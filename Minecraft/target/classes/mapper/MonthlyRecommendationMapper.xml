@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.MonthlyRecommendationMapper">
+    
+    <select id="getRecommendationsByMonthName" resultType="com.minecraft.entity.MonthlyRecommendation">
+        SELECT r.* FROM monthly_recommendations r
+        INNER JOIN months m ON r.month_id = m.id
+        WHERE m.month_name = #{monthName} AND r.is_recommended = 1
+        ORDER BY r.sort_order
+    </select>
+    
+</mapper>
