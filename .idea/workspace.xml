@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="保存本地修改">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,6 +54,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.MinecraftApplication.executor": "Run",
@@ -122,7 +124,7 @@
       <option name="project" value="LOCAL" />
       <updated>1771785037285</updated>
     </task>
-    <task id="LOCAL-00002" summary="保存本地修改">
+    <task id="LOCAL-00002" summary="Minecraft-system">
       <option name="closed" value="true" />
       <created>1771785874620</created>
       <option name="number" value="00002" />
@@ -130,7 +132,7 @@
       <option name="project" value="LOCAL" />
       <updated>1771785874620</updated>
     </task>
-    <task id="LOCAL-00003" summary="保存本地修改">
+    <task id="LOCAL-00003" summary="Minecraft-system">
       <option name="closed" value="true" />
       <created>1771785972961</created>
       <option name="number" value="00003" />
@@ -138,7 +140,23 @@
       <option name="project" value="LOCAL" />
       <updated>1771785972961</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1771787112736</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1771787112736</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1771787311849</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1771787311849</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,7 +178,8 @@
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
     <MESSAGE value="cleanup" />
-    <MESSAGE value="保存本地修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="保存本地修改" />
+    <MESSAGE value="Minecraft-system" />
+    <MESSAGE value="Minecraft-system" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minecraft-system" />
   </component>
 </project>
