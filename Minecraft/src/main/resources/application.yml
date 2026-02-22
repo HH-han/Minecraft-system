@@ -1,0 +1,102 @@
+spring:
+  application:
+    name: tourism-backend
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_minecraft?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+      validation-timeout: 5000
+      max-lifetime: 1800000
+
+  data:
+    redis:
+      password:
+      database: 0
+      timeout: 3000
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 8
+          min-idle: 0
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  mail:
+    host: smtp.qq.com
+    username: 2560177364@qq.com
+    password: emxnkcjubwyzebjd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.minecraft.entity
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret: tourism-secret-key-2024-abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  expiration: 604800000
+
+websocket:
+  allowed-origins: "*"
+
+file:
+  upload-path: ./uploads
+  allowed-types: jpg,jpeg,png,gif,bmp,mp3,mp4,wav,amr,pdf,doc,docx,xls,xlsx,ppt,pptx,zip,rar
+  max-size: 104857600
+
+# 图片上传配置
+image:
+  upload:
+    # Windows系统上传目录
+    windows-dir: D:/Image/
+    # Linux/Mac系统上传目录
+    unix-dir: /tmp/images/
+    # Windows系统访问URL
+    windows-url: http://localhost:8080/upload/
+    # Linux/Mac系统访问URL
+    unix-url: http://121.40.144.69:8080/tmp/images/
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.bolan.minecraft: debug
+    org.springframework: info
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类
