@@ -3,7 +3,7 @@
     <div class="banner">
       <div class="banner-content-SeamlessCarousel">
         <transition-group>
-          <SeamlessCarousel :items="slides" :interval="5000" :transitionDuration="700" aspectRatio="16/9" />
+          <SeamlessCarousel :items="items" :interval="5000" :transitionDuration="700" aspectRatio="16/9" />
         </transition-group>
       </div>
       <!-- 搜索栏 -->
@@ -19,9 +19,21 @@
 </template>
 <script setup>
 import SeamlessCarousel from './components/SeamlessCarousel.vue';
-import { carouselItems } from '@/views/index/HomeImage.js';
+import { ref } from 'vue';
 
-const slides = carouselItems;
+const props = defineProps({
+  items: {
+    type: Array,
+    default: () => []
+  }
+});
+
+const searchKeyword = ref('');
+
+const search = () => {
+  // 搜索功能实现
+  console.log('搜索关键词:', searchKeyword.value);
+};
 </script>
 <style scoped>
 @import "@/css/Home/paging.css";

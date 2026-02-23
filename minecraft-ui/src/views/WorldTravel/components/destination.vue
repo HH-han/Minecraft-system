@@ -111,46 +111,97 @@ const fetchHotDestinations = async () => {
   try {
     const response = await citiesApi.getCitiesList();
     
-    if (response.data && response.data.code === 200 && response.data.data.records) {
-      const apiData = response.data.data;
-      const citiesData = apiData.records || [];
-      
-      // 按国家分组城市数据
-      const groupedDestinations = [];
-      const countryMap = new Map();
-      
-      citiesData.forEach(city => {
-        const countryName = city.countryName || city.chineseName || '未知国家';
-        if (!countryMap.has(countryName)) {
-          countryMap.set(countryName, {
-            id: city.countryId || city.id,
-            provinceName: countryName,
-            region: { id: city.countryId || 1, name: countryName },
-            cities: []
-          });
-        }
-        countryMap.get(countryName).cities.push(city);
-      });
-      
-      // 转换为数组
-      countryMap.forEach(country => {
-        groupedDestinations.push(country);
-      });
-      
-      destinations.value = groupedDestinations;
-      console.log('获取到的热门目的地数据:', destinations.value);
-    } else {
-      throw new Error(response.data?.message || '获取数据失败');
+    // 尝试不同的响应格式处理
+    let citiesData = [];
+    
+    // 格式1: 后端实际返回的格式 {code: 200, message: "success", data: {records: [...]}}
+    if (response.code === 200 && response.data && response.data.records) {
+      citiesData = response.data.records;
     }
+    // 格式2: 直接返回数据数组
+    else if (Array.isArray(response)) {
+      citiesData = response;
+    }
+    // 格式3: 其他可能的格式
+    else if (response.data && Array.isArray(response.data)) {
+      citiesData = response.data;
+    }
+    else {
+      // 使用默认数据作为fallback
+      destinations.value = getDefaultDestinations();
+      return;
+    }
+    
+    // 按国家分组城市数据
+    const groupedDestinations = [];
+    const countryMap = new Map();
+    
+    // 国家名称映射
+    const countryNames = {
+      1: '中国',
+      2: '日本',
+      3: '美国',
+      4: '法国',
+      5: '澳大利亚',
+      6: '南非',
+      7: '巴西',
+      8: '德国',
+      9: '印度'
+    };
+    
+    citiesData.forEach(city => {
+      // 获取国家名称
+      const countryName = countryNames[city.countryId] || '未知国家';
+      
+      // 根据国家ID确定regionId
+      let regionId = 1; // 默认国内
+      if (city.countryId === 1) {
+        regionId = 1; // 中国 - 国内
+      } else if (city.countryId === 2) {
+        regionId = 2; // 日本
+      } else if (city.countryId === 3) {
+        regionId = 3; // 美国 - 美洲
+      } else if (city.countryId === 4 || city.countryId === 8) {
+        regionId = 4; // 法国、德国 - 欧洲
+      } else if (city.countryId === 5 || city.countryId === 6) {
+        regionId = 6; // 澳大利亚、南非 - 澳洲非洲
+      } else if (city.countryId === 7) {
+        regionId = 5; // 巴西 - 欧洲美洲
+      }
+      
+      if (!countryMap.has(countryName)) {
+        countryMap.set(countryName, {
+          id: city.countryId,
+          provinceName: countryName,
+          region: { id: regionId, name: countryName },
+          cities: []
+        });
+      }
+      
+      // 添加城市数据
+      countryMap.get(countryName).cities.push(city);
+    });
+    
+    // 转换为数组
+    countryMap.forEach(country => {
+      groupedDestinations.push(country);
+    });
+    
+    destinations.value = groupedDestinations;
   } catch (err) {
     console.error('获取热门目的地失败:', err);
     error.value = err.message || '网络请求失败，请稍后重试';
     
     // 如果API调用失败，使用默认数据作为fallback
-    destinations.value = [];
+    destinations.value = getDefaultDestinations();
   } finally {
     loading.value = false;
   }
+};
+
+// 默认目的地数据
+const getDefaultDestinations = () => {
+  return [];
 };
 
 // 处理城市点击事件

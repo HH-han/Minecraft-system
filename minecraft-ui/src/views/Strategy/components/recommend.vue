@@ -157,8 +157,8 @@ const mediaList = ref({ images: []})
 const fetchcarousel = async () => {
   try {
     const result = await carouselApi.getCarouselsByGroup('gc')
-    if (result.data && result.data.list) {
-      const filteredList = result.data.list.filter(item => item.type === 'gc')
+    if (result && result.list) {
+      const filteredList = result.list.filter(item => item.type === 'gc')
       mediaList.value.images = filteredList.map((item) => ({
         image: item.image || '默认图片链接',
         title: item.title || '默认标题',

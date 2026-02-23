@@ -29,8 +29,8 @@ const fetchcarousel = async () => {
   try {
     // 使用API获取轮播图数据
     const response = await carouselApi.getHomeTopCarousels();
-    if (response.data.code === 200 && response.data.data) {
-      mediaList.value.images = response.data.data.map((item) => ({
+    if (response.code === 200 && response.data) {
+      mediaList.value.images = response.data.map((item) => ({
         image: item.imageUrl || '默认图片链接',
         title: item.title || '默认标题',
         location: item.subtitle || '默认位置',

@@ -55,6 +55,8 @@ public class SecurityConfig {
                 .requestMatchers("/apiDocument.html").permitAll()
                 .requestMatchers("/im-api-documentation.html").permitAll()
                 .requestMatchers("/api/user/info").authenticated()
+                .requestMatchers("/upload/**").permitAll()
+                .requestMatchers("/image/**").permitAll()
                 .anyRequest().permitAll()
             )
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

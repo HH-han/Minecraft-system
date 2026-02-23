@@ -282,11 +282,43 @@ const fetchCountries = async () => {
     // 使用真实API获取数据
     const backendResponse = await countriesApi.getCountriesList()
     
-    // 国家数据在data.data.records数组中
-    const countriesData = backendResponse.data.data.records || []
+    // 安全检查：确保backendResponse存在
+    if (!backendResponse) {
+      throw new Error('API响应为空')
+    }
+    
+    // 尝试获取countriesData
+    let countriesData = []
+    
+    // 注意：由于request.js的响应拦截器直接返回了response.data，所以这里的backendResponse已经是response.data了
+    
+    // 格式1: backendResponse.records (IPage格式，因为backendResponse已经是response.data了)
+    if (Array.isArray(backendResponse.records)) {
+      countriesData = backendResponse.records
+    }
+    // 格式2: backendResponse (直接数组格式，因为backendResponse已经是response.data了)
+    else if (Array.isArray(backendResponse)) {
+      countriesData = backendResponse
+    }
+    // 格式3: backendResponse.data.records (完整格式，以防响应拦截器没有生效)
+    else if (backendResponse.data && Array.isArray(backendResponse.data.records)) {
+      countriesData = backendResponse.data.records
+    }
+    // 格式4: backendResponse.data (完整格式的数组，以防响应拦截器没有生效)
+    else if (backendResponse.data && Array.isArray(backendResponse.data)) {
+      countriesData = backendResponse.data
+    }
+    
+    // 确保countriesData是数组
+    if (!Array.isArray(countriesData)) {
+      countriesData = []
+    }
     
     // 转换数据格式，适配现有模板
     const formattedCountries = countriesData.map((country, index) => {
+      // 确保country对象存在
+      if (!country) return null
+      
       return {
         id: country.id,
         name: country.chineseName || country.name,
@@ -300,12 +332,20 @@ const fetchCountries = async () => {
         badgeText: country.flagEmoji || '',
         detailedinformation: `首都: ${country.capital}, 面积: ${country.area}万平方公里, 人口: ${country.population || 0}`
       }
-    })
+    }).filter(Boolean) // 过滤掉null值
     
     // 确保数据正确赋值 - 使用展开运算符创建新数组
     countries.value = [...formattedCountries]
     paginatedDestinations.value = [...formattedCountries]
-    totalPages.value = backendResponse.data?.pages || 1
+    
+    // 计算总页数
+    if (backendResponse.pages) {
+      totalPages.value = backendResponse.pages
+    } else if (backendResponse.data && backendResponse.data.pages) {
+      totalPages.value = backendResponse.data.pages
+    } else {
+      totalPages.value = 1
+    }
     
     // 提取分类
     const uniqueCategories = [...new Set(formattedCountries.map(c => c.category))]
@@ -322,7 +362,13 @@ const fetchCountries = async () => {
     }, 100)
     
   } catch (err) {
+    console.error('获取国家数据失败:', err)
     error.value = err.message || '获取数据失败'
+    
+    // 使用fallback数据
+    countries.value = []
+    paginatedDestinations.value = []
+    categories.value = []
   } finally {
     loading.value = false
   }

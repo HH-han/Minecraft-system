@@ -5,7 +5,7 @@
         </header>
         <main>
             <!-- 轮播图片 -->
-            <Carousel :mediaList="mediaList" />
+            <Carousel :items="mediaList.images" />
             <!-- 加载 -->
             <!-- <Loaded /> -->
             <!-- 新闻 -->
@@ -26,7 +26,7 @@ import HomeFooter from './Footer.vue';
 import Loaded from '@/components/DisplayBox/Loaded.vue';
 import News from './news.vue';
 import Content from './content.vue';
-import { carouselItems } from '../HomeImage.js';
+import carouselApi from '@/api/carousel.js';
 
 // 轮播图数据
 const mediaList = ref({ images: [] });
@@ -34,13 +34,16 @@ const mediaList = ref({ images: [] });
 // 获取轮播图数据
 const fetchcarousel = async () => {
   try {
-    // 使用本地轮播图数据
-    mediaList.value.images = carouselItems.map((item) => ({
-      image: item.image || '默认图片链接',
-      title: item.title || '默认标题',
-      location: item.location || '默认位置',
-      description: item.description || '默认描述'
-    }))
+    // 使用API获取轮播图数据
+    const response = await carouselApi.getHomeTopCarousels();
+    if (response.code === 200 && response.data) {
+      mediaList.value.images = response.data.map((item) => ({
+        image: item.imageUrl || '默认图片链接',
+        title: item.title || '默认标题',
+        location: item.subtitle || '默认位置',
+        description: item.subtitle || '默认描述'
+      }));
+    }
   } catch (error) {
     console.error('获取轮播图数据失败：', error)
   }
