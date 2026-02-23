@@ -60,21 +60,21 @@ public class CarouselController {
 
     @Operation(summary = "新增轮播图")
     @PostMapping
-    public ApiResponse<Void> addCarousel(@RequestBody Carousels carousel) {
+    public Object addCarousel(@RequestBody Carousels carousel) {
         carouselsService.save(carousel);
         return ApiResponse.success("新增轮播图成功");
     }
 
     @Operation(summary = "更新轮播图")
     @PutMapping
-    public ApiResponse<Void> updateCarousel(@RequestBody Carousels carousel) {
+    public Object updateCarousel(@RequestBody Carousels carousel) {
         carouselsService.updateById(carousel);
         return ApiResponse.success("更新轮播图成功");
     }
 
     @Operation(summary = "删除轮播图")
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteCarousel(@PathVariable Integer id) {
+    public Object deleteCarousel(@PathVariable Integer id) {
         carouselsService.removeById(id);
         return ApiResponse.success("删除轮播图成功");
     }

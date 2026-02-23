@@ -27,7 +27,9 @@ public class CarouselsServiceImpl extends ServiceImpl<CarouselsMapper, Carousels
         QueryWrapper<Carousels> wrapper = new QueryWrapper<>();
         wrapper.eq("position", position)
                 .eq("is_active", true)
-                .eq("is_deleted", false)
+                .and(i -> i.eq("is_deleted", false)
+                        .or()
+                        .isNull("is_deleted"))
                 .orderByAsc("sort_order");
         
         // 处理时间限制
@@ -52,8 +54,14 @@ public class CarouselsServiceImpl extends ServiceImpl<CarouselsMapper, Carousels
         // 获取分组关联的轮播图
         List<CarouselGroupItems> groupItems = carouselGroupItemsService.list(new QueryWrapper<CarouselGroupItems>()
                 .eq("group_id", group.getId())
-                .eq("is_active", true)
                 .orderByAsc("sort_order"));
+        
+        // 过滤活跃的轮播图项目（如果需要）
+        if (groupItems != null && !groupItems.isEmpty()) {
+            groupItems = groupItems.stream()
+                    .filter(item -> item.getIsActive() == null || item.getIsActive())
+                    .collect(java.util.stream.Collectors.toList());
+        }
         
         if (groupItems.isEmpty()) {
             return List.of();
@@ -68,7 +76,9 @@ public class CarouselsServiceImpl extends ServiceImpl<CarouselsMapper, Carousels
         QueryWrapper<Carousels> wrapper = new QueryWrapper<>();
         wrapper.in("id", carouselIds)
                 .eq("is_active", true)
-                .eq("is_deleted", false);
+                .and(i -> i.eq("is_deleted", false)
+                        .or()
+                        .isNull("is_deleted"));
         
         // 处理时间限制
         wrapper.and(i -> i.eq("is_always_show", true)
