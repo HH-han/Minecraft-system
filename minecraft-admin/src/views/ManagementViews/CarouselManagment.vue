@@ -60,7 +60,7 @@
             <!-- 新增/编辑弹窗 -->
             <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
                 <div class="dialog" @click.stop>
-                    <h2>{{ isEditing ? '编辑笔记' : '新增笔记' }}</h2>
+                    <h2>{{ isEditing ? '编辑轮播图' : '新增轮播图' }}</h2>
                     <form @submit.prevent="submitForm" class="form-container">
                         <div class="form-group">
                             <div class="image-upload-container">
@@ -127,12 +127,19 @@
                                 <input v-model="formData.description" required />
                             </div>
                             <div class="form-group">
-                                <label>轮播地点:</label>
-                                <input v-model="formData.location" required />
+                                <label>展示位置:</label>
+                                <el-select v-model="formData.location" placeholder="请选择展示位置" clearable style="width: 100%" required>
+                                    <el-option 
+                                        v-for="option in positionOptions" 
+                                        :key="option.value" 
+                                        :label="option.label" 
+                                        :value="option.value" 
+                                    />
+                                </el-select>
                             </div>
                             <div class="form-group"> 
-                                <label>请选择轮播类型:</label>
-                                <el-select v-model="formData.type" placeholder="请选择轮播类型" clearable style="width: 100%" required>
+                                <label>链接类型:</label>
+                                <el-select v-model="formData.type" placeholder="请选择链接类型" clearable style="width: 100%" required>
                                     <el-option 
                                         v-for="option in carouselTypeOptions" 
                                         :key="option.value" 
@@ -163,6 +170,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import request from '@/utils/request';
+import carouselApi from '@/api/carousel';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -172,24 +180,29 @@ const columns = [
     { key: 'title', title: '轮播标题' },
     { key: 'image', title: '轮播图片' },
     { key: 'description', title: '轮播简介' },
-    { key: 'location', title: '轮播地点' },
-    { key: 'type', title: '类型' },
+    { key: 'location', title: '展示位置' },
+    { key: 'type', title: '链接类型' },
     { key: 'createdAt', title: '创建时间' },
     { key: 'updatedAt', title: '更新时间' },
 ];
 
-// 轮播类型选项数据
+// 轮播类型选项数据（与后端linkType枚举匹配）
 const carouselTypeOptions = [
-    { label: '首页', value: 'hc' },
-    { label: '目的地', value: 'dc' },
-    { label: '景点', value: 'sc' },
-    { label: '酒店', value: 'jc' },
-    { label: '游记', value: 'tc' },
-    { label: '美食', value: 'fc' },
-    { label: '小物件', value: 'xc' },
-    { label: '攻略', value: 'gc' },
-    { label: '其他', value: 'oc' },
-    { label: 'logo', value: 'logo'},
+    { label: '无链接', value: 'none' },
+    { label: '外部链接', value: 'url' },
+    { label: '景点', value: 'attraction' },
+    { label: '城市', value: 'city' },
+    { label: '国家', value: 'country' },
+    { label: '自定义页面', value: 'custom_page' },
+];
+
+// 展示位置选项数据
+const positionOptions = [
+    { label: '首页顶部', value: 'home_top' },
+    { label: '首页中部', value: 'home_middle' },
+    { label: '首页底部', value: 'home_bottom' },
+    { label: '景点详情页', value: 'attraction_detail' },
+    { label: 'APP开屏', value: 'app_splash' },
 ];
 const showToast = ref(false);
 const toastMessage = ref('');
@@ -218,10 +231,15 @@ const formatDate = (date) => {
 // 搜索功能
 const filteredCards = computed(() => {
     const keyword = searchKeyword.value.toLowerCase();
+    if (!keyword) {
+        return cards.value;
+    }
     return cards.value.filter(
         (card) =>
             String(card.id).includes(keyword) ||
-            card.title.toLowerCase().includes(keyword)
+            card.title.toLowerCase().includes(keyword) ||
+            card.description.toLowerCase().includes(keyword) ||
+            card.location.toLowerCase().includes(keyword)
     );
 });
 
@@ -245,16 +263,47 @@ const handleCurrentChange = (newPage) => {
 // 获取数据
 const fetchScenic = async () => {
     try {
-        const params = {
-            page: currentPage.value,
-            pageSize: pageSize.value,
-            keyword: searchKeyword.value
-        };
-        const response = await request.get('/api/public/travelcarousel', { params });
-        cards.value = response.data.list;
-        total.value = response.data.total;
+        const response = await carouselApi.getAllCarousels();
+        // 检查响应数据格式
+        if (Array.isArray(response.data)) {
+            // 将后端数据结构映射到前端需要的格式
+            cards.value = response.data.map(carousel => ({
+                id: carousel.id,
+                title: carousel.title,
+                subtitle: carousel.subtitle,
+                image: carousel.imageUrl,
+                description: carousel.subtitle || '无描述',
+                location: carousel.position || '未设置',
+                type: carousel.linkType || 'none',
+                createdAt: carousel.createdAt,
+                updatedAt: carousel.updatedAt
+            }));
+            total.value = cards.value.length;
+        } else if (response.data && Array.isArray(response.data.data)) {
+            // 处理可能的嵌套数据结构
+            cards.value = response.data.data.map(carousel => ({
+                id: carousel.id,
+                title: carousel.title,
+                subtitle: carousel.subtitle,
+                image: carousel.imageUrl,
+                description: carousel.subtitle || '无描述',
+                location: carousel.position || '未设置',
+                type: carousel.linkType || 'none',
+                createdAt: carousel.createdAt,
+                updatedAt: carousel.updatedAt
+            }));
+            total.value = cards.value.length;
+        } else {
+            // 如果数据格式不正确，使用空数组
+            cards.value = [];
+            total.value = 0;
+            console.error('获取数据失败: 响应数据格式不正确', response.data);
+        }
     } catch (error) {
         console.error('获取数据失败:', error);
+        // 发生错误时使用空数组
+        cards.value = [];
+        total.value = 0;
     }
 };
 
@@ -292,15 +341,22 @@ const showToastMessage = (message, type = 'success') => {
 // 提交表单
 const submitForm = async () => {
     try {
-        // 自动设置时间
+        // 构建后端需要的数据结构
+        const carouselData = {
+            title: formData.value.title,
+            subtitle: formData.value.description,
+            imageUrl: formData.value.image,
+            linkType: formData.value.type,
+            position: formData.value.location
+        };
+        
         if (isEditing.value) {
-            formData.value.updatedAt = new Date().toISOString();
-            await request.put(`/api/public/travelcarousel/${formData.value.id}`, formData.value);
-            showToastMessage('更新成功');
+            carouselData.id = formData.value.id;
+            await carouselApi.updateCarousel(carouselData);
+            showToastMessage('更新轮播图成功');
         } else {
-            formData.value.createdAt = new Date().toISOString();
-            await request.post('/api/public/travelcarousel', formData.value);
-            showToastMessage('新增成功');
+            await carouselApi.addCarousel(carouselData);
+            showToastMessage('新增轮播图成功');
         }
         await fetchScenic();
         closeDialog();
@@ -328,10 +384,9 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
     if (deleteCardId.value) {
         try {
-            await request.delete(`/api/public/travelcarousel/${deleteCardId.value}`);
+            await carouselApi.deleteCarousel(deleteCardId.value);
             await fetchScenic();
-            closeDeletePrompt();
-            showToastMessage('删除成功');
+            showToastMessage('删除轮播图成功');
         } catch (error) {
             console.error('删除失败:', error);
             showToastMessage('删除失败', 'error');
