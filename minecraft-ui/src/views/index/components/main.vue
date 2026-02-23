@@ -23,7 +23,6 @@ import { ref, onMounted } from 'vue';
 import Header from './Header.vue';
 import Carousel from '@/views/Carousel/index.vue';
 import HomeFooter from './Footer.vue';
-import Loaded from '@/components/DisplayBox/Loaded.vue';
 import News from './news.vue';
 import Content from './content.vue';
 import carouselApi from '@/api/carousel.js';
