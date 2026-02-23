@@ -9,6 +9,7 @@ import com.minecraft.entity.Attraction;
 import com.minecraft.mapper.AttractionMapper;
 import com.minecraft.service.AttractionService;
 import com.minecraft.service.LikeService;
+import com.minecraft.utils.ImageUtils;
 import com.minecraft.vo.AttractionVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
 
     @Autowired
     private LikeService likeService;
+    @Autowired
+    private ImageUtils imageUtils;
 
     @Override
     public PageResponse<AttractionVO> getAttractionList(PageRequest request) {
@@ -107,5 +110,91 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
             BeanUtils.copyProperties(item, vo);
             return vo;
         }).collect(Collectors.toList());
+    }
+    
+    @Override
+    public boolean save(Attraction attraction) {
+        try {
+            // 处理封面图片上传
+            if (attraction.getCoverImage() != null && attraction.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(attraction.getCoverImage());
+                attraction.setCoverImage(processedCoverImage);
+            }
+            
+            // 处理多图片上传（如果是Base64数组）
+            if (attraction.getImages() != null && attraction.getImages().startsWith("[")) {
+                try {
+                    // 解析图片数组
+                    String[] imageArray = attraction.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
+                    StringBuilder processedImages = new StringBuilder();
+                    
+                    for (String image : imageArray) {
+                        if (image.trim().startsWith("data:image")) {
+                            String processedImage = imageUtils.processBase64Image(image.trim());
+                            processedImages.append(processedImage).append(",");
+                        } else {
+                            processedImages.append(image.trim()).append(",");
+                        }
+                    }
+                    
+                    if (processedImages.length() > 0) {
+                        processedImages.setLength(processedImages.length() - 1);
+                    }
+                    
+                    attraction.setImages(processedImages.toString());
+                } catch (Exception e) {
+                    // 如果解析失败，保持原数据
+                    e.printStackTrace();
+                }
+            }
+            
+            return super.save(attraction);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean updateById(Attraction attraction) {
+        try {
+            // 处理封面图片上传
+            if (attraction.getCoverImage() != null && attraction.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(attraction.getCoverImage());
+                attraction.setCoverImage(processedCoverImage);
+            }
+            
+            // 处理多图片上传（如果是Base64数组）
+            if (attraction.getImages() != null && attraction.getImages().startsWith("[")) {
+                try {
+                    // 解析图片数组
+                    String[] imageArray = attraction.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
+                    StringBuilder processedImages = new StringBuilder();
+                    
+                    for (String image : imageArray) {
+                        if (image.trim().startsWith("data:image")) {
+                            String processedImage = imageUtils.processBase64Image(image.trim());
+                            processedImages.append(processedImage).append(",");
+                        } else {
+                            processedImages.append(image.trim()).append(",");
+                        }
+                    }
+                    
+                    if (processedImages.length() > 0) {
+                        processedImages.setLength(processedImages.length() - 1);
+                    }
+                    
+                    attraction.setImages(processedImages.toString());
+                } catch (Exception e) {
+                    // 如果解析失败，保持原数据
+                    e.printStackTrace();
+                }
+            }
+            
+            return super.updateById(attraction);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

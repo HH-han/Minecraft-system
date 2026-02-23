@@ -7,6 +7,7 @@ import com.minecraft.entity.CarouselGroups;
 import com.minecraft.entity.Carousels;
 import com.minecraft.mapper.CarouselsMapper;
 import com.minecraft.service.CarouselsService;
+import com.minecraft.utils.ImageUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -18,6 +19,8 @@ public class CarouselsServiceImpl extends ServiceImpl<CarouselsMapper, Carousels
     private CarouselGroupsServiceImpl carouselGroupsService;
     @Resource
     private CarouselGroupItemsServiceImpl carouselGroupItemsService;
+    @Resource
+    private ImageUtils imageUtils;
 
     @Override
     public List<Carousels> getActiveCarouselsByPosition(String position) {
@@ -73,5 +76,61 @@ public class CarouselsServiceImpl extends ServiceImpl<CarouselsMapper, Carousels
                         .ge("end_time", LocalDateTime.now())));
         
         return baseMapper.selectList(wrapper);
+    }
+    
+    @Override
+    public boolean save(Carousels carousel) {
+        try {
+            // 处理图片上传
+            if (carousel.getImageUrl() != null && carousel.getImageUrl().startsWith("data:image")) {
+                String processedImageUrl = imageUtils.processBase64Image(carousel.getImageUrl());
+                carousel.setImageUrl(processedImageUrl);
+            }
+            
+            // 处理移动端图片上传
+            if (carousel.getMobileImageUrl() != null && carousel.getMobileImageUrl().startsWith("data:image")) {
+                String processedMobileImageUrl = imageUtils.processBase64Image(carousel.getMobileImageUrl());
+                carousel.setMobileImageUrl(processedMobileImageUrl);
+            }
+            
+            // 处理缩略图上传
+            if (carousel.getThumbnailUrl() != null && carousel.getThumbnailUrl().startsWith("data:image")) {
+                String processedThumbnailUrl = imageUtils.processBase64Image(carousel.getThumbnailUrl());
+                carousel.setThumbnailUrl(processedThumbnailUrl);
+            }
+            
+            return super.save(carousel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean updateById(Carousels carousel) {
+        try {
+            // 处理图片上传
+            if (carousel.getImageUrl() != null && carousel.getImageUrl().startsWith("data:image")) {
+                String processedImageUrl = imageUtils.processBase64Image(carousel.getImageUrl());
+                carousel.setImageUrl(processedImageUrl);
+            }
+            
+            // 处理移动端图片上传
+            if (carousel.getMobileImageUrl() != null && carousel.getMobileImageUrl().startsWith("data:image")) {
+                String processedMobileImageUrl = imageUtils.processBase64Image(carousel.getMobileImageUrl());
+                carousel.setMobileImageUrl(processedMobileImageUrl);
+            }
+            
+            // 处理缩略图上传
+            if (carousel.getThumbnailUrl() != null && carousel.getThumbnailUrl().startsWith("data:image")) {
+                String processedThumbnailUrl = imageUtils.processBase64Image(carousel.getThumbnailUrl());
+                carousel.setThumbnailUrl(processedThumbnailUrl);
+            }
+            
+            return super.updateById(carousel);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

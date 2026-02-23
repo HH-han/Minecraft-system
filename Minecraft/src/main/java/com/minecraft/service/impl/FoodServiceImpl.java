@@ -8,12 +8,16 @@ import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Food;
 import com.minecraft.mapper.FoodMapper;
 import com.minecraft.service.FoodService;
+import com.minecraft.utils.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements FoodService {
+    @Autowired
+    private ImageUtils imageUtils;
 
     @Override
     public PageResponse<?> getFoodList(PageRequest request) {
@@ -65,5 +69,91 @@ public class FoodServiceImpl extends ServiceImpl<FoodMapper, Food> implements Fo
     @Override
     public void deleteFood(Long id) {
         removeById(id);
+    }
+    
+    @Override
+    public boolean save(Food food) {
+        try {
+            // 处理封面图片上传
+            if (food.getCoverImage() != null && food.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(food.getCoverImage());
+                food.setCoverImage(processedCoverImage);
+            }
+            
+            // 处理多图片上传（如果是Base64数组）
+            if (food.getImages() != null && food.getImages().startsWith("[")) {
+                try {
+                    // 解析图片数组
+                    String[] imageArray = food.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
+                    StringBuilder processedImages = new StringBuilder();
+                    
+                    for (String image : imageArray) {
+                        if (image.trim().startsWith("data:image")) {
+                            String processedImage = imageUtils.processBase64Image(image.trim());
+                            processedImages.append(processedImage).append(",");
+                        } else {
+                            processedImages.append(image.trim()).append(",");
+                        }
+                    }
+                    
+                    if (processedImages.length() > 0) {
+                        processedImages.setLength(processedImages.length() - 1);
+                    }
+                    
+                    food.setImages(processedImages.toString());
+                } catch (Exception e) {
+                    // 如果解析失败，保持原数据
+                    e.printStackTrace();
+                }
+            }
+            
+            return super.save(food);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean updateById(Food food) {
+        try {
+            // 处理封面图片上传
+            if (food.getCoverImage() != null && food.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(food.getCoverImage());
+                food.setCoverImage(processedCoverImage);
+            }
+            
+            // 处理多图片上传（如果是Base64数组）
+            if (food.getImages() != null && food.getImages().startsWith("[")) {
+                try {
+                    // 解析图片数组
+                    String[] imageArray = food.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
+                    StringBuilder processedImages = new StringBuilder();
+                    
+                    for (String image : imageArray) {
+                        if (image.trim().startsWith("data:image")) {
+                            String processedImage = imageUtils.processBase64Image(image.trim());
+                            processedImages.append(processedImage).append(",");
+                        } else {
+                            processedImages.append(image.trim()).append(",");
+                        }
+                    }
+                    
+                    if (processedImages.length() > 0) {
+                        processedImages.setLength(processedImages.length() - 1);
+                    }
+                    
+                    food.setImages(processedImages.toString());
+                } catch (Exception e) {
+                    // 如果解析失败，保持原数据
+                    e.printStackTrace();
+                }
+            }
+            
+            return super.updateById(food);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

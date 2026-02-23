@@ -1,31 +1,31 @@
-import axios from 'axios';
+import request from '@/utils/request'
 
 const citiesApi = {
   // 获取城市列表
   getCitiesList: (page = 1, size = 10) => {
-    return axios.get('/api/cities/list', {
+    return request.get('/cities/list', {
       params: { page, size }
     });
   },
 
   // 获取城市详情
   getCitiesById: (id) => {
-    return axios.get(`/api/cities/${id}`);
+    return request.get(`/cities/${id}`);
   },
 
   // 添加城市
   addCities: (cities) => {
-    return axios.post('/api/cities/add', cities);
+    return request.post('/cities/add', cities);
   },
 
   // 更新城市
   updateCities: (cities) => {
-    return axios.put('/api/cities/update', cities);
+    return request.put('/cities/update', cities);
   },
 
   // 删除城市
   deleteCities: (id) => {
-    return axios.delete(`/api/cities/${id}`);
+    return request.delete(`/cities/${id}`);
   }
 };
 
