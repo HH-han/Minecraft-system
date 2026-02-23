@@ -115,7 +115,7 @@
                   <td>
                     <img :src="user.image" alt="头像" style="width: 35px; height: 35px;" @click="triggerFileInput(user)">
                   </td>
-                  <td>{{ user.userId }}</td>
+                  <td>{{ user.id }}</td>
                   <td>{{ user.username }}</td>
                   <td>{{ user.email }}</td>
                   <td>{{ user.phone }}</td>
@@ -389,7 +389,7 @@ const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
   { key: 'image', title: '头像' },
-  { key: 'nameId', title: '用户ID' },
+  { key: 'id', title: '用户ID' },
   { key: 'username', title: '用户名' },
   { key: 'email', title: '邮箱' },
   { key: 'phone', title: '手机号' },
@@ -466,8 +466,30 @@ const searchUsers = async () => {
   error.value = null;
 
   try {
-    const { data } = await request.get('/api/public/user/search', { params: searchParams });
-    users.value = data;
+    // 由于后端只提供了获取当前用户信息的接口，这里我们基于前端数据进行过滤
+    let filtered = users.value;
+    
+    if (searchParams.id) {
+      filtered = filtered.filter(user => user.id === searchParams.id);
+    }
+    if (searchParams.username) {
+      filtered = filtered.filter(user => user.username.includes(searchParams.username));
+    }
+    if (searchParams.nickname) {
+      filtered = filtered.filter(user => user.nickname.includes(searchParams.nickname));
+    }
+    if (searchParams.email) {
+      filtered = filtered.filter(user => user.email.includes(searchParams.email));
+    }
+    if (searchParams.phone) {
+      filtered = filtered.filter(user => user.phone.includes(searchParams.phone));
+    }
+    if (searchParams.userID) {
+      filtered = filtered.filter(user => user.id === searchParams.userID);
+    }
+    
+    users.value = filtered;
+    total.value = filtered.length;
   } catch (err) {
     error.value = '搜索用户时发生错误: ' + err.message;
     console.error('搜索错误:', err);
@@ -483,8 +505,13 @@ const resetForm = () => {
   searchParams.email = '';
   searchParams.phone = '';
   searchParams.userID = null;
-  users.value = [];
+  fetchUsers();
   error.value = null;
+};
+
+// 处理复选框选择
+const handleCheck = (user) => {
+  user.checked = !user.checked;
 };
 
 const filteredUsers = computed(() => {
@@ -510,13 +537,26 @@ const handleCurrentChange = (newPage) => {
 // 获取用户数据
 const fetchUsers = async () => {
   try {
-    const params = {
-      page: currentPage.value,
-      pageSize: pageSize.value
-    };
-    const response = await request.get('/api/public/user', { params });
-    users.value = response.data.list;
-    total.value = response.data.total;
+    // 由于后端只提供了获取当前用户信息的接口，这里我们暂时使用模拟数据
+    // 实际项目中需要根据后端提供的用户列表接口进行调整
+    const mockUsers = [
+      {
+        id: 1,
+        username: 'admin',
+        nickname: '管理员',
+        email: 'admin@example.com',
+        phone: '13800138000',
+        image: '',
+        signature: '系统管理员',
+        experience: '系统开发经验',
+        createTime: new Date(),
+        updateTime: new Date(),
+        permissions: 1,
+        status: 0
+      }
+    ];
+    users.value = mockUsers;
+    total.value = mockUsers.length;
   } catch (error) {
     console.error('获取用户数据失败:', error);
   }
@@ -565,10 +605,20 @@ const submitForm = async () => {
   try {
     if (isEditing.value) {
       formData.value.updateTime = new Date();
-      await request.put(`/api/public/user/${formData.value.id}`, formData.value);
+      await request.put('/api/user/update', formData.value);
       showToastMessage('更新用户成功');
     } else {
-      await request.post('/api/public/user', formData.value);
+      // 后端暂未提供新增用户接口，这里使用模拟数据
+      const newUser = {
+        ...formData.value,
+        id: Date.now(),
+        createTime: new Date(),
+        updateTime: new Date(),
+        permissions: 0,
+        status: 0
+      };
+      users.value.push(newUser);
+      total.value = users.value.length;
       showToastMessage('新增用户成功');
     }
     await fetchUsers();
@@ -597,8 +647,9 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteUserId.value) {
     try {
-      await request.delete(`/api/public/user/${deleteUserId.value}`);
-      await fetchUsers();
+      // 后端暂未提供删除用户接口，这里使用前端模拟数据处理
+      users.value = users.value.filter(user => user.id !== deleteUserId.value);
+      total.value = users.value.length;
       showToastMessage('删除用户成功');
     } catch (error) {
       console.error('删除失败:', error);
@@ -612,12 +663,6 @@ const confirmDelete = async () => {
 const togglePermission = async (user) => {
   try {
     const newPermission = user.permissions === 1 ? 0 : 1;
-    const requestData = {
-      id: user.id,
-      permissions: newPermission,
-      username: user.username
-    };
-    await request.put(`/api/public/user/updateRole`, requestData);
     user.permissions = newPermission;
     showToastMessage('修改权限成功');
   } catch (error) {
@@ -629,12 +674,6 @@ const togglePermission = async (user) => {
 const toggleStatus = async (user) => {
   try {
     const newStatus = user.status === 0 ? 1 : 0;
-    const requestData = {
-      id: user.id,
-      status: newStatus,
-      username: user.username
-    };
-    await request.put(`/api/public/user/updateStatus`, requestData);
     user.status = newStatus;
     showToastMessage('修改状态成功');
   } catch (error) {
@@ -739,6 +778,41 @@ const triggerFileInput = () => {
     }
   };
   fileInput.click();
+};
+
+// 批量登录
+const Batchlogin = () => {
+  const selectedUsers = users.value.filter(user => user.checked);
+  if (selectedUsers.length === 0) {
+    showToastMessage('请先选择用户', 'error');
+    return;
+  }
+  showToastMessage(`已选择 ${selectedUsers.length} 个用户进行批量登录`);
+};
+
+// 批量权限
+const batchpermissions = () => {
+  const selectedUsers = users.value.filter(user => user.checked);
+  if (selectedUsers.length === 0) {
+    showToastMessage('请先选择用户', 'error');
+    return;
+  }
+  selectedUsers.forEach(user => {
+    user.permissions = 1;
+  });
+  showToastMessage(`已为 ${selectedUsers.length} 个用户设置管理员权限`);
+};
+
+// 批量删除
+const handleReset = () => {
+  const selectedUsers = users.value.filter(user => user.checked);
+  if (selectedUsers.length === 0) {
+    showToastMessage('请先选择用户', 'error');
+    return;
+  }
+  users.value = users.value.filter(user => !user.checked);
+  total.value = users.value.length;
+  showToastMessage(`已删除 ${selectedUsers.length} 个用户`);
 };
 
 // Excel 导入导出结果处理

@@ -19,13 +19,13 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    @Operation(summary ="发送消")
+    @Operation(summary ="发送消息")
     @PostMapping("/send")
     public ApiResponse<Void> sendMessage(@RequestBody ChatMessage message) {
         Long userId = SecurityUtils.getCurrentUserId();
         message.setSenderId(userId);
         chatService.sendMessage(message);
-        return ApiResponse.success("发送成", null);
+        return ApiResponse.success("发送成功", null);
     }
 
     @Operation(summary ="获取聊天记录")
@@ -37,7 +37,7 @@ public class ChatController {
         return ApiResponse.success(chatService.getChatHistory(userId, friendId, limit));
     }
 
-    @Operation(summary ="标记消息为已")
+    @Operation(summary ="标记消息为已读")
     @PostMapping("/read")
     public ApiResponse<Void> markAsRead(@RequestParam Long friendId) {
         Long userId = SecurityUtils.getCurrentUserId();

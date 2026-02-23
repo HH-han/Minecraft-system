@@ -23,3 +23,8 @@ export const updatePassword = (oldPassword, newPassword) => {
     }
   })
 }
+
+// 发送邮箱验证码
+export const EmailCaptcha = (data) => {
+  return request.post('/api/auth/email-captcha', data)
+}

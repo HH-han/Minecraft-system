@@ -6,10 +6,7 @@ import com.minecraft.service.CarouselsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -45,5 +42,40 @@ public class CarouselController {
     public ApiResponse<List<Carousels>> getHomeMiddleCarousels() {
         List<Carousels> carousels = carouselsService.getCarouselsByGroupCode("home_middle");
         return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取所有轮播图")
+    @GetMapping
+    public ApiResponse<List<Carousels>> getAllCarousels() {
+        List<Carousels> carousels = carouselsService.list();
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取轮播图详情")
+    @GetMapping("/{id}")
+    public ApiResponse<Carousels> getCarouselById(@PathVariable Integer id) {
+        Carousels carousel = carouselsService.getById(id);
+        return ApiResponse.success(carousel);
+    }
+
+    @Operation(summary = "新增轮播图")
+    @PostMapping
+    public Object addCarousel(@RequestBody Carousels carousel) {
+        carouselsService.save(carousel);
+        return ApiResponse.success("新增轮播图成功");
+    }
+
+    @Operation(summary = "更新轮播图")
+    @PutMapping
+    public Object updateCarousel(@RequestBody Carousels carousel) {
+        carouselsService.updateById(carousel);
+        return ApiResponse.success("更新轮播图成功");
+    }
+
+    @Operation(summary = "删除轮播图")
+    @DeleteMapping("/{id}")
+    public Object deleteCarousel(@PathVariable Integer id) {
+        carouselsService.removeById(id);
+        return ApiResponse.success("删除轮播图成功");
     }
 }

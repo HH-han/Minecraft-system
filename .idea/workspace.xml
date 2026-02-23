@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system" />
+    <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/destination.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/log.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/token.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/api/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/UserManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/UserManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/login/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/login/index.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -115,6 +123,7 @@
       <option name="presentableId" value="Default" />
       <updated>1771783807014</updated>
       <workItem from="1771783808145" duration="2760000" />
+      <workItem from="1771853685394" duration="657000" />
     </task>
     <task id="LOCAL-00001" summary="cleanup">
       <option name="closed" value="true" />
