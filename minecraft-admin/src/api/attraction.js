@@ -14,8 +14,23 @@ export const getAttractionDetail = (id) => {
   return request.get(`/attraction/${id}`)
 }
 
+// 添加景点
+export const addAttraction = (data) => {
+  return request.post('/attraction/add', data)
+}
+
+// 更新景点
+export const updateAttraction = (data) => {
+  return request.put('/attraction/update', data)
+}
+
+// 删除景点
+export const deleteAttraction = (id) => {
+  return request.delete(`/attraction/${id}`)
+}
+
 // 获取推荐景点
-export const getRecommendAttractions = (city, season, limit = 10) => {
+export const getRecommendattraction = (city, season, limit = 10) => {
   return request.get('/attraction/recommend', {
     params: {
       city,
@@ -26,7 +41,7 @@ export const getRecommendAttractions = (city, season, limit = 10) => {
 }
 
 // 获取热门景点
-export const getHotAttractions = (limit = 10) => {
+export const getHotattraction = (limit = 10) => {
   return request.get('/attraction/hot', {
     params: {
       limit

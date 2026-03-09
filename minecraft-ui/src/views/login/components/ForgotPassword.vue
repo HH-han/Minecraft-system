@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import Login_background from '../../components/LoginComponent/Login_background.vue'
+import Login_background from '../../../components/LoginComponent/Login_background.vue'
 import axios from 'axios'
 
 export default {

@@ -163,7 +163,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getFoodList, addFood, updateFood, deleteFood } from '@/api/food';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -194,10 +194,21 @@ const formData = ref({
   id: null,
   name: '',
   description: '',
-  image: '',
+  coverImage: '',
   price: '',
-  sales: '',
-  rating: '',
+  rating: 0,
+  city: '',
+  province: '',
+  address: '',
+  cuisineType: '',
+  status: 1,
+  tags: '',
+  createTime: '',
+  updateTime: '',
+  collectCount: 0,
+  commentCount: 0,
+  likeCount: 0,
+  images: [],
 });
 
 // 分页相关变量
@@ -229,15 +240,20 @@ const fetchFoods = async () => {
       pageSize: pageSize.value,
       keyword: searchKeyword.value,
     };
-    const response = await request.get('/api/public/foods', { params });
-    if (response.code === "0") {
-      foods.value = response.data.list;
-      total.value = response.data.total;
+    const response = await getFoodList(params);
+    // 检查响应格式
+    if (response.code === "0" || response.code === 200) {
+      foods.value = response.data?.records || response.data?.list || [];
+      total.value = response.data?.total || 0;
     } else {
-      console.error('获取美食数据失败:', response.msg);
+      console.error('获取美食数据失败:', response.msg || response.message || '未知错误');
+      foods.value = [];
+      total.value = 0;
     }
   } catch (error) {
     console.error('请求失败:', error);
+    foods.value = [];
+    total.value = 0;
   }
 };
 
@@ -254,10 +270,21 @@ const showAddDialog = () => {
     id: null,
     name: '',
     description: '',
-    image: '',
+    coverImage: '',
     price: '',
-    sales: '',
-    rating: '',
+    rating: 0,
+    city: '',
+    province: '',
+    address: '',
+    cuisineType: '',
+    status: 1,
+    tags: '',
+    createTime: '',
+    updateTime: '',
+    collectCount: 0,
+    commentCount: 0,
+    likeCount: 0,
+    images: [],
   };
   showDialog.value = true;
 };
@@ -281,10 +308,10 @@ const showToastMessage = (message, type = 'success') => {
 const submitForm = async () => {
   try {
     if (isEditing.value) {
-      await request.put(`/api/public/foods/${formData.value.id}`, formData.value);
+      await updateFood(formData.value);
       showToastMessage('更新美食成功');
     } else {
-      await request.post('/api/public/foods', formData.value);
+      await addFood(formData.value);
       showToastMessage('新增美食成功');
     }
     await fetchFoods();
@@ -313,7 +340,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteFoodId.value) {
     try {
-      await request.delete(`/api/public/foods/${deleteFoodId.value}`);
+      await deleteFood(deleteFoodId.value);
       await fetchFoods();
       showToastMessage('删除美食成功');
 
@@ -361,7 +388,7 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
-    formData.value.image = e.target.result;
+    formData.value.coverImage = e.target.result;
   };
   reader.readAsDataURL(file);
 
@@ -394,7 +421,7 @@ const removeImage = () => {
   fileSize.value = '';
   progress.value = 0;
   uploading.value = false;
-  formData.value.image = '';
+  formData.value.coverImage = '';
   document.querySelector('.file-input').value = '';
 };
 
@@ -410,7 +437,7 @@ const formatFileSize = (bytes) => {
 const paginatedFoods = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return foods.value.slice(start, end);
+  return (foods.value || []).slice(start, end);
 });
 
 onMounted(fetchFoods);

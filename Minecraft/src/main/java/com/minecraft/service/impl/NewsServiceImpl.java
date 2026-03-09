@@ -8,12 +8,16 @@ import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.News;
 import com.minecraft.mapper.NewsMapper;
 import com.minecraft.service.NewsService;
+import com.minecraft.utils.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements NewsService {
+    @Autowired
+    private ImageUtils imageUtils;
 
     @Override
     public PageResponse<?> getNewsList(PageRequest request) {
@@ -58,5 +62,37 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements Ne
     @Override
     public void deleteNews(Long id) {
         removeById(id);
+    }
+    
+    @Override
+    public boolean save(News news) {
+        try {
+            // 处理封面图片上传
+            if (news.getCoverImage() != null && news.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(news.getCoverImage());
+                news.setCoverImage(processedCoverImage);
+            }
+            
+            return super.save(news);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean updateById(News news) {
+        try {
+            // 处理封面图片上传
+            if (news.getCoverImage() != null && news.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(news.getCoverImage());
+                news.setCoverImage(processedCoverImage);
+            }
+            
+            return super.updateById(news);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

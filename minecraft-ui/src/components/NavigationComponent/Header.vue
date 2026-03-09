@@ -20,7 +20,7 @@
             <div class="dropdown-menu_Home_2">
               <button class="dropdown-item_action-btn" style="border-radius: 0 0 10px 10px" @click="navigateTo('/SettingsFocus')">设置中心</button>
               <button class="dropdown-item_action-btn" @click="navigateTo('/aboutweb')">关于</button>
-              <button class="dropdown-item_action-btn" v-if="userInfo.permissions === 1" @click="navigateTo('/testpage')">测试页面</button>
+              <button class="dropdown-item_action-btn" @click="navigateTo('/test')">测试页面</button>
               <button class="dropdown-item_action-btn" @click="navigateTo('/travelstrategy')">社区</button>
             </div>
           </div>

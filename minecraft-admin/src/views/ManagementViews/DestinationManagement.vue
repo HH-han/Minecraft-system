@@ -232,7 +232,7 @@ const deleteItemId = ref(null);
 
 // 格式化城市显示
 const formatCities = (cities) => {
-  return cities.join(', ');
+  return (cities || []).join(', ');
 };
 
 // 搜索功能
@@ -240,10 +240,10 @@ const filteredItems = computed(() => {
   console.log('items.value:', items.value);
   if (!items.value) return [];
   const keyword = searchKeyword.value.toLowerCase();
-  return items.value.filter(
+  return (items.value || []).filter(
     (item) =>
-      item.name.toLowerCase().includes(keyword) ||
-      item.category.toLowerCase().includes(keyword)
+      (item.name && item.name.toLowerCase().includes(keyword)) ||
+      (item.category && item.category.toLowerCase().includes(keyword))
   );
 });
 
@@ -251,23 +251,23 @@ const filteredItems = computed(() => {
 const fetchItems = async () => {
   try {
     const params = {
-      currentPage: currentPage.value, // 参数名从 page 改为 currentPage
+      page: currentPage.value, // 修改为page参数
       pageSize: pageSize.value,
-      searchQuery: searchKeyword.value, // 参数名从 keyword 改为 searchQuery
-      activeCategory: '全部' // 添加分类参数（根据实际需求）
+      keyword: searchKeyword.value, // 修改为keyword参数
     };
     const response = await request.get('/api/public/destination/list', { params });
     console.log('后端返回的数据:', response.data);
-    items.value = response.data.destinations || [];
+    items.value = response.data?.records || [];
 
     // 更新分页参数
-    total.value = response.data.total; // 直接使用后端返回的总数
-    currentPage.value = response.data.currentPage || 1;
+    total.value = response.data?.total || 0; // 直接使用后端返回的总数
+    currentPage.value = response.data?.pageNum || 1;
 
     // 移除原来的总页数计算逻辑
   } catch (error) {
     console.error('获取数据失败:', error);
     items.value = [];
+    total.value = 0;
   } finally {
     loading.value = false;
   }

@@ -5,8 +5,7 @@
       <div class="action-bar">
         <div class="search-bar">
           <div class="search-box-management">
-            <input type="text" v-model="searchKeyword" placeholder="输入卡片ID或标题搜索" class="search-input-management" />
-
+            <input type="text" v-model="searchKeyword" placeholder="输入景点ID或名称搜索" class="search-input-management" />
           </div>
           <button class="btn search-btn" @click="handleSearch">搜索</button>
           <button class="btn delete-btn" @click="handleReset">批量删除</button>
@@ -29,25 +28,20 @@
                   <input type="checkbox" :checked="card.checked" @change="handleCheck(card)" class="ui-checkbox" />
                 </td>
                 <td>{{ card.id }}</td>
-                <td>{{ card.title }}</td>
-                <td>{{ card.phone }}</td>
+                <td>{{ card.name }}</td>
+                <td>{{ card.price }}</td>
                 <td>
-                  <img :src="card.image" alt="景点图片" style="width: 35px; height: 35px;" @click="triggerFileInput(card)">
+                  <img :src="card.coverImage" alt="景点图片" style="width: 35px; height: 35px;" @click="triggerFileInput(card)">
                 </td>
-                <td>{{ card.subtitle ? card.subtitle.substring(0, 15) : '未设置' }}</td>
-                <td>￥{{ card.price }}</td>
-                <td>{{ card.location }}</td>
-                <td>{{ card.sales }}</td>
-                <td>{{ card.evaluation }}</td>
-                <td>{{ card.status }}</td>
-                <td>{{ card.type }}</td>
-                <td>{{ card.facility }}</td>
-                <td>{{ card.traffic }}</td>
-                <td>{{ card.service }}</td>
-                <td>{{ card.feature }}</td>
-                <td>{{ card.star }}</td>
-                <td>{{ formatDate(card.created_at) }}</td>
-                <td>{{ formatDate(card.updated_at) }}</td>
+                <td>{{ card.description ? card.description.substring(0, 15) : '未设置' }}</td>
+                <td>{{ card.city }}</td>
+                <td>{{ card.province }}</td>
+                <td>{{ card.rating }}</td>
+                <td>{{ card.likeCount }}</td>
+                <td>{{ card.collectCount }}</td>
+                <td>{{ card.commentCount }}</td>
+                <td>{{ card.season }}</td>
+                <td>{{ formatDate(card.createTime) }}</td>
                 <td class="table-btn-display">
                   <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(card)">编辑</button>
@@ -123,26 +117,39 @@
               </div>
             </div>
             <div class="form-row">
-
               <div class="form-group">
-                <label>景点标题:</label>
-                <input v-model="formData.title" required />
-              </div>
-              <div class="form-group">
-                <label>景点副标题:</label>
-                <input v-model="formData.subtitle" required />
+                <label>景点名称:</label>
+                <input v-model="formData.name" required />
               </div>
               <div class="form-group">
                 <label>景点价格:</label>
                 <input v-model="formData.price" required />
               </div>
-              <div class="form-group" v-if="isEditing">
-                <label>景点评分:</label>
-                <input v-model="formData.sales" required />
+              <div class="form-group">
+                <label>城市:</label>
+                <input v-model="formData.city" required />
               </div>
-              <div class="form-group" v-if="isEditing">
-                <label>景点销量:</label>
-                <input v-model="formData.evaluation" required />
+              <div class="form-group">
+                <label>省份:</label>
+                <input v-model="formData.province" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>地址:</label>
+                <input v-model="formData.address" required />
+              </div>
+              <div class="form-group">
+                <label>描述:</label>
+                <textarea v-model="formData.description" required></textarea>
+              </div>
+              <div class="form-group">
+                <label>评分:</label>
+                <input v-model="formData.rating" required type="number" min="0" max="5" step="0.1" />
+              </div>
+              <div class="form-group">
+                <label>最佳季节:</label>
+                <input v-model="formData.season" required />
               </div>
             </div>
             <!-- 创建修改时间 -->
@@ -166,30 +173,25 @@
 <script setup>
 
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getAttractionList, addAttraction, updateAttraction, deleteAttraction } from '@/api/attraction';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
 const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: '景点ID' },
-  { key: 'title', title: '景点标题' },
-  { key: 'phone', title: '景点电话' },
-  { key: 'image', title: '景点图片' },
-  { key: 'subtitle', title: '景点副标题' },
+  { key: 'name', title: '景点名称' },
   { key: 'price', title: '景点价格' },
-  { key: 'location', title: '景点位置' },
-  { key: 'sales', title: '景点评分' },
-  { key: 'evaluation', title: '景点销量' },
-  { key: 'status', title: '景点状态' },
-  { key: 'type', title: '景点类型' },
-  { key: 'facility', title: '景点设施' },
-  { key: 'traffic', title: '景点交通' },
-  { key: 'service', title: '景点服务' },
-  { key: 'feature', title: '景点特色' },
-  { key: 'star', title: '景点星级' },
-  { key: 'createdAt', title: '创建时间' },
-  { key: 'updatedAt', title: '更新时间' },
+  { key: 'coverImage', title: '景点图片' },
+  { key: 'description', title: '景点描述' },
+  { key: 'city', title: '城市' },
+  { key: 'province', title: '省份' },
+  { key: 'rating', title: '评分' },
+  { key: 'likeCount', title: '点赞数' },
+  { key: 'collectCount', title: '收藏数' },
+  { key: 'commentCount', title: '评论数' },
+  { key: 'season', title: '最佳季节' },
+  { key: 'createTime', title: '创建时间' },
 ];
 const showToast = ref(false);
 const toastMessage = ref('');
@@ -200,14 +202,22 @@ const showDialog = ref(false);
 const isEditing = ref(false);
 const formData = ref({
   id: null,
-  title: '',
-  subtitle: '',
-  image: '',
+  name: '',
+  city: '',
+  province: '',
+  address: '',
+  coverImage: '',
+  description: '',
   price: '',
-  createdAt: '',
-  updatedAt: '',
-  sales: '',
-  evaluation: '',
+  rating: 0,
+  season: '',
+  createTime: '',
+  updateTime: '',
+  collectCount: 0,
+  commentCount: 0,
+  likeCount: 0,
+  images: null,
+  tags: null,
 });
 
 // 格式化日期显示
@@ -220,12 +230,35 @@ const formatDate = (date) => {
 // 搜索功能
 const filteredCards = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
-  return cards.value.filter(
+  return (cards.value || []).filter(
     (card) =>
       String(card.id).includes(keyword) ||
-      card.title.toLowerCase().includes(keyword)
+      (card.name && card.name.toLowerCase().includes(keyword))
   );
 });
+
+// 处理搜索
+const handleSearch = () => {
+  currentPage.value = 1;
+  fetchScenic();
+};
+
+// 处理重置
+const handleReset = () => {
+  // 实现批量删除逻辑
+  const selectedCards = cards.value.filter(card => card.checked);
+  if (selectedCards.length === 0) {
+    showToastMessage('请选择要删除的景点', 'warning');
+    return;
+  }
+  // 这里可以实现批量删除逻辑
+  showToastMessage(`已选择 ${selectedCards.length} 个景点`, 'info');
+};
+
+// 处理复选框
+const handleCheck = (card) => {
+  card.checked = !card.checked;
+};
 
 // 分页功能
 // 分页相关变量
@@ -244,19 +277,32 @@ const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
   fetchScenic();
 };
-// 获取订单数据
+// 获取景点数据
 const fetchScenic = async () => {
   try {
     const params = {
       page: currentPage.value,
-      pageSize: pageSize.value,
-      keyword: searchKeyword.value
+      size: pageSize.value
     };
-    const response = await request.get('/api/public/scenic', { params });
-    cards.value = response.data.list;
-    total.value = response.data.total;
+    const response = await getAttractionList(params);
+    // 检查响应格式
+    if (response.code === "0" || response.code === 200) {
+      // 为每个卡片添加checked属性
+      const data = response.data?.records || response.data?.list || [];
+      cards.value = data.map(card => ({
+        ...card,
+        checked: false
+      }));
+      total.value = response.data?.total || 0;
+    } else {
+      console.error('获取景点数据失败:', response.msg || response.message || '未知错误');
+      cards.value = [];
+      total.value = 0;
+    }
   } catch (error) {
-    console.error('获取订单数据失败:', error);
+    console.error('获取景点数据失败:', error);
+    cards.value = [];
+    total.value = 0;
   }
 };
 
@@ -265,13 +311,26 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    title: '',
-    subtitle: '',
-    image: '',
+    name: '',
+    city: '',
+    province: '',
+    address: '',
+    coverImage: '',
+    description: '',
     price: '',
-    createdAt: '',
-    updatedAt: '',
+    rating: 0,
+    season: '',
+    createTime: '',
+    updateTime: '',
+    collectCount: 0,
+    commentCount: 0,
+    likeCount: 0,
+    images: null,
+    tags: null,
   };
+  previewImage.value = '';
+  fileName.value = '';
+  fileSize.value = '';
   showDialog.value = true;
 };
 
@@ -279,6 +338,7 @@ const showAddDialog = () => {
 const showEditDialog = (card) => {
   isEditing.value = true;
   formData.value = { ...card };
+  previewImage.value = card.coverImage || '';
   showDialog.value = true;
 };
 // 显示提示消息的方法
@@ -295,12 +355,13 @@ const submitForm = async () => {
   try {
     // 自动设置时间
     if (isEditing.value) {
-      formData.value.updatedAt = new Date().toISOString();
-      await request.put(`/api/public/scenic/${formData.value.id}`, formData.value);
+      formData.value.updateTime = new Date().toISOString();
+      await updateAttraction(formData.value);
       showToastMessage('更新景点成功');
     } else {
-      formData.value.createdAt = new Date().toISOString();
-      await request.post('/api/public/scenic', formData.value);
+      formData.value.createTime = new Date().toISOString();
+      formData.value.updateTime = new Date().toISOString();
+      await addAttraction(formData.value);
       showToastMessage('新增景点成功');
     }
     await fetchScenic();
@@ -329,7 +390,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteCardId.value) {
     try {
-      await request.delete(`/api/public/scenic/${deleteCardId.value}`);
+      await deleteAttraction(deleteCardId.value);
       await fetchScenic();
       closeDeletePrompt();
       showToastMessage('删除景点成功');
@@ -392,7 +453,7 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
-    formData.value.image = e.target.result;
+    formData.value.coverImage = e.target.result;
   };
   reader.readAsDataURL(file);
 
@@ -425,18 +486,19 @@ const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
   fileSize.value = '';
-  formData.value.image = '';
+  formData.value.coverImage = '';
 };
 
 // 触发文件输入框
-const triggerFileInput = () => {
+const triggerFileInput = (card) => {
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
   fileInput.onchange = (event) => {
     const file = handleFileUpload(event);
-    if (file) {
-      formData.value.file = file;
+    if (file && card) {
+      // 这里可以实现单个卡片的图片更新逻辑
+      showToastMessage('图片已更新', 'success');
     }
   };
   fileInput.click();

@@ -29,27 +29,23 @@
                   <input type="checkbox" :checked="hotel.checked" @change="handleCheck(hotel)" class="ui-checkbox" />
                 </td>
                 <td>{{ hotel.id }}</td>
-                <td>{{ hotel.hotelName }}</td>
-                <td>{{ hotel.hotelPhone }}</td>
+                <td>{{ hotel.name }}</td>
+                <td>{{ hotel.city }}</td>
+                <td>{{ hotel.province }}</td>
+                <td>{{ hotel.address }}</td>
+                <td>{{ hotel.description }}</td>
                 <td>
-                  <img :src="hotel.hotelImage" alt="酒店图片" style="width: 35px; height: 35px;"
+                  <img :src="hotel.coverImage?.replace(/[`\s]/g, '')" alt="酒店图片" style="width: 35px; height: 35px;"
                     @click="triggerFileInput(hotel)" />
                 </td>
-                <td>{{ hotel.hotelDescription }}</td>
-                <td>￥{{ hotel.hotelPrice }}</td>
-                <td>{{ hotel.hotelAddress }}</td>
-                <td>{{ hotel.hotelStar }}</td>
-                <td>{{ hotel.hotelStatus }}</td>
-                <td>{{ hotel.hotelType }}</td>
-                <td>{{ hotel.evaluation }}</td>
-                <td>{{ hotel.sales }}</td>
-                <td>{{ hotel.hotelFacility }}</td>
-                <td>{{ hotel.hotelService }}</td>
-                <td>{{ hotel.hotelTraffic }}</td>
-                <td>{{ formatDate(hotel.created_at) }}</td>
-                <td>{{ formatDate(hotel.updated_at) }}</td>
+                <td>￥{{ hotel.price }}</td>
+                <td>{{ hotel.rating }}</td>
+                <td>{{ hotel.likeCount }}</td>
+                <td>{{ hotel.collectCount }}</td>
+                <td>{{ hotel.commentCount }}</td>
+                <td>{{ formatDate(hotel.createTime) }}</td>
                 <td class="table-btn-display">
-                  <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
+                  <button class="btn details-btn" @click="showEditDialog(hotel)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(hotel)">编辑</button>
                   <button class="btn delete-btn" @click="handleDelete(hotel.id)">删除</button>
                 </td>
@@ -127,51 +123,43 @@
 
               <div class="form-group">
                 <label>酒店名称:</label>
-                <input v-model="formData.hotelName" required />
+                <input v-model="formData.name" required />
               </div>
               <div class="form-group">
-                <label>酒店描述:</label>
-                <input v-model="formData.hotelDescription" required />
+                <label>城市:</label>
+                <input v-model="formData.city" required />
               </div>
               <div class="form-group">
-                <label>酒店价格:</label>
-                <input v-model="formData.hotelPrice" required />
+                <label>省份:</label>
+                <input v-model="formData.province" required />
+              </div>
+              <div class="form-group">
+                <label>地址:</label>
+                <input v-model="formData.address" required />
+              </div>
+              <div class="form-group">
+                <label>描述:</label>
+                <input v-model="formData.description" required />
+              </div>
+              <div class="form-group">
+                <label>价格:</label>
+                <input v-model="formData.price" required />
               </div>
               <div class="form-group" v-if="isEditing">
-                <label>酒店销量:</label>
-                <input v-model="formData.evaluation" required />
+                <label>评分:</label>
+                <input v-model="formData.rating" required />
               </div>
               <div class="form-group" v-if="isEditing">
-                <label>酒店评分:</label>
-                <input v-model="formData.sales" required />
+                <label>点赞数:</label>
+                <input v-model="formData.likeCount" required />
               </div>
-              <div class="form-group">
-                <label>酒店地址:</label>
-                <input v-model="formData.hotelAddress" required />
+              <div class="form-group" v-if="isEditing">
+                <label>收藏数:</label>
+                <input v-model="formData.collectCount" required />
               </div>
-              <div class="form-group">
-                <label>酒店星级:</label>
-                <input v-model="formData.hotelStar" required />
-              </div>
-              <div class="form-group">
-                <label>酒店状态:</label>
-                <input v-model="formData.hotelStatus" required />
-              </div>
-              <div class="form-group">
-                <label>酒店类型:</label>
-                <input v-model="formData.hotelType" required />
-              </div>
-              <div class="form-group">
-                <label>酒店设施:</label>
-                <input v-model="formData.hotelFacility" required />
-              </div>
-              <div class="form-group">
-                <label>酒店服务:</label>
-                <input v-model="formData.hotelService" required />
-              </div>
-              <div class="form-group">
-                <label>酒店交通:</label>
-                <input v-model="formData.hotelTraffic" required />
+              <div class="form-group" v-if="isEditing">
+                <label>评论数:</label>
+                <input v-model="formData.commentCount" required />
               </div>
             </div>
             <!-- 表单提交按钮 -->
@@ -194,30 +182,27 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getHotelList, addHotel, updateHotel, deleteHotel } from '@/api/hotel';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
 const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: '酒店ID' },
-  { key: 'hotelName', title: '酒店名称' },
-  { key: 'hotelPhone', title: '酒店电话' },
-  { key: 'hotelDescription', title: '酒店描述' },
-  { key: 'hotelImage', title: '酒店图片' },
-  { key: 'hotelPrice', title: '酒店价格' },
-  { key: 'hotelAddress', title: '酒店地址' },
-  { key: 'hotelStar', title: '酒店星级' },
-  { key: 'hotelStatus', title: '酒店状态' },
-  { key: 'hotelType', title: '酒店类型' },
-  { key: 'sales', title: '酒店销量' },
-  { key: 'evaluation', title: '酒店评分' },
-  { key: 'hotelFacility', title: '酒店设施' },
-  { key: 'hotelService', title: '酒店服务' },
-  { key: 'hotelTraffic', title: '酒店交通' },
-  { key: 'createdAt', title: '创建时间' },
-  { key: 'updatedAt', title: '更新时间' },
+  { key: 'name', title: '酒店名称' },
+  { key: 'city', title: '城市' },
+  { key: 'province', title: '省份' },
+  { key: 'address', title: '地址' },
+  { key: 'description', title: '描述' },
+  { key: 'coverImage', title: '封面图片' },
+  { key: 'price', title: '价格' },
+  { key: 'rating', title: '评分' },
+  { key: 'likeCount', title: '点赞数' },
+  { key: 'collectCount', title: '收藏数' },
+  { key: 'commentCount', title: '评论数' },
+  { key: 'createTime', title: '创建时间' },
 ];
+
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
@@ -227,14 +212,19 @@ const showDialog = ref(false);
 const isEditing = ref(false);
 const formData = ref({
   id: null,
-  hotelName: '',
-  hotelDescription: '',
-  hotelImage: '',
-  hotelPrice: '',
-  createdAt: '',
-  updatedAt: '',
-  sales: '',
-  evaluation: '',
+  name: '',
+  city: '',
+  province: '',
+  address: '',
+  description: '',
+  coverImage: '',
+  images: '',
+  price: '',
+  rating: '',
+  likeCount: '',
+  collectCount: '',
+  commentCount: '',
+  createTime: '',
 });
 
 
@@ -248,10 +238,10 @@ const formatDate = (date) => {
 // 搜索功能
 const filteredHotels = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
-  return hotels.value.filter(
+  return (hotels.value || []).filter(
     (hotel) =>
       String(hotel.id).includes(keyword) ||
-      hotel.hotel_name.toLowerCase().includes(keyword)
+      (hotel.name && hotel.name.toLowerCase().includes(keyword))
   );
 });
 
@@ -272,7 +262,7 @@ const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
   fetchHotels();
 };
-// 获取订单数据
+// 获取酒店数据
 const fetchHotels = async () => {
   try {
     const params = {
@@ -280,11 +270,13 @@ const fetchHotels = async () => {
       pageSize: pageSize.value,
       keyword: searchKeyword.value
     };
-    const response = await request.get('/api/public/hotel', { params });
-    hotels.value = response.data.list;
-    total.value = response.data.total;
+    const response = await getHotelList(params);
+    hotels.value = response.data?.records || [];
+    total.value = response.data?.total || 0;
   } catch (error) {
-    console.error('获取订单数据失败:', error);
+    console.error('获取酒店数据失败:', error);
+    hotels.value = [];
+    total.value = 0;
   }
 };
 
@@ -301,12 +293,18 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    hotelName: '',
-    hotelDescription: '',
-    hotelImage: '',
-    hotelPrice: '',
-    createdAt: '',
-    updatedAt: '',
+    name: '',
+    city: '',
+    province: '',
+    address: '',
+    description: '',
+    coverImage: '',
+    images: '',
+    price: '',
+    rating: '',
+    likeCount: '',
+    collectCount: '',
+    commentCount: '',
   };
   showDialog.value = true;
 };
@@ -328,12 +326,12 @@ const showToastMessage = (message, type = 'success') => {
 };
 // 提交表单
 const validateForm = () => {
-  if (!formData.value.hotelName || !formData.value.hotelDescription || !formData.value.hotelPrice) {
+  if (!formData.value.name || !formData.value.description || !formData.value.price || !formData.value.city || !formData.value.province || !formData.value.address) {
     showToastMessage('请填写所有必填字段', 'error');
     return false;
   }
 
-  if (!isEditing.value && !formData.value.hotelImage) {
+  if (!isEditing.value && !formData.value.coverImage) {
     showToastMessage('请上传酒店图片', 'error');
     return false;
   }
@@ -346,12 +344,10 @@ const submitForm = async () => {
 
   try {
     if (isEditing.value) {
-      formData.value.updatedAt = new Date().toISOString();
-      await request.put(`/api/public/hotel/${formData.value.id}`, formData.value);
+      await updateHotel(formData.value);
       showToastMessage('更新酒店成功');
     } else {
-      formData.value.createdAt = new Date().toISOString();
-      await request.post('/api/public/hotel', formData.value);
+      await addHotel(formData.value);
       showToastMessage('新增酒店成功');
     }
     await fetchHotels();
@@ -380,7 +376,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteHotelId.value) {
     try {
-      await request.delete(`/api/public/hotel/${deleteHotelId.value}`);
+      await deleteHotel(deleteHotelId.value);
       await fetchHotels();
       showToastMessage('删除酒店成功');
 
@@ -443,7 +439,7 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
-    formData.value.hotelImage = e.target.result;
+    formData.value.coverImage = e.target.result;
   };
   reader.readAsDataURL(file);
 
@@ -476,7 +472,7 @@ const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
   fileSize.value = '';
-  formData.value.hotelImage = '';
+  formData.value.coverImage = '';
 };
 
 // 触发文件输入框

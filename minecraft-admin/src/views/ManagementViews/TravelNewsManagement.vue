@@ -153,7 +153,7 @@
 <script setup>
 
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getNewsList, addNews, updateNews, deleteNews } from '@/api/news';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -180,8 +180,14 @@ const formData = ref({
     content: '',
     coverImage: '',
     location: '',
-    created_at: '',
-    updated_at: '',
+    createTime: '',
+    updateTime: '',
+    collectCount: 0,
+    commentCount: 0,
+    likeCount: 0,
+    source: '',
+    status: 1,
+    viewCount: 0,
 });
 
 // 格式化日期显示
@@ -194,10 +200,10 @@ const formatDate = (date) => {
 // 搜索功能
 const filteredCards = computed(() => {
     const keyword = searchKeyword.value.toLowerCase();
-    return cards.value.filter(
+    return (cards.value || []).filter(
         (card) =>
             String(card.id).includes(keyword) ||
-            card.title.toLowerCase().includes(keyword)
+            (card.title && card.title.toLowerCase().includes(keyword))
     );
 });
 
@@ -226,14 +232,16 @@ const fetchScenic = async () => {
             pageSize: pageSize.value,
             keyword: searchKeyword.value
         };
-        const response = await request.get('/api/public/news', { params });
-        cards.value = response.data.list.map(card => ({
+        const response = await getNewsList(params);
+        cards.value = (response.data?.records || []).map(card => ({
             ...card,
             images: typeof card.images === 'string' ? JSON.parse(card.images) : card.images
         }));
-        total.value = response.data.total;
+        total.value = response.data?.total || 0;
     } catch (error) {
         console.error('获取数据失败:', error);
+        cards.value = [];
+        total.value = 0;
     }
 };
 
@@ -246,8 +254,14 @@ const showAddDialog = () => {
         content: '',
         coverImage: '',
         location: '',
-        created_at: '',
-        updated_at: '',
+        createTime: '',
+        updateTime: '',
+        collectCount: 0,
+        commentCount: 0,
+        likeCount: 0,
+        source: '',
+        status: 1,
+        viewCount: 0,
     };
     showDialog.value = true;
 };
@@ -272,12 +286,13 @@ const submitForm = async () => {
     try {
         // 自动设置时间
         if (isEditing.value) {
-            formData.value.updated_at = new Date().toISOString();
-            await request.put(`/api/public/news/${formData.value.id}`, formData.value);
+            formData.value.updateTime = new Date().toISOString();
+            await updateNews(formData.value);
             showToastMessage('更新成功');
         } else {
-            formData.value.created_at = new Date().toISOString();
-            await request.post('/api/public/news', formData.value);
+            formData.value.createTime = new Date().toISOString();
+            formData.value.updateTime = new Date().toISOString();
+            await addNews(formData.value);
             showToastMessage('新增成功');
         }
         await fetchScenic();
@@ -306,7 +321,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
     if (deleteCardId.value) {
         try {
-            await request.delete(`/api/public/news/${deleteCardId.value}`);
+            await deleteNews(deleteCardId.value);
             await fetchScenic();
             closeDeletePrompt();
             showToastMessage('删除成功');

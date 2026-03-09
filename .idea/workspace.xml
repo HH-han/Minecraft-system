@@ -4,7 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system" />
+    <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/src/views/index/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/src/views/index/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/NewsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/NewsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/NewsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/NewsServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/public/vite.svg" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/public/vite.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/.env.production" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/attraction.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/api/attraction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/CollectionManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/CollectionManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/DestinationManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/DestinationManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/FoodManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/FoodManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/HotelManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/HotelManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/ScenicManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/ScenicManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/TravelNewsManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/TravelNewsManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/UserManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/UserManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/NavigationComponent/Header.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/NavigationComponent/Header.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/login/components/ForgotPassword.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/login/components/ForgotPassword.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,7 +158,13 @@
       <workItem from="1771783808145" duration="2760000" />
       <workItem from="1771853685394" duration="8935000" />
       <workItem from="1771863872835" duration="20000" />
-      <workItem from="1772200139584" duration="348000" />
+      <workItem from="1772200139584" duration="1288000" />
+      <workItem from="1772550901751" duration="20000" />
+      <workItem from="1772550973857" duration="8000" />
+      <workItem from="1772719860099" duration="7000" />
+      <workItem from="1772807681840" duration="1012000" />
+      <workItem from="1772932508262" duration="4245000" />
+      <workItem from="1773062640635" duration="1996000" />
     </task>
     <task id="LOCAL-00001" summary="cleanup">
       <option name="closed" value="true" />
@@ -244,7 +286,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772200481062</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1772201156686</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1772201156686</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1772201170002</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1772201170002</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -245,10 +245,10 @@ const formatDate = (date) => {
 // 搜索功能
 const filteredCards = computed(() => {
     const keyword = searchKeyword.value.toLowerCase();
-    return cards.value.filter(
+    return (cards.value || []).filter(
         (card) =>
             String(card.id).includes(keyword) ||
-            card.title.toLowerCase().includes(keyword)
+            (card.title && card.title.toLowerCase().includes(keyword))
     );
 });
 
@@ -271,22 +271,24 @@ const handleCurrentChange = (newPage) => {
 };
 // 获取数据
 const fetchScenic = async () => {
-    try {
-        const params = {
-            page: currentPage.value,
-            pageSize: pageSize.value,
-            keyword: searchKeyword.value
-        };
-        const response = await request.get('/api/public/travel-collections/search', { params });
-        cards.value = response.data.list.map(card => ({
-            ...card,
-            images: typeof card.images === 'string' ? JSON.parse(card.images) : card.images
-        }));
-        console.log(cards.value, "数据");
-        total.value = response.data.total;
-    } catch (error) {
-        console.error('获取笔记数据失败:', error);
-    }
+  try {
+    const params = {
+      page: currentPage.value,
+      pageSize: pageSize.value,
+      keyword: searchKeyword.value
+    };
+    const response = await request.get('/api/public/travel-collections/search', { params });
+    cards.value = (response.data?.records || []).map(card => ({
+      ...card,
+      images: typeof card.images === 'string' ? JSON.parse(card.images) : card.images
+    }));
+    console.log(cards.value, "数据");
+    total.value = response.data?.total || 0;
+  } catch (error) {
+    console.error('获取笔记数据失败:', error);
+    cards.value = [];
+    total.value = 0;
+  }
 };
 
 // 显示新增对话框

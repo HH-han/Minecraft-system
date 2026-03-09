@@ -537,28 +537,18 @@ const handleCurrentChange = (newPage) => {
 // 获取用户数据
 const fetchUsers = async () => {
   try {
-    // 由于后端只提供了获取当前用户信息的接口，这里我们暂时使用模拟数据
-    // 实际项目中需要根据后端提供的用户列表接口进行调整
-    const mockUsers = [
-      {
-        id: 1,
-        username: 'admin',
-        nickname: '管理员',
-        email: 'admin@example.com',
-        phone: '13800138000',
-        image: '',
-        signature: '系统管理员',
-        experience: '系统开发经验',
-        createTime: new Date(),
-        updateTime: new Date(),
-        permissions: 1,
-        status: 0
-      }
-    ];
-    users.value = mockUsers;
-    total.value = mockUsers.length;
+    const params = {
+      page: currentPage.value,
+      pageSize: pageSize.value,
+      keyword: searchKeyword.value,
+    };
+    const response = await request.get('/api/public/users', { params });
+    users.value = response.data?.records || [];
+    total.value = response.data?.total || 0;
   } catch (error) {
     console.error('获取用户数据失败:', error);
+    users.value = [];
+    total.value = 0;
   }
 };
 
