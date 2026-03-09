@@ -111,6 +111,25 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
             return vo;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public void addAttraction(AttractionVO attractionVO) {
+        Attraction attraction = new Attraction();
+        BeanUtils.copyProperties(attractionVO, attraction);
+        save(attraction);
+    }
+
+    @Override
+    public void updateAttraction(AttractionVO attractionVO) {
+        Attraction attraction = new Attraction();
+        BeanUtils.copyProperties(attractionVO, attraction);
+        updateById(attraction);
+    }
+
+    @Override
+    public void deleteAttraction(Long id) {
+        removeById(id);
+    }
     
     @Override
     public boolean save(Attraction attraction) {

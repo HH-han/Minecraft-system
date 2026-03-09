@@ -34,6 +34,27 @@ public class AttractionController {
         return ApiResponse.success(attractionService.getAttractionDetail(id, userId));
     }
 
+    @Operation(summary ="新增景点")
+    @PostMapping("/add")
+    public ApiResponse<Void> addAttraction(@RequestBody AttractionVO attractionVO) {
+        attractionService.addAttraction(attractionVO);
+        return ApiResponse.success("添加成功", null);
+    }
+
+    @Operation(summary ="修改景点")
+    @PutMapping("/update")
+    public ApiResponse<Void> updateAttraction(@RequestBody AttractionVO attractionVO) {
+        attractionService.updateAttraction(attractionVO);
+        return ApiResponse.success("更新成功", null);
+    }
+
+    @Operation(summary ="删除景点")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteAttraction(@PathVariable Long id) {
+        attractionService.deleteAttraction(id);
+        return ApiResponse.success("删除成功", null);
+    }
+
     @Operation(summary ="获取推荐景点")
     @GetMapping("/recommend")
     public ApiResponse<List<AttractionVO>> getRecommendAttractions(

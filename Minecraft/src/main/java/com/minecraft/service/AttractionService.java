@@ -11,6 +11,9 @@ import java.util.List;
 public interface AttractionService extends IService<Attraction> {
     PageResponse<AttractionVO> getAttractionList(PageRequest request);
     AttractionVO getAttractionDetail(Long id, Long userId);
+    void addAttraction(AttractionVO attractionVO);
+    void updateAttraction(AttractionVO attractionVO);
+    void deleteAttraction(Long id);
     List<AttractionVO> getRecommendAttractions(String city, String season, Integer limit);
     List<AttractionVO> getHotAttractions(Integer limit);
 }

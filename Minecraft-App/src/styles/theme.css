@@ -1,0 +1,28 @@
+/* 白夜模式 */
+:root {
+  --bg-color: #f5f5f5;
+  --card-color: #ffffff;
+  --text-color: #333333;
+  --primary-color: #007aff;
+  --border-color: #e5e5e5;
+}
+
+/* 暗黑模式 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1a1a1a;
+    --card-color: #2c2c2c;
+    --text-color: #ffffff;
+    --primary-color: #0a84ff;
+    --border-color: #444444;
+  }
+}
+
+/* 手动切换暗黑模式 */
+.dark-mode {
+  --bg-color: #1a1a1a;
+  --card-color: #2c2c2c;
+  --text-color: #ffffff;
+  --primary-color: #0a84ff;
+  --border-color: #444444;
+}
