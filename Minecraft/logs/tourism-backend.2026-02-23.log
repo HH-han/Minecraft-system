@@ -1,0 +1,708 @@
+2026-02-13 02:13:34.130 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:13:34.160 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 5080 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:13:34.160 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:13:34.160 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:13:34.819 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:13:34.821 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:13:34.849 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 24 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:13:34.853 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:13:34.855 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:13:34.859 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:13:34.867 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:13:34.868 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:13:34.876 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\AttractionMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CartMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ChatMessageMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CollectionMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommentMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommunityPostMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FileInfoMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FoodMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FriendMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\GroupTravelMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\HotelMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\LikeMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\NewsMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\OrderMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\PaymentMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ProductMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TicketMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TravelPlanMapper.class]
+2026-02-13 02:13:34.955 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\UserMapper.class]
+2026-02-13 02:13:34.956 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'attractionMapper' and 'com.minecraft.mapper.AttractionMapper' mapperInterface
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'attractionMapper'.
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'cartMapper' and 'com.minecraft.mapper.CartMapper' mapperInterface
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'cartMapper'.
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'chatMessageMapper' and 'com.minecraft.mapper.ChatMessageMapper' mapperInterface
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'chatMessageMapper'.
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'collectionMapper' and 'com.minecraft.mapper.CollectionMapper' mapperInterface
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'collectionMapper'.
+2026-02-13 02:13:34.958 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'commentMapper' and 'com.minecraft.mapper.CommentMapper' mapperInterface
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'commentMapper'.
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'communityPostMapper' and 'com.minecraft.mapper.CommunityPostMapper' mapperInterface
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'communityPostMapper'.
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'fileInfoMapper' and 'com.minecraft.mapper.FileInfoMapper' mapperInterface
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'fileInfoMapper'.
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'foodMapper' and 'com.minecraft.mapper.FoodMapper' mapperInterface
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'foodMapper'.
+2026-02-13 02:13:34.960 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'friendMapper' and 'com.minecraft.mapper.FriendMapper' mapperInterface
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'friendMapper'.
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'groupTravelMapper' and 'com.minecraft.mapper.GroupTravelMapper' mapperInterface
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'groupTravelMapper'.
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'hotelMapper' and 'com.minecraft.mapper.HotelMapper' mapperInterface
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'hotelMapper'.
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'likeMapper' and 'com.minecraft.mapper.LikeMapper' mapperInterface
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'likeMapper'.
+2026-02-13 02:13:34.961 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'newsMapper' and 'com.minecraft.mapper.NewsMapper' mapperInterface
+2026-02-13 02:13:34.963 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'newsMapper'.
+2026-02-13 02:13:34.963 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'orderMapper' and 'com.minecraft.mapper.OrderMapper' mapperInterface
+2026-02-13 02:13:34.963 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'orderMapper'.
+2026-02-13 02:13:34.963 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'paymentMapper' and 'com.minecraft.mapper.PaymentMapper' mapperInterface
+2026-02-13 02:13:34.963 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'paymentMapper'.
+2026-02-13 02:13:34.963 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'productMapper' and 'com.minecraft.mapper.ProductMapper' mapperInterface
+2026-02-13 02:13:34.964 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'productMapper'.
+2026-02-13 02:13:34.964 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'ticketMapper' and 'com.minecraft.mapper.TicketMapper' mapperInterface
+2026-02-13 02:13:34.964 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'ticketMapper'.
+2026-02-13 02:13:34.964 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'travelPlanMapper' and 'com.minecraft.mapper.TravelPlanMapper' mapperInterface
+2026-02-13 02:13:34.964 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'travelPlanMapper'.
+2026-02-13 02:13:34.964 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'userMapper' and 'com.minecraft.mapper.UserMapper' mapperInterface
+2026-02-13 02:13:34.966 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'userMapper'.
+2026-02-13 02:13:35.131 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:13:35.131 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:13:35.542 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:13:35.550 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:13:35.550 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:13:35.550 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:13:35.626 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:13:35.628 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1427 ms
+2026-02-13 02:13:36.691 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 8018dfc8-6833-44c9-bacf-5fb42141986d
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:13:36.840 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:13:37.320 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@39c1e7b7, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c14d24d, org.springframework.security.web.context.SecurityContextHolderFilter@50008974, org.springframework.security.web.header.HeaderWriterFilter@770cbe5d, org.springframework.security.web.authentication.logout.LogoutFilter@5008559a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6a0ee80, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@520ec7a7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@28515443, org.springframework.security.web.session.SessionManagementFilter@1642968c, org.springframework.security.web.access.ExceptionTranslationFilter@74919649, org.springframework.security.web.access.intercept.AuthorizationFilter@25d23478]
+2026-02-13 02:13:37.891 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:13:37.900 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:13:37.902 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:13:37.902 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@75aeec0a]]
+2026-02-13 02:13:37.902 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:13:37.906 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.166 seconds (process running for 4.682)
+2026-02-13 02:14:22.847 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:14:22.847 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@75aeec0a]]
+2026-02-13 02:14:22.847 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:14:24.835 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:14:24.864 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 12700 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:14:24.864 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:14:24.866 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:14:25.564 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:14:25.566 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:14:25.592 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:14:25.596 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:14:25.596 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:14:25.601 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:14:25.609 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:14:25.609 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:14:25.618 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\AttractionMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CartMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ChatMessageMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CollectionMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommentMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommunityPostMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FileInfoMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FoodMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FriendMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\GroupTravelMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\HotelMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\LikeMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\NewsMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\OrderMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\PaymentMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ProductMapper.class]
+2026-02-13 02:14:25.686 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TicketMapper.class]
+2026-02-13 02:14:25.687 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TravelPlanMapper.class]
+2026-02-13 02:14:25.687 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\UserMapper.class]
+2026-02-13 02:14:25.687 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'attractionMapper' and 'com.minecraft.mapper.AttractionMapper' mapperInterface
+2026-02-13 02:14:25.689 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'attractionMapper'.
+2026-02-13 02:14:25.689 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'cartMapper' and 'com.minecraft.mapper.CartMapper' mapperInterface
+2026-02-13 02:14:25.689 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'cartMapper'.
+2026-02-13 02:14:25.689 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'chatMessageMapper' and 'com.minecraft.mapper.ChatMessageMapper' mapperInterface
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'chatMessageMapper'.
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'collectionMapper' and 'com.minecraft.mapper.CollectionMapper' mapperInterface
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'collectionMapper'.
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'commentMapper' and 'com.minecraft.mapper.CommentMapper' mapperInterface
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'commentMapper'.
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'communityPostMapper' and 'com.minecraft.mapper.CommunityPostMapper' mapperInterface
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'communityPostMapper'.
+2026-02-13 02:14:25.691 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'fileInfoMapper' and 'com.minecraft.mapper.FileInfoMapper' mapperInterface
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'fileInfoMapper'.
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'foodMapper' and 'com.minecraft.mapper.FoodMapper' mapperInterface
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'foodMapper'.
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'friendMapper' and 'com.minecraft.mapper.FriendMapper' mapperInterface
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'friendMapper'.
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'groupTravelMapper' and 'com.minecraft.mapper.GroupTravelMapper' mapperInterface
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'groupTravelMapper'.
+2026-02-13 02:14:25.692 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'hotelMapper' and 'com.minecraft.mapper.HotelMapper' mapperInterface
+2026-02-13 02:14:25.694 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'hotelMapper'.
+2026-02-13 02:14:25.694 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'likeMapper' and 'com.minecraft.mapper.LikeMapper' mapperInterface
+2026-02-13 02:14:25.694 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'likeMapper'.
+2026-02-13 02:14:25.694 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'newsMapper' and 'com.minecraft.mapper.NewsMapper' mapperInterface
+2026-02-13 02:14:25.694 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'newsMapper'.
+2026-02-13 02:14:25.694 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'orderMapper' and 'com.minecraft.mapper.OrderMapper' mapperInterface
+2026-02-13 02:14:25.695 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'orderMapper'.
+2026-02-13 02:14:25.695 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'paymentMapper' and 'com.minecraft.mapper.PaymentMapper' mapperInterface
+2026-02-13 02:14:25.695 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'paymentMapper'.
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'productMapper' and 'com.minecraft.mapper.ProductMapper' mapperInterface
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'productMapper'.
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'ticketMapper' and 'com.minecraft.mapper.TicketMapper' mapperInterface
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'ticketMapper'.
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'travelPlanMapper' and 'com.minecraft.mapper.TravelPlanMapper' mapperInterface
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'travelPlanMapper'.
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'userMapper' and 'com.minecraft.mapper.UserMapper' mapperInterface
+2026-02-13 02:14:25.696 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'userMapper'.
+2026-02-13 02:14:25.860 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:14:25.860 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:14:26.232 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:14:26.240 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:14:26.240 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:14:26.240 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:14:26.320 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:14:26.320 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1419 ms
+2026-02-13 02:14:27.316 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 2d0321b9-fd5b-4d2f-a9e8-330d07c497df
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:14:27.470 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:14:27.955 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@60c8909a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@70ad0854, org.springframework.security.web.context.SecurityContextHolderFilter@1bb51492, org.springframework.security.web.header.HeaderWriterFilter@25d23478, org.springframework.security.web.authentication.logout.LogoutFilter@642614b7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4b5f022f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2ab39942, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@76208b80, org.springframework.security.web.session.SessionManagementFilter@4cf15477, org.springframework.security.web.access.ExceptionTranslationFilter@c85486, org.springframework.security.web.access.intercept.AuthorizationFilter@6bfdaed7]
+2026-02-13 02:14:28.520 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:14:28.530 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:14:28.531 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:14:28.531 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@ad6255e]]
+2026-02-13 02:14:28.531 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:14:28.535 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.057 seconds (process running for 4.621)
+2026-02-13 02:15:27.989 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-02-13 02:15:49.495 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:15:49.495 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@ad6255e]]
+2026-02-13 02:15:49.495 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:16:07.136 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:16:07.175 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 25824 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:16:07.175 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:16:07.175 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:16:07.713 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'redisHealthChecker' defined in com.minecraft.MinecraftApplication: Cannot register bean definition [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=minecraftApplication; factoryMethodName=redisHealthChecker; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in com.minecraft.MinecraftApplication] for bean 'redisHealthChecker' since there is already [Generic bean: class [com.minecraft.utils.RedisHealthChecker]; scope=singleton; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodNames=null; destroyMethodNames=null; defined in file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\utils\RedisHealthChecker.class]] bound.
+2026-02-13 02:16:07.718 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-02-13 02:16:07.733 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'redisHealthChecker', defined in com.minecraft.MinecraftApplication, could not be registered. A bean with that name has already been defined in file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\utils\RedisHealthChecker.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2026-02-13 02:16:40.164 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:16:40.194 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 12888 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:16:40.194 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:16:40.194 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:16:40.662 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'redisHealthChecker' defined in com.minecraft.MinecraftApplication: Cannot register bean definition [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=minecraftApplication; factoryMethodName=redisHealthChecker; initMethodNames=null; destroyMethodNames=[(inferred)]; defined in com.minecraft.MinecraftApplication] for bean 'redisHealthChecker' since there is already [Generic bean: class [com.minecraft.utils.RedisHealthChecker]; scope=singleton; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodNames=null; destroyMethodNames=null; defined in file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\utils\RedisHealthChecker.class]] bound.
+2026-02-13 02:16:40.667 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-02-13 02:16:40.683 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The bean 'redisHealthChecker', defined in com.minecraft.MinecraftApplication, could not be registered. A bean with that name has already been defined in file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\utils\RedisHealthChecker.class] and overriding is disabled.
+
+Action:
+
+Consider renaming one of the beans or enabling overriding by setting spring.main.allow-bean-definition-overriding=true
+
+2026-02-13 02:17:32.769 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:17:32.801 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 27176 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:17:32.802 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:17:32.802 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:17:33.463 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:17:33.464 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:17:33.489 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:17:33.493 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:17:33.493 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:17:33.498 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:17:33.505 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:17:33.505 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:17:33.514 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\AttractionMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CartMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ChatMessageMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CollectionMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommentMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommunityPostMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FileInfoMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FoodMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FriendMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\GroupTravelMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\HotelMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\LikeMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\NewsMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\OrderMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\PaymentMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ProductMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TicketMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TravelPlanMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\UserMapper.class]
+2026-02-13 02:17:33.578 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'attractionMapper' and 'com.minecraft.mapper.AttractionMapper' mapperInterface
+2026-02-13 02:17:33.580 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'attractionMapper'.
+2026-02-13 02:17:33.580 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'cartMapper' and 'com.minecraft.mapper.CartMapper' mapperInterface
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'cartMapper'.
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'chatMessageMapper' and 'com.minecraft.mapper.ChatMessageMapper' mapperInterface
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'chatMessageMapper'.
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'collectionMapper' and 'com.minecraft.mapper.CollectionMapper' mapperInterface
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'collectionMapper'.
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'commentMapper' and 'com.minecraft.mapper.CommentMapper' mapperInterface
+2026-02-13 02:17:33.581 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'commentMapper'.
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'communityPostMapper' and 'com.minecraft.mapper.CommunityPostMapper' mapperInterface
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'communityPostMapper'.
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'fileInfoMapper' and 'com.minecraft.mapper.FileInfoMapper' mapperInterface
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'fileInfoMapper'.
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'foodMapper' and 'com.minecraft.mapper.FoodMapper' mapperInterface
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'foodMapper'.
+2026-02-13 02:17:33.583 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'friendMapper' and 'com.minecraft.mapper.FriendMapper' mapperInterface
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'friendMapper'.
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'groupTravelMapper' and 'com.minecraft.mapper.GroupTravelMapper' mapperInterface
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'groupTravelMapper'.
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'hotelMapper' and 'com.minecraft.mapper.HotelMapper' mapperInterface
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'hotelMapper'.
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'likeMapper' and 'com.minecraft.mapper.LikeMapper' mapperInterface
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'likeMapper'.
+2026-02-13 02:17:33.585 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'newsMapper' and 'com.minecraft.mapper.NewsMapper' mapperInterface
+2026-02-13 02:17:33.586 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'newsMapper'.
+2026-02-13 02:17:33.586 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'orderMapper' and 'com.minecraft.mapper.OrderMapper' mapperInterface
+2026-02-13 02:17:33.586 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'orderMapper'.
+2026-02-13 02:17:33.586 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'paymentMapper' and 'com.minecraft.mapper.PaymentMapper' mapperInterface
+2026-02-13 02:17:33.586 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'paymentMapper'.
+2026-02-13 02:17:33.586 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'productMapper' and 'com.minecraft.mapper.ProductMapper' mapperInterface
+2026-02-13 02:17:33.587 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'productMapper'.
+2026-02-13 02:17:33.587 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'ticketMapper' and 'com.minecraft.mapper.TicketMapper' mapperInterface
+2026-02-13 02:17:33.587 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'ticketMapper'.
+2026-02-13 02:17:33.587 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'travelPlanMapper' and 'com.minecraft.mapper.TravelPlanMapper' mapperInterface
+2026-02-13 02:17:33.587 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'travelPlanMapper'.
+2026-02-13 02:17:33.589 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'userMapper' and 'com.minecraft.mapper.UserMapper' mapperInterface
+2026-02-13 02:17:33.589 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'userMapper'.
+2026-02-13 02:17:33.738 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:17:33.739 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:17:34.104 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:17:34.112 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:17:34.112 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:17:34.112 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:17:34.204 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:17:34.205 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1368 ms
+2026-02-13 02:17:35.291 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-02-13 02:17:35.457 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 173366f7-b1be-4849-a09f-5a21acc76df6
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:17:35.612 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:17:36.092 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1a06ec24, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1715193f, org.springframework.security.web.context.SecurityContextHolderFilter@1390a415, org.springframework.security.web.header.HeaderWriterFilter@6067e7c1, org.springframework.security.web.authentication.logout.LogoutFilter@1fce6eb4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4932d580, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5d8a1456, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1f5f4d48, org.springframework.security.web.session.SessionManagementFilter@8942ece, org.springframework.security.web.access.ExceptionTranslationFilter@2ad80cf6, org.springframework.security.web.access.intercept.AuthorizationFilter@38a61c81]
+2026-02-13 02:17:36.642 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:17:36.651 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:17:36.652 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:17:36.652 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@79a88f45]]
+2026-02-13 02:17:36.653 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:17:36.658 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.246 seconds (process running for 4.737)
+2026-02-13 02:17:36.662 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 02:17:36.768 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@10007fdc
+2026-02-13 02:17:36.770 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 02:17:36.778 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 02:17:48.231 [lettuce-nioEventLoop-4-1] INFO  i.l.core.protocol.CommandHandler - null Unexpected exception during request: java.net.SocketException: Connection reset
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.SocketChannelImpl.throwConnectionReset(SocketChannelImpl.java:401)
+	at java.base/sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:434)
+	at io.netty.buffer.PooledByteBuf.setBytes(PooledByteBuf.java:259)
+	at io.netty.buffer.AbstractByteBuf.writeBytes(AbstractByteBuf.java:1132)
+	at io.netty.channel.socket.nio.NioSocketChannel.doReadBytes(NioSocketChannel.java:357)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:151)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2026-02-13 02:17:48.327 [lettuce-eventExecutorLoop-1-1] INFO  i.l.core.protocol.ConnectionWatchdog - Reconnecting, last destination was localhost/127.0.0.1:6379
+2026-02-13 02:17:48.333 [lettuce-nioEventLoop-4-2] WARN  i.l.core.protocol.ConnectionWatchdog - Cannot reconnect to [localhost/<unresolved>:6379]: Connection refused: getsockopt: localhost/127.0.0.1:6379
+2026-02-13 02:17:50.252 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:17:50.254 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@79a88f45]]
+2026-02-13 02:17:50.254 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:17:50.386 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 02:17:50.390 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-13 02:17:52.311 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:17:52.342 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 8024 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:17:52.342 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:17:52.342 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:17:52.993 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:17:52.994 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:17:53.020 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 21 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:17:53.023 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:17:53.023 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:17:53.028 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:17:53.036 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:17:53.036 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:17:53.045 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\AttractionMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CartMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ChatMessageMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CollectionMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommentMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\CommunityPostMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FileInfoMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FoodMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\FriendMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\GroupTravelMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\HotelMapper.class]
+2026-02-13 02:17:53.108 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\LikeMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\NewsMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\OrderMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\PaymentMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\ProductMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TicketMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\TravelPlanMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Identified candidate component class: file [D:\IDEA\work\Minecraft\target\classes\com\minecraft\mapper\UserMapper.class]
+2026-02-13 02:17:53.109 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'attractionMapper' and 'com.minecraft.mapper.AttractionMapper' mapperInterface
+2026-02-13 02:17:53.111 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'attractionMapper'.
+2026-02-13 02:17:53.111 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'cartMapper' and 'com.minecraft.mapper.CartMapper' mapperInterface
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'cartMapper'.
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'chatMessageMapper' and 'com.minecraft.mapper.ChatMessageMapper' mapperInterface
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'chatMessageMapper'.
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'collectionMapper' and 'com.minecraft.mapper.CollectionMapper' mapperInterface
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'collectionMapper'.
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'commentMapper' and 'com.minecraft.mapper.CommentMapper' mapperInterface
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'commentMapper'.
+2026-02-13 02:17:53.112 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'communityPostMapper' and 'com.minecraft.mapper.CommunityPostMapper' mapperInterface
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'communityPostMapper'.
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'fileInfoMapper' and 'com.minecraft.mapper.FileInfoMapper' mapperInterface
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'fileInfoMapper'.
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'foodMapper' and 'com.minecraft.mapper.FoodMapper' mapperInterface
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'foodMapper'.
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'friendMapper' and 'com.minecraft.mapper.FriendMapper' mapperInterface
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'friendMapper'.
+2026-02-13 02:17:53.114 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'groupTravelMapper' and 'com.minecraft.mapper.GroupTravelMapper' mapperInterface
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'groupTravelMapper'.
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'hotelMapper' and 'com.minecraft.mapper.HotelMapper' mapperInterface
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'hotelMapper'.
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'likeMapper' and 'com.minecraft.mapper.LikeMapper' mapperInterface
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'likeMapper'.
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'newsMapper' and 'com.minecraft.mapper.NewsMapper' mapperInterface
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'newsMapper'.
+2026-02-13 02:17:53.115 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'orderMapper' and 'com.minecraft.mapper.OrderMapper' mapperInterface
+2026-02-13 02:17:53.117 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'orderMapper'.
+2026-02-13 02:17:53.117 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'paymentMapper' and 'com.minecraft.mapper.PaymentMapper' mapperInterface
+2026-02-13 02:17:53.117 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'paymentMapper'.
+2026-02-13 02:17:53.117 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'productMapper' and 'com.minecraft.mapper.ProductMapper' mapperInterface
+2026-02-13 02:17:53.117 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'productMapper'.
+2026-02-13 02:17:53.117 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'ticketMapper' and 'com.minecraft.mapper.TicketMapper' mapperInterface
+2026-02-13 02:17:53.118 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'ticketMapper'.
+2026-02-13 02:17:53.118 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'travelPlanMapper' and 'com.minecraft.mapper.TravelPlanMapper' mapperInterface
+2026-02-13 02:17:53.118 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'travelPlanMapper'.
+2026-02-13 02:17:53.118 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Creating MapperFactoryBean with name 'userMapper' and 'com.minecraft.mapper.UserMapper' mapperInterface
+2026-02-13 02:17:53.118 [main] DEBUG o.m.s.mapper.ClassPathMapperScanner - Enabling autowire by type for MapperFactoryBean with name 'userMapper'.
+2026-02-13 02:17:53.272 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:17:53.273 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:17:53.643 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:17:53.650 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:17:53.650 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:17:53.650 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:17:53.728 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:17:53.729 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1347 ms
+2026-02-13 02:17:54.802 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-02-13 02:17:54.802 [main] WARN  c.minecraft.utils.RedisHealthChecker - ⚠️  请确保 Redis 服务已启动，并检查以下配置：
+2026-02-13 02:17:54.803 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 地址: localhost:6379
+2026-02-13 02:17:54.803 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 密码: (如果配置了密码)
+2026-02-13 02:17:54.803 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - 启动 Redis: redis-server 或 redis-cli ping
+2026-02-13 02:17:54.803 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Windows 启动 Redis: redis-server.exe
+2026-02-13 02:17:54.967 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 8315f5ce-92b5-486d-b774-4b0101136096
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:17:55.126 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:17:55.610 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@337e573b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4d24ab25, org.springframework.security.web.context.SecurityContextHolderFilter@2178d296, org.springframework.security.web.header.HeaderWriterFilter@5184da2b, org.springframework.security.web.authentication.logout.LogoutFilter@2e3b4394, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5f1db390, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@35e7fcf2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@145f1f97, org.springframework.security.web.session.SessionManagementFilter@2bfa5678, org.springframework.security.web.access.ExceptionTranslationFilter@72998021, org.springframework.security.web.access.intercept.AuthorizationFilter@f9ac719]
+2026-02-13 02:17:56.158 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:17:56.168 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:17:56.169 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:17:56.169 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6a4f15bc]]
+2026-02-13 02:17:56.169 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:17:56.175 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.258 seconds (process running for 4.796)
+2026-02-13 02:17:56.180 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 02:17:56.288 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5295a774
+2026-02-13 02:17:56.289 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 02:17:56.298 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 02:18:55.661 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-02-13 02:19:50.354 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:19:50.355 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6a4f15bc]]
+2026-02-13 02:19:50.355 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:19:50.484 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 02:19:50.487 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-13 02:19:52.483 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:19:52.513 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 18532 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:19:52.513 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:19:52.513 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:19:53.157 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:19:53.159 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:19:53.184 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:19:53.188 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:19:53.188 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:19:53.193 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:19:53.199 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:19:53.200 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:19:53.209 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:19:53.426 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:19:53.427 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:19:53.778 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:19:53.785 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:19:53.785 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:19:53.785 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:19:53.874 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:19:53.874 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1325 ms
+2026-02-13 02:19:54.945 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-02-13 02:19:55.101 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: a9c5c617-673e-4052-bd48-b102448f6de3
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:19:55.252 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:19:55.725 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@769f6023, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@38a61c81, org.springframework.security.web.context.SecurityContextHolderFilter@8942ece, org.springframework.security.web.header.HeaderWriterFilter@2ad80cf6, org.springframework.security.web.authentication.logout.LogoutFilter@58c80957, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@15254569, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7603cfc2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2f03fdc0, org.springframework.security.web.session.SessionManagementFilter@6bbb3280, org.springframework.security.web.access.ExceptionTranslationFilter@7d432bc0, org.springframework.security.web.access.intercept.AuthorizationFilter@21d6dc81]
+2026-02-13 02:19:56.271 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:19:56.280 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:19:56.281 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:19:56.281 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3fbf66e7]]
+2026-02-13 02:19:56.281 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:19:56.286 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.169 seconds (process running for 4.687)
+2026-02-13 02:19:56.290 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 02:19:56.398 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@58c48a23
+2026-02-13 02:19:56.399 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 02:19:56.407 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 02:20:55.764 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-02-13 02:22:00.364 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:22:00.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3fbf66e7]]
+2026-02-13 02:22:00.365 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:22:00.491 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 02:22:00.495 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-13 02:22:02.722 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:22:02.753 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 5356 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:22:02.753 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:22:02.755 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:22:03.451 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:22:03.453 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:22:03.481 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 25 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:22:03.484 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:22:03.484 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:22:03.488 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:22:03.496 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:22:03.496 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:22:03.505 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:22:03.756 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:22:03.757 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:22:04.201 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:22:04.211 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:22:04.211 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:22:04.211 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:22:04.327 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:22:04.327 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1537 ms
+2026-02-13 02:22:05.591 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-02-13 02:22:05.783 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 2a8587d2-5226-4883-9678-d79a97d76f5a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:22:05.952 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:22:06.448 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@49bc1f6c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@67167f8f, org.springframework.security.web.context.SecurityContextHolderFilter@6ee07d7f, org.springframework.security.web.header.HeaderWriterFilter@67d55a46, org.springframework.security.web.authentication.logout.LogoutFilter@3c62c81f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7a6b214c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@69c6e5, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1e5190bd, org.springframework.security.web.session.SessionManagementFilter@71c74011, org.springframework.security.web.access.ExceptionTranslationFilter@70ccb3bf, org.springframework.security.web.access.intercept.AuthorizationFilter@6c92a59d]
+2026-02-13 02:22:07.117 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:22:07.127 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:22:07.128 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:22:07.128 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@73ccdfc1]]
+2026-02-13 02:22:07.128 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:22:07.135 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.858 seconds (process running for 5.49)
+2026-02-13 02:22:07.138 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 02:22:07.264 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@17d606c9
+2026-02-13 02:22:07.266 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 02:22:07.277 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 02:23:06.507 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-02-13 02:23:50.244 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-13 02:23:50.244 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-13 02:23:50.246 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-02-13 02:23:50.291 [http-nio-8080-exec-1] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HotelController
+2026-02-13 02:25:31.863 [http-nio-8080-exec-5] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 673 ms
+2026-02-13 02:26:49.696 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CommunityController
+2026-02-13 02:28:17.432 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:28:17.432 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@73ccdfc1]]
+2026-02-13 02:28:17.432 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:28:17.563 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 02:28:17.566 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-13 02:28:19.525 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:28:19.556 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 25996 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:28:19.556 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:28:19.556 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:28:20.210 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:28:20.211 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:28:20.236 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 22 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:28:20.239 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:28:20.239 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:28:20.243 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:28:20.250 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:28:20.251 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:28:20.259 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:28:20.476 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:28:20.476 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:28:20.841 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:28:20.847 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:28:20.847 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:28:20.847 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:28:20.927 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:28:20.927 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1333 ms
+2026-02-13 02:28:22.005 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-02-13 02:28:22.160 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 0655e06b-52ff-4e29-8adb-856bca89090e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:28:22.324 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:28:22.794 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@36dc6b9, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5cff6d1d, org.springframework.security.web.context.SecurityContextHolderFilter@6464f017, org.springframework.security.web.header.HeaderWriterFilter@567baa55, org.springframework.security.web.authentication.logout.LogoutFilter@7833407, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5862ab28, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@e0f2686, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3c981f76, org.springframework.security.web.session.SessionManagementFilter@103033fe, org.springframework.security.web.access.ExceptionTranslationFilter@1c25385a, org.springframework.security.web.access.intercept.AuthorizationFilter@5df7ae0a]
+2026-02-13 02:28:23.360 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:28:23.369 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:28:23.370 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:28:23.370 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d4af473]]
+2026-02-13 02:28:23.370 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:28:23.375 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.248 seconds (process running for 4.801)
+2026-02-13 02:28:23.379 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 02:28:23.490 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@37e0614e
+2026-02-13 02:28:23.490 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 02:28:23.499 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 02:28:27.562 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-13 02:28:27.562 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-13 02:28:27.563 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-02-13 02:28:28.448 [http-nio-8080-exec-9] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 687 ms
+2026-02-13 02:29:00.503 [http-nio-8080-exec-10] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CommunityController
+2026-02-13 02:29:22.830 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-02-13 02:30:22.034 [http-nio-8080-exec-8] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HotelController
+2026-02-13 02:32:05.614 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:32:05.614 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d4af473]]
+2026-02-13 02:32:05.614 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:32:05.741 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 02:32:05.746 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-13 02:32:07.672 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 02:32:07.704 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 26176 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 02:32:07.704 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 02:32:07.705 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 02:32:08.334 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:32:08.336 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:32:08.359 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 20 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 02:32:08.361 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:32:08.363 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 02:32:08.366 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 02:32:08.373 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 02:32:08.373 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 02:32:08.381 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 3 ms. Found 0 Redis repository interfaces.
+2026-02-13 02:32:08.598 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:32:08.598 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 02:32:08.962 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 02:32:08.969 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:32:08.969 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 02:32:08.969 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 02:32:09.045 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 02:32:09.045 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1303 ms
+2026-02-13 02:32:10.128 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-02-13 02:32:10.280 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 29833678-9cfe-4301-9e16-11d3b10c3de2
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 02:32:10.451 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 02:32:10.948 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@b0d4873, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7d0312a, org.springframework.security.web.context.SecurityContextHolderFilter@63a9af28, org.springframework.security.web.header.HeaderWriterFilter@9c40f43, org.springframework.security.web.authentication.logout.LogoutFilter@1399ad68, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@530bd77b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@d3b0397, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6f00c40e, org.springframework.security.web.session.SessionManagementFilter@75d0cac6, org.springframework.security.web.access.ExceptionTranslationFilter@1ecf784f, org.springframework.security.web.access.intercept.AuthorizationFilter@6a905513]
+2026-02-13 02:32:11.507 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 02:32:11.517 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 02:32:11.518 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 02:32:11.518 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d4af473]]
+2026-02-13 02:32:11.518 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 02:32:11.522 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 4.264 seconds (process running for 4.803)
+2026-02-13 02:32:11.527 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 02:32:11.645 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@37e0614e
+2026-02-13 02:32:11.646 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 02:32:11.656 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 02:32:54.632 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 02:32:54.632 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5d4af473]]
+2026-02-13 02:32:54.632 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 02:32:54.761 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 02:32:54.764 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-13 18:35:17.344 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-02-13 18:35:17.383 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 29096 (D:\IDEA\work\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft)
+2026-02-13 18:35:17.383 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-02-13 18:35:17.383 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-02-13 18:35:18.325 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 18:35:18.327 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-02-13 18:35:18.367 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 33 ms. Found 0 Elasticsearch repository interfaces.
+2026-02-13 18:35:18.369 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 18:35:18.371 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-02-13 18:35:18.375 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 5 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-02-13 18:35:18.387 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-13 18:35:18.389 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-13 18:35:18.401 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2026-02-13 18:35:18.738 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 18:35:18.739 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-02-13 18:35:19.317 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-02-13 18:35:19.325 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-13 18:35:19.325 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-13 18:35:19.325 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-02-13 18:35:19.426 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-13 18:35:19.426 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1993 ms
+2026-02-13 18:35:20.842 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-02-13 18:35:20.842 [main] WARN  c.minecraft.utils.RedisHealthChecker - ⚠️  请确保 Redis 服务已启动，并检查以下配置：
+2026-02-13 18:35:20.842 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 地址: localhost:6379
+2026-02-13 18:35:20.842 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 密码: (如果配置了密码)
+2026-02-13 18:35:20.842 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - 启动 Redis: redis-server 或 redis-cli ping
+2026-02-13 18:35:20.842 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Windows 启动 Redis: redis-server.exe
+2026-02-13 18:35:21.077 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: ab9ce665-7a04-48f9-b71a-610a71684193
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-02-13 18:35:21.314 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-13 18:35:21.924 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4d10f182, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5570ee6d, org.springframework.security.web.context.SecurityContextHolderFilter@9c40f43, org.springframework.security.web.header.HeaderWriterFilter@40696fc6, org.springframework.security.web.authentication.logout.LogoutFilter@e0f2686, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6329a5b9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@67167f8f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7e2f16bd, org.springframework.security.web.session.SessionManagementFilter@1ecf784f, org.springframework.security.web.access.ExceptionTranslationFilter@38d895e8, org.springframework.security.web.access.intercept.AuthorizationFilter@35c3d6e8]
+2026-02-13 18:35:22.687 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-13 18:35:22.697 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-02-13 18:35:22.699 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-02-13 18:35:22.699 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@20e4e27f]]
+2026-02-13 18:35:22.699 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-02-13 18:35:22.705 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 5.853 seconds (process running for 6.702)
+2026-02-13 18:35:22.710 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-13 18:35:22.870 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4f8488ef
+2026-02-13 18:35:22.872 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-13 18:35:22.882 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-02-13 18:35:42.712 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-02-13 18:35:42.712 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@20e4e27f]]
+2026-02-13 18:35:42.712 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-02-13 18:35:42.846 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-13 18:35:42.852 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

@@ -34,29 +34,30 @@
                   </td>
                   <td>{{ item.id }}</td>
                   <td>{{ item.name }}</td>
+                  <td>{{ item.chineseName }}</td>
                   <td>
                     <img :src="item.image" alt="图片" style="width: 35px; height: 35px;" />
                   </td>
-                  <td>{{ item.description ? item.description.substring(0, 25) + '...' : '' }}</td>
-                  <td>{{ item.rating }}</td>
-                  <td>{{ item.badgeText }}</td>
-                  <td>{{ item.status }}</td>
-                  <td>{{ item.isDiscounted }}</td>
-                  <td>{{ item.isFeatured }}</td>
-                  <td>{{ item.category }}</td>
-                  <td>{{ formatCities(item.cities) }}</td>
-                  <td>￥{{ item.price }}</td>
-                  <td>{{ item.created_at }}</td>
-                  <td>{{ item.updated_at }}</td>
+                  <td>{{ item.continentId }}</td>
+                  <td>{{ item.capital }}</td>
+                  <td>{{ item.area }}</td>
+                  <td>{{ item.population }}</td>
+                  <td>{{ item.currency }}</td>
+                  <td>{{ item.language }}</td>
+                  <td>{{ item.timezone }}</td>
+                  <td>{{ item.countryCode }}</td>
+                  <td>{{ item.phoneCode }}</td>
+                  <td>{{ item.flagEmoji }}</td>
+                  <td>{{ item.createdAt }}</td>
                   <td class="table-btn-display">
-                    <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
+                    <button class="btn details-btn" @click="showEditDialog(item)">详情</button>
                     <button class="btn edit-btn" @click="showEditDialog(item)">编辑</button>
                     <button class="btn delete-btn" @click="handleDelete(item.id)">删除</button>
                   </td>
                 </tr>
                 <!-- 当 filteredItems 为空时显示提示信息 -->
                 <tr v-if="filteredItems.length === 0">
-                  <td colspan="7">未找到相关数据</td>
+                  <td colspan="17">未找到相关数据</td>
                 </tr>
               </tbody>
             </table>
@@ -128,24 +129,60 @@
                 </div>
               </div>
               <div class="form-row">
-
                 <div class="form-group">
                   <label>名称:</label>
                   <input v-model="formData.name" required />
                 </div>
                 <div class="form-group">
-                  <label>大洲:</label>
-                  <input v-model="formData.category" required />
+                  <label>中文名称:</label>
+                  <input v-model="formData.chineseName" required />
                 </div>
                 <div class="form-group">
-                  <label>城市:</label>
-                  <input v-model="formData.cities" placeholder="用逗号分隔多个城市" required />
+                  <label>大洲ID:</label>
+                  <input v-model="formData.continentId" type="number" required />
                 </div>
-
                 <div class="form-group">
-                  <label>价格:</label>
-                  <input v-model="formData.price" type="number" required />
+                  <label>首都:</label>
+                  <input v-model="formData.capital" />
                 </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>面积:</label>
+                  <input v-model="formData.area" type="number" step="0.01" />
+                </div>
+                <div class="form-group">
+                  <label>人口:</label>
+                  <input v-model="formData.population" type="number" />
+                </div>
+                <div class="form-group">
+                  <label>货币:</label>
+                  <input v-model="formData.currency" />
+                </div>
+                <div class="form-group">
+                  <label>官方语言:</label>
+                  <input v-model="formData.language" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>时区:</label>
+                  <input v-model="formData.timezone" />
+                </div>
+                <div class="form-group">
+                  <label>国家代码:</label>
+                  <input v-model="formData.countryCode" />
+                </div>
+                <div class="form-group">
+                  <label>电话区号:</label>
+                  <input v-model="formData.phoneCode" />
+                </div>
+                <div class="form-group">
+                  <label>国旗emoji:</label>
+                  <input v-model="formData.flagEmoji" />
+                </div>
+              </div>
+              <div class="form-row">
                 <div class="form-group">
                   <label>描述:</label>
                   <textarea v-model="formData.description" placeholder="最多 255 字" maxlength="255"></textarea>
@@ -173,7 +210,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import countriesApi from '@/api/countries';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -181,19 +218,20 @@ import ToastType from '@/components/PromptComponent/ToastType.vue';
 const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
-  { key: 'name', title: '名称' },
+  { key: 'name', title: '国家名称' },
+  { key: 'chineseName', title: '中文名称' },
   { key: 'image', title: '图片' },
-  { key: 'description', title: '描述' },
-  { key: 'rating', title: '评分' },
-  { key: 'badgeText', title: '标签' },
-  { key: 'status', title: '状态' },
-  { key: 'isDiscounted', title: '折扣' },
-  { key: 'isFeatured', title: '特色' },
-  { key: 'category', title: '大洲' },
-  { key: 'cities', title: '城市' },
-  { key: 'price', title: '价格' },
-  { key: 'created_at', title: '创建时间' },
-  { key: 'updated_at', title: '更新时间' }
+  { key: 'continentId', title: '大洲ID' },
+  { key: 'capital', title: '首都' },
+  { key: 'area', title: '面积' },
+  { key: 'population', title: '人口' },
+  { key: 'currency', title: '货币' },
+  { key: 'language', title: '官方语言' },
+  { key: 'timezone', title: '时区' },
+  { key: 'countryCode', title: '国家代码' },
+  { key: 'phoneCode', title: '电话区号' },
+  { key: 'flagEmoji', title: '国旗' },
+  { key: 'createdAt', title: '创建时间' }
 ];
 
 // 数据相关
@@ -243,27 +281,46 @@ const filteredItems = computed(() => {
   return (items.value || []).filter(
     (item) =>
       (item.name && item.name.toLowerCase().includes(keyword)) ||
-      (item.category && item.category.toLowerCase().includes(keyword))
+      (item.chineseName && item.chineseName.toLowerCase().includes(keyword))
   );
 });
 
 // 获取数据
 const fetchItems = async () => {
+  loading.value = true;
   try {
-    const params = {
-      page: currentPage.value, // 修改为page参数
-      pageSize: pageSize.value,
-      keyword: searchKeyword.value, // 修改为keyword参数
-    };
-    const response = await request.get('/api/public/destination/list', { params });
-    console.log('后端返回的数据:', response.data);
-    items.value = response.data?.records || [];
+    const response = await countriesApi.getCountriesList(currentPage.value, pageSize.value);
+    console.log('后端返回的数据:', response);
+
+    // 处理完整的响应格式，数据在response.data.data.records中
+    let countriesData = [];
+    let totalCount = 0;
+
+    if (response.data && response.data.data) {
+      // 完整的axios响应格式
+      countriesData = response.data.data.records || [];
+      totalCount = response.data.data.total || 0;
+    } else if (response.data) {
+      // 简化的格式
+      countriesData = response.data.records || response.data.list || [];
+      totalCount = response.data.total || 0;
+    } else {
+      // 其他格式
+      countriesData = response.records || response.list || [];
+      totalCount = response.total || 0;
+    }
+
+    // 处理数据，确保每个国家都有 checked 属性
+    items.value = countriesData.map(item => ({
+      ...item,
+      checked: false // 添加复选框状态
+    }));
 
     // 更新分页参数
-    total.value = response.data?.total || 0; // 直接使用后端返回的总数
-    currentPage.value = response.data?.pageNum || 1;
-
-    // 移除原来的总页数计算逻辑
+    total.value = totalCount;
+    console.log('处理后的数据:', countriesData);
+    console.log('更新后的items:', items.value);
+    console.log('更新后的total:', total.value);
   } catch (error) {
     console.error('获取数据失败:', error);
     items.value = [];
@@ -279,11 +336,19 @@ const showAddDialog = () => {
   formData.value = {
     id: null,
     name: '',
-    category: '',
-    cities: '',
-    description: '',
+    chineseName: '',
     image: '',
-    price: 0,
+    continentId: 0,
+    capital: '',
+    area: 0,
+    population: 0,
+    currency: '',
+    language: '',
+    timezone: '',
+    countryCode: '',
+    phoneCode: '',
+    flagEmoji: '',
+    description: '',
   };
   showDialog.value = true;
 };
@@ -292,8 +357,21 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
-    cities: item.cities.join(','),
+    id: item.id,
+    name: item.name,
+    chineseName: item.chineseName,
+    image: item.image || '',
+    continentId: item.continentId,
+    capital: item.capital,
+    area: item.area,
+    population: item.population,
+    currency: item.currency,
+    language: item.language,
+    timezone: item.timezone,
+    countryCode: item.countryCode,
+    phoneCode: item.phoneCode,
+    flagEmoji: item.flagEmoji,
+    description: item.description,
   };
   showDialog.value = true;
 };
@@ -303,20 +381,19 @@ const submitForm = async () => {
   try {
     const data = {
       ...formData.value,
-      cities: formData.value.cities.split(',').map((city) => city.trim()),
     };
 
     if (isEditing.value) {
-      await request.put(`/api/public/destination/${data.id}`, data);
-      showToastMessage('更新项目成功');
+      await countriesApi.updateCountries(data);
+      showToastMessage('更新国家成功');
     } else {
-      await request.post('/api/public/destination', data);
-      showToastMessage('新增项目成功');
+      await countriesApi.addCountries(data);
+      showToastMessage('新增国家成功');
     }
     await fetchItems();
     closeDialog();
   } catch (error) {
-    const message = isEditing.value ? '更新项目失败' : '新增项目失败';
+    const message = isEditing.value ? '更新国家失败' : '新增国家失败';
     showToastMessage(message, 'error');
     console.error('操作失败:', error);
   }
@@ -331,12 +408,12 @@ const handleDelete = (id) => {
 const confirmDelete = async () => {
   if (deleteItemId.value) {
     try {
-      await request.delete(`/api/public/destination/${deleteItemId.value}`);
+      await countriesApi.deleteCountries(deleteItemId.value);
       await fetchItems();
-      showToastMessage('删除项目成功');
+      showToastMessage('删除国家成功');
     } catch (error) {
       console.error('删除失败:', error);
-      showToastMessage('删除项目失败', 'error');
+      showToastMessage('删除国家失败', 'error');
     } finally {
       closeDeletePrompt();
     }
@@ -455,8 +532,37 @@ const handleCurrentChange = (newPage) => {
   fetchItems();
 };
 
+// 处理复选框点击
+const handleCheck = (item) => {
+  item.checked = !item.checked;
+};
+
+// 处理搜索
+const handleSearch = () => {
+  currentPage.value = 1; // 搜索时重置到第一页
+  fetchItems();
+};
+
+// 处理批量删除
+const handleReset = () => {
+  const selectedItems = items.value.filter(item => item.checked);
+  if (selectedItems.length === 0) {
+    showToastMessage('请选择要删除的国家', 'error');
+    return;
+  }
+
+  // 这里可以实现批量删除逻辑
+  showToastMessage(`已选择 ${selectedItems.length} 个国家进行批量删除`, 'success');
+};
+
 // 初始化加载数据
 onMounted(fetchItems);
+
+// 确保数据正确渲染
+const forceUpdate = () => {
+  // 重新赋值，触发响应式更新
+  items.value = [...items.value];
+};
 
 
 </script>

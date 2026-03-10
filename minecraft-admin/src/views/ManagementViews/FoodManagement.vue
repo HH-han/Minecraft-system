@@ -34,7 +34,7 @@
                 <td>{{ food.phone }}</td>
                 <td>{{ food.name }}</td>
                 <td>
-                  <img :src="food.image" alt="美食图片" style="width: 35px; height: 35px;"
+                  <img :src="food.coverImage" alt="美食图片" style="width: 35px; height: 35px;"
                     @click="triggerFileInput(food)" />
                 </td>
                 <td>{{ food.description }}</td>
@@ -47,7 +47,7 @@
                 <td>{{ formatDate(food.created_at) }}</td>
                 <td>{{ formatDate(food.updated_at) }}</td>
                 <td class="table-btn-display">
-                  <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
+                  <button class="btn details-btn" @click="showEditDialog(food)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(food)">编辑</button>
                   <button class="btn delete-btn" @click="handleDelete(food.id)">删除</button>
                 </td>
@@ -143,6 +143,32 @@
                 <input v-model="formData.rating" required />
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>城市:</label>
+                <input v-model="formData.city" />
+              </div>
+              <div class="form-group">
+                <label>省份:</label>
+                <input v-model="formData.province" />
+              </div>
+              <div class="form-group">
+                <label>地址:</label>
+                <input v-model="formData.address" />
+              </div>
+              <div class="form-group">
+                <label>菜系类型:</label>
+                <input v-model="formData.cuisineType" />
+              </div>
+              <div class="form-group">
+                <label>状态:</label>
+                <input v-model="formData.status" type="number" />
+              </div>
+              <div class="form-group">
+                <label>标签:</label>
+                <input v-model="formData.tags" />
+              </div>
+            </div>
             <!-- 提交按钮 -->
             <div class="dialog-buttons">
               <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
@@ -172,7 +198,7 @@ const columns = [
   { key: 'id', title: '美食ID' },
   { key: 'phone', title: '美食电话' },
   { key: 'name', title: '美食名称' },
-  { key: 'image', title: '美食图片' },
+  { key: 'coverImage', title: '美食图片' },
   { key: 'description', title: '美食描述' },
   { key: 'category', title: '美食分类' },
   { key: 'status', title: '美食状态' },
@@ -196,6 +222,7 @@ const formData = ref({
   description: '',
   coverImage: '',
   price: '',
+  sales: 0,
   rating: 0,
   city: '',
   province: '',
@@ -272,6 +299,7 @@ const showAddDialog = () => {
     description: '',
     coverImage: '',
     price: '',
+    sales: 0,
     rating: 0,
     city: '',
     province: '',
@@ -286,13 +314,45 @@ const showAddDialog = () => {
     likeCount: 0,
     images: [],
   };
+  // 重置图片上传相关状态
+  previewImage.value = null;
+  fileName.value = '';
+  fileSize.value = '';
+  progress.value = 0;
+  uploading.value = false;
   showDialog.value = true;
 };
 
 // 显示编辑对话框
 const showEditDialog = (food) => {
   isEditing.value = true;
-  formData.value = { ...food };
+  formData.value = {
+    id: food.id,
+    name: food.name,
+    description: food.description,
+    coverImage: food.image || food.coverImage,
+    price: food.price,
+    sales: food.sales || 0,
+    rating: food.rating || 0,
+    city: food.city || '',
+    province: food.province || '',
+    address: food.address || '',
+    cuisineType: food.cuisineType || food.category || '',
+    status: food.status || 1,
+    tags: food.tags || '',
+    createTime: food.createTime || food.created_at,
+    updateTime: food.updateTime || food.updated_at,
+    collectCount: food.collectCount || 0,
+    commentCount: food.commentCount || 0,
+    likeCount: food.likeCount || 0,
+    images: food.images || [],
+  };
+  // 显示已有的图片预览
+  if (formData.value.coverImage) {
+    previewImage.value = formData.value.coverImage;
+    fileName.value = '已上传图片';
+    fileSize.value = '';
+  }
   showDialog.value = true;
 };
 // 显示提示消息的方法
@@ -306,6 +366,19 @@ const showToastMessage = (message, type = 'success') => {
 };
 // 提交表单
 const submitForm = async () => {
+  // 表单验证
+  if (!formData.value.name) {
+    showToastMessage('请输入美食名称', 'error');
+    return;
+  }
+  if (!formData.value.description) {
+    showToastMessage('请输入美食描述', 'error');
+    return;
+  }
+  if (!formData.value.price) {
+    showToastMessage('请输入美食价格', 'error');
+    return;
+  }
   try {
     if (isEditing.value) {
       await updateFood(formData.value);

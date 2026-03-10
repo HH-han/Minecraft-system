@@ -215,7 +215,7 @@ const activeCategory = ref('')
 const categories = ref([])
 const paginatedDestinations = ref([])
 const selectedDestination = ref(null)
-const defaultImage = ref('')
+const defaultImage = ref('https://via.placeholder.com/400x300?text=No+Image')
 const currentPage = ref(1)
 const totalPages = ref(1)
 const destinationList = ref([])
@@ -322,7 +322,7 @@ const fetchCountries = async () => {
       return {
         id: country.id,
         name: country.chineseName || country.name,
-        image: defaultImage.value, // 使用默认图片
+        image: country.image || defaultImage.value, // 使用后端返回的图片，如果没有则使用默认图片
         description: country.description || '暂无描述',
         category: getContinentName(country.continentId),
         cities: [country.capital], // 使用首都作为城市

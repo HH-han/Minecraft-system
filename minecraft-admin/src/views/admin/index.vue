@@ -299,6 +299,9 @@ import OperationLog from '@/views/SystemManagement/OperationLog.vue';
 import SystemMonitoring from '@/views/MonitoringCenter/SystemMonitoring.vue';
 import CacheMonitoring from '@/views/MonitoringCenter/CacheMonitoring.vue';
 import OnlineUsers from '@/views/MonitoringCenter/OnlineUsers.vue';
+// 主题切换组件
+import ThemeSwitching from '@/components/ThemeComponents/ThemeSwitching.vue';
+
 
 // 导航路由
 const router = useRouter();

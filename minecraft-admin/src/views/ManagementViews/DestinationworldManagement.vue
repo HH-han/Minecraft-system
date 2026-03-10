@@ -45,11 +45,10 @@
                                     <td>{{ item.features }}</td>
                                     <td>{{ item.history }}</td>
                                     <td>{{ item.tags }}</td>
+                                    <td>{{ item.category }}</td>
                                     <td>{{ item.color }}</td>
-                                    <td>{{ item.created_at }}</td>
-                                    <td>{{ item.updated_at }}</td>
                                     <td class="table-btn-display">
-                                        <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
+                                        <button class="btn details-btn" @click="showEditDialog(item)">详情</button>
                                         <button class="btn edit-btn" @click="showEditDialog(item)">编辑</button>
                                         <button class="btn delete-btn" @click="handleDelete(item.id)">删除</button>
                                     </td>
@@ -168,6 +167,10 @@
                                         required />
                                     <span>当前颜色值: {{ formData.color }}</span>
                                 </div>
+                                <div class="form-group">
+                                    <label>分类:</label>
+                                    <input v-model="formData.category" required />
+                                </div>
                             </div>
                             <!-- 提交按钮 -->
                             <div class="dialog-buttons">
@@ -191,7 +194,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getWorldCharacteristicsPage, addWorldCharacteristics, updateWorldCharacteristics, deleteWorldCharacteristics } from '@/api/worldcharacteristics';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -208,9 +211,8 @@ const columns = [
     { key: 'features', title: '特征' },
     { key: 'history', title: '历史' },
     { key: 'tags', title: '标签' },
-    { key: 'color', title: '颜色' },
-    { key: 'created_at', title: '创建时间' },
-    { key: 'updated_at', title: '更新时间' }
+    { key: 'category', title: '分类' },
+    { key: 'color', title: '颜色' }
 ];
 
 // 数据相关
@@ -228,11 +230,9 @@ const formData = ref({
     description: '',
     features: '',
     history: '',
-    tags: [],
+    tags: '',
+    category: '',
     color: '',
-    created_at: '',
-    updated_at: '',
-
 });
 const closeDialog = () => {
     showDialog.value = false;
@@ -271,24 +271,16 @@ const filteredItems = computed(() => {
 // 获取数据
 const fetchItems = async () => {
     try {
-        const params = {
-            currentPage: currentPage.value,
-            pageSize: pageSize.value,
-            searchQuery: searchKeyword.value,
-            activeCategory: '全部'
-        };
-        const response = await request.get('/api/public/travelworld', { params });
+        const response = await getWorldCharacteristicsPage(currentPage.value, pageSize.value);
         console.log('后端返回的数据:', response.data);
-        items.value = response.data.travelWorldcharacteristics || [];
+        items.value = response.data?.records || response.data?.list || [];
 
         // 更新分页参数
-        total.value = response.data.total; // 直接使用后端返回的总数
-        currentPage.value = response.data.currentPage || 1;
-
-        // 移除原来的总页数计算逻辑
+        total.value = response.data?.total || 0;
     } catch (error) {
         console.error('获取数据失败:', error);
         items.value = [];
+        total.value = 0;
     } finally {
         loading.value = false;
     }
@@ -307,9 +299,8 @@ const showAddDialog = () => {
         features: '',
         history: '',
         tags: '',
+        category: '',
         color: '',
-        created_at: '',
-        updated_at: '',
     };
     showDialog.value = true;
 };
@@ -318,8 +309,17 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
     isEditing.value = true;
     formData.value = {
-        ...item,
-        tags: item.tags.join(','),
+        id: item.id,
+        name: item.name,
+        country: item.country,
+        culture: item.culture,
+        image: item.image,
+        description: item.description,
+        features: item.features,
+        history: item.history,
+        tags: item.tags || '',
+        category: item.category || '',
+        color: item.color || '',
     };
     showDialog.value = true;
 };
@@ -329,20 +329,19 @@ const submitForm = async () => {
     try {
         const data = {
             ...formData.value,
-            tags: formData.value.tags.split(',').map(tag => tag.trim())
         };
 
         if (isEditing.value) {
-            await request.put(`/api/public/travelworld/${data.id}`, data);
-            showToastMessage('更新项目成功');
+            await updateWorldCharacteristics(data);
+            showToastMessage('更新世界特征成功');
         } else {
-            await request.post('/api/public/travelworld', data);
-            showToastMessage('新增项目成功');
+            await addWorldCharacteristics(data);
+            showToastMessage('新增世界特征成功');
         }
         await fetchItems();
         closeDialog();
     } catch (error) {
-        const message = isEditing.value ? '更新项目失败' : '新增项目失败';
+        const message = isEditing.value ? '更新世界特征失败' : '新增世界特征失败';
         showToastMessage(message, 'error');
         console.error('操作失败:', error);
     }
@@ -357,12 +356,12 @@ const handleDelete = (id) => {
 const confirmDelete = async () => {
     if (deleteItemId.value) {
         try {
-            await request.delete(`/api/public/travelworld/${deleteItemId.value}`);
+            await deleteWorldCharacteristics(deleteItemId.value);
             await fetchItems();
-            showToastMessage('删除项目成功');
+            showToastMessage('删除世界特征成功');
         } catch (error) {
             console.error('删除失败:', error);
-            showToastMessage('删除项目失败', 'error');
+            showToastMessage('删除世界特征失败', 'error');
         } finally {
             closeDeletePrompt();
         }

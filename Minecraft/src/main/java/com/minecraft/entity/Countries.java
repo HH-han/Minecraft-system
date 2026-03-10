@@ -15,6 +15,8 @@ public class Countries {
     private String name;
     
     private String chineseName;
+
+    private String image;
     
     private Integer continentId;
     
