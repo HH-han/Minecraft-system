@@ -30,28 +30,21 @@
                   <input type="checkbox" :checked="item.checked" @change="handleCheck(item)" class="ui-checkbox" />
                 </td>
                 <td>{{ item.id }}</td>
-                <td>{{ item.title }}</td>
+                <td>{{ item.name }}</td>
                 <td>
-                  <img :src="item.coverImage" alt="封面图片" style="width: 35px; height: 35px;"
+                  <img :src="item.image" alt="图片" style="width: 35px; height: 35px;"
                     @click="triggerFileInput(item)">
                 </td>
-                <td>{{ item.content ? item.content.slice(0, 20) : '无' }}...</td>
-                <td>{{ item.location }}</td>
-                <td>￥{{ item.price }}</td>
-                <td>❤️{{ item.likes }}</td>
-                <td>{{ item.favorites }}</td>
-                <td>{{ item.browse }}</td>
+                <td>{{ item.description ? item.description.slice(0, 20) : '无' }}...</td>
+                <td>{{ item.details ? item.details.slice(0, 20) : '无' }}...</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.state === 0" @change="toggleState(item)">
-                    <span class="slider" :class="{ 'green': item.state === 0, 'red': item.state !== 0 }"></span>
+                    <input type="checkbox" :checked="item.state === '0'" @change="toggleState(item)">
+                    <span class="slider" :class="{ 'green': item.state === '0', 'red': item.state !== '0' }"></span>
                     <span class="knob"></span>
                   </label>
                 </td>
-                <td>{{ formatDate(item.created_at) }}</td>
-                <td>{{ formatDate(item.updata_at) }}</td>
                 <td class="table-btn-display">
-                  <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(item)">编辑</button>
                   <button class="btn delete-btn" @click="handleDelete(item.id)">删除</button>
                 </td>
@@ -60,13 +53,7 @@
           </table>
         </div>
       </div>
-      <!-- 分页器 -->
-      <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
-      </div>
+
       <!-- 新增/编辑弹窗 -->
       <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
         <div class="dialog" @click.stop>
@@ -125,34 +112,24 @@
               </div>
             </div>
             <div class="form-row">
-
               <div class="form-group">
-                <label>推荐标题:</label>
-                <input v-model="formData.title" required />
+                <label>名称:</label>
+                <input v-model="formData.name" required />
               </div>
               <div class="form-group">
-                <label>推荐内容:</label>
-                <input v-model="formData.content" required />
+                <label>描述:</label>
+                <input v-model="formData.description" required />
               </div>
               <div class="form-group">
-                <label>推荐位置:</label>
-                <input v-model="formData.location" required />
+                <label>详情:</label>
+                <textarea v-model="formData.details" rows="4" required></textarea>
               </div>
               <div class="form-group">
-                <label>价格:</label>
-                <input v-model="formData.price" required />
-              </div>
-              <div class="form-group">
-                <label>点赞数:</label>
-                <input v-model="formData.likes" required />
-              </div>
-              <div class="form-group">
-                <label>收藏数:</label>
-                <input v-model="formData.favorites" required />
-              </div>
-              <div class="form-group">
-                <label>创建时间:</label>
-                <input type="datetime-local" v-model="formData.createdAt" required />
+                <label>状态:</label>
+                <select v-model="formData.state" required>
+                  <option value="0">显示</option>
+                  <option value="1">不显示</option>
+                </select>
               </div>
             </div>
             <div class="dialog-buttons">
@@ -174,7 +151,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getRecommendList, getAllRecommendList, addRecommend, updateRecommend, deleteRecommend } from '@/api/recommend';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -182,18 +159,13 @@ import ToastType from '@/components/PromptComponent/ToastType.vue';
 const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
-  { key: 'title', title: '标题' },
-  { key: 'coverImage', title: '封面图片' },
-  { key: 'content', title: '内容' },
-  { key: 'location', title: '位置' },
-  { key: 'price', title: '价格' },
-  { key: 'likes', title: '点赞数' },
-  { key: 'favorites', title: '收藏数' },
-  { key: 'browse', title: '浏览数' },
+  { key: 'name', title: '名称' },
+  { key: 'image', title: '图片' },
+  { key: 'description', title: '描述' },
+  { key: 'details', title: '详情' },
   { key: 'state', title: '状态' },
-  { key: 'created_at', title: '创建时间' },
-  { key: 'updata_at', title: '更新时间' },
 ];
+
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
@@ -203,23 +175,14 @@ const showDialog = ref(false);
 const isEditing = ref(false);
 const formData = ref({
   id: null,
-  title: '',
-  content: '',
-  location: '',
-  coverImage: '',
-  likes: 0,
-  price: '',
-  favorites: 0,
-  createdAt: '',
-  updatedAt: ''
+  name: '',
+  image: '',
+  description: '',
+  details: '',
+  state: '0'
 });
 
-// 格式化日期显示
-const formatDate = (date) => {
-  if (!date) return '未知日期';
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Intl.DateTimeFormat('zh-CN', options).format(new Date(date));
-};
+
 
 // 搜索功能
 const filteredItems = computed(() => {
@@ -227,41 +190,34 @@ const filteredItems = computed(() => {
   return items.value.filter(
     (item) =>
       String(item.id).includes(keyword) ||
-      item.title.toLowerCase().includes(keyword) ||
-      item.content.toLowerCase().includes(keyword)
+      item.name.toLowerCase().includes(keyword) ||
+      item.description.toLowerCase().includes(keyword) ||
+      item.details.toLowerCase().includes(keyword)
   );
 });
 
-// 分页功能
-// 分页相关变量
-const currentPage = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
-
-// 分页处理函数
-const handleSizeChange = (newSize) => {
-  pageSize.value = newSize;
-  currentPage.value = 1;
-  fetchItems();
-};
-
-const handleCurrentChange = (newPage) => {
-  currentPage.value = newPage;
-  fetchItems();
-};
 // 获取数据
 const fetchItems = async () => {
   try {
-    const params = {
-      page: currentPage.value,
-      pageSize: pageSize.value,
-      keyword: searchKeyword.value
-    };
-    const response = await request.get('/api/public/blogs', { params });
-    items.value = response.data.list;
-    total.value = response.data.total;
+    const response = await getAllRecommendList();
+    if (response.code === 200 && response.data) {
+      items.value = response.data;
+    }
   } catch (error) {
     console.error('获取数据失败:', error);
+  }
+};
+
+// 修改状态
+const toggleState = async (item) => {
+  try {
+    const newState = item.state === '0' ? '1' : '0';
+    item.state = newState;
+    await updateRecommend(item);
+    showToastMessage('修改状态成功');
+  } catch (error) {
+    console.error('修改状态失败:', error);
+    showToastMessage('修改状态失败', 'error');
   }
 };
 
@@ -270,15 +226,11 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    title: '',
-    content: '',
-    location: '',
-    coverImage: '',
-    likes: 0,
-    price: '',
-    favorites: 0,
-    createdAt: '',
-    updatedAt: '',
+    name: '',
+    image: '',
+    description: '',
+    details: '',
+    state: '0'
   };
   showDialog.value = true;
 };
@@ -302,12 +254,10 @@ const showToastMessage = (message, type = 'success') => {
 const submitForm = async () => {
   try {
     if (isEditing.value) {
-      await request.put(`/api/public/blogs/${formData.value.id}`, formData.value);
+      await updateRecommend(formData.value);
       showToastMessage('更新推荐成功');
     } else {
-      // 新增时自动设置创建时间为当前时间
-      formData.value.createdAt = new Date().toISOString();
-      await request.post('/api/public/blogs', formData.value);
+      await addRecommend(formData.value);
       showToastMessage('新增推荐成功');
     }
     await fetchItems();
@@ -341,7 +291,7 @@ const closeToast = () => {
 const confirmDelete = async () => {
   if (deleteItemId.value) {
     try {
-      await request.delete(`/api/public/blogs/${deleteItemId.value}`);
+      await deleteRecommend(deleteItemId.value);
       await fetchItems();
       showToastMessage('删除推荐成功');
     } catch (error) {
@@ -353,25 +303,14 @@ const confirmDelete = async () => {
     }
   }
 };
-// 修改状态
-const toggleState = async (item) => {
-  try {
-    const newstate = item.state === 0 ? 1 : 0;
-    const requestData = {
-      id: item.id,
-      state: newstate,
-    };
-    await request.put(`/api/public/blogs/`, requestData);
-    item.state = newstate;
-    showToastMessage('修改状态成功');
-  } catch (error) {
-    console.error('修改状态失败:', error);
-    showToastMessage('修改状态失败', 'error');
-  }
-};
 // 关闭对话框
 const closeDialog = () => {
   showDialog.value = false;
+};
+
+// 处理复选框选择
+const handleCheck = (item) => {
+  item.checked = !item.checked;
 };
 
 // 图片上传相关状态
@@ -418,7 +357,7 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
-    formData.value.coverImage = e.target.result;
+    formData.value.image = e.target.result;
   };
   reader.readAsDataURL(file);
 
@@ -451,7 +390,7 @@ const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
   fileSize.value = '';
-  formData.value.coverImage = '';
+  formData.value.image = '';
 };
 
 // 触发文件输入框

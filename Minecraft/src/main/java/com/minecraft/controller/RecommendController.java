@@ -24,6 +24,18 @@ public class RecommendController {
         return ApiResponse.success(recommendService.getRecommendList());
     }
 
+    @Operation(summary = "获取所有推荐列表（管理用）")
+    @GetMapping("/list/all")
+    public ApiResponse<List<Recommend>> getAllRecommendList() {
+        return ApiResponse.success(recommendService.getRecommendListByState(null));
+    }
+
+    @Operation(summary = "根据状态获取推荐列表")
+    @GetMapping("/list/state")
+    public ApiResponse<List<Recommend>> getRecommendListByState(@RequestParam String state) {
+        return ApiResponse.success(recommendService.getRecommendListByState(state));
+    }
+
     @Operation(summary = "获取推荐详情")
     @GetMapping("/{id}")
     public ApiResponse<Recommend> getRecommendById(@PathVariable Integer id) {

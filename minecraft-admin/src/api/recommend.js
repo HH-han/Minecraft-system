@@ -9,6 +9,16 @@ export const getRecommendList = () => {
   return request.get('/recommend/list')
 }
 
+// 获取所有推荐列表（管理用）
+export const getAllRecommendList = () => {
+  return request.get('/recommend/list/all')
+}
+
+// 根据状态获取推荐列表
+export const getRecommendListByState = (state) => {
+  return request.get('/recommend/list/state', { params: { state } })
+}
+
 // 获取推荐详情
 export const getRecommendById = (id) => {
   return request.get(`/recommend/${id}`)

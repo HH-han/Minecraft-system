@@ -1066,4 +1066,173 @@ INSERT INTO db_minecraft.recommend (id, image, name, description, details) VALUE
 INSERT INTO db_minecraft.recommend (id, image, name, description, details) VALUES (15, 'http://localhost:2025/upload/f787f69a-274b-442a-9ed3-9b5030673180.png', '鼓浪屿', '海上花园，钢琴之岛', '鼓浪屿原名“圆沙洲”，别名“圆洲仔”，南宋时期命“五龙屿”，明朝改称“鼓浪屿”。因岛西南方海滩上有一块两米多高、中有洞穴的礁石，每当涨潮水涌，浪击礁石，声似擂鼓，人们称“鼓浪石”，鼓浪屿因此而得名。鼓浪屿风景名胜区获得国家5A级旅游景区、全国重点文物保护单位、中国最美五大城区等荣誉。2017年7月8日，“鼓浪屿：历史国际社区”被列入世界遗产名录，成为中国第52项世界遗产项目。岛上气候宜人，四季如春，无车马喧嚣，有鸟语花香，素有“海上花园”之誉。');
 INSERT INTO db_minecraft.recommend (id, image, name, description, details) VALUES (16, 'http://localhost:2025/upload/01130228-67ad-4d32-be47-25e751b8f9ba.png', '亚龙湾', '天下第一湾', '亚龙湾是中华人民共和国海南省三亚市东郊的一处优质热带海滨风景区，距离市中心区约10公里。海湾以中心有野猪岛为中心，南有东洲岛、西洲岛，西面有东排、西排，可开展多种水上运动。亚龙湾为一个月牙湾，拥有7千米长的银白色海滩，沙质相当细腻。而这里的南海没有受到污染，海水洁净透明，远望呈现几种不同的蓝色，而水面下珊瑚种类丰富，可清楚观赏珊瑚，适合多种水面下活动包括潜水等，令海底成为了当地的旅游的核心。岸上林木郁郁葱葱。冬季这里的气温27摄氏度，水温20摄氏度，是一处理想的冬季避寒和休闲度假胜地。号称"东方夏威夷"。');
 
+-- ======================================================
+-- 数据库：旅游推荐系统
+-- 表名：home_recommendations
+-- 描述：首页旅游推荐内容表（单表）
+-- 作者：AI 助手
+-- 创建时间：2024
+-- ======================================================
 
+CREATE TABLE home_recommendations (
+    -- 主键与基础信息
+                                        id BIGINT UNSIGNED AUTO_INCREMENT COMMENT '主键ID，自增长',
+                                        uuid CHAR(36) NOT NULL COMMENT '全局唯一标识符，用于对外接口',
+                                        name VARCHAR(200) NOT NULL COMMENT '景点/项目名称',
+                                        english_name VARCHAR(500) DEFAULT NULL COMMENT '英文名称（如果有）',
+                                        alias_name VARCHAR(500) DEFAULT NULL COMMENT '别名/俗称',
+
+    -- 分类与标签
+                                        category_id INT UNSIGNED NOT NULL COMMENT '分类ID（如：1-自然风光，2-历史文化，3-主题乐园，4-美食探店，5-休闲度假）',
+                                        category_name VARCHAR(100) NOT NULL COMMENT '分类名称（冗余字段，便于查询）',
+                                        tags VARCHAR(500) DEFAULT NULL COMMENT '标签，多个用逗号分隔（如：亲子,情侣,网红打卡,拍照圣地）',
+
+    -- 地理位置
+                                        country VARCHAR(100) NOT NULL DEFAULT '中国' COMMENT '国家',
+                                        province VARCHAR(100) NOT NULL COMMENT '省份/直辖市',
+                                        city VARCHAR(100) NOT NULL COMMENT '城市',
+                                        district VARCHAR(100) DEFAULT NULL COMMENT '区/县',
+                                        address VARCHAR(500) NOT NULL COMMENT '详细地址',
+                                        longitude DECIMAL(10, 7) DEFAULT NULL COMMENT '经度（WGS84坐标系）',
+                                        latitude DECIMAL(10, 7) DEFAULT NULL COMMENT '纬度（WGS84坐标系）',
+                                        google_map_url VARCHAR(1000) DEFAULT NULL COMMENT 'Google地图链接',
+                                        baidu_map_url VARCHAR(1000) DEFAULT NULL COMMENT '百度地图链接',
+                                        transportation TEXT COMMENT '交通方式描述（如：地铁X号线XX站A口出，步行500米）',
+
+    -- 推荐核心信息
+                                        recommendation_reason TEXT NOT NULL COMMENT '推荐理由（首页展示的核心文案）',
+                                        highlights TEXT COMMENT '亮点特色（多个亮点可用分号分隔）',
+                                        best_travel_time VARCHAR(200) DEFAULT NULL COMMENT '最佳游玩时间（如：春秋两季，9月-11月）',
+                                        visit_duration VARCHAR(100) DEFAULT NULL COMMENT '建议游玩时长（如：3-4小时，1天）',
+
+    -- 媒体资源
+                                        cover_image_url VARCHAR(1000) NOT NULL COMMENT '封面图片URL（首页列表展示）',
+                                        banner_image_url VARCHAR(1000) DEFAULT NULL COMMENT '详情页Banner图URL',
+                                        video_url VARCHAR(1000) DEFAULT NULL COMMENT '宣传视频URL',
+                                        image_urls TEXT COMMENT '更多图片URL，JSON数组格式存储',
+
+    -- 价格与费用
+                                        ticket_price_description VARCHAR(500) DEFAULT NULL COMMENT '门票价格描述（如：成人票100元，学生票50元）',
+                                        min_price DECIMAL(10, 2) UNSIGNED DEFAULT NULL COMMENT '最低价格（用于价格筛选）',
+                                        max_price DECIMAL(10, 2) UNSIGNED DEFAULT NULL COMMENT '最高价格（用于价格筛选）',
+                                        price_currency VARCHAR(10) DEFAULT 'CNY' COMMENT '货币单位（CNY, USD, etc.）',
+                                        is_free BOOLEAN DEFAULT FALSE COMMENT '是否免费（TRUE-免费，FALSE-收费）',
+
+    -- 开放时间
+                                        opening_hours_weekday VARCHAR(200) DEFAULT NULL COMMENT '工作日开放时间（如：09:00-18:00）',
+                                        opening_hours_weekend VARCHAR(200) DEFAULT NULL COMMENT '周末开放时间（如：09:00-20:00）',
+                                        opening_hours_description TEXT COMMENT '开放时间详细描述（如：每周一闭馆，节假日正常开放）',
+
+    -- 联系方式
+                                        contact_phone VARCHAR(200) DEFAULT NULL COMMENT '联系电话（多个用逗号分隔）',
+                                        official_website VARCHAR(500) DEFAULT NULL COMMENT '官方网站',
+                                        social_media JSON DEFAULT NULL COMMENT '社交媒体信息（JSON格式，如：{"weibo":"xxx", "wechat":"xxx", "douyin":"xxx"}）',
+
+    -- 统计与评分
+                                        view_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览次数',
+                                        like_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞/收藏次数',
+                                        share_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '分享次数',
+                                        comment_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论次数',
+                                        average_rating DECIMAL(3, 2) UNSIGNED DEFAULT 0.00 COMMENT '平均评分（满分5分）',
+                                        rating_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '评分人数',
+
+    -- 推荐权重与状态
+                                        weight INT NOT NULL DEFAULT 0 COMMENT '推荐权重（数字越大，排名越靠前）',
+                                        is_hot BOOLEAN DEFAULT FALSE COMMENT '是否热门推荐',
+                                        is_new BOOLEAN DEFAULT FALSE COMMENT '是否新晋推荐',
+                                        is_top BOOLEAN DEFAULT FALSE COMMENT '是否置顶',
+                                        status TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态：0-下架，1-上架，2-审核中，3-待发布',
+
+    -- 季节/节日关联
+                                        season VARCHAR(50) DEFAULT NULL COMMENT '推荐季节（spring, summer, autumn, winter, all）',
+                                        festival VARCHAR(100) DEFAULT NULL COMMENT '关联节日（如：春节，国庆，圣诞节）',
+
+    -- 注意事项
+                                        tips TEXT COMMENT '游玩小贴士/注意事项',
+                                        suitable_crowd VARCHAR(200) DEFAULT NULL COMMENT '适合人群（如：亲子，情侣，朋友，家庭，老人）',
+                                        facility_info TEXT COMMENT '设施信息（如：有无停车场，有无母婴室，无障碍设施等）',
+
+    -- SEO相关
+                                        seo_title VARCHAR(500) DEFAULT NULL COMMENT 'SEO标题',
+                                        seo_keywords VARCHAR(500) DEFAULT NULL COMMENT 'SEO关键词',
+                                        seo_description TEXT COMMENT 'SEO描述',
+
+    -- 内容管理
+                                        content TEXT COMMENT '详细介绍内容（富文本或Markdown）',
+                                        summary VARCHAR(1000) DEFAULT NULL COMMENT '摘要/简介（用于列表页）',
+                                        source VARCHAR(200) DEFAULT NULL COMMENT '信息来源（如：小编踩点，用户投稿，官方合作）',
+                                        author VARCHAR(100) DEFAULT NULL COMMENT '作者/编辑',
+
+    -- 时间戳
+                                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                        published_at TIMESTAMP NULL DEFAULT NULL COMMENT '发布时间',
+                                        expired_at TIMESTAMP NULL DEFAULT NULL COMMENT '过期时间（NULL表示永不过期）',
+
+    -- 主键约束
+                                        PRIMARY KEY (id),
+
+    -- 唯一约束
+                                        UNIQUE KEY uk_uuid (uuid),
+
+    -- 索引：用于提升查询效率
+                                        INDEX idx_category (category_id, status, weight),
+                                        INDEX idx_city (province, city, status),
+                                        INDEX idx_hot (is_hot, weight),
+                                        INDEX idx_new (is_new, created_at),
+                                        INDEX idx_price (min_price, max_price),
+                                        INDEX idx_season (season),
+                                        INDEX idx_status_published (status, published_at),
+                                        INDEX idx_location (longitude, latitude),
+                                        FULLTEXT INDEX ft_content (name, summary, content) WITH PARSER ngram  -- 全文索引，用于搜索
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='首页旅游推荐内容表';
+
+-- ======================================================
+-- 插入示例数据
+-- ======================================================
+
+INSERT INTO home_recommendations (
+    uuid, name, english_name, category_id, category_name, tags,
+    province, city, district, address, transportation,
+    recommendation_reason, highlights, best_travel_time, visit_duration,
+    cover_image_url, image_urls,
+    ticket_price_description, min_price, max_price, is_free,
+    opening_hours_weekday, opening_hours_weekend, opening_hours_description,
+    contact_phone, official_website,
+    weight, is_hot, is_new, status, season,
+    tips, suitable_crowd, content, summary
+) VALUES
+      (
+          UUID(), '故宫博物院', 'The Palace Museum', 2, '历史文化', '世界遗产,拍照圣地,亲子游,研学',
+          '北京市', '北京市', '东城区', '景山前街4号', '地铁1号线天安门东站A口出，步行约10分钟',
+          '穿越六百年时光，感受明清两代的皇家气派。故宫不仅是中国古代建筑的精髓，更是中华文明的瑰宝。',
+          '三大殿太和殿中和殿保和殿;珍宝馆;钟表馆;故宫角楼;景山俯瞰全景',
+          '春秋两季（4月-5月，9月-10月）', '半天至一天',
+          'https://example.com/images/gugong_cover.jpg',
+          '["https://example.com/images/gugong_1.jpg", "https://example.com/images/gugong_2.jpg"]',
+          '旺季60元/人，淡季40元/人，珍宝馆和钟表馆需另购票', 40.00, 60.00, FALSE,
+          '08:30-17:00', '08:30-17:00', '每周一闭馆（法定节假日除外）',
+          '010-85007421', 'https://www.dpm.org.cn',
+          100, TRUE, FALSE, 1, 'autumn',
+          '建议提前网上预约购票，携带身份证入场。避开节假日高峰期，可租讲解器或请导游。',
+          '历史文化爱好者,亲子家庭,摄影爱好者',
+          '故宫博物院建立于1925年，是在明朝、清朝两代皇宫及其收藏的基础上建立起来的中国综合性博物馆。',
+          '穿越六百年时光，探寻紫禁城的秘密'
+      ),
+      (
+          UUID(), '成都大熊猫繁育研究基地', 'Chengdu Research Base of Giant Panda Breeding', 1, '自然风光', '熊猫,亲子,动物保护,网红',
+          '四川省', '成都市', '成华区', '熊猫大道1375号', '地铁3号线熊猫大道站A口出，转乘景区直通车',
+          '近距离观察国宝大熊猫的日常生活，看软萌的熊猫宝宝嬉戏玩耍，是成都必打卡的亲子胜地。',
+          '月亮产房看熊猫幼崽;太阳产房;成年熊猫别墅;小熊猫活动区;熊猫博物馆',
+          '全年（最佳是春秋季，上午熊猫最活跃）', '3-4小时',
+          'https://example.com/images/panda_cover.jpg',
+          '["https://example.com/images/panda_1.jpg", "https://example.com/images/panda_2.jpg"]',
+          '成人票55元，学生票27元', 27.00, 55.00, FALSE,
+          '07:30-18:00', '07:30-18:00', '全年开放',
+          '028-83510033', 'http://www.panda.org.cn',
+          95, TRUE, TRUE, 1, 'spring',
+          '尽量上午8-10点前往，此时熊猫最活跃，是喂食时间。穿舒适的鞋子，园区较大。',
+          '亲子家庭,动物爱好者,自然爱好者',
+          '成都大熊猫繁育研究基地是一个专门保护和繁育大熊猫、小熊猫等珍稀动物的机构，也是全球最大的大熊猫人工繁育机构。',
+          '近距离感受国宝熊猫的萌力暴击'
+      );

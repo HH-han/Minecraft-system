@@ -18,4 +18,8 @@ public class Recommend {
     private String description;
     
     private String details;
+
+    private String type;
+
+    private String state;
 }

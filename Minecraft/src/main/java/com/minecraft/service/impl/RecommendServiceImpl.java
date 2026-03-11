@@ -18,7 +18,15 @@ public class RecommendServiceImpl extends ServiceImpl<RecommendMapper, Recommend
 
     @Override
     public List<Recommend> getRecommendList() {
-        return list();
+        return getRecommendListByState("0");
+    }
+
+    @Override
+    public List<Recommend> getRecommendListByState(String state) {
+        if (state == null) {
+            return list();
+        }
+        return list(new com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<Recommend>().eq("state", state));
     }
 
     @Override

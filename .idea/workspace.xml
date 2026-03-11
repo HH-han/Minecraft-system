@@ -6,17 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/src/views/login/login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/src/views/login/login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/src/views/login/register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/src/views/login/register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/RecommendController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/RecommendController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Recommend.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Recommend.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/RecommendService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/RecommendService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/RecommendServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/RecommendServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/controller/RecommendController.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/controller/RecommendController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/entity/Recommend.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/entity/Recommend.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/RecommendService.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/RecommendService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/RecommendServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/RecommendServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/recommend.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/api/recommend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/RecommendationManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/RecommendationManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Recommend/components/main.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Recommend/components/main.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/content.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/news.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/news.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +169,7 @@
       <workItem from="1772932508262" duration="4245000" />
       <workItem from="1773062640635" duration="3672000" />
       <workItem from="1773149889203" duration="5301000" />
-      <workItem from="1773236307903" duration="1557000" />
+      <workItem from="1773236307903" duration="3719000" />
     </task>
     <task id="LOCAL-00001" summary="cleanup">
       <option name="closed" value="true" />
@@ -348,7 +355,23 @@
       <option name="project" value="LOCAL" />
       <updated>1773156203304</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773238630918</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1773238630918</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773238640030</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1773238640030</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

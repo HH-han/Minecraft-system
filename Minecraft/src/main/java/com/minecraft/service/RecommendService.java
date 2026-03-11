@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface RecommendService extends IService<Recommend> {
     List<Recommend> getRecommendList();
+    List<Recommend> getRecommendListByState(String state);
     Recommend getRecommendById(Integer id);
     void addRecommend(Recommend recommend);
     void updateRecommend(Recommend recommend);

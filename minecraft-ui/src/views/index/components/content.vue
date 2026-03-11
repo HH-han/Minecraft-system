@@ -413,6 +413,7 @@ onMounted(() => {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 16px;
 }
 
 .card:hover {
@@ -425,7 +426,9 @@ onMounted(() => {
 }
 
 .card-image img {
+    max-width: 300px;
     height: 100%;
+    border-radius: 16px;
     transition: transform 0.5s ease;
 }
 
