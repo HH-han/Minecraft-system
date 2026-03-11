@@ -15,7 +15,7 @@
                     <div class="image-section">
                         <div class="category-tag" v-if="news.category">{{ news.category }}</div>
                         <img 
-                            :src="news.coverImage || news.image || news.imageUrl || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=news%20article%20placeholder%2C%20simple%20clean%20design&image_size=square'" 
+                            :src="getCoverImage(news.coverImage)" 
                             :alt="news.title"
                             class="news-image"
                             loading="lazy"
@@ -119,6 +119,14 @@ const fetchNews = async () => {
     } finally {
         loading.value.news = false;
     }
+};
+
+// 获取有效封面图片URL
+const getCoverImage = (coverImage) => {
+    if (!coverImage || coverImage.includes('via.placeholder.com')) {
+        return 'https://placehold.co/400x300?text=No+Image';
+    }
+    return coverImage;
 };
 
 // 查看新闻详情

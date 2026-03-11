@@ -9,6 +9,8 @@
             <!-- 加载 -->
             <!-- <Loaded /> -->
             <!-- 新闻 -->
+            <!-- 推荐 -->
+            <Recommend />
             <News />
             <!-- 首页内容 -->
             <Content />
@@ -23,6 +25,7 @@ import { ref, onMounted } from 'vue';
 import Header from './Header.vue';
 import Carousel from '@/views/Carousel/index.vue';
 import HomeFooter from './Footer.vue';
+import Recommend from '/src/views/Recommend/index.vue';
 import News from './news.vue';
 import Content from './content.vue';
 import carouselApi from '@/api/carousel.js';

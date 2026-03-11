@@ -6,29 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Countries.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Countries.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/CountriesServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/CountriesServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/WorldCharacteristicsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/WorldCharacteristicsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/src/views/login/login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/src/views/login/login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/src/views/login/register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/src/views/login/register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/test/java/com/MinecraftApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/test/java/com/MinecraftApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/controller/AttractionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/controller/AttractionController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/entity/Countries.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/entity/Countries.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/CountriesServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/CountriesServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/WorldCharacteristicsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/WorldCharacteristicsServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/sql/db_minecraft.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/components/HelloWorld.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/DestinationManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/DestinationManagement.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/DestinationworldManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/DestinationworldManagement.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/FoodManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/FoodManagement.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/news.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/news.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +161,8 @@
       <workItem from="1772807681840" duration="1012000" />
       <workItem from="1772932508262" duration="4245000" />
       <workItem from="1773062640635" duration="3672000" />
-      <workItem from="1773149889203" duration="4876000" />
+      <workItem from="1773149889203" duration="5301000" />
+      <workItem from="1773236307903" duration="1557000" />
     </task>
     <task id="LOCAL-00001" summary="cleanup">
       <option name="closed" value="true" />
@@ -343,7 +332,23 @@
       <option name="project" value="LOCAL" />
       <updated>1773069613820</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773156192319</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1773156192319</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773156203304</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1773156203304</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

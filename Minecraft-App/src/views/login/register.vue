@@ -288,7 +288,7 @@ const goLogin = () => {
 
 .register-form {
   width: 100%;
-  max-width: 400px;
+  max-width: 300px;
   padding: 60rpx 40rpx;
   background-color: var(--card-color);
   border-radius: 20rpx;

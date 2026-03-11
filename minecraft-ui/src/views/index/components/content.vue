@@ -8,7 +8,7 @@
             <div v-else class="card-grid">
                 <div v-for="news in newsList" :key="news.id" class="card">
                     <div class="card-image">
-                        <img :src="news.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=news%20article%20placeholder%2C%20simple%20clean%20design&image_size=square'" alt="新闻图片">
+                        <img :src="news.coverImage" alt="新闻图片">
                     </div>
                     <div class="container">
                         <div class="left">
@@ -41,7 +41,7 @@
             <div v-else class="card-grid">
                 <div v-for="hotel in hotelList" :key="hotel.id" class="card">
                     <div class="card-image">
-                        <img :src="hotel.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20exterior%20placeholder%2C%20modern%20design&image_size=square'" alt="酒店图片">
+                        <img :src="hotel.coverImage" alt="酒店图片">
                     </div>
                     <div class="container">
                         <div class="left">
@@ -74,7 +74,7 @@
             <div v-else class="card-grid">
                 <div v-for="food in foodList" :key="food.id" class="card">
                     <div class="card-image">
-                        <img :src="food.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=delicious%20food%20placeholder%2C%20appetizing%20presentation&image_size=square'" alt="美食图片">
+                        <img :src="food.coverImage" alt="美食图片">
                     </div>
                     <div class="container">
                         <div class="left">
@@ -107,7 +107,7 @@
             <div v-else class="card-grid">
                 <div v-for="attraction in attractionList" :key="attraction.id" class="card">
                     <div class="card-image">
-                        <img :src="attraction.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tourist%20attraction%20placeholder%2C%20scenic%20view&image_size=square'" alt="景点图片">
+                        <img :src="attraction.coverImage" alt="景点图片">
                     </div>
                     <div class="container">
                         <div class="left">
