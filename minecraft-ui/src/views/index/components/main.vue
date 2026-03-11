@@ -12,6 +12,8 @@
             <!-- 推荐 -->
             <Recommend />
             <News />
+            <!-- 热门推荐 -->
+            <Recommendations />
             <!-- 首页内容 -->
             <Content />
         </main>
@@ -29,6 +31,7 @@ import Recommend from '/src/views/Recommend/index.vue';
 import News from './news.vue';
 import Content from './content.vue';
 import carouselApi from '@/api/carousel.js';
+import Recommendations from './recommendations.vue';
 
 // 轮播图数据
 const mediaList = ref({ images: [] });

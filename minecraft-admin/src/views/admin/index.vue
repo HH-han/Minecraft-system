@@ -282,8 +282,8 @@ import DestinationManagement from '@/views/ManagementViews/DestinationManagement
 import StrategygroupManagement from '@/views/ManagementViews/StrategygroupManagement.vue';
 import RecommendationManagement from '@/views/ManagementViews/RecommendationManagement.vue';
 import TravelGuide from '@/views/ManagementViews/TravelGuide.vue';
-import DisplayManagement from '@/views/ManagementViews/DisplayManagement.vue';
-import CarouselManagment from '@/views/ManagementViews/CarouselManagment.vue';
+import CarouselManagement from '@/views/ManagementViews/CarouselManagement.vue';
+import HotRecommendationManagement from '@/views/ManagementViews/HotRecommendationManagement.vue';
 import DestinationworldManagement from '@/views/ManagementViews/DestinationworldManagement.vue';
 import TravelNewsManagement from '@/views/ManagementViews/TravelNewsManagement.vue';
 import index from '@/views/ManagementViews/DestinationManagement/index.vue';
@@ -427,8 +427,8 @@ const menuItems = reactive([
   { id: 19, title: '登录日志', icon: llIcon, component: LoginLogs },
   { id: 20, title: '缓存监控', icon: cmIcon, component: CacheMonitoring },
   { id: 21, title: '在线用户', icon: ouIcon, component: OnlineUsers },
-  { id: 22, title: '展示管理', icon: dymIcon, component: DisplayManagement },
-  { id: 23, title: '轮播管理', icon: camIcon, component: CarouselManagment },
+  { id: 22, title: '轮播管理', icon: dymIcon, component: CarouselManagement },
+  { id: 23, title: '热门推荐', icon: camIcon, component: HotRecommendationManagement },
   { id: 24, title: '世界之旅', icon: dwmIcon, component: DestinationworldManagement },
   { id: 25, title: '收藏管理', icon: comIcon, component: CollectionManagement },
   { id: 26, title: '旅行新闻', icon: trnIcon, component: TravelNewsManagement },
