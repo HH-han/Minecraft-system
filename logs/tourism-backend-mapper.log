@@ -493,3 +493,33 @@
 2026-03-11 21:47:18.503 [http-nio-8080-exec-10] DEBUG c.m.m.CarouselsMapper.selectList - ==>  Preparing: SELECT id,title,subtitle,image_url,mobile_image_url,thumbnail_url,link_type,link_url,link_target,target_id,button_text,button_color,text_color,text_shadow,overlay_color,overlay_opacity,position,device_type,user_type,start_time,end_time,is_always_show,click_count,impression_count,sort_order,is_active,is_deleted,remark,created_by,created_at,updated_at FROM carousels WHERE (id IN (?,?,?) AND is_active = ? AND (is_deleted = ? OR is_deleted IS NULL) AND (is_always_show = ? OR (start_time <= ? AND end_time >= ?)))
 2026-03-11 21:47:18.503 [http-nio-8080-exec-10] DEBUG c.m.m.CarouselsMapper.selectList - ==> Parameters: 1(Integer), 2(Integer), 3(Integer), true(Boolean), false(Boolean), true(Boolean), 2026-03-11T21:47:18.501775900(LocalDateTime), 2026-03-11T21:47:18.501775900(LocalDateTime)
 2026-03-11 21:47:18.504 [http-nio-8080-exec-10] DEBUG c.m.m.CarouselsMapper.selectList - <==      Total: 3
+2026-03-11 22:12:48.329 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectById - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,create_time,update_time FROM user WHERE id=?
+2026-03-11 22:12:48.361 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectById - ==> Parameters: 15(Long)
+2026-03-11 22:12:48.370 [http-nio-8080-exec-8] DEBUG c.m.mapper.FoodMapper.selectList - ==>  Preparing: SELECT id,name,city,province,address,description,cover_image,images,price,cuisine_type,rating,like_count,collect_count,comment_count,tags,status,create_time,update_time FROM food WHERE (status = ?) ORDER BY like_count DESC LIMIT 6
+2026-03-11 22:12:48.370 [http-nio-8080-exec-4] DEBUG c.m.m.C.selectList - ==>  Preparing: SELECT id,group_name,group_code,description,display_type,auto_play,auto_play_interval,animation_type,show_indicators,show_arrows,pause_on_hover,width,height,aspect_ratio,max_items,is_active,sort_order,created_at,updated_at FROM carousel_groups WHERE (group_code = ? AND is_active = ?)
+2026-03-11 22:12:48.370 [http-nio-8080-exec-5] DEBUG c.m.mapper.HotelMapper.selectList - ==>  Preparing: SELECT id,name,city,province,address,description,cover_image,images,price,star_level,rating,like_count,collect_count,comment_count,facilities,status,create_time,update_time FROM hotel WHERE (status = ?) ORDER BY rating DESC LIMIT 6
+2026-03-11 22:12:48.370 [http-nio-8080-exec-2] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY view_count DESC LIMIT 6
+2026-03-11 22:12:48.373 [http-nio-8080-exec-8] DEBUG c.m.mapper.FoodMapper.selectList - ==> Parameters: 1(Integer)
+2026-03-11 22:12:48.373 [http-nio-8080-exec-2] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer)
+2026-03-11 22:12:48.373 [http-nio-8080-exec-5] DEBUG c.m.mapper.HotelMapper.selectList - ==> Parameters: 1(Integer)
+2026-03-11 22:12:48.373 [http-nio-8080-exec-4] DEBUG c.m.m.C.selectList - ==> Parameters: home_top(String), true(Boolean)
+2026-03-11 22:12:48.376 [http-nio-8080-exec-3] DEBUG c.m.m.AttractionMapper.selectList - ==>  Preparing: SELECT id,name,city,province,address,description,cover_image,images,price,season,rating,like_count,collect_count,comment_count,tags,status,create_time,update_time FROM attraction WHERE (status = ?) ORDER BY like_count DESC LIMIT 6
+2026-03-11 22:12:48.376 [http-nio-8080-exec-3] DEBUG c.m.m.AttractionMapper.selectList - ==> Parameters: 1(Integer)
+2026-03-11 22:12:48.399 [http-nio-8080-exec-4] DEBUG c.m.m.C.selectList - <==      Total: 1
+2026-03-11 22:12:48.399 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectById - <==      Total: 1
+2026-03-11 22:12:48.400 [http-nio-8080-exec-5] DEBUG c.m.mapper.HotelMapper.selectList - <==      Total: 6
+2026-03-11 22:12:48.400 [http-nio-8080-exec-8] DEBUG c.m.mapper.FoodMapper.selectList - <==      Total: 6
+2026-03-11 22:12:48.400 [http-nio-8080-exec-2] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 6
+2026-03-11 22:12:48.401 [http-nio-8080-exec-3] DEBUG c.m.m.AttractionMapper.selectList - <==      Total: 6
+2026-03-11 22:12:48.409 [http-nio-8080-exec-4] DEBUG c.m.m.C.selectList - ==>  Preparing: SELECT id,group_id,carousel_id,sort_order,is_active,created_at FROM carousel_group_items WHERE (group_id = ?) ORDER BY sort_order ASC
+2026-03-11 22:12:48.409 [http-nio-8080-exec-4] DEBUG c.m.m.C.selectList - ==> Parameters: 1(Integer)
+2026-03-11 22:12:48.411 [http-nio-8080-exec-4] DEBUG c.m.m.C.selectList - <==      Total: 3
+2026-03-11 22:12:48.416 [http-nio-8080-exec-4] DEBUG c.m.m.CarouselsMapper.selectList - ==>  Preparing: SELECT id,title,subtitle,image_url,mobile_image_url,thumbnail_url,link_type,link_url,link_target,target_id,button_text,button_color,text_color,text_shadow,overlay_color,overlay_opacity,position,device_type,user_type,start_time,end_time,is_always_show,click_count,impression_count,sort_order,is_active,is_deleted,remark,created_by,created_at,updated_at FROM carousels WHERE (id IN (?,?,?) AND is_active = ? AND (is_deleted = ? OR is_deleted IS NULL) AND (is_always_show = ? OR (start_time <= ? AND end_time >= ?)))
+2026-03-11 22:12:48.416 [http-nio-8080-exec-4] DEBUG c.m.m.CarouselsMapper.selectList - ==> Parameters: 1(Integer), 2(Integer), 3(Integer), true(Boolean), false(Boolean), true(Boolean), 2026-03-11T22:12:48.414544800(LocalDateTime), 2026-03-11T22:12:48.414544800(LocalDateTime)
+2026-03-11 22:12:48.425 [http-nio-8080-exec-4] DEBUG c.m.m.CarouselsMapper.selectList - <==      Total: 3
+2026-03-11 22:12:48.795 [http-nio-8080-exec-4] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY view_count DESC LIMIT 6
+2026-03-11 22:12:48.795 [http-nio-8080-exec-4] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer)
+2026-03-11 22:12:48.798 [http-nio-8080-exec-4] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 6
+2026-03-11 22:13:29.659 [http-nio-8080-exec-5] DEBUG c.m.m.RecommendMapper.selectList - ==>  Preparing: SELECT id,image,name,description,details FROM recommend
+2026-03-11 22:13:29.659 [http-nio-8080-exec-5] DEBUG c.m.m.RecommendMapper.selectList - ==> Parameters: 
+2026-03-11 22:13:29.661 [http-nio-8080-exec-5] DEBUG c.m.m.RecommendMapper.selectList - <==      Total: 10
