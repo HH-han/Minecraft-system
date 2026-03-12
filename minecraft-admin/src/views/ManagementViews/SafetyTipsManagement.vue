@@ -8,11 +8,11 @@
             <input type="text" v-model="searchKeyword" placeholder="输入卡片ID或标题搜索" class="search-input-management" />
 
           </div>
-          <button class="btn search-btn" @click="fetchScenic">搜索</button>
-          <button class="btn delete-btn" @click="handleReset">批量删除</button>
+          <button class="btn search-btn" @click="applySearchFilter">搜索</button>
+          <button class="btn delete-btn" @click="handleBatchDelete">批量删除</button>
         </div>
 
-        <button class="btn add-btn" @click="showAddDialog">新增安全</button>
+        <button class="btn add-btn" @click="showAddDialog">新增安全知识提示</button>
       </div>
       <!-- 数据表格 -->
       <div class="data-table-container">
@@ -25,22 +25,25 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="card in cards" :key="card.id">
+              <tr v-for="tip in safetyTips" :key="tip.id">
                 <td>
-                  <input type="checkbox" :checked="card.checked" @change="handleCheck(card)" class="ui-checkbox" />
+                  <input type="checkbox" :checked="tip.checked" @change="handleCheck(tip)" class="ui-checkbox" />
                 </td>
-                <td>{{ card.id }}</td>
-                <td>{{ card.title }}</td>
+                <td>{{ tip.id }}</td>
+                <td>{{ tip.title }}</td>
                 <td>
-                  <img :src="card.imageUrl" alt="安全图片" style="width: 35px; height: 35px;" />
+                  <img :src="tip.imageUrl" alt="安全图片" style="width: 35px; height: 35px;" />
                 </td>
-                <td>{{ card.description }}</td>
-                <td>{{ formatDate(card.createTime) }}</td>
-                <!-- <td>{{ formatDate(card.updateTime) }}</td> -->
+                <td>{{ tip.description }}</td>
+                <td>{{ tip.categoryId }}</td>
+                <td>{{ tip.sortWeight }}</td>
+                <td>{{ tip.status === 1 ? '启用' : '禁用' }}</td>
+                <td>{{ formatDate(tip.createTime) }}</td>
+                <td>{{ formatDate(tip.updateTime) }}</td>
                 <td class="table-btn-display">
-                  <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
-                  <button class="btn edit-btn" @click="showEditDialog(card)">编辑</button>
-                  <button class="btn delete-btn" @click="handleDelete(card.id)">删除</button>
+                  <button class="btn details-btn" @click="showEditDialog(tip)">详情</button>
+                  <button class="btn edit-btn" @click="showEditDialog(tip)">编辑</button>
+                  <button class="btn delete-btn" @click="handleDelete(tip.id)">删除</button>
                 </td>
               </tr>
             </tbody>
@@ -57,7 +60,7 @@
       <!-- 新增/编辑弹窗 -->
       <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
         <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑安全' : '新增安全' }}</h2>
+          <h2>{{ isEditing ? '编辑安全知识提示' : '新增安全知识提示' }}</h2>
           <form @submit.prevent="submitForm" class="form-container">
             <div class="form-group">
               <div class="image-upload-container">
@@ -112,14 +115,30 @@
               </div>
             </div>
             <div class="form-row">
-
               <div class="form-group">
                 <label>安全标题:</label>
                 <input v-model="formData.title" required />
               </div>
               <div class="form-group">
-                <label>安全副标题:</label>
+                <label>安全描述:</label>
                 <input v-model="formData.description" required />
+              </div>
+              <div class="form-group">
+                <label>分类ID:</label>
+                <input v-model="formData.categoryId" type="number" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>排序权重:</label>
+                <input v-model="formData.sortWeight" type="number" min="0" max="999" />
+              </div>
+              <div class="form-group">
+                <label>状态:</label>
+                <select v-model="formData.status">
+                  <option value="1">启用</option>
+                  <option value="0">禁用</option>
+                </select>
               </div>
             </div>
             <div class="dialog-buttons">
@@ -141,7 +160,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import request from '@/utils/request';
+import safetyTipsApi from '@/api/safetytips';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -150,12 +169,15 @@ const columns = [
   { key: 'id', title: '安全ID' },
   { key: 'title', title: '安全标题' },
   { key: 'imageUrl', title: '安全图片' },
-  { key: 'description', title: '安全副标题' },
+  { key: 'description', title: '安全描述' },
+  { key: 'categoryId', title: '分类ID' },
+  { key: 'sortWeight', title: '排序权重' },
+  { key: 'status', title: '状态' },
   { key: 'createTime', title: '创建时间' },
-  // { key: 'updateTime', title: '更新时间' },
+  { key: 'updateTime', title: '更新时间' },
 ];
 
-const cards = ref([]);
+const safetyTips = ref([]);
 const searchKeyword = ref('');
 const showDialog = ref(false);
 const isEditing = ref(false);
@@ -164,6 +186,9 @@ const formData = ref({
   title: '',
   description: '',
   imageUrl: '',
+  categoryId: null,
+  sortWeight: 0,
+  status: 1,
   createTime: '',
   updateTime: '',
 });
@@ -178,20 +203,34 @@ const formatDate = (date) => {
   return new Date(date).toLocaleString('zh-CN', options);
 };
 
-const fetchScenic = async () => {
+// 原始安全知识提示数据
+const originalSafetyTips = ref([]);
+
+const fetchSafetyTips = async () => {
   try {
-    const response = await request.get('/api/public/safety-tips/page', {
-      params: {
-        keyword: searchKeyword.value,
-        page: currentPage.value,
-        pageSize: pageSize.value,
-      },
-    });
-    cards.value = response.data.list;
-    total.value = response.data.total;
+    const response = await safetyTipsApi.getActiveSafetyTips();
+    originalSafetyTips.value = response.data || [];
+    // 应用搜索过滤
+    applySearchFilter();
   } catch (error) {
     console.error('获取数据失败:', error);
+    safetyTips.value = [];
+    total.value = 0;
   }
+};
+
+// 应用搜索过滤
+const applySearchFilter = () => {
+  const keyword = searchKeyword.value.toLowerCase();
+  if (!keyword) {
+    safetyTips.value = [...originalSafetyTips.value];
+  } else {
+    safetyTips.value = originalSafetyTips.value.filter(tip => {
+      return String(tip.id).includes(keyword) ||
+             (tip.title && tip.title.toLowerCase().includes(keyword));
+    });
+  }
+  total.value = safetyTips.value.length;
 };
 
 const showAddDialog = () => {
@@ -201,15 +240,18 @@ const showAddDialog = () => {
     title: '',
     description: '',
     imageUrl: '',
+    categoryId: null,
+    sortWeight: 0,
+    status: 1,
     createTime: '',
     updateTime: '',
   };
   showDialog.value = true;
 };
 
-const showEditDialog = (card) => {
+const showEditDialog = (tip) => {
   isEditing.value = true;
-  formData.value = { ...card };
+  formData.value = { ...tip };
   showDialog.value = true;
 };
 // 显示提示消息的方法
@@ -225,13 +267,13 @@ const showToastMessage = (message, type = 'success') => {
 const submitForm = async () => {
   try {
     if (isEditing.value) {
-      await request.put(`/api/public/safety-tips/${formData.value.id}`, formData.value);
+      await safetyTipsApi.updateSafetyTip(formData.value);
       showToastMessage('更新成功');
     } else {
-      await request.post('/api/public/safety-tips', formData.value);
+      await safetyTipsApi.addSafetyTip(formData.value);
       showToastMessage('新增成功');
     }
-    await fetchScenic();
+    await fetchSafetyTips();
     closeDialog();
   } catch (error) {
     const message = isEditing.value ? '更新失败' : '新增失败';
@@ -241,19 +283,19 @@ const submitForm = async () => {
 };
 
 const handleDelete = (id) => {
-  deleteCardId.value = id;
+  deleteTipId.value = id;
   isDeletePromptVisible.value = true;
 };
 
 const closeDeletePrompt = () => {
   isDeletePromptVisible.value = false;
-  deleteCardId.value = null;
+  deleteTipId.value = null;
 };
 
 const confirmDelete = async () => {
   try {
-    await request.delete(`/api/public/safety-tips/${deleteCardId.value}`);
-    await fetchScenic();
+    await safetyTipsApi.deleteSafetyTip(deleteTipId.value);
+    await fetchSafetyTips();
     showToastMessage('删除成功');
     toastType.value = 'success';
     showToast.value = true;
@@ -261,9 +303,34 @@ const confirmDelete = async () => {
     showToastMessage('删除失败');
     toastType.value = 'error';
     showToast.value = true;
-    console.error('message:', error);
+    console.error('删除失败:', error);
   } finally {
     closeDeletePrompt();
+  }
+};
+
+// 处理复选框点击
+const handleCheck = (tip) => {
+  tip.checked = !tip.checked;
+};
+
+// 处理批量删除
+const handleBatchDelete = async () => {
+  const selectedTips = safetyTips.value.filter(tip => tip.checked);
+  if (selectedTips.length === 0) {
+    showToastMessage('请选择要删除的安全知识提示', 'error');
+    return;
+  }
+  
+  try {
+    for (const tip of selectedTips) {
+      await safetyTipsApi.deleteSafetyTip(tip.id);
+    }
+    await fetchSafetyTips();
+    showToastMessage('批量删除成功');
+  } catch (error) {
+    showToastMessage('批量删除失败', 'error');
+    console.error('批量删除失败:', error);
   }
 };
 
@@ -370,18 +437,18 @@ const pageSize = ref(10);
 const total = ref(0);
 const handleSizeChange = (newSize) => {
   pageSize.value = newSize;
-  fetchScenic();
+  fetchSafetyTips();
 };
 
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
-  fetchScenic();
+  fetchSafetyTips();
 };
 
 const isDeletePromptVisible = ref(false);
-const deleteCardId = ref(null);
+const deleteTipId = ref(null);
 
-onMounted(fetchScenic);
+onMounted(fetchSafetyTips);
 </script>
 
 <style scoped>

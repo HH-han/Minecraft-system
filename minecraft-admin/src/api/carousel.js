@@ -25,9 +25,44 @@ const carouselApi = {
     return request.get('/carousel/home/middle');
   },
 
+  // 获取目的地轮播图
+  getDestinationCarousels: () => {
+    return request.get('/carousel/destination');
+  },
+
+  // 获取景点轮播图
+  getAttractionCarousels: () => {
+    return request.get('/carousel/attraction');
+  },
+
+  // 获取酒店轮播图
+  getHotelCarousels: () => {
+    return request.get('/carousel/hotel');
+  },
+
+  // 获取美食轮播图
+  getFoodCarousels: () => {
+    return request.get('/carousel/food');
+  },
+
+  // 获取纪念品轮播图
+  getSouvenirCarousels: () => {
+    return request.get('/carousel/souvenir');
+  },
+
+  // 获取攻略群轮播图
+  getStrategyCarousels: () => {
+    return request.get('/carousel/strategy');
+  },
+
+  // 获取社区轮播图
+  getCommunityCarousels: () => {
+    return request.get('/carousel/community');
+  },
+
   // 获取所有轮播图
   getAllCarousels: () => {
-    return request.get('/carousel');
+    return request.get('/carousel/categories');
   },
 
   // 获取轮播图详情

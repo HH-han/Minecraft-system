@@ -1,37 +1,5 @@
 <template>
     <div class="content-container">
-        <!-- 新闻卡片 -->
-        <section class="content-section">
-            <h2 class="section-title">热门新闻</h2>
-            <div v-if="loading.news" class="loading">加载中...</div>
-            <div v-else-if="error.news" class="error">{{ error.news }}</div>
-            <div v-else class="card-grid">
-                <div v-for="news in newsList" :key="news.id" class="card">
-                    <div class="card-image">
-                        <img :src="news.coverImage" alt="新闻图片">
-                    </div>
-                    <div class="container">
-                        <div class="left">
-                            <div class="status-ind"></div>
-                        </div>
-                        <div class="right">
-                            <div class="text-wrap">
-                                <h3 class="card-title">{{ news.title }}</h3>
-                                <p class="card-description">{{ news.content.substring(0, 100) }}...</p>
-                                <div class="card-meta">
-                                    <span class="card-date">{{ formatDate(news.createTime) }}</span>
-                                    <span class="card-view">{{ news.viewCount || 0 }} 阅读</span>
-                                </div>
-                            </div>
-                            <div class="button-wrap">
-                                <button class="primary-cta" @click="viewNewsDetail(news.id)">查看详情</button>
-                                <button class="secondary-cta">标记为已读</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- 酒店卡片 -->
         <section class="content-section">
@@ -146,11 +114,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getHotNews, getNewsDetail } from '@/api/news.js';
+import { getNewsDetail } from '@/api/news.js';
 import { getRecommendHotels, getHotelDetail } from '@/api/hotel.js';
 import { getRecommendFoods, getFoodDetail } from '@/api/food.js';
 import { getHotAttractions, getAttractionDetail } from '@/api/attraction.js';
-import { ElMessage } from 'element-plus';
 import DetailsModal from './details.vue';
 
 // 响应式数据
@@ -188,26 +155,6 @@ const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('zh-CN');
 };
-
-// 获取新闻数据
-const fetchNews = async () => {
-    loading.value.news = true;
-    error.value.news = '';
-    try {
-        const response = await getHotNews({ limit: 6 });
-        if (response.code === 200 && response.data) {
-            newsList.value = response.data;
-        } else {
-            error.value.news = '获取新闻失败';
-        }
-    } catch (err) {
-        error.value.news = '网络错误，请稍后重试';
-        console.error('获取新闻失败:', err);
-    } finally {
-        loading.value.news = false;
-    }
-};
-
 // 获取酒店数据
 const fetchHotels = async () => {
     loading.value.hotel = true;
@@ -372,7 +319,6 @@ const viewAttractionDetail = async (attractionId) => {
 
 // 组件挂载时获取数据
 onMounted(() => {
-    fetchNews();
     fetchHotels();
     fetchFoods();
     fetchAttractions();

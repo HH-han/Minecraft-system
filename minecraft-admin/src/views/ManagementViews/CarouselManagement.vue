@@ -12,6 +12,18 @@
         </div>
         <button class="btn add-btn" @click="showAddDialog">新增轮播</button>
       </div>
+      <!-- 位置筛选按钮 -->
+      <div class="position-filter">
+        <button 
+          v-for="(label, value) in positionOptions" 
+          :key="value"
+          class="position-btn"
+          :class="{ active: selectedPosition === value }"
+          @click="selectedPosition = value"
+        >
+          {{ label }}
+        </button>
+      </div>
 
       <!-- 数据表格 -->
       <div class="data-table-container">
@@ -35,7 +47,7 @@
                   <img :src="carousel.imageUrl?.replace(/[`\s]/g, '')" alt="轮播图片" style="width: 35px; height: 35px;"
                     @click="triggerFileInput(carousel)" />
                 </td>
-                <td>{{ carousel.position }}</td>
+                <td>{{ getPositionName(carousel.position) }}</td>
                 <td>{{ carousel.linkType }}</td>
                 <td>{{ carousel.isActive ? '是' : '否' }}</td>
                 <td>{{ formatDate(carousel.createdAt) }}</td>
@@ -126,19 +138,107 @@
               </div>
               <div class="form-group">
                 <label>位置:</label>
-                <input v-model="formData.position" required />
+                <el-select v-model="formData.position" placeholder="请选择位置" clearable style="width: 100%" required>
+                  <el-option value="home_top" label="首页顶部" />
+                  <el-option value="home_middle" label="首页中部" />
+                  <el-option value="destination" label="目的地" />
+                  <el-option value="attraction" label="景点" />
+                  <el-option value="hotel" label="酒店" />
+                  <el-option value="food" label="美食" />
+                  <el-option value="souvenir" label="纪念品" />
+                  <el-option value="strategy" label="攻略群" />
+                  <el-option value="community" label="社区" />
+                </el-select>
               </div>
               <div class="form-group">
                 <label>链接类型:</label>
                 <input v-model="formData.linkType" />
               </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label>链接URL:</label>
                 <input v-model="formData.linkUrl" />
               </div>
               <div class="form-group">
+                <label>链接目标:</label>
+                <input v-model="formData.linkTarget" />
+              </div>
+              <div class="form-group">
+                <label>目标ID:</label>
+                <input v-model="formData.targetId" type="number" />
+              </div>
+              <div class="form-group">
+                <label>按钮文本:</label>
+                <input v-model="formData.buttonText" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>按钮颜色:</label>
+                <input v-model="formData.buttonColor" />
+              </div>
+              <div class="form-group">
+                <label>文本颜色:</label>
+                <input v-model="formData.textColor" />
+              </div>
+              <div class="form-group">
+                <label>文本阴影:</label>
+                <el-switch v-model="formData.textShadow" />
+              </div>
+              <div class="form-group">
+                <label>叠加颜色:</label>
+                <input v-model="formData.overlayColor" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>叠加透明度:</label>
+                <input v-model="formData.overlayOpacity" type="number" step="0.1" min="0" max="1" />
+              </div>
+              <div class="form-group">
+                <label>设备类型:</label>
+                <input v-model="formData.deviceType" />
+              </div>
+              <div class="form-group">
+                <label>用户类型:</label>
+                <input v-model="formData.userType" />
+              </div>
+              <div class="form-group">
+                <label>排序顺序:</label>
+                <input v-model="formData.sortOrder" type="number" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>开始时间:</label>
+                <input v-model="formData.startTime" type="datetime-local" />
+              </div>
+              <div class="form-group">
+                <label>结束时间:</label>
+                <input v-model="formData.endTime" type="datetime-local" />
+              </div>
+              <div class="form-group">
+                <label>是否始终显示:</label>
+                <el-switch v-model="formData.isAlwaysShow" />
+              </div>
+              <div class="form-group">
                 <label>是否激活:</label>
                 <el-switch v-model="formData.isActive" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>备注:</label>
+                <textarea v-model="formData.remark" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>移动端图片:</label>
+                <input v-model="formData.mobileImageUrl" />
+              </div>
+              <div class="form-group">
+                <label>缩略图:</label>
+                <input v-model="formData.thumbnailUrl" />
               </div>
             </div>
             <!-- 表单提交按钮 -->
@@ -161,51 +261,97 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getHotelList, addHotel, updateHotel, deleteHotel } from '@/api/hotel';
+import carouselApi from '@/api/carousel';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
 const columns = [
   { key: 'checked', title: '多选' },
-  { key: 'id', title: '酒店ID' },
-  { key: 'name', title: '酒店名称' },
-  { key: 'city', title: '城市' },
-  { key: 'province', title: '省份' },
-  { key: 'address', title: '地址' },
-  { key: 'description', title: '描述' },
-  { key: 'coverImage', title: '封面图片' },
-  { key: 'price', title: '价格' },
-  { key: 'rating', title: '评分' },
-  { key: 'likeCount', title: '点赞数' },
-  { key: 'collectCount', title: '收藏数' },
-  { key: 'commentCount', title: '评论数' },
-  { key: 'createTime', title: '创建时间' },
+  { key: 'id', title: '轮播ID' },
+  { key: 'title', title: '轮播标题' },
+  { key: 'subtitle', title: '副标题' },
+  { key: 'imageUrl', title: '轮播图片' },
+  { key: 'position', title: '位置' },
+  { key: 'linkType', title: '链接类型' },
+  { key: 'isActive', title: '是否激活' },
+  { key: 'createdAt', title: '创建时间' },
+  { key: 'updatedAt', title: '更新时间' },
 ];
 
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
-const hotels = ref([]);
+const carousels = ref([]);
 const searchKeyword = ref('');
 const showDialog = ref(false);
 const isEditing = ref(false);
+const selectedPosition = ref('all');
 const formData = ref({
   id: null,
-  name: '',
-  city: '',
-  province: '',
-  address: '',
-  description: '',
-  coverImage: '',
-  images: '',
-  price: '',
-  rating: '',
-  likeCount: '',
-  collectCount: '',
-  commentCount: '',
-  createTime: '',
+  title: '',
+  subtitle: '',
+  imageUrl: '',
+  mobileImageUrl: '',
+  thumbnailUrl: '',
+  linkType: '',
+  linkUrl: '',
+  linkTarget: '',
+  targetId: null,
+  buttonText: '',
+  buttonColor: '',
+  textColor: '',
+  textShadow: false,
+  overlayColor: '',
+  overlayOpacity: null,
+  position: '',
+  deviceType: '',
+  userType: '',
+  startTime: null,
+  endTime: null,
+  isAlwaysShow: false,
+  clickCount: 0,
+  impressionCount: 0,
+  sortOrder: 0,
+  isActive: true,
+  isDeleted: false,
+  remark: '',
+  createdBy: '',
+  createdAt: null,
+  updatedAt: null,
 });
 
+
+// 位置映射
+const positionMap = {
+  'home_top': '首页顶部',
+  'home_middle': '首页中部',
+  'destination': '目的地',
+  'attraction': '景点',
+  'hotel': '酒店',
+  'food': '美食',
+  'souvenir': '纪念品',
+  'strategy': '攻略群',
+  'community': '社区'
+};
+
+// 位置筛选选项
+const positionOptions = {
+  'all': '全部位置',
+  'home_top': '首页顶部',
+  'home_middle': '首页中部',
+  'destination': '目的地',
+  'attraction': '景点',
+  'hotel': '酒店',
+  'food': '美食',
+  'souvenir': '纪念品',
+  'strategy': '攻略群',
+  'community': '社区'
+};
+
+// 获取中文位置名称
+const getPositionName = (position) => {
+  return positionMap[position] || position;
+};
 
 // 格式化日期显示
 const formatDate = (date) => {
@@ -215,12 +361,18 @@ const formatDate = (date) => {
 };
 
 // 搜索功能
-const filteredHotels = computed(() => {
+const filteredCarousels = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
-  return (hotels.value || []).filter(
-    (hotel) =>
-      String(hotel.id).includes(keyword) ||
-      (hotel.name && hotel.name.toLowerCase().includes(keyword))
+  return (carousels.value || []).filter(
+    (carousel) => {
+      // 位置筛选
+      if (selectedPosition.value !== 'all' && carousel.position !== selectedPosition.value) {
+        return false;
+      }
+      // 关键词搜索
+      return String(carousel.id).includes(keyword) ||
+             (carousel.title && carousel.title.toLowerCase().includes(keyword));
+    }
   );
 });
 
@@ -234,37 +386,33 @@ const total = ref(0);
 const handleSizeChange = (newSize) => {
   pageSize.value = newSize;
   currentPage.value = 1;
-  fetchHotels();
+  fetchCarousels();
 };
 
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
-  fetchHotels();
+  fetchCarousels();
 };
-// 获取酒店数据
-const fetchHotels = async () => {
+// 获取轮播数据
+const fetchCarousels = async () => {
   try {
-    const params = {
-      page: currentPage.value,
-      pageSize: pageSize.value,
-      keyword: searchKeyword.value
-    };
-    const response = await getHotelList(params);
-    hotels.value = response.data?.records || [];
-    total.value = response.data?.total || 0;
+    const response = await carouselApi.getAllCarousels();
+    carousels.value = response.data || [];
+    total.value = carousels.value.length;
   } catch (error) {
-    console.error('获取酒店数据失败:', error);
-    hotels.value = [];
+    console.error('获取轮播数据失败:', error);
+    carousels.value = [];
     total.value = 0;
   }
 };
 
 
 
+
 // 搜索按钮点击事件
 const handleSearch = () => {
   currentPage.value = 1; // 搜索时重置到第一页
-  fetchHotels();
+  fetchCarousels();
 };
 
 // 显示新增对话框
@@ -272,26 +420,63 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    name: '',
-    city: '',
-    province: '',
-    address: '',
-    description: '',
-    coverImage: '',
-    images: '',
-    price: '',
-    rating: '',
-    likeCount: '',
-    collectCount: '',
-    commentCount: '',
+    title: '',
+    subtitle: '',
+    imageUrl: '',
+    mobileImageUrl: '',
+    thumbnailUrl: '',
+    linkType: '',
+    linkUrl: '',
+    linkTarget: '',
+    targetId: null,
+    buttonText: '',
+    buttonColor: '',
+    textColor: '',
+    textShadow: false,
+    overlayColor: '',
+    overlayOpacity: null,
+    position: '',
+    deviceType: '',
+    userType: '',
+    startTime: null,
+    endTime: null,
+    isAlwaysShow: false,
+    clickCount: 0,
+    impressionCount: 0,
+    sortOrder: 0,
+    isActive: true,
+    isDeleted: false,
+    remark: '',
+    createdBy: '',
   };
   showDialog.value = true;
 };
 
+// 处理日期时间格式，去除秒部分
+const formatDateTimeForInput = (dateTimeString) => {
+  if (!dateTimeString) return null;
+  // 检查是否包含秒，如果包含则去除
+  if (dateTimeString.includes(':')) {
+    const parts = dateTimeString.split(':');
+    if (parts.length >= 3) {
+      return dateTimeString.substring(0, dateTimeString.lastIndexOf(':'));
+    }
+  }
+  return dateTimeString;
+};
+
 // 显示编辑对话框
-const showEditDialog = (hotel) => {
+const showEditDialog = (carousel) => {
   isEditing.value = true;
-  formData.value = { ...hotel };
+  const formattedCarousel = { ...carousel };
+  // 处理日期时间格式
+  if (formattedCarousel.startTime) {
+    formattedCarousel.startTime = formatDateTimeForInput(formattedCarousel.startTime);
+  }
+  if (formattedCarousel.endTime) {
+    formattedCarousel.endTime = formatDateTimeForInput(formattedCarousel.endTime);
+  }
+  formData.value = formattedCarousel;
   showDialog.value = true;
 };
 // 显示提示消息的方法
@@ -305,64 +490,84 @@ const showToastMessage = (message, type = 'success') => {
 };
 // 提交表单
 const validateForm = () => {
-  if (!formData.value.name || !formData.value.description || !formData.value.price || !formData.value.city || !formData.value.province || !formData.value.address) {
-    showToastMessage('请填写所有必填字段', 'error');
+  if (!formData.value.title || !formData.value.position) {
+    showToastMessage('请填写轮播标题和位置', 'error');
     return false;
   }
 
-  if (!isEditing.value && !formData.value.coverImage) {
-    showToastMessage('请上传酒店图片', 'error');
+  if (!isEditing.value && !formData.value.imageUrl) {
+    showToastMessage('请上传轮播图片', 'error');
     return false;
   }
 
   return true;
 };
 
+// 处理表单提交时的日期时间格式
+const prepareFormDataForSubmit = (formData) => {
+  const submitData = { ...formData };
+  // 确保日期时间格式正确
+  if (submitData.startTime) {
+    // 如果包含T但没有秒，添加秒部分
+    if (submitData.startTime.includes('T') && !submitData.startTime.includes(':')) {
+      submitData.startTime = submitData.startTime + ':00';
+    }
+  }
+  if (submitData.endTime) {
+    // 如果包含T但没有秒，添加秒部分
+    if (submitData.endTime.includes('T') && !submitData.endTime.includes(':')) {
+      submitData.endTime = submitData.endTime + ':00';
+    }
+  }
+  return submitData;
+};
+
 const submitForm = async () => {
   if (!validateForm()) return;
 
   try {
+    const submitData = prepareFormDataForSubmit(formData.value);
     if (isEditing.value) {
-      await updateHotel(formData.value);
-      showToastMessage('更新酒店成功');
+      await carouselApi.updateCarousel(submitData);
+      showToastMessage('更新轮播成功');
     } else {
-      await addHotel(formData.value);
-      showToastMessage('新增酒店成功');
+      await carouselApi.addCarousel(submitData);
+      showToastMessage('新增轮播成功');
     }
-    await fetchHotels();
+    await fetchCarousels();
     closeDialog();
   } catch (error) {
-    const message = isEditing.value ? '更新酒店失败' : '新增酒店失败';
+    const message = isEditing.value ? '更新轮播失败' : '新增轮播失败';
     showToastMessage(message, 'error');
     console.error('操作失败:', error);
   }
 };
 
-// 删除酒店
+// 删除轮播
 const isDeletePromptVisible = ref(false);
-const deleteHotelId = ref(null);
+const deleteCarouselId = ref(null);
 
 const handleDelete = (id) => {
-  deleteHotelId.value = id;
+  deleteCarouselId.value = id;
   isDeletePromptVisible.value = true;
 };
 
 const closeDeletePrompt = () => {
   isDeletePromptVisible.value = false;
-  deleteHotelId.value = null;
+  deleteCarouselId.value = null;
 };
 
 const confirmDelete = async () => {
-  if (deleteHotelId.value) {
+  if (deleteCarouselId.value) {
     try {
-      await deleteHotel(deleteHotelId.value);
-      await fetchHotels();
-      showToastMessage('删除酒店成功');
+      await carouselApi.deleteCarousel(deleteCarouselId.value);
+      await fetchCarousels();
+      showToastMessage('删除轮播成功');
 
     } catch (error) {
       console.error('删除失败:', error.response?.data || error.message);
       console.error('删除失败:', error);
-      showToastMessage('删除酒店失败', 'error');
+      showToastMessage('删除轮播失败', 'error');
     } finally {
       closeDeletePrompt();
     }
@@ -418,7 +623,7 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
-    formData.value.coverImage = e.target.result;
+    formData.value.imageUrl = e.target.result;
   };
   reader.readAsDataURL(file);
 
@@ -451,7 +656,7 @@ const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
   fileSize.value = '';
-  formData.value.coverImage = '';
+  formData.value.imageUrl = '';
 };
 
 // 触发文件输入框
@@ -468,11 +673,42 @@ const triggerFileInput = () => {
   fileInput.click();
 };
 
-onMounted(fetchHotels);
+onMounted(fetchCarousels);
+
 
 
 </script>
 
 <style scoped>
 @import '@/css/Management/BackgroundManagement.css';
+
+.position-filter {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.position-btn {
+  padding: 6px 12px;
+  border: 1px solid #dcdfe6;
+  border-radius: 15px;
+  background-color: #fff;
+  color: #606266;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.position-btn:hover {
+  border-color: #409eff;
+  color: #409eff;
+}
+
+.position-btn.active {
+  background-color: #409eff;
+  border-color: #409eff;
+  color: #fff;
+}
 </style>

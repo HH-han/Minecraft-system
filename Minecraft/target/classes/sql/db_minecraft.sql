@@ -1236,3 +1236,45 @@ INSERT INTO home_recommendations (
           '成都大熊猫繁育研究基地是一个专门保护和繁育大熊猫、小熊猫等珍稀动物的机构，也是全球最大的大熊猫人工繁育机构。',
           '近距离感受国宝熊猫的萌力暴击'
       );
+
+create table safetytips
+(
+    id          bigint auto_increment comment '主键ID'
+        primary key,
+    title       varchar(100)                       not null comment '标题',
+    description text                               not null comment '描述内容',
+    image_url   varchar(255)                       null comment '图片URL',
+    category_id bigint                             null comment '分类ID',
+    sort_weight int      default 0                 null comment '排序权重(0-999)',
+    status      tinyint  default 1                 null comment '状态(0-禁用,1-启用)',
+    creator_id  bigint                             null comment '创建人ID',
+    updater_id  bigint                             null comment '更新人ID',
+    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '安全知识提示表' charset = utf8mb4
+                             row_format = DYNAMIC;
+
+create index idx_category
+    on safetytips (category_id);
+
+create index idx_create_time
+    on safetytips (create_time);
+
+create index idx_sort
+    on safetytips (sort_weight);
+
+create index idx_status
+    on safetytips (status);
+
+
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (31, '旅游前的准备工作', '旅游前要检查身份证、护照等证件，准备好常用药品，了解目的地的天气情况...', 'https://example.com/safety1.jpg', null, 1, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (32, '在景区游玩的安全注意事项', '在景区游玩时要遵守景区规定，不要离开指定路线，注意防滑防摔...', 'https://example.com/safety2.jpg', null, 2, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (33, '食品安全注意事项', '在旅游过程中要注意饮食卫生，避免食用生冷食物，选择正规餐厅...', 'https://example.com/safety3.jpg', null, 3, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (34, '交通安全注意事项', '在旅游过程中要遵守交通规则，选择正规的交通工具，系好安全带...', 'https://example.com/safety4.jpg', null, 4, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (35, '财物安全注意事项', '在旅游过程中要保管好个人财物，避免携带大量现金，注意防盗防骗...', 'https://example.com/safety5.jpg', null, 5, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (36, '应急处理方法', '在旅游过程中如果遇到紧急情况，要保持冷静，及时拨打当地的紧急救援电话...', 'https://example.com/safety6.jpg', null, 6, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (37, '高原旅游注意事项', '在高原地区旅游时要注意预防高原反应，避免剧烈运动，保持充足的睡眠...', 'https://example.com/safety7.jpg', null, 7, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (38, '水上活动安全注意事项', '在进行水上活动时要穿戴好救生设备，听从教练的指导，不要独自下水...', 'https://example.com/safety8.jpg', null, 8, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (39, '登山安全注意事项', '在登山时要选择合适的装备，遵循登山路线，注意天气变化...', 'https://example.com/safety9.jpg', null, 9, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');
+INSERT INTO db_minecraft.safetytips (id, title, description, image_url, category_id, sort_weight, status, creator_id, updater_id, create_time, update_time) VALUES (40, '夜间出行安全注意事项', '在夜间出行时要选择明亮的路线，避免前往偏僻的地方，注意自身安全...', 'https://example.com/safety10.jpg', null, 10, 1, null, null, '2025-12-21 12:02:13', '2025-12-21 12:02:13');

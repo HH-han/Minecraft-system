@@ -1,26 +1,34 @@
 <template>
-    <div class="home-main">
-        <header>
-            <Header  />
-        </header>
-        <main>
-            <!-- 轮播图片 -->
-            <Carousel :items="mediaList.images" />
-            <!-- 加载 -->
-            <!-- <Loaded /> -->
-            <!-- 新闻 -->
-            <!-- 推荐 -->
-            <Recommend />
-            <News />
-            <!-- 热门推荐 -->
-            <Recommendations />
-            <!-- 首页内容 -->
-            <Content />
-        </main>
-        <footer>
-            <HomeFooter />
-        </footer>
-    </div>
+  <div class="home-main">
+    <header>
+      <Header />
+    </header>
+    <main>
+      <!-- 轮播图片 -->
+      <Carousel :items="mediaList.images" />
+      <!-- 加载 -->
+      <!-- <Loaded /> -->
+      <!-- 推荐 -->
+      <Recommend />
+      <div class="home-content">
+        <div>
+          <!-- 安全提示 -->
+          <SafetyTips />
+        </div>
+        <div>
+          <!-- 新闻 -->
+          <News />
+        </div>
+      </div>
+      <!-- 热门推荐 -->
+      <Recommendations />
+      <!-- 首页内容 -->
+      <Content />
+    </main>
+    <footer>
+      <HomeFooter />
+    </footer>
+  </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -28,6 +36,7 @@ import Header from './Header.vue';
 import Carousel from '@/views/Carousel/index.vue';
 import HomeFooter from './Footer.vue';
 import Recommend from '/src/views/Recommend/index.vue';
+import SafetyTips from './safetytips.vue';
 import News from './news.vue';
 import Content from './content.vue';
 import carouselApi from '@/api/carousel.js';
@@ -59,3 +68,10 @@ onMounted(() => {
   fetchcarousel();
 });
 </script>
+<style scoped>
+.home-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+</style>

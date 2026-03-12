@@ -1,44 +1,44 @@
-2026-03-09 23:30:30.200 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
-2026-03-09 23:30:30.234 [main] INFO  com.MinecraftApplicationTests - Starting MinecraftApplicationTests using Java 21.0.9 with PID 29436 (started by Admin in D:\IDEA\work\Minecraft-system\Minecraft)
-2026-03-09 23:30:30.235 [main] INFO  com.MinecraftApplicationTests - The following 1 profile is active: "dev"
-2026-03-09 23:30:32.900 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-03-09 23:30:32.903 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
-2026-03-09 23:30:32.940 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 32 ms. Found 0 Elasticsearch repository interfaces.
-2026-03-09 23:30:32.944 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-03-09 23:30:32.945 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
-2026-03-09 23:30:32.950 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 6 ms. Found 0 Reactive Elasticsearch repository interfaces.
-2026-03-09 23:30:32.960 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-03-09 23:30:32.961 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-03-09 23:30:32.973 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
-2026-03-09 23:30:33.300 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
-2026-03-09 23:30:33.301 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
-2026-03-09 23:30:35.116 [main] INFO  com.minecraft.utils.FileUtils - 使用目录: D:\Image
-2026-03-09 23:30:35.116 [main] INFO  com.minecraft.utils.FileUtils - 文件上传路径初始化: D:\Image
-2026-03-09 23:30:35.974 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-09 23:30:35.974 [main] WARN  c.minecraft.utils.RedisHealthChecker - ⚠️  请确保 Redis 服务已启动，并检查以下配置：
-2026-03-09 23:30:35.974 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 地址: localhost:6379
-2026-03-09 23:30:35.974 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 密码: (如果配置了密码)
-2026-03-09 23:30:35.974 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - 启动 Redis: redis-server 或 redis-cli ping
-2026-03-09 23:30:35.974 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Windows 启动 Redis: redis-server.exe
-2026-03-09 23:30:36.276 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+2026-03-12 21:45:32.866 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-03-12 21:45:32.921 [main] INFO  com.MinecraftApplicationTests - Starting MinecraftApplicationTests using Java 21.0.9 with PID 23260 (started by Admin in D:\IDEA\work\Minecraft-system\Minecraft)
+2026-03-12 21:45:32.922 [main] INFO  com.MinecraftApplicationTests - The following 1 profile is active: "dev"
+2026-03-12 21:45:33.909 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-12 21:45:33.911 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-03-12 21:45:33.976 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 61 ms. Found 0 Elasticsearch repository interfaces.
+2026-03-12 21:45:33.981 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-12 21:45:33.982 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-03-12 21:45:34.013 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 32 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-03-12 21:45:34.025 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-03-12 21:45:34.026 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-03-12 21:45:34.062 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 29 ms. Found 0 Redis repository interfaces.
+2026-03-12 21:45:34.470 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-03-12 21:45:34.472 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-03-12 21:45:36.523 [main] INFO  com.minecraft.utils.FileUtils - 使用目录: D:\Image
+2026-03-12 21:45:36.523 [main] INFO  com.minecraft.utils.FileUtils - 文件上传路径初始化: D:\Image
+2026-03-12 21:45:37.651 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-03-12 21:45:37.651 [main] WARN  c.minecraft.utils.RedisHealthChecker - ⚠️  请确保 Redis 服务已启动，并检查以下配置：
+2026-03-12 21:45:37.651 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 地址: localhost:6379
+2026-03-12 21:45:37.651 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Redis 密码: (如果配置了密码)
+2026-03-12 21:45:37.651 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - 启动 Redis: redis-server 或 redis-cli ping
+2026-03-12 21:45:37.651 [main] WARN  c.minecraft.utils.RedisHealthChecker -    - Windows 启动 Redis: redis-server.exe
+2026-03-12 21:45:38.052 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
 
-Using generated security password: a410679a-e7db-4249-a423-4f092105e3c9
+Using generated security password: d204c705-1472-4a88-b969-c58c1d9f249a
 
 This generated password is for development use only. Your security configuration must be updated before running your application in production.
 
-2026-03-09 23:30:36.572 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-03-09 23:30:36.723 [main] INFO  com.minecraft.config.WebConfig - 使用目录: D:\Image
-2026-03-09 23:30:37.404 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@628f0936, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@20706e70, org.springframework.security.web.context.SecurityContextHolderFilter@1185b0b7, org.springframework.security.web.header.HeaderWriterFilter@2a0881f1, org.springframework.security.web.authentication.logout.LogoutFilter@527d1fe1, com.minecraft.handler.JwtAuthenticationFilter@6e5fba90, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2082e0e4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@28b4b10e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@57283fac, org.springframework.security.web.session.SessionManagementFilter@461b38ca, org.springframework.security.web.access.ExceptionTranslationFilter@1fa24e7, org.springframework.security.web.access.intercept.AuthorizationFilter@10abd94f]
-2026-03-09 23:30:38.383 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
-2026-03-09 23:30:38.383 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@67c61551]]
-2026-03-09 23:30:38.385 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
-2026-03-09 23:30:38.393 [main] INFO  com.MinecraftApplicationTests - Started MinecraftApplicationTests in 8.622 seconds (process running for 9.598)
-2026-03-09 23:30:38.401 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-03-09 23:30:38.548 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@136a5572
-2026-03-09 23:30:38.549 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-03-09 23:30:38.560 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
-2026-03-09 23:30:38.771 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
-2026-03-09 23:30:38.771 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@67c61551]]
-2026-03-09 23:30:38.771 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
-2026-03-09 23:30:38.890 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2026-03-09 23:30:38.895 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-12 21:45:38.456 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-03-12 21:45:38.654 [main] INFO  com.minecraft.config.WebConfig - 使用目录: D:\Image
+2026-03-12 21:45:39.584 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4a7427f9, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@155767a7, org.springframework.security.web.context.SecurityContextHolderFilter@428e9be2, org.springframework.security.web.header.HeaderWriterFilter@1cdb280b, org.springframework.security.web.authentication.logout.LogoutFilter@600a1270, com.minecraft.handler.JwtAuthenticationFilter@5418a659, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2723b0d0, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@577dac16, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@46067a74, org.springframework.security.web.session.SessionManagementFilter@463746eb, org.springframework.security.web.access.ExceptionTranslationFilter@425a5c2e, org.springframework.security.web.access.intercept.AuthorizationFilter@55a29589]
+2026-03-12 21:45:41.463 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-03-12 21:45:41.465 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3e92bded]]
+2026-03-12 21:45:41.467 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-03-12 21:45:42.112 [main] INFO  com.MinecraftApplicationTests - Started MinecraftApplicationTests in 9.769 seconds (process running for 10.738)
+2026-03-12 21:45:42.117 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-12 21:45:42.285 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@62a89e92
+2026-03-12 21:45:42.286 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-12 21:45:42.296 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-03-12 21:45:42.536 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-03-12 21:45:42.536 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3e92bded]]
+2026-03-12 21:45:42.536 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-03-12 21:45:42.653 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-12 21:45:42.657 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

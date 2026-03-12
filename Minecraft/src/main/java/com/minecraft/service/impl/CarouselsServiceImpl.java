@@ -25,18 +25,21 @@ public class CarouselsServiceImpl extends ServiceImpl<CarouselsMapper, Carousels
     @Override
     public List<Carousels> getActiveCarouselsByPosition(String position) {
         QueryWrapper<Carousels> wrapper = new QueryWrapper<>();
+
+        // 按位置过滤
         wrapper.eq("position", position)
+                // 只获取激活的轮播图
                 .eq("is_active", true)
+                // 排除已删除的轮播图
                 .and(i -> i.eq("is_deleted", false)
                         .or()
-                        .isNull("is_deleted"))
-                .orderByAsc("sort_order");
-        
+                        .isNull("is_deleted"));
+
         // 处理时间限制
         wrapper.and(i -> i.eq("is_always_show", true)
                 .or(j -> j.le("start_time", LocalDateTime.now())
                         .ge("end_time", LocalDateTime.now())));
-        
+
         return baseMapper.selectList(wrapper);
     }
 

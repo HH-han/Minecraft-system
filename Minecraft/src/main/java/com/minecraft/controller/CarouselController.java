@@ -33,19 +33,68 @@ public class CarouselController {
     @Operation(summary = "获取首页顶部轮播图")
     @GetMapping("/home/top")
     public ApiResponse<List<Carousels>> getHomeTopCarousels() {
-        List<Carousels> carousels = carouselsService.getCarouselsByGroupCode("home_top");
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("home_top");
         return ApiResponse.success(carousels);
     }
 
     @Operation(summary = "获取首页中部轮播图")
     @GetMapping("/home/middle")
     public ApiResponse<List<Carousels>> getHomeMiddleCarousels() {
-        List<Carousels> carousels = carouselsService.getCarouselsByGroupCode("home_middle");
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("home_middle");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取目的地轮播图")
+    @GetMapping("/destination")
+    public ApiResponse<List<Carousels>> getDestinationCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("destination");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取景点轮播图")
+    @GetMapping("/attraction")
+    public ApiResponse<List<Carousels>> getAttractionCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("attraction");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取酒店轮播图")
+    @GetMapping("/hotel")
+    public ApiResponse<List<Carousels>> getHotelCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("hotel");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取美食轮播图")
+    @GetMapping("/food")
+    public ApiResponse<List<Carousels>> getFoodCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("food");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取纪念品轮播图")
+    @GetMapping("/souvenir")
+    public ApiResponse<List<Carousels>> getSouvenirCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("souvenir");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取攻略群轮播图")
+    @GetMapping("/strategy")
+    public ApiResponse<List<Carousels>> getStrategyCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("strategy");
+        return ApiResponse.success(carousels);
+    }
+
+    @Operation(summary = "获取社区轮播图")
+    @GetMapping("/community")
+    public ApiResponse<List<Carousels>> getCommunityCarousels() {
+        List<Carousels> carousels = carouselsService.getActiveCarouselsByPosition("community");
         return ApiResponse.success(carousels);
     }
 
     @Operation(summary = "获取所有轮播图")
-    @GetMapping
+    @GetMapping("/categories")
     public ApiResponse<List<Carousels>> getAllCarousels() {
         List<Carousels> carousels = carouselsService.list();
         return ApiResponse.success(carousels);

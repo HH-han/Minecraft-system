@@ -31,7 +31,7 @@ const mediaList = ref({ images: [] });
 const fetchcarousel = async () => {
   try {
     // 使用API获取轮播图数据
-    const response = await carouselApi.getHomeTopCarousels();
+    const response = await carouselApi.getDestinationCarousels();
     if (response.code === 200 && response.data) {
       mediaList.value.images = response.data.map((item) => ({
         image: item.imageUrl || '默认图片链接',
