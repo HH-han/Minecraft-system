@@ -217,6 +217,8 @@ const closeDetailModal = () => {
 <style scoped>
 .recommendations-container {
   padding: 40px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .recommendations-header {
@@ -225,97 +227,123 @@ const closeDetailModal = () => {
   align-items: center;
   margin-bottom: 30px;
   padding: 0 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 20px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .recommendations-header h2 {
   font-size: 28px;
   font-weight: 600;
-  color: #333;
+  color: #fff;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .see-more {
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   font-size: 14px;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .see-more:hover {
-  color: #333;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .category-filter {
   padding: 0 20px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 20px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .category-list {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .price-category-list {
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .category-btn {
-  background-color: #f0f0f0;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .category-btn:hover {
-  background-color: #e0e0e0;
-  color: #333;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .category-btn.active {
-  background-color: #1677ff;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
   color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
 }
 
 .recommendations-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-  gap: 20px;
+  gap: 24px;
   padding: 0 20px;
 }
 
 .recommendations {
   width: 100%;
-  background-color: #f2f3f7;
-  border-radius: 0.75em;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: ease 0.2s;
-  box-shadow: 1em 1em 1em #d8dae0b1, -0.75em -0.75em 1em #ffffff;
-  border: 1.5px solid #f2f3f7;
+  transition: all 0.3s ease;
   overflow: hidden;
   display: flex;
-  padding: 16px;
+  padding: 20px;
 }
 
 .recommendations:hover {
-  background-color: #d3ddf1;
-  border: 1.5px solid #1677ff;
   transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .recommendations-image {
   height: 250px;
+  flex-shrink: 0;
 }
 
 .recommendations-image img {
   max-width: 300px;
   height: 100%;
-  border-radius: 16px;
+  border-radius: 12px;
   transition: transform 0.5s ease;
   object-fit: cover;
 }
@@ -325,34 +353,36 @@ const closeDetailModal = () => {
 }
 
 .container {
-  margin-left: 1.375em;
+  margin-left: 20px;
   display: flex;
   flex-direction: row;
-  gap: 0.75em;
+  gap: 12px;
   flex: 1;
 }
 
 .status-ind {
-  width: 0.625em;
-  height: 0.625em;
-  background-color: #ff0000;
-  margin: 0.375em 0;
-  border-radius: 0.5em;
+  width: 8px;
+  height: 8px;
+  background-color: #ff4757;
+  margin: 6px 0;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .text-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
-  color: #333;
+  gap: 8px;
+  color: #fff;
   flex: 1;
 }
 
 .recommendations-title {
   font-size: 18px;
   font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
+  margin: 0;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   line-height: 1.3;
 }
 
@@ -362,18 +392,19 @@ const closeDetailModal = () => {
 
 .category-tag {
   display: inline-block;
-  background-color: #1677ff;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
   color: white;
   font-size: 12px;
   font-weight: 500;
   padding: 4px 12px;
   border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(79, 172, 254, 0.4);
 }
 
 .recommendations-description {
   font-size: 14px;
-  color: #666;
-  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -385,8 +416,8 @@ const closeDetailModal = () => {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: #999;
-  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 8px;
 }
 
 .recommendations-location, .recommendations-price {
@@ -397,31 +428,44 @@ const closeDetailModal = () => {
 .button-wrap {
   display: flex;
   flex-direction: row;
-  gap: 1em;
+  gap: 16px;
   align-items: center;
 }
 
 .secondary-cta {
-  background-color: transparent;
-  border: none;
-  font-size: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
   font-weight: 400;
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.secondary-cta:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  text-decoration: none;
 }
 
 .primary-cta {
-  font-size: 15px;
-  background-color: transparent;
+  font-size: 14px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
   font-weight: 600;
-  color: #1677ff;
+  color: #fff;
   border: none;
-  border-radius: 1.5em;
+  border-radius: 16px;
   cursor: pointer;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
 }
 
-button:hover {
-  text-decoration: underline;
+.primary-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+  text-decoration: none;
 }
 
 .right {
@@ -429,7 +473,7 @@ button:hover {
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 0.875em;
+  gap: 14px;
 }
 
 .left {
@@ -439,17 +483,39 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+  .recommendations-header {
+    padding: 16px;
+    margin: 0 10px 20px;
+  }
+  
+  .recommendations-header h2 {
+    font-size: 24px;
+  }
+  
+  .category-filter {
+    padding: 16px;
+    margin: 0 10px 20px;
+  }
+  
+  .category-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
   .recommendations-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: 1fr;
+    padding: 0 10px;
+    gap: 20px;
   }
   
   .recommendations {
     flex-direction: column;
-    padding: 12px;
+    padding: 16px;
   }
   
   .recommendations-image {
     height: 200px;
+    width: 100%;
   }
   
   .recommendations-image img {
@@ -458,7 +524,23 @@ button:hover {
   
   .container {
     margin-left: 0;
-    margin-top: 12px;
+    margin-top: 16px;
+  }
+  
+  .recommendations-title {
+    font-size: 16px;
+  }
+  
+  .button-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .primary-cta,
+  .secondary-cta {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -478,11 +560,11 @@ button:hover {
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
@@ -494,29 +576,35 @@ button:hover {
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   margin: 0;
 }
 
 .close-btn {
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  color: #666;
+  color: #fff;
   padding: 8px;
   border-radius: 50%;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
-  color: #333;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 .modal-body {
@@ -538,19 +626,42 @@ button:hover {
 }
 
 .info-section {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .info-section h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
-  margin: 0 0 10px 0;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  margin: 0 0 12px 0;
+  position: relative;
+  padding-left: 12px;
+}
+
+.info-section h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 16px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  border-radius: 2px;
 }
 
 .info-section p {
   font-size: 14px;
-  color: #666;
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.5;
   margin: 0;
 }
@@ -558,23 +669,27 @@ button:hover {
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
+  gap: 16px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .info-item .label {
   font-size: 12px;
-  color: #999;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .info-item .value {
   font-size: 14px;
-  color: #333;
+  color: #fff;
   font-weight: 500;
 }
 
@@ -590,26 +705,39 @@ button:hover {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .recommendations-header {
-    padding: 0 16px;
-  }
-  
-  .recommendations-grid {
-    grid-template-columns: 1fr;
-    padding: 0 16px;
-  }
-  
   .modal-content {
     margin: 20px;
     max-height: calc(100vh - 40px);
+  }
+  
+  .modal-header {
+    padding: 16px;
+  }
+  
+  .modal-header h2 {
+    font-size: 20px;
   }
   
   .modal-body {
     padding: 16px;
   }
   
+  .modal-image {
+    height: 200px;
+  }
+  
   .info-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .info-section {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+  
+  .info-section h3 {
+    font-size: 16px;
   }
 }
 </style>

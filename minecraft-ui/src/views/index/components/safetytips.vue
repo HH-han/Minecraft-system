@@ -2,18 +2,18 @@
     <div class="safety-tips">
         <h2 class="section-title">安全知识提示</h2>
         <div class="tips-grid">
-            <div 
-                v-for="tip in safetyTips" 
-                :key="tip.id" 
-                class="tips-item" 
-                @click="openTipDetail(tip)"
-            >
+            <div v-for="tip in safetyTips" :key="tip.id" class="tips-item" @click="openTipDetail(tip)">
                 <div class="tips-icon">
                     <i class="el-icon-warning-outline"></i>
                 </div>
-                <div class="tips-content">
-                    <h3 class="tips-title">{{ tip.title }}</h3>
-                    <p class="tips-desc">{{ tip.description }}</p>
+                <div class="tips-body">
+                    <div class="tips-image" v-if="tip.imageUrl">
+                        <img :src="tip.imageUrl" :alt="tip.title" />
+                    </div>
+                    <div class="tips-content">
+                        <h3 class="tips-title">{{ tip.title }}</h3>
+                        <p class="tips-desc">{{ tip.description }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,24 +53,24 @@ const selectedTip = ref(null);
 
 // 获取安全知识提示数据
 const fetchSafetyTips = async () => {
-  try {
-    const response = await safetyTipsApi.getActiveSafetyTips();
-    safetyTips.value = response.data || [];
-  } catch (error) {
-    console.error('获取安全知识提示失败:', error);
-  }
+    try {
+        const response = await safetyTipsApi.getActiveSafetyTips();
+        safetyTips.value = response.data || [];
+    } catch (error) {
+        console.error('获取安全知识提示失败:', error);
+    }
 };
 
 // 打开安全提示详情
 const openTipDetail = (tip) => {
-  selectedTip.value = tip;
-  showModal.value = true;
+    selectedTip.value = tip;
+    showModal.value = true;
 };
 
 // 关闭安全提示详情
 const closeTipDetail = () => {
-  showModal.value = false;
-  selectedTip.value = null;
+    showModal.value = false;
+    selectedTip.value = null;
 };
 
 onMounted(fetchSafetyTips);
@@ -78,25 +78,43 @@ onMounted(fetchSafetyTips);
 
 <style scoped>
 .safety-tips {
-    padding: 40px 20px;
+    padding: 60px 40px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    border-radius: 16px;
-    margin: 20px 0;
+    border-radius: 20px;
+    margin: 40px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .section-title {
     text-align: center;
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 40px;
     color: #fff;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #ff4757, #ff6b81);
+    border-radius: 2px;
 }
 
 .tips-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .tips-item {
@@ -119,9 +137,32 @@ onMounted(fetchSafetyTips);
 }
 
 .tips-icon {
-    font-size: 24px;
+    font-size: 28px;
     color: #ff4757;
     margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.tips-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tips-image {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tips-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .tips-content {
@@ -133,6 +174,7 @@ onMounted(fetchSafetyTips);
     font-weight: 600;
     margin-bottom: 8px;
     color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .tips-desc {
@@ -140,6 +182,11 @@ onMounted(fetchSafetyTips);
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.8);
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 模态框样式 */
@@ -246,20 +293,56 @@ onMounted(fetchSafetyTips);
 /* 响应式设计 */
 @media (max-width: 768px) {
     .safety-tips {
-        padding: 20px 10px;
+        padding: 40px 20px;
+        margin: 20px 0;
     }
-    
+
     .section-title {
-        font-size: 20px;
+        font-size: 24px;
+        margin-bottom: 30px;
     }
-    
+
     .tips-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
-    
+
+    .tips-item {
+        padding: 16px;
+    }
+
+    .tips-icon {
+        font-size: 24px;
+    }
+
+    .tips-title {
+        font-size: 16px;
+    }
+
     .modal-content {
         width: 95%;
         padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .safety-tips {
+        padding: 30px 15px;
+    }
+
+    .section-title {
+        font-size: 22px;
+        margin-bottom: 25px;
+    }
+
+    .tips-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .tips-icon {
+        margin-top: 0;
     }
 }
 </style>

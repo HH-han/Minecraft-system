@@ -9,8 +9,10 @@
                     <div class="back">
                         <div class="back-content">
                             <img :src="item.image" alt="推荐图片" />
-                            <span>{{ item.name }}</span>
-                            <p>{{ item.description }}</p>
+                            <div class="text-overlay">
+                                <span>{{ item.name }}</span>
+                                <p>{{ item.description }}</p>
+                            </div>
                         </div>
                     </div>
                     <div class="front">
@@ -94,6 +96,16 @@ const loadRecommendList = async () => {
     overflow: visible;
     width: 100%;
     height: 254px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    padding: 20px;
 }
 
 .content {
@@ -138,28 +150,50 @@ const loadRecommendList = async () => {
 
 .back-content {
     position: absolute;
-    width: 99%;
-    height: 99%;
+    width: 100%;
+    height: 100%;
     background-color: #151515;
     border-radius: 5px;
     color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
+    overflow: hidden;
+}
+
+.back-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.back-content .text-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px;
     text-align: center;
+}
+
+.back-content span {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .back-content p {
     font-size: 12px;
     margin: 0;
     line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .card:hover .content {
-    transform: rotateY(180deg);
+    transform: rotateX(180deg);
 }
 
 @keyframes rotation_481 {
@@ -173,7 +207,7 @@ const loadRecommendList = async () => {
 }
 
 .front {
-    transform: rotateY(180deg);
+    transform: rotateX(180deg);
     color: white;
 }
 
