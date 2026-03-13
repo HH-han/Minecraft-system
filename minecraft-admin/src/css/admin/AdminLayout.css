@@ -648,6 +648,9 @@
 }
 
 .data-management__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
   color: #ffffff;
 }
 

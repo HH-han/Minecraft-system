@@ -67,7 +67,7 @@
                     <h2>{{ isEditing ? '编辑笔记' : '新增笔记' }}</h2>
                     <form @submit.prevent="submitForm" class="form-container">
                         <div class="form-group">
-                            <div class="image-upload-container">
+                            <div class="images-upload-container">
                                 <div class="upload-header">
                                     <h3>上传图片</h3>
                                     <p>支持 JPG, PNG 格式，最大 5MB</p>
@@ -167,7 +167,7 @@
                         <div class="form-row">
                             <div class="form-group full-width">
                                 <label>图片 (多个图片用逗号分隔):</label>
-                                <input v-model="formData.images" placeholder="例如: https://example.com/image1.jpg,https://example.com/image2.jpg" />
+                                <input v-model="formData.images" placeholder="例如: https://example.com/images1.jpg,https://example.com/images2.jpg" />
                             </div>
                         </div>
                         <!-- 创建修改时间 -->
@@ -191,7 +191,7 @@
 <script setup>
 
 import { ref, computed, onMounted } from 'vue';
-import { getGroupList, getGroupDetail, createGroup, joinGroup, leaveGroup } from '@/api/group';
+import { getGroupList, getGroupDetail, createGroup, joinGroup, leaveGroup, updateGroup, deleteGroup } from '@/api/group';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -327,8 +327,8 @@ const showToastMessage = (message, type = 'success') => {
 const submitForm = async () => {
     try {
         if (isEditing.value) {
-            // 编辑功能暂未实现，需要后端提供更新API
-            showToastMessage('编辑功能暂未实现', 'warning');
+            await updateGroup(formData.value);
+            showToastMessage('更新旅行团成功');
         } else {
             await createGroup(formData.value);
             showToastMessage('新增旅行团成功');
@@ -359,8 +359,8 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
     if (deleteCardId.value) {
         try {
-            // 删除功能暂未实现，需要后端提供删除API
-            showToastMessage('删除功能暂未实现', 'warning');
+            await deleteGroup(deleteCardId.value);
+            showToastMessage('删除旅行团成功');
             await fetchScenic();
         } catch (error) {
             console.error('删除失败:', error);
@@ -421,7 +421,7 @@ const handleFileUpload = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
         previewImage.value = e.target.result;
-        formData.value.image = e.target.result;
+        formData.value.images = e.target.result;
     };
     reader.readAsDataURL(file);
 
@@ -454,7 +454,7 @@ const removeImage = () => {
     previewImage.value = '';
     fileName.value = '';
     fileSize.value = '';
-    formData.value.image = '';
+    formData.value.images = '';
 };
 
 // 触发文件输入框

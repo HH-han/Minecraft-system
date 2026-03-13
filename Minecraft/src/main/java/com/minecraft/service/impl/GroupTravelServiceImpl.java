@@ -69,11 +69,16 @@ public class GroupTravelServiceImpl extends ServiceImpl<GroupTravelMapper, Group
     @Override
     public boolean save(GroupTravel group) {
         try {
+            // 处理单张图片上传（如果是Base64格式）
+            if (group.getImages() != null && group.getImages().startsWith("data:image")) {
+                String processedImage = imageUtils.processBase64Image(group.getImages());
+                group.setImages(processedImage);
+            }
             // 处理多图片上传（如果是Base64数组）
-            if (group.getImages() != null && group.getImages().startsWith("[")) {
+            else if (group.getImages() != null && group.getImages().startsWith("[")) {
                 try {
                     // 解析图片数组
-                    String[] imageArray = group.getImages().replace("[", "").replace("]", "").replaceAll("\\"", "").split(",");
+                    String[] imageArray = group.getImages().replace("[", "").replace("]", "").replaceAll("\"", "").split(",");
                     StringBuilder processedImages = new StringBuilder();
                     
                     for (String image : imageArray) {
@@ -106,11 +111,16 @@ public class GroupTravelServiceImpl extends ServiceImpl<GroupTravelMapper, Group
     @Override
     public boolean updateById(GroupTravel group) {
         try {
+            // 处理单张图片上传（如果是Base64格式）
+            if (group.getImages() != null && group.getImages().startsWith("data:image")) {
+                String processedImage = imageUtils.processBase64Image(group.getImages());
+                group.setImages(processedImage);
+            }
             // 处理多图片上传（如果是Base64数组）
-            if (group.getImages() != null && group.getImages().startsWith("[")) {
+            else if (group.getImages() != null && group.getImages().startsWith("[")) {
                 try {
                     // 解析图片数组
-                    String[] imageArray = group.getImages().replace("[", "").replace("]", "").replaceAll("\\"", "").split(",");
+                    String[] imageArray = group.getImages().replace("[", "").replace("]", "").replaceAll("\"", "").split(",");
                     StringBuilder processedImages = new StringBuilder();
                     
                     for (String image : imageArray) {
