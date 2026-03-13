@@ -37,6 +37,12 @@ public class User {
     
     private Integer status;
     
+    private String signature;
+    
+    private String nickname;
+    
+    private String experience;
+    
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     

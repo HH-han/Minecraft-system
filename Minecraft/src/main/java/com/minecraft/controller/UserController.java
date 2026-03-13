@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 @Tag(name = "用户管理")
 @RestController
@@ -37,5 +39,34 @@ public class UserController {
         Long userId = SecurityUtils.getCurrentUserId();
         userService.updatePassword(userId, oldPassword, newPassword);
         return ApiResponse.success("修改成功", null);
+    }
+
+    @Operation(summary ="上传头像")
+    @PostMapping("/avatar")
+    public ApiResponse<String> uploadAvatar(@RequestParam("avatar") MultipartFile file) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        String avatarUrl = userService.uploadAvatar(userId, file);
+        return ApiResponse.success(avatarUrl);
+    }
+
+    @Operation(summary ="删除用户")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ApiResponse.success("删除成功", null);
+    }
+
+    @Operation(summary ="获取所有用户")
+    @GetMapping("/list")
+    public ApiResponse<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ApiResponse.success(users);
+    }
+
+    @Operation(summary ="根据账号获取用户信息")
+    @GetMapping("/by-account")
+    public ApiResponse<User> getUserByAccount(@RequestParam String account) {
+        User user = userService.getUserByAccount(account);
+        return ApiResponse.success(user);
     }
 }

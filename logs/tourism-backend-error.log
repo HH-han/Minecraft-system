@@ -1,11 +1,4 @@
-2026-03-12 00:08:53.171 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 00:11:38.646 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:18:09.467 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:33:54.936 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:39:31.274 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:45:45.225 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:51:44.906 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:53:40.435 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 21:58:32.022 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 22:30:21.000 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
-2026-03-12 22:34:43.854 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-03-13 21:27:16.953 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-03-13 21:47:09.523 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-03-13 21:51:27.151 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
+2026-03-13 22:00:44.737 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis

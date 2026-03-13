@@ -28,3 +28,21 @@ export const updatePassword = (oldPassword, newPassword) => {
 export const EmailCaptcha = (data) => {
   return request.post('/api/auth/email-captcha', data)
 }
+
+// 上传头像
+export const uploadAvatar = (formData) => {
+  return request.post('/user/avatar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
+// 根据账号获取用户信息
+export const getUserByAccount = (account) => {
+  return request.get('/user/by-account', {
+    params: {
+      account
+    }
+  })
+}

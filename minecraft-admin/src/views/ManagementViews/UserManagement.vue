@@ -113,15 +113,20 @@
                   </td>
                   <td>{{ user.id }}</td>
                   <td>
-                    <img :src="user.image" alt="头像" style="width: 35px; height: 35px;" @click="triggerFileInput(user)">
+                    <img :src="user.avatar" alt="头像" style="width: 35px; height: 35px;" @click="triggerFileInput(user)">
                   </td>
-                  <td>{{ user.id }}</td>
+                  <td>{{ user.account }}</td>
                   <td>{{ user.username }}</td>
                   <td>{{ user.email }}</td>
                   <td>{{ user.phone }}</td>
                   <td>{{ user.nickname ? user.nickname : '未设置' }}</td>
                   <td>{{ user.signature ? user.signature.substring(0, 10) : '未设置' }}...</td>
                   <td>{{ user.experience ? user.experience.substring(0, 15) : '未设置' }}...</td>
+                  <td>{{ user.bio }}</td>
+                  <td>{{ user.age }}</td>
+                  <td>{{ user.gender === 1 ? '男' : user.gender === 0 ? '女' : '未知' }}</td>
+                  <td>{{ user.hobbies ? user.hobbies : '未设置' }}</td>
+                  <td>{{ user.occupation ? user.occupation : '未设置' }}</td>
                   <td>{{ formatDate(user.createTime) }}</td>
                   <td>{{ formatDate(user.updateTime) }}</td>
                   <td>
@@ -381,6 +386,7 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue';
 import request from '@/utils/request';
+import { getAllUsers, deleteUser, uploadAvatar } from '@/api/user';
 import ExcelImportExportAPI from '@/components/DisplayBox/ExcelImportExportAPI.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
@@ -389,13 +395,18 @@ const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
   { key: 'image', title: '头像' },
-  { key: 'id', title: '用户ID' },
+  { key: 'account', title: '账号' },
   { key: 'username', title: '用户名' },
   { key: 'email', title: '邮箱' },
   { key: 'phone', title: '手机号' },
   { key: 'nickname', title: '昵称' },
   { key: 'signature', title: '签名' },
   { key: 'experience', title: '经验' },
+  { key: 'bio', title: '简介' },
+  { key: 'age', title: '年龄' },
+  { key: 'gender', title: '性别' },
+  { key: 'hobbies', title: '爱好' },
+  { key: 'occupation', title: '职业' },
   { key: 'createTime', title: '创建时间' },
   { key: 'updateTime', title: '更新时间' },
   { key: 'permissions', title: '管理员权限(关闭-开启)' },
@@ -537,14 +548,9 @@ const handleCurrentChange = (newPage) => {
 // 获取用户数据
 const fetchUsers = async () => {
   try {
-    const params = {
-      page: currentPage.value,
-      pageSize: pageSize.value,
-      keyword: searchKeyword.value,
-    };
-    const response = await request.get('/api/public/users', { params });
-    users.value = response.data?.records || [];
-    total.value = response.data?.total || 0;
+    const response = await getAllUsers();
+    users.value = response.data || [];
+    total.value = users.value.length;
   } catch (error) {
     console.error('获取用户数据失败:', error);
     users.value = [];
@@ -637,10 +643,9 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteUserId.value) {
     try {
-      // 后端暂未提供删除用户接口，这里使用前端模拟数据处理
-      users.value = users.value.filter(user => user.id !== deleteUserId.value);
-      total.value = users.value.length;
+      await deleteUser(deleteUserId.value);
       showToastMessage('删除用户成功');
+      await fetchUsers();
     } catch (error) {
       console.error('删除失败:', error);
       showToastMessage('删除用户失败', 'error');
@@ -694,7 +699,7 @@ const formatFileSize = (bytes) => {
 };
 
 // 处理文件上传
-const handleFileUpload = (event) => {
+const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -720,20 +725,24 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
-    formData.value.image = e.target.result;
   };
   reader.readAsDataURL(file);
 
-  // 模拟上传进度
+  // 上传图片
   uploading.value = true;
-  const interval = setInterval(() => {
-    if (progress.value < 100) {
-      progress.value += 10;
-    } else {
-      clearInterval(interval);
-      uploading.value = false;
-    }
-  }, 100);
+  try {
+    const uploadFormData = new FormData();
+    uploadFormData.append('avatar', file);
+    
+    const response = await uploadAvatar(uploadFormData);
+    formData.value.image = response.data;
+    showToastMessage('头像上传成功');
+  } catch (error) {
+    console.error('头像上传失败:', error);
+    showToastMessage('头像上传失败', 'error');
+  } finally {
+    uploading.value = false;
+  }
 
   return file;
 };
@@ -794,15 +803,23 @@ const batchpermissions = () => {
 };
 
 // 批量删除
-const handleReset = () => {
+const handleReset = async () => {
   const selectedUsers = users.value.filter(user => user.checked);
   if (selectedUsers.length === 0) {
     showToastMessage('请先选择用户', 'error');
     return;
   }
-  users.value = users.value.filter(user => !user.checked);
-  total.value = users.value.length;
-  showToastMessage(`已删除 ${selectedUsers.length} 个用户`);
+  
+  try {
+    for (const user of selectedUsers) {
+      await deleteUser(user.id);
+    }
+    showToastMessage(`已删除 ${selectedUsers.length} 个用户`);
+    await fetchUsers();
+  } catch (error) {
+    console.error('批量删除失败:', error);
+    showToastMessage('批量删除失败', 'error');
+  }
 };
 
 // Excel 导入导出结果处理

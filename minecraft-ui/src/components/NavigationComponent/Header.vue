@@ -111,8 +111,8 @@
             <div class="profilepicture">
               <button class="profilepicture_button" @click="toggleDropdown">
                 <div class="profilepicture_img">
-                  <img v-if="!userInfo.image" :src="defaultAvatar" alt="默认头像" class="img1">
-                  <img v-else :src="userInfo.image" alt="用户头像" class="img1" />
+                  <img v-if="!userInfo.avatar" :src="defaultAvatar" alt="默认头像" class="img1">
+                  <img v-else :src="userInfo.avatar" alt="用户头像" class="img1" />
                 </div>
               </button>
               <div class="profilepicture-inner" v-show="isDropdownVisible">
@@ -157,6 +157,7 @@ import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
 // 接口
 import { useAuthStore } from '@/stores/auth';
 import { getUserInfo } from '@/api/user';
+import { logout } from '@/api/auth';
 
 const props = defineProps({
   mediaList: {
@@ -359,10 +360,9 @@ const handleMenuItemClick = (item) => {
 
 // 用户信息
 const userInfo = ref({
-  image: '',
   username: '',
   permissions: '',
-  hasInput: false
+  avatar: ''
 });
 
 // 过滤后的用户菜单项

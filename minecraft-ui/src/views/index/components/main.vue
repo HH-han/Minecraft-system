@@ -58,7 +58,7 @@ const fetchcarousel = async () => {
         image: item.imageUrl || '默认图片链接',
         title: item.title || '默认标题',
         location: item.subtitle || '默认位置',
-        description: item.subtitle || '默认描述'
+        description: item.startTime || '默认描述'
       }));
     }
   } catch (error) {

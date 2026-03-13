@@ -26,5 +26,24 @@ export const updatePassword = (oldPassword, newPassword) => {
 
 // 发送邮箱验证码
 export const EmailCaptcha = (data) => {
-  return request.post('/api/auth/email-captcha', data)
+  return request.post('/auth/email-captcha', data)
+}
+
+// 删除用户
+export const deleteUser = (id) => {
+  return request.delete(`/user/${id}`)
+}
+
+// 获取所有用户
+export const getAllUsers = () => {
+  return request.get('/user/list')
+}
+
+// 上传头像
+export const uploadAvatar = (formData) => {
+  return request.post('/user/avatar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 }

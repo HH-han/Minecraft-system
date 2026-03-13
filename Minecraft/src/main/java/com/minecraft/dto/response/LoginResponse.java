@@ -11,4 +11,7 @@ public class LoginResponse {
     private String avatar;
     private String account;
     private String phone;
+    private String signature;
+    private String nickname;
+    private String experience;
 }

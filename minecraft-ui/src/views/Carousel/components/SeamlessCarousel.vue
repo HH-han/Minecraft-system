@@ -315,30 +315,50 @@ onUnmounted(() => {
 
 .slide-caption {
     position: absolute;
-    bottom: 15px;
+    bottom: 0;
     left: 0;
     right: 0;
-    padding: 2rem;
+    padding: 2.5rem;
     color: var(--text-color);
-    max-width: 800px;
     margin: 0 auto;
     text-align: center;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+    transform: translateY(0);
+    transition: all 0.5s ease;
+}
+
+.slide-caption:hover {
+    transform: translateY(-5px);
 }
 
 .slide-caption h3 {
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    line-height: 1.1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.8);
+    letter-spacing: -0.02em;
+    animation: fadeInUp 0.8s ease-out;
 }
 
 .slide-caption p {
-    font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+    font-size: clamp(0.9375rem, 1.7vw, 1.25rem);
     margin-bottom: 0;
-    opacity: 0.9;
+    opacity: 0.95;
     line-height: 1.6;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .carousel-nav {

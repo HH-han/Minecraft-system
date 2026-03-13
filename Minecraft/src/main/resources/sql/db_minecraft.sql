@@ -17,6 +17,39 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+
+create table user
+(
+    id          bigint auto_increment comment '用户ID'
+        primary key,
+    account     varchar(50)                        not null comment '账号',
+    username    varchar(50)                        not null comment '用户名',
+    password    varchar(255)                       not null comment '密码',
+    email       varchar(100)                       not null comment '邮箱',
+    phone       varchar(20)                        null comment '手机号',
+    avatar      varchar(255)                       null comment '头像',
+    gender      varchar(10)                        null comment '性别',
+    age         int                                null comment '年龄',
+    occupation  varchar(50)                        null comment '职业',
+    hobbies     varchar(255)                       null comment '爱好',
+    bio         varchar(500)                       null comment '个人简介',
+    online      int      default 0                 null comment '在线状态 0-离线 1-在线',
+    status      int      default 1                 null comment '状态 0-禁用 1-正常',
+    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    signature   int as (255) comment '签名',
+    nickname    int as (50) comment '昵称',
+    experience  int as (255) comment '经验',
+    constraint uk_account
+        unique (account),
+    constraint uk_email
+        unique (email),
+    constraint uk_username
+        unique (username)
+)
+    comment '用户表' collate = utf8mb4_unicode_ci
+                     row_format = DYNAMIC;
+
 -- ----------------------------
 -- Table structure for attraction
 -- ----------------------------

@@ -10,16 +10,23 @@ import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.UserMapper;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.AccountGenerator;
+import com.minecraft.utils.ImageUtils;
 import com.minecraft.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    private ImageUtils imageUtils;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -57,6 +64,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         response.setAvatar(user.getAvatar());
         response.setAccount(user.getAccount());
         response.setPhone(user.getPhone());
+        response.setSignature(user.getSignature());
+        response.setNickname(user.getNickname());
+        response.setExperience(user.getExperience());
 
         return response;
     }
@@ -113,5 +123,65 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setOnline(online ? 1 : 0);
             updateById(user);
         }
+    }
+
+    @Override
+    public String uploadAvatar(Long userId, MultipartFile file) {
+        try {
+            // 处理上传的文件
+            String avatarUrl = imageUtils.processMultipartFile(file);
+            
+            // 更新用户头像
+            User user = getById(userId);
+            if (user != null) {
+                // 删除旧头像
+                if (user.getAvatar() != null) {
+                    try {
+                        imageUtils.deleteImage(user.getAvatar());
+                    } catch (Exception e) {
+                        // 旧头像删除失败不影响新头像上传
+                        e.printStackTrace();
+                    }
+                }
+                user.setAvatar(avatarUrl);
+                updateById(user);
+            }
+            
+            return avatarUrl;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException("头像上传失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        // 获取用户信息
+        User user = getById(userId);
+        if (user != null) {
+            // 删除用户头像
+            if (user.getAvatar() != null) {
+                try {
+                    imageUtils.deleteImage(user.getAvatar());
+                } catch (Exception e) {
+                    // 头像删除失败不影响用户删除
+                    e.printStackTrace();
+                }
+            }
+            // 删除用户
+            removeById(userId);
+        }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return list();
+    }
+
+    @Override
+    public User getUserByAccount(String account) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getAccount, account);
+        return getOne(wrapper);
     }
 }

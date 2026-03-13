@@ -213,6 +213,7 @@ import Login_background from '@/components/LoginComponent/Login_background.vue';
 import LoginSucceeded from '@/components/PromptComponent/LoginSucceeded.vue';
 import ErrorMessage from '@/components/PromptComponent/ErrorMessage.vue';
 import { login } from '@/api/auth.js';
+import { getUserByAccount } from '@/api/user.js';
 import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
 import { useAuthStore } from '@/stores/auth.js'
 
@@ -279,15 +280,28 @@ const rememberMe = ref(false);
 // auth store
 const authStore = useAuthStore();
 
-// 用户名输入处理（简化版，不再尝试预加载头像）
-const handleUsernameInput = () => {
-  loginForm.value.hasInput = loginForm.value.username.trim() !== '';
+// 用户名输入处理
+const handleUsernameInput = async () => {
+  const account = loginForm.value.username.trim();
+  loginForm.value.hasInput = account !== '';
 
-  // 仅当本地有匹配的已登录用户时才显示头像
-  const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
-  if (storedUser && storedUser.username === loginForm.value.username.trim()) {
-    loginForm.value.image = storedUser.image || defaultAvatar;
+  if (account) {
+    try {
+      // 调用后端API获取用户信息
+      const response = await getUserByAccount(account);
+      if (response.code === 200 && response.data) {
+        loginForm.value.image = response.data.avatar || defaultAvatar;
+      } else {
+        // 用户不存在，使用默认头像
+        loginForm.value.image = defaultAvatar;
+      }
+    } catch (error) {
+      // 网络错误或其他问题，使用默认头像
+      loginForm.value.image = defaultAvatar;
+      console.error('获取用户信息失败:', error);
+    }
   } else {
+    // 输入为空，使用默认头像
     loginForm.value.image = defaultAvatar;
   }
 };

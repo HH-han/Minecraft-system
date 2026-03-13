@@ -100,8 +100,8 @@
 
       <!-- 在线状态 (根据online字段) -->
       <div class="online-status" v-if="userInfo.online !== undefined">
-        <span class="status-dot" :class="{ 'online': userInfo.online === 1 }"></span>
-        <span>{{ userInfo.online === "1" ? '当前在线' : '离线' }}</span>
+        <span class="status-dot" :class="{ 'online': userInfo.online === 0 }"></span>
+        <span>{{ userInfo.online === 0 ? '当前在线' : '离线' }}</span>
       </div>
     </div>
 
@@ -173,7 +173,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Edit, Lock } from '@element-plus/icons-vue';
-import { getUserInfo, updateUserInfo, updatePassword } from '@/api/user';
+import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
 
 // 用户信息 (根据后端返回完整字段)
 const userInfo = ref({
@@ -222,6 +222,15 @@ const passwordForm = ref({
   confirmPassword: ''
 });
 
+// 头像预览
+const avatarPreview = ref('');
+
+// 触发文件输入
+const fileInput = ref(null);
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
 // 初始化获取用户信息
 onMounted(() => {
   fetchUserInfo();
@@ -235,6 +244,10 @@ const fetchUserInfo = async () => {
     const response = await getUserInfo(token);
     if (response.code === 200) {
       userInfo.value = response.data;
+      // 设置头像预览
+      if (response.data.avatar) {
+        avatarPreview.value = response.data.avatar;
+      }
       console.log('用户信息:', response.data);
     } else {
       ElMessage.error(response.message || '获取用户信息失败');
@@ -244,6 +257,50 @@ const fetchUserInfo = async () => {
     console.error('获取用户信息失败:', error);
   } finally {
     loading.value = false;
+  }
+};
+
+// 处理头像上传
+const handleAvatarUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // 验证文件类型
+  const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (!validTypes.includes(file.type)) {
+    ElMessage.error('请选择有效的图片文件');
+    return;
+  }
+
+  // 验证文件大小 (2MB)
+  const maxSize = 2 * 1024 * 1024;
+  if (file.size > maxSize) {
+    ElMessage.error('图片大小不能超过2MB');
+    return;
+  }
+
+  try {
+    loading.value = true;
+    const formData = new FormData();
+    formData.append('avatar', file);
+    
+    const response = await uploadAvatar(formData);
+    if (response.code === 200) {
+      ElMessage.success('头像上传成功');
+      // 更新头像预览
+      avatarPreview.value = response.data;
+      // 重新获取用户信息
+      await fetchUserInfo();
+    } else {
+      ElMessage.error(response.message || '头像上传失败');
+    }
+  } catch (error) {
+    ElMessage.error('头像上传失败，请检查网络');
+    console.error('头像上传失败:', error);
+  } finally {
+    loading.value = false;
+    // 重置文件输入
+    event.target.value = '';
   }
 };
 

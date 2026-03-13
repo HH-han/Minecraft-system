@@ -5,6 +5,8 @@ import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.request.RegisterRequest;
 import com.minecraft.dto.response.LoginResponse;
 import com.minecraft.entity.User;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 public interface UserService extends IService<User> {
     LoginResponse login(LoginRequest request);
@@ -13,4 +15,8 @@ public interface UserService extends IService<User> {
     void updateUserInfo(User user);
     void updatePassword(Long userId, String oldPassword, String newPassword);
     void updateOnlineStatus(Long userId, boolean online);
+    String uploadAvatar(Long userId, MultipartFile file);
+    void deleteUser(Long userId);
+    List<User> getAllUsers();
+    User getUserByAccount(String account);
 }
