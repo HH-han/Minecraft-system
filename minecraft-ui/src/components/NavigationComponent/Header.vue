@@ -295,14 +295,8 @@ const localLogout = () => {
 // 确认退出登录
 const confirmLogout = async () => {
   try {
-    // 获取用户ID
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    const userId = userData.id;
-
     // 调用API退出登录
-    if (userId) {
-      await logout(userId);
-    }
+    await logout();
 
     // 清除所有登录相关存储
     localStorage.removeItem('token');

@@ -36,3 +36,13 @@ export const leaveGroup = (groupId) => {
     }
   })
 }
+
+// 修改旅行团
+export const updateGroup = (group) => {
+  return request.put('/group/update', group)
+}
+
+// 删除旅行团
+export const deleteGroup = (id) => {
+  return request.delete(`/group/${id}`)
+}

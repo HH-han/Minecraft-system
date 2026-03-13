@@ -422,7 +422,7 @@ const menuItems = reactive([
   { id: 14, title: '个人中心', icon: cm, component: CenterManagement },
   { id: 15, title: '旅行笔记', icon: tz, component: TravelNoteManagement },
   { id: 16, title: '服务监测', icon: sm, component: SystemMonitoring },
-  { id: 17, title: '策略管理', icon: sg, component: StrategygroupManagement },
+  { id: 17, title: '旅游团管理', icon: sg, component: StrategygroupManagement },
   { id: 18, title: '操作日志', icon: olIcon, component: OperationLog },
   { id: 19, title: '登录日志', icon: llIcon, component: LoginLogs },
   { id: 20, title: '缓存监控', icon: cmIcon, component: CacheMonitoring },

@@ -103,7 +103,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void updateUserInfo(User user) {
-        updateById(user);
+        // 排除生成列，只更新允许更新的字段
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setAccount(user.getAccount());
+        updateUser.setUsername(user.getUsername());
+        updateUser.setPassword(user.getPassword());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setAvatar(user.getAvatar());
+        updateUser.setGender(user.getGender());
+        updateUser.setAge(user.getAge());
+        updateUser.setOccupation(user.getOccupation());
+        updateUser.setHobbies(user.getHobbies());
+        updateUser.setBio(user.getBio());
+        updateUser.setOnline(user.getOnline());
+        updateUser.setStatus(user.getStatus());
+        updateUser.setUpdateTime(user.getUpdateTime());
+        updateUser.setSignature(user.getSignature());
+        updateUser.setNickname(user.getNickname());
+        updateUser.setExperience(user.getExperience());
+        
+        updateById(updateUser);
     }
 
     @Override

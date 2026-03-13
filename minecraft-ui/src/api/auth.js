@@ -11,6 +11,6 @@ export const register = (data) => {
 }
 
 // 退出登录
-export const logout = (userId) => {
-  return request.post('/auth/logout', { userId })
+export const logout = () => {
+  return request.post('/api/user/logout')
 }

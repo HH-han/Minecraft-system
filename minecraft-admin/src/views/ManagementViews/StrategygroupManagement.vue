@@ -30,20 +30,20 @@
                                         class="ui-checkbox" />
                                 </td>
                                 <td>{{ card.id }}</td>
-                                <td>{{ card.title }}</td>
+                                <td>{{ card.name }}</td>
                                 <td>
-                                    <img :src="card.image" alt="美食图片" style="width: 35px; height: 35px;"
+                                    <img :src="card.images ? card.images.split(',')[0] : ''" alt="旅行团图片" style="width: 35px; height: 35px;"
                                         @click="triggerFileInput(card)" />
                                 </td>
-                                <td>{{ card.tag }}</td>
-                                <td>{{ card.highlights.substring(0, 10) }}</td>
-                                <td>{{ card.groupName }}</td>
-                                <td>{{ card.members }}</td>
+                                <td>{{ card.destination }}</td>
+                                <td>{{ card.maxMembers }}</td>
+                                <td>{{ card.currentMembers }}</td>
                                 <td>{{ card.price }}</td>
                                 <td>{{ card.description.substring(0, 15) }}...</td>
-                                <td>{{ card.createdAt }}</td>
-                                <td>{{ card.updatedAt }}</td>
-                                <td>{{ card.dates }}</td>
+                                <td>{{ card.status === 1 ? '招募中' : '已结束' }}</td>
+                                <td>{{ formatDate(card.createTime) }}</td>
+                                <td>{{ formatDate(card.updateTime) }}</td>
+                                <td>{{ formatDate(card.departureTime) }}</td>
                                 <td class="table-btn-display">
                                     <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
                                     <button class="btn edit-btn" @click="showEditDialog(card)">编辑</button>
@@ -122,51 +122,52 @@
                             </div>
                         </div>
                         <div class="form-row">
-
                             <div class="form-group">
-                                <label>群组描述:</label>
-                                <textarea v-model="formData.groupDescription" required></textarea>
+                                <label>旅行团名称:</label>
+                                <input v-model="formData.name" required />
                             </div>
                             <div class="form-group">
-                                <label>标题:</label>
-                                <input v-model="formData.title" required />
+                                <label>目的地:</label>
+                                <input v-model="formData.destination" required />
                             </div>
                             <div class="form-group">
-                                <label>类型:</label>
-                                <input v-model="formData.type" required />
-                                <select name="type" id="" v-model="formData.type" required>
-                                    <option value="">请选择</option>
-                                    <option value="domestic">国内游</option>
-                                    <option value="abroad">海外游</option>
-                                </select>
+                                <label>出发时间:</label>
+                                <input type="datetime-local" v-model="formData.departureTime" required />
                             </div>
                             <div class="form-group">
-                                <label>日期:</label>
-                                <input v-model="formData.dates" required />
+                                <label>返回时间:</label>
+                                <input type="datetime-local" v-model="formData.returnTime" required />
                             </div>
                             <div class="form-group">
-                                <label>描述:</label>
-                                <input v-model="formData.description" required />
+                                <label>最大成员数:</label>
+                                <input type="number" v-model="formData.maxMembers" required />
                             </div>
                             <div class="form-group">
-                                <label>群组名称:</label>
-                                <input v-model="formData.groupName" required />
-                            </div>
-                            <div class="form-group">
-                                <label>亮点:</label>
-                                <input v-model="formData.highlights" required />
-                            </div>
-                            <div class="form-group">
-                                <label>成员数:</label>
-                                <input type="number" v-model="formData.members" required />
+                                <label>当前成员数:</label>
+                                <input type="number" v-model="formData.currentMembers" required />
                             </div>
                             <div class="form-group">
                                 <label>价格:</label>
-                                <input type="number" v-model="formData.price" required />
+                                <input type="number" v-model="formData.price" step="0.01" required />
                             </div>
                             <div class="form-group">
-                                <label>标签:</label>
-                                <input v-model="formData.tag" required />
+                                <label>状态:</label>
+                                <select v-model="formData.status" required>
+                                    <option value="1">招募中</option>
+                                    <option value="0">已结束</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>描述:</label>
+                                <textarea v-model="formData.description" rows="4" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>图片 (多个图片用逗号分隔):</label>
+                                <input v-model="formData.images" placeholder="例如: https://example.com/image1.jpg,https://example.com/image2.jpg" />
                             </div>
                         </div>
                         <!-- 创建修改时间 -->
@@ -190,24 +191,24 @@
 <script setup>
 
 import { ref, computed, onMounted } from 'vue';
-import request from '@/utils/request';
+import { getGroupList, getGroupDetail, createGroup, joinGroup, leaveGroup } from '@/api/group';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
 const columns = [
     { key: 'checked', title: '多选' },
     { key: 'id', title: 'ID' },
-    { key: 'title', title: '标题' },
+    { key: 'name', title: '旅行团名称' },
     { key: 'images', title: '图片预览' },
-    { key: 'tag', title: '标签' },
-    { key: 'highlights', title: '亮点' },
-    { key: 'groupName', title: '分组' },
-    { key: 'members', title: '成员' },
+    { key: 'destination', title: '目的地' },
+    { key: 'maxMembers', title: '最大成员数' },
+    { key: 'currentMembers', title: '当前成员数' },
     { key: 'price', title: '价格' },
     { key: 'description', title: '描述' },
-    { key: 'createdAt', title: '创建时间' },
-    { key: 'updatedAt', title: '修改时间' },
-    { key: 'dates', title: '日期' }
+    { key: 'status', title: '状态' },
+    { key: 'createTime', title: '创建时间' },
+    { key: 'updateTime', title: '修改时间' },
+    { key: 'departureTime', title: '出发时间' }
 
 ];
 const showToast = ref(false);
@@ -219,18 +220,17 @@ const showDialog = ref(false);
 const isEditing = ref(false);
 const formData = ref({
     id: '',
-    avatar: '',
-    title: '',
-    type: '',
-    dates: '',
+    creatorId: '',
+    name: '',
     description: '',
-    image: '',
-    groupDescription: '',
-    groupName: '',
-    highlights: '',
-    members: '',
-    price: '',
-    tag: '',
+    destination: '',
+    departureTime: '',
+    returnTime: '',
+    maxMembers: 0,
+    currentMembers: 0,
+    price: 0,
+    images: '',
+    status: 1,
 });
 
 // 格式化日期显示
@@ -246,7 +246,8 @@ const filteredCards = computed(() => {
     return cards.value.filter(
         (card) =>
             String(card.id).includes(keyword) ||
-            card.title.toLowerCase().includes(keyword)
+            (card.name && card.name.toLowerCase().includes(keyword)) ||
+            (card.destination && card.destination.toLowerCase().includes(keyword))
     );
 });
 
@@ -271,18 +272,19 @@ const handleCurrentChange = (newPage) => {
 const fetchScenic = async () => {
     try {
         const params = {
-            page: currentPage.value,
-            pageSize: pageSize.value,
-            keyword: searchKeyword.value
+            pageNum: currentPage.value,
+            pageSize: pageSize.value
         };
-        const response = await request.get('/api/public/strategy-groups', { params });
-        cards.value = response.data.list.map(card => ({
-            ...card,
-            images: typeof card.images === 'string' ? JSON.parse(card.images) : card.images
-        }));
-        total.value = response.data.total;
+        const response = await getGroupList(params);
+        if (response.data && response.data.records) {
+            cards.value = response.data.records.map(card => ({
+                ...card,
+                checked: false
+            }));
+            total.value = response.data.total;
+        }
     } catch (error) {
-        console.error('获取笔记数据失败:', error);
+        console.error('获取旅行团数据失败:', error);
     }
 };
 
@@ -291,18 +293,17 @@ const showAddDialog = () => {
     isEditing.value = false;
     formData.value = {
         id: '',
-        avatar: '',
-        title: '',
-        type: '',
-        dates: '',
+        creatorId: '',
+        name: '',
         description: '',
-        image: '',
-        groupDescription: '',
-        groupName: '',
-        highlights: '',
-        members: '',
-        price: '',
-        tag: '',
+        destination: '',
+        departureTime: '',
+        returnTime: '',
+        maxMembers: 0,
+        currentMembers: 0,
+        price: 0,
+        images: '',
+        status: 1,
     };
     showDialog.value = true;
 };
@@ -325,20 +326,17 @@ const showToastMessage = (message, type = 'success') => {
 // 提交表单
 const submitForm = async () => {
     try {
-        // 自动设置时间
         if (isEditing.value) {
-            formData.value.updatedAt = new Date().toISOString();
-            await request.put(`/api/public/strategy-groups/${formData.value.id}`, formData.value);
-            showToastMessage('更新策略组成功');
+            // 编辑功能暂未实现，需要后端提供更新API
+            showToastMessage('编辑功能暂未实现', 'warning');
         } else {
-            formData.value.createdAt = new Date().toISOString();
-            await request.post('/api/public/strategy-groups', formData.value);
-            showToastMessage('新增策略组成功');
+            await createGroup(formData.value);
+            showToastMessage('新增旅行团成功');
         }
         await fetchScenic();
         closeDialog();
     } catch (error) {
-        const message = isEditing.value ? '更新策略组失败' : '新增策略组失败';
+        const message = isEditing.value ? '更新旅行团失败' : '新增旅行团失败';
         showToastMessage(message, 'error');
         console.error('操作失败:', error);
     }
@@ -361,13 +359,12 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
     if (deleteCardId.value) {
         try {
-            await request.delete(`/api/public/strategy-groups/${deleteCardId.value}`);
+            // 删除功能暂未实现，需要后端提供删除API
+            showToastMessage('删除功能暂未实现', 'warning');
             await fetchScenic();
-            closeDeletePrompt();
-            showToastMessage('删除策略组成功');
         } catch (error) {
             console.error('删除失败:', error);
-            showToastMessage('删除策略组失败', 'error');
+            showToastMessage('删除旅行团失败', 'error');
 
         } finally {
             closeDeletePrompt();

@@ -124,7 +124,7 @@
                   <td>{{ user.experience ? user.experience.substring(0, 15) : '未设置' }}...</td>
                   <td>{{ user.bio }}</td>
                   <td>{{ user.age }}</td>
-                  <td>{{ user.gender === 1 ? '男' : user.gender === 0 ? '女' : '未知' }}</td>
+                  <td>{{ user.gender === "1" ? '男' : user.gender === "0" ? '女' : '未知' }}</td>
                   <td>{{ user.hobbies ? user.hobbies : '未设置' }}</td>
                   <td>{{ user.occupation ? user.occupation : '未设置' }}</td>
                   <td>{{ formatDate(user.createTime) }}</td>
@@ -222,7 +222,10 @@
               </div>
             </div>
             <div class="form-row">
-
+              <div class="form-group">
+                <label>账号:</label>
+                <input v-model="formData.account" :required="!isEditing" />
+              </div>
               <div class="form-group">
                 <label>用户名:</label>
                 <input v-model="formData.username" required />
@@ -233,7 +236,7 @@
               </div>
               <div class="form-group">
                 <label>密码:</label>
-                <input type="password" v-model="formData.password" required />
+                <input type="password" v-model="formData.password" :required="!isEditing" />
               </div>
               <div class="form-group">
                 <label>手机号:</label>
@@ -242,6 +245,44 @@
               <div class="form-group">
                 <label>昵称:</label>
                 <input v-model="formData.nickname" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>签名:</label>
+                <input v-model="formData.signature" />
+              </div>
+              <div class="form-group">
+                <label>年龄:</label>
+                <input v-model="formData.age" type="number" />
+              </div>
+              <div class="form-group">
+                <label>性别:</label>
+                <select v-model="formData.gender">
+                  <option value="">请选择</option>
+                  <option value="1">男</option>
+                  <option value="0">女</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>职业:</label>
+                <input v-model="formData.occupation" />
+              </div>
+              <div class="form-group">
+                <label>爱好:</label>
+                <input v-model="formData.hobbies" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label>简介:</label>
+                <textarea v-model="formData.bio" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label>经验:</label>
+                <textarea v-model="formData.experience" rows="3"></textarea>
               </div>
             </div>
             <div class="dialog-buttons">
@@ -263,7 +304,7 @@
           <!-- 用户头像区 -->
           <div class="user-avatar-section">
             <div class="avatar-wrapper">
-              <img :src="userDetail.image" alt="用户头像" class="user-avatar">
+              <img :src="userDetail.avatar" alt="用户头像" class="user-avatar">
               <div class="avatar-border"></div>
             </div>
             <h2 class="user-name">{{ userDetail.username }}</h2>
@@ -386,7 +427,7 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue';
 import request from '@/utils/request';
-import { getAllUsers, deleteUser, uploadAvatar } from '@/api/user';
+import { getAllUsers, deleteUser, uploadAvatar, updateUserInfo, createUser } from '@/api/user';
 import ExcelImportExportAPI from '@/components/DisplayBox/ExcelImportExportAPI.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
@@ -394,7 +435,7 @@ import ToastType from '@/components/PromptComponent/ToastType.vue';
 const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
-  { key: 'image', title: '头像' },
+  { key: 'avatar', title: '头像' },
   { key: 'account', title: '账号' },
   { key: 'username', title: '用户名' },
   { key: 'email', title: '邮箱' },
@@ -429,14 +470,14 @@ const formData = ref({
   password: '',
   phone: '',
   nickname: '',
-  image: '',
+  avatar: '',
   createTime: new Date(),
   updateTime: new Date(),
 });
 
 // 详情弹窗
 const userDetail = ref({
-  image: '',
+  avatar: '',
   username: '',
   nickname: '',
   createTime: null,
@@ -563,12 +604,20 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    username: '',
     account: '',
+    username: '',
+    email: '',
     password: '',
     phone: '',
     nickname: '',
-    image: '',
+    signature: '',
+    experience: '',
+    bio: '',
+    age: null,
+    gender: '',
+    hobbies: '',
+    occupation: '',
+    avatar: '',
     createTime: new Date(),
     updateTime: new Date(),
   };
@@ -578,7 +627,29 @@ const showAddDialog = () => {
 // 显示编辑对话框
 const showEditDialog = (user) => {
   isEditing.value = true;
-  formData.value = { ...user };
+  formData.value = {
+    id: user.id,
+    account: user.account,
+    username: user.username,
+    email: user.email,
+    password: '', // 编辑时密码为空，不修改密码
+    phone: user.phone,
+    nickname: user.nickname || '',
+    signature: user.signature || '',
+    experience: user.experience || '',
+    bio: user.bio || '',
+    age: user.age || null,
+    gender: user.gender || '',
+    hobbies: user.hobbies || '',
+    occupation: user.occupation || '',
+    avatar: user.avatar || '',
+    createTime: user.createTime,
+    updateTime: new Date(),
+  };
+  // 设置头像预览
+  if (user.avatar) {
+    previewImage.value = user.avatar;
+  }
   showDialog.value = true;
 };
 
@@ -601,20 +672,15 @@ const submitForm = async () => {
   try {
     if (isEditing.value) {
       formData.value.updateTime = new Date();
-      await request.put('/api/user/update', formData.value);
+      // 编辑时，如果密码为空，则不包含密码字段
+      const updateData = { ...formData.value };
+      if (!updateData.password) {
+        delete updateData.password;
+      }
+      await updateUserInfo(updateData);
       showToastMessage('更新用户成功');
     } else {
-      // 后端暂未提供新增用户接口，这里使用模拟数据
-      const newUser = {
-        ...formData.value,
-        id: Date.now(),
-        createTime: new Date(),
-        updateTime: new Date(),
-        permissions: 0,
-        status: 0
-      };
-      users.value.push(newUser);
-      total.value = users.value.length;
+      await createUser(formData.value);
       showToastMessage('新增用户成功');
     }
     await fetchUsers();
@@ -735,7 +801,7 @@ const handleFileUpload = async (event) => {
     uploadFormData.append('avatar', file);
     
     const response = await uploadAvatar(uploadFormData);
-    formData.value.image = response.data;
+    formData.value.avatar = response.data;
     showToastMessage('头像上传成功');
   } catch (error) {
     console.error('头像上传失败:', error);
@@ -762,7 +828,7 @@ const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
   fileSize.value = '';
-  formData.value.image = '';
+  formData.value.avatar = '';
 };
 
 // 触发文件输入框

@@ -72,6 +72,10 @@
           <span class="item-label">职业</span>
           <span class="item-value">{{ userInfo.occupation }}</span>
         </div>
+        <div class="info-item" v-if="userInfo.nickname">
+          <span class="item-label">昵称</span>
+          <span class="item-value bio-value">{{ userInfo.nickname }}</span>
+        </div>
         <div class="info-item" v-if="userInfo.hobbies">
           <span class="item-label">爱好</span>
           <span class="item-value">{{ userInfo.hobbies }}</span>
@@ -79,6 +83,14 @@
         <div class="info-item" v-if="userInfo.bio">
           <span class="item-label">个人简介</span>
           <span class="item-value bio-value">{{ userInfo.bio }}</span>
+        </div>
+        <div class="info-item" v-if="userInfo.experience">
+          <span class="item-label">经验</span>
+          <span class="item-value bio-value">{{ userInfo.experience }}</span>
+        </div>
+        <div class="info-item" v-if="userInfo.signature">
+          <span class="item-label">签名</span>
+          <span class="item-value bio-value">{{ userInfo.signature }}</span>
         </div>
         <div class="info-item">
           <span class="item-label">账号状态</span>
@@ -112,6 +124,9 @@
         <el-form-item label="用户名">
           <el-input v-model="editForm.username" placeholder="请输入用户名" />
         </el-form-item>
+        <el-form-item label="昵称">
+          <el-input v-model="editForm.nickname" placeholder="请输入昵称" />
+        </el-form-item>
         <el-form-item label="邮箱">
           <el-input v-model="editForm.email" placeholder="请输入邮箱" />
         </el-form-item>
@@ -135,6 +150,12 @@
         </el-form-item>
         <el-form-item label="个人简介">
           <el-input v-model="editForm.bio" type="textarea" :rows="3" placeholder="介绍一下自己" />
+        </el-form-item>
+        <el-form-item label="签名">
+          <el-input v-model="editForm.signature" placeholder="请输入签名" />
+        </el-form-item>
+        <el-form-item label="经验">
+          <el-input v-model="editForm.experience" type="textarea" :rows="3" placeholder="请输入经验" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -192,7 +213,10 @@ const userInfo = ref({
   hobbies: '',
   bio: '',
   online: 0,
-  password: '' // 不展示
+  password: '',
+  nickname:'',
+  signature:'',
+  experience:''
 });
 
 // 加载状态
@@ -212,7 +236,10 @@ const editForm = ref({
   age: null,
   occupation: '',
   hobbies: '',
-  bio: ''
+  bio: '',
+  nickname:'',
+  signature:'',
+  experience:''
 });
 
 // 更改密码表单
@@ -283,7 +310,7 @@ const handleAvatarUpload = async (event) => {
     loading.value = true;
     const formData = new FormData();
     formData.append('avatar', file);
-    
+
     const response = await uploadAvatar(formData);
     if (response.code === 200) {
       ElMessage.success('头像上传成功');
@@ -315,7 +342,10 @@ const openEditModal = () => {
     age: userInfo.value.age,
     occupation: userInfo.value.occupation || '',
     hobbies: userInfo.value.hobbies || '',
-    bio: userInfo.value.bio || ''
+    bio: userInfo.value.bio || '',
+    nickname: userInfo.value.nickname || '',
+    signature: userInfo.value.signature || '',
+    experience: userInfo.value.experience || ''
   };
   showEditModal.value = true;
 };
@@ -370,7 +400,10 @@ const handleUpdateUserInfo = async () => {
       age: editForm.value.age,
       occupation: editForm.value.occupation,
       hobbies: editForm.value.hobbies,
-      bio: editForm.value.bio
+      bio: editForm.value.bio,
+      nickname: editForm.value.nickname,
+      signature: editForm.value.signature,
+      experience: editForm.value.experience
     };
 
     const response = await updateUserInfo(updateData);

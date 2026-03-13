@@ -47,3 +47,8 @@ export const uploadAvatar = (formData) => {
     }
   })
 }
+
+// 新增用户
+export const createUser = (user) => {
+  return request.post('/auth/register', user)
+}

@@ -69,4 +69,12 @@ public class UserController {
         User user = userService.getUserByAccount(account);
         return ApiResponse.success(user);
     }
+
+    @Operation(summary ="退出登录")
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout() {
+        Long userId = SecurityUtils.getCurrentUserId();
+        userService.updateOnlineStatus(userId, false);
+        return ApiResponse.success("退出成功", null);
+    }
 }

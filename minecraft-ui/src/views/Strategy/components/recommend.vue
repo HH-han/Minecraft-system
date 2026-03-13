@@ -145,7 +145,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getTravelPlanList } from '@/api/travel';
+import { getGroupList } from '@/api/group';
 import carouselApi from '@/api/carousel'
 
 // 搜索关键词
@@ -178,11 +178,24 @@ const travelCards = ref([]);
 const fetchCards = async () => {
     try {
         const params = {
-            keyword: searchKeyword.value
+            pageNum: 1,
+            pageSize: 10
         };
-        const response = await getTravelPlanList(params);
-        if (response.data) {
-            travelCards.value = response.data.list || [];
+        const response = await getGroupList(params);
+        if (response.data && response.data.records) {
+            // 转换数据结构以匹配模板期望
+            travelCards.value = response.data.records.map(group => ({
+                id: group.id,
+                title: group.name,
+                image: group.images ? group.images.split(',')[0] : '默认图片链接',
+                avatar: 'https://randomuser.me/api/portraits/men/32.jpg', // 团队头像，使用默认值
+                members: group.currentMembers || 0,
+                description: group.description || '暂无描述',
+                price: group.price || 0,
+                tag: group.status === 1 ? '招募中' : '已结束',
+                tagIcon: group.status === 1 ? 'fas fa-users' : 'fas fa-check-circle',
+                type: 'domestic' // 默认类型，可根据实际数据调整
+            }));
         } else {
             travelCards.value = [];
         }

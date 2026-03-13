@@ -53,4 +53,18 @@ public class GroupTravelController {
         groupTravelService.leaveGroup(groupId, userId);
         return ApiResponse.success("退出成功", null);
     }
+
+    @Operation(summary ="修改旅行团")
+    @PutMapping("/update")
+    public ApiResponse<Void> updateGroup(@RequestBody GroupTravel group) {
+        groupTravelService.updateGroup(group);
+        return ApiResponse.success("修改成功", null);
+    }
+
+    @Operation(summary ="删除旅行团")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteGroup(@PathVariable Long id) {
+        groupTravelService.deleteGroup(id);
+        return ApiResponse.success("删除成功", null);
+    }
 }
