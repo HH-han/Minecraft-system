@@ -287,6 +287,7 @@ import HotRecommendationManagement from '@/views/ManagementViews/HotRecommendati
 import DestinationworldManagement from '@/views/ManagementViews/DestinationworldManagement.vue';
 import TravelNewsManagement from '@/views/ManagementViews/TravelNewsManagement.vue';
 import index from '@/views/ManagementViews/DestinationManagement/index.vue';
+import ProductManagement from '@/views/ManagementViews/ProductManagement.vue';
 // 个人/设置组件
 import CenterManagement from '@/views/ManagementViews/CenterManagement.vue';
 import AdminSetting from './AdminSetting.vue';
@@ -434,6 +435,7 @@ const menuItems = reactive([
   { id: 26, title: '旅行新闻', icon: trnIcon, component: TravelNewsManagement },
   { id: 27, title: '登录信息', icon: liIcon, component: logininformationManagement },
   { id: 28, title: '目的地管理', icon: indexIcon, component: index },
+  { id: 29, title: '商品管理', icon: gsIcon, component: ProductManagement },
 ]);
 // 计算属性分类
 const systemMenus = computed(() =>
@@ -445,7 +447,7 @@ const contentMenus = computed(() =>
 )
 
 const travelMenus = computed(() =>
-  menuItems.filter(item => [5, 6, 8, 9, 11, 7, 17, 22, 23, 24, 26, 28].includes(item.id))
+  menuItems.filter(item => [5, 6, 8, 9, 11, 7, 17, 22, 23, 24, 26, 28, 29].includes(item.id))
 )
 const userMenus = computed(() =>
   menuItems.filter(item => [3, 12, 25, 27].includes(item.id))
@@ -756,7 +758,7 @@ const currentCategories = computed(() => {
   // 添加主分类
   if ([1, 2, 18, 19].includes(menuId)) categories.push('系统管理');
   if ([4, 10, 12, 13, 15].includes(menuId)) categories.push('内容管理');
-  if ([5, 6, 7, 8, 9, 11, 22, 23, 24, 26, 28].includes(menuId)) categories.push('旅行管理');
+  if ([5, 6, 7, 8, 9, 11, 22, 23, 24, 26, 28, 29].includes(menuId)) categories.push('旅行管理');
   if ([3, 12, 25, 27].includes(menuId)) categories.push('用户管理');
   if ([14].includes(menuId)) categories.push('个人中心');
   if ([16, 20, 21].includes(menuId)) categories.push('服务监测');

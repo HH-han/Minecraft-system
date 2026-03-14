@@ -8,12 +8,17 @@ import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Product;
 import com.minecraft.mapper.ProductMapper;
 import com.minecraft.service.ProductService;
+import com.minecraft.utils.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
+
+    @Autowired
+    private ImageUtils imageUtils;
 
     @Override
     public PageResponse<?> getProductList(PageRequest request) {
@@ -65,5 +70,91 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public void deleteProduct(Long id) {
         removeById(id);
+    }
+    
+    @Override
+    public boolean save(Product product) {
+        try {
+            // 处理封面图片上传
+            if (product.getCoverImage() != null && product.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(product.getCoverImage());
+                product.setCoverImage(processedCoverImage);
+            }
+            
+            // 处理多图片上传（如果是Base64数组）
+            if (product.getImages() != null && product.getImages().startsWith("[")) {
+                try {
+                    // 解析图片数组
+                    String[] imageArray = product.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
+                    StringBuilder processedImages = new StringBuilder();
+                    
+                    for (String image : imageArray) {
+                        if (image.trim().startsWith("data:image")) {
+                            String processedImage = imageUtils.processBase64Image(image.trim());
+                            processedImages.append(processedImage).append(",");
+                        } else {
+                            processedImages.append(image.trim()).append(",");
+                        }
+                    }
+                    
+                    if (processedImages.length() > 0) {
+                        processedImages.setLength(processedImages.length() - 1);
+                    }
+                    
+                    product.setImages(processedImages.toString());
+                } catch (Exception e) {
+                    // 如果解析失败，保持原数据
+                    e.printStackTrace();
+                }
+            }
+            
+            return super.save(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public boolean updateById(Product product) {
+        try {
+            // 处理封面图片上传
+            if (product.getCoverImage() != null && product.getCoverImage().startsWith("data:image")) {
+                String processedCoverImage = imageUtils.processBase64Image(product.getCoverImage());
+                product.setCoverImage(processedCoverImage);
+            }
+            
+            // 处理多图片上传（如果是Base64数组）
+            if (product.getImages() != null && product.getImages().startsWith("[")) {
+                try {
+                    // 解析图片数组
+                    String[] imageArray = product.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
+                    StringBuilder processedImages = new StringBuilder();
+                    
+                    for (String image : imageArray) {
+                        if (image.trim().startsWith("data:image")) {
+                            String processedImage = imageUtils.processBase64Image(image.trim());
+                            processedImages.append(processedImage).append(",");
+                        } else {
+                            processedImages.append(image.trim()).append(",");
+                        }
+                    }
+                    
+                    if (processedImages.length() > 0) {
+                        processedImages.setLength(processedImages.length() - 1);
+                    }
+                    
+                    product.setImages(processedImages.toString());
+                } catch (Exception e) {
+                    // 如果解析失败，保持原数据
+                    e.printStackTrace();
+                }
+            }
+            
+            return super.updateById(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

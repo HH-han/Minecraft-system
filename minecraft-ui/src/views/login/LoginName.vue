@@ -61,7 +61,17 @@
         <div class="form-wrapper">
           <div class="login-form">
             <h3>USER PORTAL</h3>
-            <h2>欢迎回来 <span class="user-icon">👤</span></h2>
+            <div class="welcome-message">
+              <h2>欢迎回来 </h2>
+              <span class="user-icon">
+                <svg t="1773503868766" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                  xmlns="http://www.w3.org/2000/svg" p-id="28684" width="256" height="256">
+                  <path
+                    d="M510.45 70.554c-243.163 0-442.115 198.951-442.115 442.115 0 243.16 198.952 442.11 442.116 442.11 243.159 0 442.11-198.95 442.11-442.11 0-243.165-198.951-442.115-442.11-442.115z m11.051 132.633c168.556 0 168.556 127.11 168.556 198.95 0 71.847-66.318 204.48-168.556 207.24-99.475 0-168.556-132.632-168.556-207.24 0.001-71.841 0.001-198.95 168.556-198.95z m-11.05 726.723c-127.11 0-243.164-58.03-320.534-149.211 11.051-27.635 24.868-58.03 44.212-74.607 41.446-33.162 165.79-88.425 165.79-88.425l77.37 149.215 13.816-35.923L469 686.747l44.212-44.208 44.212 44.208-19.345 46.974 11.055 35.924 80.132-146.45s124.343 55.262 165.793 88.424c19.34 13.813 33.157 38.685 41.447 60.787C761.9 869.12 643.082 929.91 510.45 929.91z m0 0"
+                    fill="" p-id="28685"></path>
+                </svg></span>
+            </div>
+
             <p class="form-subtitle">请登录您的账户</p>
             <!-- 二维码登录快捷入口 -->
             <div class="loginpage-qr-link" @click="showQrCode">
@@ -195,7 +205,7 @@
                 </button>
               </div>
             </div>
-            <button class="submit-btn" @click="handleLogin">登录工作台</button>
+            <button class="submit-btn" @click="handleLogin">立即登录</button>
             <div class="form-footer">
               <button @click="showForgotPassword" class="footer-btn">忘记密码？</button>
               <button @click="isRegister = true" class="footer-btn">立即注册</button>
@@ -286,10 +296,7 @@
   <!-- 账号信息模态框 -->
   <div v-if="showAccountModal" class="loginpage-modal" @click="closeAccountModal">
     <div class="account-modal-content" @click.stop>
-      <Account 
-        :account="generatedAccount"
-        @confirm="confirmAccount"
-      />
+      <Account :account="generatedAccount" @confirm="confirmAccount" />
     </div>
   </div>
   <!-- 错误提示框 -->
@@ -815,6 +822,13 @@ onMounted(() => {
   animation: slideInUp 0.8s ease-out 0.4s both;
 }
 
+.welcome-message {
+  font-size: 16px;
+  color: #666;
+  display: flex;
+  animation: slideInUp 0.8s ease-out 0.6s both;
+}
+
 .form-subtitle {
   color: #666;
   margin-bottom: 40px;
@@ -824,8 +838,16 @@ onMounted(() => {
 
 .user-icon {
   font-size: 20px;
-  margin-left: 5px;
+  margin: 8px 16px;
+  display: flex;
+  align-items: center;
   animation: bounce 2s ease-in-out infinite;
+}
+
+.user-icon svg {
+  width: 32px;
+  height: 32px;
+  fill: #8B4513;
 }
 
 /* 头像显示样式 */
@@ -1660,6 +1682,4 @@ onMounted(() => {
   overflow-y: auto;
   animation: slideIn 0.3s ease-in-out;
 }
-
-
 </style>
