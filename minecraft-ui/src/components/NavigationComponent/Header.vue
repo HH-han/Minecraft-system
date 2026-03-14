@@ -156,8 +156,7 @@ import strategy from '@/views/Strategy/index.vue';
 import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
 // 接口
 import { useAuthStore } from '@/stores/auth';
-import { getUserInfo } from '@/api/user';
-import { logout } from '@/api/auth';
+import { getUserInfo, logout } from '@/api/user';
 
 const props = defineProps({
   mediaList: {

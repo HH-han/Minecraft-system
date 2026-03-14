@@ -4,13 +4,13 @@
     <div class="login">欢迎登录</div>
     <div class="loginform-3-center">
       <div class="input-container-3">
-        <input required="" id="username" type="text" @input="handleUsernameInput" v-model="loginForm.username" />
-        <label class="label" for="input">账号</label>
+        <input required="" id="username" type="text" @input="handleUsernameInput" v-model="loginForm.username" placeholder="请输入账号" />
+        <label class="label" for="username">账号</label>
         <div class="underline"></div>
       </div>
       <div class="input-container-3">
-        <input type="password" id="password" v-model="loginForm.password" required />
-        <label class="label" for="input">密码</label>
+        <input type="password" id="password" v-model="loginForm.password" required placeholder="请输入密码" />
+        <label class="label" for="password">密码</label>
         <div class="underline"></div>
       </div>
     </div>
@@ -37,7 +37,7 @@
     </div>
     <div class="radio_1">
       <div>
-        <input type="checkbox" id="rememberMe" />
+        <input type="checkbox" id="rememberMe" v-model="rememberMe" />
         <span>记住用户名!</span>
       </div>
       <div>
@@ -47,6 +47,22 @@
       </div>
     </div>
   </form>
+  <!-- 错误提示框 -->
+  <div v-if="showError" class="error-message">
+    <div class="error-content">
+      <span class="error-icon">❌</span>
+      <span class="error-text">{{ errorMessage }}</span>
+      <button class="error-close" @click="showError = false">×</button>
+    </div>
+  </div>
+  <!-- 成功提示框 -->
+  <div v-if="showSucceeded" class="success-message">
+    <div class="success-content">
+      <span class="success-icon">✅</span>
+      <span class="success-text">{{ successMessage }}</span>
+      <button class="success-close" @click="showSucceeded = false">×</button>
+    </div>
+  </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -183,3 +199,299 @@ onMounted(() => {
   }
 });
 </script>
+<style scoped>
+/* 主容器样式 */
+.loginform-3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+}
+
+/* 标题样式 */
+.login {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* 表单容器 */
+.loginform-3-center {
+  margin-bottom: 25px;
+}
+
+/* 输入框容器 */
+.input-container-3 {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+/* 输入框样式 */
+.input-container-3 input {
+  width: 100%;
+  padding: 15px 10px 10px;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  background: transparent;
+  font-size: 16px;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.input-container-3 input:focus {
+  outline: none;
+  border-bottom-color: #4CAF50;
+}
+
+.input-container-3 input::placeholder {
+  color: transparent;
+}
+
+/* 标签样式 */
+.input-container-3 .label {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  font-size: 16px;
+  color: #999;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.input-container-3 input:focus + .label,
+.input-container-3 input:not(:placeholder-shown) + .label {
+  top: -5px;
+  left: 5px;
+  font-size: 12px;
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+/* 下划线动画 */
+.underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.input-container-3 input:focus ~ .underline {
+  width: 100%;
+}
+
+/* 按钮容器 */
+.btn-conteiner {
+  margin-bottom: 20px;
+}
+
+/* 登录按钮 */
+.btn-content {
+  width: 100%;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.btn-content:active {
+  transform: translateY(0);
+}
+
+/* 箭头图标动画 */
+.icon-arrow {
+  transition: transform 0.3s ease;
+}
+
+.btn-content:hover .icon-arrow {
+  transform: translateX(5px);
+}
+
+/* 选项容器 */
+.radio_1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 记住用户名选项 */
+.radio_1 div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio_1 input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #4CAF50;
+}
+
+/* 手机号登录按钮 */
+.phone {
+  background: transparent;
+  border: none;
+  color: #4CAF50;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.phone:hover {
+  color: #45a049;
+  text-decoration: underline;
+}
+
+/* 错误提示框 */
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.error-icon {
+  font-size: 18px;
+}
+
+.error-text {
+  flex: 1;
+  color: #c62828;
+  font-size: 14px;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.error-close:hover {
+  color: #333;
+}
+
+/* 成功提示框 */
+.success-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #e8f5e8;
+  border-left: 4px solid #4CAF50;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.success-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.success-icon {
+  font-size: 18px;
+}
+
+.success-text {
+  flex: 1;
+  color: #2e7d32;
+  font-size: 14px;
+}
+
+.success-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.success-close:hover {
+  color: #333;
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .loginform-3 {
+    padding: 25px;
+    width: 95%;
+  }
+  
+  .login {
+    font-size: 22px;
+  }
+  
+  .input-container-3 input {
+    padding: 12px 10px 8px;
+  }
+  
+  .btn-content {
+    padding: 12px;
+  }
+  
+  .radio_1 {
+    font-size: 13px;
+  }
+}
+</style>

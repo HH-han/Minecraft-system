@@ -47,6 +47,7 @@ import { useAuthStore } from '@/stores/auth.js'
 // 导入页面
 import TestProject001 from '@/views/Test/components/TestProject001.vue'
 import TestProject002 from '@/views/Test/components/TestProject002.vue'
+import TestProject003 from '@/views/Test/components/TestProject003.vue'
 
 
 const router = useRouter()
@@ -56,6 +57,7 @@ const authStore = useAuthStore()
 const pages = [
   { name: '项目一', component: TestProject001, icon: 'fas fa-project-diagram' },
   { name: '项目二', component: TestProject002, icon: 'fas fa-chart-line' },
+  { name: '项目三', component: TestProject003, icon: 'fas fa-chart-line' },
 
 ]
 

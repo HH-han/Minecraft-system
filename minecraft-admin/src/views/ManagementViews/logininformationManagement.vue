@@ -21,7 +21,10 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th v-for="col in columns" :key="col.key">{{ col.title }}</th>
+                                <th>
+                                    <input type="checkbox" :checked="isAllSelected" @change="handleSelectAll" class="ui-checkbox" />
+                                </th>
+                                <th v-for="col in columns.slice(1)" :key="col.key">{{ col.title }}</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -72,7 +75,7 @@
                         </div>
                         <div class="detail-item">
                             <label>用户ID:</label>
-                            <span>{{ currentLoginInfo?.user_id }}</span>
+                            <span>{{ currentLoginInfo?.userId }}</span>
                         </div>
                         <div class="detail-item">
                             <label>用户名:</label>
@@ -84,7 +87,7 @@
                         </div>
                         <div class="detail-item">
                             <label>登录地点:</label>
-                            <span>{{ currentLoginInfo?.login_location || '未知' }}</span>
+                            <span>{{ currentLoginInfo?.loginLocation || '未知' }}</span>
                         </div>
                         <div class="detail-item">
                             <label>浏览器:</label>
@@ -106,7 +109,7 @@
                         </div>
                         <div class="detail-item">
                             <label>登录时间:</label>
-                            <span>{{ formatDateTime(currentLoginInfo?.login_time) }}</span>
+                            <span>{{ formatDateTime(currentLoginInfo?.loginTime) }}</span>
                         </div>
                     </div>
                     <div class="dialog-buttons">
@@ -127,6 +130,7 @@
 
 import { ref, computed, onMounted } from 'vue';
 import request from '@/utils/request';
+import loginInfoApi from '@/api/loginInfo';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -150,6 +154,25 @@ const loginInfos = ref([]);
 const searchKeyword = ref('');
 const showDetailsDialog = ref(false);
 const currentLoginInfo = ref(null);
+const selectedIds = ref([]);
+
+// 全选状态
+const isAllSelected = computed(() => {
+    return filteredLoginInfos.value.length > 0 && filteredLoginInfos.value.every(item => item.checked);
+});
+
+// 全选/取消全选
+const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    filteredLoginInfos.value.forEach(item => {
+        item.checked = checked;
+    });
+    if (checked) {
+        selectedIds.value = filteredLoginInfos.value.map(item => item.id);
+    } else {
+        selectedIds.value = [];
+    }
+};
 
 // 格式化日期时间显示
 const formatDateTime = (date) => {
@@ -170,10 +193,10 @@ const getStatusInfo = (status) => {
     if (status === null || status === undefined) {
         return { text: '未知', class: '' };
     }
-    if (status === "0" || status === "1") {
-        return { text: '在线', class: 'success' };
-    } else if (status === "1" || status === "0") {
-        return { text: '离线', class: 'error' };
+    if (status === "1") {
+        return { text: '成功', class: 'success' };
+    } else if (status === "0") {
+        return { text: '失败', class: 'error' };
     }
     return { text: '未知', class: '' };
 };
@@ -184,7 +207,7 @@ const filteredLoginInfos = computed(() => {
     return loginInfos.value.filter(
         (loginInfo) =>
             String(loginInfo.id).includes(keyword) ||
-            String(loginInfo.user_id).includes(keyword) ||
+            String(loginInfo.userId).includes(keyword) ||
             loginInfo.username.toLowerCase().includes(keyword) ||
             loginInfo.ipaddr.toLowerCase().includes(keyword)
     );
@@ -215,9 +238,15 @@ const fetchLoginInfos = async () => {
             pageSize: pageSize.value,
             keyword: searchKeyword.value
         };
-        const response = await request.get('/api/public/user/logininfo', { params });
-        loginInfos.value = response.data.list;
+        const response = await loginInfoApi.getLoginInfoList(params);
+        // 为每条数据添加checked属性
+        loginInfos.value = response.data.records.map(item => ({
+            ...item,
+            checked: false
+        }));
         total.value = response.data.total;
+        // 清空选择的ID
+        selectedIds.value = [];
     } catch (error) {
         console.error('获取登录信息失败:', error);
         showToastMessage('获取登录信息失败', 'error');
@@ -261,7 +290,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
     if (deleteCardId.value) {
         try {
-            await request.delete(`/api/public/user/logininfo/${deleteCardId.value}`);
+            await loginInfoApi.deleteLoginInfo(deleteCardId.value);
             await fetchLoginInfos();
             closeDeletePrompt();
             showToastMessage('删除成功');
@@ -281,16 +310,31 @@ const handleSearch = () => {
     fetchLoginInfos();
 };
 
-// 重置搜索
-const handleReset = () => {
-    searchKeyword.value = '';
-    currentPage.value = 1;
-    fetchLoginInfos();
+// 批量删除
+const handleReset = async () => {
+    if (selectedIds.value.length === 0) {
+        showToastMessage('请选择要删除的记录', 'warning');
+        return;
+    }
+    try {
+        await loginInfoApi.deleteBatchLoginInfo(selectedIds.value.join(','));
+        await fetchLoginInfos();
+        selectedIds.value = [];
+        showToastMessage('批量删除成功');
+    } catch (error) {
+        console.error('批量删除失败:', error);
+        showToastMessage('批量删除失败', 'error');
+    }
 };
 
 // 处理复选框选择
 const handleCheck = (loginInfo) => {
     loginInfo.checked = !loginInfo.checked;
+    if (loginInfo.checked) {
+        selectedIds.value.push(loginInfo.id);
+    } else {
+        selectedIds.value = selectedIds.value.filter(id => id !== loginInfo.id);
+    }
 };
 
 // Excel导入导出（待实现）

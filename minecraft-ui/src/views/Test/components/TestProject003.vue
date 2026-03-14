@@ -1,0 +1,458 @@
+<template>
+  <!-- 背景 -->
+  <div>
+    <Login_background />
+  </div>
+  <!-- 登录页面 -->
+  <div class="auth-container">
+    <span class="welcome-title">博览旅行-登录/注册</span>
+    <div class="container-wrapper" :class="{ 'right-panel-active': isSignUpActive }">
+      <div class="form-container sign-up-container">
+        <!-- 注册页面-右侧 -->
+        <form action="#" class="loginpage-form-SignUp">
+          <div class="loginpage-decoration">
+            <div class="loginpage-decoration-imbtn">
+              <!-- 背景图片 -->
+              <div class="loginpage-background">
+                <h1>欢迎加入博览</h1>
+                <div class="loginpage-background-content">
+                  <img src="@/assets/loging/31d494f83e7fef6eed32f2ac1d746e79dd387cd7bc439-5C2vFY_fw1200webp.webp"
+                    alt="Welcome">
+                  <div class="loginpage-background-text">
+                    <p>探索精彩世界</p>
+                    <p>分享旅行故事</p>
+                  </div>
+                </div>
+              </div>
+              <!-- 操作按钮 -->
+              <div class="loginpage-decoration-links">
+                <button type="button" class="loginpage-decoration-btn loginpage-new-user" @click="enrolfirst">
+                  <div class="svg-wrapper-icon">
+                    <div class="svg-wrapper">
+                      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="loginpage-btn-glow"></div>
+                  <div class="loginpage-tooltip">
+                    <span>创建新账户</span>
+                    <div class="loginpage-tooltip-arrow"></div>
+                  </div>
+                </button>
+                <button type="button" class="loginpage-decoration-btn loginpage-phone-login" @click="Fanginter">
+                  <div class="svg-wrapper-icon">
+                    <div class="svg-wrapper">
+                      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="loginpage-btn-glow"></div>
+                  <div class="loginpage-tooltip">
+                    <span>使用手机号登录</span>
+                    <div class="loginpage-tooltip-arrow"></div>
+                  </div>
+                </button>
+                <button type="button" class="loginpage-decoration-btn loginpage-email-login" @click="EmailLogin">
+                  <div class="svg-wrapper-icon">
+                    <div class="svg-wrapper">
+                      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="loginpage-btn-glow"></div>
+                  <div class="loginpage-tooltip">
+                    <span>使用邮箱登录</span>
+                    <div class="loginpage-tooltip-arrow"></div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="form-container sign-in-container">
+        <!-- 登录页面-左侧 -->
+        <form @submit.prevent="handleLogin" class="loginpage-form">
+          <div>
+            <h1>欢迎回来</h1>
+            <p>请登录您的账户</p>
+          </div>
+          <!-- 二维码登录快捷入口 -->
+          <div class="loginpage-qr-link" @click="showQrCode">
+            <div class="loginpage-qr-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-12v8h8V3h-8zm6 6h-4V5h4v4zm-6 6h8v-8h-8v8zm2-6h4v4h-4v-4z" />
+              </svg>
+            </div>
+          </div>
+          <!-- 用户头像显示 -->
+          <div class="loginpage-avatar-container">
+            <div class="loginpage-avatar">
+              <transition name="fade" mode="out-in">
+                <img :key="loginForm.hasInput ? 'user' : 'default'"
+                  :src="loginForm.hasInput ? loginForm.image : defaultAvatar" alt="用户头像" class="loginpage-avatar-img" />
+              </transition>
+            </div>
+          </div>
+          <!-- 用户名输入框 -->
+          <div class="userlogin-input-centainer">
+            <div class="userlogin-inputContainer">
+              <input required="required" id="userlogin-usernameField" placeholder="请输入账号" @input="handleUsernameInput"
+                v-model="loginForm.username" type="text">
+              <label class="userlogin-usernameLabel" for="userlogin-usernameField">请输入账号</label>
+              <svg t="1746095535223" class="userlogin-userIcon" viewBox="0 0 1024 1024" version="1.1" p-id="26266">
+                <path
+                  d="M512 273.066667m-273.066667 0a273.066667 273.066667 0 1 0 546.133334 0 273.066667 273.066667 0 1 0-546.133334 0Z"
+                  p-id="26267"></path>
+                <path
+                  d="M375.466667 614.4h273.066666a341.333333 341.333333 0 0 1 341.333334 341.333333v68.266667H34.133333v-68.266667a341.333333 341.333333 0 0 1 341.333334-341.333333z"
+                  p-id="26268"></path>
+              </svg>
+            </div>
+            <!-- 密码输入框 -->
+            <div class="userlogin-inputContainer">
+              <input required="required" id="userlogin-passwordField" placeholder="请输入密码" v-model="loginForm.password"
+                type="password">
+              <label class="userlogin-usernameLabel" for="userlogin-passwordField">请输入密码</label>
+              <svg t="1746095118852" class="userlogin-userIcon" viewBox="0 0 1024 1024" version="1.1" p-id="21472">
+                <path
+                  d="M808.435 370.238h-592.87A127.218 127.218 0 0 0 88.89 496.913v400.14a126.947 126.947 0 0 0 126.675 126.403h592.87A126.947 126.947 0 0 0 935.11 897.053v-400.14a127.218 127.218 0 0 0-126.675-126.675z m-244.65 347.948v131.296H459.4V717.915a105.744 105.744 0 1 1 105.2 0z"
+                  p-id="21473"></path>
+                <path
+                  d="M790.766 373.772h-81.55V278.63a197.08 197.08 0 0 0-394.16 0v95.142h-81.55V278.63a278.63 278.63 0 0 1 557.26 0z"
+                  p-id="21474"></path>
+              </svg>
+            </div>
+          </div>
+          <!-- 登录按钮 -->
+          <button type="submit" class="loginpage-submit-btn">
+            <span class="loginpage-btn-text">登 录</span>
+            <div class="loginpage-btn-loader">
+              <svg viewBox="0 0 24 24">
+                <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z" />
+              </svg>
+            </div>
+          </button>
+
+          <!-- 底部选项 -->
+          <div class="loginpage-options">
+            <div class="loginpage-remember">
+              <input type="checkbox" id="loginpage-remember" v-model="rememberMe" class="loginpage-checkbox" />
+              <label for="loginpage-remember" class="loginpage-remember-label">
+                <span class="loginpage-checkbox-custom"></span>
+                记住我
+              </label>
+            </div>
+            <button class="loginpage-decoration-btn loginpage-new-user-phone" @click="enrolfirst">新用户注册 →</button>
+            <router-link to="/login/ForgotPassword" class="loginpage-forgot-link">
+              忘记密码?
+            </router-link>
+          </div>
+        </form>
+      </div>
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>欢迎回来</h1>
+            <p>请登录您的账户</p>
+            <button class="ghost" @click="toggleSignUp(false)">登录</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>你好，朋友！</h1>
+            <p>输入您的个人信息，开始与我们的旅程</p>
+            <button class="ghost" @click="toggleSignUp(true)">注册</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        欢迎登录 <i class="fa fa-heart"></i> 通过
+        <a target="_blank" href="https://florin-pop.com">博览介绍</a>
+        - 阅读我网站相关的内容
+        <a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">这里</a>。
+      </p>
+    </footer>
+  </div>
+  <div v-if="isPersonalCenterVisible" class="loginpage-modal" @click="close">
+    <QRcodeLogin @click.stop />
+  </div>
+  <!-- 成功提示框 -->
+  <div>
+    <LoginSucceeded v-if="showSucceeded" :username="loginForm.username" :message="successMessage"
+      @close="showSucceeded = false" />
+  </div>
+  <!-- 错误提示框 -->
+  <div>
+    <ErrorMessage v-if="showError" :message="errorMessage" @close="showError = false" />
+  </div>
+  <!-- 子路由显示区域 -->
+
+  
+  <!-- 模糊背景模态框 -->
+  <div v-if="isModalVisible" class="blur-modal" @click="closeModal">
+    <div class="blur-modal-content" @click.stop>
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import Login_background from '@/components/LoginComponent/Login_background.vue';
+import LoginSucceeded from '@/components/PromptComponent/LoginSucceeded.vue';
+import ErrorMessage from '@/components/PromptComponent/ErrorMessage.vue';
+import { login } from '@/api/auth.js';
+import { getUserByAccount } from '@/api/user.js';
+import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
+import { useAuthStore } from '@/stores/auth.js'
+
+// 登录-注册切换
+const isSignUpActive = ref(false)
+const toggleSignUp = (active) => {
+  isSignUpActive.value = active
+}
+// 二维码登录
+const isPersonalCenterVisible = ref(false);
+const showQrCode = () => {
+  isPersonalCenterVisible.value = true;
+};// 关闭模态框
+const close = () => {
+  isPersonalCenterVisible.value = false;
+};
+
+// 关闭模糊背景模态框
+const closeModal = () => {
+  isModalVisible.value = false;
+};
+
+// 用户信息
+const router = useRouter();
+
+// 模糊背景模态框状态
+const isModalVisible = ref(false);
+
+// 页面跳转
+const Fanginter = () => {
+  // 注册
+  isModalVisible.value = true;
+  router.push('/login/Fanginter');
+};
+const enrolfirst = () => {
+  // 手机号
+  isModalVisible.value = true;
+  router.push('/login/enrolfirst');
+};
+const EmailLogin = () => {
+  // 登录
+  isModalVisible.value = true;
+  router.push('/login/emaillogin');
+};
+// 图片引入
+const defaultAvatar = new URL('@/assets/defaultimage/mrtx.png', import.meta.url).href
+// 状态管理
+const showError = ref(false);
+const showSucceeded = ref(false);
+const successMessage = ref('');
+const errorMessage = ref('');
+
+// 登录表单数据
+const loginForm = ref({
+  username: '',
+  password: '',
+  image: defaultAvatar,
+  hasInput: false
+});
+
+// 记住用户名功能
+const rememberMe = ref(false);
+
+// auth store
+const authStore = useAuthStore();
+
+// 用户名输入处理
+const handleUsernameInput = async () => {
+  const account = loginForm.value.username.trim();
+  loginForm.value.hasInput = account !== '';
+
+  if (account) {
+    try {
+      // 调用后端API获取用户信息
+      const response = await getUserByAccount(account);
+      if (response.code === 200 && response.data) {
+        loginForm.value.image = response.data.avatar || defaultAvatar;
+      } else {
+        // 用户不存在，使用默认头像
+        loginForm.value.image = defaultAvatar;
+      }
+    } catch (error) {
+      // 网络错误或其他问题，使用默认头像
+      loginForm.value.image = defaultAvatar;
+      console.error('获取用户信息失败:', error);
+    }
+  } else {
+    // 输入为空，使用默认头像
+    loginForm.value.image = defaultAvatar;
+  }
+};
+
+/**
+ * 处理登录逻辑
+ */
+const handleLogin = async () => {
+  errorMessage.value = '';
+  showError.value = false;
+
+  if (!loginForm.value.username || !loginForm.value.password) {
+    errorMessage.value = '请输入账号和密码';
+    showError.value = true;
+    return;
+  }
+
+  try {
+    // 使用login函数调用后端登录接口
+    const response = await login({
+      account: loginForm.value.username,
+      password: loginForm.value.password
+    });
+
+    console.log('登录响应:', response);
+
+    if (response.code === 200) {
+      // 严格验证响应数据结构
+      if (!response.data?.token || !response.data?.username) {
+        throw new Error('响应数据不完整');
+      }
+
+      const { token, username } = response.data;
+
+      // 验证必要字段
+      if (!token || !username) {
+        throw new Error('无效的用户数据');
+      }
+
+      // 使用auth store设置用户信息
+      authStore.setUserInfo({
+        token,
+        username
+      });
+
+      // 记住用户名处理
+      if (rememberMe.value) {
+        localStorage.setItem('rememberedUsername', username);
+      } else {
+        localStorage.removeItem('rememberedUsername');
+      }
+
+      successMessage.value = '登录成功！';
+      showSucceeded.value = true;
+
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    } else {
+      errorMessage.value = response.message || '登录失败';
+      showError.value = true;
+    }
+  } catch (error) {
+    errorMessage.value = error.response?.data?.message || '登录失败';
+    showError.value = true;
+    console.error('登录失败:', error);
+  }
+};
+// 挂载逻辑
+onMounted(() => {
+  const rememberedUsername = localStorage.getItem('rememberedUsername');
+  if (rememberedUsername) {
+    loginForm.value.username = rememberedUsername;
+    loginForm.value.hasInput = true;
+    rememberMe.value = true;
+
+    // 从本地存储加载用户数据
+    const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (storedUser?.username === rememberedUsername) {
+      // 确保头像URL有效
+      loginForm.value.image = storedUser.image || defaultAvatar;
+    }
+  }
+});
+</script>
+<style scoped>
+/* 局部引入自定义 CSS 文件UserLogin */
+@import '@/css/Login/UserLogin.css';
+
+.loginpage-form-content {
+  padding: 0 var(--space-4);
+}
+
+.loginpage-form-content .userlogin-input-centainer {
+  margin-bottom: var(--space-6);
+}
+
+.loginpage-form-content .userlogin-inputContainer {
+  margin-bottom: var(--space-4);
+}
+
+.loginpage-form-content .loginpage-submit-btn {
+  width: 100%;
+  margin-top: var(--space-6);
+}
+
+/* 模糊背景模态框样式 */
+.blur-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.blur-modal-content {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
