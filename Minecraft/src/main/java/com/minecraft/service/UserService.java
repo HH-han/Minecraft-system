@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserService extends IService<User> {
     LoginResponse login(LoginRequest request);
-    void register(RegisterRequest request);
+    String register(RegisterRequest request) throws Exception;
     User getUserInfo(Long userId);
     void updateUserInfo(User user);
     void updatePassword(Long userId, String oldPassword, String newPassword);

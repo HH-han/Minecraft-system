@@ -29,8 +29,12 @@ public class AuthController {
 
     @Operation(summary = "用户注册")
     @PostMapping("/register")
-    public ApiResponse<Void> register(@Valid @RequestBody RegisterRequest request) {
-        userService.register(request);
-        return ApiResponse.success("注册成功", null);
+    public ApiResponse<String> register(@Valid @RequestBody RegisterRequest request) {
+        try {
+            String account = userService.register(request);
+            return ApiResponse.success("注册成功", account);
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage());
+        }
     }
 }

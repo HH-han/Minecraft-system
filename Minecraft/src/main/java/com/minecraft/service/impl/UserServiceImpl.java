@@ -72,7 +72,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, request.getUsername());
         if (getOne(wrapper) != null) {
@@ -86,14 +86,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         User user = new User();
-        user.setAccount(AccountGenerator.generateAccount());
+        String account = AccountGenerator.generateAccount();
+        user.setAccount(account);
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setStatus(1);
+        
+        // 处理头像上传
+        if (request.getAvatar() != null && request.getAvatar().startsWith("data:image")) {
+            try {
+                String processedAvatar = imageUtils.processBase64Image(request.getAvatar());
+                user.setAvatar(processedAvatar);
+            } catch (Exception e) {
+                throw new BusinessException("头像处理失败: " + e.getMessage());
+                // 头像处理失败不影响注册流程，继续执行
+            }
+        }
 
         save(user);
+        return account;
     }
 
     @Override

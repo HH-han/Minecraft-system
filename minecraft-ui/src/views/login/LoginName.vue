@@ -66,8 +66,11 @@
             <!-- 二维码登录快捷入口 -->
             <div class="loginpage-qr-link" @click="showQrCode">
               <div class="loginpage-qr-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-12v8h8V3h-8zm6 6h-4V5h4v4zm-6 6h8v-8h-8v8zm2-6h4v4h-4v-4z" />
+                <svg t="1773502026367" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                  xmlns="http://www.w3.org/2000/svg" p-id="25552" width="256" height="256">
+                  <path
+                    d="M117.368 487.445h371.92v-371.92h-371.92v371.92z m92.981-278.94h185.96v185.96h-185.96v-185.96z m325.43-92.98v371.92h371.92v-371.92H535.78z m278.94 278.94h-185.96v-185.96h185.96v185.96z m-557.88-46.49h92.98v-92.98h-92.98v92.98z m-139.47 557.88h371.92v-371.92h-371.92v371.92z m92.98-278.94h185.96v185.96h-185.96v-185.96z m557.88-371.92h-92.98v92.98h92.98v-92.98z m-232.45 650.86h92.98v-92.98h-92.98v92.98z m92.98-278.94v185.96h92.98v-185.96h-92.98z m185.96 185.96h-92.98v92.98h185.96v-185.96h-92.98v92.98z m0-185.96h92.98v-92.98h-92.98v92.98z m-278.94-92.98v92.98h92.98v-92.98h-92.98z m-278.94 232.45h92.98v-92.98h-92.98v92.98z"
+                    fill="#929292" p-id="25553"></path>
                 </svg>
               </div>
             </div>
@@ -221,11 +224,6 @@
             </div>
             <div class="registered-css-input-container-all">
               <div>
-                <div class="registered-css-input-container">
-                  <input placeholder="" class="registered-css-input-field" type="text" v-model="registerForm.account">
-                  <label for="enrolfirst-input-field" class="registered-css-input-label">请设置账号...</label>
-                  <span class="registered-css-input-highlight"></span>
-                </div>
 
                 <div class="registered-css-input-container">
                   <input placeholder="" class="registered-css-input-field" type="text" v-model="registerForm.username">
@@ -285,6 +283,15 @@
     <LoginSucceeded v-if="showSucceeded" :username="loginForm.username" :message="successMessage"
       @close="showSucceeded = false" />
   </div>
+  <!-- 账号信息模态框 -->
+  <div v-if="showAccountModal" class="loginpage-modal" @click="closeAccountModal">
+    <div class="account-modal-content" @click.stop>
+      <Account 
+        :account="generatedAccount"
+        @confirm="confirmAccount"
+      />
+    </div>
+  </div>
   <!-- 错误提示框 -->
   <div>
     <ErrorMessage v-if="showError" :message="errorMessage" @close="showError = false" />
@@ -307,9 +314,10 @@ import { useRouter } from 'vue-router';
 import Login_background from '@/components/LoginComponent/Login_background.vue';
 import LoginSucceeded from '@/components/PromptComponent/LoginSucceeded.vue';
 import ErrorMessage from '@/components/PromptComponent/ErrorMessage.vue';
-import { login } from '@/api/auth.js';
+import { login, register } from '@/api/auth.js';
 import { getUserByAccount } from '@/api/user.js';
 import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
+import Account from '@/views/login/components/Account.vue'
 import { useAuthStore } from '@/stores/auth.js'
 
 // 登录-注册切换
@@ -336,14 +344,33 @@ const closeQrCode = () => {
   isQrCodeVisible.value = false;
 };
 
+// 显示账号信息模态框
+const showAccountInfo = (account) => {
+  generatedAccount.value = account;
+  showAccountModal.value = true;
+};
+
+// 关闭账号信息模态框
+const closeAccountModal = () => {
+  // 不允许点击背景关闭，只能通过确认按钮关闭
+};
+
+// 确认账号信息
+const confirmAccount = () => {
+  showAccountModal.value = false;
+  isRegister.value = false;
+};
+
 // 用户信息
 const router = useRouter();
 
 // 状态管理
 const showError = ref(false);
 const showSucceeded = ref(false);
+const showAccountModal = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+const generatedAccount = ref('');
 
 // 图片引入
 const defaultAvatar = new URL('@/assets/defaultimage/mrtx.png', import.meta.url).href
@@ -447,7 +474,7 @@ const handleLogin = async () => {
       // 记住用户名处理
       localStorage.setItem('rememberedUsername', username);
 
-      successMessage.value = '登录成功！';
+      successMessage.value = '';
       showSucceeded.value = true;
 
       setTimeout(() => {
@@ -479,20 +506,6 @@ const handleAvatarUpload = (event) => {
 const handleRegister = async () => {
   errorMessage.value = '';
   showError.value = false;
-
-  // 账号验证
-  if (!registerForm.value.account || registerForm.value.account.trim() === '') {
-    errorMessage.value = '请输入账号';
-    showError.value = true;
-    return;
-  }
-
-  // 账号长度验证
-  if (registerForm.value.account.length < 3 || registerForm.value.account.length > 20) {
-    errorMessage.value = '账号长度必须在3-20位之间';
-    showError.value = true;
-    return;
-  }
 
   // 用户名验证
   if (!registerForm.value.username || registerForm.value.username.trim() === '') {
@@ -539,15 +552,25 @@ const handleRegister = async () => {
   }
 
   try {
-    // 这里需要调用后端注册接口
-    // 暂时模拟注册成功
-    successMessage.value = '注册成功！请登录';
-    showSucceeded.value = true;
+    // 调用后端注册接口
+    const response = await register({
+      username: registerForm.value.username,
+      password: registerForm.value.password,
+      email: registerForm.value.email,
+      phone: registerForm.value.phone,
+      avatar: registerForm.value.avatar
+    });
 
-    setTimeout(() => {
-      isRegister.value = false;
-      showSucceeded.value = false;
-    }, 2000);
+    console.log('注册响应:', response);
+
+    if (response.code === 200) {
+      // 注册成功，获取生成的账号
+      const account = response.data;
+      showAccountInfo(account);
+    } else {
+      errorMessage.value = response.message || '注册失败';
+      showError.value = true;
+    }
   } catch (error) {
     errorMessage.value = error.response?.data?.message || '注册失败';
     showError.value = true;
@@ -1558,6 +1581,7 @@ onMounted(() => {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1568,6 +1592,7 @@ onMounted(() => {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1635,4 +1660,6 @@ onMounted(() => {
   overflow-y: auto;
   animation: slideIn 0.3s ease-in-out;
 }
+
+
 </style>

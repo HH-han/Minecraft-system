@@ -8,8 +8,8 @@
           </svg>
         </div>
         <div class="success-text">
-          <h3 class="success-title">登录成功!</h3>
-          <p class="success-message">欢迎回来，{{ username }}！即将跳转到首页...</p>
+          <h3 class="success-title">操作成功!</h3>
+          <p class="success-message">{{ message || `欢迎回来，${username}！即将跳转到首页...` }}</p>
         </div>
         <div class="progress-bar" :style="{ width: progress + '%' }"></div>
       </div>
@@ -24,6 +24,10 @@ const props = defineProps({
   username: {
     type: String,
     default: '用户'
+  },
+  message: {
+    type: String,
+    default: ''
   },
   duration: {
     type: Number,
