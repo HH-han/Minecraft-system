@@ -262,7 +262,7 @@ const LoginName = () => {
   ElMessage.success('返回登录！');
 };
 const EnrolFirst = () => {
-  router.push('/EnrolFirst');
+  router.push('/login');
   ElMessage.success('前往注册！');
 };
 const isLoggedIn = ref(false);
