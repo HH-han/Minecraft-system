@@ -95,7 +95,7 @@ const loadRecommendList = async () => {
 .card {
     overflow: visible;
     width: 100%;
-    height: 254px;
+    height: 300px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border-radius: 16px;
@@ -105,7 +105,6 @@ const loadRecommendList = async () => {
     transition: all 0.3s ease;
     overflow: hidden;
     display: flex;
-    padding: 20px;
 }
 
 .content {
@@ -215,15 +214,17 @@ const loadRecommendList = async () => {
     position: absolute;
     width: 100%;
     height: 100%;
-    padding: 10px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .front-content .badge {
     background-color: #00000055;
     padding: 2px 10px;
+    margin: 10px;
     border-radius: 10px;
     backdrop-filter: blur(2px);
     width: fit-content;
@@ -232,10 +233,10 @@ const loadRecommendList = async () => {
 .description {
     box-shadow: 0px 0px 10px 5px #00000088;
     width: 100%;
-    padding: 10px;
     background-color: #00000099;
     backdrop-filter: blur(5px);
     border-radius: 5px;
+    padding: 16px 0 16px 0;
 }
 
 .title {
@@ -243,6 +244,9 @@ const loadRecommendList = async () => {
     max-width: 100%;
     display: flex;
     justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 16px 0px 8px;
 }
 
 .title p {
@@ -255,6 +259,7 @@ const loadRecommendList = async () => {
     margin-top: 5px;
     font-size: 8px;
     margin: 5px 0 0 0;
+    padding: 0px 16px 0px 16px;
     line-height: 1.3;
 }
 

@@ -368,7 +368,7 @@ onMounted(() => {
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-    gap: 24px;
+    gap: 50px;
 }
 
 .card {

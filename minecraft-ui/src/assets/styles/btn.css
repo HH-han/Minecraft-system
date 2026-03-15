@@ -1,0 +1,65 @@
+
+/* 按钮容器样式 */
+.btn-container-collection {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 液态玻璃按钮样式 */
+.btn {
+  flex: 1;
+  padding: .5rem 1rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 购买按钮样式 */
+.btn.pay {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+.btn.pay:hover {
+  background: rgba(52, 152, 219, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+}
+
+/* 收藏按钮样式 */
+.btn.collection {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.btn.collection:hover {
+  background: rgba(231, 76, 60, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+}
+
+/* 按钮点击效果 */
+.btn:active {
+  transform: translateY(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .btn-container-collection {
+    flex-direction: column;
+  }
+  
+  .btn {
+    padding: 0.8rem 1.5rem;
+  }
+}

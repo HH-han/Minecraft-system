@@ -310,7 +310,7 @@ const closeDetailModal = () => {
 .recommendations-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-  gap: 24px;
+  gap: 50px;
   padding: 0 20px;
 }
 
