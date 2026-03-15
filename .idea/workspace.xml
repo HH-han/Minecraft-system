@@ -5,25 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
-      <change afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/common/PaymentMethod.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/common/Result.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/common/exception/RateLimitException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/utils/IpLocationUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/LoginInfoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/LoginInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/utils/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/utils/RedisUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/exception/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/exception/GlobalExceptionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/LoginInfoServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/LoginInfoServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/UserServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/utils/RedisUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/utils/RedisUtil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/mapper/FoodMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/mapper/FoodMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/mapper/FriendMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/mapper/FriendMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/mapper/GroupTravelMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/mapper/GroupTravelMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/mapper/TravelPlanMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/mapper/TravelPlanMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/UserService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/UserServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/utils/RedisUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/sql/db_minecraft.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
     </list>
@@ -169,7 +161,7 @@
       <workItem from="1773321462444" duration="5331000" />
       <workItem from="1773408383195" duration="8267000" />
       <workItem from="1773496027866" duration="5308000" />
-      <workItem from="1773553976729" duration="2773000" />
+      <workItem from="1773553976729" duration="4069000" />
     </task>
     <task id="LOCAL-00001" summary="cleanup">
       <option name="closed" value="true" />
@@ -507,7 +499,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773554820027</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773559697486</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1773559697486</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

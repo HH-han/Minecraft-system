@@ -1229,3 +1229,21 @@ WHERE m.month_name = p_month_name AND r.is_recommended = 1
 ORDER BY r.sort_order;
 END;
 
+CREATE TABLE `login_log` (
+                             `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                             `user_id` BIGINT DEFAULT NULL COMMENT '用户ID',
+                             `username` VARCHAR(50) DEFAULT NULL COMMENT '用户名',
+                             `ipaddr` VARCHAR(128) DEFAULT NULL COMMENT '登录IP地址',
+                             `login_location` VARCHAR(255) DEFAULT NULL COMMENT '登录地点',
+                             `browser` VARCHAR(50) DEFAULT NULL COMMENT '浏览器类型',
+                             `os` VARCHAR(50) DEFAULT NULL COMMENT '操作系统',
+                             `status` VARCHAR(10) DEFAULT NULL COMMENT '登录状态（0成功 1失败）',
+                             `msg` VARCHAR(255) DEFAULT NULL COMMENT '提示消息',
+                             `login_time` DATETIME DEFAULT NULL COMMENT '登录时间',
+                             PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='登录日志表';
+
+-- 添加索引（可选，根据查询需求）
+CREATE INDEX `idx_user_id` ON `login_log`(`user_id`);
+CREATE INDEX `idx_login_time` ON `login_log`(`login_time`);
+CREATE INDEX `idx_username` ON `login_log`(`username`);

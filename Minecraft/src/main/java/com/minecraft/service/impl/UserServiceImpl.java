@@ -5,19 +5,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.request.RegisterRequest;
 import com.minecraft.dto.response.LoginResponse;
+import com.minecraft.entity.LoginLog;
 import com.minecraft.entity.User;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.UserMapper;
+import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.AccountGenerator;
+import com.minecraft.utils.DeviceInfoUtils;
 import com.minecraft.utils.ImageUtils;
+import com.minecraft.utils.IpLocationUtils;
 import com.minecraft.utils.JwtUtil;
 import com.minecraft.utils.RedisUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,17 +38,42 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private RedisUtil redisUtil;
+    
+    @Autowired
+    private DeviceInfoUtils deviceInfoUtils;
+    
+    @Autowired
+    private IpLocationUtils ipLocationUtils;
+    
+    @Autowired
+    private LoginLogService loginLogService;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request, HttpServletRequest httpRequest) {
         String account = request.getAccount();
+        
+        // 获取用户IP地址
+        String ip = deviceInfoUtils.getClientIP(httpRequest);
+        
+        // 检查IP是否被封禁
+        if (loginLogService.isIPBlocked(ip)) {
+            String blockReason = loginLogService.getIPBlockReason(ip);
+            String msg = "IP已被封禁：" + blockReason;
+            // 记录登录失败日志
+            recordLoginLog(httpRequest, account, "0", msg);
+            throw new BusinessException(msg);
+        }
+        
         String cacheKey = "login:user:" + account;
         
         // 尝试从Redis获取缓存的登录响应
-        LoginResponse cachedResponse = (LoginResponse) redisUtil.get(cacheKey);
-        if (cachedResponse != null) {
+        Object cachedValue = redisUtil.get(cacheKey);
+        if (cachedValue != null && cachedValue instanceof LoginResponse) {
+            LoginResponse cachedResponse = (LoginResponse) cachedValue;
+            // 记录登录日志
+            recordLoginLog(httpRequest, account, "1", "登录成功（缓存）");
             return cachedResponse;
         }
         
@@ -51,14 +82,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = getOne(wrapper);
 
         if (user == null) {
+            // 记录登录失败日志
+            recordLoginLog(httpRequest, account, "0", "用户不存在");
             throw new BusinessException("用户不存在");
         }
 
         if (user.getStatus() != 1) {
+            // 记录登录失败日志
+            recordLoginLog(httpRequest, account, "0", "账号已被禁用");
             throw new BusinessException("账号已被禁用");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            // 记录登录失败日志
+            recordLoginLog(httpRequest, account, "0", "密码错误");
             throw new BusinessException("密码错误");
         }
 
@@ -85,7 +122,63 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 将登录响应缓存到Redis，设置30分钟过期
         redisUtil.set(cacheKey, response, 30, TimeUnit.MINUTES);
 
+        // 记录登录成功日志
+        recordLoginLog(httpRequest, account, "1", "登录成功");
+
         return response;
+    }
+
+    /**
+     * 记录登录日志
+     * @param request HttpServletRequest
+     * @param account 用户账号
+     * @param status 登录状态（1-成功，0-失败）
+     * @param msg 登录消息
+     */
+    private void recordLoginLog(HttpServletRequest request, String account, String status, String msg) {
+        // 获取用户IP地址
+        String ip = deviceInfoUtils.getClientIP(request);
+        // 获取地理位置
+        String loginLocation = ipLocationUtils.getLocation(ip);
+        // 获取用户代理
+        String userAgent = deviceInfoUtils.getUserAgent(request);
+        // 获取浏览器信息
+        String browser = deviceInfoUtils.getBrowser(userAgent);
+        // 获取操作系统信息
+        String os = deviceInfoUtils.getOS(userAgent);
+
+        // 构建登录日志
+        LoginLog loginLog = new LoginLog();
+        // 尝试获取用户ID
+        try {
+            LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(User::getAccount, account);
+            User user = getOne(wrapper);
+            if (user != null) {
+                loginLog.setUserId(user.getId());
+                loginLog.setUsername(user.getUsername());
+            }
+        } catch (Exception e) {
+            // 获取用户信息失败，不影响日志记录
+        }
+        loginLog.setAccount(account);
+        loginLog.setIpaddr(ip);
+        loginLog.setLoginLocation(loginLocation);
+        loginLog.setBrowser(browser);
+        loginLog.setOs(os);
+        loginLog.setStatus(status);
+        loginLog.setMsg(msg);
+        loginLog.setLoginTime(LocalDateTime.now());
+
+        // 异步保存登录日志
+        new Thread(() -> {
+            try {
+                loginLogService.save(loginLog);
+            } catch (Exception e) {
+                // 日志保存失败，不影响登录流程
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override

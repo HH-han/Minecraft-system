@@ -1428,3 +1428,6 @@
 2026-03-15 15:28:03.528 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectById - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,create_time,update_time FROM user WHERE id=?
 2026-03-15 15:28:03.531 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectById - ==> Parameters: 19(Long)
 2026-03-15 15:28:03.532 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectById - <==      Total: 1
+2026-03-15 15:30:40.020 [http-nio-8080-exec-6] DEBUG c.m.m.L.selectLoginInfoPage_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM login_info
+2026-03-15 15:30:40.020 [http-nio-8080-exec-6] DEBUG c.m.m.L.selectLoginInfoPage_mpCount - ==> Parameters: 
+2026-03-15 15:30:40.021 [http-nio-8080-exec-6] DEBUG c.m.m.L.selectLoginInfoPage_mpCount - <==      Total: 1
