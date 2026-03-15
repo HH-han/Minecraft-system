@@ -12,4 +12,5 @@ public interface LoginLogService extends IService<LoginLog> {
     void blockIPAddress(String ip, Integer duration, String reason);
     boolean isIPBlocked(String ip);
     String getIPBlockReason(String ip);
+    void clearLoginLogs(Long userId);
 }

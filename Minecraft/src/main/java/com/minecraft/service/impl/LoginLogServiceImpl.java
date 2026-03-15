@@ -91,4 +91,15 @@ public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> i
         Object value = redisUtil.get(blockKey);
         return value != null ? value.toString() : null;
     }
+
+    /**
+     * 清除用户的登录日志
+     * @param userId 用户ID
+     */
+    @Override
+    public void clearLoginLogs(Long userId) {
+        LambdaQueryWrapper<LoginLog> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LoginLog::getUserId, userId);
+        remove(wrapper);
+    }
 }

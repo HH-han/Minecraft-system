@@ -2,6 +2,7 @@ package com.minecraft.controller;
 
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.User;
+import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private LoginLogService loginLogService;
 
     @Operation(summary ="获取用户信息")
     @GetMapping("/info")
@@ -75,6 +79,8 @@ public class UserController {
     public ApiResponse<Void> logout() {
         Long userId = SecurityUtils.getCurrentUserId();
         userService.updateOnlineStatus(userId, false);
+        // 清除用户的登录日志
+        loginLogService.clearLoginLogs(userId);
         return ApiResponse.success("退出成功", null);
     }
 }
