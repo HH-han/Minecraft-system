@@ -269,6 +269,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import loginLogApi from '@/api/loginlog'
 
 // 搜索参数
 const searchParams = ref({
@@ -372,7 +373,7 @@ const fetchLogs = async () => {
       endTime: searchParams.value.endTime
     }
     
-    const res = await getLoginLogs(params)
+    const res = await loginLogApi.getLoginLogs(params)
     logData.value = res.data.list
     pagination.value.total = res.data.total
     statistics.value = res.data.statistics || {
@@ -421,7 +422,7 @@ const handleCurrentChange = (page) => {
 // 查看详情
 const showDetail = async (row) => {
   try {
-    const res = await getLoginLogDetail(row.id)
+    const res = await loginLogApi.getLoginLogDetail(row.id)
     currentLog.value = res.data
     detailDialogVisible.value = true
   } catch (error) {
@@ -439,7 +440,7 @@ const handleBlock = (ip) => {
 // 确认封禁IP
 const confirmBlock = async () => {
   try {
-    await blockIPAddress({
+    await loginLogApi.blockIPAddress({
       ip: blockIP.value,
       duration: blockDuration.value,
       reason: blockReason.value

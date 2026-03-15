@@ -1229,21 +1229,32 @@ WHERE m.month_name = p_month_name AND r.is_recommended = 1
 ORDER BY r.sort_order;
 END;
 
-CREATE TABLE `login_log` (
-                             `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-                             `user_id` BIGINT DEFAULT NULL COMMENT '用户ID',
-                             `username` VARCHAR(50) DEFAULT NULL COMMENT '用户名',
-                             `ipaddr` VARCHAR(128) DEFAULT NULL COMMENT '登录IP地址',
-                             `login_location` VARCHAR(255) DEFAULT NULL COMMENT '登录地点',
-                             `browser` VARCHAR(50) DEFAULT NULL COMMENT '浏览器类型',
-                             `os` VARCHAR(50) DEFAULT NULL COMMENT '操作系统',
-                             `status` VARCHAR(10) DEFAULT NULL COMMENT '登录状态（0成功 1失败）',
-                             `msg` VARCHAR(255) DEFAULT NULL COMMENT '提示消息',
-                             `login_time` DATETIME DEFAULT NULL COMMENT '登录时间',
-                             PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='登录日志表';
+create table login_log
+(
+    id             bigint auto_increment comment '主键ID'
+        primary key,
+    user_id        bigint       null comment '用户ID',
+    username       varchar(50)  null comment '用户名',
+    account        varchar(50)  null comment '登录账号',
+    ipaddr         varchar(128) null comment '登录IP地址',
+    login_location varchar(255) null comment '登录地点',
+    browser        varchar(50)  null comment '浏览器类型',
+    os             varchar(50)  null comment '操作系统',
+    status         varchar(10)  null comment '登录状态（0成功 1失败）',
+    msg            varchar(255) null comment '提示消息',
+    login_time     datetime     null comment '登录时间'
+)
+    comment '登录日志表' charset = utf8mb4;
 
--- 添加索引（可选，根据查询需求）
-CREATE INDEX `idx_user_id` ON `login_log`(`user_id`);
-CREATE INDEX `idx_login_time` ON `login_log`(`login_time`);
-CREATE INDEX `idx_username` ON `login_log`(`username`);
+create index idx_account
+    on login_log (account);
+
+create index idx_login_time
+    on login_log (login_time);
+
+create index idx_user_id
+    on login_log (user_id);
+
+create index idx_username
+    on login_log (username);
+
