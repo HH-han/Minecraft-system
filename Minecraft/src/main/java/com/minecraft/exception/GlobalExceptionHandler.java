@@ -1,5 +1,6 @@
 package com.minecraft.exception;
 
+import com.minecraft.common.exception.RateLimitException;
 import com.minecraft.dto.response.ApiResponse;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -32,6 +33,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException e) {
         return ApiResponse.error(400, e.getMessage());
+    }
+
+    @ExceptionHandler(RateLimitException.class)
+    public ApiResponse<?> handleRateLimitException(RateLimitException e) {
+        return ApiResponse.error(429, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

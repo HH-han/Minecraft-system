@@ -135,4 +135,13 @@ public class RedisUtil {
     public Long zsize(String key) {
         return redisTemplate.opsForZSet().size(key);
     }
+    
+    /**
+     * 根据模式获取Redis键
+     * @param pattern 键模式，例如：login_info:page:*
+     * @return 匹配的键集合
+     */
+    public Set<String> keys(String pattern) {
+        return redisTemplate.keys(pattern);
+    }
 }

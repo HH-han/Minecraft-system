@@ -1,5 +1,6 @@
 package com.minecraft.controller;
 
+import com.minecraft.common.PaymentMethod;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.Payment;
 import com.minecraft.service.PaymentService;
@@ -21,7 +22,7 @@ public class PaymentController {
     @PostMapping("/create")
     public ApiResponse<Payment> createPayment(
             @RequestParam Long orderId,
-            @RequestParam String paymentMethod) {
+            @RequestParam PaymentMethod paymentMethod) {
         Long userId = SecurityUtils.getCurrentUserId();
         return ApiResponse.success("创建成功", paymentService.createPayment(orderId, userId, paymentMethod));
     }

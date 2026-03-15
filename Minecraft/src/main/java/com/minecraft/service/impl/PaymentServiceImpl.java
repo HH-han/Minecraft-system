@@ -1,6 +1,7 @@
 package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minecraft.common.PaymentMethod;
 import com.minecraft.entity.Order;
 import com.minecraft.entity.Payment;
 import com.minecraft.enums.PaymentStatus;
@@ -17,7 +18,7 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
     private OrderMapper orderMapper;
 
     @Override
-    public Payment createPayment(Long orderId, Long userId, String paymentMethod) {
+    public Payment createPayment(Long orderId, Long userId, PaymentMethod paymentMethod) {
         Order order = orderMapper.selectById(orderId);
         if (order == null) {
             throw new RuntimeException("订单不存在");
@@ -26,7 +27,7 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
         Payment payment = new Payment();
         payment.setOrderId(orderId);
         payment.setUserId(userId);
-        payment.setPaymentMethod(paymentMethod);
+        payment.setPaymentMethod(paymentMethod.getChineseName());
         payment.setAmount(order.getAmount().multiply(new java.math.BigDecimal(order.getQuantity())));
         payment.setStatus(PaymentStatus.PENDING.getCode().toString());
         save(payment);

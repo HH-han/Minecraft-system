@@ -12,12 +12,14 @@ import com.minecraft.service.UserService;
 import com.minecraft.utils.AccountGenerator;
 import com.minecraft.utils.ImageUtils;
 import com.minecraft.utils.JwtUtil;
+import com.minecraft.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -27,13 +29,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private ImageUtils imageUtils;
+    
+    @Autowired
+    private RedisUtil redisUtil;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public LoginResponse login(LoginRequest request) {
+        String account = request.getAccount();
+        String cacheKey = "login:user:" + account;
+        
+        // 尝试从Redis获取缓存的登录响应
+        LoginResponse cachedResponse = (LoginResponse) redisUtil.get(cacheKey);
+        if (cachedResponse != null) {
+            return cachedResponse;
+        }
+        
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(User::getAccount, request.getAccount());
+        wrapper.eq(User::getAccount, account);
         User user = getOne(wrapper);
 
         if (user == null) {
@@ -67,6 +81,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         response.setSignature(user.getSignature());
         response.setNickname(user.getNickname());
         response.setExperience(user.getExperience());
+        
+        // 将登录响应缓存到Redis，设置30分钟过期
+        redisUtil.set(cacheKey, response, 30, TimeUnit.MINUTES);
 
         return response;
     }
@@ -106,6 +123,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         save(user);
+        
+        // 构建登录响应并缓存到Redis
+        String username = user.getUsername();
+        if (username == null || username.trim().isEmpty()) {
+            username = user.getAccount();
+        }
+        
+        String token = jwtUtil.generateToken(user.getId(), username);
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setUserId(user.getId());
+        response.setUsername(username);
+        response.setEmail(user.getEmail());
+        response.setAvatar(user.getAvatar());
+        response.setAccount(user.getAccount());
+        response.setPhone(user.getPhone());
+        response.setSignature(user.getSignature());
+        response.setNickname(user.getNickname());
+        response.setExperience(user.getExperience());
+        
+        String cacheKey = "login:user:" + account;
+        redisUtil.set(cacheKey, response, 30, TimeUnit.MINUTES);
+        
         return account;
     }
 
@@ -138,6 +178,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateUser.setExperience(user.getExperience());
         
         updateById(updateUser);
+        
+        // 清除用户登录缓存
+        String cacheKey = "login:user:" + user.getAccount();
+        redisUtil.delete(cacheKey);
     }
 
     @Override
@@ -148,6 +192,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         updateById(user);
+        
+        // 清除用户登录缓存
+        String cacheKey = "login:user:" + user.getAccount();
+        redisUtil.delete(cacheKey);
     }
 
     @Override
