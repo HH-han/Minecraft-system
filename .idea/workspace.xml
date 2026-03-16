@@ -6,13 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Food.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Food.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/bug" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/bug" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/FoodManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/FoodManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/ProductManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/ProductManagement.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Food/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Food/components/content.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Souvenir/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Souvenir/components/content.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/PayPage.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/OrderDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/OrderDetail.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/ShoppingCart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/ShoppingCart.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/index.vue" afterDir="false" />
     </list>
@@ -162,7 +166,7 @@
       <workItem from="1773408383195" duration="8267000" />
       <workItem from="1773496027866" duration="5308000" />
       <workItem from="1773553976729" duration="9241000" />
-      <workItem from="1773667184140" duration="1942000" />
+      <workItem from="1773667184140" duration="2876000" />
     </task>
     <task id="LOCAL-00001" summary="cleanup">
       <option name="closed" value="true" />
@@ -548,7 +552,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773667884320</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773670124208</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1773670124208</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

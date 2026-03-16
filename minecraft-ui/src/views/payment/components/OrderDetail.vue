@@ -2,7 +2,7 @@
   <div class="order-detail">
     <div class="order-header">
       <h2>订单详情</h2>
-      <div class="order-status" :class="order.status">
+      <div class="order-status" :class="getStatusClass(order.status)">
         {{ getStatusText(order.status) }}
       </div>
     </div>
@@ -85,20 +85,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { getFoodDetail } from '@/api/food.js'
+import { getProductDetail } from '@/api/product.js'
+import { getOrderDetail } from '@/api/order.js'
 
 const emit = defineEmits(['pay'])
 const router = useRouter()
+const route = useRoute()
 
 const order = ref({
   orderId: '20240101001',
   status: 'unpaid',
-  createTime: '2024-01-01 12:00:00',
+  createTime: new Date().toLocaleString('zh-CN'),
   payTime: '',
-  totalPrice: 199.99,
+  totalPrice: 0,
   shippingFee: 0,
-  payPrice: 199.99,
+  payPrice: 0,
   address: {
     name: '张三',
     phone: '13800138000',
@@ -107,28 +111,129 @@ const order = ref({
     district: '朝阳区',
     detail: '某某街道某某小区1号楼101室'
   },
-  items: [
-    {
-      id: 1,
-      name: 'Minecraft  Java版',
-      spec: '标准版',
-      price: 165,
-      quantity: 1,
-      image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20Java%20Edition%20game%20cover&size=512x512'
-    },
-    {
-      id: 2,
-      name: 'Minecraft 皮肤包',
-      spec: '基础包',
-      price: 34.99,
-      quantity: 1,
-      image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20skin%20pack&size=512x512'
-    }
-  ]
+  items: []
 })
+
+// 获取订单数据
+const fetchProductData = async () => {
+  const orderId = route.query.orderId
+  const id = route.query.id
+  const commodity = route.query.commodity
+  
+  if (orderId) {
+    // 如果有订单编号，从后端获取订单数据
+    try {
+      const response = await getOrderDetail(orderId)
+      const orderData = response.data
+      
+      // 构建订单信息
+      order.value = {
+        orderId: orderData.orderNo || orderData.id,
+        status: orderData.status,
+        createTime: new Date(orderData.createTime).toLocaleString('zh-CN'),
+        payTime: orderData.payTime ? new Date(orderData.payTime).toLocaleString('zh-CN') : '',
+        totalPrice: 0, // 后端可能没有计算，需要从商品API获取
+        shippingFee: 0,
+        payPrice: 0,
+        address: {
+          name: '张三',
+          phone: '13800138000',
+          province: '北京市',
+          city: '北京市',
+          district: '朝阳区',
+          detail: '某某街道某某小区1号楼101室'
+        },
+        items: []
+      }
+      
+      // 根据商品类型获取商品详情
+      if (id && commodity) {
+        if (commodity === '0') {
+          // 美食类型，调用food API
+          const foodResponse = await getFoodDetail(id)
+          const food = foodResponse.data
+          order.value.items = [{
+            id: food.id,
+            name: food.name,
+            price: food.price,
+            quantity: 1,
+            image: food.coverImage
+          }]
+          order.value.totalPrice = food.price
+          order.value.payPrice = food.price
+        } else if (commodity === '1') {
+          // 纪念品类型，调用product API
+          const productResponse = await getProductDetail(id)
+          const product = productResponse.data
+          order.value.items = [{
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.coverImage
+          }]
+          order.value.totalPrice = product.price
+          order.value.payPrice = product.price
+        }
+      }
+    } catch (err) {
+      console.error('获取订单数据失败:', err)
+      // 如果获取订单失败，使用默认数据
+      setDefaultOrderData()
+    }
+  } else {
+    // 如果没有订单编号，使用默认数据
+    setDefaultOrderData()
+  }
+}
+
+// 设置默认订单数据
+const setDefaultOrderData = () => {
+  const id = route.query.id
+  const commodity = route.query.commodity
+  
+  if (id && commodity) {
+    // 根据商品类型获取商品详情
+    if (commodity === '0') {
+      // 美食类型，调用food API
+      getFoodDetail(id).then(response => {
+        const food = response.data
+        order.value.items = [{
+          id: food.id,
+          name: food.name,
+          price: food.price,
+          quantity: 1,
+          image: food.coverImage
+        }]
+        order.value.totalPrice = food.price
+        order.value.payPrice = food.price
+      })
+    } else if (commodity === '1') {
+      // 纪念品类型，调用product API
+      getProductDetail(id).then(response => {
+        const product = response.data
+        order.value.items = [{
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: 1,
+          image: product.coverImage
+        }]
+        order.value.totalPrice = product.price
+        order.value.payPrice = product.price
+      })
+    }
+  }
+}
 
 const getStatusText = (status) => {
   const statusMap = {
+    '0': '待支付',
+    '1': '已支付',
+    '2': '已发货',
+    '3': '已完成',
+    '4': '已取消',
+    '5': '已退款',
     unpaid: '待支付',
     paid: '已支付',
     shipping: '配送中',
@@ -138,10 +243,26 @@ const getStatusText = (status) => {
   return status in statusMap ? statusMap[status] : '未知状态'
 }
 
+const getStatusClass = (status) => {
+  const classMap = {
+    '0': 'unpaid',
+    '1': 'paid',
+    '2': 'shipping',
+    '3': 'completed',
+    '4': 'cancelled',
+    '5': 'refunded',
+    unpaid: 'unpaid',
+    paid: 'paid',
+    shipping: 'shipping',
+    completed: 'completed',
+    cancelled: 'cancelled'
+  }
+  return classMap[status] || 'unpaid'
+}
+
 const goToPay = () => {
   // 触发支付事件
   emit('pay')
-  router.push('/payment')
 }
 
 const cancelOrder = () => {
@@ -149,6 +270,11 @@ const cancelOrder = () => {
     order.value.status = 'cancelled'
   }
 }
+
+// 组件挂载时获取商品数据
+onMounted(() => {
+  fetchProductData()
+})
 </script>
 
 <style scoped>
@@ -204,6 +330,11 @@ const cancelOrder = () => {
 .order-status.cancelled {
   background: #f8d7da;
   color: #721c24;
+}
+
+.order-status.refunded {
+  background: #e2e3e5;
+  color: #383d41;
 }
 
 .order-info {

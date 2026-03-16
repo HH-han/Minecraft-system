@@ -12,8 +12,15 @@ import com.minecraft.mapper.OrderMapper;
 import com.minecraft.service.OrderService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
+
+    // 用于生成订单编号的计数器
+    private final AtomicInteger orderCounter = new AtomicInteger(1);
 
     @Override
     public Order createOrder(Long userId, OrderRequest request) {
@@ -24,6 +31,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setQuantity(request.getQuantity());
         order.setRemark(request.getRemark());
         order.setStatus(OrderStatus.PENDING.getCode().toString());
+        
+        // 生成订单编号：日期 + 4位自增数
+        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String counterStr = String.format("%04d", orderCounter.getAndIncrement());
+        if (orderCounter.get() > 9999) {
+            orderCounter.set(1);
+        }
+        String orderNo = dateStr + counterStr;
+        order.setOrderNo(orderNo);
+        
+        // 设置创建时间
+        order.setCreateTime(LocalDateTime.now());
+        order.setUpdateTime(LocalDateTime.now());
+        
         save(order);
         return order;
     }
@@ -51,6 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             throw new RuntimeException("订单不存在");
         }
         order.setStatus(OrderStatus.CANCELLED.getCode().toString());
+        order.setUpdateTime(LocalDateTime.now());
         updateById(order);
     }
 }

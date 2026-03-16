@@ -40,17 +40,26 @@
       <p>暂无美食数据</p>
     </div>
   </div>
+  
+  <!-- 商品详情模态框 -->
+  <Select 
+    :visible="showSelectModal" 
+    :productId="selectedFoodId" 
+    :commodity="'0'" 
+    @close="closeSelectModal"
+  />
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { getFoodList } from '@/api/food.js'
+import Select from '@/components/Payment/Select.vue'
 
 // 响应式数据
 const foods = ref([])
 const loading = ref(false)
 const error = ref('')
-const router = useRouter()
+const showSelectModal = ref(false)
+const selectedFoodId = ref('')
 
 // 获取美食数据
 const fetchFoods = async () => {
@@ -73,26 +82,17 @@ onMounted(() => {
   fetchFoods()
 })
 
-// 打开详情页并跳转到支付页面
+// 打开详情模态框
 const openDetail = (food) => {
   console.log('点击了美食卡片:', food)
-  console.log('准备跳转到支付页面')
-  try {
-    router.push({
-      path: '/payment',
-      query: {
-        item: JSON.stringify({
-          id: food.id,
-          name: food.name,
-          price: food.price,
-          coverImage: food.coverImage
-        })
-      }
-    })
-    console.log('跳转命令已执行')
-  } catch (error) {
-    console.error('跳转失败:', error)
-  }
+  selectedFoodId.value = food.id
+  showSelectModal.value = true
+}
+
+// 关闭详情模态框
+const closeSelectModal = () => {
+  showSelectModal.value = false
+  selectedFoodId.value = ''
 }
 </script>
 <style scoped>

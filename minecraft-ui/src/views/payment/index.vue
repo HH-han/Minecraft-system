@@ -94,9 +94,11 @@
 
         <!-- 支付页面 -->
 
-        <div class="section-body" v-if="showPayPage">
-          <PayPage />
-        </div>
+
+          <div class="section-body" v-if="showPayPage">
+            <PayPage />
+          </div>
+
       </div>
     </div>
   </div>
@@ -110,10 +112,14 @@ import OrderDetail from './components/OrderDetail.vue'
 import ShoppingCart from './components/ShoppingCart.vue'
 import UserReview from './components/UserReview.vue'
 import ProductTypeSelector from './components/ProductTypeSelector.vue'
+import { getFoodDetail } from '@/api/food.js'
 
 const route = useRoute()
 const selectedOptions = ref({})
 const showPayPage = ref(false)
+const loading = ref(false)
+const error = ref('')
+const productData = ref(null)
 
 const handleOptionChange = (options) => {
   selectedOptions.value = options
@@ -127,11 +133,36 @@ const handlePay = () => {
   showPayPage.value = true
 }
 
-// 组件挂载时检查是否有商品参数，如果有则直接显示支付页面
-onMounted(() => {
-  if (route.query.item) {
-    showPayPage.value = true
+// 获取商品数据
+const fetchProductData = async () => {
+  const id = route.query.id
+  const commodity = route.query.commodity
+  
+  if (!id || !commodity) return
+  
+  loading.value = true
+  error.value = ''
+  
+  try {
+    if (commodity === '0') {
+      // 美食类型，调用food API
+      const response = await getFoodDetail(id)
+      productData.value = response.data
+    } else {
+      // 其他类型，这里可以添加相应的API调用
+      console.log('其他商品类型:', commodity)
+    }
+  } catch (err) {
+    error.value = err.message || '获取商品数据失败'
+    console.error('获取商品数据失败:', err)
+  } finally {
+    loading.value = false
   }
+}
+
+// 组件挂载时获取商品数据
+onMounted(() => {
+  fetchProductData()
 })
 </script>
 

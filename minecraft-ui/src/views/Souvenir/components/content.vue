@@ -28,15 +28,26 @@
             <p>暂无商品数据</p>
         </div>
     </div>
+    
+    <!-- 商品详情模态框 -->
+    <Select 
+        :visible="showSelectModal" 
+        :product-id="selectedProductId" 
+        :commodity="'1'" 
+        @close="closeModal"
+    />
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getProductList } from '@/api/product.js'
+import Select from '@/components/Payment/Select.vue'
 
 // 响应式数据
 const products = ref([])
 const loading = ref(false)
 const error = ref('')
+const showSelectModal = ref(false)
+const selectedProductId = ref('')
 
 // 获取商品数据
 const fetchProducts = async () => {
@@ -59,9 +70,16 @@ onMounted(() => {
     fetchProducts()
 })
 
-// 打开详情页
+// 打开详情模态框
 const showDetail = (product) => {
-    console.log('打开商品详情:', product)
+    console.log('点击了商品卡片:', product)
+    selectedProductId.value = product.id
+    showSelectModal.value = true
+}
+
+// 关闭模态框
+const closeModal = () => {
+    showSelectModal.value = false
 }
 
 // 跳转到订单详情页

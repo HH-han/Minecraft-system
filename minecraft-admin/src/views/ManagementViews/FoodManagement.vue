@@ -38,6 +38,7 @@
                     @click="triggerFileInput(food)" />
                 </td>
                 <td>{{ food.description }}</td>
+                <td>{{ food.commodity }}</td>
                 <td>{{ food.category }}</td>
                 <td>{{ food.status }}</td>
                 <td>{{ food.location }}</td>
@@ -131,6 +132,10 @@
                 <input v-model="formData.description" required />
               </div>
               <div class="form-group">
+                <label>商品:</label>
+                <input v-model="formData.commodity" required />
+              </div>
+              <div class="form-group">
                 <label>美食价格:</label>
                 <input v-model="formData.price" required />
               </div>
@@ -200,6 +205,7 @@ const columns = [
   { key: 'name', title: '美食名称' },
   { key: 'coverImage', title: '美食图片' },
   { key: 'description', title: '美食描述' },
+  { key: 'commodity', title: '商品' },
   { key: 'category', title: '美食分类' },
   { key: 'status', title: '美食状态' },
   { key: 'location', title: '美食位置' },
@@ -221,6 +227,7 @@ const formData = ref({
   name: '',
   description: '',
   coverImage: '',
+  commodity: '',
   price: '',
   sales: 0,
   rating: 0,
@@ -297,6 +304,7 @@ const showAddDialog = () => {
     id: null,
     name: '',
     description: '',
+    commodity: '',
     coverImage: '',
     price: '',
     sales: 0,
@@ -330,6 +338,7 @@ const showEditDialog = (food) => {
     id: food.id,
     name: food.name,
     description: food.description,
+    commodity: food.commodity || '',
     coverImage: food.image || food.coverImage,
     price: food.price,
     sales: food.sales || 0,

@@ -33,6 +33,7 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.type }}</td>
+                <td>{{ product.commodity }}</td>
                 <td>{{ product.city }}</td>
                 <td>{{ product.province }}</td>
                 <td>
@@ -130,6 +131,10 @@
                 <input v-model="formData.type" required />
               </div>
               <div class="form-group">
+                <label>商品:</label>
+                <input v-model="formData.commodity" required />
+              </div>
+              <div class="form-group">
                 <label>城市:</label>
                 <input v-model="formData.city" required />
               </div>
@@ -195,6 +200,7 @@ const columns = [
   { key: 'id', title: '产品ID' },
   { key: 'name', title: '产品名称' },
   { key: 'type', title: '产品类型' },
+  { key: 'commodity', title: '商品' },
   { key: 'city', title: '城市' },
   { key: 'province', title: '省份' },
   { key: 'coverImage', title: '产品图片' },
@@ -217,6 +223,7 @@ const formData = ref({
   id: null,
   name: '',
   type: '',
+  commodity: '',
   city: '',
   province: '',
   description: '',
@@ -293,6 +300,7 @@ const showAddDialog = () => {
     id: null,
     name: '',
     type: '',
+    commodity: '',
     city: '',
     province: '',
     description: '',
@@ -325,6 +333,7 @@ const showEditDialog = (product) => {
     id: product.id,
     name: product.name,
     type: product.type || '',
+    commodity: product.commodity || '',
     city: product.city || '',
     province: product.province || '',
     description: product.description || '',
