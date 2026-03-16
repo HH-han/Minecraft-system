@@ -167,6 +167,7 @@ create table cart
     quantity    int      default 1                 null comment '数量',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    image       varchar(255)                       null comment '图片',
     constraint uk_user_item
         unique (user_id, item_type, item_id)
 )
@@ -439,7 +440,8 @@ create table food
     tags          varchar(255)                       null comment '标签',
     status        int      default 1                 null comment '状态 0-下架 1-上架',
     create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    commodity     varchar(20)                        null comment '商品'
 )
     comment '美食表' collate = utf8mb4_unicode_ci
                      row_format = DYNAMIC;
@@ -681,6 +683,35 @@ create index idx_login_time
 create index idx_user_id
     on login_info (user_id);
 
+create table login_log
+(
+    id             bigint auto_increment comment '主键ID'
+        primary key,
+    user_id        bigint       null comment '用户ID',
+    username       varchar(50)  null comment '用户名',
+    account        varchar(50)  null comment '登录账号',
+    ipaddr         varchar(128) null comment '登录IP地址',
+    login_location varchar(255) null comment '登录地点',
+    browser        varchar(50)  null comment '浏览器类型',
+    os             varchar(50)  null comment '操作系统',
+    status         varchar(10)  null comment '登录状态（0成功 1失败）',
+    msg            varchar(255) null comment '提示消息',
+    login_time     datetime     null comment '登录时间'
+)
+    comment '登录日志表' charset = utf8mb4;
+
+create index idx_account
+    on login_log (account);
+
+create index idx_login_time
+    on login_log (login_time);
+
+create index idx_user_id
+    on login_log (user_id);
+
+create index idx_username
+    on login_log (username);
+
 create table months
 (
     id          int auto_increment comment '月份ID，自增'
@@ -825,7 +856,8 @@ create table product
     tags          varchar(255)                       null comment '标签',
     status        int      default 1                 null comment '状态 0-下架 1-上架',
     create_time   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    commodity     varchar(20)                        null comment '商品'
 )
     comment '特产/纪念品表' collate = utf8mb4_unicode_ci
                             row_format = DYNAMIC;
@@ -853,7 +885,7 @@ create table recommend
     state       int default 0 null comment '状态',
     type        int           null comment '类型'
 )
-    row_format = DYNAMIC;
+    comment '推荐' row_format = DYNAMIC;
 
 create table safetytips
 (
@@ -1228,33 +1260,4 @@ FROM monthly_recommendations r
 WHERE m.month_name = p_month_name AND r.is_recommended = 1
 ORDER BY r.sort_order;
 END;
-
-create table login_log
-(
-    id             bigint auto_increment comment '主键ID'
-        primary key,
-    user_id        bigint       null comment '用户ID',
-    username       varchar(50)  null comment '用户名',
-    account        varchar(50)  null comment '登录账号',
-    ipaddr         varchar(128) null comment '登录IP地址',
-    login_location varchar(255) null comment '登录地点',
-    browser        varchar(50)  null comment '浏览器类型',
-    os             varchar(50)  null comment '操作系统',
-    status         varchar(10)  null comment '登录状态（0成功 1失败）',
-    msg            varchar(255) null comment '提示消息',
-    login_time     datetime     null comment '登录时间'
-)
-    comment '登录日志表' charset = utf8mb4;
-
-create index idx_account
-    on login_log (account);
-
-create index idx_login_time
-    on login_log (login_time);
-
-create index idx_user_id
-    on login_log (user_id);
-
-create index idx_username
-    on login_log (username);
 

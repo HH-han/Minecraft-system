@@ -6,26 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/MinecraftApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/MinecraftApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/CartController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/CartController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/dto/request/OrderRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/dto/request/OrderRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Cart.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Cart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/CartServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/controller/CartController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/dto/request/OrderRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/dto/request/OrderRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/entity/Cart.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/entity/Cart.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/CartServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/CartServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/OrderServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/target/classes/com/minecraft/service/impl/OrderServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/api/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/api/cart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/Select.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/Select.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/OrderDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/OrderDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/ShoppingCart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/ShoppingCart.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,15 +157,7 @@
       <workItem from="1773408383195" duration="8267000" />
       <workItem from="1773496027866" duration="5308000" />
       <workItem from="1773553976729" duration="9241000" />
-      <workItem from="1773667184140" duration="5602000" />
-    </task>
-    <task id="LOCAL-00002" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771785874620</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1771785874620</updated>
+      <workItem from="1773667184140" duration="6097000" />
     </task>
     <task id="LOCAL-00003" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -567,7 +543,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773673220324</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773676417711</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1773676417711</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
