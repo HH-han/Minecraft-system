@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+
+# Build output
+target
+
+# IDE files
+.idea
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven files
+mvnw
+mvnw.cmd
+
+# Gradle files
+gradlew
+gradlew.bat
+build
+
+# Java files
+*.class
+*.jar
+*.war
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.sql
+*.sqlite
+
+# Uploads directory
+uploads
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
