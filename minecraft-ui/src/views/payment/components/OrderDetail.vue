@@ -77,9 +77,9 @@
       </div>
     </div>
     
-    <div class="order-actions" v-if="order.status === 'unpaid'">
+    <div class="order-actions" v-if="order.status === '0'">
       <button class="btn btn-primary" @click="goToPay">立即支付</button>
-      <button class="btn btn-secondary" @click="cancelOrder">取消订单</button>
+      <button class="btn btn-secondary" @click="handleCancelOrder">取消订单</button>
     </div>
   </div>
 </template>
@@ -89,7 +89,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
-import { getOrderDetail } from '@/api/order.js'
+import { getOrderDetail, cancelOrder } from '@/api/order.js'
 
 const emit = defineEmits(['pay'])
 const router = useRouter()
@@ -265,9 +265,19 @@ const goToPay = () => {
   emit('pay')
 }
 
-const cancelOrder = () => {
+const handleCancelOrder = async () => {
   if (confirm('确定要取消订单吗？')) {
-    order.value.status = 'cancelled'
+    try {
+      const orderId = route.query.orderId
+      if (orderId) {
+        await cancelOrder(orderId)
+        order.value.status = '4' // 4-已取消
+        alert('订单已取消')
+      }
+    } catch (error) {
+      console.error('取消订单失败:', error)
+      alert('取消订单失败，请重试')
+    }
   }
 }
 

@@ -14,13 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
-
-    // 用于生成订单编号的计数器
-    private final AtomicInteger orderCounter = new AtomicInteger(1);
 
     @Override
     public Order createOrder(Long userId, OrderRequest request) {
@@ -28,17 +24,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUserId(userId);
         order.setItemType(request.getItemType());
         order.setItemId(request.getItemId());
+        order.setItemName(request.getItemName());
+        order.setAmount(request.getAmount());
         order.setQuantity(request.getQuantity());
         order.setRemark(request.getRemark());
         order.setStatus(OrderStatus.PENDING.getCode().toString());
         
         // 生成订单编号：日期 + 4位自增数
-        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String counterStr = String.format("%04d", orderCounter.getAndIncrement());
-        if (orderCounter.get() > 9999) {
-            orderCounter.set(1);
-        }
-        String orderNo = dateStr + counterStr;
+        String orderNo = generateOrderNo();
         order.setOrderNo(orderNo);
         
         // 设置创建时间
@@ -47,6 +40,38 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         
         save(order);
         return order;
+    }
+    
+    // 生成唯一订单编号
+    private String generateOrderNo() {
+        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        
+        // 从数据库中获取当天的最大订单编号
+        LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(Order::getOrderNo, dateStr)
+               .orderByDesc(Order::getOrderNo)
+               .last("LIMIT 1");
+        
+        Order lastOrder = getOne(wrapper);
+        int counter = 1;
+        
+        if (lastOrder != null) {
+            String lastOrderNo = lastOrder.getOrderNo();
+            if (lastOrderNo.startsWith(dateStr)) {
+                // 提取计数器部分并加 1
+                String counterStr = lastOrderNo.substring(dateStr.length());
+                try {
+                    counter = Integer.parseInt(counterStr) + 1;
+                } catch (NumberFormatException e) {
+                    // 如果解析失败，使用默认值 1
+                    counter = 1;
+                }
+            }
+        }
+        
+        // 格式化为 4 位数字
+        String counterStr = String.format("%04d", counter);
+        return dateStr + counterStr;
     }
 
     @Override

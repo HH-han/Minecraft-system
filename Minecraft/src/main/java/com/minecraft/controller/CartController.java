@@ -22,7 +22,14 @@ public class CartController {
     @Operation(summary ="添加到购物车")
     @PostMapping("/add")
     public ApiResponse<Void> addToCart(@RequestBody Cart cart) {
-        Long userId = SecurityUtils.getCurrentUserId();
+        // 优先使用前端传递的 userId，否则从 SecurityUtils 获取
+        Long userId = cart.getUserId();
+        if (userId == null) {
+            userId = SecurityUtils.getCurrentUserId();
+        }
+        if (userId == null) {
+            return ApiResponse.error(401, "用户未登录");
+        }
         cart.setUserId(userId);
         cartService.addToCart(cart);
         return ApiResponse.success("添加成功", null);
@@ -44,16 +51,28 @@ public class CartController {
 
     @Operation(summary ="清空购物")
     @DeleteMapping("/clear")
-    public ApiResponse<Void> clearCart() {
-        Long userId = SecurityUtils.getCurrentUserId();
+    public ApiResponse<Void> clearCart(@RequestParam(required = false) Long userId) {
+        // 优先使用前端传递的 userId，否则从 SecurityUtils 获取
+        if (userId == null) {
+            userId = SecurityUtils.getCurrentUserId();
+        }
+        if (userId == null) {
+            return ApiResponse.error(401, "用户未登录");
+        }
         cartService.clearCart(userId);
         return ApiResponse.success("清空成功", null);
     }
 
     @Operation(summary ="获取购物车列")
     @GetMapping("/list")
-    public ApiResponse<List<Cart>> getCartList() {
-        Long userId = SecurityUtils.getCurrentUserId();
+    public ApiResponse<List<Cart>> getCartList(@RequestParam(required = false) Long userId) {
+        // 优先使用前端传递的 userId，否则从 SecurityUtils 获取
+        if (userId == null) {
+            userId = SecurityUtils.getCurrentUserId();
+        }
+        if (userId == null) {
+            return ApiResponse.success("用户未登录", null);
+        }
         return ApiResponse.success(cartService.getCartList(userId));
     }
 }

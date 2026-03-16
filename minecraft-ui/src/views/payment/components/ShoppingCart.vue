@@ -20,7 +20,7 @@
                   fill="#FFFFFF" p-id="20588"></path>
               </svg>
         </div>
-        <div class="empty-text">购物车是空的</div>
+        <div class="empty empty-text">购物车是空的</div>
         <router-link to="/product" class="btn btn-primary">去购物</router-link>
       </div>
       <div v-else class="items-list">
@@ -33,11 +33,11 @@
             >
           </div>
           <div class="item-image">
-            <img :src="item.image" :alt="item.name">
+            <img :src="item.coverImage || 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20item&size=512x512'" :alt="item.itemName || item.name">
           </div>
           <div class="item-info">
-            <div class="item-name">{{ item.name }}</div>
-            <div class="item-spec" v-if="item.spec">{{ item.spec }}</div>
+            <div class="item-name">{{ item.itemName || item.name }}</div>
+            <div class="item-spec" v-if="item.itemType">{{ item.itemType === 'food' ? '美食' : item.itemType === 'product' ? '纪念品' : item.itemType }}</div>
             <div class="item-price">
               <span class="price">{{ item.price }} 元</span>
               <div class="quantity-control">
@@ -90,32 +90,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getCartList, updateCart, deleteFromCart } from '@/api/cart.js'
 
 const emit = defineEmits(['checkout'])
 const router = useRouter()
 
-const cartItems = ref([
-  {
-    id: 1,
-    name: 'Minecraft  Java版',
-    spec: '标准版',
-    price: 165,
-    quantity: 1,
-    selected: true,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20Java%20Edition%20game%20cover&size=512x512'
-  },
-  {
-    id: 2,
-    name: 'Minecraft 皮肤包',
-    spec: '基础包',
-    price: 34.99,
-    quantity: 2,
-    selected: false,
-    image: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20skin%20pack&size=512x512'
-  }
-])
+const cartItems = ref([])
 
 const selectAllFlag = ref(false)
 
@@ -145,34 +127,63 @@ const selectAll = () => {
   toggleSelectAll()
 }
 
-const increaseQuantity = (item) => {
-  item.quantity++
-  updateTotal()
+const increaseQuantity = async (item) => {
+  try {
+    item.quantity++
+    await updateCart(item.id, item.quantity)
+    updateTotal()
+  } catch (error) {
+    console.error('更新购物车失败:', error)
+    item.quantity-- // 失败时回滚
+  }
 }
 
-const decreaseQuantity = (item) => {
+const decreaseQuantity = async (item) => {
   if (item.quantity > 1) {
     item.quantity--
-    updateTotal()
+    try {
+      await updateCart(item.id, item.quantity)
+      updateTotal()
+    } catch (error) {
+      console.error('更新购物车失败:', error)
+      item.quantity++ // 失败时回滚
+    }
   }
 }
 
-const removeItem = (id) => {
+const removeItem = async (id) => {
   if (confirm('确定要删除这个商品吗？')) {
-    cartItems.value = cartItems.value.filter(item => item.id !== id)
-    updateTotal()
+    try {
+      await deleteFromCart(id)
+      cartItems.value = cartItems.value.filter(item => item.id !== id)
+      updateTotal()
+    } catch (error) {
+      console.error('删除购物车商品失败:', error)
+    }
   }
 }
 
-const deleteSelected = () => {
+const deleteSelected = async () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
     alert('请选择要删除的商品')
     return
   }
   if (confirm(`确定要删除选中的 ${selectedItems.length} 件商品吗？`)) {
-    cartItems.value = cartItems.value.filter(item => !item.selected)
-    updateTotal()
+    try {
+      // 从 localStorage 获取用户信息
+      const userInfo = JSON.parse(localStorage.getItem('user'))
+      const userId = userInfo?.id || userInfo?.userId
+      
+      // 逐个删除选中的商品
+      for (const item of selectedItems) {
+        await deleteFromCart(item.id)
+      }
+      // 重新获取购物车数据
+      await fetchCartData()
+    } catch (error) {
+      console.error('删除选中商品失败:', error)
+    }
   }
 }
 
@@ -182,11 +193,41 @@ const checkout = () => {
     alert('请选择要结算的商品')
     return
   }
+  // 从 localStorage 获取用户信息
+  const userInfo = JSON.parse(localStorage.getItem('user'))
+  const userId = userInfo?.id || userInfo?.userId
+  
   // 触发结算事件
   emit('checkout')
   // 跳转到订单确认页面
-  router.push('/payment')
+  router.push({
+    path: '/payment',
+    query: {
+      userId: userId
+    }
+  })
 }
+
+// 从后端获取购物车数据
+const fetchCartData = async () => {
+  try {
+    // 从 localStorage 获取用户信息
+    const userInfo = JSON.parse(localStorage.getItem('user'))
+    const userId = userInfo?.id || userInfo?.userId
+    
+    // 传递 userId 到 API
+    const response = await getCartList({ userId })
+    cartItems.value = response.data || []
+  } catch (error) {
+    console.error('获取购物车数据失败:', error)
+    cartItems.value = [] // 失败时也设置为空数组
+  }
+}
+
+// 组件挂载时获取购物车数据
+onMounted(() => {
+  fetchCartData()
+})
 
 // 初始化全选状态
 watch(cartItems, () => {

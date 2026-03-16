@@ -9,7 +9,7 @@
       <div class="order-details">
         <div class="detail-item">
           <span class="detail-label">订单编号：</span>
-          <span class="detail-value">{{ orderId || '自动生成' }}</span>
+          <span class="detail-value">{{ item.orderNo || '自动生成' }}</span>
         </div>
         <div class="detail-item">
           <span class="detail-label">订单名称：</span>
@@ -166,6 +166,7 @@ import { useRoute, useRouter } from 'vue-router';
 import PaymentSuccessModal from '@/components/PromptComponent/PaymentSuccessModal.vue';
 import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
+import { getOrderDetail } from '@/api/order.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -201,13 +202,34 @@ const generateOrderTime = () => {
 };
 
 // 从路由查询参数中获取商品信息和订单ID
-onMounted(() => {
+onMounted(async () => {
   // 生成订单时间
   orderTime.value = generateOrderTime();
   
-  if (route.query.item) {
+  orderId.value = route.query.orderId || '';
+  
+  // 如果有订单ID，从API获取订单详情
+  if (orderId.value) {
     try {
-
+      const response = await getOrderDetail(orderId.value);
+      const orderData = response.data;
+      
+      // 构建商品信息
+      item.value = {
+        id: orderData.itemId,
+        name: orderData.itemName,
+        orderNo: orderData.orderNo,
+        price: orderData.amount,
+        quantity: orderData.quantity || 1,
+        ticketType: orderData.itemType === 'food' ? '美食' : '纪念品'
+      };
+    } catch (error) {
+      console.error('获取订单详情失败:', error);
+      ElMessage.error('获取订单详情失败，请重试');
+    }
+  } else if (route.query.item) {
+    // 如果没有订单ID，使用路由参数中的商品信息
+    try {
       const decodedItem = decodeURIComponent(route.query.item);
       const parsedItem = JSON.parse(decodedItem);
       console.log('解析后item对象:', parsedItem); // 调试日志
@@ -228,7 +250,6 @@ onMounted(() => {
       console.error('解析item参数失败:', error);
     }
   }
-  orderId.value = route.query.orderId || '';
 });
 
 // 确认支付

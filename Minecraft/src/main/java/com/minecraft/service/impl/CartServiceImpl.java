@@ -7,6 +7,7 @@ import com.minecraft.mapper.CartMapper;
 import com.minecraft.service.CartService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +15,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Override
     public void addToCart(Cart cart) {
+        if (cart.getUserId() == null) {
+            throw new RuntimeException("用户未登录");
+        }
         LambdaQueryWrapper<Cart> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Cart::getUserId, cart.getUserId())
                 .eq(Cart::getItemType, cart.getItemType())
@@ -45,6 +49,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Override
     public void clearCart(Long userId) {
+        if (userId == null) {
+            throw new RuntimeException("用户未登录");
+        }
         LambdaQueryWrapper<Cart> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Cart::getUserId, userId);
         remove(wrapper);
@@ -52,6 +59,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements Ca
 
     @Override
     public List<Cart> getCartList(Long userId) {
+        if (userId == null) {
+            return new ArrayList<>();
+        }
         LambdaQueryWrapper<Cart> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Cart::getUserId, userId);
         return list(wrapper);

@@ -15,6 +15,8 @@ public class Cart {
     private Long userId;
     
     private String itemType;
+
+    private String image;
     
     private Long itemId;
     

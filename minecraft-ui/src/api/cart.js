@@ -30,6 +30,6 @@ export const clearCart = () => {
 }
 
 // 获取购物车列表
-export const getCartList = () => {
-  return request.get('/cart/list')
+export const getCartList = (params) => {
+  return request.get('/cart/list', { params })
 }

@@ -16,7 +16,7 @@
             <div class="product-price">¥{{ product.price }}</div>
             <div class="product-description">{{ product.description }}</div>
             <div class="product-actions">
-              <button class="btn btn-cart" @click="addToCart">加入购物车</button>
+              <button class="btn btn-cart" @click="handleAddToCart">加入购物车</button>
               <button class="btn btn-pay" @click="buyNow">立即支付</button>
             </div>
           </div>
@@ -32,6 +32,7 @@ import { useRouter } from 'vue-router'
 import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
 import { createOrder } from '@/api/order.js'
+import { addToCart } from '@/api/cart.js'
 
 const props = defineProps({
   visible: {
@@ -91,11 +92,32 @@ const fetchProductData = async () => {
 }
 
 // 加入购物车
-const addToCart = () => {
+const handleAddToCart = async () => {
   console.log('加入购物车:', product.value)
-  // 这里可以添加加入购物车的逻辑
-  alert('商品已加入购物车')
-  closeModal()
+  try {
+    // 从 localStorage 获取用户信息
+    const userInfo = JSON.parse(localStorage.getItem('user'))
+    const userId = userInfo?.id || userInfo?.userId
+    
+    // 调用加入购物车 API
+    const cartData = {
+      itemId: product.value.id,
+      itemName: product.value.name,
+      price: product.value.price,
+      quantity: 1,
+      image: product.value.coverImage,
+      itemType: props.commodity === '0' ? 'food' : 'product',
+      userId: userId
+    }
+    
+    await addToCart(cartData)
+    alert('商品已加入购物车')
+  } catch (error) {
+    console.error('加入购物车失败:', error)
+    alert('加入购物车失败，请重试')
+  } finally {
+    closeModal()
+  }
 }
 
 // 立即支付
@@ -106,6 +128,8 @@ const buyNow = async () => {
     const orderRequest = {
       itemType: props.commodity === '0' ? 'food' : 'product',
       itemId: product.value.id,
+      itemName: product.value.name,
+      amount: parseFloat(product.value.price),
       quantity: 1,
       remark: ''
     }
@@ -166,7 +190,6 @@ onMounted(() => {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
-  background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
@@ -229,7 +252,6 @@ onMounted(() => {
 .product-image {
   flex: 0 0 35%;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
