@@ -37,7 +37,9 @@ public class Product {
     private Integer collectCount;
     
     private Integer commentCount;
-    
+
+    private String commodity;
+
     private String tags;
     
     private Integer status;

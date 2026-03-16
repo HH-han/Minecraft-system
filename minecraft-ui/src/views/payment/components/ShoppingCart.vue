@@ -210,6 +210,7 @@ watch(cartItems, () => {
 }
 
 .cart-actions {
+  min-width: 350px;
   display: flex;
   gap: 10px;
 }

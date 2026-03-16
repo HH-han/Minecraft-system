@@ -39,6 +39,8 @@ public class Food {
     private Integer commentCount;
     
     private String tags;
+
+    private String commodity;
     
     private Integer status;
     

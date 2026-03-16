@@ -21,7 +21,6 @@
                 <p class="description">{{ item.description }}</p>
                 <div class="card-footer">
                     <span class="card-price">¥{{ item.price }}</span>
-                    <button @click="OrderDetails(item.id)" class="btn pay">前往购买</button>
                 </div>
             </div>
         </div>
@@ -189,29 +188,6 @@ const OrderDetails = (productId) => {
     color: #e74c3c;
     font-size: 1.2em;
     font-weight: bold;
-}
-
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn.pay {
-    background: #e74c3c;
-    color: white;
-}
-
-.btn.pay:hover {
-    background: #c0392b;
-}
-
-.btn.retry {
-    background: #3498db;
-    color: white;
-    margin-top: 10px;
 }
 
 /* 加载状态 */
