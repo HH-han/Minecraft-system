@@ -241,6 +241,24 @@ const routes = [
       title: "测试",
       requiresAuth: false,
     },
+  },
+  {
+    path: "/predetermined",
+    name: "Predetermined",
+    component: () => import("@/views/Predetermined/index.vue"),
+    meta: {
+      title: "预订服务",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/payment",
+    name: "Payment",
+    component: () => import("@/views/payment/index.vue"),
+    meta: {
+      title: "支付页面",
+      requiresAuth: false,
+    },
   }
 ];
 

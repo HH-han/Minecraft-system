@@ -48,6 +48,8 @@ import { useAuthStore } from '@/stores/auth.js'
 import TestProject001 from '@/views/Test/components/TestProject001.vue'
 import TestProject002 from '@/views/Test/components/TestProject002.vue'
 import TestProject003 from '@/views/Test/components/TestProject003.vue'
+import TestProject004 from '@/views/Test/components/TestProject004.vue'
+import TestProject005 from '@/views/Test/components/TestProject005.vue'
 
 
 const router = useRouter()
@@ -58,7 +60,8 @@ const pages = [
   { name: '项目一', component: TestProject001, icon: 'fas fa-project-diagram' },
   { name: '项目二', component: TestProject002, icon: 'fas fa-chart-line' },
   { name: '项目三', component: TestProject003, icon: 'fas fa-chart-line' },
-
+  { name: '项目四', component: TestProject004, icon: 'fas fa-chart-line' },
+  { name: '项目五', component: TestProject005, icon: 'fas fa-chart-line' },
 ]
 
 // 当前页面

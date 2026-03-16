@@ -1,0 +1,2 @@
+1.参考携程酒店的预订页面https://hotels.ctrip.com/hotels/426595.html#ctm_ref=hp_htl_pt_pro_01，编写当前项目的酒店预定页面
+2.参考携程景点预定页面https://vacations.ctrip.com/travel/detail/p47690265/?city=34&ctm_ref=vactang_scene_pg_110000388，编写当前项目的景点预定相关页面
