@@ -1,5 +1,195 @@
-# Vue 3 + Vite
+# Minecraft 旅游系统前端
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 项目介绍
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+Minecraft 旅游系统是一个现代化的旅游预订平台，提供酒店、景点、美食、纪念品等多种旅游相关服务的预订功能。系统采用 Vue 3 + Vite 技术栈，结合 Element Plus 组件库，打造了一个美观、易用的前端界面。
+
+## 技术栈
+
+- **前端框架**: Vue 3
+- **构建工具**: Vite
+- **状态管理**: Pinia
+- **路由管理**: Vue Router
+- **UI 组件库**: Element Plus
+- **HTTP 客户端**: Axios
+- **图标库**: Element Plus Icons
+
+## 项目结构
+
+```
+minecraft-ui/
+├── public/            # 静态资源
+├── src/
+│   ├── api/           # API 接口
+│   ├── assets/        # 静态资源
+│   ├── components/    # 通用组件
+│   ├── css/           # 样式文件
+│   ├── router/        # 路由配置
+│   ├── stores/        # 状态管理
+│   ├── utils/         # 工具函数
+│   ├── views/         # 页面组件
+│   ├── App.vue        # 根组件
+│   └── main.js        # 入口文件
+├── .env.development   # 开发环境配置
+├── .env.production    # 生产环境配置
+├── index.html         # HTML 模板
+├── package.json       # 项目配置
+└── vite.config.js     # Vite 配置
+```
+
+## 功能模块
+
+### 1. 首页
+- 轮播图展示
+- 推荐景点和酒店
+- 搜索功能
+- 安全提示
+
+### 2. 酒店预订
+- 酒店列表展示
+- 酒店详情查看
+- 房型选择
+- 日期选择
+- 预订表单
+
+### 3. 景点预订
+- 景点列表展示
+- 景点详情查看
+- 票种选择
+- 游客信息填写
+- 预订表单
+
+### 4. 美食
+- 美食列表展示
+- 美食详情查看
+
+### 5. 纪念品
+- 纪念品列表展示
+- 纪念品详情查看
+
+### 6. 攻略
+- 攻略列表展示
+- 攻略详情查看
+
+### 7. 社区
+- 帖子列表展示
+- 帖子详情查看
+
+### 8. 个人中心
+- 账户设置
+- 历史订单
+- 收藏管理
+
+### 9. 登录/注册
+- 账号密码登录
+- 邮箱登录
+- 注册功能
+- 忘记密码
+
+## 快速开始
+
+### 环境要求
+
+- Node.js 14.18.0 或更高版本
+- npm 6.14.15 或更高版本
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 开发环境运行
+
+```bash
+npm run dev
+```
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+### 预览生产版本
+
+```bash
+npm run preview
+```
+
+## 开发指南
+
+### 组件开发
+
+1. 通用组件放在 `src/components` 目录下
+2. 页面组件放在 `src/views` 目录下，按功能模块组织
+3. 使用 Vue 3 的 `<script setup>` 语法
+4. 组件命名使用 PascalCase 格式
+
+### API 调用
+
+1. API 接口定义放在 `src/api` 目录下
+2. 使用 Axios 进行 HTTP 请求
+3. 统一的请求拦截和响应处理
+
+### 状态管理
+
+1. 使用 Pinia 进行状态管理
+2. 状态定义放在 `src/stores` 目录下
+3. 按功能模块组织 store
+
+### 路由配置
+
+1. 路由定义放在 `src/router/index.js` 文件中
+2. 使用 Vue Router 4 的路由配置
+3. 按功能模块组织路由
+
+## 构建和部署
+
+### 构建
+
+```bash
+npm run build
+```
+
+构建后的文件会生成在 `dist` 目录中。
+
+### 部署
+
+1. 将 `dist` 目录中的文件部署到服务器
+2. 配置服务器的静态文件服务
+3. 确保服务器支持 SPA 应用的路由模式
+
+## 样式设计
+
+项目采用现代化的液态玻璃风格，具有以下特点：
+
+- 半透明背景
+- 背景模糊效果
+- 柔和的边框
+- 现代阴影
+- 平滑过渡动画
+- 圆角设计
+
+## 响应式设计
+
+项目支持响应式布局，适配不同屏幕尺寸：
+
+- 桌面端（1200px 以上）
+- 平板端（768px - 1199px）
+- 移动端（767px 以下）
+
+## 浏览器兼容性
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+## 许可证
+
+MIT
+
+## 联系方式
+
+如有问题或建议，请联系项目维护者。
