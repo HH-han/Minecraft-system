@@ -116,11 +116,11 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
         }
         
         return switch (currentStatus) {
-            case PENDING -> newStatus == SUCCESS || newStatus == FAILED || newStatus == CANCELLED;
-            case SUCCESS -> newStatus == REFUNDING;
-            case FAILED -> newStatus == PENDING;
+            case PENDING -> newStatus == PaymentStatus.SUCCESS || newStatus == PaymentStatus.FAILED || newStatus == PaymentStatus.CANCELLED;
+            case SUCCESS -> newStatus == PaymentStatus.REFUNDING;
+            case FAILED -> newStatus == PaymentStatus.PENDING;
             case CANCELLED -> false;
-            case REFUNDING -> newStatus == REFUNDED;
+            case REFUNDING -> newStatus == PaymentStatus.REFUNDED;
             case REFUNDED -> false;
             default -> false;
         };
