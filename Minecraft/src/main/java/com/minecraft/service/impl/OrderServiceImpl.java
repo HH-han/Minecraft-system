@@ -25,6 +25,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setItemType(request.getItemType());
         order.setItemId(request.getItemId());
         order.setItemName(request.getItemName());
+        order.setImage(request.getImage());
         order.setAmount(request.getAmount());
         order.setQuantity(request.getQuantity());
         order.setRemark(request.getRemark());

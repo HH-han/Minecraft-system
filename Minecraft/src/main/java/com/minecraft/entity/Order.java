@@ -21,7 +21,9 @@ public class Order {
     private Long itemId;
     
     private String itemName;
-    
+
+    private String image;
+
     private BigDecimal amount;
     
     private Integer quantity;

@@ -16,6 +16,8 @@ public class OrderRequest {
     @NotNull(message = "商品名称不能为空")
     private String itemName;
 
+    private String image;
+
     @NotNull(message = "商品金额不能为空")
     private BigDecimal amount;
 

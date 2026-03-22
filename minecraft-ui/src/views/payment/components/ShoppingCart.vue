@@ -26,14 +26,29 @@
       <div v-else class="items-list">
         <div v-for="item in cartItems" :key="item.id" class="cart-item">
           <div class="item-checkbox">
-            <input 
-              type="checkbox" 
-              v-model="item.selected"
-              @change="updateTotal"
-            >
+            <label class="ios-checkbox red">
+              <input 
+                type="checkbox" 
+                v-model="item.selected"
+                @change="updateTotal"
+              >
+              <div class="checkbox-wrapper">
+                <div class="checkbox-bg"></div>
+                <svg class="checkbox-icon" viewBox="0 0 24 24" fill="none">
+                  <path 
+                    class="check-path" 
+                    d="M4 12L10 18L20 6" 
+                    stroke="currentColor" 
+                    stroke-width="3" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </div>
+            </label>
           </div>
           <div class="item-image">
-            <img :src="item.coverImage || 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20item&size=512x512'" :alt="item.itemName || item.name">
+            <img :src="item.image" :alt="item.itemName || item.name">
           </div>
           <div class="item-info">
             <div class="item-name">{{ item.itemName || item.name }}</div>
@@ -70,11 +85,26 @@
     
     <div class="cart-footer" v-if="cartItems.length > 0">
       <div class="footer-left">
-        <input 
-          type="checkbox" 
-          v-model="selectAllFlag"
-          @change="toggleSelectAll"
-        >
+        <label class="ios-checkbox red">
+          <input 
+            type="checkbox" 
+            v-model="selectAllFlag"
+            @change="toggleSelectAll"
+          >
+          <div class="checkbox-wrapper">
+            <div class="checkbox-bg"></div>
+            <svg class="checkbox-icon" viewBox="0 0 24 24" fill="none">
+              <path 
+                class="check-path" 
+                d="M4 12L10 18L20 6" 
+                stroke="currentColor" 
+                stroke-width="3" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </div>
+        </label>
         <span>全选</span>
         <span class="selected-count">已选择 {{ selectedCount }} 件商品</span>
       </div>
@@ -93,6 +123,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCartList, updateCart, deleteFromCart } from '@/api/cart.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const emit = defineEmits(['checkout'])
 const router = useRouter()
@@ -152,13 +183,21 @@ const decreaseQuantity = async (item) => {
 }
 
 const removeItem = async (id) => {
-  if (confirm('确定要删除这个商品吗？')) {
-    try {
-      await deleteFromCart(id)
-      cartItems.value = cartItems.value.filter(item => item.id !== id)
-      updateTotal()
-    } catch (error) {
+  try {
+    await ElMessageBox.confirm('确定要删除这个商品吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    
+    await deleteFromCart(id)
+    cartItems.value = cartItems.value.filter(item => item.id !== id)
+    updateTotal()
+    ElMessage.success('商品已删除')
+  } catch (error) {
+    if (error !== 'cancel') {
       console.error('删除购物车商品失败:', error)
+      ElMessage.error('删除失败，请重试')
     }
   }
 }
@@ -166,23 +205,31 @@ const removeItem = async (id) => {
 const deleteSelected = async () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
-    alert('请选择要删除的商品')
+    ElMessage.warning('请选择要删除的商品')
     return
   }
-  if (confirm(`确定要删除选中的 ${selectedItems.length} 件商品吗？`)) {
-    try {
-      // 从 localStorage 获取用户信息
-      const userInfo = JSON.parse(localStorage.getItem('user'))
-      const userId = userInfo?.id || userInfo?.userId
-      
-      // 逐个删除选中的商品
-      for (const item of selectedItems) {
-        await deleteFromCart(item.id)
-      }
-      // 重新获取购物车数据
-      await fetchCartData()
-    } catch (error) {
+  try {
+    await ElMessageBox.confirm(`确定要删除选中的 ${selectedItems.length} 件商品吗？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    
+    // 从 localStorage 获取用户信息
+    const userInfo = JSON.parse(localStorage.getItem('user'))
+    const userId = userInfo?.id || userInfo?.userId
+    
+    // 逐个删除选中的商品
+    for (const item of selectedItems) {
+      await deleteFromCart(item.id)
+    }
+    // 重新获取购物车数据
+    await fetchCartData()
+    ElMessage.success('选中商品已删除')
+  } catch (error) {
+    if (error !== 'cancel') {
       console.error('删除选中商品失败:', error)
+      ElMessage.error('删除失败，请重试')
     }
   }
 }
@@ -190,7 +237,7 @@ const deleteSelected = async () => {
 const checkout = () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
-    alert('请选择要结算的商品')
+    ElMessage.warning('请选择要结算的商品')
     return
   }
   // 从 localStorage 获取用户信息
@@ -237,46 +284,66 @@ watch(cartItems, () => {
 
 <style scoped>
 .shopping-cart {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.shopping-cart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .cart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cart-header h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .cart-actions {
   min-width: 350px;
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
 .btn {
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
-  border: 1px solid #d9d9d9;
-  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .btn-secondary {
-  background: #fff;
-  color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .btn-secondary:hover {
@@ -285,191 +352,367 @@ watch(cartItems, () => {
 }
 
 .btn-danger {
-  background: #fff;
+  background: rgba(255, 77, 79, 0.1);
   color: #ff4d4f;
-  border-color: #ff4d4f;
+  border-color: rgba(255, 77, 79, 0.3);
 }
 
 .btn-danger:hover {
   background: #ff4d4f;
   color: #fff;
+  border-color: #ff4d4f;
 }
 
 .empty-cart {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 0;
+  padding: 80px 0;
   text-align: center;
 }
 
 .empty-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+  font-size: 64px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .empty-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 48px;
+  height: 48px;
 }
 
 .empty.empty-text {
-  font-size: 16px;
-  color: #999;
-  margin-bottom: 20px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 25px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-primary {
-  background: #ff4d4f;
+  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
   color: #fff;
   border-color: #ff4d4f;
-  padding: 8px 20px;
+  padding: 10px 24px;
   text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(255, 77, 79, 0.3);
 }
 
 .btn-primary:hover {
-  background: #ff7875;
+  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
   border-color: #ff7875;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
 }
 
 .items-list {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
-.cart-item:last-child {
-  border-bottom: none;
+.cart-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .item-checkbox {
-  margin-right: 15px;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+/* iOS 风格 Checkbox 样式 */
+/* From Uiverse.io by Tsiangana */ 
+.checkbox-container {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.ios-checkbox {
+  --checkbox-size: 28px;
+  --checkbox-color: #3b82f6;
+  --checkbox-bg: #dbeafe;
+  --checkbox-border: #93c5fd;
+
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ios-checkbox input {
+  display: none;
+}
+
+.checkbox-wrapper {
+  position: relative;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.checkbox-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  border: 2px solid var(--checkbox-border);
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.checkbox-icon {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 80%;
+  height: 80%;
+  color: white;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
+.check-path {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  transition: stroke-dashoffset 0.3s ease 0.1s;
+}
+
+/* Checked State */
+.ios-checkbox input:checked + .checkbox-wrapper .checkbox-bg {
+  background: var(--checkbox-color);
+  border-color: var(--checkbox-color);
+}
+
+.ios-checkbox input:checked + .checkbox-wrapper .checkbox-icon {
+  transform: scale(1);
+}
+
+.ios-checkbox input:checked + .checkbox-wrapper .check-path {
+  stroke-dashoffset: 0;
+}
+
+/* Hover Effects */
+.ios-checkbox:hover .checkbox-wrapper {
+  transform: scale(1.05);
+}
+
+/* Active Animation */
+.ios-checkbox:active .checkbox-wrapper {
+  transform: scale(0.95);
+}
+
+/* Focus Styles */
+.ios-checkbox input:focus + .checkbox-wrapper .checkbox-bg {
+  box-shadow: 0 0 0 4px var(--checkbox-bg);
+}
+
+.ios-checkbox.red {
+  --checkbox-color: #ef4444;
+  --checkbox-bg: #fee2e2;
+  --checkbox-border: #fca5a5;
+}
+
+/* Animation */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.ios-checkbox input:checked + .checkbox-wrapper {
+  animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* Animation */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.ios-checkbox input:checked + .checkbox-wrapper {
+  animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
-  margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
   flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.item-image:hover img {
+  transform: scale(1.05);
 }
 
 .item-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .item-name {
-  font-size: 14px;
-  color: #333;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.4;
+  font-weight: 500;
 }
 
 .item-spec {
-  font-size: 12px;
-  color: #999;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .item-price {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .price {
   color: #ff4d4f;
   font-weight: 600;
+  font-size: 16px;
 }
 
 .quantity-control {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
 }
 
 .quantity-btn {
-  width: 28px;
-  height: 28px;
-  border: 1px solid #d9d9d9;
-  background: #fff;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  border-radius: 4px;
-  transition: all 0.3s;
+  font-size: 18px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
 .quantity-btn:hover:not(:disabled) {
   border-color: #ff4d4f;
   color: #ff4d4f;
+  transform: scale(1.1);
 }
 
 .quantity-btn:disabled {
-  color: #d9d9d9;
+  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
 }
 
 .quantity-input {
-  width: 50px;
-  height: 28px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
+  width: 60px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
   text-align: center;
   font-size: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
 }
 
 .quantity-input:focus {
   outline: none;
   border-color: #ff4d4f;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
 }
 
 .item-total {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
+  min-width: 100px;
+  text-align: right;
 }
 
 .item-actions {
-  margin-left: 15px;
+  margin-left: 20px;
+  flex-shrink: 0;
 }
 
 .btn-link {
   background: none;
   border: none;
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   font-size: 14px;
-  padding: 0;
-  text-decoration: underline;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .btn-link:hover {
   color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.1);
 }
 
 .cart-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-  margin-top: 20px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 25px;
 }
 
 .footer-left {
@@ -477,60 +720,67 @@ watch(cartItems, () => {
   align-items: center;
   gap: 15px;
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-left span:first-of-type {
+  margin-left: 5px;
+  font-weight: 500;
 }
 
 .selected-count {
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .footer-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
 }
 
 .total-price {
-  font-size: 16px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
 .total-price .price {
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-left: 10px;
 }
 
 .checkout-btn {
-  padding: 10px 30px;
+  padding: 12px 36px;
   font-size: 16px;
   font-weight: 600;
+  border-radius: 12px;
 }
 
 @media (max-width: 768px) {
   .shopping-cart {
-    padding: 15px;
+    padding: 20px;
   }
   
   .cart-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
   }
   
   .cart-actions {
     width: 100%;
     justify-content: space-between;
+    min-width: unset;
   }
   
   .cart-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .cart-item:last-child {
-    margin-bottom: 0;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
   }
   
   .item-info {
@@ -540,26 +790,79 @@ watch(cartItems, () => {
   .item-price {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
+    width: 100%;
   }
   
   .quantity-control {
     align-self: flex-start;
   }
   
+  .item-total {
+    align-self: flex-start;
+    text-align: left;
+    margin-top: 10px;
+  }
+  
   .cart-footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 20px;
+    padding: 20px;
   }
   
   .footer-right {
     width: 100%;
     justify-content: space-between;
+    align-items: center;
+  }
+  
+  .checkout-btn {
+    width: 140px;
+    padding: 10px 24px;
+  }
+  
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .empty-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shopping-cart {
+    padding: 15px;
+  }
+  
+  .cart-header h2 {
+    font-size: 18px;
+  }
+  
+  .cart-item {
+    padding: 15px;
+  }
+  
+  .item-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .cart-footer {
+    padding: 15px;
+  }
+  
+  .total-price .price {
+    font-size: 20px;
   }
   
   .checkout-btn {
     width: 120px;
+    padding: 8px 20px;
+    font-size: 14px;
   }
 }
 </style>

@@ -90,6 +90,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
 import { getOrderDetail, cancelOrder } from '@/api/order.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const emit = defineEmits(['pay'])
 const router = useRouter()
@@ -266,17 +267,23 @@ const goToPay = () => {
 }
 
 const handleCancelOrder = async () => {
-  if (confirm('确定要取消订单吗？')) {
-    try {
-      const orderId = route.query.orderId
-      if (orderId) {
-        await cancelOrder(orderId)
-        order.value.status = '4' // 4-已取消
-        alert('订单已取消')
-      }
-    } catch (error) {
+  try {
+    await ElMessageBox.confirm('确定要取消订单吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    
+    const orderId = route.query.orderId
+    if (orderId) {
+      await cancelOrder(orderId)
+      order.value.status = '4' // 4-已取消
+      ElMessage.success('订单已取消')
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
       console.error('取消订单失败:', error)
-      alert('取消订单失败，请重试')
+      ElMessage.error('取消订单失败，请重试')
     }
   }
 }
@@ -289,100 +296,125 @@ onMounted(() => {
 
 <style scoped>
 .order-detail {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.order-detail:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .order-header h2 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .order-status {
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 6px 16px;
+  border-radius: 16px;
   font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .order-status.unpaid {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(255, 243, 205, 0.2);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .order-status.paid {
-  background: #d1ecf1;
-  color: #0c5460;
+  background: rgba(209, 236, 241, 0.2);
+  color: #4ecdc4;
+  border: 1px solid rgba(78, 205, 196, 0.3);
 }
 
 .order-status.shipping {
-  background: #e7f3ff;
-  color: #004085;
+  background: rgba(231, 243, 255, 0.2);
+  color: #4a90e2;
+  border: 1px solid rgba(74, 144, 226, 0.3);
 }
 
 .order-status.completed {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(212, 237, 218, 0.2);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
 .order-status.cancelled {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(248, 215, 218, 0.2);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
 .order-status.refunded {
-  background: #e2e3e5;
-  color: #383d41;
+  background: rgba(226, 227, 229, 0.2);
+  color: #95a5a6;
+  border: 1px solid rgba(149, 165, 166, 0.3);
 }
 
 .order-info {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .info-item {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
+  align-items: center;
 }
 
 .info-item .label {
-  width: 80px;
-  color: #666;
+  width: 100px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
 }
 
 .info-item .value {
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
+  flex: 1;
 }
 
 .info-item .price {
   color: #ff4d4f;
   font-weight: 600;
+  font-size: 16px;
 }
 
 .shipping-address {
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 6px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .shipping-address h3 {
   font-size: 16px;
   font-weight: 600;
-  margin: 0 0 10px 0;
-  color: #333;
+  margin: 0 0 12px 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .address-info {
@@ -390,40 +422,54 @@ onMounted(() => {
 }
 
 .name-phone {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .name {
   font-weight: 600;
-  margin-right: 15px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.phone {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .address-detail {
-  color: #666;
-  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
 }
 
 .order-items {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .order-items h3 {
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 15px 0;
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .items-list {
-  border: 1px solid #eee;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .item {
   display: flex;
-  padding: 15px;
-  border-bottom: 1px solid #eee;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .item:last-child {
@@ -431,17 +477,24 @@ onMounted(() => {
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
-  margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
   flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.item-image:hover img {
+  transform: scale(1.05);
 }
 
 .item-info {
@@ -449,92 +502,133 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .item-name {
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 8px;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.4;
+  font-weight: 500;
 }
 
 .item-spec {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 12px;
+  border-radius: 8px;
+  align-self: flex-start;
 }
 
 .item-price {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 10px;
 }
 
 .item-price .price {
   color: #ff4d4f;
   font-weight: 600;
+  font-size: 16px;
 }
 
 .item-price .quantity {
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 12px;
+  border-radius: 12px;
 }
 
 .order-summary {
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 6px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.summary-item span:first-child {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.summary-item span:last-child {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .summary-item.total {
   font-weight: 600;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
-  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+
+.summary-item.total span:first-child {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
 }
 
 .summary-item.total .price {
   color: #ff4d4f;
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .order-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn {
-  padding: 8px 20px;
-  border-radius: 4px;
+  padding: 10px 24px;
+  border-radius: 12px;
   font-size: 14px;
   cursor: pointer;
-  border: 1px solid #d9d9d9;
-  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary {
-  background: #ff4d4f;
+  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
   color: #fff;
   border-color: #ff4d4f;
+  box-shadow: 0 4px 16px rgba(255, 77, 79, 0.3);
 }
 
 .btn-primary:hover {
-  background: #ff7875;
+  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
   border-color: #ff7875;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
 }
 
 .btn-secondary {
-  background: #fff;
-  color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .btn-secondary:hover {
@@ -544,29 +638,68 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .order-detail {
-    padding: 15px;
+    padding: 20px;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
   
   .order-header h2 {
-    font-size: 16px;
+    font-size: 18px;
   }
   
   .item {
-    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
   }
   
   .item-image {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
+  }
+  
+  .item-info {
+    width: 100%;
+  }
+  
+  .name-phone {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
   }
   
   .order-actions {
     flex-direction: column;
+    gap: 10px;
   }
   
   .btn {
     width: 100%;
     text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-detail {
+    padding: 15px;
+  }
+  
+  .info-item .label {
+    width: 80px;
+  }
+  
+  .shipping-address,
+  .order-summary {
+    padding: 15px;
+  }
+  
+  .item {
+    padding: 15px;
   }
 }
 </style>

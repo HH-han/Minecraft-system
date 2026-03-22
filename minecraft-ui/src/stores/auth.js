@@ -8,14 +8,20 @@ export const useAuthStore = defineStore('auth', {
     username: getUsername() || '',
     isAuthenticated: !!getToken(),
     userInfo: null,
-    currentComponentPath: ''
+    currentComponentPath: '',
+    pageState: {
+      payment: {
+        activeTab: 'product'
+      }
+    }
   }),
   
   getters: {
     getToken: (state) => state.token,
     getUsername: (state) => state.username,
     getUserInfo: (state) => state.userInfo,
-    getIsAuthenticated: (state) => state.isAuthenticated
+    getIsAuthenticated: (state) => state.isAuthenticated,
+    getPageState: (state) => state.pageState
   },
   
   actions: {
@@ -55,6 +61,18 @@ export const useAuthStore = defineStore('auth', {
         this.setUserInfo(response.data)
       }
       return response
+    },
+    
+    // 更新页面状态
+    updatePageState(page, state) {
+      this.pageState[page] = { ...this.pageState[page], ...state }
+    },
+    
+    // 重置页面状态
+    resetPageState(page) {
+      this.pageState[page] = {}
     }
-  }
+  },
+  
+  persist: true
 })

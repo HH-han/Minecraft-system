@@ -131,6 +131,7 @@ const buyNow = async () => {
       itemName: product.value.name,
       amount: parseFloat(product.value.price),
       quantity: 1,
+      image: product.value.coverImage,
       remark: ''
     }
     
@@ -144,6 +145,7 @@ const buyNow = async () => {
       query: {
         id: product.value.id,
         commodity: props.commodity,
+        image: product.value.coverImage,
         orderId: orderId,
         item: JSON.stringify(product.value)
       }
