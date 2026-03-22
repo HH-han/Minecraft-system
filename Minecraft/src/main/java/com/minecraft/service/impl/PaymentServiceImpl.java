@@ -29,21 +29,8 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
     public Payment createPayment(Long orderId, Long userId, PaymentMethod paymentMethod) {
-        Order order = orderMapper.selectById(orderId);
-        if (order == null) {
-            throw new RuntimeException("订单不存在");
-        }
-
-        Payment payment = new Payment();
-        payment.setOrderId(orderId);
-        payment.setUserId(userId);
-        payment.setPaymentMethod(paymentMethod.getChineseName());
-        payment.setAmount(order.getAmount().multiply(new java.math.BigDecimal(order.getQuantity())));
-        payment.setStatus(PaymentStatus.PENDING.getCode().toString());
-        payment.setPaymentNo(generatePaymentNo());
-        payment.setCreateTime(LocalDateTime.now());
-        save(payment);
-        return payment;
+        // 调用 processPayment 方法，确保支付成功后更新订单状态
+        return processPayment(orderId, userId, paymentMethod);
     }
 
     @Override
@@ -74,7 +61,20 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
     public Payment processPayment(Long orderId, Long userId, PaymentMethod paymentMethod) {
         try {
-            Payment payment = createPayment(orderId, userId, paymentMethod);
+            Order order = orderMapper.selectById(orderId);
+            if (order == null) {
+                throw new RuntimeException("订单不存在");
+            }
+
+            Payment payment = new Payment();
+            payment.setOrderId(orderId);
+            payment.setUserId(userId);
+            payment.setPaymentMethod(paymentMethod.getChineseName());
+            payment.setAmount(order.getAmount().multiply(new java.math.BigDecimal(order.getQuantity())));
+            payment.setStatus(PaymentStatus.PENDING.getCode().toString());
+            payment.setPaymentNo(generatePaymentNo());
+            payment.setCreateTime(LocalDateTime.now());
+            save(payment);
             
             // 模拟支付网关调用，80%的成功率
             boolean paymentSuccess = simulatePaymentGateway();
@@ -84,7 +84,6 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
                 log.info("支付成功，订单ID：{}，支付编号：{}", orderId, payment.getPaymentNo());
                 
                 // 更新订单状态为已支付
-                Order order = orderMapper.selectById(orderId);
                 if (order != null) {
                     order.setStatus(com.minecraft.enums.OrderStatus.PAID.getCode().toString());
                     order.setUpdateTime(LocalDateTime.now());
