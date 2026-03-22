@@ -342,21 +342,18 @@ const confirmPayment = async () => {
     alertMessage.value = '支付请求失败，请检查网络';
   }
 };
-
-// 关闭支付成功提示框并关闭当前页面
-const closeModal = () => {
-  isPaymentModalVisible.value = false;
-  setTimeout(() => {
-    // 尝试关闭当前页面
-    window.close();
-  }, 500);
-  console.log('关闭支付成功提示框');
-  ElMessage.success('订单支付成功');
-};
-
 // 关闭自定义提示框
 const closeAlert = () => {
   isAlertVisible.value = false;
+};
+
+// 关闭支付成功模态框
+const closeModal = () => {
+  isPaymentModalVisible.value = false;
+  // 支付成功后自动关闭页面
+  setTimeout(() => {
+    window.parent.postMessage({ action: 'closeModal' }, '*');
+  }, 1000);
 };
 </script>
 
@@ -691,6 +688,7 @@ const closeAlert = () => {
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  z-index: 9999;
 }
 
 .alert-content {

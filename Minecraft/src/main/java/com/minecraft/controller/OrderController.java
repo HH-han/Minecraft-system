@@ -46,4 +46,11 @@ public class OrderController {
         orderService.cancelOrder(id);
         return ApiResponse.success("取消成功", null);
     }
+
+    @Operation(summary ="删除订单")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
+        return ApiResponse.success("删除成功", null);
+    }
 }

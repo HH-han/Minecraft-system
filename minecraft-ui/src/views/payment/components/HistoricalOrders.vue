@@ -84,7 +84,7 @@
             <button class="btn btn-secondary" @click="viewOrderDetail(order.id)">
               查看物流
             </button>
-            <button class="btn btn-delete" @click="handleCancelOrder(order.id)">
+            <button class="btn btn-delete" @click="deleteOrder(order.id)">
               删除订单
             </button>
           </div>
@@ -114,7 +114,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getOrderList, cancelOrder } from '@/api/order.js'
+import { getOrderList, cancelOrder, deleteOrder } from '@/api/order.js'
 
 const router = useRouter()
 
@@ -241,6 +241,29 @@ const handleCancelOrder = async (orderId) => {
     if (error !== 'cancel') {
       console.error('取消订单失败:', error)
       ElMessage.error('取消订单失败，请重试')
+    }
+  }
+}
+
+// 删除订单
+const deleteOrder = async (orderId) => {
+  try {
+    await ElMessageBox.confirm('确定要删除订单吗？此操作不可恢复！', '警告', {
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+      type: 'error'
+    })
+    
+    // 调用 API 删除订单
+    await deleteOrder(orderId)
+    ElMessage.success('订单已删除')
+    
+    // 重新获取订单列表
+    await fetchOrders()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除订单失败:', error)
+      ElMessage.error('删除订单失败，请重试')
     }
   }
 }

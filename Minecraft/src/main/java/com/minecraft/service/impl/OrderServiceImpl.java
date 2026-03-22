@@ -112,4 +112,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUpdateTime(LocalDateTime.now());
         updateById(order);
     }
+
+    @Override
+    public void deleteOrder(Long id) {
+        Order order = getById(id);
+        if (order == null) {
+            throw new RuntimeException("订单不存在");
+        }
+        removeById(id);
+    }
 }

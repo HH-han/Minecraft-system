@@ -45,11 +45,11 @@ watch(() => props.isPaymentModalVisible, (newValue) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  z-index: 5000;
 }
 
 .payment-content {

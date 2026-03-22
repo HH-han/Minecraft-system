@@ -12,4 +12,5 @@ public interface OrderService extends IService<Order> {
     Order getOrderDetail(Long id);
     void cancelOrder(Long id);
     void payOrder(Long id);
+    void deleteOrder(Long id);
 }

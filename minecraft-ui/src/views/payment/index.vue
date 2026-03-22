@@ -52,16 +52,14 @@
       </main>
 
       <!-- 支付模态框 -->
-      <div v-if="showPayModal" class="modal-overlay">
-        <div>
-          <div class="modal-body">
+      <div v-if="showPayModal" class="modal-overlay" @click="closePayModal">
+        <div class="modal-content" @click.stop>
             <PayPage 
               :orderId="paymentData.orderId" 
               :orderIds="paymentData.orderIds" 
               :cartItems="paymentData.cartItems" 
               :userId="paymentData.userId"
             />
-          </div>
         </div>
       </div>
     </div>
@@ -86,6 +84,15 @@ const loading = ref(false)
 const error = ref('')
 const productData = ref(null)
 const showPayModal = ref(false)
+
+// 监听来自PayPage的closeModal消息
+onMounted(() => {
+  window.addEventListener('message', (event) => {
+    if (event.data.action === 'closeModal') {
+      closePayModal()
+    }
+  })
+})
 
 // 导航项配置
 const navItems = [
@@ -367,25 +374,67 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(5px);
+  cursor: pointer;
 }
 
 .modal-content {
   max-width: 600px;
   width: 90%;
   max-height: 80vh;
-  overflow-y: auto;
   position: relative;
   animation: modalFadeIn 0.3s ease;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  cursor: default;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .modal-body {
   color: rgba(255, 255, 255, 0.9);
+  background: none;
 }
 
 @keyframes modalFadeIn {

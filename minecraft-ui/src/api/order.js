@@ -23,3 +23,8 @@ export const getOrderDetail = (id) => {
 export const cancelOrder = (id) => {
   return request.put(`/order/${id}/cancel`)
 }
+
+// 删除订单
+export const deleteOrder = (id) => {
+  return request.delete(`/order/${id}`)
+}
