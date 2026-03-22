@@ -4,24 +4,24 @@
     <div class="attraction-info">
       <div class="attraction-images">
         <div class="main-image">
-          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beautiful%20scenic%20spot%20landscape%20mountain%20lake&image_size=square_hd" alt="景点景观">
+          <img :src="attractionData?.coverImage || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beautiful%20scenic%20spot%20landscape%20mountain%20lake&image_size=square_hd'" :alt="attractionData?.name || '景点景观'">
         </div>
         <div class="image-thumbs">
           <div class="thumb" v-for="i in 5" :key="i">
-            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scenic%20view%20tourist%20attraction%20natural%20beauty&image_size=square" alt="景点图片">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=scenic%20view%20tourist%20attraction%20natural%20beauty&image_size=square" :alt="attractionData?.name || '景点图片'">
           </div>
         </div>
       </div>
       <div class="attraction-details">
-        <h2 class="attraction-name">国家5A级风景区</h2>
+        <h2 class="attraction-name">{{ attractionData?.name || '国家5A级风景区' }}</h2>
         <div class="attraction-rating">
-          <span class="rating">4.9</span>
-          <span class="rating-text">极好</span>
-          <span class="review-count">(2345条点评)</span>
+          <span class="rating">{{ attractionData?.rating || 4.9 }}</span>
+          <span class="rating-text">{{ attractionData?.rating >= 4.5 ? '极好' : attractionData?.rating >= 4 ? '很好' : '好' }}</span>
+          <span class="review-count">({{ attractionData?.commentCount || 2345 }}条点评)</span>
         </div>
         <div class="attraction-location">
           <i class="location-icon">📍</i>
-          <span>风景秀丽的山区，距离市中心约1小时车程</span>
+          <span>{{ attractionData?.address || '风景秀丽的山区，距离市中心约1小时车程' }}</span>
         </div>
         <div class="attraction-tags">
           <span class="tag" v-for="tag in tags" :key="tag">{{ tag }}</span>
@@ -92,48 +92,27 @@ export default {
     TouristInfoForm,
     BookingForm
   },
+  props: {
+    dateFields: {
+      type: Array,
+      required: true
+    },
+    tags: {
+      type: Array,
+      required: true
+    },
+    tickets: {
+      type: Array,
+      required: true
+    },
+    attractionData: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
-      dateFields: [
-        {
-          name: 'visitDate',
-          label: '游玩日期',
-          value: '',
-          min: new Date().toISOString().split('T')[0]
-        }
-      ],
       visitDate: '',
-      tags: ['自然风光', '5A景区', '避暑胜地', '亲子游', '摄影天堂'],
-      tickets: [
-        {
-          id: 1,
-          name: '成人票',
-          description: '适用于18-60周岁成人',
-          rules: ['有效期当天一次入园', '需携带身份证'],
-          price: 120
-        },
-        {
-          id: 2,
-          name: '儿童票',
-          description: '适用于1.2-1.5米儿童',
-          rules: ['有效期当天一次入园', '需携带身份证或户口本'],
-          price: 60
-        },
-        {
-          id: 3,
-          name: '老人票',
-          description: '适用于60周岁以上老人',
-          rules: ['有效期当天一次入园', '需携带身份证'],
-          price: 60
-        },
-        {
-          id: 4,
-          name: '学生票',
-          description: '适用于全日制学生',
-          rules: ['有效期当天一次入园', '需携带学生证'],
-          price: 80
-        }
-      ],
       ticketQuantities: {
         1: 0,
         2: 0,

@@ -4,27 +4,27 @@
     <div class="hotel-info">
       <div class="hotel-images">
         <div class="main-image">
-          <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20hotel%20exterior%20building%20with%20pool&image_size=square_hd" alt="酒店外观">
+          <img :src="hotelData?.coverImage || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20hotel%20exterior%20building%20with%20pool&image_size=square_hd'" :alt="hotelData?.name || '酒店外观'">
         </div>
         <div class="image-thumbs">
           <div class="thumb" v-for="i in 5" :key="i">
-            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20room%20interior%20bathroom%20swimming%20pool%20lobby&image_size=square" alt="酒店图片">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20room%20interior%20bathroom%20swimming%20pool%20lobby&image_size=square" :alt="hotelData?.name || '酒店图片'">
           </div>
         </div>
       </div>
       <div class="hotel-details">
-        <h2 class="hotel-name">豪华度假酒店</h2>
+        <h2 class="hotel-name">{{ hotelData?.name || '豪华度假酒店' }}</h2>
         <div class="hotel-rating">
-          <span class="rating">4.8</span>
-          <span class="rating-text">超棒</span>
-          <span class="review-count">(1234条点评)</span>
+          <span class="rating">{{ hotelData?.rating || 4.8 }}</span>
+          <span class="rating-text">{{ hotelData?.rating >= 4.5 ? '超棒' : hotelData?.rating >= 4 ? '很好' : '好' }}</span>
+          <span class="review-count">({{ hotelData?.commentCount || 1234 }}条点评)</span>
         </div>
         <div class="hotel-location">
           <i class="location-icon">📍</i>
-          <span>城市中心，距离地铁站步行5分钟</span>
+          <span>{{ hotelData?.address || '城市中心，距离地铁站步行5分钟' }}</span>
         </div>
         <div class="hotel-facilities">
-          <span class="facility-tag" v-for="facility in facilities" :key="facility">{{ facility }}</span>
+          <span class="facility-tag" v-for="(tag, index) in (hotelData?.tags || facilities)" :key="index">{{ tag }}</span>
         </div>
       </div>
     </div>
@@ -89,49 +89,29 @@ export default {
     RoomSelector,
     BookingForm
   },
+  props: {
+    dateFields: {
+      type: Array,
+      required: true
+    },
+    facilities: {
+      type: Array,
+      required: true
+    },
+    rooms: {
+      type: Array,
+      required: true
+    },
+    hotelData: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
-      dateFields: [
-        {
-          name: 'checkInDate',
-          label: '入住日期',
-          value: '',
-          min: new Date().toISOString().split('T')[0]
-        },
-        {
-          name: 'checkOutDate',
-          label: '离店日期',
-          value: '',
-          min: new Date().toISOString().split('T')[0]
-        }
-      ],
       checkInDate: '',
       checkOutDate: '',
       guests: 2,
-      facilities: ['免费WiFi', '游泳池', '健身房', '停车场', '餐厅'],
-      rooms: [
-        {
-          id: 1,
-          name: '豪华大床房',
-          description: '20平方米，1张1.8米大床，城市景观',
-          facilities: ['免费WiFi', '空调', '电视', '独立卫浴'],
-          price: 888
-        },
-        {
-          id: 2,
-          name: '豪华双床房',
-          description: '25平方米，2张1.2米单人床，城市景观',
-          facilities: ['免费WiFi', '空调', '电视', '独立卫浴'],
-          price: 988
-        },
-        {
-          id: 3,
-          name: '行政套房',
-          description: '40平方米，1张2米大床，行政礼遇，城市景观',
-          facilities: ['免费WiFi', '空调', '电视', '独立卫浴', '迷你吧', '行政酒廊'],
-          price: 1688
-        }
-      ],
       selectedRoom: null
     }
   },

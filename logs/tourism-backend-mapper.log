@@ -1405,3 +1405,177 @@
 2026-03-22 13:46:15.204 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.updateById - ==>  Preparing: UPDATE user SET account=?, username=?, password=?, email=?, phone=?, avatar=?, online=?, status=?, update_time=? WHERE id=?
 2026-03-22 13:46:15.204 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.updateById - ==> Parameters: 20260314207018(String), 56436(String), $2a$10$u634T2zfipiqXyqDZbnNgeLT5aXYNkVBobg7oWYIeErq0sAAcSWc6(String), 17241200127@qq.com(String), 17213200129(String), http://localhost:8080/upload/d33f6e07-cab2-4abf-9813-0134cb28f3f8.png(String), 0(Integer), 0(Integer), 2026-03-14T23:55:17(LocalDateTime), 21(Long)
 2026-03-22 13:46:15.205 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.updateById - <==    Updates: 1
+2026-03-22 13:47:40.777 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user
+2026-03-22 13:47:40.799 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 
+2026-03-22 13:47:40.821 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 13
+2026-03-22 13:47:44.927 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.updateById - ==>  Preparing: UPDATE user SET account=?, username=?, password=?, email=?, phone=?, avatar=?, online=?, status=?, permissions=?, update_time=? WHERE id=?
+2026-03-22 13:47:44.932 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.updateById - ==> Parameters: 20260314838329(String), 432455(String), $2a$10$bwzjm1U1rC6bISy20mMzguSbjtUgBI/Ef14f6s3rRvVswqnJ8DA.S(String), 2530166354@qq.com(String), 17312900128(String), http://localhost:8080/upload/d333bdc6-a972-403b-8c2f-1e5da3b73edb.jpeg(String), 0(Integer), 0(Integer), 0(String), 2026-03-14T23:40:17(LocalDateTime), 19(Long)
+2026-03-22 13:47:44.939 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.updateById - <==    Updates: 1
+2026-03-22 13:47:45.517 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.updateById - ==>  Preparing: UPDATE user SET account=?, username=?, password=?, email=?, phone=?, avatar=?, online=?, status=?, permissions=?, update_time=? WHERE id=?
+2026-03-22 13:47:45.517 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.updateById - ==> Parameters: 20260314207018(String), 56436(String), $2a$10$u634T2zfipiqXyqDZbnNgeLT5aXYNkVBobg7oWYIeErq0sAAcSWc6(String), 17241200127@qq.com(String), 17213200129(String), http://localhost:8080/upload/d33f6e07-cab2-4abf-9813-0134cb28f3f8.png(String), 0(Integer), 0(Integer), 0(String), 2026-03-14T23:55:17(LocalDateTime), 21(Long)
+2026-03-22 13:47:45.520 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.updateById - <==    Updates: 1
+2026-03-22 13:47:50.595 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.updateById - ==>  Preparing: UPDATE user SET account=?, username=?, password=?, email=?, phone=?, avatar=?, online=?, status=?, permissions=?, update_time=? WHERE id=?
+2026-03-22 13:47:50.595 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.updateById - ==> Parameters: 20260314207018(String), 56436(String), $2a$10$u634T2zfipiqXyqDZbnNgeLT5aXYNkVBobg7oWYIeErq0sAAcSWc6(String), 17241200127@qq.com(String), 17213200129(String), http://localhost:8080/upload/d33f6e07-cab2-4abf-9813-0134cb28f3f8.png(String), 0(Integer), 0(Integer), 1(String), 2026-03-14T23:55:17(LocalDateTime), 21(Long)
+2026-03-22 13:47:50.600 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.updateById - <==    Updates: 1
+2026-03-22 13:47:51.500 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.updateById - ==>  Preparing: UPDATE user SET account=?, username=?, password=?, email=?, phone=?, avatar=?, online=?, status=?, permissions=?, update_time=? WHERE id=?
+2026-03-22 13:47:51.501 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.updateById - ==> Parameters: 20260314838329(String), 432455(String), $2a$10$bwzjm1U1rC6bISy20mMzguSbjtUgBI/Ef14f6s3rRvVswqnJ8DA.S(String), 2530166354@qq.com(String), 17312900128(String), http://localhost:8080/upload/d333bdc6-a972-403b-8c2f-1e5da3b73edb.jpeg(String), 0(Integer), 0(Integer), 1(String), 2026-03-14T23:40:17(LocalDateTime), 19(Long)
+2026-03-22 13:47:51.504 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.updateById - <==    Updates: 1
+2026-03-22 13:48:05.518 [http-nio-8080-exec-1] DEBUG c.m.mapper.OrderMapper.selectById - ==>  Preparing: SELECT id,user_id,order_no,item_type,item_id,item_name,image,amount,quantity,remark,status,create_time,update_time FROM orders WHERE id=?
+2026-03-22 13:48:05.518 [http-nio-8080-exec-1] DEBUG c.m.mapper.OrderMapper.selectById - ==> Parameters: 21(Long)
+2026-03-22 13:48:05.519 [http-nio-8080-exec-1] DEBUG c.m.mapper.OrderMapper.selectById - <==      Total: 1
+2026-03-22 13:48:06.907 [http-nio-8080-exec-4] DEBUG c.m.m.OrderMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM orders WHERE (user_id = ?)
+2026-03-22 13:48:06.908 [http-nio-8080-exec-4] DEBUG c.m.m.OrderMapper.selectList_mpCount - ==> Parameters: 15(Long)
+2026-03-22 13:48:06.909 [http-nio-8080-exec-4] DEBUG c.m.m.OrderMapper.selectList_mpCount - <==      Total: 1
+2026-03-22 13:48:06.912 [http-nio-8080-exec-4] DEBUG c.m.mapper.OrderMapper.selectList - ==>  Preparing: SELECT id,user_id,order_no,item_type,item_id,item_name,image,amount,quantity,remark,status,create_time,update_time FROM orders WHERE (user_id = ?) ORDER BY create_time DESC LIMIT ?
+2026-03-22 13:48:06.912 [http-nio-8080-exec-4] DEBUG c.m.mapper.OrderMapper.selectList - ==> Parameters: 15(Long), 10(Long)
+2026-03-22 13:48:06.913 [http-nio-8080-exec-4] DEBUG c.m.mapper.OrderMapper.selectList - <==      Total: 1
+2026-03-22 13:50:20.849 [http-nio-8080-exec-7] DEBUG c.m.mapper.OrderMapper.selectById - ==>  Preparing: SELECT id,user_id,order_no,item_type,item_id,item_name,image,amount,quantity,remark,status,create_time,update_time FROM orders WHERE id=?
+2026-03-22 13:50:20.849 [http-nio-8080-exec-7] DEBUG c.m.mapper.OrderMapper.selectById - ==> Parameters: 21(Long)
+2026-03-22 13:50:20.850 [http-nio-8080-exec-7] DEBUG c.m.mapper.OrderMapper.selectById - <==      Total: 1
+2026-03-22 13:50:21.504 [http-nio-8080-exec-10] DEBUG c.m.m.OrderMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM orders WHERE (user_id = ?)
+2026-03-22 13:50:21.504 [http-nio-8080-exec-10] DEBUG c.m.m.OrderMapper.selectList_mpCount - ==> Parameters: 15(Long)
+2026-03-22 13:50:21.504 [http-nio-8080-exec-10] DEBUG c.m.m.OrderMapper.selectList_mpCount - <==      Total: 1
+2026-03-22 13:50:21.506 [http-nio-8080-exec-10] DEBUG c.m.mapper.OrderMapper.selectList - ==>  Preparing: SELECT id,user_id,order_no,item_type,item_id,item_name,image,amount,quantity,remark,status,create_time,update_time FROM orders WHERE (user_id = ?) ORDER BY create_time DESC LIMIT ?
+2026-03-22 13:50:21.506 [http-nio-8080-exec-10] DEBUG c.m.mapper.OrderMapper.selectList - ==> Parameters: 15(Long), 10(Long)
+2026-03-22 13:50:21.507 [http-nio-8080-exec-10] DEBUG c.m.mapper.OrderMapper.selectList - <==      Total: 1
+2026-03-22 13:51:34.543 [http-nio-8080-exec-3] DEBUG c.m.m.OrderMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM orders WHERE (user_id = ?)
+2026-03-22 13:51:34.543 [http-nio-8080-exec-3] DEBUG c.m.m.OrderMapper.selectList_mpCount - ==> Parameters: 15(Long)
+2026-03-22 13:51:34.545 [http-nio-8080-exec-3] DEBUG c.m.m.OrderMapper.selectList_mpCount - <==      Total: 1
+2026-03-22 13:51:34.545 [http-nio-8080-exec-3] DEBUG c.m.mapper.OrderMapper.selectList - ==>  Preparing: SELECT id,user_id,order_no,item_type,item_id,item_name,image,amount,quantity,remark,status,create_time,update_time FROM orders WHERE (user_id = ?) ORDER BY create_time DESC LIMIT ?
+2026-03-22 13:51:34.545 [http-nio-8080-exec-3] DEBUG c.m.mapper.OrderMapper.selectList - ==> Parameters: 15(Long), 10(Long)
+2026-03-22 13:51:34.546 [http-nio-8080-exec-3] DEBUG c.m.mapper.OrderMapper.selectList - <==      Total: 1
+2026-03-22 13:54:25.442 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user
+2026-03-22 13:54:25.442 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 
+2026-03-22 13:54:25.445 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 13
+2026-03-22 13:54:28.101 [http-nio-8080-exec-4] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user
+2026-03-22 13:54:28.101 [http-nio-8080-exec-4] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 
+2026-03-22 13:54:28.104 [http-nio-8080-exec-4] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 13
+2026-03-22 13:54:44.706 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:54:44.706 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:54:44.707 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:54:44.709 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:54:44.709 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:54:44.710 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:54:44.715 [Thread-8] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:54:44.716 [Thread-8] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:54:44.710837300(LocalDateTime)
+2026-03-22 13:54:44.721 [Thread-8] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:54:48.106 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:54:48.106 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:54:48.108 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:54:48.108 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:54:48.108 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:54:48.109 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:54:48.111 [Thread-9] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:54:48.111 [Thread-9] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:54:48.109554700(LocalDateTime)
+2026-03-22 13:54:48.115 [Thread-9] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:55:08.565 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:08.565 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:08.566 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:08.566 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:08.568 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:08.568 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:08.569 [Thread-10] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:55:08.570 [Thread-10] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:55:08.568630500(LocalDateTime)
+2026-03-22 13:55:08.572 [Thread-10] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:55:11.259 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:11.259 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:11.260 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:11.260 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:11.260 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:11.262 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:11.263 [Thread-11] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:55:11.263 [Thread-11] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:55:11.262340300(LocalDateTime)
+2026-03-22 13:55:11.268 [Thread-11] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:55:31.647 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:31.647 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:31.649 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:31.651 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:31.651 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:31.652 [http-nio-8080-exec-6] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:31.652 [Thread-12] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:55:31.654 [Thread-12] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:55:31.652595600(LocalDateTime)
+2026-03-22 13:55:31.657 [Thread-12] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:55:41.138 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:41.138 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:41.139 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:41.139 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:41.141 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:41.141 [http-nio-8080-exec-8] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:41.142 [Thread-13] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:55:41.142 [Thread-13] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:55:41.141001100(LocalDateTime)
+2026-03-22 13:55:41.145 [Thread-13] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:55:48.259 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:48.259 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:48.261 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:48.263 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:55:48.263 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:55:48.264 [http-nio-8080-exec-9] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:55:48.264 [Thread-14] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:55:48.264 [Thread-14] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:55:48.264089500(LocalDateTime)
+2026-03-22 13:55:48.268 [Thread-14] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:56:03.579 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:03.579 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:03.580 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:03.580 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:03.580 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:03.582 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:03.584 [Thread-15] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:56:03.584 [Thread-15] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:56:03.582543(LocalDateTime)
+2026-03-22 13:56:03.587 [Thread-15] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:56:34.259 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:34.259 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:34.259 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:34.261 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:34.261 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:34.262 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:34.262 [Thread-16] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:56:34.262 [Thread-16] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 0(String), 账号已被禁用(String), 2026-03-22T13:56:34.262730800(LocalDateTime)
+2026-03-22 13:56:34.267 [Thread-16] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:56:57.045 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:57.045 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:57.046 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:57.153 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:57.153 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:57.154 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:57.154 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:57.154 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:57.156 [Thread-17] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:56:57.156 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:57.156 [Thread-17] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功(String), 2026-03-22T13:56:57.154716300(LocalDateTime)
+2026-03-22 13:56:57.157 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 13:56:57.157 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 13:56:57.157 [http-nio-8080-exec-7] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 13:56:57.158 [Thread-18] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 13:56:57.158 [Thread-18] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-03-22T13:56:57.157433700(LocalDateTime)
+2026-03-22 13:56:57.160 [Thread-17] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 13:56:57.162 [Thread-18] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 14:02:35.476 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 14:02:35.476 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 14:02:35.478 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 14:02:35.478 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 14:02:35.479 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 14:02:35.479 [Thread-19] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 14:02:35.479 [Thread-19] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功（缓存）(String), 2026-03-22T14:02:35.478377700(LocalDateTime)
+2026-03-22 14:02:35.479 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 14:02:35.479 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 14:02:35.481 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 14:02:35.481 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 14:02:35.481 [Thread-20] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 14:02:35.483 [Thread-20] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-03-22T14:02:35.481457900(LocalDateTime)
+2026-03-22 14:02:35.483 [Thread-19] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 14:02:35.484 [Thread-20] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 14:04:37.394 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 14:04:37.394 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 14:04:37.396 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 14:04:37.397 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 14:04:37.397 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 14:04:37.397 [Thread-21] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 14:04:37.397 [Thread-21] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功（缓存）(String), 2026-03-22T14:04:37.396354900(LocalDateTime)
+2026-03-22 14:04:37.399 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 14:04:37.399 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-03-22 14:04:37.399 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-03-22 14:04:37.401 [http-nio-8080-exec-1] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-03-22 14:04:37.401 [Thread-21] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-03-22 14:04:37.402 [Thread-22] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-03-22 14:04:37.402 [Thread-22] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-03-22T14:04:37.401115400(LocalDateTime)
+2026-03-22 14:04:37.405 [Thread-22] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1

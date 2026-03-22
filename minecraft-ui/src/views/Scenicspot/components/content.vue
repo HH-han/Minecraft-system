@@ -33,9 +33,6 @@
                 </div>
                 <div class="card-footer">
                     <span class="card-price">¥{{ attraction.price }}</span>
-                    <div class="card-buttons">
-                        <button @click="OrderDetails(attraction.id)" class="btn pay">前往预订</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -43,15 +40,69 @@
             <p>暂无景点数据</p>
         </div>
     </div>
+
+    <!-- 景点详情模态框 -->
+    <div v-if="showModal" class="glass-modal" @click="closeModal">
+        <div class="glass-modal-content" @click.stop>
+            <button class="close-btn" @click="closeModal">&times;</button>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img :src="selectedAttraction?.coverImage" :alt="selectedAttraction?.name">
+                </div>
+                <div class="modal-info">
+                    <h2 class="modal-title">{{ selectedAttraction?.name }}</h2>
+                    <div class="modal-rating">
+                        <span class="rating">{{ selectedAttraction?.rating }}</span>
+                        <span class="rating-text">{{ selectedAttraction?.rating >= 4.5 ? '极好' : selectedAttraction?.rating >= 4 ? '很好' : '好' }}</span>
+                        <span class="review-count">({{ selectedAttraction?.commentCount }}条点评)</span>
+                    </div>
+                    <div class="modal-location">
+                        <i class="location-icon">📍</i>
+                        <span>{{ selectedAttraction?.address }}</span>
+                    </div>
+                    <div class="modal-description">
+                        <h3>景点介绍</h3>
+                        <p>{{ selectedAttraction?.description }}</p>
+                    </div>
+                    <div class="modal-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">收藏数</span>
+                            <span class="stat-value">{{ selectedAttraction?.collectCount }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">点赞数</span>
+                            <span class="stat-value">{{ selectedAttraction?.likeCount }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">价格</span>
+                            <span class="stat-value">¥{{ selectedAttraction?.price }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">最佳季节</span>
+                            <span class="stat-value">{{ selectedAttraction?.season || '四季皆宜' }}</span>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn secondary" @click="closeModal">关闭</button>
+                        <button class="btn primary" @click="OrderDetails(selectedAttraction)">前往预订</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { getAttractionList } from '@/api/attraction.js'
 
 // 响应式数据
 const attractions = ref([])
 const loading = ref(false)
 const error = ref('')
+const router = useRouter()
+const showModal = ref(false)
+const selectedAttraction = ref(null)
 
 // 获取景点数据
 const fetchAttractions = async () => {
@@ -76,12 +127,27 @@ onMounted(() => {
 
 // 打开详情页
 const openDetail = (attraction) => {
-    console.log('打开景点详情:', attraction)
+    selectedAttraction.value = attraction
+    showModal.value = true
+}
+
+// 关闭详情页
+const closeModal = () => {
+    showModal.value = false
+    selectedAttraction.value = null
 }
 
 // 跳转到订单详情页
-const OrderDetails = (attractionId) => {
-    console.log('前往预订:', attractionId)
+const OrderDetails = (attraction) => {
+    console.log('前往预订:', attraction)
+    router.push({
+        path: '/predetermined',
+        query: {
+            activeTab: 'attraction',
+            attractionData: JSON.stringify(attraction)
+        }
+    })
+    closeModal()
 }
 </script>
 <style scoped>
@@ -156,25 +222,6 @@ const OrderDetails = (attractionId) => {
   font-weight: bold;
 }
 
-.card-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.cart-btn {
-  background: #3498db;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.cart-btn:hover {
-  background: #2980b9;
-}
-
 /* 分页 */
 .pagination {
   display: flex;
@@ -202,125 +249,238 @@ const OrderDetails = (attractionId) => {
   border-color: #e74c3c;
 }
 
-/* 美食详情弹窗 */
-.detail-modal {
+/* 液态玻璃模态框 */
+.glass-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  -webkit-backdrop-filter: blur(5px);
-  /* 为 Safari 和 iOS Safari 添加前缀 */
-  backdrop-filter: blur(5px);
-  /* 背景模糊效果 */
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fadeIn 0.3s ease-out;
 }
 
-.detail-content {
-  background: white;
-  border-radius: 15px;
-  max-width: 800px;
-  width: 90%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
-  position: relative;
-  animation: modal-enter 0.3s ease-out;
-}
-
-@keyframes modal-enter {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
   }
-
   to {
     opacity: 1;
-    transform: scale(1);
   }
 }
 
-.detail-close {
+.glass-modal-content {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-width: 900px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close-btn {
   position: absolute;
+  top: 15px;
   right: 20px;
-  top: 20px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 28px;
   cursor: pointer;
-  color: #666;
-  transition: color 0.3s;
-}
-
-.detail-close:hover {
   color: #333;
+  transition: all 0.3s ease;
+  z-index: 10;
 }
 
-.detail-image {
+.close-btn:hover {
+  color: #ff6a00;
+  transform: scale(1.1);
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 30px;
+}
+
+.modal-image {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modal-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.detail-info {
-  padding: 20px;
+.modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.detail-desc {
+.modal-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.modal-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-rating .rating {
+  background-color: #ff6a00;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.modal-rating .rating-text {
+  color: #ff6a00;
+  font-weight: bold;
+}
+
+.modal-rating .review-count {
+  color: #666;
+  font-size: 14px;
+}
+
+.modal-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.modal-description {
+  margin-top: 10px;
+}
+
+.modal-description h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.modal-description p {
   color: #666;
   line-height: 1.6;
-  margin: 20px 0;
+  font-size: 14px;
 }
 
-.detail-stats {
-  background: #f8f8f8;
-  box-shadow: 0 0 20px rgba(38, 38, 38, 0.252);
-  padding: 15px;
-  border-radius: 8px;
-  margin: 20px 0;
+.modal-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 10px;
 }
 
-.detail-stats p {
-  margin: 10px 0;
-  color: #444;
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.detail-actions {
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-actions {
   display: flex;
   gap: 15px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
-.detail-cart,
-.detail-buy {
+.modal-actions .btn {
   flex: 1;
-  padding: 12px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: 8px;
   font-size: 16px;
-  transition: all 0.3s;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.detail-cart {
-  background: #3498db;
+.modal-actions .btn.secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.modal-actions .btn.secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.modal-actions .btn.primary {
+  background-color: #ff6a00;
   color: white;
 }
 
-.detail-buy {
-  background: #e74c3c;
-  color: white;
+.modal-actions .btn.primary:hover {
+  background-color: #ff8c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 106, 0, 0.3);
 }
 
-.detail-cart:hover {
-  background: #2980b9;
-}
-
-.detail-buy:hover {
-  background: #c0392b;
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .modal-image {
+    height: 250px;
+  }
+  
+  .modal-title {
+    font-size: 24px;
+  }
+  
+  .modal-stats {
+    gap: 20px;
+  }
 }
 </style>

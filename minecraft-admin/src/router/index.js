@@ -27,7 +27,7 @@ const routes = [
       name: 'Admin',
       component: () => import('@/views/admin/index.vue'),
       meta: {
-        title: '管理',
+        title: '博览管理系统',
         requireAuth: true
       }
     },

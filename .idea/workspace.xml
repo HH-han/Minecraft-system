@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/vo/UserVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/vo/UserVO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/api/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/stores/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/stores/auth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/UserManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/ManagementViews/UserManagement.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/admin/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/admin/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/login/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/login/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,15 +157,7 @@
       <workItem from="1773553976729" duration="9241000" />
       <workItem from="1773667184140" duration="6199000" />
       <workItem from="1774102871385" duration="1344000" />
-      <workItem from="1774151387516" duration="4755000" />
-    </task>
-    <task id="LOCAL-00006" summary="保存本地修改">
-      <option name="closed" value="true" />
-      <created>1771787384168</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1771787384168</updated>
+      <workItem from="1774151387516" duration="5418000" />
     </task>
     <task id="LOCAL-00007" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -562,7 +543,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774156211657</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774159717035</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1774159717035</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
