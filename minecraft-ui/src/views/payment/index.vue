@@ -55,7 +55,12 @@
       <div v-if="showPayModal" class="modal-overlay">
         <div>
           <div class="modal-body">
-            <PayPage />
+            <PayPage 
+              :orderId="paymentData.orderId" 
+              :orderIds="paymentData.orderIds" 
+              :cartItems="paymentData.cartItems" 
+              :userId="paymentData.userId"
+            />
           </div>
         </div>
       </div>
@@ -127,13 +132,28 @@ const handleOptionChange = (options) => {
   selectedOptions.value = options
 }
 
+// 支付相关数据
+const paymentData = ref({
+  orderId: '',
+  orderIds: [],
+  userId: '',
+  cartItems: []
+})
+
 // 处理 checkout
-const handleCheckout = () => {
+const handleCheckout = (data) => {
+  paymentData.value = data
   showPayModal.value = true
 }
 
 // 处理支付
 const handlePay = () => {
+  // 从路由中获取订单ID
+  const orderId = route.query.orderId || ''
+  if (orderId) {
+    paymentData.value.orderId = orderId
+    paymentData.value.orderIds = [orderId]
+  }
   showPayModal.value = true
 }
 

@@ -146,7 +146,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineProps } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PaymentSuccessModal from '@/components/PromptComponent/PaymentSuccessModal.vue';
 import { ElMessage } from 'element-plus';
@@ -155,6 +155,26 @@ import { processPayment } from '@/api/payment.js';
 
 const route = useRoute();
 const router = useRouter();
+
+// 接收props参数
+const props = defineProps({
+  orderId: {
+    type: String,
+    default: ''
+  },
+  orderIds: {
+    type: Array,
+    default: () => []
+  },
+  cartItems: {
+    type: Array,
+    default: () => []
+  },
+  userId: {
+    type: String,
+    default: ''
+  }
+});
 
 // 商品信息
 const item = ref({});
@@ -186,12 +206,14 @@ const generateOrderTime = () => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-// 从路由查询参数中获取商品信息和订单ID
+// 从props或路由查询参数中获取商品信息和订单ID
 onMounted(async () => {
   // 生成订单时间
   orderTime.value = generateOrderTime();
   
-  orderId.value = route.query.orderId || '';
+  // 优先使用props传递的参数，如果没有则使用路由参数
+  orderId.value = props.orderId || route.query.orderId || '';
+  const cartItemsParam = props.cartItems || route.query.cartItems;
   
   // 如果有订单ID，从API获取订单详情
   if (orderId.value) {
@@ -212,12 +234,18 @@ onMounted(async () => {
       console.error('获取订单详情失败:', error);
       ElMessage.error('获取订单详情失败，请重试');
     }
-  } else if (route.query.cartItems) {
+  } else if (cartItemsParam) {
     // 如果有购物车数据，使用购物车数据
     try {
-      const decodedCartItems = decodeURIComponent(route.query.cartItems);
-      const parsedCartItems = JSON.parse(decodedCartItems);
-      console.log('解析后购物车数据:', parsedCartItems); // 调试日志
+      let parsedCartItems = cartItemsParam;
+      
+      // 如果是字符串，尝试解析为JSON
+      if (typeof cartItemsParam === 'string') {
+        const decodedCartItems = decodeURIComponent(cartItemsParam);
+        parsedCartItems = JSON.parse(decodedCartItems);
+      }
+      
+      console.log('购物车数据:', parsedCartItems); // 调试日志
       
       if (parsedCartItems && parsedCartItems.length > 0) {
         // 计算总价格
@@ -245,7 +273,7 @@ onMounted(async () => {
       // 清除可能的状态值，确保用户选择支付方式
       selectedPaymentMethod.value = '';
     } catch (error) {
-      console.error('解析购物车数据失败:', error);
+      console.error('处理购物车数据失败:', error);
     }
   } else if (route.query.item) {
     // 如果没有订单ID，使用路由参数中的商品信息
@@ -315,10 +343,13 @@ const confirmPayment = async () => {
   }
 };
 
-// 关闭支付成功提示框并返回上一个页面
+// 关闭支付成功提示框并关闭当前页面
 const closeModal = () => {
   isPaymentModalVisible.value = false;
-  setTimeout(() => router.go(-1), 1500);
+  setTimeout(() => {
+    // 尝试关闭当前页面
+    window.close();
+  }, 500);
   console.log('关闭支付成功提示框');
   ElMessage.success('订单支付成功');
 };

@@ -282,18 +282,12 @@ const checkout = async () => {
     // 收集所有订单ID
     const orderIds = responses.map(response => response.data.orderId || response.data.id || response.data.orderNo)
     
-    // 触发结算事件
-    emit('checkout')
-    
-    // 跳转到支付页面，传递第一个订单ID和所有订单ID以及购物车数据
-    router.push({
-      path: '/payment',
-      query: {
-        orderId: orderIds[0],
-        orderIds: JSON.stringify(orderIds),
-        userId: userId,
-        cartItems: JSON.stringify(selectedItems)
-      }
+    // 触发结算事件，传递订单数据
+    emit('checkout', {
+      orderId: orderIds[0],
+      orderIds: orderIds,
+      userId: userId,
+      cartItems: selectedItems
     })
   } catch (error) {
     console.error('创建订单失败:', error)
