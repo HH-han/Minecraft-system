@@ -212,6 +212,41 @@ onMounted(async () => {
       console.error('获取订单详情失败:', error);
       ElMessage.error('获取订单详情失败，请重试');
     }
+  } else if (route.query.cartItems) {
+    // 如果有购物车数据，使用购物车数据
+    try {
+      const decodedCartItems = decodeURIComponent(route.query.cartItems);
+      const parsedCartItems = JSON.parse(decodedCartItems);
+      console.log('解析后购物车数据:', parsedCartItems); // 调试日志
+      
+      if (parsedCartItems && parsedCartItems.length > 0) {
+        // 计算总价格
+        const totalPrice = parsedCartItems.reduce((sum, cartItem) => sum + (cartItem.price * cartItem.quantity), 0);
+        
+        // 构建商品信息（如果是多个商品，显示汇总信息）
+        if (parsedCartItems.length === 1) {
+          const cartItem = parsedCartItems[0];
+          item.value = {
+            id: cartItem.id,
+            name: cartItem.itemName || cartItem.name,
+            price: totalPrice,
+            quantity: cartItem.quantity,
+            ticketType: cartItem.itemType === 'food' ? '美食' : '纪念品'
+          };
+        } else {
+          item.value = {
+            name: `共${parsedCartItems.length}件商品`,
+            price: totalPrice,
+            quantity: parsedCartItems.reduce((sum, cartItem) => sum + cartItem.quantity, 0),
+            ticketType: '混合商品'
+          };
+        }
+      }
+      // 清除可能的状态值，确保用户选择支付方式
+      selectedPaymentMethod.value = '';
+    } catch (error) {
+      console.error('解析购物车数据失败:', error);
+    }
   } else if (route.query.item) {
     // 如果没有订单ID，使用路由参数中的商品信息
     try {

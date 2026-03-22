@@ -123,6 +123,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCartList, updateCart, deleteFromCart } from '@/api/cart.js'
+import { createOrder } from '@/api/order.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const emit = defineEmits(['checkout'])
@@ -234,7 +235,7 @@ const deleteSelected = async () => {
   }
 }
 
-const checkout = () => {
+const checkout = async () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
     ElMessage.warning('请选择要结算的商品')
@@ -244,15 +245,60 @@ const checkout = () => {
   const userInfo = JSON.parse(localStorage.getItem('user'))
   const userId = userInfo?.id || userInfo?.userId
   
-  // 触发结算事件
-  emit('checkout')
-  // 跳转到订单确认页面
-  router.push({
-    path: '/payment',
-    query: {
-      userId: userId
+  if (!userId) {
+    ElMessage.warning('请先登录')
+    router.push('/login')
+    return
+  }
+  
+  try {
+    // 为每个选中的商品创建单独的订单
+    const orderPromises = selectedItems.map(item => {
+      // 构建订单请求数据
+      const orderRequest = {
+        itemType: item.itemType || (item.category === 'food' ? 'food' : 'product'),
+        itemId: item.id,
+        itemName: item.itemName || item.name,
+        image: item.image,
+        amount: item.price * item.quantity,
+        quantity: item.quantity,
+        remark: ''
+      }
+      
+      // 调用创建订单接口
+      return createOrder(orderRequest)
+    })
+    
+    // 并行处理所有订单创建请求
+    const responses = await Promise.all(orderPromises)
+    
+    // 检查所有订单是否创建成功
+    const failedOrders = responses.filter(response => response.code !== 200)
+    if (failedOrders.length > 0) {
+      ElMessage.error('部分订单创建失败，请重试')
+      return
     }
-  })
+    
+    // 收集所有订单ID
+    const orderIds = responses.map(response => response.data.orderId || response.data.id || response.data.orderNo)
+    
+    // 触发结算事件
+    emit('checkout')
+    
+    // 跳转到支付页面，传递第一个订单ID和所有订单ID以及购物车数据
+    router.push({
+      path: '/payment',
+      query: {
+        orderId: orderIds[0],
+        orderIds: JSON.stringify(orderIds),
+        userId: userId,
+        cartItems: JSON.stringify(selectedItems)
+      }
+    })
+  } catch (error) {
+    console.error('创建订单失败:', error)
+    ElMessage.error('创建订单失败，请检查网络')
+  }
 }
 
 // 从后端获取购物车数据

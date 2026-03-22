@@ -1,5 +1,5 @@
 <template>
-  <div class="order-detail">
+  <div class="order-detail" v-if="hasOrderData">
     <div class="order-header">
       <h2>订单详情</h2>
       <div class="order-status" :class="getStatusClass(order.status)">
@@ -82,6 +82,22 @@
       <button class="btn btn-secondary" @click="handleCancelOrder">取消订单</button>
     </div>
   </div>
+  
+  <!-- 无订单数据页面 -->
+  <div class="no-order" v-else>
+    <div class="no-order-content">
+      <div class="no-order-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+      </div>
+      <h3>暂无订单数据</h3>
+      <p>您还没有相关订单信息，请先去浏览商品</p>
+      <button class="btn btn-primary" @click="goToHome">返回首页</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -115,11 +131,17 @@ const order = ref({
   items: []
 })
 
+// 订单数据是否存在
+const hasOrderData = ref(false)
+
 // 获取订单数据
 const fetchProductData = async () => {
   const orderId = route.query.orderId
   const id = route.query.id
   const commodity = route.query.commodity
+  
+  // 初始设置为false
+  hasOrderData.value = false
   
   if (orderId) {
     // 如果有订单编号，从后端获取订单数据
@@ -127,55 +149,60 @@ const fetchProductData = async () => {
       const response = await getOrderDetail(orderId)
       const orderData = response.data
       
-      // 构建订单信息
-      order.value = {
-        orderId: orderData.orderNo || orderData.id,
-        status: orderData.status,
-        createTime: new Date(orderData.createTime).toLocaleString('zh-CN'),
-        payTime: orderData.payTime ? new Date(orderData.payTime).toLocaleString('zh-CN') : '',
-        totalPrice: 0, // 后端可能没有计算，需要从商品API获取
-        shippingFee: 0,
-        payPrice: 0,
-        address: {
-          name: '张三',
-          phone: '13800138000',
-          province: '北京市',
-          city: '北京市',
-          district: '朝阳区',
-          detail: '某某街道某某小区1号楼101室'
-        },
-        items: []
-      }
-      
-      // 根据商品类型获取商品详情
-      if (id && commodity) {
-        if (commodity === '0') {
-          // 美食类型，调用food API
-          const foodResponse = await getFoodDetail(id)
-          const food = foodResponse.data
-          order.value.items = [{
-            id: food.id,
-            name: food.name,
-            price: food.price,
-            quantity: 1,
-            image: food.coverImage
-          }]
-          order.value.totalPrice = food.price
-          order.value.payPrice = food.price
-        } else if (commodity === '1') {
-          // 纪念品类型，调用product API
-          const productResponse = await getProductDetail(id)
-          const product = productResponse.data
-          order.value.items = [{
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            quantity: 1,
-            image: product.coverImage
-          }]
-          order.value.totalPrice = product.price
-          order.value.payPrice = product.price
+      if (orderData) {
+        // 构建订单信息
+        order.value = {
+          orderId: orderData.orderNo || orderData.id,
+          status: orderData.status,
+          createTime: new Date(orderData.createTime).toLocaleString('zh-CN'),
+          payTime: orderData.payTime ? new Date(orderData.payTime).toLocaleString('zh-CN') : '',
+          totalPrice: 0, // 后端可能没有计算，需要从商品API获取
+          shippingFee: 0,
+          payPrice: 0,
+          address: {
+            name: '张三',
+            phone: '13800138000',
+            province: '北京市',
+            city: '北京市',
+            district: '朝阳区',
+            detail: '某某街道某某小区1号楼101室'
+          },
+          items: []
         }
+        
+        // 根据商品类型获取商品详情
+        if (id && commodity) {
+          if (commodity === '0') {
+            // 美食类型，调用food API
+            const foodResponse = await getFoodDetail(id)
+            const food = foodResponse.data
+            order.value.items = [{
+              id: food.id,
+              name: food.name,
+              price: food.price,
+              quantity: 1,
+              image: food.coverImage
+            }]
+            order.value.totalPrice = food.price
+            order.value.payPrice = food.price
+          } else if (commodity === '1') {
+            // 纪念品类型，调用product API
+            const productResponse = await getProductDetail(id)
+            const product = productResponse.data
+            order.value.items = [{
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              quantity: 1,
+              image: product.coverImage
+            }]
+            order.value.totalPrice = product.price
+            order.value.payPrice = product.price
+          }
+        }
+        
+        // 设置为有订单数据
+        hasOrderData.value = true
       }
     } catch (err) {
       console.error('获取订单数据失败:', err)
@@ -199,29 +226,41 @@ const setDefaultOrderData = () => {
       // 美食类型，调用food API
       getFoodDetail(id).then(response => {
         const food = response.data
-        order.value.items = [{
-          id: food.id,
-          name: food.name,
-          price: food.price,
-          quantity: 1,
-          image: food.coverImage
-        }]
-        order.value.totalPrice = food.price
-        order.value.payPrice = food.price
+        if (food) {
+          order.value.items = [{
+            id: food.id,
+            name: food.name,
+            price: food.price,
+            quantity: 1,
+            image: food.coverImage
+          }]
+          order.value.totalPrice = food.price
+          order.value.payPrice = food.price
+          // 设置为有订单数据
+          hasOrderData.value = true
+        }
+      }).catch(err => {
+        console.error('获取美食数据失败:', err)
       })
     } else if (commodity === '1') {
       // 纪念品类型，调用product API
       getProductDetail(id).then(response => {
         const product = response.data
-        order.value.items = [{
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          quantity: 1,
-          image: product.coverImage
-        }]
-        order.value.totalPrice = product.price
-        order.value.payPrice = product.price
+        if (product) {
+          order.value.items = [{
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: product.coverImage
+          }]
+          order.value.totalPrice = product.price
+          order.value.payPrice = product.price
+          // 设置为有订单数据
+          hasOrderData.value = true
+        }
+      }).catch(err => {
+        console.error('获取商品数据失败:', err)
       })
     }
   }
@@ -264,6 +303,11 @@ const getStatusClass = (status) => {
 const goToPay = () => {
   // 触发支付事件
   emit('pay')
+}
+
+const goToHome = () => {
+  // 跳转到首页
+  router.push('/')
 }
 
 const handleCancelOrder = async () => {
@@ -700,6 +744,104 @@ onMounted(() => {
   
   .item {
     padding: 15px;
+  }
+}
+
+/* 无订单数据页面样式 */
+.no-order {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  padding: 40px;
+  text-align: center;
+}
+
+.no-order-content {
+  max-width: 400px;
+  width: 100%;
+}
+
+.no-order-icon {
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.no-order-icon svg {
+  width: 80px;
+  height: 80px;
+}
+
+.no-order h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 12px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.no-order p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .no-order {
+    padding: 30px;
+    min-height: 400px;
+  }
+  
+  .no-order-icon svg {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .no-order h3 {
+    font-size: 18px;
+  }
+  
+  .no-order p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .no-order {
+    padding: 20px;
+    min-height: 350px;
+  }
+  
+  .no-order-icon svg {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .no-order h3 {
+    font-size: 16px;
   }
 }
 </style>

@@ -1,1 +1,4 @@
 2026-03-22 16:29:11.449 [http-nio-8080-exec-6] INFO  c.m.service.impl.PaymentServiceImpl - 支付失败，订单ID：24，支付编号：PAY17741681514447380
+2026-03-22 16:41:57.620 [http-nio-8080-exec-1] INFO  c.m.service.impl.PaymentServiceImpl - 支付失败，订单ID：25，支付编号：PAY1774168917592524
+2026-03-22 16:47:22.315 [http-nio-8080-exec-3] INFO  c.m.service.impl.PaymentServiceImpl - 支付成功，订单ID：26，支付编号：PAY17741692423092714
+2026-03-22 16:47:22.321 [http-nio-8080-exec-3] INFO  c.m.service.impl.PaymentServiceImpl - 订单状态更新成功，订单ID：26

@@ -11,4 +11,5 @@ public interface OrderService extends IService<Order> {
     PageResponse<?> getOrderList(Long userId, PageRequest request);
     Order getOrderDetail(Long id);
     void cancelOrder(Long id);
+    void payOrder(Long id);
 }
