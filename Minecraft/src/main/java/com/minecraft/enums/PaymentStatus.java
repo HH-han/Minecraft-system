@@ -23,4 +23,18 @@ public enum PaymentStatus {
     public String getDescription() {
         return description;
     }
+
+    /**
+     * 根据状态码获取支付状态枚举
+     * @param code 状态码
+     * @return 支付状态枚举
+     */
+    public static PaymentStatus fromCode(Integer code) {
+        for (PaymentStatus status : values()) {
+            if (status.code.equals(code)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Invalid payment status code: " + code);
+    }
 }
