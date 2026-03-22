@@ -5,11 +5,10 @@
         <h1 class="systemhome-title">博览业务管理系统</h1>
         <p class="systemhome-subtitle">高效 · 智能 · 安全</p>
       </div>
-      <div class="systemhome-header-decoration"></div>
     </header>
 
     <main class="systemhome-main">
-      <section class="systemhome-hero">
+      <section class="systemhome-hero glass-card">
         <div class="systemhome-hero-content">
           <h2 class="systemhome-hero-title">欢迎使用新一代业务平台</h2>
           <p class="systemhome-hero-description">
@@ -25,7 +24,7 @@
       <section class="systemhome-features">
         <h2 class="systemhome-features-title">核心特性</h2>
         <div class="systemhome-features-grid">
-          <div class="systemhome-feature-card">
+          <div class="systemhome-feature-card glass-card">
             <div class="systemhome-feature-icon">
               <svg viewBox="0 0 24 24">
                 <path d="M12,2L1,12H4V22H20V12H23M11,15V18H13V15M15,15V18H17V15M7,15V18H9V15Z" />
@@ -36,7 +35,7 @@
               基于AI的数据分析，提供精准的业务洞察和预测。
             </p>
           </div>
-          <div class="systemhome-feature-card">
+          <div class="systemhome-feature-card glass-card">
             <div class="systemhome-feature-icon">
               <svg viewBox="0 0 24 24">
                 <path d="M12,3L2,12H5V20H19V12H22M12,7.7L16,11.2V18H13V14H11V18H8V11.2M12,8.8L9,11.4H15L12,8.8Z" />
@@ -47,7 +46,7 @@
               自动化业务流程，减少人工干预，提高工作效率。
             </p>
           </div>
-          <div class="systemhome-feature-card">
+          <div class="systemhome-feature-card glass-card">
             <div class="systemhome-feature-icon">
               <svg viewBox="0 0 24 24">
                 <path
@@ -62,7 +61,7 @@
         </div>
       </section>
 
-      <section class="systemhome-stats">
+      <section class="systemhome-stats glass-card">
         <div class="systemhome-stat-item">
           <div class="systemhome-stat-number">98.9%</div>
           <div class="systemhome-stat-label">系统可用性</div>
@@ -77,7 +76,7 @@
         </div>
       </section>
 
-      <section class="systemhome-cta">
+      <section class="systemhome-cta glass-card">
         <h2 class="systemhome-cta-title">准备好提升您的业务效率了吗？</h2>
         <p class="systemhome-cta-description">
           立即注册，体验智能业务管理系统带来的变革。
@@ -89,7 +88,7 @@
       </section>
     </main>
 
-    <footer class="systemhome-footer">
+    <footer class="systemhome-footer glass-card">
       <div class="systemhome-footer-content">
         <div class="systemhome-footer-section">
           <h3 class="systemhome-footer-title">关于我们</h3>

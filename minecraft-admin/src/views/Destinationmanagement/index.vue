@@ -33,12 +33,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import BasicDestinationManagement from "@/views/ManagementViews/Destinationmanagement/BasicDestinationManagement.vue";
-import CityManagement from "@/views/ManagementViews/Destinationmanagement/CityManagement.vue";
-import ComprehensiveQueryManagement from "@/views/ManagementViews/Destinationmanagement/ComprehensiveQueryManagement.vue";
-import RegionTabManagement from "@/views/ManagementViews/Destinationmanagement/RegionTabManagement.vue";
-import TravelDestinationManagement from "@/views/ManagementViews/Destinationmanagement/TravelDestinationManagement.vue";
-import TravelRecommendationManagement from "@/views/ManagementViews/Destinationmanagement/TravelRecommendationManagement.vue";
+import BasicDestinationManagement from "@/views/Destinationmanagement/BasicDestinationManagement.vue";
+import CityManagement from "@/views/Destinationmanagement/CityManagement.vue";
+import ComprehensiveQueryManagement from "@/views/Destinationmanagement/ComprehensiveQueryManagement.vue";
+import RegionTabManagement from "@/views/Destinationmanagement/RegionTabManagement.vue";
+import TravelDestinationManagement from "@/views/Destinationmanagement/TravelDestinationManagement.vue";
+import TravelRecommendationManagement from "@/views/Destinationmanagement/TravelRecommendationManagement.vue";
 
 // 当前激活的菜单项
 const activeMenu = ref('basic');

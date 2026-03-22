@@ -20,4 +20,5 @@ public interface UserService extends IService<User> {
     void deleteUser(Long userId);
     List<User> getAllUsers();
     User getUserByAccount(String account);
+    LoginResponse adminLogin(LoginRequest request, HttpServletRequest httpRequest);
 }

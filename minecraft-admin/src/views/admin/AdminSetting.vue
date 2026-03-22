@@ -22,8 +22,8 @@
             </nav>
             <div class="admin-sidebar-footer">
                 <div class="admin-user-info">
-                    <img :src="userInfo.image" alt="用户头像" class="admin-user-avatar">
-                    <span class="admin-user-name">当前用户：{{ userInfo.username }}</span>
+                    <img :src="userInfo.avatar" alt="用户头像" class="admin-user-avatar">
+                    <span class="admin-user-name">{{ userInfo.username }}</span>
                 </div>
             </div>
         </aside>

@@ -81,6 +81,12 @@
             <button class="btn btn-link" @click="viewOrderDetail(order.id)">
               查看详情
             </button>
+            <button class="btn btn-secondary" @click="viewOrderDetail(order.id)">
+              查看物流
+            </button>
+            <button class="btn btn-delete" @click="handleCancelOrder(order.id)">
+              删除订单
+            </button>
           </div>
         </div>
       </div>
@@ -590,17 +596,17 @@ watch(activeFilter, () => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
   color: #fff;
-  border-color: #ff4d4f;
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+  border-color: #00aaff94;
+  box-shadow: 0 4px 12px rgba(77, 193, 255, 0.3);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
-  border-color: #ff7875;
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  border-color: #66a6ff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 77, 79, 0.4);
+  box-shadow: 0 6px 16px rgba(77, 193, 255, 0.4);
 }
 
 .btn-secondary {
@@ -611,6 +617,20 @@ watch(activeFilter, () => {
 .btn-secondary:hover {
   border-color: #ff4d4f;
   color: #ff4d4f;
+}
+
+.btn-delete {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.btn-delete:hover {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.5);
+  color: #e74c3c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .btn-link {

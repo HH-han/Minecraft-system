@@ -1,6 +1,7 @@
 // 导入 Pinia 的 defineStore 函数和项目封装的request工具
 import { defineStore } from 'pinia'
 import request from '@/utils/request'
+import { adminLogin as apiAdminLogin, getUserInfo as apiGetUserInfo, login as apiLogin } from '@/api/user.js'
 
 // 定义一个名为 'auth' 的 Pinia store
 export const useAuthStore = defineStore('auth', {
@@ -33,14 +34,14 @@ export const useAuthStore = defineStore('auth', {
     async adminLogin(credentials) {
       try {
         // 发送 POST 请求到管理员登录 API
-        const response = await request.post('/api/public/user/adminlogin', {
-          username: credentials.username,
+        const response = await apiAdminLogin({
+          account: credentials.username,
           password: credentials.password
         })
         
         // 登录成功，设置用户信息并清除错误信息
-        if (response.code === '0') {
-          this.user = response.data.user
+        if (response.code === 200) {
+          this.user = response.data
           this.error = null
           
           // 存储到localStorage
@@ -51,12 +52,12 @@ export const useAuthStore = defineStore('auth', {
           return response
         } else {
           // 登录失败，设置错误信息
-          this.error = response.msg || '管理员登录失败'
+          this.error = response.message || '管理员登录失败'
           throw new Error(this.error)
         }
       } catch (error) {
         // 登录失败，设置错误信息
-        this.error = error.response?.data?.msg || error.message || '管理员登录失败'
+        this.error = error.response?.data?.message || error.message || '管理员登录失败'
         // 抛出错误
         throw error
       }
@@ -66,30 +67,30 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials) {
       try {
         // 发送 POST 请求到登录 API
-        const response = await request.post('/api/public/user/login', {
-          username: credentials.username,
+        const response = await apiLogin({
+          account: credentials.username,
           password: credentials.password
         })
         
         // 登录成功，设置用户信息并清除错误信息
-        if (response.code === '0' || response.code === 0) {
-          this.user = response.data.user
+        if (response.code === 200) {
+          this.user = response.data
           this.error = null
           
           // 存储到localStorage
           localStorage.setItem('token', response.data.token)
-          localStorage.setItem('user', JSON.stringify(response.data.user))
+          localStorage.setItem('user', JSON.stringify(this.user))
           
           // 返回响应数据
           return response
         } else {
           // 登录失败，设置错误信息
-          this.error = response.msg || '登录失败'
+          this.error = response.message || '登录失败'
           throw new Error(this.error)
         }
       } catch (error) {
         // 登录失败，设置错误信息
-        this.error = error.response?.data?.msg || error.message || '登录失败'
+        this.error = error.response?.data?.message || error.message || '登录失败'
         // 抛出错误
         throw error
       }
@@ -98,8 +99,8 @@ export const useAuthStore = defineStore('auth', {
     // 获取用户信息
     async getUserInfo() {
       try {
-        const response = await request.get('/api/public/user/info')
-        if (response.code === '0' || response.code === 0) {
+        const response = await apiGetUserInfo()
+        if (response.code === 200) {
           this.user = response.data
           localStorage.setItem('user', JSON.stringify(response.data))
           return response

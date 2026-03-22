@@ -98,13 +98,13 @@ const handleLogin = async () => {
 
     console.log('登录响应:', response);
 
-    if (response.code === '0') {
+    if (response.code === 200) {
       // 严格验证响应数据结构
-      if (!response.data?.token || !response.data?.user) {
+      if (!response.data?.token) {
         throw new Error('响应数据不完整');
       }
 
-      const { user } = response.data;
+      const user = response.data;
 
       // 验证必要字段
       if (!user?.username) {
@@ -117,13 +117,10 @@ const handleLogin = async () => {
         localStorage.removeItem('rememberedUsername');
       }
       // 如果是admin账号，跳转到指定页面
-      if (user.permissions === 1) {
-        router.push('/AdminLayout');
-      } else {
-        ElMessage.error('请输入管理员账号登录');
-      }
+      router.push('/');
+      ElMessage.success('登录成功');
     } else {
-      errorMessage.value = response.msg || '登录失败';
+      errorMessage.value = response.message || '登录失败';
       showError.value = true;
     }
   } catch (error) {

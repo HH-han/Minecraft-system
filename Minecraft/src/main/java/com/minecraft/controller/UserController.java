@@ -1,10 +1,13 @@
 package com.minecraft.controller;
 
+import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.response.ApiResponse;
+import com.minecraft.dto.response.LoginResponse;
 import com.minecraft.entity.User;
 import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +85,12 @@ public class UserController {
         // 清除用户的登录日志
         loginLogService.clearLoginLogs(userId);
         return ApiResponse.success("退出成功", null);
+    }
+
+    @Operation(summary ="管理员登录")
+    @PostMapping("/admin/login")
+    public ApiResponse<LoginResponse> adminLogin(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        LoginResponse response = userService.adminLogin(request, httpRequest);
+        return ApiResponse.success(response);
     }
 }

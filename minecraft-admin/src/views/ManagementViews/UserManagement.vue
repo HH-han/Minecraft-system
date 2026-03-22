@@ -131,16 +131,16 @@
                   <td>{{ formatDate(user.updateTime) }}</td>
                   <td>
                     <label class="switch">
-                      <input type="checkbox" :checked="user.permissions === 1" @change="togglePermission(user)">
+                      <input type="checkbox" :checked="user.permissions === '0'" @change="togglePermission(user)">
                       <span class="slider"
-                        :class="{ 'green': user.permissions === 1, 'red': user.permissions !== 1 }"></span>
+                        :class="{ 'green': user.permissions === '0', 'red': user.permissions !== '0' }"></span>
                       <span class="knob"></span>
                     </label>
                   </td>
                   <td>
                     <label class="switch">
-                      <input type="checkbox" :checked="user.status === 0" @change="toggleStatus(user)">
-                      <span class="slider" :class="{ 'green': user.status === 0, 'red': user.status !== 0 }"></span>
+                      <input type="checkbox" :checked="user.status === 1" @change="toggleStatus(user)">
+                      <span class="slider" :class="{ 'green': user.status === 1, 'red': user.status !== 1 }"></span>
                       <span class="knob"></span>
                     </label>
                   </td>
@@ -723,8 +723,9 @@ const confirmDelete = async () => {
 // 更改权限
 const togglePermission = async (user) => {
   try {
-    const newPermission = user.permissions === 1 ? 0 : 1;
+    const newPermission = user.permissions === '0' ? '1' : '0';
     user.permissions = newPermission;
+    await updateUserInfo(user);
     showToastMessage('修改权限成功');
   } catch (error) {
     console.error('修改权限失败:', error);
@@ -734,8 +735,9 @@ const togglePermission = async (user) => {
 // 更改状态
 const toggleStatus = async (user) => {
   try {
-    const newStatus = user.status === 0 ? 1 : 0;
+    const newStatus = user.status === 1 ? 0 : 1;
     user.status = newStatus;
+    await updateUserInfo(user);
     showToastMessage('修改状态成功');
   } catch (error) {
     console.error('修改状态失败:', error);

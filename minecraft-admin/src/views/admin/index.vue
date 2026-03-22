@@ -113,7 +113,7 @@
 
             <div class="user-dropdown-wrapper" @mouseenter="showDropdown" @mouseleave="hideDropdown">
               <button class="user-button">
-                <span class="user-name">{{ userInfo.nickname }}</span>
+                <span class="user-name">{{ userInfo.username }}</span>
                 <img v-if="!userInfo.hasInput" :src="defaultAvatar" alt="默认头像" class="data-management__top-avatar" />
                 <img v-else :src="userInfo.image" alt="用户头像" class="data-management__top-avatar" />
               </button>
@@ -286,7 +286,7 @@ import CarouselManagement from '@/views/ManagementViews/CarouselManagement.vue';
 import HotRecommendationManagement from '@/views/ManagementViews/HotRecommendationManagement.vue';
 import DestinationworldManagement from '@/views/ManagementViews/DestinationworldManagement.vue';
 import TravelNewsManagement from '@/views/ManagementViews/TravelNewsManagement.vue';
-import index from '@/views/ManagementViews/DestinationManagement/index.vue';
+import index from '@/views/DestinationManagement/index.vue';
 import ProductManagement from '@/views/ManagementViews/ProductManagement.vue';
 // 个人/设置组件
 import CenterManagement from '@/views/ManagementViews/CenterManagement.vue';
@@ -566,7 +566,7 @@ const logout = () => {
       localStorage.removeItem('rememberedUsername');
       // 关闭下拉菜单
       isDropdownVisible.value = false;
-      router.push('/AdminLogin');
+      router.push('/login');
 
       ElMessage.success('退出登录成功');
     } catch (error) {
@@ -576,7 +576,7 @@ const logout = () => {
       localStorage.removeItem('user');
       localStorage.removeItem('rememberedUsername');
       isDropdownVisible.value = false;
-      router.push('/AdminLogin');
+      router.push('/login');
       ElMessage.success('已退出登录');
     }
   }).catch(() => {
@@ -600,36 +600,38 @@ const userInfo = ref({
 const loading = ref(false);
 
 // 获取用户信息
-// const fetchUserInfo = async () => {
-//   try {
-//     loading.value = true;
-//     //检查是否有token
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//       ElMessage.error('请先登录');
-//       router.push('/AdminLogin');
-//       return;
-//     }
-//     // 先从本地存储获取，优化用户体验
-//     const localUser = JSON.parse(localStorage.getItem('user') || '{}');
-//     userInfo.value = { ...localUser };
-
-//     // 检查是否有用户头像
-//     if (!localUser.image) {
-//       userInfo.value.image = defaultAvatar;
-//     } else {
-//       userInfo.value.image = localUser.image;
-//     }
-
-//     // 设置 hasInput 的值
-//     userInfo.value.hasInput = !!localUser.image;
-//   } catch (error) {
-//     console.error('获取用户信息失败:', error);
-//     ElMessage.error('获取用户信息失败');
-//   } finally {
-//     loading.value = false;
-//   }
-// };
+const fetchUserInfo = async () => {
+  try {
+    loading.value = true;
+    //检查是否有token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      ElMessage.error('请先登录');
+      router.push('/login');
+      return;
+    }
+    
+    // 从auth store中获取用户信息
+    const storeUser = authStore.user;
+    // 从localStorage中获取用户信息作为备份
+    const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // 优先使用store中的用户信息，其次使用localStorage中的信息
+    const userData = storeUser || localUser;
+    
+    userInfo.value = { 
+      ...userData,
+      nickname: userData.nickname || userData.username || userData.account || '管理员',
+      image: userData.avatar || userData.image || defaultAvatar,
+      hasInput: !!userData.avatar || !!userData.image
+    };
+  } catch (error) {
+    console.error('获取用户信息失败:', error);
+    ElMessage.error('获取用户信息失败');
+  } finally {
+    loading.value = false;
+  }
+};
 // 放大全屏
 const toggleFullScreen = () => {
   if (!document.fullscreenElement) {
@@ -740,7 +742,7 @@ const currentCategories = computed(() => {
 
 // 初始化时设置组件和侧边栏状态
 onMounted(() => {
-  // fetchUserInfo();
+  fetchUserInfo();
   const savedMenuId = authStore.currentComponentPath || 1;
   const menuItem = menuItems.find(item => item.id === savedMenuId) || menuItems[0];
   activeComponent.value = menuItem.component;

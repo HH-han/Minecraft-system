@@ -269,6 +269,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateUser.setSignature(user.getSignature());
         updateUser.setNickname(user.getNickname());
         updateUser.setExperience(user.getExperience());
+        updateUser.setPermissions(user.getPermissions());
         
         updateById(updateUser);
         
@@ -358,5 +359,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getAccount, account);
         return getOne(wrapper);
+    }
+
+    @Override
+    public LoginResponse adminLogin(LoginRequest request, HttpServletRequest httpRequest) {
+        // 先执行普通登录逻辑
+        LoginResponse response = login(request, httpRequest);
+        
+        // 获取用户信息
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getAccount, request.getAccount());
+        User user = getOne(wrapper);
+        
+        // 检查权限
+        if (user == null || !"0".equals(user.getPermissions())) {
+            // 记录登录失败日志
+            recordLoginLog(httpRequest, request.getAccount(), "0", "权限不足，非管理员账号");
+            throw new BusinessException("权限不足，只有管理员账号才能登录");
+        }
+        
+        // 记录管理员登录成功日志
+        recordLoginLog(httpRequest, request.getAccount(), "1", "管理员登录成功");
+        
+        return response;
     }
 }

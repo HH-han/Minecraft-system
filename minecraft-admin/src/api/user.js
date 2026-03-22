@@ -52,3 +52,13 @@ export const uploadAvatar = (formData) => {
 export const createUser = (user) => {
   return request.post('/auth/register', user)
 }
+
+// 管理员登录
+export const adminLogin = (data) => {
+  return request.post('/user/admin/login', data)
+}
+
+// 普通用户登录
+export const login = (data) => {
+  return request.post('/auth/login', data)
+}

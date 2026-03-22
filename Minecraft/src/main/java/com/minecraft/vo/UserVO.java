@@ -16,6 +16,10 @@ public class UserVO {
     private Integer age;
     private String occupation;
     private String hobbies;
+    private String permissions;
+    private String signature;
+    private String nickname;
+    private String experience;
     private String bio;
     private LocalDateTime createTime;
 }

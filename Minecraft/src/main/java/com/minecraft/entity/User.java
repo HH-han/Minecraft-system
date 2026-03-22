@@ -42,6 +42,8 @@ public class User {
     private String nickname;
     
     private String experience;
+
+    private String permissions;
     
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
