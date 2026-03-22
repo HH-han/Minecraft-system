@@ -45,29 +45,33 @@ export default {
 
 <style scoped>
 .room-selector {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 .room-selector h4 {
-  margin-bottom: 15px;
-  font-size: 16px;
+  margin-bottom: 20px;
+  font-size: 18px;
   font-weight: bold;
+  color: #333;
 }
 
 .room-option {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background-color: white;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .room-option:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 106, 0, 0.3);
 }
 
 .room-info {
@@ -75,14 +79,15 @@ export default {
 }
 
 .room-info h5 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  color: #333;
 }
 
 .room-info p {
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
 }
 
@@ -93,11 +98,12 @@ export default {
 }
 
 .room-facilities .facility {
-  background-color: #f5f5f5;
-  padding: 2px 8px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 12px;
   font-size: 12px;
   color: #666;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .room-price {
@@ -106,11 +112,11 @@ export default {
 }
 
 .price {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .price-value {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   color: #ff6a00;
 }
@@ -121,19 +127,22 @@ export default {
 }
 
 .book-btn {
-  padding: 8px 20px;
+  padding: 10px 24px;
   background-color: #ff6a00;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 106, 0, 0.3);
 }
 
 .book-btn:hover {
   background-color: #ff8c00;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 106, 0, 0.4);
 }
 
 @media (max-width: 768px) {

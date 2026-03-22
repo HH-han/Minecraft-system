@@ -95,6 +95,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAttractionList } from '@/api/attraction.js'
+import { useBookingStore } from '@/stores/bookingStore.js'
 
 // 响应式数据
 const attractions = ref([])
@@ -103,6 +104,7 @@ const error = ref('')
 const router = useRouter()
 const showModal = ref(false)
 const selectedAttraction = ref(null)
+const bookingStore = useBookingStore()
 
 // 获取景点数据
 const fetchAttractions = async () => {
@@ -140,13 +142,9 @@ const closeModal = () => {
 // 跳转到订单详情页
 const OrderDetails = (attraction) => {
     console.log('前往预订:', attraction)
-    router.push({
-        path: '/predetermined',
-        query: {
-            activeTab: 'attraction',
-            attractionData: JSON.stringify(attraction)
-        }
-    })
+    // 使用 Pinia 存储景点数据
+    bookingStore.bookAttraction(attraction)
+    router.push('/predetermined')
     closeModal()
 }
 </script>

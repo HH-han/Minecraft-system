@@ -41,7 +41,7 @@
             </div>
             <div class="info-item">
               <span class="label">支付时间：</span>
-              <span class="value">{{ order.payTime || '未支付' }}</span>
+              <span class="value">{{ order.updateTime || '未支付' }}</span>
             </div>
             <div class="info-item">
               <span class="label">订单金额：</span>
@@ -65,7 +65,7 @@
         </div>
         <div class="order-footer">
           <div class="order-total">
-            共 {{ order.items.length }} 件商品，合计：
+            共 {{ order.quantity }} 件商品，合计：
             <span class="total-price">{{ order.totalPrice }} 元</span>
           </div>
           <div class="order-actions">
@@ -84,7 +84,7 @@
             <button class="btn btn-secondary" @click="viewOrderDetail(order.id)">
               查看物流
             </button>
-            <button class="btn btn-delete" @click="deleteOrder(order.id)">
+            <button class="btn btn-delete" @click="handleDeleteOrder(order.id)">
               删除订单
             </button>
           </div>
@@ -166,8 +166,9 @@ const fetchOrders = async () => {
       orderId: order.orderNo,
       status: order.status,
       createTime: order.createTime,
-      payTime: order.payTime || '',
+      updateTime: order.updateTime || '',
       totalPrice: order.amount,
+      quantity: order.quantity,
       items: [{
         id: order.itemId,
         name: order.itemName,
@@ -246,7 +247,7 @@ const handleCancelOrder = async (orderId) => {
 }
 
 // 删除订单
-const deleteOrder = async (orderId) => {
+const handleDeleteOrder = async (orderId) => {
   try {
     await ElMessageBox.confirm('确定要删除订单吗？此操作不可恢复！', '警告', {
       confirmButtonText: '删除',

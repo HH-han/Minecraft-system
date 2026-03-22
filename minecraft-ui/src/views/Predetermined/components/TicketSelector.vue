@@ -67,29 +67,33 @@ export default {
 
 <style scoped>
 .ticket-selector {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 .ticket-selector h4 {
-  margin-bottom: 15px;
-  font-size: 16px;
+  margin-bottom: 20px;
+  font-size: 18px;
   font-weight: bold;
+  color: #333;
 }
 
 .ticket-option {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background-color: white;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .ticket-option:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 106, 0, 0.3);
 }
 
 .ticket-info {
@@ -97,14 +101,15 @@ export default {
 }
 
 .ticket-info h5 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  color: #333;
 }
 
 .ticket-info p {
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 14px;
 }
 
@@ -115,11 +120,12 @@ export default {
 }
 
 .ticket-rules .rule {
-  background-color: #f5f5f5;
-  padding: 2px 8px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 12px;
   font-size: 12px;
   color: #666;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .ticket-price {
@@ -128,11 +134,11 @@ export default {
 }
 
 .price {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .price-value {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   color: #ff6a00;
 }
@@ -146,20 +152,26 @@ export default {
   display: flex;
   align-items: center;
   width: 120px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   overflow: hidden;
   margin-left: auto;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .ticket-quantity button {
   width: 30px;
-  height: 36px;
+  height: 40px;
   border: none;
-  background-color: #f5f5f5;
+  background: rgba(255, 255, 255, 0.3);
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.ticket-quantity button:hover {
+  background: rgba(255, 106, 0, 0.1);
 }
 
 .ticket-quantity button:disabled {
@@ -170,7 +182,8 @@ export default {
 .ticket-quantity span {
   flex: 1;
   text-align: center;
-  line-height: 36px;
+  line-height: 40px;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {

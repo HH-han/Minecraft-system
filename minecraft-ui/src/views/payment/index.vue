@@ -67,8 +67,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.js'
 import PayPage from '@/components/Payment/PayPage.vue'
 import OrderDetail from './components/OrderDetail.vue'
 import ShoppingCart from './components/ShoppingCart.vue'
@@ -77,13 +78,21 @@ import ProductTypeSelector from './components/ProductTypeSelector.vue'
 import HistoricalOrders from './components/HistoricalOrders.vue'
 import { getFoodDetail } from '@/api/food.js'
 
+const store = useAuthStore()
+
 const route = useRoute()
-const activeTab = ref('product')
+const router = useRouter()
+const activeTab = ref(store.pageState.payment?.activeTab || 'product')
 const selectedOptions = ref({})
 const loading = ref(false)
 const error = ref('')
 const productData = ref(null)
 const showPayModal = ref(false)
+
+// 监听activeTab变化，更新store
+watch(activeTab, (newValue) => {
+  store.updatePageState('payment', { activeTab: newValue })
+}, { immediate: true })
 
 // 监听来自PayPage的closeModal消息
 onMounted(() => {
@@ -96,6 +105,11 @@ onMounted(() => {
 
 // 导航项配置
 const navItems = [
+  {
+    id: 'home',
+    title: '返回首页',
+    icon: `<svg t="1774174358646" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="16082" width="24" height="24"><path d="M913.6 280L660 112c-88-73.6-216.8-73.6-303.2 0L104.8 277.6l-3.2 2.4C57.6 317.6 32 372 32 428.8v352c0 111.2 70.4 176 188.8 176h575.2c118.4 1.6 188.8-62.4 188.8-176v-352c0-56.8-25.6-111.2-71.2-148.8z m-34.4 483.2c-0.8 61.6-27.2 86.4-96 87.2H233.6c-70.4 0-96-26.4-96-87.2V432c0-30.4 13.6-61.6 38.4-82.4l239.2-152.8 3.2-1.6c50.4-44 129.6-44 180 0L840 351.2c24.8 20.8 38.4 52 38.4 82.4v329.6z" p-id="16083" fill="#ffffff"></path><path d="M508 480c-28.8 0-52.8 20.8-52.8 44.8v202.4c0 24 24 44.8 52.8 44.8 28.8 0 52.8-20.8 52.8-44.8V524c0-25.6-24-44-52.8-44z" p-id="16084" fill="#ffffff"></path></svg>`
+  },
   {
     id: 'product',
     title: '商品类型选择',
@@ -125,7 +139,11 @@ const navItems = [
 
 // 切换标签
 const switchTab = (tabId) => {
-  activeTab.value = tabId
+  if (tabId === 'home') {
+    router.push('/')
+  } else {
+    activeTab.value = tabId
+  }
 }
 
 // 获取当前标签标题
@@ -289,6 +307,29 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.4);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 返回首页按钮样式 */
+.nav-item:nth-child(1) {
+  background: linear-gradient(135deg, rgba(255, 77, 79, 0.1), rgba(255, 120, 117, 0.1));
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  margin-bottom: 15px;
+}
+
+.nav-item:nth-child(1):hover {
+  background: linear-gradient(135deg, rgba(255, 77, 79, 0.2), rgba(255, 120, 117, 0.2));
+  border-color: rgba(255, 77, 79, 0.5);
+  transform: translateX(8px);
+  box-shadow: 0 6px 20px rgba(255, 77, 79, 0.3);
+}
+
+.nav-item:nth-child(1) .nav-icon svg {
+  color: #ff4d4f;
+}
+
+.nav-item:nth-child(1) .nav-text {
+  font-weight: 600;
+  color: #ff4d4f;
 }
 
 .nav-icon {

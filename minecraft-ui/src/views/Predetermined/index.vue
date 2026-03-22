@@ -24,11 +24,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 import HotelBooking from './components/HotelBooking.vue'
 import AttractionBooking from './components/AttractionBooking.vue'
+import { useBookingStore } from '@/stores/bookingStore.js'
 
-const route = useRoute()
+const bookingStore = useBookingStore()
 const activeTab = ref('hotel')
 const attractionData = ref(null)
 const hotelData = ref(null)
@@ -112,33 +112,25 @@ const attractionTickets = [
   }
 ];
 
-// 组件挂载时处理路由参数
+// 组件挂载时从 Pinia 获取数据
 onMounted(() => {
-  if (route.query.activeTab) {
-    activeTab.value = route.query.activeTab
-  }
-  if (route.query.attractionData) {
-    try {
-      attractionData.value = JSON.parse(route.query.attractionData)
-    } catch (error) {
-      console.error('解析景点数据失败:', error)
-    }
-  }
-  if (route.query.hotelData) {
-    try {
-      hotelData.value = JSON.parse(route.query.hotelData)
-    } catch (error) {
-      console.error('解析酒店数据失败:', error)
-    }
-  }
+  // 从 Pinia 中获取数据
+  activeTab.value = bookingStore.getActiveTab
+  attractionData.value = bookingStore.getAttractionData
+  hotelData.value = bookingStore.getHotelData
+  
+  // 清除 Pinia 中的数据，避免重复使用
+  bookingStore.clearData()
 })
 </script>
 
 <style scoped>
 .predetermined-container {
-  max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
+  background-image: url('@/assets/scenery/scenery-2.webp');
+  background-size: cover;
+  background-position: center;
 }
 
 h1 {
