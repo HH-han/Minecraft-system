@@ -800,6 +800,7 @@ create table orders
     status      varchar(20) default '0'               null comment '订单状态 0-待支付 1-已支付 2-已发货 3-已完成 4-已取消 5-已退款',
     create_time datetime    default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime    default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    image       varchar(255)                          null comment '图片',
     constraint uk_order_no
         unique (order_no)
 )
@@ -1087,6 +1088,7 @@ create table user
     status      int      default 1                 null comment '状态 0-禁用 1-正常',
     create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    permissions int      default 1                 null comment '权限，0管理员，1普通用户',
     constraint uk_account
         unique (account),
     constraint uk_email
