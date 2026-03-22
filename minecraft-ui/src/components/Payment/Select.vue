@@ -24,6 +24,21 @@
       </div>
     </div>
   </div>
+  
+  <!-- Element Plus 弹窗 -->
+  <el-dialog
+    v-model="dialogVisible"
+    :title="dialogTitle"
+    width="30%"
+    center
+  >
+    <span>{{ dialogMessage }}</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -33,6 +48,7 @@ import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
 import { createOrder } from '@/api/order.js'
 import { addToCart } from '@/api/cart.js'
+import { ElDialog, ElButton } from 'element-plus'
 
 const props = defineProps({
   visible: {
@@ -59,6 +75,11 @@ const product = ref({
   coverImage: '',
   description: ''
 })
+
+// 对话框相关变量
+const dialogVisible = ref(false)
+const dialogTitle = ref('')
+const dialogMessage = ref('')
 
 // 监听商品ID变化，获取商品数据
 watch(() => props.productId, (newId) => {
@@ -111,10 +132,14 @@ const handleAddToCart = async () => {
     }
     
     await addToCart(cartData)
-    alert('商品已加入购物车')
+    dialogTitle.value = '成功'
+    dialogMessage.value = '商品已加入购物车'
+    dialogVisible.value = true
   } catch (error) {
     console.error('加入购物车失败:', error)
-    alert('加入购物车失败，请重试')
+    dialogTitle.value = '失败'
+    dialogMessage.value = '加入购物车失败，请重试'
+    dialogVisible.value = true
   } finally {
     closeModal()
   }
@@ -152,7 +177,9 @@ const buyNow = async () => {
     })
   } catch (error) {
     console.error('创建订单失败:', error)
-    alert('创建订单失败，请重试')
+    dialogTitle.value = '失败'
+    dialogMessage.value = '创建订单失败，请重试'
+    dialogVisible.value = true
   } finally {
     closeModal()
   }
