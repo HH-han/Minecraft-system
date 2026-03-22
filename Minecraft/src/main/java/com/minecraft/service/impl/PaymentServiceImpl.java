@@ -82,6 +82,15 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
             if (paymentSuccess) {
                 payment.setStatus(PaymentStatus.SUCCESS.getCode().toString());
                 log.info("支付成功，订单ID：{}，支付编号：{}", orderId, payment.getPaymentNo());
+                
+                // 更新订单状态为已支付
+                Order order = orderMapper.selectById(orderId);
+                if (order != null) {
+                    order.setStatus(com.minecraft.enums.OrderStatus.PAID.getCode().toString());
+                    order.setUpdateTime(LocalDateTime.now());
+                    orderMapper.updateById(order);
+                    log.info("订单状态更新成功，订单ID：{}", orderId);
+                }
             } else {
                 payment.setStatus(PaymentStatus.FAILED.getCode().toString());
                 log.info("支付失败，订单ID：{}，支付编号：{}", orderId, payment.getPaymentNo());

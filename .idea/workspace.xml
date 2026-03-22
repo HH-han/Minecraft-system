@@ -5,9 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/PaymentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/PaymentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/PaymentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/bug" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/bug" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/api/payment.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/api/payment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,47 +163,7 @@
       <workItem from="1773553976729" duration="9241000" />
       <workItem from="1773667184140" duration="6199000" />
       <workItem from="1774102871385" duration="1344000" />
-      <workItem from="1774151387516" duration="5418000" />
-    </task>
-    <task id="LOCAL-00007" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771854641792</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1771854641792</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771855731003</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1771855731003</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771856716097</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1771856716097</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771856720380</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1771856720380</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771856724251</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1771856724251</updated>
+      <workItem from="1774151387516" duration="8520000" />
     </task>
     <task id="LOCAL-00012" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -551,7 +517,47 @@
       <option name="project" value="LOCAL" />
       <updated>1774159717035</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774165559459</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1774165559459</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774166193883</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1774166193883</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774167077113</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1774167077113</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774167256980</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1774167256981</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774167315119</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1774167315119</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

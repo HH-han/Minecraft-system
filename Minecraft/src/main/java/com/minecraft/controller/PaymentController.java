@@ -27,6 +27,15 @@ public class PaymentController {
         return ApiResponse.success("创建成功", paymentService.createPayment(orderId, userId, paymentMethod));
     }
 
+    @Operation(summary ="处理支付")
+    @PostMapping("/process")
+    public ApiResponse<Payment> processPayment(
+            @RequestParam Long orderId,
+            @RequestParam PaymentMethod paymentMethod) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        return ApiResponse.success("支付处理成功", paymentService.processPayment(orderId, userId, paymentMethod));
+    }
+
     @Operation(summary ="获取支付详情")
     @GetMapping("/{id}")
     public ApiResponse<Payment> getPaymentDetail(@PathVariable Long id) {

@@ -151,7 +151,7 @@ import { useRoute, useRouter } from 'vue-router';
 import PaymentSuccessModal from '@/components/PromptComponent/PaymentSuccessModal.vue';
 import { ElMessage } from 'element-plus';
 import { getOrderDetail } from '@/api/order.js';
-import { createPayment } from '@/api/payment.js';
+import { processPayment } from '@/api/payment.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -262,7 +262,7 @@ const confirmPayment = async () => {
 
   try {
     // 调用后端支付接口
-    const response = await createPayment({
+    const response = await processPayment({
       orderId: orderId.value,
       paymentMethod: selectedPaymentMethod.value
     });
