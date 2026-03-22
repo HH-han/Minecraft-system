@@ -85,7 +85,7 @@
           <div class="PayPage_center">
             <div class="payment-option">
               <label class="container-pay">
-                <input type="radio" v-model="selectedPaymentMethod" value="BANK" />
+                <input type="radio" v-model="selectedPaymentMethod" value="UNIONPAY" />
                 <div class="checkmark-pay"></div>
               </label>
               <div class="payment-icon">
@@ -111,22 +111,7 @@
               </div>
             </div>
           </div>
-          <!-- 信用卡 -->
-          <div class="PayPage_center">
-            <div class="payment-option">
-              <label class="container-pay">
-                <input type="radio" v-model="selectedPaymentMethod" value="CREDIT_CARD" />
-                <div class="checkmark-pay"></div>
-              </label>
-              <div class="payment-icon">
-                <svg t="1773576440059" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14509" width="45" height="45"><path d="M0 0h1024v1024H0z" fill="#D8D8D8" fill-opacity="0" p-id="14510"></path><path d="M174.72 170.666667h643.285333c59.605333 0 89.386667 29.952 89.386667 89.856v423.381333c0 59.904-29.781333 89.856-89.386667 89.856H174.72C115.114667 773.76 85.333333 743.808 85.333333 683.946667V260.522667C85.333333 200.618667 115.114667 170.666667 174.72 170.666667z" fill="#61AFFE" p-id="14511"></path><path d="M85.333333 271.189333h822.058667V371.626667H85.333333z" fill="#4A4A4A" p-id="14512"></path><path d="M238.122667 472.192h252.288c33.365333 0 50.005333 16.768 50.005333 50.261333 0 33.493333-16.64 50.261333-50.005333 50.261334H238.122667c-33.322667 0-50.005333-16.768-50.005334-50.304v0.042666c0-33.493333 16.64-50.261333 50.005334-50.261333z" fill="#FFFFFF" p-id="14513"></path><path d="M563.669333 668.586667c0 125.568 103.082667 227.413333 230.186667 227.413333C920.96 896 1024 794.154667 1024 668.586667c0-125.653333-103.04-227.498667-230.144-227.498667-127.146667 0-230.186667 101.845333-230.186667 227.456z" fill="#5BD599" p-id="14514"></path><path d="M793.856 668.586667h113.92v40.96h-155.306667v-143.445334h41.386667z" fill="#FFFFFF" p-id="14515"></path></svg>
-              </div>
-              <div class="payment-info">
-                <span class="payment-name">信用卡</span>
-                <span class="payment-desc">支持Visa、MasterCard、American Express</span>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -164,9 +149,9 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PaymentSuccessModal from '@/components/PromptComponent/PaymentSuccessModal.vue';
-import request from '@/utils/request';
 import { ElMessage } from 'element-plus';
 import { getOrderDetail } from '@/api/order.js';
+import { createPayment } from '@/api/payment.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -245,7 +230,8 @@ onMounted(async () => {
       } else {
         item.value = parsedItem;
       }
-      selectedPaymentMethod.value = item.value.status;
+      // 清除可能的状态值，确保用户选择支付方式
+      selectedPaymentMethod.value = '';
     } catch (error) {
       console.error('解析item参数失败:', error);
     }
@@ -262,67 +248,30 @@ const confirmPayment = async () => {
     return;
   }
 
-  // 获取完整的用户信息
-  const userInfo = JSON.parse(localStorage.getItem('user'));
-  if (!userInfo || !userInfo.username) {
-    ElMessage.error('用户信息获取失败');
-    return;
-  }
-
   if (!selectedPaymentMethod.value) {
     isAlertVisible.value = true;
     alertMessage.value = '请选择支付方式';
     return;
   }
 
+  if (!orderId.value) {
+    isAlertVisible.value = true;
+    alertMessage.value = '订单ID不存在，请重新下单';
+    return;
+  }
+
   try {
-    let response;
+    // 调用后端支付接口
+    const response = await createPayment({
+      orderId: orderId.value,
+      paymentMethod: selectedPaymentMethod.value
+    });
 
-    if (orderId.value) {
-      // 更新订单接口 - 将status作为URL参数传递
-      response = await request({
-        url: `/api/public/payment/${orderId.value}`,
-        method: 'PUT',
-        params: {
-          status: 'SUCCESS',
-          paymentMethod: selectedPaymentMethod.value,
-          version: 0
-        }
-      });
-    } else {
-      // 新建支付接口保持不变
-      // 统一处理quantity字段，确保数值类型
-      const quantityValue = typeof item.value.quantity === 'object'
-        ? (item.value.quantity.value || 1)
-        : (item.value.quantity || 1);
-
-      const paymentData = {
-        itemId: item.value.id,
-        itemName: item.value.name,
-        amount: item.value.price,
-        paymentMethod: selectedPaymentMethod.value,
-        version: 0,
-        username: userInfo.username,
-        quantity: quantityValue
-      };
-
-      response = await request({
-        url: '/api/public/payment/shoping',
-        method: 'POST',
-        data: paymentData,
-      });
-    }
-
-    if (response.code === '0') {
+    if (response.code === 200) {
       isPaymentModalVisible.value = true;
     } else {
       isAlertVisible.value = true;
-      alertMessage.value = response.msg || response.data?.message || '支付失败，请重试';
-
-      // 如果是无效支付状态错误，显示更友好的提示
-      if (response.code === '-1' && response.msg === '无效的支付状态') {
-        alertMessage.value = '支付方式选择无效，请重新选择';
-      }
+      alertMessage.value = response.message || '支付失败，请重试';
     }
   } catch (error) {
     console.error('支付请求失败:', error);
