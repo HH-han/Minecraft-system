@@ -28,7 +28,7 @@ public class ConsoleUtils {
         System.out.println("📃"+"接口文档"+"地址:"+"http://localhost:8080/apiDocument.html");
         System.out.println("🌌" + "前端" + "地址:" + "http://localhost:8090/");
         System.out.println("🧑‍🤝‍🧑"+"即时通讯" + "地址:" + "http://localhost:8080/im-api-documentation.html");
-        System.out.println("🧺"+"Github地址:" + "https://github.com/HH-han");
+        System.out.println("🧺"+"Github地址:" + "https://github.com/HH-han/Minecraft-system");
         System.out.println("🐵"+"程序猿:"+"bolan");
         System.out.println("========================================");
         System.out.println("     Minecraft Backend Started Successfully!");
