@@ -526,37 +526,6 @@ const menuCategories = reactive([
 // 使用shallowRef优化性能
 const activeComponent = shallowRef(null);
 const showContent = ref(true);
-// 初始化时设置组件和侧边栏状态
-onMounted(() => {
-  const savedMenuId = Number(localStorage.getItem('activeMenu')) || 1;
-  const menuItem = menuItems.find(item => item.id === savedMenuId) || menuItems[1];
-  activeComponent.value = menuItem.component;
-  activeMenu.value = menuItem.id;
-  updateBreadcrumb(menuItem);
-
-  // 初始化时设置首页面包屑的active样式
-  const breadcrumbWrappers = document.querySelectorAll('.breadcrumb-main.fixed-element .breadcrumb-wrapper');
-  breadcrumbWrappers.forEach(wrapper => {
-    wrapper.classList.remove('active');
-    if (wrapper.querySelector('.breadcrumb-item').textContent === menuItem.title) {
-      wrapper.classList.add('active');
-    }
-  });
-
-  // 恢复侧边栏折叠状态
-  document.documentElement.style.setProperty(
-    '--sidebar-width',
-    isSidebarCollapsed.value ? '64px' : '180px'
-  );
-
-  // 恢复内容区域宽度
-  document.documentElement.style.setProperty(
-    '--main-width',
-    isSidebarCollapsed.value ? '64px' : '180px'
-  );
-});
-
-
 const isDropdownVisible = ref(false)
 const isPersonalCenterVisible = ref(false)
 const issystemsetting = ref(false)
@@ -694,8 +663,8 @@ const updateBreadcrumb = (menuItem) => {
 const changeMenu = (item) => {
   activeMenu.value = item.id;
   authStore.currentComponentPath = item.id;
-  authStore.breadcrumbList = breadcrumbList.value;
   updateBreadcrumb(item);
+  authStore.breadcrumbList = breadcrumbList.value;
 
   // 更新面包屑导航的active样式
   const breadcrumbWrappers = document.querySelectorAll('.breadcrumb-main.fixed-element .breadcrumb-wrapper');
@@ -732,8 +701,6 @@ const navigateTo = (item) => {
       });
     });
     changeMenu(menuItem);
-    // 保存面包屑列表到Pinia
-    authStore.breadcrumbList = breadcrumbList.value;
   }
 };
 
@@ -770,18 +737,33 @@ const currentCategories = computed(() => {
   }
   return categories.length > 0 ? categories : ['未知分类'];
 });
+
+// 初始化时设置组件和侧边栏状态
 onMounted(() => {
   // fetchUserInfo();
   const savedMenuId = authStore.currentComponentPath || 1;
   const menuItem = menuItems.find(item => item.id === savedMenuId) || menuItems[0];
   activeComponent.value = menuItem.component;
   activeMenu.value = menuItem.id;
+  
   // 如果Pinia中有保存的面包屑列表，则使用保存的列表
   if (authStore.breadcrumbList && authStore.breadcrumbList.length > 0) {
     breadcrumbList.value = authStore.breadcrumbList;
   } else {
     updateBreadcrumb(menuItem);
   }
+
+  // 恢复侧边栏折叠状态
+  document.documentElement.style.setProperty(
+    '--sidebar-width',
+    isSidebarCollapsed.value ? '64px' : '180px'
+  );
+
+  // 恢复内容区域宽度
+  document.documentElement.style.setProperty(
+    '--main-width',
+    isSidebarCollapsed.value ? '64px' : '180px'
+  );
 
   // 在下一个tick中更新面包屑导航的active样式
   nextTick(() => {

@@ -245,13 +245,13 @@ onMounted(() => {
 
 .product-info {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 30px;
+  flex-direction: column;
 }
 
 .product-image {
   flex: 0 0 35%;
-  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -261,8 +261,8 @@ onMounted(() => {
 }
 
 .image-main {
-  max-width: 100%;
-  max-height: 300px;
+  min-width: 100%;
+  max-height: 350px;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);

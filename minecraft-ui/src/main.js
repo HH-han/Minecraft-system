@@ -8,13 +8,16 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import router from './router'
 import './assets/styles/btn.css'
 import { initTheme } from './utils/theme'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const app = createApp(App)
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 // 挂载全局属性
 app.config.globalProperties.$electron = window.electronAPI
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.use(ElementPlus, { 
   locale: zhCn,

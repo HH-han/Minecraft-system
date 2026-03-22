@@ -18,7 +18,8 @@
           <div class="dropdown">
             <button class="action-btn dropdown-toggle">更多</button>
             <div class="dropdown-menu_Home_2">
-              <button class="dropdown-item_action-btn" style="border-radius: 0 0 10px 10px" @click="navigateTo('/SettingsFocus')">设置中心</button>
+              <button class="dropdown-item_action-btn" style="border-radius: 0 0 10px 10px"
+                @click="navigateTo('/SettingsFocus')">设置中心</button>
               <button class="dropdown-item_action-btn" @click="navigateTo('/aboutweb')">关于</button>
               <button class="dropdown-item_action-btn" @click="navigateTo('/test')">测试页面</button>
               <button class="dropdown-item_action-btn" @click="navigateTo('/travelstrategy')">社区</button>
@@ -139,6 +140,10 @@
   <div>
     <Launchlogin v-if="showLogoutConfirm" @confirm="confirmLogout" @cancel="cancelLogout" />
   </div>
+  <!-- 返回顶部 -->
+  <div>
+    <BacktoTop />
+  </div>
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
@@ -154,6 +159,7 @@ import scenicspot from '@/views/Scenicspot/index.vue';
 import souvenir from '@/views/Souvenir/index.vue';
 import strategy from '@/views/Strategy/index.vue';
 import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
+import BacktoTop from '@/components/DisplayBox/BacktoTop.vue';
 // 接口
 import { useAuthStore } from '@/stores/auth';
 import { getUserInfo, logout } from '@/api/user';
@@ -219,7 +225,7 @@ const handleClick = (path) => {
     router.push('/community');
     return;
   }
-  
+
   // 对于其他导航项，设置组件并导航到对应路由
   const componentMap = {
     'home': home,
@@ -230,7 +236,7 @@ const handleClick = (path) => {
     'souvenir': souvenir,
     'strategy': strategy
   };
-  
+
   // 映射路径到路由
   const pathToRoute = {
     'home': '/',
@@ -241,7 +247,7 @@ const handleClick = (path) => {
     'souvenir': '/souvenir',
     'strategy': '/strategy'
   };
-  
+
   currentComponent.value = componentMap[path];
   // 导航到对应路由
   if (pathToRoute[path]) {
@@ -429,10 +435,10 @@ onMounted(() => {
     'souvenir': souvenir,
     'strategy': strategy
   };
-  
+
   // 检查当前路由
   const currentRoute = router.currentRoute.value;
-  
+
   // 如果当前路由是社区页面，清空组件显示router-view
   if (currentRoute.path === '/community') {
     currentComponent.value = null;
@@ -443,7 +449,7 @@ onMounted(() => {
 
   isLoggedIn.value = !!localStorage.getItem('token');
   fetchUserInfo();
-  
+
   // 添加路由守卫，监听路由变化，自动保存状态
   router.afterEach((to) => {
     // 映射路由到路径
@@ -456,7 +462,7 @@ onMounted(() => {
       '/souvenir': 'souvenir',
       '/strategy': 'strategy'
     };
-    
+
     // 如果是已知路由，保存状态
     if (routeToPath[to.path]) {
       authStore.currentComponentPath = routeToPath[to.path];

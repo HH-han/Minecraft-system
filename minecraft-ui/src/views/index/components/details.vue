@@ -62,9 +62,6 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="secondary-button" @click="closeModal">关闭</button>
-            </div>
         </div>
     </div>
 </template>
@@ -130,21 +127,24 @@ const formatDate = (dateString) => {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(15px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .modal-content {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     width: 90%;
     max-width: 800px;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
     animation: slideIn 0.3s ease-in-out;
 }
@@ -165,7 +165,7 @@ const formatDate = (dateString) => {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-title {
@@ -173,14 +173,15 @@ const formatDate = (dateString) => {
     font-weight: 600;
     margin: 0;
     color: #333;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .close-button {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 24px;
     cursor: pointer;
-    color: #999;
+    color: #333;
     padding: 0;
     width: 30px;
     height: 30px;
@@ -189,34 +190,32 @@ const formatDate = (dateString) => {
     justify-content: center;
     border-radius: 50%;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .close-button:hover {
-    background-color: #f0f0f0;
-    color: #333;
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #1677ff;
+    transform: scale(1.1);
 }
 
 .modal-body {
     padding: 20px;
 }
 
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding: 20px;
-    border-top: 1px solid #e0e0e0;
-}
-
 .loading {
     text-align: center;
     padding: 40px;
     color: #666;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .error {
     text-align: center;
     padding: 40px;
     color: #ff4d4f;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* 详情通用样式 */
@@ -225,13 +224,20 @@ const formatDate = (dateString) => {
     height: 300px;
     overflow: hidden;
     margin-bottom: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .details-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.details-image:hover img {
+    transform: scale(1.02);
 }
 
 .details-title {
@@ -239,37 +245,23 @@ const formatDate = (dateString) => {
     font-weight: 600;
     margin-bottom: 15px;
     color: #333;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .details-meta {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
-    color: #999;
+    color: #666;
     margin-bottom: 20px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .details-content {
     font-size: 16px;
     line-height: 1.6;
-    color: #666;
-}
-
-/* 按钮样式 */
-.secondary-button {
-    background-color: transparent;
-    border: 1px solid #d9d9d9;
-    color: #333;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.secondary-button:hover {
-    border-color: #1677ff;
-    color: #1677ff;
+    color: #555;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* 响应式设计 */
@@ -277,6 +269,8 @@ const formatDate = (dateString) => {
     .modal-content {
         width: 95%;
         margin: 20px;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(15px);
     }
     
     .details-image {

@@ -191,16 +191,17 @@ onMounted(fetchSafetyTips);
 
 /* 模态框样式 */
 .modal-overlay {
-    position: fixed;
+position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     z-index: 1000;
+    padding: 20px;
 }
 
 .modal-content {
@@ -210,6 +211,8 @@ onMounted(fetchSafetyTips);
     overflow-y: auto;
     border-radius: 16px;
     padding: 24px;
+    position: relative;
+    box-sizing: border-box;
 }
 
 .glass-card {
@@ -282,12 +285,33 @@ onMounted(fetchSafetyTips);
     gap: 12px;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.7);
+    margin-top: 20px;
 }
 
 .meta-item {
     background: rgba(255, 255, 255, 0.1);
     padding: 4px 12px;
     border-radius: 12px;
+    flex-shrink: 0;
+}
+
+/* 模态框滚动条样式 */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* 响应式设计 */
@@ -319,9 +343,14 @@ onMounted(fetchSafetyTips);
         font-size: 16px;
     }
 
-    .modal-content {
-        width: 95%;
+    .modal-overlay {
         padding: 20px;
+    }
+
+    .modal-content {
+        width: 100%;
+        padding: 20px;
+        max-height: 90vh;
     }
 }
 
@@ -343,6 +372,22 @@ onMounted(fetchSafetyTips);
 
     .tips-icon {
         margin-top: 0;
+    }
+
+    .modal-overlay {
+        padding: 15px;
+    }
+
+    .modal-content {
+        padding: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 18px;
+    }
+
+    .tip-description {
+        font-size: 14px;
     }
 }
 </style>

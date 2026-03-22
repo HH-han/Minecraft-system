@@ -98,7 +98,6 @@ const currentComponent = ref('aboutweb');
 /* 内容容器 */
 .content-container {
   width: 100%;
-  max-width: 1200px;
   min-height: 80vh;
   border-radius: 15px;
   overflow: hidden;

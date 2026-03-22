@@ -6,10 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/sql/db_minecraft.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/views/admin/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/views/admin/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/NavigationComponent/Header.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/NavigationComponent/Header.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/Select.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/Select.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/details.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/details.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/recommendations.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/recommendations.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/safetytips.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/index/components/safetytips.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,15 +171,8 @@
       <workItem from="1773408383195" duration="8267000" />
       <workItem from="1773496027866" duration="5308000" />
       <workItem from="1773553976729" duration="9241000" />
-      <workItem from="1773667184140" duration="6097000" />
-    </task>
-    <task id="LOCAL-00003" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1771785972961</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1771785972961</updated>
+      <workItem from="1773667184140" duration="6199000" />
+      <workItem from="1774102871385" duration="1344000" />
     </task>
     <task id="LOCAL-00004" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -551,7 +558,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773676417711</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1773676649693</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1773676649693</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
