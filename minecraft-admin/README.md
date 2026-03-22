@@ -1,5 +1,204 @@
-# Vue 3 + Vite
+# Minecraft 旅游系统后台管理
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 项目介绍
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+Minecraft 旅游系统后台管理是一个现代化的旅游平台管理系统，提供对酒店、景点、美食、纪念品等多种旅游相关服务的管理功能。系统采用 Vue 3 + Vite 技术栈，结合 Element Plus 组件库和 ECharts 图表库，打造了一个功能强大、美观易用的后台管理界面。
+
+## 技术栈
+
+- **前端框架**: Vue 3
+- **构建工具**: Vite
+- **状态管理**: Pinia
+- **路由管理**: Vue Router
+- **UI 组件库**: Element Plus
+- **HTTP 客户端**: Axios
+- **图表库**: ECharts
+- **图标库**: Element Plus Icons
+
+## 项目结构
+
+```
+minecraft-admin/
+├── public/            # 静态资源
+├── src/
+│   ├── api/           # API 接口
+│   ├── assets/        # 静态资源
+│   ├── components/    # 通用组件
+│   ├── css/           # 样式文件
+│   ├── router/        # 路由配置
+│   ├── stores/        # 状态管理
+│   ├── utils/         # 工具函数
+│   ├── views/         # 页面组件
+│   ├── App.vue        # 根组件
+│   ├── main.js        # 入口文件
+│   └── style.css      # 全局样式
+├── .env.development   # 开发环境配置
+├── .env.production    # 生产环境配置
+├── index.html         # HTML 模板
+├── package.json       # 项目配置
+└── vite.config.js     # Vite 配置
+```
+
+## 功能模块
+
+### 1. 仪表盘
+- 销售利润图表
+- 产品销售饼图
+- 年度利润分析
+- 最近交易记录
+- 热门产品
+- 营销报告
+
+### 2. 管理中心
+- 用户管理
+- 酒店管理
+- 景点管理
+- 美食管理
+- 纪念品管理
+- 订单管理
+- 轮播图管理
+- 推荐管理
+- 安全提示管理
+- 旅行攻略管理
+- 旅行笔记管理
+- 旅行帖子管理
+- 旅行新闻管理
+- 收藏管理
+- 目的地管理
+
+### 3. 目的地管理
+- 基础目的地管理
+- 城市管理
+- 区域标签管理
+- 旅行目的地管理
+- 旅行推荐管理
+- 综合查询管理
+
+### 4. 系统管理
+- 管理首页
+- 登录日志
+- 操作日志
+
+### 5. 监控中心
+- 系统监控
+- 在线用户
+- 缓存监控
+
+### 6. 个人中心
+- 账户设置
+- 修改密码
+- 我的订单
+- 订单详情
+- 删除订单
+- 个人帖子
+- 个人笔记
+- 旅行收藏
+- 消息通知
+- 登录状态
+
+## 快速开始
+
+### 环境要求
+
+- Node.js 14.18.0 或更高版本
+- npm 6.14.15 或更高版本
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 开发环境运行
+
+```bash
+npm run dev
+```
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+### 预览生产版本
+
+```bash
+npm run preview
+```
+
+## 开发指南
+
+### 组件开发
+
+1. 通用组件放在 `src/components` 目录下
+2. 页面组件放在 `src/views` 目录下，按功能模块组织
+3. 使用 Vue 3 的 `<script setup>` 语法
+4. 组件命名使用 PascalCase 格式
+
+### API 调用
+
+1. API 接口定义放在 `src/api` 目录下
+2. 使用 Axios 进行 HTTP 请求
+3. 统一的请求拦截和响应处理
+
+### 状态管理
+
+1. 使用 Pinia 进行状态管理
+2. 状态定义放在 `src/stores` 目录下
+3. 按功能模块组织 store
+
+### 路由配置
+
+1. 路由定义放在 `src/router/index.js` 文件中
+2. 使用 Vue Router 4 的路由配置
+3. 按功能模块组织路由
+
+## 构建和部署
+
+### 构建
+
+```bash
+npm run build
+```
+
+构建后的文件会生成在 `dist` 目录中。
+
+### 部署
+
+1. 将 `dist` 目录中的文件部署到服务器
+2. 配置服务器的静态文件服务
+3. 确保服务器支持 SPA 应用的路由模式
+
+## 样式设计
+
+项目采用现代化的管理系统风格，具有以下特点：
+
+- 清晰的布局结构
+- 统一的配色方案
+- 响应式设计
+- 流畅的交互体验
+- 专业的图表展示
+
+## 响应式设计
+
+项目支持响应式布局，适配不同屏幕尺寸：
+
+- 桌面端（1200px 以上）
+- 平板端（768px - 1199px）
+- 移动端（767px 以下）
+
+## 浏览器兼容性
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+## 许可证
+
+MIT
+
+## 联系方式
+
+如有问题或建议，请联系项目维护者。
