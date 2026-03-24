@@ -100,6 +100,34 @@
         <text v-if="errors.email" class="error-message">{{ errors.email }}</text>
       </view>
       <view class="form-item">
+        <view class="input-wrapper">
+          <text class="input-icon">
+            <svg t="1772207717423" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8533" width="256" height="256"><path d="M873.472 0H150.528C67.584 0 0 67.584 0 150.528v722.944C0 956.416 67.584 1024 150.528 1024h722.944c82.944 0 150.528-67.584 150.528-150.528V150.528C1024 67.584 956.416 0 873.472 0z m-61.952 656.896c0 41.472-33.792 74.752-74.752 74.752H287.232c-41.472 0-74.752-33.28-74.752-74.752V367.104c0-41.472 33.28-74.752 74.752-74.752h449.024c41.472 0 74.752 33.28 74.752 74.752v289.792z" fill="#4873ED" p-id="8534"></path><path d="M712.192 427.008L512 556.032 311.808 427.008c-9.216-6.144-21.504-3.072-27.648 6.144-6.144 9.216-3.072 21.504 6.144 27.648l210.944 135.68c3.072 2.048 7.168 3.072 10.752 3.072 3.584 0 7.68-1.024 10.752-3.072L733.696 460.8a20.48 20.48 0 0 0 6.144-27.648 20.48 20.48 0 0 0-27.648-6.144z" fill="#4873ED" p-id="8535"></path></svg>
+          </text>
+          <input 
+            v-model="formData.phone" 
+            placeholder="请输入手机号" 
+            class="form-input"
+            :class="{ 'error': errors.phone }"
+          />
+        </view>
+        <text v-if="errors.phone" class="error-message">{{ errors.phone }}</text>
+      </view>
+      <view class="form-item">
+        <view class="input-wrapper">
+          <text class="input-icon">
+            <svg t="1772207717423" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8533" width="256" height="256"><path d="M873.472 0H150.528C67.584 0 0 67.584 0 150.528v722.944C0 956.416 67.584 1024 150.528 1024h722.944c82.944 0 150.528-67.584 150.528-150.528V150.528C1024 67.584 956.416 0 873.472 0z m-61.952 656.896c0 41.472-33.792 74.752-74.752 74.752H287.232c-41.472 0-74.752-33.28-74.752-74.752V367.104c0-41.472 33.28-74.752 74.752-74.752h449.024c41.472 0 74.752 33.28 74.752 74.752v289.792z" fill="#4873ED" p-id="8534"></path><path d="M712.192 427.008L512 556.032 311.808 427.008c-9.216-6.144-21.504-3.072-27.648 6.144-6.144 9.216-3.072 21.504 6.144 27.648l210.944 135.68c3.072 2.048 7.168 3.072 10.752 3.072 3.584 0 7.68-1.024 10.752-3.072L733.696 460.8a20.48 20.48 0 0 0 6.144-27.648 20.48 20.48 0 0 0-27.648-6.144z" fill="#4873ED" p-id="8535"></path></svg>
+          </text>
+          <input 
+            v-model="formData.avatar" 
+            placeholder="请输入头像URL" 
+            class="form-input"
+            :class="{ 'error': errors.avatar }"
+          />
+        </view>
+        <text v-if="errors.avatar" class="error-message">{{ errors.avatar }}</text>
+      </view>
+      <view class="form-item">
         <button 
           :loading="loading" 
           @click="submitForm" 
@@ -118,6 +146,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
+import { register } from '@/api/auth';
 
 const loading = ref(false);
 
@@ -125,14 +154,18 @@ const formData = reactive({
   username: '',
   password: '',
   confirmPassword: '',
-  email: ''
+  email: '',
+  phone: '',
+  avatar: ''
 });
 
 const errors = reactive({
   username: '',
   password: '',
   confirmPassword: '',
-  email: ''
+  email: '',
+  phone: '',
+  avatar: ''
 });
 
 const validateForm = () => {
@@ -143,10 +176,15 @@ const validateForm = () => {
   errors.password = '';
   errors.confirmPassword = '';
   errors.email = '';
+  errors.phone = '';
+  errors.avatar = '';
   
   // 验证用户名
   if (!formData.username.trim()) {
     errors.username = '请输入用户名';
+    isValid = false;
+  } else if (formData.username.length < 3 || formData.username.length > 20) {
+    errors.username = '用户名长度必须在3-20位之间';
     isValid = false;
   }
   
@@ -154,8 +192,8 @@ const validateForm = () => {
   if (!formData.password.trim()) {
     errors.password = '请输入密码';
     isValid = false;
-  } else if (formData.password.length < 6) {
-    errors.password = '密码长度至少6位';
+  } else if (formData.password.length < 6 || formData.password.length > 20) {
+    errors.password = '密码长度必须在6-20位之间';
     isValid = false;
   }
   
@@ -174,30 +212,64 @@ const validateForm = () => {
     isValid = false;
   } else {
     // 简单的邮箱格式验证
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
     if (!emailRegex.test(formData.email)) {
       errors.email = '请输入正确的邮箱格式';
       isValid = false;
     }
   }
   
+  // 验证手机号
+  if (!formData.phone.trim()) {
+    errors.phone = '请输入手机号';
+    isValid = false;
+  }
+  
+  // 验证头像
+  if (!formData.avatar.trim()) {
+    errors.avatar = '请输入头像URL';
+    isValid = false;
+  }
+  
   return isValid;
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   if (validateForm()) {
     loading.value = true;
-    // 模拟注册请求
-    setTimeout(() => {
-      loading.value = false;
+    try {
+      // 准备注册数据，移除confirmPassword字段
+      const registerData = {
+        username: formData.username,
+        password: formData.password,
+        email: formData.email,
+        phone: formData.phone,
+        avatar: formData.avatar
+      };
+      
+      const response = await register(registerData);
+      if (response.code === 200) {
+        uni.showToast({
+          title: '注册成功',
+          icon: 'success'
+        });
+        uni.navigateTo({
+          url: '/src/views/login/login'
+        });
+      } else {
+        uni.showToast({
+          title: response.message || '注册失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
       uni.showToast({
-        title: '注册成功',
-        icon: 'success'
+        title: '网络错误，请稍后重试',
+        icon: 'none'
       });
-      uni.navigateTo({
-        url: '/src/views/login/login'
-      });
-    }, 1000);
+    } finally {
+      loading.value = false;
+    }
   }
 };
 

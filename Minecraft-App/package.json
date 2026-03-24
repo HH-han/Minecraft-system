@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@dcloudio/uni-ui": "^1.5.11",
+    "@uni-helper/axios-adapter": "^1.5.3",
+    "axios": "^1.13.6",
     "uview-ui": "^2.0.38"
   }
 }

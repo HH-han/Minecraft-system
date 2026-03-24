@@ -30,10 +30,10 @@
                 fill="#0972E7" p-id="7505"></path>
             </svg>
           </text>
-          <input v-model="formData.username" placeholder="请输入用户名" class="form-input"
-            :class="{ 'error': errors.username }" />
+          <input v-model="formData.account" placeholder="请输入账号" class="form-input"
+            :class="{ 'error': errors.account }" />
         </view>
-        <text v-if="errors.username" class="error-message">{{ errors.username }}</text>
+        <text v-if="errors.account" class="error-message">{{ errors.account }}</text>
       </view>
       <view class="form-item">
         <view class="input-wrapper">
@@ -77,17 +77,18 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
+import { login } from '@/api/auth';
 
 const loading = ref(false);
 const remember = ref(false);
 
 const formData = reactive({
-  username: '',
+  account: '',
   password: ''
 });
 
 const errors = reactive({
-  username: '',
+  account: '',
   password: ''
 });
 
@@ -95,12 +96,12 @@ const validateForm = () => {
   let isValid = true;
 
   // 重置错误信息
-  errors.username = '';
+  errors.account = '';
   errors.password = '';
 
-  // 验证用户名
-  if (!formData.username.trim()) {
-    errors.username = '请输入用户名';
+  // 验证账号
+  if (!formData.account.trim()) {
+    errors.account = '请输入账号';
     isValid = false;
   }
 
@@ -113,20 +114,38 @@ const validateForm = () => {
   return isValid;
 };
 
-const submitForm = () => {
+const submitForm = async () => {
   if (validateForm()) {
     loading.value = true;
-    // 模拟登录请求
-    setTimeout(() => {
-      loading.value = false;
+    try {
+      const response = await login(formData);
+      if (response.code === 200) {
+        // 存储登录信息
+        uni.setStorageSync('token', response.data.token);
+        uni.setStorageSync('userInfo', response.data);
+        
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success'
+        });
+        
+        uni.navigateTo({
+          url: '/src/views/index/index'
+        });
+      } else {
+        uni.showToast({
+          title: response.message || '登录失败',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
       uni.showToast({
-        title: '登录成功',
-        icon: 'success'
+        title: '网络错误，请稍后重试',
+        icon: 'none'
       });
-      uni.navigateTo({
-        url: '/src/views/index/index'
-      });
-    }, 1000);
+    } finally {
+      loading.value = false;
+    }
   }
 };
 

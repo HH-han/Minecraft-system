@@ -5,15 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/api/order.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/api/order.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/PromptComponent/PaymentSuccessModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/PromptComponent/PaymentSuccessModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/HistoricalOrders.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/HistoricalOrders.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/.env.development" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/.env.development" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin/src/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin/src/.env.production" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,36 +61,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.MinecraftApplicationTests.contextLoads.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.MinecraftApplicationTests.executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.MinecraftApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/IDEA/work/Minecraft-system/Minecraft/src/main/java/com/minecraft&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.MinecraftApplicationTests.contextLoads.executor": "Debug",
+    "JUnit.MinecraftApplicationTests.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.MinecraftApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/IDEA/work/Minecraft-system/Minecraft/src/main/java/com/minecraft",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql_aurora&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql_aurora"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -163,71 +159,9 @@
       <workItem from="1773553976729" duration="9241000" />
       <workItem from="1773667184140" duration="6199000" />
       <workItem from="1774102871385" duration="1344000" />
-      <workItem from="1774151387516" duration="11795000" />
-    </task>
-    <task id="LOCAL-00016" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1772201156686</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1772201156686</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1772201170002</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1772201170002</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773069217880</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1773069217880</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773069243585</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1773069243585</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773069610376</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1773069610376</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773069613820</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1773069613820</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773156192319</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1773156192319</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773156203304</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1773156203304</updated>
+      <workItem from="1774151387516" duration="15773000" />
+      <workItem from="1774193666679" duration="8000" />
+      <workItem from="1774270772109" duration="2779000" />
     </task>
     <task id="LOCAL-00024" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -557,7 +491,71 @@
       <option name="project" value="LOCAL" />
       <updated>1774171875853</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774173097862</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1774173097862</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774179091967</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1774179091967</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774179749839</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1774179749839</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774179795047</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1774179795047</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774180415509</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1774180415509</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774180467400</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1774180467400</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774276370632</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1774276370632</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1774278188943</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1774278188943</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

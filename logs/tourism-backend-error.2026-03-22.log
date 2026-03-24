@@ -1,0 +1,1 @@
+2026-03-22 11:50:08.649 [main] ERROR c.minecraft.utils.RedisHealthChecker - ❌ Redis 连接失败: Unable to connect to Redis
