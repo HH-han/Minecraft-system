@@ -1,5 +1,5 @@
-import App from './App'
-
+import App from './App.vue'
+import './src/styles/theme.css'
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'

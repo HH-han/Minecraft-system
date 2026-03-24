@@ -146,7 +146,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
-import { register } from '@/api/auth';
+import { register } from '../../api/auth';
 
 const loading = ref(false);
 
@@ -412,6 +412,7 @@ const goLogin = () => {
   align-items: center;
   border: 1px solid var(--border-color);
   border-radius: 12rpx;
+  padding: 8rpx 20rpx;
   transition: all 0.3s ease;
   background-color: var(--bg-color);
 }
@@ -437,7 +438,6 @@ const goLogin = () => {
 
 .form-input {
   flex: 1;
-  padding: 22rpx 20rpx;
   font-size: 28rpx;
   background-color: transparent;
   color: var(--text-color);

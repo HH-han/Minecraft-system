@@ -1,15 +1,81 @@
 {
   "pages": [
     {
-      "path": "src/views/login/index",
-      "style": {
-        "navigationBarTitleText": "登录/注册"
-      }
-    },
-    {
       "path": "src/views/index/index",
       "style": {
         "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "src/views/attraction/index",
+      "style": {
+        "navigationBarTitleText": "景点推荐"
+      }
+    },
+    {
+      "path": "src/views/hotel/index",
+      "style": {
+        "navigationBarTitleText": "酒店预订"
+      }
+    },
+    {
+      "path": "src/views/ticket/index",
+      "style": {
+        "navigationBarTitleText": "票务预订"
+      }
+    },
+    {
+      "path": "src/views/food/index",
+      "style": {
+        "navigationBarTitleText": "美食推荐"
+      }
+    },
+    {
+      "path": "src/views/product/index",
+      "style": {
+        "navigationBarTitleText": "特产商城"
+      }
+    },
+    {
+      "path": "src/views/travelPlan/index",
+      "style": {
+        "navigationBarTitleText": "出行计划"
+      }
+    },
+    {
+      "path": "src/views/groupTravel/index",
+      "style": {
+        "navigationBarTitleText": "跟团游"
+      }
+    },
+    {
+      "path": "src/views/news/index",
+      "style": {
+        "navigationBarTitleText": "新闻资讯"
+      }
+    },
+    {
+      "path": "src/views/community/index",
+      "style": {
+        "navigationBarTitleText": "社区"
+      }
+    },
+    {
+      "path": "src/views/discover/index",
+      "style": {
+        "navigationBarTitleText": "发现"
+      }
+    },
+    {
+      "path": "src/views/profile/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "src/views/login/index",
+      "style": {
+        "navigationBarTitleText": "登录/注册"
       }
     },
     {
@@ -30,6 +96,38 @@
     "navigationBarTitleText": "Minecraft",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#1E88E5",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "src/views/index/index",
+        "text": "首页",
+        "iconPath": "static/icon/home.png",
+        "selectedIconPath": "static/icon/home-active.png"
+      },
+      {
+        "pagePath": "src/views/discover/index",
+        "text": "发现",
+        "iconPath": "static/icon/discover.png",
+        "selectedIconPath": "static/icon/discover-active.png"
+      },
+      {
+        "pagePath": "src/views/community/index",
+        "text": "社区",
+        "iconPath": "static/icon/community.png",
+        "selectedIconPath": "static/icon/community-active.png"
+      },
+      {
+        "pagePath": "src/views/profile/index",
+        "text": "我的",
+        "iconPath": "static/icon/profile.png",
+        "selectedIconPath": "static/icon/profile-active.png"
+      }
+    ]
   },
   "uniIdRouter": {}
 }

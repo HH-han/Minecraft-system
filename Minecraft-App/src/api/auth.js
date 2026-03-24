@@ -1,16 +1,16 @@
-import request from '@/utils/request'
+import request from '../utils/request'
 
 // 登录
 export const login = (data) => {
-  return request.post('/api/auth/login', data)
+  return request.post('/auth/login', data)
 }
 
 // 注册
 export const register = (data) => {
-  return request.post('/api/auth/register', data)
+  return request.post('/auth/register', data)
 }
 
 // 退出登录
 export const logout = () => {
-  return request.post('/api/user/logout')
+  return request.post('/user/logout')
 }
