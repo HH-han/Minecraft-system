@@ -129,8 +129,8 @@ const submitForm = async () => {
           icon: 'success'
         });
         
-        uni.navigateTo({
-          url: '/src/views/index/index'
+        uni.switchTab({
+          url: '/pages/index/index'
         });
       } else {
         uni.showToast({
@@ -158,7 +158,7 @@ const forgotPassword = () => {
 
 const goRegister = () => {
   uni.navigateTo({
-    url: '/src/views/login/register'
+    url: '/pages/login/register'
   });
 };
 </script>
@@ -297,6 +297,7 @@ const goRegister = () => {
   position: relative;
   display: flex;
   align-items: center;
+  flex-direction: row;
   border: 1px solid var(--border-color);
   border-radius: 12rpx;
   padding: 8rpx 20rpx;
@@ -468,6 +469,9 @@ const goRegister = () => {
   margin-top: 40rpx;
   font-size: 24rpx;
   color: var(--text-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .link {

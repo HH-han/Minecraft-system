@@ -278,28 +278,52 @@ onMounted(() => {
   gap: 16px;
   padding: 20px;
   margin-bottom: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 20px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(30, 136, 229, 0.3);
+  border-color: rgba(30, 136, 229, 0.5);
 }
 
 .nav-icon {
-  font-size: 24px;
-  margin-bottom: 8px;
+  font-size: 32px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover .nav-icon {
+  transform: scale(1.1);
 }
 
 .nav-text {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-color);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover .nav-text {
+  color: var(--primary-color);
 }
 
 .section {
@@ -394,38 +418,45 @@ onMounted(() => {
 .news-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .news-item {
-  padding: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .news-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px 0 rgba(31, 38, 135, 0.4);
-  border-radius: 16px;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(30, 136, 229, 0.3);
 }
 
 .news-item h3 {
-  margin-bottom: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--text-color);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-height: 1.4;
 }
 
 .news-desc {
+  margin: 0 0 16px 0;
   font-size: 14px;
   color: var(--text-secondary-color);
-  line-height: 1.4;
-  margin-bottom: 8px;
+  line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -436,8 +467,28 @@ onMounted(() => {
 .news-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  align-items: center;
+  font-size: 13px;
   color: var(--text-secondary-color);
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.news-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.news-view {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(30, 136, 229, 0.1);
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: var(--primary-color);
+  font-weight: 500;
 }
 
 /* 响应式设计 */

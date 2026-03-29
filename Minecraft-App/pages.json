@@ -34,6 +34,14 @@
 			}
 		},
 		{
+			"path": "pages/news/detail",
+			"style": {
+				"navigationBarTitleText": "新闻详情",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/groupTravel/index",
 			"style": {
 				"navigationBarTitleText": "跟团游",
@@ -66,6 +74,14 @@
 			}
 		},
 		{
+			"path": "pages/attraction/detail",
+			"style": {
+				"navigationBarTitleText": "景点详情",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/hotel/index",
 			"style": {
 				"navigationBarTitleText": "酒店",
@@ -74,9 +90,25 @@
 			}
 		},
 		{
+			"path": "pages/hotel/detail",
+			"style": {
+				"navigationBarTitleText": "酒店详情",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/food/index",
 			"style": {
 				"navigationBarTitleText": "美食",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/food/detail",
+			"style": {
+				"navigationBarTitleText": "美食详情",
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}
@@ -93,6 +125,54 @@
 			"path": "pages/profile/index",
 			"style": {
 				"navigationBarTitleText": "我的",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/profile/settings",
+			"style": {
+				"navigationBarTitleText": "设置",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/profile/about",
+			"style": {
+				"navigationBarTitleText": "关于我们",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/order/index",
+			"style": {
+				"navigationBarTitleText": "我的订单",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/collection/index",
+			"style": {
+				"navigationBarTitleText": "我的收藏",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/comment/index",
+			"style": {
+				"navigationBarTitleText": "我的评论",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/chat/index",
+			"style": {
+				"navigationBarTitleText": "在线客服",
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}

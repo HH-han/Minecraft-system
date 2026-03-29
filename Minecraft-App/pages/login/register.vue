@@ -254,7 +254,7 @@ const submitForm = async () => {
           icon: 'success'
         });
         uni.navigateTo({
-          url: '/src/views/login/login'
+          url: '/pages/login/login'
         });
       } else {
         uni.showToast({
@@ -275,7 +275,7 @@ const submitForm = async () => {
 
 const goLogin = () => {
   uni.navigateTo({
-    url: '/src/views/login/login'
+    url: '/pages/login/login'
   });
 };
 </script>
@@ -410,6 +410,7 @@ const goLogin = () => {
   position: relative;
   display: flex;
   align-items: center;
+  flex-direction: row;
   border: 1px solid var(--border-color);
   border-radius: 12rpx;
   padding: 8rpx 20rpx;
@@ -531,6 +532,9 @@ const goLogin = () => {
   margin-top: 40rpx;
   font-size: 24rpx;
   color: var(--text-color);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .link {
