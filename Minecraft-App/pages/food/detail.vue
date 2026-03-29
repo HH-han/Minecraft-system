@@ -37,15 +37,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getFoodById } from '@/api/food'
+import { getFoodDetail } from '@/api/food'
 
 const food = ref({})
 
 onMounted(async () => {
-  const { id } = uni.getStorageSync('uniRouter')?.query || {}
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const { id } = currentPage.options || {}
   if (id) {
     try {
-      const response = await getFoodById(id)
+      const response = await getFoodDetail(id)
       food.value = response.data
     } catch (error) {
       console.error('获取美食详情失败:', error)

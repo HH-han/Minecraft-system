@@ -34,15 +34,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getHotelById } from '@/api/hotel'
+import { getHotelDetail } from '@/api/hotel'
 
 const hotel = ref({})
 
 onMounted(async () => {
-  const { id } = uni.getStorageSync('uniRouter')?.query || {}
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const { id } = currentPage.options || {}
   if (id) {
     try {
-      const response = await getHotelById(id)
+      const response = await getHotelDetail(id)
       hotel.value = response.data
     } catch (error) {
       console.error('获取酒店详情失败:', error)

@@ -37,15 +37,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getAttractionById } from '@/api/attraction'
+import { getAttractionDetail } from '@/api/attraction'
 
 const attraction = ref({})
 
 onMounted(async () => {
-  const { id } = uni.getStorageSync('uniRouter')?.query || {}
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const { id } = currentPage.options || {}
   if (id) {
     try {
-      const response = await getAttractionById(id)
+      const response = await getAttractionDetail(id)
       attraction.value = response.data
     } catch (error) {
       console.error('获取景点详情失败:', error)
