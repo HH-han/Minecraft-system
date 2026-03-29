@@ -10,7 +10,55 @@
 			}
 		},
 		{
-			"path": "pages/attraction/attraction",
+			"path": "pages/discover/index",
+			"style": {
+				"navigationBarTitleText": "发现",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/community/index",
+			"style": {
+				"navigationBarTitleText": "社区",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/news/index",
+			"style": {
+				"navigationBarTitleText": "资讯",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/groupTravel/index",
+			"style": {
+				"navigationBarTitleText": "跟团游",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/travelPlan/index",
+			"style": {
+				"navigationBarTitleText": "行程规划",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/product/index",
+			"style": {
+				"navigationBarTitleText": "产品",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/attraction/index",
 			"style": {
 				"navigationBarTitleText": "景点",
 				"navigationBarBackgroundColor": "#4A90E2",
@@ -18,7 +66,7 @@
 			}
 		},
 		{
-			"path": "pages/hotel/hotel",
+			"path": "pages/hotel/index",
 			"style": {
 				"navigationBarTitleText": "酒店",
 				"navigationBarBackgroundColor": "#4A90E2",
@@ -26,7 +74,7 @@
 			}
 		},
 		{
-			"path": "pages/food/food",
+			"path": "pages/food/index",
 			"style": {
 				"navigationBarTitleText": "美食",
 				"navigationBarBackgroundColor": "#4A90E2",
@@ -34,17 +82,25 @@
 			}
 		},
 		{
-			"path": "pages/order/order",
+			"path": "pages/ticket/index",
 			"style": {
-				"navigationBarTitleText": "订单",
+				"navigationBarTitleText": "门票",
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}
 		},
 		{
-			"path": "pages/user/user",
+			"path": "pages/profile/index",
 			"style": {
 				"navigationBarTitleText": "我的",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "登录",
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}
@@ -58,169 +114,9 @@
 			}
 		},
 		{
-			"path": "pages/register/register",
+			"path": "pages/login/register",
 			"style": {
 				"navigationBarTitleText": "注册",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/hotel/detail",
-			"style": {
-				"navigationBarTitleText": "酒店详情",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/hotel/booking",
-			"style": {
-				"navigationBarTitleText": "酒店预订",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/attraction/detail",
-			"style": {
-				"navigationBarTitleText": "景点详情",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/attraction/booking",
-			"style": {
-				"navigationBarTitleText": "门票预订",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/food/detail",
-			"style": {
-				"navigationBarTitleText": "美食详情",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/food/order",
-			"style": {
-				"navigationBarTitleText": "美食下单",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/setting/setting",
-			"style": {
-				"navigationBarTitleText": "设置",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/security/security",
-			"style": {
-				"navigationBarTitleText": "安全中心",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/help/help",
-			"style": {
-				"navigationBarTitleText": "帮助中心",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/strategy/strategy",
-			"style": {
-				"navigationBarTitleText": "旅游攻略",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/strategy/detail",
-			"style": {
-				"navigationBarTitleText": "攻略详情",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/collection/collection",
-			"style": {
-				"navigationBarTitleText": "我的收藏",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/coupon/coupon",
-			"style": {
-				"navigationBarTitleText": "优惠券",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/address/address",
-			"style": {
-				"navigationBarTitleText": "收货地址",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/order/detail",
-			"style": {
-				"navigationBarTitleText": "订单详情",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/setting/notification",
-			"style": {
-				"navigationBarTitleText": "通知设置",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/setting/about",
-			"style": {
-				"navigationBarTitleText": "关于我们",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/setting/privacy",
-			"style": {
-				"navigationBarTitleText": "隐私政策",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/setting/language",
-			"style": {
-				"navigationBarTitleText": "语言设置",
-				"navigationBarBackgroundColor": "#4A90E2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/profile/edit",
-			"style": {
-				"navigationBarTitleText": "编辑个人信息",
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}
@@ -251,25 +147,25 @@
 				"text": "首页"
 			},
 			{
-				"pagePath": "pages/attraction/attraction",
+				"pagePath": "pages/discover/index",
 				"iconPath": "/static/tabbar/attraction.png",
 				"selectedIconPath": "/static/tabbar/attraction.png",
-				"text": "景点"
+				"text": "发现"
 			},
 			{
-				"pagePath": "pages/hotel/hotel",
+				"pagePath": "pages/community/index",
 				"iconPath": "/static/tabbar/order.png",
 				"selectedIconPath": "/static/tabbar/order.png",
-				"text": "酒店"
+				"text": "社区"
 			},
 			{
-				"pagePath": "pages/food/food",
+				"pagePath": "pages/news/index",
 				"iconPath": "/static/tabbar/food.png",
 				"selectedIconPath": "/static/tabbar/food.png",
-				"text": "美食"
+				"text": "资讯"
 			},
 			{
-				"pagePath": "pages/user/user",
+				"pagePath": "pages/profile/index",
 				"iconPath": "/static/tabbar/user.png",
 				"selectedIconPath": "/static/tabbar/user.png",
 				"text": "我的"

@@ -15,35 +15,35 @@
 
     <!-- 功能导航 -->
     <div class="glass-morphism nav-container">
-      <div class="nav-item" @click="navigateTo('/views/attraction/index')">
+      <div class="nav-item" @click="navigateTo('/pages/attraction/index')">
         <div class="nav-icon">🏞️</div>
         <div class="nav-text">景点</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/hotel/index')">
+      <div class="nav-item" @click="navigateTo('/pages/hotel/index')">
         <div class="nav-icon">🏨</div>
         <div class="nav-text">酒店</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/ticket/index')">
+      <div class="nav-item" @click="navigateTo('/pages/ticket/index')">
         <div class="nav-icon">🎫</div>
         <div class="nav-text">票务</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/food/index')">
+      <div class="nav-item" @click="navigateTo('/pages/food/index')">
         <div class="nav-icon">🍜</div>
         <div class="nav-text">美食</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/product/index')">
+      <div class="nav-item" @click="navigateTo('/pages/product/index')">
         <div class="nav-icon">🛍️</div>
         <div class="nav-text">特产</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/travelPlan/index')">
+      <div class="nav-item" @click="navigateTo('/pages/travelPlan/index')">
         <div class="nav-icon">📅</div>
         <div class="nav-text">出行计划</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/groupTravel/index')">
+      <div class="nav-item" @click="navigateTo('/pages/groupTravel/index')">
         <div class="nav-icon">👥</div>
         <div class="nav-text">跟团游</div>
       </div>
-      <div class="nav-item" @click="navigateTo('/views/news/index')">
+      <div class="nav-item" @click="navigateTo('/pages/news/index')">
         <div class="nav-icon">📰</div>
         <div class="nav-text">新闻</div>
       </div>
@@ -53,16 +53,16 @@
     <div class="section">
       <div class="section-header">
         <h2>推荐景点</h2>
-        <button class="more-btn" @click="navigateTo('/views/attraction/index')">查看更多</button>
+        <button class="more-btn" @click="navigateTo('/pages/attraction/index')">查看更多</button>
       </div>
       <div class="recommend-list">
         <div 
           v-for="attraction in recommendAttractions" 
           :key="attraction.id" 
           class="glass-card attraction-item"
-          @click="navigateTo(`/views/attraction/detail?id=${attraction.id}`)"
+          @click="navigateTo(`/pages/attraction/detail?id=${attraction.id}`)"
         >
-          <img :src="attraction.image" :alt="attraction.name" class="item-image">
+          <img :src="attraction.coverImage" :alt="attraction.name" class="item-image">
           <div class="item-info">
             <h3>{{ attraction.name }}</h3>
             <p class="text-secondary">{{ attraction.city }}</p>
@@ -79,16 +79,16 @@
     <div class="section">
       <div class="section-header">
         <h2>推荐酒店</h2>
-        <button class="more-btn" @click="navigateTo('/views/hotel/index')">查看更多</button>
+        <button class="more-btn" @click="navigateTo('/pages/hotel/index')">查看更多</button>
       </div>
       <div class="recommend-list">
         <div 
           v-for="hotel in recommendHotels" 
           :key="hotel.id" 
           class="glass-card hotel-item"
-          @click="navigateTo(`/views/hotel/detail?id=${hotel.id}`)"
+          @click="navigateTo(`/pages/hotel/detail?id=${hotel.id}`)"
         >
-          <img :src="hotel.image" :alt="hotel.name" class="item-image">
+          <img :src="hotel.coverImage" :alt="hotel.name" class="item-image">
           <div class="item-info">
             <h3>{{ hotel.name }}</h3>
             <p class="text-secondary">{{ hotel.city }}</p>
@@ -102,16 +102,16 @@
     <div class="section">
       <div class="section-header">
         <h2>推荐美食</h2>
-        <button class="more-btn" @click="navigateTo('/views/food/index')">查看更多</button>
+        <button class="more-btn" @click="navigateTo('/pages/food/index')">查看更多</button>
       </div>
       <div class="recommend-list">
         <div 
           v-for="food in recommendFoods" 
           :key="food.id" 
           class="glass-card food-item"
-          @click="navigateTo(`/views/food/detail?id=${food.id}`)"
+          @click="navigateTo(`/pages/food/detail?id=${food.id}`)"
         >
-          <img :src="food.image" :alt="food.name" class="item-image">
+          <img :src="food.coverImage" :alt="food.name" class="item-image">
           <div class="item-info">
             <h3>{{ food.name }}</h3>
             <p class="text-secondary">{{ food.city }} - {{ food.cuisine }}</p>
@@ -128,14 +128,14 @@
     <div class="section">
       <div class="section-header">
         <h2>热门新闻</h2>
-        <button class="more-btn" @click="navigateTo('/views/news/index')">查看更多</button>
+        <button class="more-btn" @click="navigateTo('/pages/news/index')">查看更多</button>
       </div>
       <div class="news-list">
         <div 
           v-for="news in hotNews" 
           :key="news.id" 
           class="glass-card news-item"
-          @click="navigateTo(`/views/news/detail?id=${news.id}`)"
+          @click="navigateTo(`/pages/news/detail?id=${news.id}`)"
         >
           <h3>{{ news.title }}</h3>
           <p class="news-desc">{{ news.description }}</p>
@@ -352,6 +352,7 @@ onMounted(() => {
 .recommend-list .glass-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px 0 rgba(31, 38, 135, 0.4);
+  border-radius: 16px;
 }
 
 .item-image {
@@ -405,6 +406,7 @@ onMounted(() => {
 .news-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px 0 rgba(31, 38, 135, 0.4);
+  border-radius: 16px;
 }
 
 .news-item h3 {
