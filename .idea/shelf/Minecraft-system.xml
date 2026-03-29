@@ -1,0 +1,20 @@
+<changelist name="Minecraft-system" date="1774368121432" recycled="false">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Minecraft-system/shelved.patch" />
+  <option name="DESCRIPTION" value="Minecraft-system" />
+  <binary>
+    <option name="AFTER_PATH" value="Minecraft-App/node_modules/@esbuild/win32-x64/esbuild.exe" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Minecraft-system/esbuild.exe" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="Minecraft-App/node_modules/@rolldown/.binding-win32-x64-msvc-znkfVfWf/rolldown-binding.win32-x64-msvc.node" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Minecraft-system/rolldown-binding.win32-x64-msvc.node" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="Minecraft-App/node_modules/@rollup/rollup-win32-x64-gnu/rollup.win32-x64-gnu.node" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Minecraft-system/rollup.win32-x64-gnu.node" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="Minecraft-App/node_modules/@rollup/rollup-win32-x64-msvc/rollup.win32-x64-msvc.node" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Minecraft-system/rollup.win32-x64-msvc.node" />
+  </binary>
+</changelist>
