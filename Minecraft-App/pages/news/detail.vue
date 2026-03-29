@@ -26,15 +26,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getNewsById } from '@/api/news'
+import { getNewsDetail } from '@/api/news'
 
 const news = ref({})
 
 onMounted(async () => {
-  const { id } = uni.getStorageSync('uniRouter')?.query || {}
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  const { id } = currentPage.options || {}
   if (id) {
     try {
-      const response = await getNewsById(id)
+      const response = await getNewsDetail(id)
       news.value = response.data
     } catch (error) {
       console.error('获取新闻详情失败:', error)
