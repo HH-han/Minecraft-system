@@ -1,2 +1,0 @@
-2026-02-24 00:05:42.495 [http-nio-8080-exec-2] INFO  c.m.controller.UserController - 文件保存成功: 7b966a24-32cb-410a-9a1d-c2ba1c0cefb1.pnghttp://localhost:8080/upload/
-2026-02-24 00:05:53.613 [http-nio-8080-exec-8] INFO  c.m.controller.UserController - 文件保存成功: f9d5edf7-5b9e-4fbf-a331-0d14b66ee33d.pnghttp://localhost:8080/upload/
