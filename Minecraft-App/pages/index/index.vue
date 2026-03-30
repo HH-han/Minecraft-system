@@ -233,21 +233,32 @@ onMounted(() => {
 }
 
 .carousel {
-  margin-bottom: 20px;
-  border-radius: 12px;
+  margin-bottom: 24px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.4);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.carousel:hover {
+  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.5);
 }
 
 .swiper {
   width: 100%;
-  height: 200px;
+  height: 280px;
 }
 
 .carousel-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+.swiper-item:hover .carousel-image {
+  transform: scale(1.05);
 }
 
 .carousel-content {
@@ -255,21 +266,77 @@ onMounted(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  padding: 32px 24px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), transparent);
   color: white;
+  transition: all 0.3s ease;
 }
 
 .carousel-content h3 {
-  margin: 0 0 4px 0;
-  font-size: 18px;
-  font-weight: 500;
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: fadeInUp 0.6s ease;
 }
 
 .carousel-content p {
   margin: 0;
-  font-size: 14px;
-  opacity: 0.9;
+  font-size: 16px;
+  opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  animation: fadeInUp 0.8s ease 0.2s forwards;
+  opacity: 0;
+}
+
+/* 轮播指示器样式 */
+.swiper .uni-swiper-dots {
+  bottom: 24px;
+}
+
+.swiper .uni-swiper-dot {
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.swiper .uni-swiper-dot-active {
+  width: 24px;
+  background: white;
+  border-radius: 6px;
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .swiper {
+    height: 200px;
+  }
+  
+  .carousel-content {
+    padding: 24px 16px;
+  }
+  
+  .carousel-content h3 {
+    font-size: 20px;
+  }
+  
+  .carousel-content p {
+    font-size: 14px;
+  }
 }
 
 .nav-container {
@@ -339,80 +406,140 @@ onMounted(() => {
 
 .section-header h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 600;
   color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header h2::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--primary-color), #0056b3);
+  border-radius: 2px;
 }
 
 .more-btn {
-  background: none;
-  border: none;
-  font-size: 14px;
+  background: rgba(30, 136, 229, 0.1);
+  border: 1px solid rgba(30, 136, 229, 0.3);
+  font-size: 12px;
   color: var(--primary-color);
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: 20px;
   transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .more-btn:hover {
-  background-color: rgba(30, 136, 229, 0.1);
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.4);
 }
 
 .recommend-list {
   display: flex;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding-bottom: 16px;
   -webkit-overflow-scrolling: touch;
-  gap: 16px;
+  gap: 20px;
+  margin-top: 16px;
 }
 
 .recommend-list .glass-card {
-  flex: 0 0 200px;
-  padding: 16px;
+  flex: 0 0 220px;
+  padding: 0;
   cursor: pointer;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
 }
 
 .recommend-list .glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px 0 rgba(31, 38, 135, 0.4);
-  border-radius: 16px;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3);
+  border-color: rgba(30, 136, 229, 0.3);
 }
 
 .item-image {
   width: 100%;
-  height: 120px;
-  border-radius: 8px;
+  height: 140px;
+  border-radius: 16px 16px 0 0;
   object-fit: cover;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
+}
+
+.recommend-list .glass-card:hover .item-image {
+  transform: scale(1.05);
+}
+
+.item-info {
+  padding: 16px;
 }
 
 .item-info h3 {
-  margin-bottom: 8px;
+  margin: 0 0 10px 0;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.3;
+}
+
+.text-secondary {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+  line-height: 1.4;
 }
 
 .rating {
   display: flex;
   align-items: center;
   margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .star {
   color: #FF9800;
-  margin-right: 4px;
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.rating span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #FF9800;
 }
 
 .price {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: #F44336;
   margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.price::after {
+  content: '/晚';
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary-color);
 }
 
 .news-list {
