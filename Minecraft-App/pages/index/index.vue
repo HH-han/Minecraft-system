@@ -445,7 +445,7 @@ onMounted(() => {
   overflow-x: auto;
   padding-bottom: 16px;
   -webkit-overflow-scrolling: touch;
-  gap: 20px;
+  gap: 8px;
   margin-top: 16px;
 }
 

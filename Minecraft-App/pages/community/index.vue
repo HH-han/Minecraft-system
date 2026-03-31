@@ -353,7 +353,7 @@ onMounted(() => {
 
 .create-post-btn {
   position: fixed;
-  bottom: 30px;
+  bottom: 70px;
   right: 30px;
   z-index: 1000;
 }
@@ -387,7 +387,7 @@ onMounted(() => {
   }
   
   .create-post-btn {
-    bottom: 20px;
+    bottom: 70px;
     right: 20px;
   }
   
