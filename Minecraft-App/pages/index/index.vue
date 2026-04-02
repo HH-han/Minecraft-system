@@ -1,17 +1,7 @@
 <template>
   <div class="page-container">
     <!-- 轮播图 -->
-    <div class="carousel">
-      <swiper class="swiper" indicator-dots="true" autoplay="true" interval="3000" duration="500">
-        <swiper-item v-for="(item, index) in carouselList" :key="index">
-          <img :src="item.image" :alt="item.title" class="carousel-image">
-          <div class="carousel-content">
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.subtitle }}</p>
-          </div>
-        </swiper-item>
-      </swiper>
-    </div>
+    <Carousel :items="carouselList" :interval="3000" :transitionDuration="600" :showArrows="true" :showIndicators="true" :aspectRatio="'16/9'" />
 
     <!-- 功能导航 -->
     <div class="glass-morphism nav-container">
@@ -218,18 +208,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { getHotAttractions } from '@/api/attraction'
 import { getRecommendHotels } from '@/api/hotel'
 import { getRecommendFoods } from '@/api/food'
 import { getHotNews } from '@/api/news'
+import carouselApi from '@/api/carousel'
+import Carousel from '../carousel/Carousel.vue'
 
 // 轮播图数据
-const carouselList = ref([
-  { image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beautiful%20scenic%20landscape%20of%20mountain%20and%20lake&image_size=landscape_16_9', title: '探索自然风光', subtitle: '领略大自然的壮美景色' },
-  { image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20city%20skyline%20at%20night&image_size=landscape_16_9', title: '城市之旅', subtitle: '体验都市的繁华与活力' },
-  { image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20architecture&image_size=landscape_16_9', title: '文化古迹', subtitle: '感受历史的厚重与魅力' }
-])
+const carouselList = ref([])
+
+
 
 // 推荐数据
 const recommendAttractions = ref([])
@@ -277,6 +267,16 @@ const getHotNewsList = async () => {
   }
 }
 
+// 获取轮播图数据
+const getCarouselData = async () => {
+  try {
+    const response = await carouselApi.getHomeTopCarousels()
+    carouselList.value = response.data
+  } catch (error) {
+    console.error('获取轮播图数据失败:', error)
+  }
+}
+
 // 导航到指定页面
 const navigateTo = (url) => {
   uni.navigateTo({
@@ -286,94 +286,31 @@ const navigateTo = (url) => {
 
 // 页面加载时获取数据
 onMounted(() => {
+  getCarouselData()
   getRecommendAttractions()
   getRecommendHotelsList()
   getRecommendFoodsList()
   getHotNewsList()
 })
+
+// 页面卸载时清理
+onUnmounted(() => {
+})
 </script>
 
 <style scoped>
+/* CSS 变量定义 */
+:root {
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+  --primary-color: #007aff;
+  --text-secondary-color: #666666;
+}
+
 .page-container {
-  padding: 16px;
+  padding: 8px;
   min-height: 100vh;
   background-color: var(--background-color);
-}
-
-.carousel {
-  margin-bottom: 24px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.4);
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.carousel:hover {
-  box-shadow: 0 16px 48px rgba(31, 38, 135, 0.5);
-}
-
-.swiper {
-  width: 100%;
-  height: 280px;
-}
-
-.carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: all 0.5s ease;
-}
-
-.swiper-item:hover .carousel-image {
-  transform: scale(1.05);
-}
-
-.carousel-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 32px 24px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4), transparent);
-  color: white;
-  transition: all 0.3s ease;
-}
-
-.carousel-content h3 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 0.6s ease;
-}
-
-.carousel-content p {
-  margin: 0;
-  font-size: 16px;
-  opacity: 0.95;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 0.8s ease 0.2s forwards;
-  opacity: 0;
-}
-
-/* 轮播指示器样式 */
-.swiper .uni-swiper-dots {
-  bottom: 24px;
-}
-
-.swiper .uni-swiper-dot {
-  width: 12px;
-  height: 12px;
-  margin: 0 6px;
-  background: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
-}
-
-.swiper .uni-swiper-dot-active {
-  width: 24px;
-  background: white;
-  border-radius: 6px;
 }
 
 /* 动画效果 */
@@ -386,25 +323,6 @@ onMounted(() => {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .swiper {
-    height: 200px;
-  }
-
-  .carousel-content {
-    padding: 24px 16px;
-  }
-
-  .carousel-content h3 {
-    font-size: 20px;
-  }
-
-  .carousel-content p {
-    font-size: 14px;
   }
 }
 
@@ -469,6 +387,9 @@ onMounted(() => {
 
 .section {
   margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  padding: 8px;
+  border-radius: 16px;
 }
 
 .section-header {

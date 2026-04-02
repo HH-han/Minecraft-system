@@ -12,6 +12,12 @@
         <text class="logo-text">Minecraft</text>
         <text class="logo-subtext">登录您的账户</text>
       </view>
+      <!-- 头像显示 -->
+      <view class="avatar-container">
+        <view class="avatar">
+          <image :src="avatarUrl" mode="aspectFill" class="avatar-img" />
+        </view>
+      </view>
       <view class="form-item">
         <view class="input-wrapper">
           <text class="input-icon">
@@ -30,22 +36,28 @@
                 fill="#0972E7" p-id="7505"></path>
             </svg>
           </text>
-          <input v-model="formData.account" placeholder="请输入账号" class="form-input"
-            :class="{ 'error': errors.account }" />
+          <input v-model="formData.account" placeholder="请输入账号" class="form-input" :class="{ 'error': errors.account }"
+            @input="handleAccountInput" />
         </view>
         <text v-if="errors.account" class="error-message">{{ errors.account }}</text>
       </view>
       <view class="form-item">
         <view class="input-wrapper">
           <text class="input-icon">
-            <svg t="1772207403612" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-              p-id="6495" width="256" height="256">
+            <svg t="1775143734296" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              p-id="12595" width="256" height="256">
               <path
-                d="M128 0h768C981.357714 0 1024 42.642286 1024 128v768c0 85.357714-42.642286 128-128 128H128C42.642286 1024 0 981.357714 0 896V128C0 42.642286 42.642286 0 128 0z"
-                fill="#4C84FF" p-id="6496"></path>
+                d="M511.2832 509.696m-432.3328 0a432.3328 432.3328 0 1 0 864.6656 0 432.3328 432.3328 0 1 0-864.6656 0Z"
+                fill="#FF579C" p-id="12596"></path>
               <path
-                d="M704 398.189714h-31.963429v-64.950857c0-89.746286-71.68-162.596571-160.036571-162.596571-88.283429 0-159.963429 72.850286-159.963429 162.596571v64.950857h-32.036571c-35.181714 0-64 29.257143-64 65.097143v282.331429c0 35.766857 28.818286 65.097143 64 65.097143h384c35.181714 0 64-29.257143 64-65.097143v-282.331429a64.731429 64.731429 0 0 0-64-65.097143zM512 682.715429a85.577143 85.577143 0 0 1-85.357714-85.357715A85.577143 85.577143 0 0 1 512 512a85.577143 85.577143 0 0 1 85.357714 85.357714A85.577143 85.577143 0 0 1 512 682.642286z m-95.963429-284.525715v-64.950857c0-53.979429 42.861714-97.572571 95.963429-97.572571 53.101714 0 96.036571 43.52 96.036571 97.572571v64.950857H416.036571z"
-                fill="#FFFFFF" p-id="6497"></path>
+                d="M286.3104 415.5904c-85.0432 0-160.4096 41.3696-207.104 105.0624 4.5568 182.7328 122.368 337.3056 285.952 396.032 103.2192-33.28 177.92-130.048 177.92-244.3776-0.0512-141.7728-114.9952-256.7168-256.768-256.7168z"
+                fill="#FF80BA" p-id="12597"></path>
+              <path
+                d="M408.7808 422.8096V358.7584c0-27.9552 22.7328-50.6368 50.6368-50.6368h103.68c27.9552 0 50.6368 22.7328 50.6368 50.6368v64.0512h61.44V358.7584c0-61.7984-50.2784-112.0768-112.0768-112.0768H459.4176c-61.7984 0-112.0768 50.2784-112.0768 112.0768v64.0512h61.44z"
+                fill="#FFC7E3" p-id="12598"></path>
+              <path
+                d="M668.8768 395.2128H353.6384c-48.9472 0-88.6272 39.68-88.6272 88.6272v186.0608c0 48.9472 39.68 88.6272 88.6272 88.6272h315.2384c48.9472 0 88.6272-39.68 88.6272-88.6272V483.84c0-48.9472-39.68-88.6272-88.6272-88.6272z m-130.1504 188.2112v64.512a27.4432 27.4432 0 0 1-54.8864 0v-64.512a55.31648 55.31648 0 0 1-27.9552-48.0768c0-30.6176 24.7808-55.3984 55.3984-55.3984s55.3984 24.7808 55.3984 55.3984c0 20.6336-11.264 38.5536-27.9552 48.0768z"
+                fill="#FFFFFF" p-id="12599"></path>
             </svg>
           </text>
           <input v-model="formData.password" type="password" placeholder="请输入密码" class="form-input"
@@ -82,15 +94,34 @@ import { login } from '../../api/auth';
 const loading = ref(false);
 const remember = ref(false);
 
+// 头像相关
+const defaultAvatar = 'https://img.icons8.com/ios-filled/50/000000/user.png';
+const avatarUrl = ref(defaultAvatar);
+
 const formData = reactive({
   account: '',
-  password: ''
+  password: '',
+  hasInput: false
 });
 
 const errors = reactive({
   account: '',
   password: ''
 });
+
+// 处理账号输入，获取头像
+const handleAccountInput = async () => {
+  const account = formData.account.trim();
+  formData.hasInput = account !== '';
+
+  if (account) {
+    // 这里可以添加调用后端API获取用户头像的逻辑
+    // 暂时使用默认头像
+    avatarUrl.value = defaultAvatar;
+  } else {
+    avatarUrl.value = defaultAvatar;
+  }
+};
 
 const validateForm = () => {
   let isValid = true;
@@ -123,12 +154,12 @@ const submitForm = async () => {
         // 存储登录信息
         uni.setStorageSync('token', response.data.token);
         uni.setStorageSync('userInfo', response.data);
-        
+
         uni.showToast({
           title: '登录成功',
           icon: 'success'
         });
-        
+
         uni.switchTab({
           url: '/pages/index/index'
         });
@@ -164,6 +195,15 @@ const goRegister = () => {
 </script>
 
 <style scoped>
+/* CSS 变量定义 */
+:root {
+  --bg-color: #f5f5f5;
+  --card-color: #ffffff;
+  --text-color: #333333;
+  --border-color: #6c6c6c;
+  --primary-color: #007aff;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
@@ -268,6 +308,48 @@ const goRegister = () => {
   }
 }
 
+/* 头像样式 */
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40rpx;
+  animation: slideIn 0.5s ease-out 0.2s both;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3rpx solid var(--primary-color);
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3);
+  animation: scaleIn 0.5s ease-out 0.4s both;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.avatar-img:hover {
+  transform: scale(1.05);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .logo {
   text-align: center;
   margin-bottom: 50rpx;
@@ -291,6 +373,8 @@ const goRegister = () => {
 
 .form-item {
   margin-bottom: 35rpx;
+  display: flex;
+  gap: 8px;
 }
 
 .input-wrapper {
@@ -366,12 +450,14 @@ const goRegister = () => {
 .checkbox-group {
   display: flex;
   align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .custom-checkbox {
   width: 32rpx;
   height: 32rpx;
-  border: 2rpx solid var(--border-color);
+  border: 2rpx solid #6c6c6c;
   border-radius: 6rpx;
   display: flex;
   align-items: center;
