@@ -173,7 +173,6 @@ const logout = () => {
 
 .logout-btn {
   width: 100%;
-  padding: 16px;
   background-color: #F44336;
   color: white;
   border: none;
