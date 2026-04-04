@@ -279,9 +279,30 @@ const getCarouselData = async () => {
 
 // 导航到指定页面
 const navigateTo = (url) => {
-  uni.navigateTo({
-    url
-  })
+  // 提取页面路径（去除参数部分）
+  const pagePath = url.split('?')[0];
+  
+  // tabbar 页面列表
+  const tabbarPages = [
+    '/pages/index/index',
+    '/pages/discover/index',
+    '/pages/community/index',
+    '/pages/news/index',
+    '/pages/profile/index'
+  ];
+  
+  // 检查是否为 tabbar 页面
+  if (tabbarPages.includes(pagePath)) {
+    // 使用 switchTab 跳转到 tabbar 页面
+    uni.switchTab({
+      url: pagePath
+    });
+  } else {
+    // 使用 navigateTo 跳转到非 tabbar 页面
+    uni.navigateTo({
+      url
+    });
+  }
 }
 
 // 页面加载时获取数据
