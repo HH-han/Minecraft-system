@@ -640,3 +640,159 @@
 2026-04-05 21:31:04.522 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.updateById - ==>  Preparing: UPDATE news SET title=?, content=?, cover_image=?, source=?, view_count=?, like_count=?, collect_count=?, comment_count=?, status=?, create_time=?, update_time=? WHERE id=?
 2026-04-05 21:31:04.522 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.updateById - ==> Parameters: 中国出境游市场逐步恢复，2024年第一季度出境游人次同比增长200%(String), 随着全球疫情防控形势的好转，中国出境游市场逐步恢复。2024年第一季度，中国公民出境游人次达到1200万，同比增长200%。(String), http://localhost:8080/upload/01a608e4-d51e-424e-b293-05d35bc53816.png(String), 环球时报(String), 45003(Integer), 1900(Integer), 1400(Integer), 750(Integer), 1(Integer), 2026-02-14T17:21:56(LocalDateTime), 2026-04-05T13:30:59(LocalDateTime), 12(Long)
 2026-04-05 21:31:04.525 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.updateById - <==    Updates: 1
+2026-04-05 21:46:29.838 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:46:29.840 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:46:29.840 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:46:29.954 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:46:29.954 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:46:29.955 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:46:29.955 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:46:29.955 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:46:29.956 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:46:29.957 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:46:29.958 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:46:29.958 [http-nio-8080-exec-10] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:46:29.958 [Thread-8] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:46:29.958 [Thread-8] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功(String), 2026-04-05T21:46:29.955460600(LocalDateTime)
+2026-04-05 21:46:29.959 [Thread-9] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:46:29.959 [Thread-9] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-04-05T21:46:29.958066500(LocalDateTime)
+2026-04-05 21:46:29.964 [Thread-9] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:46:29.964 [Thread-8] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:46:30.004 [http-nio-8080-exec-7] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:46:30.004 [http-nio-8080-exec-7] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:46:30.004 [http-nio-8080-exec-7] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:46:30.006 [http-nio-8080-exec-7] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:46:30.006 [http-nio-8080-exec-7] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:46:30.007 [http-nio-8080-exec-7] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 21:49:00.458 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:49:00.459 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:49:00.459 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:49:00.459 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:49:00.459 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:49:00.460 [Thread-10] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:49:00.460 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:49:00.461 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:49:00.461 [Thread-10] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功（缓存）(String), 2026-04-05T21:49:00.459655600(LocalDateTime)
+2026-04-05 21:49:00.461 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:49:00.461 [http-nio-8080-exec-2] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:49:00.462 [Thread-11] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:49:00.462 [Thread-11] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-04-05T21:49:00.461166400(LocalDateTime)
+2026-04-05 21:49:00.468 [Thread-10] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:49:00.471 [Thread-11] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:49:00.711 [http-nio-8080-exec-8] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:49:00.712 [http-nio-8080-exec-8] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:49:00.712 [http-nio-8080-exec-8] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:49:00.712 [http-nio-8080-exec-8] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:49:00.713 [http-nio-8080-exec-8] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:49:00.713 [http-nio-8080-exec-8] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 21:49:12.787 [http-nio-8080-exec-15] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:49:12.787 [http-nio-8080-exec-15] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:49:12.787 [http-nio-8080-exec-15] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:49:12.787 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:49:12.787 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:49:12.789 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 21:50:13.818 [http-nio-8080-exec-1] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:50:13.818 [http-nio-8080-exec-1] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:50:13.820 [http-nio-8080-exec-1] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:50:13.820 [http-nio-8080-exec-1] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:50:13.820 [http-nio-8080-exec-1] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:50:13.820 [http-nio-8080-exec-1] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 21:51:05.691 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:51:05.691 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:51:05.692 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:51:05.693 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:51:05.693 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:51:05.693 [Thread-12] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:51:05.693 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:51:05.693 [Thread-12] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功（缓存）(String), 2026-04-05T21:51:05.692510900(LocalDateTime)
+2026-04-05 21:51:05.694 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:51:05.694 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:51:05.695 [http-nio-8080-exec-3] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:51:05.695 [Thread-13] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:51:05.696 [Thread-13] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-04-05T21:51:05.695160800(LocalDateTime)
+2026-04-05 21:51:05.696 [Thread-12] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:51:05.698 [Thread-13] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:51:05.950 [http-nio-8080-exec-13] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:51:05.951 [http-nio-8080-exec-13] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:51:05.951 [http-nio-8080-exec-13] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:51:05.951 [http-nio-8080-exec-13] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:51:05.952 [http-nio-8080-exec-13] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:51:05.952 [http-nio-8080-exec-13] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 21:51:10.232 [http-nio-8080-exec-15] DEBUG c.m.mapper.UserMapper.selectById - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE id=?
+2026-04-05 21:51:10.232 [http-nio-8080-exec-15] DEBUG c.m.mapper.UserMapper.selectById - ==> Parameters: 15(Long)
+2026-04-05 21:51:10.233 [http-nio-8080-exec-15] DEBUG c.m.mapper.UserMapper.selectById - <==      Total: 1
+2026-04-05 21:51:10.236 [http-nio-8080-exec-15] DEBUG c.m.mapper.UserMapper.updateById - ==>  Preparing: UPDATE user SET account=?, username=?, password=?, email=?, phone=?, avatar=?, gender=?, age=?, occupation=?, hobbies=?, bio=?, online=?, status=?, signature=?, nickname=?, experience=?, permissions=?, create_time=?, update_time=? WHERE id=?
+2026-04-05 21:51:10.237 [http-nio-8080-exec-15] DEBUG c.m.mapper.UserMapper.updateById - ==> Parameters: 20260219132871(String), 爱吃薯条的小懒猪(String), $2a$10$l7ZIij1Ef3Sl/jGjcv.fROPL2eaFQyM3Wb9X6vE3YiZB2qqxoBwFC(String), 2560177364@qq.com(String), 18213200129(String), http://localhost:8080/upload/55328bf3-9947-428c-8217-e569473b5853.webp(String), 1(String), 22(Integer), 销售(String), 打羽毛球(String), 喜欢的羽毛球(String), 0(Integer), 1(Integer), 努力奋斗(String), 小可爱(String), 大学刚毕业(String), 0(String), 2026-02-19T15:11:47(LocalDateTime), 2026-03-22T13:56:53(LocalDateTime), 15(Long)
+2026-04-05 21:51:10.240 [http-nio-8080-exec-15] DEBUG c.m.mapper.UserMapper.updateById - <==    Updates: 1
+2026-04-05 21:51:10.241 [http-nio-8080-exec-15] DEBUG c.m.mapper.LoginLogMapper.delete - ==>  Preparing: DELETE FROM login_log WHERE (user_id = ?)
+2026-04-05 21:51:10.241 [http-nio-8080-exec-15] DEBUG c.m.mapper.LoginLogMapper.delete - ==> Parameters: 15(Long)
+2026-04-05 21:51:10.246 [http-nio-8080-exec-15] DEBUG c.m.mapper.LoginLogMapper.delete - <==    Updates: 53
+2026-04-05 21:51:18.112 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:51:18.114 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:51:18.114 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:51:18.115 [Thread-14] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:51:18.115 [Thread-14] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 登录成功（缓存）(String), 2026-04-05T21:51:18.114133700(LocalDateTime)
+2026-04-05 21:51:18.115 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:51:18.115 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:51:18.117 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:51:18.117 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - ==>  Preparing: SELECT id,account,username,password,email,phone,avatar,gender,age,occupation,hobbies,bio,online,status,signature,nickname,experience,permissions,create_time,update_time FROM user WHERE (account = ?)
+2026-04-05 21:51:18.117 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - ==> Parameters: 20260219132871(String)
+2026-04-05 21:51:18.118 [http-nio-8080-exec-14] DEBUG c.m.mapper.UserMapper.selectList - <==      Total: 1
+2026-04-05 21:51:18.118 [Thread-14] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:51:18.118 [Thread-15] DEBUG c.m.mapper.LoginLogMapper.insert - ==>  Preparing: INSERT INTO login_log ( user_id, username, account, ipaddr, login_location, browser, os, status, msg, login_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+2026-04-05 21:51:18.120 [Thread-15] DEBUG c.m.mapper.LoginLogMapper.insert - ==> Parameters: 15(Long), 爱吃薯条的小懒猪(String), 20260219132871(String), 0:0:0:0:0:0:0:1(String), 内网IP(String), Chrome(String), Windows(String), 1(String), 管理员登录成功(String), 2026-04-05T21:51:18.118751200(LocalDateTime)
+2026-04-05 21:51:18.123 [Thread-15] DEBUG c.m.mapper.LoginLogMapper.insert - <==    Updates: 1
+2026-04-05 21:51:18.466 [http-nio-8080-exec-2] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:51:18.466 [http-nio-8080-exec-2] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:51:18.468 [http-nio-8080-exec-2] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:51:18.468 [http-nio-8080-exec-2] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:51:18.468 [http-nio-8080-exec-2] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:51:18.468 [http-nio-8080-exec-2] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 21:53:53.605 [http-nio-8080-exec-14] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 21:53:53.605 [http-nio-8080-exec-14] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 21:53:53.605 [http-nio-8080-exec-14] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 21:53:53.605 [http-nio-8080-exec-14] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 21:53:53.605 [http-nio-8080-exec-14] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 21:53:53.607 [http-nio-8080-exec-14] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:04:07.499 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:04:07.499 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:04:07.500 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:04:07.500 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:04:07.500 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:04:07.502 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:07:55.904 [http-nio-8080-exec-7] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:07:55.904 [http-nio-8080-exec-7] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:07:55.904 [http-nio-8080-exec-7] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:07:55.904 [http-nio-8080-exec-7] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:07:55.905 [http-nio-8080-exec-7] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:07:55.907 [http-nio-8080-exec-7] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:10:24.559 [http-nio-8080-exec-10] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:10:24.560 [http-nio-8080-exec-10] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:10:24.560 [http-nio-8080-exec-10] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:10:24.560 [http-nio-8080-exec-10] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:10:24.560 [http-nio-8080-exec-10] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:10:24.562 [http-nio-8080-exec-10] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:10:44.071 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:10:44.071 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:10:44.072 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:10:44.072 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:10:44.072 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:10:44.074 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:14:30.806 [http-nio-8080-exec-15] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:14:30.806 [http-nio-8080-exec-15] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:14:30.807 [http-nio-8080-exec-15] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:14:30.807 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:14:30.807 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:14:30.809 [http-nio-8080-exec-15] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:17:13.990 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:17:13.990 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:17:13.990 [http-nio-8080-exec-9] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:17:13.991 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:17:13.991 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:17:13.991 [http-nio-8080-exec-9] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10
+2026-04-05 22:18:36.331 [http-nio-8080-exec-3] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==>  Preparing: SELECT COUNT(*) AS total FROM news WHERE (status = ?)
+2026-04-05 22:18:36.333 [http-nio-8080-exec-3] DEBUG c.m.m.NewsMapper.selectList_mpCount - ==> Parameters: 1(Integer)
+2026-04-05 22:18:36.333 [http-nio-8080-exec-3] DEBUG c.m.m.NewsMapper.selectList_mpCount - <==      Total: 1
+2026-04-05 22:18:36.333 [http-nio-8080-exec-3] DEBUG c.m.mapper.NewsMapper.selectList - ==>  Preparing: SELECT id,title,content,cover_image,source,view_count,like_count,collect_count,comment_count,status,create_time,update_time FROM news WHERE (status = ?) ORDER BY create_time DESC LIMIT ?
+2026-04-05 22:18:36.333 [http-nio-8080-exec-3] DEBUG c.m.mapper.NewsMapper.selectList - ==> Parameters: 1(Integer), 10(Long)
+2026-04-05 22:18:36.335 [http-nio-8080-exec-3] DEBUG c.m.mapper.NewsMapper.selectList - <==      Total: 10

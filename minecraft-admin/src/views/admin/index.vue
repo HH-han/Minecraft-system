@@ -260,14 +260,17 @@
     </div>
     
     <!-- 用户信息模态框 -->
-    <el-dialog
-      v-model="userInfoModalVisible"
-      title="个人信息"
-      width="800px"
-      center
-    >
-      <UserInfo :user-data="userInfo" />
-    </el-dialog>
+    <div v-if="userInfoModalVisible" class="modal-overlay" @click="userInfoModalVisible = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2 class="modal-title">个人信息</h2>
+          <button class="modal-close" @click="userInfoModalVisible = false">×</button>
+        </div>
+        <div class="modal-body">
+          <UserInfo :user-data="userInfo" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
