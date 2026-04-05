@@ -5,6 +5,14 @@
       <view class="detail-title">
         <h1>{{ attraction.name }}</h1>
         <p class="location">{{ attraction.city }}</p>
+        <div class="attraction-price" v-if="attraction.price > 0">¥{{ attraction.price }}</div>
+        <div class="attraction-price free" v-else>免费</div>
+        <div class="attraction-season" v-if="attraction.season">{{ attraction.season }}</div>
+        <div class="attraction-stats">
+          <span class="attraction-stat">{{ attraction.likeCount }} 点赞</span>
+          <span class="attraction-stat">{{ attraction.commentCount }} 评论</span>
+          <span class="attraction-stat">{{ attraction.collectCount }} 收藏</span>
+        </div>
       </view>
     </view>
     
@@ -91,9 +99,45 @@ onMounted(async () => {
 }
 
 .location {
-  margin: 0;
+  margin: 0 0 12px 0;
   font-size: 14px;
   opacity: 0.9;
+}
+
+.attraction-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #F44336;
+  margin-bottom: 12px;
+}
+
+.attraction-price.free {
+  color: #4CAF50;
+}
+
+.attraction-season {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.attraction-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: white;
+  opacity: 0.9;
+}
+
+.attraction-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .detail-content {

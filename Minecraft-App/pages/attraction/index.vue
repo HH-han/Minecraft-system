@@ -36,9 +36,20 @@
         <div class="attraction-info">
           <h3>{{ attraction.name }}</h3>
           <p class="attraction-city">{{ attraction.city }}</p>
-          <div class="attraction-rating">
-            <span class="star">★</span>
-            <span>{{ attraction.rating }}</span>
+          <div class="attraction-price" v-if="attraction.price > 0">¥{{ attraction.price }}</div>
+          <div class="attraction-price free" v-else>免费</div>
+          <div class="attraction-address">{{ attraction.address }}</div>
+          <div class="attraction-season" v-if="attraction.season">{{ attraction.season }}</div>
+          <div class="attraction-stats">
+            <div class="attraction-rating">
+              <span class="star">★</span>
+              <span>{{ attraction.rating }}</span>
+            </div>
+            <div class="attraction-stat">
+              <span>{{ attraction.likeCount }} 点赞</span>
+              <span>{{ attraction.commentCount }} 评论</span>
+              <span>{{ attraction.collectCount }} 收藏</span>
+            </div>
           </div>
         </div>
       </div>
@@ -224,6 +235,46 @@ onMounted(() => {
   color: var(--text-secondary-color);
 }
 
+.attraction-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #F44336;
+  margin: 8px 0;
+}
+
+.attraction-price.free {
+  color: #4CAF50;
+}
+
+.attraction-address {
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attraction-season {
+  font-size: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.attraction-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .attraction-rating {
   display: flex;
   align-items: center;
@@ -233,6 +284,24 @@ onMounted(() => {
 
 .star {
   margin-right: 4px;
+}
+
+.attraction-stat {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.attraction-stat span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.attraction-item:hover .attraction-stat span {
+  color: var(--primary-color);
 }
 
 .empty-tip {

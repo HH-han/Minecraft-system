@@ -2,7 +2,7 @@
   "name": "Minecraft-App",
   "version": "1.0.0",
   "description": "旅游平台uni-app前端",
-  "main": "main.uts",
+  "main": "main.js",
   "scripts": {
     "dev": "uni -p",
     "build": "uni build",

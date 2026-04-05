@@ -6,10 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/App.uvue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/main.uts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-02-23.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-02-24.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
@@ -174,23 +176,7 @@
       <workItem from="1775140855462" duration="655000" />
       <workItem from="1775225917750" duration="415000" />
       <workItem from="1775267788189" duration="2679000" />
-      <workItem from="1775366866262" duration="705000" />
-    </task>
-    <task id="LOCAL-00043" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773559697486</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1773559697486</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773560919773</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1773560919773</updated>
+      <workItem from="1775366866262" duration="2574000" />
     </task>
     <task id="LOCAL-00045" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -568,7 +554,23 @@
       <option name="project" value="LOCAL" />
       <updated>1775367690195</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1775368489597</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1775368489597</updated>
+    </task>
+    <task id="LOCAL-00093" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1775395897758</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1775395897758</updated>
+    </task>
+    <option name="localTasksCounter" value="94" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

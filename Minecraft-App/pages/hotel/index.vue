@@ -36,7 +36,21 @@
         <div class="hotel-info">
           <h3>{{ hotel.name }}</h3>
           <p class="hotel-city">{{ hotel.city }}</p>
-          <div class="hotel-price">¥{{ hotel.price }}/晚</div>
+          <div class="hotel-stars">
+            <span v-for="i in hotel.starLevel" :key="i" class="star">★</span>
+          </div>
+          <div class="hotel-address">{{ hotel.address }}</div>
+          <div class="hotel-facilities">
+            <span v-for="facility in (hotel.facilities ? hotel.facilities.split(',') : [])" :key="facility" class="hotel-facility">{{ facility }}</span>
+          </div>
+          <div class="hotel-stats">
+            <div class="hotel-price">¥{{ hotel.price }}/晚</div>
+            <div class="hotel-stat">
+              <span>{{ hotel.likeCount }} 点赞</span>
+              <span>{{ hotel.commentCount }} 评论</span>
+              <span>{{ hotel.collectCount }} 收藏</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -221,10 +235,74 @@ onMounted(() => {
   color: var(--text-secondary-color);
 }
 
+.hotel-stars {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.hotel-stars .star {
+  color: #FF9800;
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.hotel-address {
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hotel-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.hotel-facility {
+  font-size: 11px;
+  background: rgba(30, 136, 229, 0.1);
+  color: var(--primary-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.hotel-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .hotel-price {
   font-size: 16px;
   font-weight: 600;
   color: #F44336;
+}
+
+.hotel-stat {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.hotel-stat span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.hotel-item:hover .hotel-stat span {
+  color: var(--primary-color);
 }
 
 .empty-tip {

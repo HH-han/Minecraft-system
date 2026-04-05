@@ -6,34 +6,106 @@
 .detail-header[data-v-4a324f21] {
   padding: 20px;
   border-bottom: 1px solid var(--border-color);
+  background-color: white;
 }
 .detail-title h1[data-v-4a324f21] {
-  margin: 0 0 12px 0;
+  margin: 0 0 16px 0;
   font-size: 24px;
   font-weight: 600;
   color: var(--text-color);
+  line-height: 1.3;
 }
 .news-meta[data-v-4a324f21] {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   font-size: 14px;
   color: var(--text-secondary-color);
+  margin-bottom: 12px;
+}
+.news-source[data-v-4a324f21] {
+  background: rgba(30, 136, 229, 0.1);
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 12px;
+}
+.news-date[data-v-4a324f21] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.news-stats[data-v-4a324f21] {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 12px;
+}
+.news-stat[data-v-4a324f21] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.detail-image[data-v-4a324f21] {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.detail-image img[data-v-4a324f21] {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
 }
 .detail-content[data-v-4a324f21] {
   padding: 20px;
+  background-color: white;
+  margin-top: 10px;
 }
 .section[data-v-4a324f21] {
   margin-bottom: 30px;
 }
 .section h2[data-v-4a324f21] {
-  margin: 0 0 12px 0;
+  margin: 0 0 16px 0;
   font-size: 18px;
   font-weight: 500;
   color: var(--text-color);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 .section p[data-v-4a324f21] {
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
   color: var(--text-secondary-color);
+}
+.content-text[data-v-4a324f21] {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-color);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+@media (max-width: 768px) {
+.detail-header[data-v-4a324f21] {
+    padding: 16px;
+}
+.detail-title h1[data-v-4a324f21] {
+    font-size: 20px;
+}
+.detail-content[data-v-4a324f21] {
+    padding: 16px;
+}
+.news-stats[data-v-4a324f21] {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.detail-image img[data-v-4a324f21] {
+    max-height: 250px;
+}
 }

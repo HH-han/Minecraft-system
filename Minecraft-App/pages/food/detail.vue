@@ -4,7 +4,16 @@
       <image :src="food.coverImage" :alt="food.name" class="detail-image"></image>
       <view class="detail-title">
         <h1>{{ food.name }}</h1>
-        <p class="location">{{ food.city }} - {{ food.cuisine }}</p>
+        <p class="location">{{ food.city }} - {{ food.cuisineType }}</p>
+        <div class="food-price">¥{{ food.price }}</div>
+        <div class="food-tags">
+          <span v-for="tag in food.tags.split(',')" :key="tag" class="food-tag">{{ tag }}</span>
+        </div>
+        <div class="food-stats">
+          <span class="food-stat">{{ food.likeCount }} 点赞</span>
+          <span class="food-stat">{{ food.commentCount }} 评论</span>
+          <span class="food-stat">{{ food.collectCount }} 收藏</span>
+        </div>
       </view>
     </view>
     
@@ -28,8 +37,10 @@
       </view>
       
       <view class="section">
-        <h2>推荐餐厅</h2>
-        <p>{{ food.restaurant }}</p>
+        <h2>图片展示</h2>
+        <div class="image-gallery">
+          <image v-for="(img, index) in food.images.split(',')" :key="index" :src="img.trim()" :alt="food.name + index" class="gallery-image"></image>
+        </div>
       </view>
     </view>
   </div>
@@ -91,9 +102,65 @@ onMounted(async () => {
 }
 
 .location {
-  margin: 0;
+  margin: 0 0 12px 0;
   font-size: 14px;
   opacity: 0.9;
+}
+
+.food-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #F44336;
+  margin-bottom: 12px;
+}
+
+.food-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.food-tag {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.food-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: white;
+  opacity: 0.9;
+}
+
+.food-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
 }
 
 .detail-content {

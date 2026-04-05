@@ -656,7 +656,7 @@ if (uni.restoreGlobal) {
           const response = await getHotAttractions(4);
           recommendAttractions.value = response.data;
         } catch (error) {
-          formatAppLog("error", "at pages/index/index.vue:236", "获取推荐景点失败:", error);
+          formatAppLog("error", "at pages/index/index.vue:287", "获取推荐景点失败:", error);
         }
       };
       const getRecommendHotelsList = async () => {
@@ -664,7 +664,7 @@ if (uni.restoreGlobal) {
           const response = await getRecommendHotels("", 4);
           recommendHotels.value = response.data;
         } catch (error) {
-          formatAppLog("error", "at pages/index/index.vue:246", "获取推荐酒店失败:", error);
+          formatAppLog("error", "at pages/index/index.vue:297", "获取推荐酒店失败:", error);
         }
       };
       const getRecommendFoodsList = async () => {
@@ -672,7 +672,7 @@ if (uni.restoreGlobal) {
           const response = await getRecommendFoods("", 4);
           recommendFoods.value = response.data;
         } catch (error) {
-          formatAppLog("error", "at pages/index/index.vue:256", "获取推荐美食失败:", error);
+          formatAppLog("error", "at pages/index/index.vue:307", "获取推荐美食失败:", error);
         }
       };
       const getHotNewsList = async () => {
@@ -680,7 +680,7 @@ if (uni.restoreGlobal) {
           const response = await getHotNews({ limit: 4 });
           hotNews.value = response.data;
         } catch (error) {
-          formatAppLog("error", "at pages/index/index.vue:266", "获取热门新闻失败:", error);
+          formatAppLog("error", "at pages/index/index.vue:317", "获取热门新闻失败:", error);
         }
       };
       const getCarouselData = async () => {
@@ -688,7 +688,7 @@ if (uni.restoreGlobal) {
           const response = await carouselApi.getHomeTopCarousels();
           carouselList.value = response.data;
         } catch (error) {
-          formatAppLog("error", "at pages/index/index.vue:276", "获取轮播图数据失败:", error);
+          formatAppLog("error", "at pages/index/index.vue:327", "获取轮播图数据失败:", error);
         }
       };
       const navigateTo = (url) => {
@@ -1004,15 +1004,74 @@ if (uni.restoreGlobal) {
                     1
                     /* TEXT */
                   ),
+                  attraction.price > 0 ? (vue.openBlock(), vue.createElementBlock(
+                    "div",
+                    {
+                      key: 0,
+                      class: "attraction-price"
+                    },
+                    "¥" + vue.toDisplayString(attraction.price),
+                    1
+                    /* TEXT */
+                  )) : (vue.openBlock(), vue.createElementBlock("div", {
+                    key: 1,
+                    class: "attraction-price free"
+                  }, "免费")),
                   vue.createElementVNode("div", { class: "rating" }, [
-                    vue.createElementVNode("span", { class: "star" }, "★"),
-                    vue.createElementVNode(
-                      "span",
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
                       null,
-                      vue.toDisplayString(attraction.rating),
-                      1
-                      /* TEXT */
-                    )
+                      vue.renderList(attraction.rating, (i) => {
+                        return vue.openBlock(), vue.createElementBlock("span", {
+                          key: i,
+                          class: "star"
+                        }, "★");
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ]),
+                  vue.createElementVNode(
+                    "div",
+                    { class: "attraction-address" },
+                    vue.toDisplayString(attraction.address),
+                    1
+                    /* TEXT */
+                  ),
+                  attraction.season ? (vue.openBlock(), vue.createElementBlock(
+                    "div",
+                    {
+                      key: 2,
+                      class: "attraction-season"
+                    },
+                    vue.toDisplayString(attraction.season),
+                    1
+                    /* TEXT */
+                  )) : vue.createCommentVNode("v-if", true),
+                  vue.createElementVNode("div", { class: "attraction-stats stats" }, [
+                    vue.createElementVNode("div", { class: "attraction-stat" }, [
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(attraction.likeCount) + " 点赞",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(attraction.commentCount) + " 评论",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(attraction.collectCount) + " 收藏",
+                        1
+                        /* TEXT */
+                      )
+                    ])
                   ])
                 ])
               ], 8, ["onClick"]);
@@ -1066,7 +1125,73 @@ if (uni.restoreGlobal) {
                     "¥" + vue.toDisplayString(hotel.price) + "/晚",
                     1
                     /* TEXT */
-                  )
+                  ),
+                  vue.createElementVNode("div", { class: "hotel-stars" }, [
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList(hotel.starLevel, (i) => {
+                        return vue.openBlock(), vue.createElementBlock("span", {
+                          key: i,
+                          class: "star"
+                        }, "★");
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ]),
+                  vue.createElementVNode(
+                    "div",
+                    { class: "hotel-address" },
+                    vue.toDisplayString(hotel.address),
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode("div", { class: "hotel-facilities" }, [
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList(hotel.facilities ? hotel.facilities.split(",") : [], (facility) => {
+                        return vue.openBlock(), vue.createElementBlock(
+                          "span",
+                          {
+                            key: facility,
+                            class: "hotel-facility"
+                          },
+                          vue.toDisplayString(facility),
+                          1
+                          /* TEXT */
+                        );
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ]),
+                  vue.createElementVNode("div", { class: "hotel-stats stats" }, [
+                    vue.createElementVNode("div", { class: "hotel-stat" }, [
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(hotel.likeCount) + " 点赞",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(hotel.commentCount) + " 评论",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(hotel.collectCount) + " 收藏",
+                        1
+                        /* TEXT */
+                      )
+                    ])
+                  ])
                 ])
               ], 8, ["onClick"]);
             }),
@@ -1109,19 +1234,82 @@ if (uni.restoreGlobal) {
                   vue.createElementVNode(
                     "p",
                     { class: "text-secondary" },
-                    vue.toDisplayString(food.city) + " - " + vue.toDisplayString(food.cuisine),
+                    vue.toDisplayString(food.city) + " - " + vue.toDisplayString(food.cuisineType),
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode(
+                    "div",
+                    { class: "food-price" },
+                    "¥" + vue.toDisplayString(food.price),
                     1
                     /* TEXT */
                   ),
                   vue.createElementVNode("div", { class: "rating" }, [
-                    vue.createElementVNode("span", { class: "star" }, "★"),
-                    vue.createElementVNode(
-                      "span",
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
                       null,
-                      vue.toDisplayString(food.rating),
-                      1
-                      /* TEXT */
-                    )
+                      vue.renderList(food.rating, (i) => {
+                        return vue.openBlock(), vue.createElementBlock("span", {
+                          key: i,
+                          class: "star"
+                        }, "★");
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ]),
+                  vue.createElementVNode(
+                    "div",
+                    { class: "food-address" },
+                    vue.toDisplayString(food.address),
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode("div", { class: "food-tags" }, [
+                    (vue.openBlock(true), vue.createElementBlock(
+                      vue.Fragment,
+                      null,
+                      vue.renderList(food.tags ? food.tags.split(",") : [], (tag) => {
+                        return vue.openBlock(), vue.createElementBlock(
+                          "span",
+                          {
+                            key: tag,
+                            class: "food-tag"
+                          },
+                          vue.toDisplayString(tag),
+                          1
+                          /* TEXT */
+                        );
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ]),
+                  vue.createElementVNode("div", { class: "food-stats stats" }, [
+                    vue.createElementVNode("div", { class: "food-stat" }, [
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(food.likeCount) + " 点赞",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(food.commentCount) + " 评论",
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        null,
+                        vue.toDisplayString(food.collectCount) + " 收藏",
+                        1
+                        /* TEXT */
+                      )
+                    ])
                   ])
                 ])
               ], 8, ["onClick"]);
@@ -1149,32 +1337,75 @@ if (uni.restoreGlobal) {
                 class: "glass-card news-item",
                 onClick: ($event) => $setup.navigateTo(`/pages/news/detail?id=${news.id}`)
               }, [
-                vue.createElementVNode(
-                  "h3",
-                  null,
-                  vue.toDisplayString(news.title),
-                  1
-                  /* TEXT */
-                ),
-                vue.createElementVNode(
-                  "p",
-                  { class: "news-desc" },
-                  vue.toDisplayString(news.description),
-                  1
-                  /* TEXT */
-                ),
-                vue.createElementVNode("div", { class: "news-meta" }, [
+                vue.createElementVNode("div", { class: "news-content" }, [
+                  news.coverImage ? (vue.openBlock(), vue.createElementBlock("div", {
+                    key: 0,
+                    class: "news-image"
+                  }, [
+                    vue.createElementVNode("img", {
+                      src: news.coverImage,
+                      alt: news.title
+                    }, null, 8, ["src", "alt"])
+                  ])) : vue.createCommentVNode("v-if", true),
+                  vue.createElementVNode("div", { class: "news-info" }, [
+                    vue.createElementVNode(
+                      "h3",
+                      null,
+                      vue.toDisplayString(news.title),
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "p",
+                      { class: "news-desc" },
+                      vue.toDisplayString(news.description),
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode("div", { class: "news-meta" }, [
+                      vue.createElementVNode(
+                        "span",
+                        { class: "news-source" },
+                        vue.toDisplayString(news.source),
+                        1
+                        /* TEXT */
+                      ),
+                      vue.createElementVNode(
+                        "span",
+                        { class: "news-date" },
+                        vue.toDisplayString(news.createTime),
+                        1
+                        /* TEXT */
+                      )
+                    ])
+                  ])
+                ]),
+                vue.createElementVNode("div", { class: "news-stats" }, [
                   vue.createElementVNode(
                     "span",
-                    { class: "news-date" },
-                    vue.toDisplayString(news.createTime),
+                    { class: "news-stat" },
+                    vue.toDisplayString(news.viewCount) + " 浏览",
                     1
                     /* TEXT */
                   ),
                   vue.createElementVNode(
                     "span",
-                    { class: "news-view" },
-                    vue.toDisplayString(news.viewCount) + " 浏览",
+                    { class: "news-stat" },
+                    vue.toDisplayString(news.likeCount) + " 点赞",
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode(
+                    "span",
+                    { class: "news-stat" },
+                    vue.toDisplayString(news.commentCount) + " 评论",
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode(
+                    "span",
+                    { class: "news-stat" },
+                    vue.toDisplayString(news.collectCount) + " 收藏",
                     1
                     /* TEXT */
                   )
@@ -1578,7 +1809,7 @@ if (uni.restoreGlobal) {
           newsList.value = response.data.records || [];
           totalPages.value = calculateTotalPages(response.data.total || 0);
         } catch (error) {
-          formatAppLog("error", "at pages/news/index.vue:73", "获取新闻列表失败:", error);
+          formatAppLog("error", "at pages/news/index.vue:79", "获取新闻列表失败:", error);
         }
       };
       const navigateToDetail = (id) => {
@@ -1630,36 +1861,77 @@ if (uni.restoreGlobal) {
               onClick: ($event) => $setup.navigateToDetail(news.id)
             }, [
               vue.createElementVNode("div", { class: "news-content" }, [
-                vue.createElementVNode(
-                  "h3",
-                  null,
-                  vue.toDisplayString(news.title),
-                  1
-                  /* TEXT */
-                ),
-                vue.createElementVNode(
-                  "p",
-                  { class: "news-desc" },
-                  vue.toDisplayString(news.description),
-                  1
-                  /* TEXT */
-                ),
-                vue.createElementVNode("div", { class: "news-meta" }, [
+                news.coverImage ? (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 0,
+                  class: "news-image"
+                }, [
+                  vue.createElementVNode("img", {
+                    src: news.coverImage,
+                    alt: news.title
+                  }, null, 8, ["src", "alt"])
+                ])) : vue.createCommentVNode("v-if", true),
+                vue.createElementVNode("div", { class: "news-info" }, [
                   vue.createElementVNode(
-                    "span",
-                    { class: "news-date" },
-                    vue.toDisplayString(news.createTime),
+                    "h3",
+                    null,
+                    vue.toDisplayString(news.title),
                     1
                     /* TEXT */
                   ),
                   vue.createElementVNode(
-                    "span",
-                    { class: "news-view" },
-                    vue.toDisplayString(news.viewCount) + " 浏览",
+                    "p",
+                    { class: "news-desc" },
+                    vue.toDisplayString(news.description),
                     1
                     /* TEXT */
-                  )
+                  ),
+                  vue.createElementVNode("div", { class: "news-meta" }, [
+                    vue.createElementVNode(
+                      "span",
+                      { class: "news-source" },
+                      vue.toDisplayString(news.source),
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      { class: "news-date" },
+                      vue.toDisplayString(news.createTime),
+                      1
+                      /* TEXT */
+                    )
+                  ])
                 ])
+              ]),
+              vue.createElementVNode("div", { class: "news-stats" }, [
+                vue.createElementVNode(
+                  "span",
+                  { class: "news-stat" },
+                  vue.toDisplayString(news.viewCount) + " 浏览",
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "span",
+                  { class: "news-stat" },
+                  vue.toDisplayString(news.likeCount) + " 点赞",
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "span",
+                  { class: "news-stat" },
+                  vue.toDisplayString(news.commentCount) + " 评论",
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "span",
+                  { class: "news-stat" },
+                  vue.toDisplayString(news.collectCount) + " 收藏",
+                  1
+                  /* TEXT */
+                )
               ])
             ], 8, ["onClick"]);
           }),
@@ -1710,7 +1982,7 @@ if (uni.restoreGlobal) {
             const response = await getNewsDetail(id);
             news.value = response.data;
           } catch (error) {
-            formatAppLog("error", "at pages/news/detail.vue:42", "获取新闻详情失败:", error);
+            formatAppLog("error", "at pages/news/detail.vue:51", "获取新闻详情失败:", error);
           }
         }
       });
@@ -1735,27 +2007,66 @@ if (uni.restoreGlobal) {
           vue.createElementVNode("div", { class: "news-meta" }, [
             vue.createElementVNode(
               "span",
-              { class: "news-date" },
-              vue.toDisplayString($setup.news.createTime),
+              { class: "news-source" },
+              vue.toDisplayString($setup.news.source),
               1
               /* TEXT */
             ),
             vue.createElementVNode(
               "span",
-              { class: "news-view" },
+              { class: "news-date" },
+              vue.toDisplayString($setup.news.createTime),
+              1
+              /* TEXT */
+            )
+          ]),
+          vue.createElementVNode("div", { class: "news-stats" }, [
+            vue.createElementVNode(
+              "span",
+              { class: "news-stat" },
               vue.toDisplayString($setup.news.viewCount) + " 浏览",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "news-stat" },
+              vue.toDisplayString($setup.news.likeCount) + " 点赞",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "news-stat" },
+              vue.toDisplayString($setup.news.commentCount) + " 评论",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "news-stat" },
+              vue.toDisplayString($setup.news.collectCount) + " 收藏",
               1
               /* TEXT */
             )
           ])
-        ])
+        ]),
+        $setup.news.coverImage ? (vue.openBlock(), vue.createElementBlock("div", {
+          key: 0,
+          class: "detail-image"
+        }, [
+          vue.createElementVNode("img", {
+            src: $setup.news.coverImage,
+            alt: $setup.news.title
+          }, null, 8, ["src", "alt"])
+        ])) : vue.createCommentVNode("v-if", true)
       ]),
       vue.createElementVNode("view", { class: "detail-content" }, [
         vue.createElementVNode("view", { class: "section" }, [
           vue.createElementVNode("h2", null, "新闻内容"),
           vue.createElementVNode(
-            "p",
-            null,
+            "div",
+            { class: "content-text" },
             vue.toDisplayString($setup.news.content),
             1
             /* TEXT */
@@ -1828,7 +2139,7 @@ if (uni.restoreGlobal) {
           attractions.value = response.data.records || [];
           totalPages.value = calculateTotalPages(response.data.total || 0);
         } catch (error) {
-          formatAppLog("error", "at pages/attraction/index.vue:96", "获取景点列表失败:", error);
+          formatAppLog("error", "at pages/attraction/index.vue:107", "获取景点列表失败:", error);
         }
       };
       const navigateToDetail = (id) => {
@@ -1937,15 +2248,70 @@ if (uni.restoreGlobal) {
                   1
                   /* TEXT */
                 ),
-                vue.createElementVNode("div", { class: "attraction-rating" }, [
-                  vue.createElementVNode("span", { class: "star" }, "★"),
-                  vue.createElementVNode(
-                    "span",
-                    null,
-                    vue.toDisplayString(attraction.rating),
-                    1
-                    /* TEXT */
-                  )
+                attraction.price > 0 ? (vue.openBlock(), vue.createElementBlock(
+                  "div",
+                  {
+                    key: 0,
+                    class: "attraction-price"
+                  },
+                  "¥" + vue.toDisplayString(attraction.price),
+                  1
+                  /* TEXT */
+                )) : (vue.openBlock(), vue.createElementBlock("div", {
+                  key: 1,
+                  class: "attraction-price free"
+                }, "免费")),
+                vue.createElementVNode(
+                  "div",
+                  { class: "attraction-address" },
+                  vue.toDisplayString(attraction.address),
+                  1
+                  /* TEXT */
+                ),
+                attraction.season ? (vue.openBlock(), vue.createElementBlock(
+                  "div",
+                  {
+                    key: 2,
+                    class: "attraction-season"
+                  },
+                  vue.toDisplayString(attraction.season),
+                  1
+                  /* TEXT */
+                )) : vue.createCommentVNode("v-if", true),
+                vue.createElementVNode("div", { class: "attraction-stats" }, [
+                  vue.createElementVNode("div", { class: "attraction-rating" }, [
+                    vue.createElementVNode("span", { class: "star" }, "★"),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(attraction.rating),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode("div", { class: "attraction-stat" }, [
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(attraction.likeCount) + " 点赞",
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(attraction.commentCount) + " 评论",
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(attraction.collectCount) + " 收藏",
+                      1
+                      /* TEXT */
+                    )
+                  ])
                 ])
               ])
             ], 8, ["onClick"]);
@@ -1997,7 +2363,7 @@ if (uni.restoreGlobal) {
             const response = await getAttractionDetail(id);
             attraction.value = response.data;
           } catch (error) {
-            formatAppLog("error", "at pages/attraction/detail.vue:53", "获取景点详情失败:", error);
+            formatAppLog("error", "at pages/attraction/detail.vue:61", "获取景点详情失败:", error);
           }
         }
       });
@@ -2030,7 +2396,53 @@ if (uni.restoreGlobal) {
             vue.toDisplayString($setup.attraction.city),
             1
             /* TEXT */
-          )
+          ),
+          $setup.attraction.price > 0 ? (vue.openBlock(), vue.createElementBlock(
+            "div",
+            {
+              key: 0,
+              class: "attraction-price"
+            },
+            "¥" + vue.toDisplayString($setup.attraction.price),
+            1
+            /* TEXT */
+          )) : (vue.openBlock(), vue.createElementBlock("div", {
+            key: 1,
+            class: "attraction-price free"
+          }, "免费")),
+          $setup.attraction.season ? (vue.openBlock(), vue.createElementBlock(
+            "div",
+            {
+              key: 2,
+              class: "attraction-season"
+            },
+            vue.toDisplayString($setup.attraction.season),
+            1
+            /* TEXT */
+          )) : vue.createCommentVNode("v-if", true),
+          vue.createElementVNode("div", { class: "attraction-stats" }, [
+            vue.createElementVNode(
+              "span",
+              { class: "attraction-stat" },
+              vue.toDisplayString($setup.attraction.likeCount) + " 点赞",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "attraction-stat" },
+              vue.toDisplayString($setup.attraction.commentCount) + " 评论",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "attraction-stat" },
+              vue.toDisplayString($setup.attraction.collectCount) + " 收藏",
+              1
+              /* TEXT */
+            )
+          ])
         ])
       ]),
       vue.createElementVNode("view", { class: "detail-content" }, [
@@ -2107,7 +2519,7 @@ if (uni.restoreGlobal) {
           hotels.value = response.data.records || [];
           totalPages.value = calculateTotalPages(response.data.total || 0);
         } catch (error) {
-          formatAppLog("error", "at pages/hotel/index.vue:93", "获取酒店列表失败:", error);
+          formatAppLog("error", "at pages/hotel/index.vue:107", "获取酒店列表失败:", error);
         }
       };
       const navigateToDetail = (id) => {
@@ -2216,13 +2628,79 @@ if (uni.restoreGlobal) {
                   1
                   /* TEXT */
                 ),
+                vue.createElementVNode("div", { class: "hotel-stars" }, [
+                  (vue.openBlock(true), vue.createElementBlock(
+                    vue.Fragment,
+                    null,
+                    vue.renderList(hotel.starLevel, (i) => {
+                      return vue.openBlock(), vue.createElementBlock("span", {
+                        key: i,
+                        class: "star"
+                      }, "★");
+                    }),
+                    128
+                    /* KEYED_FRAGMENT */
+                  ))
+                ]),
                 vue.createElementVNode(
                   "div",
-                  { class: "hotel-price" },
-                  "¥" + vue.toDisplayString(hotel.price) + "/晚",
+                  { class: "hotel-address" },
+                  vue.toDisplayString(hotel.address),
                   1
                   /* TEXT */
-                )
+                ),
+                vue.createElementVNode("div", { class: "hotel-facilities" }, [
+                  (vue.openBlock(true), vue.createElementBlock(
+                    vue.Fragment,
+                    null,
+                    vue.renderList(hotel.facilities ? hotel.facilities.split(",") : [], (facility) => {
+                      return vue.openBlock(), vue.createElementBlock(
+                        "span",
+                        {
+                          key: facility,
+                          class: "hotel-facility"
+                        },
+                        vue.toDisplayString(facility),
+                        1
+                        /* TEXT */
+                      );
+                    }),
+                    128
+                    /* KEYED_FRAGMENT */
+                  ))
+                ]),
+                vue.createElementVNode("div", { class: "hotel-stats" }, [
+                  vue.createElementVNode(
+                    "div",
+                    { class: "hotel-price" },
+                    "¥" + vue.toDisplayString(hotel.price) + "/晚",
+                    1
+                    /* TEXT */
+                  ),
+                  vue.createElementVNode("div", { class: "hotel-stat" }, [
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(hotel.likeCount) + " 点赞",
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(hotel.commentCount) + " 评论",
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(hotel.collectCount) + " 收藏",
+                      1
+                      /* TEXT */
+                    )
+                  ])
+                ])
               ])
             ], 8, ["onClick"]);
           }),
@@ -2264,6 +2742,13 @@ if (uni.restoreGlobal) {
     setup(__props, { expose: __expose }) {
       __expose();
       const hotel = vue.ref({});
+      const parseImages = (imagesStr) => {
+        try {
+          return JSON.parse(imagesStr);
+        } catch (error) {
+          return [];
+        }
+      };
       vue.onMounted(async () => {
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
@@ -2273,11 +2758,11 @@ if (uni.restoreGlobal) {
             const response = await getHotelDetail(id);
             hotel.value = response.data;
           } catch (error) {
-            formatAppLog("error", "at pages/hotel/detail.vue:50", "获取酒店详情失败:", error);
+            formatAppLog("error", "at pages/hotel/detail.vue:73", "获取酒店详情失败:", error);
           }
         }
       });
-      const __returned__ = { hotel, ref: vue.ref, onMounted: vue.onMounted, get getHotelDetail() {
+      const __returned__ = { hotel, parseImages, ref: vue.ref, onMounted: vue.onMounted, get getHotelDetail() {
         return getHotelDetail;
       } };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
@@ -2306,7 +2791,71 @@ if (uni.restoreGlobal) {
             vue.toDisplayString($setup.hotel.city),
             1
             /* TEXT */
-          )
+          ),
+          vue.createElementVNode("div", { class: "hotel-stars" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.hotel.starLevel, (i) => {
+                return vue.openBlock(), vue.createElementBlock("span", {
+                  key: i,
+                  class: "star"
+                }, "★");
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ]),
+          vue.createElementVNode(
+            "div",
+            { class: "hotel-price" },
+            "¥" + vue.toDisplayString($setup.hotel.price) + "/晚",
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode("div", { class: "hotel-facilities" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.hotel.facilities ? $setup.hotel.facilities.split(",") : [], (facility) => {
+                return vue.openBlock(), vue.createElementBlock(
+                  "span",
+                  {
+                    key: facility,
+                    class: "hotel-facility"
+                  },
+                  vue.toDisplayString(facility),
+                  1
+                  /* TEXT */
+                );
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ]),
+          vue.createElementVNode("div", { class: "hotel-stats" }, [
+            vue.createElementVNode(
+              "span",
+              { class: "hotel-stat" },
+              vue.toDisplayString($setup.hotel.likeCount) + " 点赞",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "hotel-stat" },
+              vue.toDisplayString($setup.hotel.commentCount) + " 评论",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "hotel-stat" },
+              vue.toDisplayString($setup.hotel.collectCount) + " 收藏",
+              1
+              /* TEXT */
+            )
+          ])
         ])
       ]),
       vue.createElementVNode("view", { class: "detail-content" }, [
@@ -2316,16 +2865,6 @@ if (uni.restoreGlobal) {
             "p",
             null,
             vue.toDisplayString($setup.hotel.description),
-            1
-            /* TEXT */
-          )
-        ]),
-        vue.createElementVNode("view", { class: "section" }, [
-          vue.createElementVNode("h2", null, "价格"),
-          vue.createElementVNode(
-            "div",
-            { class: "price" },
-            "¥" + vue.toDisplayString($setup.hotel.price) + "/晚",
             1
             /* TEXT */
           )
@@ -2349,6 +2888,25 @@ if (uni.restoreGlobal) {
             1
             /* TEXT */
           )
+        ]),
+        vue.createElementVNode("view", { class: "section" }, [
+          vue.createElementVNode("h2", null, "图片展示"),
+          vue.createElementVNode("div", { class: "image-gallery" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.hotel.images ? $setup.parseImages($setup.hotel.images) : [], (img, index) => {
+                return vue.openBlock(), vue.createElementBlock("image", {
+                  key: index,
+                  src: img.trim(),
+                  alt: $setup.hotel.name + index,
+                  class: "gallery-image"
+                }, null, 8, ["src", "alt"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ])
         ])
       ])
     ]);
@@ -2380,7 +2938,7 @@ if (uni.restoreGlobal) {
           foods.value = response.data.records || [];
           totalPages.value = calculateTotalPages(response.data.total || 0);
         } catch (error) {
-          formatAppLog("error", "at pages/food/index.vue:96", "获取美食列表失败:", error);
+          formatAppLog("error", "at pages/food/index.vue:108", "获取美食列表失败:", error);
         }
       };
       const navigateToDetail = (id) => {
@@ -2485,19 +3043,78 @@ if (uni.restoreGlobal) {
                 vue.createElementVNode(
                   "p",
                   { class: "food-meta" },
-                  vue.toDisplayString(food.city) + " - " + vue.toDisplayString(food.cuisine),
+                  vue.toDisplayString(food.city) + " - " + vue.toDisplayString(food.cuisineType),
                   1
                   /* TEXT */
                 ),
-                vue.createElementVNode("div", { class: "food-rating" }, [
-                  vue.createElementVNode("span", { class: "star" }, "★"),
-                  vue.createElementVNode(
-                    "span",
+                vue.createElementVNode(
+                  "div",
+                  { class: "food-price" },
+                  "¥" + vue.toDisplayString(food.price),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode(
+                  "div",
+                  { class: "food-address" },
+                  vue.toDisplayString(food.address),
+                  1
+                  /* TEXT */
+                ),
+                vue.createElementVNode("div", { class: "food-tags" }, [
+                  (vue.openBlock(true), vue.createElementBlock(
+                    vue.Fragment,
                     null,
-                    vue.toDisplayString(food.rating),
-                    1
-                    /* TEXT */
-                  )
+                    vue.renderList(food.tags ? food.tags.split(",") : [], (tag) => {
+                      return vue.openBlock(), vue.createElementBlock(
+                        "span",
+                        {
+                          key: tag,
+                          class: "food-tag"
+                        },
+                        vue.toDisplayString(tag),
+                        1
+                        /* TEXT */
+                      );
+                    }),
+                    128
+                    /* KEYED_FRAGMENT */
+                  ))
+                ]),
+                vue.createElementVNode("div", { class: "food-stats" }, [
+                  vue.createElementVNode("div", { class: "food-rating" }, [
+                    vue.createElementVNode("span", { class: "star" }, "★"),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(food.rating),
+                      1
+                      /* TEXT */
+                    )
+                  ]),
+                  vue.createElementVNode("div", { class: "food-stat" }, [
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(food.likeCount) + " 点赞",
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(food.commentCount) + " 评论",
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode(
+                      "span",
+                      null,
+                      vue.toDisplayString(food.collectCount) + " 收藏",
+                      1
+                      /* TEXT */
+                    )
+                  ])
                 ])
               ])
             ], 8, ["onClick"]);
@@ -2549,7 +3166,7 @@ if (uni.restoreGlobal) {
             const response = await getFoodDetail(id);
             food.value = response.data;
           } catch (error) {
-            formatAppLog("error", "at pages/food/detail.vue:53", "获取美食详情失败:", error);
+            formatAppLog("error", "at pages/food/detail.vue:64", "获取美食详情失败:", error);
           }
         }
       });
@@ -2579,10 +3196,60 @@ if (uni.restoreGlobal) {
           vue.createElementVNode(
             "p",
             { class: "location" },
-            vue.toDisplayString($setup.food.city) + " - " + vue.toDisplayString($setup.food.cuisine),
+            vue.toDisplayString($setup.food.city) + " - " + vue.toDisplayString($setup.food.cuisineType),
             1
             /* TEXT */
-          )
+          ),
+          vue.createElementVNode(
+            "div",
+            { class: "food-price" },
+            "¥" + vue.toDisplayString($setup.food.price),
+            1
+            /* TEXT */
+          ),
+          vue.createElementVNode("div", { class: "food-tags" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.food.tags.split(","), (tag) => {
+                return vue.openBlock(), vue.createElementBlock(
+                  "span",
+                  {
+                    key: tag,
+                    class: "food-tag"
+                  },
+                  vue.toDisplayString(tag),
+                  1
+                  /* TEXT */
+                );
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ]),
+          vue.createElementVNode("div", { class: "food-stats" }, [
+            vue.createElementVNode(
+              "span",
+              { class: "food-stat" },
+              vue.toDisplayString($setup.food.likeCount) + " 点赞",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "food-stat" },
+              vue.toDisplayString($setup.food.commentCount) + " 评论",
+              1
+              /* TEXT */
+            ),
+            vue.createElementVNode(
+              "span",
+              { class: "food-stat" },
+              vue.toDisplayString($setup.food.collectCount) + " 收藏",
+              1
+              /* TEXT */
+            )
+          ])
         ])
       ]),
       vue.createElementVNode("view", { class: "detail-content" }, [
@@ -2620,14 +3287,23 @@ if (uni.restoreGlobal) {
           )
         ]),
         vue.createElementVNode("view", { class: "section" }, [
-          vue.createElementVNode("h2", null, "推荐餐厅"),
-          vue.createElementVNode(
-            "p",
-            null,
-            vue.toDisplayString($setup.food.restaurant),
-            1
-            /* TEXT */
-          )
+          vue.createElementVNode("h2", null, "图片展示"),
+          vue.createElementVNode("div", { class: "image-gallery" }, [
+            (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              null,
+              vue.renderList($setup.food.images.split(","), (img, index) => {
+                return vue.openBlock(), vue.createElementBlock("image", {
+                  key: index,
+                  src: img.trim(),
+                  alt: $setup.food.name + index,
+                  class: "gallery-image"
+                }, null, 8, ["src", "alt"]);
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            ))
+          ])
         ])
       ])
     ]);

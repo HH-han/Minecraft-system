@@ -28,9 +28,40 @@
   font-weight: 600;
 }
 .location[data-v-b05ef446] {
-  margin: 0;
+  margin: 0 0 12px 0;
   font-size: 14px;
   opacity: 0.9;
+}
+.attraction-price[data-v-b05ef446] {
+  font-size: 20px;
+  font-weight: 700;
+  color: #F44336;
+  margin-bottom: 12px;
+}
+.attraction-price.free[data-v-b05ef446] {
+  color: #4CAF50;
+}
+.attraction-season[data-v-b05ef446] {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+.attraction-stats[data-v-b05ef446] {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: white;
+  opacity: 0.9;
+}
+.attraction-stat[data-v-b05ef446] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 .detail-content[data-v-b05ef446] {
   padding: 20px;

@@ -9,3 +9,8 @@ export const login = (data) => {
 export const register = (data) => {
   return request.post('/auth/register', data)
 }
+
+// 退出登录
+export const logout = () => {
+  return request.post('/user/logout')
+}

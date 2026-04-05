@@ -35,10 +35,22 @@
         <img :src="food.coverImage" :alt="food.name" class="food-image">
         <div class="food-info">
           <h3>{{ food.name }}</h3>
-          <p class="food-meta">{{ food.city }} - {{ food.cuisine }}</p>
-          <div class="food-rating">
-            <span class="star">★</span>
-            <span>{{ food.rating }}</span>
+          <p class="food-meta">{{ food.city }} - {{ food.cuisineType }}</p>
+          <div class="food-price">¥{{ food.price }}</div>
+          <div class="food-address">{{ food.address }}</div>
+          <div class="food-tags">
+            <span v-for="tag in (food.tags ? food.tags.split(',') : [])" :key="tag" class="food-tag">{{ tag }}</span>
+          </div>
+          <div class="food-stats">
+            <div class="food-rating">
+              <span class="star">★</span>
+              <span>{{ food.rating }}</span>
+            </div>
+            <div class="food-stat">
+              <span>{{ food.likeCount }} 点赞</span>
+              <span>{{ food.commentCount }} 评论</span>
+              <span>{{ food.collectCount }} 收藏</span>
+            </div>
           </div>
         </div>
       </div>
@@ -224,6 +236,47 @@ onMounted(() => {
   color: var(--text-secondary-color);
 }
 
+.food-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #F44336;
+  margin: 8px 0;
+}
+
+.food-address {
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.food-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.food-tag {
+  font-size: 11px;
+  background: rgba(30, 136, 229, 0.1);
+  color: var(--primary-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.food-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .food-rating {
   display: flex;
   align-items: center;
@@ -233,6 +286,24 @@ onMounted(() => {
 
 .star {
   margin-right: 4px;
+}
+
+.food-stat {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.food-stat span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.food-item:hover .food-stat span {
+  color: var(--primary-color);
 }
 
 .empty-tip {

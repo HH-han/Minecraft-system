@@ -91,6 +91,41 @@
   font-size: 14px;
   color: var(--text-secondary-color);
 }
+.attraction-price[data-v-471183cd] {
+  font-size: 16px;
+  font-weight: 700;
+  color: #F44336;
+  margin: 8px 0;
+}
+.attraction-price.free[data-v-471183cd] {
+  color: #4CAF50;
+}
+.attraction-address[data-v-471183cd] {
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.attraction-season[data-v-471183cd] {
+  font-size: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.attraction-stats[data-v-471183cd] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
 .attraction-rating[data-v-471183cd] {
   display: flex;
   align-items: center;
@@ -99,6 +134,21 @@
 }
 .star[data-v-471183cd] {
   margin-right: 4px;
+}
+.attraction-stat[data-v-471183cd] {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+.attraction-stat span[data-v-471183cd] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+.attraction-item:hover .attraction-stat span[data-v-471183cd] {
+  color: var(--primary-color);
 }
 .empty-tip[data-v-471183cd] {
   text-align: center;

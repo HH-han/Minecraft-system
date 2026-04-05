@@ -5,31 +5,37 @@
       <input type="text" v-model="searchQuery" placeholder="搜索新闻" class="search-input">
       <button class="search-btn">搜索</button>
     </div>
-    
+
     <!-- 新闻列表 -->
     <div class="news-list">
-      <div 
-        v-for="news in newsList" 
-        :key="news.id" 
-        class="news-item"
-        @click="navigateToDetail(news.id)"
-      >
+      <div v-for="news in newsList" :key="news.id" class="news-item" @click="navigateToDetail(news.id)">
         <div class="news-content">
-          <h3>{{ news.title }}</h3>
-          <p class="news-desc">{{ news.description }}</p>
-          <div class="news-meta">
-            <span class="news-date">{{ news.createTime }}</span>
-            <span class="news-view">{{ news.viewCount }} 浏览</span>
+          <div class="news-image" v-if="news.coverImage">
+            <img :src="news.coverImage" :alt="news.title">
           </div>
+          <div class="news-info">
+            <h3>{{ news.title }}</h3>
+            <p class="news-desc">{{ news.description }}</p>
+            <div class="news-meta">
+              <span class="news-source">{{ news.source }}</span>
+              <span class="news-date">{{ news.createTime }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="news-stats">
+          <span class="news-stat">{{ news.viewCount }} 浏览</span>
+          <span class="news-stat">{{ news.likeCount }} 点赞</span>
+          <span class="news-stat">{{ news.commentCount }} 评论</span>
+          <span class="news-stat">{{ news.collectCount }} 收藏</span>
         </div>
       </div>
     </div>
-    
+
     <!-- 无数据提示 -->
     <div v-if="newsList.length === 0" class="empty-tip">
       暂无新闻数据
     </div>
-    
+
     <!-- 分页 -->
     <div v-if="newsList.length > 0" class="pagination">
       <button class="page-btn" :disabled="currentPage === 1" @click="changePage(currentPage - 1)">上一页</button>
@@ -158,7 +164,36 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.news-content h3 {
+.news-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.news-image {
+  flex: 0 0 100px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.news-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.news-item:hover .news-image img {
+  transform: scale(1.05);
+}
+
+.news-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.news-info h3 {
   margin: 0 0 8px 0;
   font-size: 16px;
   font-weight: 500;
@@ -168,10 +203,11 @@ onMounted(() => {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-height: 1.4;
 }
 
 .news-desc {
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
   font-size: 14px;
   line-height: 1.4;
   color: var(--text-secondary-color);
@@ -184,9 +220,48 @@ onMounted(() => {
 
 .news-meta {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   font-size: 12px;
   color: var(--text-secondary-color);
+  margin-bottom: 8px;
+}
+
+.news-source {
+  background: rgba(30, 136, 229, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.news-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.news-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.news-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.news-item:hover .news-stat {
+  color: var(--primary-color);
 }
 
 .empty-tip {
@@ -235,7 +310,7 @@ onMounted(() => {
   .news-list {
     gap: 12px;
   }
-  
+
   .news-item {
     padding: 12px;
   }

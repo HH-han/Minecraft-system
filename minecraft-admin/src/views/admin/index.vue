@@ -123,6 +123,9 @@
                     <button @click="showHelp">
                       请求帮助
                     </button>
+                    <button @click="showUserInfoModal">
+                      个人信息
+                    </button>
                     <button class="logout" @click="logout">
                       退出登录
                     </button>
@@ -255,6 +258,16 @@
         </div>
       </footer>
     </div>
+    
+    <!-- 用户信息模态框 -->
+    <el-dialog
+      v-model="userInfoModalVisible"
+      title="个人信息"
+      width="800px"
+      center
+    >
+      <UserInfo :user-data="userInfo" />
+    </el-dialog>
   </div>
 </template>
 
@@ -264,6 +277,7 @@ import { ref, reactive, shallowRef, onMounted, computed, watchEffect, nextTick }
 import { useRouter } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { useAuthStore } from '@/stores/auth';
+import { logout as logoutApi } from '@/api/auth';
 // 用户管理组件
 import User from '@/views/ManagementViews/UserManagement.vue';
 import OrderManagement from '@/views/ManagementViews/OrderManagement.vue';
@@ -291,6 +305,7 @@ import ProductManagement from '@/views/ManagementViews/ProductManagement.vue';
 // 个人/设置组件
 import CenterManagement from '@/views/ManagementViews/CenterManagement.vue';
 import AdminSetting from './AdminSetting.vue';
+import UserInfo from './UserInfo.vue';
 // 系统管理组件
 import AdminsystemHome from '@/views/SystemManagement/AdminsystemHome.vue';
 import ManagementHomepage from '@/views/SystemManagement/ManagementHomepage.vue';
@@ -555,14 +570,8 @@ const logout = () => {
     type: 'warning'
   }).then(async () => {
     try {
-      // 获取当前用户ID
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const userId = user.id || user.userId;
-
       // 调用后端退出API
-      if (userId) {
-        await userLogout(userId);
-      }
+      await logoutApi();
 
       // 清除所有登录相关存储
       localStorage.removeItem('token');
@@ -592,14 +601,35 @@ const logout = () => {
 const showHelp = () => {
   // 显示帮助对话框
   console.log('显示帮助信息')
-}
+};
+
+// 显示用户信息模态框
+const showUserInfoModal = () => {
+  // 确保用户信息已加载
+  if (!userInfo.value.username) {
+    fetchUserInfo();
+  }
+  // 打开模态框
+  userInfoModalVisible.value = true;
+};
+
+// 用户信息模态框状态
+const userInfoModalVisible = ref(false);
+
 // 默认头像
 const defaultAvatar = new URL('@/assets/defaultimage/mrtx.png', import.meta.url).href
 // 用户信息
 const userInfo = ref({
   image: '',
   username: '',
-  hasInput: false
+  hasInput: false,
+  nickname: '',
+  email: '',
+  phone: '',
+  account: '',
+  experience: '',
+  signature: '',
+  userId: ''
 });
 const loading = ref(false);
 
@@ -627,7 +657,13 @@ const fetchUserInfo = async () => {
       ...userData,
       nickname: userData.nickname || userData.username || userData.account || '管理员',
       image: userData.avatar || userData.image || defaultAvatar,
-      hasInput: !!userData.avatar || !!userData.image
+      hasInput: !!userData.avatar || !!userData.image,
+      email: userData.email || '',
+      phone: userData.phone || '',
+      account: userData.account || '',
+      experience: userData.experience || '',
+      signature: userData.signature || '',
+      userId: userData.userId || userData.id || ''
     };
   } catch (error) {
     console.error('获取用户信息失败:', error);

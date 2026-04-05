@@ -31,8 +31,16 @@
           <h3>{{ item.name }}</h3>
           <p class="characteristic-country">{{ item.country }}</p>
           <p class="characteristic-desc">{{ item.description }}</p>
-          <div class="characteristic-category">
-            <span class="category-tag">{{ item.category }}</span>
+          <p class="characteristic-culture">{{ item.culture }}</p>
+          <p class="characteristic-history">{{ item.history }}</p>
+          <div class="characteristic-features">
+            <span class="feature-tag">{{ item.features }}</span>
+          </div>
+          <div class="characteristic-tags">
+            <span v-for="tag in (item.tags ? item.tags.split(',') : [])" :key="tag" class="tag">{{ tag }}</span>
+          </div>
+          <div class="characteristic-category" :style="{ borderColor: item.color, backgroundColor: item.color + '20' }">
+            <span class="category-tag" :style="{ color: item.color }">{{ item.category }}</span>
           </div>
         </div>
       </div>
@@ -203,7 +211,7 @@ onMounted(() => {
 }
 
 .characteristic-desc {
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
   font-size: 14px;
   line-height: 1.4;
   color: var(--text-secondary-color);
@@ -214,17 +222,70 @@ onMounted(() => {
   -webkit-box-orient: vertical;
 }
 
-.characteristic-category {
-  display: flex;
-  justify-content: flex-end;
+.characteristic-culture {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-secondary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
-.category-tag {
+.characteristic-history {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-secondary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.characteristic-features {
+  margin-bottom: 12px;
+}
+
+.feature-tag {
+  padding: 4px 12px;
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.characteristic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tag {
   padding: 4px 12px;
   background-color: rgba(30, 136, 229, 0.1);
   color: var(--primary-color);
   border-radius: 12px;
   font-size: 12px;
+}
+
+.characteristic-category {
+  display: flex;
+  justify-content: center;
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 2px;
+}
+
+.category-tag {
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .empty-tip {

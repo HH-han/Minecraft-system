@@ -28,9 +28,57 @@
   font-weight: 600;
 }
 .location[data-v-b49a7fa1] {
-  margin: 0;
+  margin: 0 0 12px 0;
   font-size: 14px;
   opacity: 0.9;
+}
+.food-price[data-v-b49a7fa1] {
+  font-size: 20px;
+  font-weight: 700;
+  color: #F44336;
+  margin-bottom: 12px;
+}
+.food-tags[data-v-b49a7fa1] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.food-tag[data-v-b49a7fa1] {
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.food-stats[data-v-b49a7fa1] {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  color: white;
+  opacity: 0.9;
+}
+.food-stat[data-v-b49a7fa1] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.image-gallery[data-v-b49a7fa1] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.gallery-image[data-v-b49a7fa1] {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+.gallery-image[data-v-b49a7fa1]:hover {
+  transform: scale(1.05);
 }
 .detail-content[data-v-b49a7fa1] {
   padding: 20px;

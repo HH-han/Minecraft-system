@@ -1,7 +1,8 @@
 <template>
   <div class="page-container">
     <!-- 轮播图 -->
-    <Carousel :items="carouselList" :interval="3000" :transitionDuration="600" :showArrows="true" :showIndicators="true" :aspectRatio="'16/9'" />
+    <Carousel :items="carouselList" :interval="3000" :transitionDuration="600" :showArrows="true" :showIndicators="true"
+      :aspectRatio="'16/9'" />
 
     <!-- 功能导航 -->
     <div class="glass-morphism nav-container">
@@ -136,9 +137,20 @@
           <div class="item-info">
             <h3>{{ attraction.name }}</h3>
             <p class="text-secondary">{{ attraction.city }}</p>
+            <div class="attraction-price" v-if="attraction.price > 0">¥{{ attraction.price }}</div>
+            <div class="attraction-price free" v-else>免费</div>
             <div class="rating">
-              <span class="star">★</span>
-              <span>{{ attraction.rating }}</span>
+              <span v-for="i in attraction.rating" :key="i" class="star">★</span>
+            </div>
+            <div class="attraction-address">{{ attraction.address }}</div>
+
+            <div class="attraction-season" v-if="attraction.season">{{ attraction.season }}</div>
+            <div class="attraction-stats stats">
+              <div class="attraction-stat">
+                <span>{{ attraction.likeCount }} 点赞</span>
+                <span>{{ attraction.commentCount }} 评论</span>
+                <span>{{ attraction.collectCount }} 收藏</span>
+              </div>
             </div>
           </div>
         </div>
@@ -159,6 +171,21 @@
             <h3>{{ hotel.name }}</h3>
             <p class="text-secondary">{{ hotel.city }}</p>
             <div class="price">¥{{ hotel.price }}/晚</div>
+            <div class="hotel-stars">
+              <span v-for="i in hotel.starLevel" :key="i" class="star">★</span>
+            </div>
+            <div class="hotel-address">{{ hotel.address }}</div>
+            <div class="hotel-facilities">
+              <span v-for="facility in (hotel.facilities ? hotel.facilities.split(',') : [])" :key="facility"
+                class="hotel-facility">{{ facility }}</span>
+            </div>
+            <div class="hotel-stats stats">
+              <div class="hotel-stat">
+                <span>{{ hotel.likeCount }} 点赞</span>
+                <span>{{ hotel.commentCount }} 评论</span>
+                <span>{{ hotel.collectCount }} 收藏</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -176,10 +203,21 @@
           <img :src="food.coverImage" :alt="food.name" class="item-image">
           <div class="item-info">
             <h3>{{ food.name }}</h3>
-            <p class="text-secondary">{{ food.city }} - {{ food.cuisine }}</p>
+            <p class="text-secondary">{{ food.city }} - {{ food.cuisineType }}</p>
+            <div class="food-price">¥{{ food.price }}</div>
             <div class="rating">
-              <span class="star">★</span>
-              <span>{{ food.rating }}</span>
+              <span v-for="i in food.rating" :key="i" class="star">★</span>
+            </div>
+            <div class="food-address">{{ food.address }}</div>
+            <div class="food-tags">
+              <span v-for="tag in (food.tags ? food.tags.split(',') : [])" :key="tag" class="food-tag">{{ tag }}</span>
+            </div>
+            <div class="food-stats stats">
+              <div class="food-stat">
+                <span>{{ food.likeCount }} 点赞</span>
+                <span>{{ food.commentCount }} 评论</span>
+                <span>{{ food.collectCount }} 收藏</span>
+              </div>
             </div>
           </div>
         </div>
@@ -195,11 +233,24 @@
       <div class="news-list">
         <div v-for="news in hotNews" :key="news.id" class="glass-card news-item"
           @click="navigateTo(`/pages/news/detail?id=${news.id}`)">
-          <h3>{{ news.title }}</h3>
-          <p class="news-desc">{{ news.description }}</p>
-          <div class="news-meta">
-            <span class="news-date">{{ news.createTime }}</span>
-            <span class="news-view">{{ news.viewCount }} 浏览</span>
+          <div class="news-content">
+            <div class="news-image" v-if="news.coverImage">
+              <img :src="news.coverImage" :alt="news.title">
+            </div>
+            <div class="news-info">
+              <h3>{{ news.title }}</h3>
+              <p class="news-desc">{{ news.description }}</p>
+              <div class="news-meta">
+                <span class="news-source">{{ news.source }}</span>
+                <span class="news-date">{{ news.createTime }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="news-stats">
+            <span class="news-stat">{{ news.viewCount }} 浏览</span>
+            <span class="news-stat">{{ news.likeCount }} 点赞</span>
+            <span class="news-stat">{{ news.commentCount }} 评论</span>
+            <span class="news-stat">{{ news.collectCount }} 收藏</span>
           </div>
         </div>
       </div>
@@ -281,7 +332,7 @@ const getCarouselData = async () => {
 const navigateTo = (url) => {
   // 提取页面路径（去除参数部分）
   const pagePath = url.split('?')[0];
-  
+
   // tabbar 页面列表
   const tabbarPages = [
     '/pages/index/index',
@@ -290,7 +341,7 @@ const navigateTo = (url) => {
     '/pages/news/index',
     '/pages/profile/index'
   ];
-  
+
   // 检查是否为 tabbar 页面
   if (tabbarPages.includes(pagePath)) {
     // 使用 switchTab 跳转到 tabbar 页面
@@ -365,7 +416,6 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 12px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   cursor: pointer;
@@ -447,6 +497,7 @@ onUnmounted(() => {
   border-radius: 20px;
   transition: all 0.3s ease;
   font-weight: 500;
+  margin-right: 0
 }
 
 .more-btn:hover {
@@ -522,8 +573,6 @@ onUnmounted(() => {
 .rating {
   display: flex;
   align-items: center;
-  margin-top: 8px;
-  padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -539,12 +588,72 @@ onUnmounted(() => {
   color: #FF9800;
 }
 
+.attraction-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #F44336;
+  margin: 8px 0;
+}
+
+.attraction-price.free {
+  color: #4CAF50;
+}
+
+.attraction-address {
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attraction-season {
+  font-size: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.attraction-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stats {
+  justify-content: flex-end;
+}
+
+.attraction-stat {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.attraction-stat span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.attraction-item:hover .attraction-stat span {
+  color: var(--primary-color);
+}
+
 .price {
   font-size: 18px;
   font-weight: 700;
   color: #F44336;
-  margin-top: 8px;
-  padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: baseline;
@@ -552,10 +661,128 @@ onUnmounted(() => {
 }
 
 .price::after {
-  content: '/晚';
+  content: '';
+}
+
+.hotel-stars {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.hotel-stars .star {
+  color: #FF9800;
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.hotel-address {
   font-size: 12px;
-  font-weight: 500;
   color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hotel-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.hotel-facility {
+  font-size: 11px;
+  background: rgba(30, 136, 229, 0.1);
+  color: var(--primary-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.hotel-stats {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-direction: row;
+  gap: 8px;
+}
+
+.hotel-stat {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.hotel-stat span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.hotel-item:hover .hotel-stat span {
+  color: var(--primary-color);
+}
+
+.food-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #F44336;
+  margin: 8px 0;
+}
+
+.food-address {
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.food-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.food-tag {
+  font-size: 11px;
+  background: rgba(30, 136, 229, 0.1);
+  color: var(--primary-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.food-stats {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.food-stat {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+
+.food-stat span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.3s ease;
+}
+
+.food-item:hover .food-stat span {
+  color: var(--primary-color);
 }
 
 .news-list {
@@ -582,9 +809,38 @@ onUnmounted(() => {
   border-color: rgba(30, 136, 229, 0.3);
 }
 
-.news-item h3 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
+.news-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.news-image {
+  flex: 0 0 120px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.news-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.news-item:hover .news-image img {
+  transform: scale(1.05);
+}
+
+.news-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.news-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-color);
   overflow: hidden;
@@ -596,7 +852,7 @@ onUnmounted(() => {
 }
 
 .news-desc {
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
   font-size: 14px;
   color: var(--text-secondary-color);
   line-height: 1.5;
@@ -609,12 +865,20 @@ onUnmounted(() => {
 
 .news-meta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  gap: 12px;
+  font-size: 12px;
   color: var(--text-secondary-color);
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
+}
+
+.news-source {
+  background: rgba(30, 136, 229, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 11px;
 }
 
 .news-date {
@@ -623,15 +887,26 @@ onUnmounted(() => {
   gap: 4px;
 }
 
-.news-view {
+.news-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.news-stat {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(30, 136, 229, 0.1);
-  padding: 4px 12px;
-  border-radius: 12px;
+  transition: color 0.3s ease;
+}
+
+.news-item:hover .news-stat {
   color: var(--primary-color);
-  font-weight: 500;
 }
 
 /* 响应式设计 */
@@ -647,7 +922,7 @@ onUnmounted(() => {
   }
 
   .recommend-list .glass-card {
-    flex: 0 0 150px;
+    flex: 0 0 290px;
   }
 
   .item-image {
