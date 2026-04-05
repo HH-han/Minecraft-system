@@ -38,9 +38,14 @@
                                     <img :src="card.coverImage" alt="封面图片" class="cover-image" />
                                 </td>
                                 <td>{{ card.content.substring(0, 15) }}...</td>
-                                <td>{{ card.location }}</td>
-                                <td>{{ formatDate(card.created_at) }}</td>
-                                <td>{{ formatDate(card.updated_at) }}</td>
+                                <td>{{ card.source }}</td>
+                                <td>{{ card.viewCount }}</td>
+                                <td>{{ card.likeCount }}</td>
+                                <td>{{ card.commentCount }}</td>
+                                <td>{{ card.collectCount }}</td>
+                                <td>{{ formatDate(card.createTime) }}</td>
+                                <td>{{ formatDate(card.updateTime) }}</td>
+                                <td>{{ card.status === 1 ? '启用' : '禁用' }}</td>
                                 <td class="table-btn-display">
                                     <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
                                     <button class="btn edit-btn" @click="showEditDialog(card)">编辑</button>
@@ -124,12 +129,37 @@
                                 <input v-model="formData.title" required />
                             </div>
                             <div class="form-group">
-                                <label>新闻内容:</label>
-                                <input v-model="formData.content" required />
+                                <label>新闻来源:</label>
+                                <input v-model="formData.source" required />
                             </div>
                             <div class="form-group">
-                                <label>地点:</label>
-                                <input v-model="formData.location" required />
+                                <label>新闻内容:</label>
+                                <textarea v-model="formData.content" required rows="4"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>浏览量:</label>
+                                <input type="number" v-model="formData.viewCount" min="0" />
+                            </div>
+                            <div class="form-group">
+                                <label>点赞数:</label>
+                                <input type="number" v-model="formData.likeCount" min="0" />
+                            </div>
+                            <div class="form-group">
+                                <label>评论数:</label>
+                                <input type="number" v-model="formData.commentCount" min="0" />
+                            </div>
+                            <div class="form-group">
+                                <label>收藏数:</label>
+                                <input type="number" v-model="formData.collectCount" min="0" />
+                            </div>
+                            <div class="form-group">
+                                <label>状态:</label>
+                                <select v-model="formData.status">
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                </select>
                             </div>
                         </div>
                         <!-- 创建修改时间 -->
@@ -163,9 +193,14 @@ const columns = [
     { key: 'title', title: '标题' },
     { key: 'coverImage', title: '图片' },
     { key: 'content', title: '内容' },
-    { key: 'location', title: '地点' },
-    { key: 'created_at', title: '创建时间' },
-    { key: 'updated_at', title: '更新时间' },
+    { key: 'source', title: '来源' },
+    { key: 'viewCount', title: '浏览量' },
+    { key: 'likeCount', title: '点赞数' },
+    { key: 'commentCount', title: '评论数' },
+    { key: 'collectCount', title: '收藏数' },
+    { key: 'createTime', title: '创建时间' },
+    { key: 'updateTime', title: '更新时间' },
+    { key: 'status', title: '状态' },
 ];
 const showToast = ref(false);
 const toastMessage = ref('');
@@ -233,10 +268,7 @@ const fetchScenic = async () => {
             keyword: searchKeyword.value
         };
         const response = await getNewsList(params);
-        cards.value = (response.data?.records || []).map(card => ({
-            ...card,
-            images: typeof card.images === 'string' ? JSON.parse(card.images) : card.images
-        }));
+        cards.value = response.data?.records || [];
         total.value = response.data?.total || 0;
     } catch (error) {
         console.error('获取数据失败:', error);
@@ -253,7 +285,6 @@ const showAddDialog = () => {
         title: '',
         content: '',
         coverImage: '',
-        location: '',
         createTime: '',
         updateTime: '',
         collectCount: 0,
