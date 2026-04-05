@@ -53,4 +53,10 @@ public class OrderController {
         orderService.deleteOrder(id);
         return ApiResponse.success("删除成功", null);
     }
+
+    @Operation(summary ="获取全部订单列表")
+    @GetMapping("/all/list")
+    public ApiResponse<PageResponse<?>> getAllOrderList(PageRequest pageRequest) {
+        return ApiResponse.success(orderService.getAllOrderList(pageRequest));
+    }
 }

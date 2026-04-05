@@ -121,4 +121,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         removeById(id);
     }
+
+    @Override
+    public PageResponse<?> getAllOrderList(PageRequest request) {
+        Page<Order> page = new Page<>(request.getPageNum(), request.getPageSize());
+        LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(Order::getCreateTime);
+        Page<Order> result = page(page, wrapper);
+        return new PageResponse<>(result.getRecords(), result.getTotal(), request.getPageNum(), request.getPageSize());
+    }
 }
