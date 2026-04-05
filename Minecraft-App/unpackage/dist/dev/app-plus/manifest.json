@@ -1,0 +1,165 @@
+{
+  "@platforms": [
+    "android",
+    "iPhone",
+    "iPad"
+  ],
+  "id": "__UNI__080221D",
+  "name": "spiritualPressure-uniApp",
+  "version": {
+    "name": "1.0.0",
+    "code": "100"
+  },
+  "description": "",
+  "developer": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "permissions": {
+    "UniNView": {
+      "description": "UniNView原生渲染"
+    }
+  },
+  "plus": {
+    "useragent": {
+      "value": "uni-app",
+      "concatenate": true
+    },
+    "splashscreen": {
+      "target": "id:1",
+      "autoclose": true,
+      "waiting": true,
+      "delay": 0
+    },
+    "popGesture": "close",
+    "launchwebview": {
+      "id": "1",
+      "kernel": "WKWebview"
+    },
+    "statusbar": {
+      "immersed": "supportedDevice",
+      "style": "light",
+      "background": "#4A90E2"
+    },
+    "uniStatistics": {
+      "enable": false
+    },
+    "allowsInlineMediaPlayback": true,
+    "distribute": {
+      "plugins": {
+        "audio": {
+          "mp3": {
+            "description": "Android平台录音支持MP3格式文件"
+          }
+        }
+      }
+    },
+    "safearea": {
+      "background": "#FFFFFF",
+      "bottom": {
+        "offset": "auto"
+      }
+    },
+    "uni-app": {
+      "control": "uni-v3",
+      "vueVersion": "3",
+      "compilerVersion": "4.84",
+      "nvueCompiler": "uni-app",
+      "renderer": "auto",
+      "nvue": {
+        "flex-direction": "column"
+      },
+      "nvueLaunchMode": "normal",
+      "webView": {
+        "minUserAgentVersion": "49.0"
+      }
+    },
+    "tabBar": {
+      "position": "bottom",
+      "color": "#7D7E80",
+      "selectedColor": "#4A90E2",
+      "borderStyle": "rgba(255,255,255,0.4)",
+      "blurEffect": "none",
+      "fontSize": "10px",
+      "iconWidth": "24px",
+      "spacing": "8px",
+      "height": "60px",
+      "list": [
+        {
+          "pagePath": "pages/index/index",
+          "iconPath": "/static/tabbar/home.png",
+          "selectedIconPath": "/static/tabbar/home.png",
+          "text": "首页",
+          "iconFontSize": "24px",
+          "textFontSize": "12px"
+        },
+        {
+          "pagePath": "pages/discover/index",
+          "iconPath": "/static/tabbar/attraction.png",
+          "selectedIconPath": "/static/tabbar/attraction.png",
+          "text": "发现",
+          "iconFontSize": "24px",
+          "textFontSize": "12px"
+        },
+        {
+          "pagePath": "pages/community/index",
+          "iconPath": "/static/tabbar/order.png",
+          "selectedIconPath": "/static/tabbar/order.png",
+          "text": "社区",
+          "iconFontSize": "24px",
+          "textFontSize": "12px"
+        },
+        {
+          "pagePath": "pages/news/index",
+          "iconPath": "/static/tabbar/food.png",
+          "selectedIconPath": "/static/tabbar/food.png",
+          "text": "资讯",
+          "iconFontSize": "24px",
+          "textFontSize": "12px"
+        },
+        {
+          "pagePath": "pages/profile/index",
+          "iconPath": "/static/tabbar/user.png",
+          "selectedIconPath": "/static/tabbar/user.png",
+          "text": "我的",
+          "iconFontSize": "24px",
+          "textFontSize": "12px"
+        }
+      ],
+      "backgroundColor": "#FFFFFF",
+      "app-plus": {
+        "background": "#FFFFFF",
+        "borderRadius": "16px 16px 0 0",
+        "shadow": "0 -2px 10px rgba(0, 0, 0, 0.08)",
+        "marginBottom": "0px",
+        "animation": {
+          "duration": "300ms",
+          "timingFunction": "ease-in-out"
+        }
+      },
+      "selectedIndex": 0,
+      "shown": true,
+      "child": [
+        "lauchwebview"
+      ],
+      "selected": 0
+    }
+  },
+  "app-harmony": {
+    "useragent": {
+      "value": "uni-app",
+      "concatenate": true
+    },
+    "uniStatistics": {
+      "enable": false
+    },
+    "safearea": {
+      "background": "#FFFFFF",
+      "bottom": {
+        "offset": "auto"
+      }
+    }
+  },
+  "launch_path": "__uniappview.html"
+}

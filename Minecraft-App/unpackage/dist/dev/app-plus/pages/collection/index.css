@@ -1,0 +1,109 @@
+
+.collection-container[data-v-7e535635] {
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 20px;
+}
+.collection-header[data-v-7e535635] {
+  margin-bottom: 20px;
+}
+.collection-header h1[data-v-7e535635] {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.collection-tabs[data-v-7e535635] {
+  display: flex;
+  background-color: var(--card-background);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.tab-item[data-v-7e535635] {
+  flex: 1;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.tab-item.active[data-v-7e535635] {
+  background-color: var(--primary-color);
+  color: white;
+}
+.collection-list[data-v-7e535635] {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.collection-item[data-v-7e535635] {
+  display: flex;
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.collection-item[data-v-7e535635]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.collection-image[data-v-7e535635] {
+  width: 120px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 16px;
+}
+.collection-info[data-v-7e535635] {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.collection-info h3[data-v-7e535635] {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+.collection-desc[data-v-7e535635] {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+  line-height: 1.4;
+}
+.collection-meta[data-v-7e535635] {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary-color);
+}
+.collection-type[data-v-7e535635] {
+  background-color: rgba(30, 136, 229, 0.1);
+  color: var(--primary-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.collection-action[data-v-7e535635] {
+  display: flex;
+  align-items: center;
+}
+.action-btn[data-v-7e535635] {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+.action-btn[data-v-7e535635]:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.icon[data-v-7e535635] {
+  font-size: 20px;
+  color: #F44336;
+}

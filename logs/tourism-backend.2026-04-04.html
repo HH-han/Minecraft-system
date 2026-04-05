@@ -1,0 +1,1406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Logback Log Messages</title>
+<style  type="text/css">
+table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }
+TR.even { background: #FFFFFF; }
+TR.odd { background: #EAEAEA; }
+TR.warn TD.Level, TR.error TD.Level, TR.fatal TD.Level {font-weight: bold; color: #FF4040 }
+TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }
+TD.Time, TD.Date { text-align: right; font-family: courier, monospace; font-size: smaller; }
+TD.Thread { text-align: left; }
+TD.Level { text-align: right; }
+TD.Logger { text-align: left; }
+TR.header { background: #596ED5; color: #FFF; font-weight: bold; font-size: larger; }
+TD.Exception { background: #A2AEE8; font-family: courier, monospace;}
+</style>
+
+  </head>
+<body>
+<hr/>
+<p>Log session start time Sat Apr 04 09:56:50 CST 2026</p><p></p>
+
+<table cellspacing="0">
+<tr class="header">
+<td class="Date">Date</td>
+<td class="Thread">Thread</td>
+<td class="Level">Level</td>
+<td class="Logger">Logger</td>
+<td class="Message">Message</td>
+</tr>
+
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:50.964</td>
+<td class="Thread">background-preinit</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.h.validator.internal.util.Version</td>
+<td class="Message">HV000001: Hibernate Validator 8.0.0.Final</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:51.013</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Starting MinecraftApplication using Java 21.0.9 with PID 20068 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-04-04 09:56:51.014</td>
+<td class="Thread">main</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Running with Spring Boot v3.0.2, Spring v6.0.4</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:51.014</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">The following 1 profile is active: &quot;dev&quot;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:52.409</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Multiple Spring Data modules found, entering strict repository configuration mode</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:52.414</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Bootstrapping Spring Data Redis repositories in DEFAULT mode.</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:52.478</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Finished Spring Data repository scanning in 45 ms. Found 0 Redis repository interfaces.</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 09:56:53.087</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.aspect.LogAspect</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:56:53.088</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.aspect.LogAspect</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:53.916</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.e.tomcat.TomcatWebServer</td>
+<td class="Message">Tomcat initialized with port(s): 8080 (http)</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:53.927</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.coyote.http11.Http11NioProtocol</td>
+<td class="Message">Initializing ProtocolHandler [&quot;http-nio-8080&quot;]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:53.927</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.catalina.core.StandardService</td>
+<td class="Message">Starting service [Tomcat]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:53.927</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.catalina.core.StandardEngine</td>
+<td class="Message">Starting Servlet engine: [Apache Tomcat/10.1.5]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:54.075</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.c.c.C.[Tomcat].[localhost].[/]</td>
+<td class="Message">Initializing Spring embedded WebApplicationContext</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:54.076</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.s.c.ServletWebServerApplicationContext</td>
+<td class="Message">Root WebApplicationContext: initialization completed in 3014 ms</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-04-04 09:56:54.309</td>
+<td class="Thread">main</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.handler.JwtAuthenticationFilter</td>
+<td class="Message">Filter &#39;jwtAuthenticationFilter&#39; configured for use</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:56.721</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.utils.FileUtils</td>
+<td class="Message">使用目录: D:\Image</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:56.721</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.utils.FileUtils</td>
+<td class="Message">文件上传路径初始化: D:\Image</td>
+</tr>
+
+<tr class="error even">
+<td class="Date">2026-04-04 09:56:57.337</td>
+<td class="Thread">main</td>
+<td class="Level">ERROR</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">❌ Redis 连接失败: Unable to connect to Redis</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 09:56:57.338</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">⚠️  请确保 Redis 服务已启动，并检查以下配置：</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:56:57.338</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">   - Redis 地址: localhost:6379</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 09:56:57.338</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">   - Redis 密码: (如果配置了密码)</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:56:57.338</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">   - 启动 Redis: redis-server 或 redis-cli ping</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 09:56:57.338</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">   - Windows 启动 Redis: redis-server.exe</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:56:57.594</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.b.a.s.s.UserDetailsServiceAutoConfiguration</td>
+<td class="Message">
+
+Using generated security password: 1692b176-a022-45ff-b7de-51f10b401df5
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:57.838</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.a.w.s.WelcomePageHandlerMapping</td>
+<td class="Message">Adding welcome page: class path resource [static/index.html]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:58.001</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.config.WebConfig</td>
+<td class="Message">使用目录: D:\Image</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:56:58.902</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.a.e.web.EndpointLinksResolver</td>
+<td class="Message">Exposing 1 endpoint(s) beneath base path &#39;/actuator&#39;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:56:58.981</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.s.web.DefaultSecurityFilterChain</td>
+<td class="Message">Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@473c491, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ede428e, org.springframework.security.web.context.SecurityContextHolderFilter@2e0de20d, org.springframework.security.web.header.HeaderWriterFilter@367653cc, org.springframework.security.web.authentication.logout.LogoutFilter@345d4ecb, com.minecraft.handler.JwtAuthenticationFilter@6ea3a513, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@70a3b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@f461c9c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@70a8654, org.springframework.security.web.session.SessionManagementFilter@701996e9, org.springframework.security.web.access.ExceptionTranslationFilter@253379ec, org.springframework.security.web.access.intercept.AuthorizationFilter@5fdcc63f]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.273</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.coyote.http11.Http11NioProtocol</td>
+<td class="Message">Starting ProtocolHandler [&quot;http-nio-8080&quot;]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:57:00.296</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.e.tomcat.TomcatWebServer</td>
+<td class="Message">Tomcat started on port(s): 8080 (http) with context path &#39;&#39;</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.298</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Starting...</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:57:00.299</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1e40edb7]]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.301</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Started.</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:57:00.317</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Started MinecraftApplication in 9.984 seconds (process running for 10.902)</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.333</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Starting...</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:57:00.631</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.pool.HikariPool</td>
+<td class="Message">HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7b237c2c</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.647</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Start completed.</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:57:00.665</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">c.m.utils.DatabaseHealthChecker</td>
+<td class="Message">✅ MySQL 数据库连接成功</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.946</td>
+<td class="Thread">RMI TCP Connection(2)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.c.c.C.[Tomcat].[localhost].[/]</td>
+<td class="Message">Initializing Spring DispatcherServlet &#39;dispatcherServlet&#39;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 09:57:00.948</td>
+<td class="Thread">RMI TCP Connection(2)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.web.servlet.DispatcherServlet</td>
+<td class="Message">Initializing Servlet &#39;dispatcherServlet&#39;</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:00.952</td>
+<td class="Thread">RMI TCP Connection(2)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.web.servlet.DispatcherServlet</td>
+<td class="Message">Completed initialization in 4 ms</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:57:02.291</td>
+<td class="Thread">boundedElastic-1</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.b.a.d.r.RedisReactiveHealthIndicator</td>
+<td class="Message">Redis health check failed</td>
+</tr>
+<tr><td class="Exception" colspan="6">org.springframework.data.redis.RedisConnectionFailureException: Unable to connect to Redis
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory$ExceptionTranslatingConnectionProvider.translateException(LettuceConnectionFactory.java:1602)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory$ExceptionTranslatingConnectionProvider.getConnection(LettuceConnectionFactory.java:1533)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory$SharedConnection.getNativeConnection(LettuceConnectionFactory.java:1358)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory$SharedConnection.getConnection(LettuceConnectionFactory.java:1341)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory.getSharedReactiveConnection(LettuceConnectionFactory.java:1083)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory.getReactiveConnection(LettuceConnectionFactory.java:479)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory.getReactiveConnection(LettuceConnectionFactory.java:105)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at reactor.core.publisher.MonoSupplier.call(MonoSupplier.java:67)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at reactor.core.publisher.FluxSubscribeOnCallable$CallableSubscribeOnSubscription.run(FluxSubscribeOnCallable.java:227)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:68)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:28)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.lang.Thread.run(Thread.java:1583)
+<br />Caused by: io.lettuce.core.RedisConnectionException: Unable to connect to localhost/&lt;unresolved&gt;:6379
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:78)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.lettuce.core.RedisConnectionException.create(RedisConnectionException.java:56)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.lettuce.core.AbstractRedisClient.getConnection(AbstractRedisClient.java:350)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.lettuce.core.RedisClient.connect(RedisClient.java:216)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.StandaloneConnectionProvider.lambda$getConnection$1(StandaloneConnectionProvider.java:111)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.util.Optional.orElseGet(Optional.java:364)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.StandaloneConnectionProvider.getConnection(StandaloneConnectionProvider.java:111)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory$ExceptionTranslatingConnectionProvider.getConnection(LettuceConnectionFactory.java:1531)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;	... 14 common frames omitted
+io.netty.channel.AbstractChannel$AnnotatedConnectException: Connection refused: getsockopt: localhost/127.0.0.1:6379
+java.net.ConnectException: Connection refused: getsockopt
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:973)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.channel.socket.nio.NioSocketChannel.doFinishConnect(NioSocketChannel.java:337)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.channel.nio.AbstractNioChannel$AbstractNioUnsafe.finishConnect(AbstractNioChannel.java:334)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:776)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.lang.Thread.run(Thread.java:1583)
+</td></tr>
+<tr class="warn odd">
+<td class="Date">2026-04-04 09:57:05.124</td>
+<td class="Thread">http-nio-8080-exec-8</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.HotelController</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:57:05.124</td>
+<td class="Thread">http-nio-8080-exec-2</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.NewsController</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 09:57:05.124</td>
+<td class="Thread">http-nio-8080-exec-9</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.AttractionController</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:57:05.124</td>
+<td class="Thread">http-nio-8080-exec-1</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.FoodController</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 09:57:59.042</td>
+<td class="Thread">MessageBroker-1</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.w.s.c.WebSocketMessageBrokerStats</td>
+<td class="Message">WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 09:58:54.923</td>
+<td class="Thread">http-nio-8080-exec-8</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.WorldCharacteristicsController</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:00:13.859</td>
+<td class="Thread">http-nio-8080-exec-1</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.HomeRecommendationsController</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 10:01:50.619</td>
+<td class="Thread">http-nio-8080-exec-10</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.UserController</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:02:38.419</td>
+<td class="Thread">http-nio-8080-exec-3</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.CitiesController</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 10:02:38.520</td>
+<td class="Thread">http-nio-8080-exec-11</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.CountriesController</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:02:38.666</td>
+<td class="Thread">http-nio-8080-exec-9</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.MonthlyRecommendationController</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 10:08:36.516</td>
+<td class="Thread">http-nio-8080-exec-2</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.ProductController</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:08:48.386</td>
+<td class="Thread">http-nio-8080-exec-9</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.controller.CartController</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:05.252</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Stopping...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:05.252</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1e40edb7]]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:05.252</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Stopped.</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:05.391</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Shutdown initiated...</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:05.393</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Shutdown completed.</td>
+</tr>
+</table>
+</body></html><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Logback Log Messages</title>
+<style  type="text/css">
+table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }
+TR.even { background: #FFFFFF; }
+TR.odd { background: #EAEAEA; }
+TR.warn TD.Level, TR.error TD.Level, TR.fatal TD.Level {font-weight: bold; color: #FF4040 }
+TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }
+TD.Time, TD.Date { text-align: right; font-family: courier, monospace; font-size: smaller; }
+TD.Thread { text-align: left; }
+TD.Level { text-align: right; }
+TD.Logger { text-align: left; }
+TR.header { background: #596ED5; color: #FFF; font-weight: bold; font-size: larger; }
+TD.Exception { background: #A2AEE8; font-family: courier, monospace;}
+</style>
+
+  </head>
+<body>
+<hr/>
+<p>Log session start time Sat Apr 04 10:12:08 CST 2026</p><p></p>
+
+<table cellspacing="0">
+<tr class="header">
+<td class="Date">Date</td>
+<td class="Thread">Thread</td>
+<td class="Level">Level</td>
+<td class="Logger">Logger</td>
+<td class="Message">Message</td>
+</tr>
+
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:08.959</td>
+<td class="Thread">background-preinit</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.h.validator.internal.util.Version</td>
+<td class="Message">HV000001: Hibernate Validator 8.0.0.Final</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:08.990</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Starting MinecraftApplication using Java 21.0.9 with PID 19596 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-04-04 10:12:08.990</td>
+<td class="Thread">main</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Running with Spring Boot v3.0.2, Spring v6.0.4</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:08.991</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">The following 1 profile is active: &quot;dev&quot;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:09.833</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Multiple Spring Data modules found, entering strict repository configuration mode</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:09.834</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Bootstrapping Spring Data Redis repositories in DEFAULT mode.</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:09.870</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Finished Spring Data repository scanning in 27 ms. Found 0 Redis repository interfaces.</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:12:10.132</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.aspect.LogAspect</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 10:12:10.133</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.aspect.LogAspect</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:10.499</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.e.tomcat.TomcatWebServer</td>
+<td class="Message">Tomcat initialized with port(s): 8080 (http)</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:10.505</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.coyote.http11.Http11NioProtocol</td>
+<td class="Message">Initializing ProtocolHandler [&quot;http-nio-8080&quot;]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:10.505</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.catalina.core.StandardService</td>
+<td class="Message">Starting service [Tomcat]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:10.505</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.catalina.core.StandardEngine</td>
+<td class="Message">Starting Servlet engine: [Apache Tomcat/10.1.5]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:10.583</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.c.c.C.[Tomcat].[localhost].[/]</td>
+<td class="Message">Initializing Spring embedded WebApplicationContext</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:10.583</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.s.c.ServletWebServerApplicationContext</td>
+<td class="Message">Root WebApplicationContext: initialization completed in 1560 ms</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-04-04 10:12:10.712</td>
+<td class="Thread">main</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.handler.JwtAuthenticationFilter</td>
+<td class="Message">Filter &#39;jwtAuthenticationFilter&#39; configured for use</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:12.033</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.utils.FileUtils</td>
+<td class="Message">使用目录: D:\Image</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:12.033</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.utils.FileUtils</td>
+<td class="Message">文件上传路径初始化: D:\Image</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:12.354</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">✅ Redis 连接成功</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:12:12.477</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.b.a.s.s.UserDetailsServiceAutoConfiguration</td>
+<td class="Message">
+
+Using generated security password: f181fdb0-2b0b-41b6-b7a9-74d663961f05
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:12.594</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.a.w.s.WelcomePageHandlerMapping</td>
+<td class="Message">Adding welcome page: class path resource [static/index.html]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:12.672</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.config.WebConfig</td>
+<td class="Message">使用目录: D:\Image</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:13.127</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.a.e.web.EndpointLinksResolver</td>
+<td class="Message">Exposing 1 endpoint(s) beneath base path &#39;/actuator&#39;</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:13.162</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.s.web.DefaultSecurityFilterChain</td>
+<td class="Message">Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@580a5b6e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@66450129, org.springframework.security.web.context.SecurityContextHolderFilter@2e68bd3d, org.springframework.security.web.header.HeaderWriterFilter@106387cf, org.springframework.security.web.authentication.logout.LogoutFilter@24347d8b, com.minecraft.handler.JwtAuthenticationFilter@3c4059a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@535adf36, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5bdef8ee, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@14f1545c, org.springframework.security.web.session.SessionManagementFilter@5f3bc119, org.springframework.security.web.access.ExceptionTranslationFilter@66297b63, org.springframework.security.web.access.intercept.AuthorizationFilter@a3f1f32]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:13.581</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.coyote.http11.Http11NioProtocol</td>
+<td class="Message">Starting ProtocolHandler [&quot;http-nio-8080&quot;]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:13.591</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.e.tomcat.TomcatWebServer</td>
+<td class="Message">Tomcat started on port(s): 8080 (http) with context path &#39;&#39;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:13.592</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Starting...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:13.592</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@66790851]]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:13.592</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Started.</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:13.599</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Started MinecraftApplication in 5.023 seconds (process running for 5.564)</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:13.607</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Starting...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:13.716</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.pool.HikariPool</td>
+<td class="Message">HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4e132a9b</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:13.718</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Start completed.</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:13.726</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">c.m.utils.DatabaseHealthChecker</td>
+<td class="Message">✅ MySQL 数据库连接成功</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:14.237</td>
+<td class="Thread">RMI TCP Connection(2)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.c.c.C.[Tomcat].[localhost].[/]</td>
+<td class="Message">Initializing Spring DispatcherServlet &#39;dispatcherServlet&#39;</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:14.237</td>
+<td class="Thread">RMI TCP Connection(2)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.web.servlet.DispatcherServlet</td>
+<td class="Message">Initializing Servlet &#39;dispatcherServlet&#39;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:12:14.239</td>
+<td class="Thread">RMI TCP Connection(2)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.web.servlet.DispatcherServlet</td>
+<td class="Message">Completed initialization in 2 ms</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:12:21.455</td>
+<td class="Thread">http-nio-8080-exec-4</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.api.AbstractOpenApiResource</td>
+<td class="Message">Init duration for springdoc-openapi is: 1039 ms</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:13:13.192</td>
+<td class="Thread">MessageBroker-1</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.w.s.c.WebSocketMessageBrokerStats</td>
+<td class="Message">WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:19.890</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Stopping...</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:19.890</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@66790851]]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:19.890</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Stopped.</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:20.023</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Shutdown initiated...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:20.029</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Shutdown completed.</td>
+</tr>
+</table>
+</body></html><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Logback Log Messages</title>
+<style  type="text/css">
+table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }
+TR.even { background: #FFFFFF; }
+TR.odd { background: #EAEAEA; }
+TR.warn TD.Level, TR.error TD.Level, TR.fatal TD.Level {font-weight: bold; color: #FF4040 }
+TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }
+TD.Time, TD.Date { text-align: right; font-family: courier, monospace; font-size: smaller; }
+TD.Thread { text-align: left; }
+TD.Level { text-align: right; }
+TD.Logger { text-align: left; }
+TR.header { background: #596ED5; color: #FFF; font-weight: bold; font-size: larger; }
+TD.Exception { background: #A2AEE8; font-family: courier, monospace;}
+</style>
+
+  </head>
+<body>
+<hr/>
+<p>Log session start time Sat Apr 04 10:21:24 CST 2026</p><p></p>
+
+<table cellspacing="0">
+<tr class="header">
+<td class="Date">Date</td>
+<td class="Thread">Thread</td>
+<td class="Level">Level</td>
+<td class="Logger">Logger</td>
+<td class="Message">Message</td>
+</tr>
+
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:24.085</td>
+<td class="Thread">background-preinit</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.h.validator.internal.util.Version</td>
+<td class="Message">HV000001: Hibernate Validator 8.0.0.Final</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:24.115</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Starting MinecraftApplication using Java 21.0.9 with PID 18468 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-04-04 10:21:24.115</td>
+<td class="Thread">main</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Running with Spring Boot v3.0.2, Spring v6.0.4</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:24.117</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">The following 1 profile is active: &quot;dev&quot;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:25.054</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Multiple Spring Data modules found, entering strict repository configuration mode</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:25.056</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Bootstrapping Spring Data Redis repositories in DEFAULT mode.</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:25.106</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.d.r.c.RepositoryConfigurationDelegate</td>
+<td class="Message">Finished Spring Data repository scanning in 36 ms. Found 0 Redis repository interfaces.</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:21:25.362</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.aspect.LogAspect</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-04-04 10:21:25.362</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.c.LocalVariableTableParameterNameDiscoverer</td>
+<td class="Message">Using deprecated &#39;-debug&#39; fallback for parameter name resolution. Compile the affected code with &#39;-parameters&#39; instead or avoid its introspection: com.minecraft.aspect.LogAspect</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:25.761</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.e.tomcat.TomcatWebServer</td>
+<td class="Message">Tomcat initialized with port(s): 8080 (http)</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:25.769</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.coyote.http11.Http11NioProtocol</td>
+<td class="Message">Initializing ProtocolHandler [&quot;http-nio-8080&quot;]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:25.771</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.catalina.core.StandardService</td>
+<td class="Message">Starting service [Tomcat]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:25.771</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.catalina.core.StandardEngine</td>
+<td class="Message">Starting Servlet engine: [Apache Tomcat/10.1.5]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:25.857</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.c.c.C.[Tomcat].[localhost].[/]</td>
+<td class="Message">Initializing Spring embedded WebApplicationContext</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:25.857</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.s.c.ServletWebServerApplicationContext</td>
+<td class="Message">Root WebApplicationContext: initialization completed in 1708 ms</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-04-04 10:21:25.993</td>
+<td class="Thread">main</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.handler.JwtAuthenticationFilter</td>
+<td class="Message">Filter &#39;jwtAuthenticationFilter&#39; configured for use</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:28.045</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.utils.FileUtils</td>
+<td class="Message">使用目录: D:\Image</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:28.045</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.utils.FileUtils</td>
+<td class="Message">文件上传路径初始化: D:\Image</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:28.544</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">c.minecraft.utils.RedisHealthChecker</td>
+<td class="Message">✅ Redis 连接成功</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 10:21:28.738</td>
+<td class="Thread">main</td>
+<td class="Level">WARN</td>
+<td class="Logger">o.s.b.a.s.s.UserDetailsServiceAutoConfiguration</td>
+<td class="Message">
+
+Using generated security password: b18ee77c-e568-411f-8a51-6667cb34d574
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:28.908</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.a.w.s.WelcomePageHandlerMapping</td>
+<td class="Message">Adding welcome page: class path resource [static/index.html]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:29.015</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.config.WebConfig</td>
+<td class="Message">使用目录: D:\Image</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:29.682</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.a.e.web.EndpointLinksResolver</td>
+<td class="Message">Exposing 1 endpoint(s) beneath base path &#39;/actuator&#39;</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:29.732</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.s.web.DefaultSecurityFilterChain</td>
+<td class="Message">Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@34128fed, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@10efb806, org.springframework.security.web.context.SecurityContextHolderFilter@16ca4532, org.springframework.security.web.header.HeaderWriterFilter@40477d52, org.springframework.security.web.authentication.logout.LogoutFilter@31d791c0, com.minecraft.handler.JwtAuthenticationFilter@2c56eba5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@75a5a912, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2e68bd3d, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4dfe56dc, org.springframework.security.web.session.SessionManagementFilter@36618b3b, org.springframework.security.web.access.ExceptionTranslationFilter@59e67a18, org.springframework.security.web.access.intercept.AuthorizationFilter@18b88f7]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:30.378</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.coyote.http11.Http11NioProtocol</td>
+<td class="Message">Starting ProtocolHandler [&quot;http-nio-8080&quot;]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:30.392</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.b.w.e.tomcat.TomcatWebServer</td>
+<td class="Message">Tomcat started on port(s): 8080 (http) with context path &#39;&#39;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:30.393</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Starting...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:30.393</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3796ff4]]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:30.393</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Started.</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:30.412</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.minecraft.MinecraftApplication</td>
+<td class="Message">Started MinecraftApplication in 6.768 seconds (process running for 7.355)</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:30.423</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Starting...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:30.597</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.pool.HikariPool</td>
+<td class="Message">HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7f2d4ffc</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:30.600</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Start completed.</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:30.612</td>
+<td class="Thread">main</td>
+<td class="Level">INFO</td>
+<td class="Logger">c.m.utils.DatabaseHealthChecker</td>
+<td class="Message">✅ MySQL 数据库连接成功</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:31.005</td>
+<td class="Thread">RMI TCP Connection(1)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.a.c.c.C.[Tomcat].[localhost].[/]</td>
+<td class="Message">Initializing Spring DispatcherServlet &#39;dispatcherServlet&#39;</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:21:31.005</td>
+<td class="Thread">RMI TCP Connection(1)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.web.servlet.DispatcherServlet</td>
+<td class="Message">Initializing Servlet &#39;dispatcherServlet&#39;</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:21:31.008</td>
+<td class="Thread">RMI TCP Connection(1)-192.168.2.104</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.web.servlet.DispatcherServlet</td>
+<td class="Message">Completed initialization in 3 ms</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 10:22:29.775</td>
+<td class="Thread">MessageBroker-1</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.w.s.c.WebSocketMessageBrokerStats</td>
+<td class="Message">WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 10:52:29.780</td>
+<td class="Thread">MessageBroker-1</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.w.s.c.WebSocketMessageBrokerStats</td>
+<td class="Message">WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 2, active threads = 1, queued tasks = 0, completed tasks = 1]</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-04-04 22:19:24.538</td>
+<td class="Thread">HikariPool-1 housekeeper</td>
+<td class="Level">WARN</td>
+<td class="Logger">com.zaxxer.hikari.pool.HikariPool</td>
+<td class="Message">HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10h59m22s909ms493µs900ns).</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 22:21:33.187</td>
+<td class="Thread">MessageBroker-2</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.w.s.c.WebSocketMessageBrokerStats</td>
+<td class="Message">WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 3, active threads = 1, queued tasks = 0, completed tasks = 2]</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 22:51:33.199</td>
+<td class="Thread">MessageBroker-1</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.w.s.c.WebSocketMessageBrokerStats</td>
+<td class="Message">WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 4, active threads = 1, queued tasks = 0, completed tasks = 3]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 23:09:32.404</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Stopping...</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 23:09:32.404</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3796ff4]]</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 23:09:32.404</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">o.s.m.s.b.SimpleBrokerMessageHandler</td>
+<td class="Message">Stopped.</td>
+</tr>
+
+<tr class="info odd">
+<td class="Date">2026-04-04 23:09:32.537</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Shutdown initiated...</td>
+</tr>
+
+<tr class="info even">
+<td class="Date">2026-04-04 23:09:32.538</td>
+<td class="Thread">SpringApplicationShutdownHook</td>
+<td class="Level">INFO</td>
+<td class="Logger">com.zaxxer.hikari.HikariDataSource</td>
+<td class="Message">HikariPool-1 - Shutdown completed.</td>
+</tr>
+</table>
+</body></html><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Logback Log Messages</title>
+<style  type="text/css">
+table { margin-left: 2em; margin-right: 2em; border-left: 2px solid #AAA; }
+TR.even { background: #FFFFFF; }
+TR.odd { background: #EAEAEA; }
+TR.warn TD.Level, TR.error TD.Level, TR.fatal TD.Level {font-weight: bold; color: #FF4040 }
+TD { padding-right: 1ex; padding-left: 1ex; border-right: 2px solid #AAA; }
+TD.Time, TD.Date { text-align: right; font-family: courier, monospace; font-size: smaller; }
+TD.Thread { text-align: left; }
+TD.Level { text-align: right; }
+TD.Logger { text-align: left; }
+TR.header { background: #596ED5; color: #FFF; font-weight: bold; font-size: larger; }
+TD.Exception { background: #A2AEE8; font-family: courier, monospace;}
+</style>
+
+  </head>
+<body>
+<hr/>
+<p>Log session start time Sun Apr 05 13:28:13 CST 2026</p><p></p>
+
+<table cellspacing="0">
+<tr class="header">
+<td class="Date">Date</td>
+<td class="Thread">Thread</td>
+<td class="Level">Level</td>
+<td class="Logger">Logger</td>
+<td class="Message">Message</td>
+</tr>
+
+</table>
+</body></html>

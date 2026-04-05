@@ -1,0 +1,99 @@
+
+.comment-container[data-v-ba484d75] {
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 20px;
+}
+.comment-header[data-v-ba484d75] {
+  margin-bottom: 20px;
+}
+.comment-header h1[data-v-ba484d75] {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.comment-list[data-v-ba484d75] {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.comment-item[data-v-ba484d75] {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+.comment-item[data-v-ba484d75]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.comment-user[data-v-ba484d75] {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.user-avatar[data-v-ba484d75] {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+.user-info h3[data-v-ba484d75] {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+.comment-time[data-v-ba484d75] {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+}
+.comment-content[data-v-ba484d75] {
+  margin-bottom: 12px;
+}
+.comment-rating[data-v-ba484d75] {
+  margin-bottom: 8px;
+}
+.star[data-v-ba484d75] {
+  font-size: 16px;
+  color: #FF9800;
+}
+.comment-text[data-v-ba484d75] {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+.comment-target[data-v-ba484d75] {
+  font-size: 14px;
+  color: var(--text-secondary-color);
+}
+.target-label[data-v-ba484d75] {
+  font-weight: 500;
+}
+.target-name[data-v-ba484d75] {
+  color: var(--primary-color);
+}
+.comment-actions[data-v-ba484d75] {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+.action-btn[data-v-ba484d75] {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.action-btn[data-v-ba484d75]:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}

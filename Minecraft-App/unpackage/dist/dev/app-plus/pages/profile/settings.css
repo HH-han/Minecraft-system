@@ -1,0 +1,54 @@
+
+.settings-container[data-v-eeefe5cd] {
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 20px;
+}
+.settings-header[data-v-eeefe5cd] {
+  margin-bottom: 20px;
+}
+.settings-header h1[data-v-eeefe5cd] {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+.settings-list[data-v-eeefe5cd] {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.settings-item[data-v-eeefe5cd] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.settings-item[data-v-eeefe5cd]:last-child {
+  border-bottom: none;
+}
+.settings-item[data-v-eeefe5cd]:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.settings-label[data-v-eeefe5cd] {
+  font-size: 16px;
+  color: var(--text-color);
+  font-weight: 500;
+}
+.settings-action[data-v-eeefe5cd] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.settings-desc[data-v-eeefe5cd] {
+  font-size: 14px;
+  color: var(--text-secondary-color);
+}
+.settings-arrow[data-v-eeefe5cd] {
+  font-size: 18px;
+  color: var(--text-secondary-color);
+}
