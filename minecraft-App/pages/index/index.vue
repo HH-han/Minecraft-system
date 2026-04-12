@@ -380,7 +380,6 @@ onUnmounted(() => {
 }
 
 .page-container {
-  padding: 8px;
   min-height: 100vh;
   background-color: var(--background-color);
 }
@@ -406,7 +405,6 @@ onUnmounted(() => {
   margin-bottom: 24px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  border-radius: 16px;
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
@@ -457,10 +455,9 @@ onUnmounted(() => {
 }
 
 .section {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
   padding: 8px;
-  border-radius: 16px;
 }
 
 .section-header {

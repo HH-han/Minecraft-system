@@ -252,8 +252,7 @@ onUnmounted(() => {
   aspect-ratio: var(--carousel-aspect-ratio);
   overflow: hidden;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 24px;
-  border-radius: 16px;
+  margin-bottom: 8px;
   transition: all 0.3s ease;
 }
 
@@ -400,8 +399,8 @@ onUnmounted(() => {
 }
 
 .carousel-pagination button {
-  width: 14px;
-  height: 14px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.4);
   border: none;
@@ -439,7 +438,7 @@ onUnmounted(() => {
 }
 
 .carousel-pagination button.active {
-  width: 40px;
+  width: 32px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);

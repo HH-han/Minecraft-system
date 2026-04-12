@@ -6,13 +6,196 @@
   <component name="ChangeListManager">
     <list default="true" id="708ba62d-3d47-4c7a-a770-8b42fc2f5ecd" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/App.uvue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/main.uts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/.env.development" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/.env.development" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/.env.production" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/.hbuilderx/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/.hbuilderx/launch.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/attraction.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/attraction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/carousel.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/carousel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/cities.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/cities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/collection.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/collection.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/comment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/community.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/community.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/continents.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/continents.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/countries.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/countries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/food.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/food.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/friend.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/friend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/group.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/group.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/homeRecommendations.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/homeRecommendations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/hotel.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/hotel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/like.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/like.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/monthlyRecommendations.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/monthlyRecommendations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/news.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/news.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/order.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/order.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/payment.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/payment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/product.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/product.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/recommend.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/recommend.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/safetytips.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/safetytips.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/ticket.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/ticket.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/travel.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/travel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/upload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/api/worldcharacteristics.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/api/worldcharacteristics.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/attraction/detail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/attraction/detail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/attraction/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/attraction/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/carousel/Carousel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/carousel/Carousel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/chat/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/chat/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/collection/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/collection/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/comment/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/comment/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/community/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/community/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/discover/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/discover/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/food/detail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/food/detail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/food/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/food/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/groupTravel/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/groupTravel/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/hotel/detail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/hotel/detail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/hotel/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/hotel/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/index/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/index/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/login/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/login/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/login/login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/login/login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/login/register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/login/register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/news/detail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/news/detail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/news/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/news/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/order/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/order/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/product/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/product/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/profile/about.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/profile/about.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/profile/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/profile/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/profile/settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/profile/settings.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/ticket/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/ticket/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/pages/travelPlan/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/travelPlan/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/platformConfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/platformConfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/app/qq.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/app/qq.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/app/wechat.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/app/wechat.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/bug.txt" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/bug.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/tabbar/attraction.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/tabbar/attraction.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/tabbar/food.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/tabbar/food.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/tabbar/home.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/tabbar/home.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/tabbar/order.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/tabbar/order.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/tabbar/search.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/tabbar/search.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/static/tabbar/user.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/static/tabbar/user.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/stores/cart.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/stores/cart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/stores/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/stores/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/changelog.md" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/changelog.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/components/uni-icons/uni-icons.uvue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/components/uni-icons/uni-icons.uvue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/components/uni-icons/uni-icons.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/components/uni-icons/uni-icons.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons_file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons_file.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons_file_vue.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/components/uni-icons/uniicons_file_vue.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-icons/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-icons/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/changelog.md" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/changelog.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/index.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_border.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_border.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_color.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_color.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_radius.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_radius.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_space.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_space.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_text.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_text.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/setting/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/setting/_variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/styles/tools/functions.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/styles/tools/functions.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/theme.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/theme.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/uni_modules/uni-scss/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/uni_modules/uni-scss/variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/cache/.app-android/tsc/app-android/.tsbuildInfo" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/cache/.app-android/tsc/app-android/.tsbuildInfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/cache/.vite/deps/_metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/cache/.vite/deps/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/cache/.vite/deps/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/.nvue/app.css.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/.nvue/app.css.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/.nvue/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/.nvue/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappautomator.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappautomator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappchooselocation.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappchooselocation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniapperror.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniapperror.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappopenlocation.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappopenlocation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniapppicker.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniapppicker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappquill.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappquill.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappquillimageresize.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappquillimageresize.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappscan.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappscan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappsuccess.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappsuccess.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/__uniappview.html" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/__uniappview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/app-config-service.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/app-config-service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/app-config.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/app-config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/app-service.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/app-service.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/app.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/attraction/detail.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/attraction/detail.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/attraction/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/attraction/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/chat/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/chat/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/collection/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/collection/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/comment/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/comment/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/community/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/community/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/discover/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/discover/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/food/detail.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/food/detail.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/food/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/food/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/groupTravel/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/groupTravel/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/hotel/detail.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/hotel/detail.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/hotel/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/hotel/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/index/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/index/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/login/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/login/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/login/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/login/login.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/login/register.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/login/register.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/news/detail.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/news/detail.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/news/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/news/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/order/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/order/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/product/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/product/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/profile/about.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/profile/about.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/profile/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/profile/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/profile/settings.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/profile/settings.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/ticket/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/ticket/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/pages/travelPlan/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/pages/travelPlan/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/app/qq.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/app/qq.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/app/wechat.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/app/wechat.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/bug.txt" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/bug.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/attraction.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/attraction.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/food.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/food.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/home.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/home.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/order.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/order.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/search.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/search.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/user.png" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/static/tabbar/user.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/app-plus/uni-app-view.umd.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/app-plus/uni-app-view.umd.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/unpackage/dist/dev/cache/.app-plus/tsc/app-android/.tsbuildInfo" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/unpackage/dist/dev/cache/.app-plus/tsc/app-android/.tsbuildInfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/utils/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/utils/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/utils/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/utils/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft-App/utils/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/utils/request.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-03-06.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-03-08.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-03-09.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-03-10.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-03-11.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-03-12.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.2026-03-06.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.2026-03-08.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.2026-03-09.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.2026-03-10.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.2026-03-11.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.2026-03-12.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-06.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-06.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-08.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-08.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-09.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-09.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-10.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-10.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-11.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-11.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-12.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-03-12.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
     </list>
@@ -176,23 +359,8 @@
       <workItem from="1775140855462" duration="655000" />
       <workItem from="1775225917750" duration="415000" />
       <workItem from="1775267788189" duration="2679000" />
-      <workItem from="1775366866262" duration="2574000" />
-    </task>
-    <task id="LOCAL-00045" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773560926087</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1773560926087</updated>
-    </task>
-    <task id="LOCAL-00046" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1773561781725</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1773561781725</updated>
+      <workItem from="1775366866262" duration="3572000" />
+      <workItem from="1775991832308" duration="1970000" />
     </task>
     <task id="LOCAL-00047" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -570,7 +738,23 @@
       <option name="project" value="LOCAL" />
       <updated>1775395897758</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1775398359780</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1775398359780</updated>
+    </task>
+    <task id="LOCAL-00095" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1775398735969</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1775398735969</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
