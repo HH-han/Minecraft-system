@@ -205,18 +205,32 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "SpiritualPressure",
-		"navigationBarBackgroundColor": "#4A90E2",
-		"backgroundColor": "#F6F9FE",
+		"navigationBarBackgroundColor": "#3A80D2",
+		"backgroundColor": "#F8FAFF",
 		"backgroundTextStyle": "dark",
-		"backgroundColorTop": "#4A90E2",
-		"backgroundColorBottom": "#F6F9FE",
+		"backgroundColorTop": "#3A80D2",
+		"backgroundColorBottom": "#F8FAFF",
 		"app-plus": {
-			"background": "#F6F9FE"
+			"background": "#F8FAFF",
+			"titleNView": {
+				"titleTextStyle": {
+					"fontSize": "18px",
+					"fontWeight": "600",
+					"color": "#FFFFFF"
+				},
+				"backgroundColor": "#3A80D2",
+				"shadow": "0 2px 8px rgba(0, 0, 0, 0.15)",
+				"height": "48px"
+			},
+			"animation": {
+				"duration": "300ms",
+				"timingFunction": "ease-in-out"
+			}
 		}
 	},
 	"tabBar": {
 		"color": "#7D7E80",
-		"selectedColor": "#4A90E2",
+		"selectedColor": "#3A80D2",
 		"backgroundColor": "#FFFFFF",
 		"borderStyle": "white",
 		"height": "60px",

@@ -72,7 +72,8 @@ export default {
     left: 0;
     right: 0;
     padding: 16px;
-    z-index: 10; /* 设定更高的 z-index 值，确保在其他元素上方 */
+    z-index: 10;
+    margin-top: 24px;
   }  
 .container_bottom {  
     max-width: 1200px; 
