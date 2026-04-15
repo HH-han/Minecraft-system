@@ -11,12 +11,15 @@ import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.UserMapper;
 import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
+import com.minecraft.vo.OnlineUserVO;
 import com.minecraft.utils.AccountGenerator;
 import com.minecraft.utils.DeviceInfoUtils;
 import com.minecraft.utils.ImageUtils;
 import com.minecraft.utils.IpLocationUtils;
 import com.minecraft.utils.JwtUtil;
 import com.minecraft.utils.RedisUtil;
+import com.minecraft.utils.OnlineUserUtil;
+import com.minecraft.mapper.OnlineUserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,6 +50,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private LoginLogService loginLogService;
+    
+    @Autowired
+    private OnlineUserMapper onlineUserMapper;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -124,6 +130,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 记录登录成功日志
         recordLoginLog(httpRequest, account, "1", "登录成功");
+        
+        // 添加在线用户记录
+        try {
+            OnlineUserVO onlineUser = OnlineUserUtil.createOnlineUserVO(user, httpRequest);
+            onlineUserMapper.addOnlineUser(onlineUser);
+        } catch (Exception e) {
+            // 在线用户记录失败，不影响登录流程
+            e.printStackTrace();
+        }
 
         return response;
     }
