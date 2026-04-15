@@ -8,7 +8,7 @@
           :alt="userInfo?.username || '用户头像'">
       </div>
       <div class="user-details">
-        <h2>{{ userInfo?.nickname || userInfo?.username || '用户名' }}</h2>
+        <h2>{{ userInfo?.username || userInfo?.username || '用户名' }}</h2>
         <p v-if="userInfo">{{ userInfo?.signature || '个人签名' }}</p>
         <p v-else @click="navigateTo('/pages/login/index')" style="cursor: pointer; color: var(--primary-color);">点击登录</p>
       </div>
