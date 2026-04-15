@@ -139,7 +139,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as echarts from 'echarts'
-import request from '@/utils/request'
+import { getServerMonitor, getServerStatus } from '@/api/monitoring'
 // 图表引用
 const cpuChart = ref(null)
 const memoryChart = ref(null)
@@ -710,8 +710,8 @@ const formatUptime = (seconds) => {
 // 获取服务器数据
 const fetchServerData = async () => {
     try {
-        const response = await request.get('/api/server-monitor')
-        const data = response
+        const response = await getServerMonitor()
+        const data = response.data
 
         // 更新时间
         lastUpdateTime.value = new Date().toLocaleTimeString()

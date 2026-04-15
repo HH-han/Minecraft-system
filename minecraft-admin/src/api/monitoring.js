@@ -6,15 +6,15 @@ import request from '@/utils/request'
 
 // 获取服务器性能监控数据
 export const getServerMonitor = () => {
-  return request.get('/api/server-monitor')
+  return request.get('/server-monitor')
 }
 
 // 获取服务器历史监控数据
 export const getServerMonitorHistory = (params) => {
-  return request.get('/api/server-monitor/history', { params })
+  return request.get('/server-monitor/history', { params })
 }
 
 // 获取服务器状态
 export const getServerStatus = () => {
-  return request.get('/api/server-monitor/status')
+  return request.get('/server-monitor/status')
 }

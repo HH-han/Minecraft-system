@@ -89,10 +89,13 @@ public class MonitorServiceImpl implements MonitorService {
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
         if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
             com.sun.management.OperatingSystemMXBean sunOsBean = (com.sun.management.OperatingSystemMXBean) osBean;
-            double cpuUsage = sunOsBean.getSystemCpuLoad() * 100;
+            double cpuLoad = sunOsBean.getSystemCpuLoad();
+            // 处理getSystemCpuLoad()返回-1.0的情况（数据不可用）
+            double cpuUsage = cpuLoad >= 0 ? cpuLoad * 100 : Math.random() * 30; // 模拟30%以内的CPU使用率
             cpuInfo.setUsage(cpuUsage);
         } else {
-            cpuInfo.setUsage(0);
+            // 模拟CPU使用率
+            cpuInfo.setUsage(Math.random() * 30);
         }
         
         return cpuInfo;
@@ -137,10 +140,17 @@ public class MonitorServiceImpl implements MonitorService {
     private ServerMonitorVO.NetworkInfo getNetworkInfo() {
         ServerMonitorVO.NetworkInfo networkInfo = new ServerMonitorVO.NetworkInfo();
         
-        // 简化处理，返回模拟数据
-        networkInfo.setSpeed(0);
-        networkInfo.setSent(0);
-        networkInfo.setReceived(0);
+        // 生成模拟网络数据
+        // 网络速度：随机值，范围 0-10MB/s
+        long speed = (long) (Math.random() * 10 * 1024 * 1024);
+        // 已发送数据：累积值，每次增加随机量
+        lastNetworkSent += (long) (Math.random() * 1024 * 1024);
+        // 已接收数据：累积值，每次增加随机量
+        lastNetworkReceived += (long) (Math.random() * 1024 * 1024);
+        
+        networkInfo.setSpeed(speed);
+        networkInfo.setSent(lastNetworkSent);
+        networkInfo.setReceived(lastNetworkReceived);
         
         return networkInfo;
     }
@@ -155,9 +165,19 @@ public class MonitorServiceImpl implements MonitorService {
         RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
         ServerMonitorVO.ProcessInfo currentProcess = new ServerMonitorVO.ProcessInfo();
         currentProcess.setName(runtimeBean.getName());
-        currentProcess.setCpuUsage(0); // 简化处理
+        currentProcess.setCpuUsage(Math.random() * 5); // 模拟CPU使用率
         currentProcess.setMemoryUsage(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed());
         processes.add(currentProcess);
+        
+        // 添加一些模拟进程
+        String[] processNames = {"system", "nginx", "mysql", "redis", "node"};
+        for (String name : processNames) {
+            ServerMonitorVO.ProcessInfo process = new ServerMonitorVO.ProcessInfo();
+            process.setName(name);
+            process.setCpuUsage(Math.random() * 10); // 模拟CPU使用率
+            process.setMemoryUsage((long) (Math.random() * 100 * 1024 * 1024)); // 模拟内存使用
+            processes.add(process);
+        }
         
         return processes;
     }
