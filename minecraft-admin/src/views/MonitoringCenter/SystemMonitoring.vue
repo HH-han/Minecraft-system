@@ -257,15 +257,23 @@ const updateCpuGauge = () => {
                         x2: 0,
                         y2: 1,
                         colorStops: [ {
+                            offset: 0,
+                            color: '#409EFF'
+                        }, {
                             offset: 0.7,
-                            color: '#37a2da'
+                            color: '#66B1FF'
+                        }, {
+                            offset: 1,
+                            color: '#91D5FF'
                         }]
-                    }
+                    },
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(64, 158, 255, 0.5)'
                 }
             },
             axisLine: {
                 lineStyle: {
-                    width: 20,
+                    width: 24,
                     color: [[1, 'rgba(200, 200, 200, 0.1)']]
                 }
             },
@@ -280,16 +288,18 @@ const updateCpuGauge = () => {
             },
             detail: {
                 valueAnimation: true,
-                fontSize: 28,
-                fontWeight: 'bolder',
+                fontSize: 20,
+                fontWeight: '600',
                 offsetCenter: [0, 0],
                 formatter: '{value}%',
-                color: '#333'
+                color: '#303133',
+                fontFamily: 'PingFang SC, Helvetica Neue, Arial, sans-serif'
             },
             title: {
-                fontSize: 14,
-                offsetCenter: [0, '75%'],
-                color: '#666'
+                fontSize: 16,
+                offsetCenter: [0, '35%'],
+                color: '#909399',
+                fontFamily: 'PingFang SC, Helvetica Neue, Arial, sans-serif'
             },
             data: [{
                 value: cpuUsage.value,
@@ -330,15 +340,23 @@ const updateNetworkGauge = () => {
                         x2: 0,
                         y2: 1,
                         colorStops: [{
+                            offset: 0,
+                            color: '#F56C6C'
+                        }, {
+                            offset: 0.7,
+                            color: '#F78989'
+                        }, {
                             offset: 1,
-                            color: '#fa541c'
+                            color: '#F9A9A9'
                         }]
-                    }
+                    },
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(245, 108, 108, 0.5)'
                 }
             },
             axisLine: {
                 lineStyle: {
-                    width: 20,
+                    width: 24,
                     color: [[1, 'rgba(200, 200, 200, 0.1)']]
                 }
             },
@@ -353,19 +371,21 @@ const updateNetworkGauge = () => {
             },
             detail: {
                 valueAnimation: true,
-                fontSize: 22,
-                fontWeight: 'bolder',
+                fontSize: 20,
+                fontWeight: '600',
                 offsetCenter: [0, 0],
             formatter: function(value) {
                 var mbValue = (value * 1024) / (1024 * 1024);
-                return mbValue.toFixed(5) + ' MB/s';
+                return mbValue.toFixed(2) + ' MB/s';
             },
-                color: '#333'
+                color: '#303133',
+                fontFamily: 'PingFang SC, Helvetica Neue, Arial, sans-serif'
             },
             title: {
-                fontSize: 14,
-                offsetCenter: [0, '75%'],
-                color: '#666'
+                fontSize: 16,
+                offsetCenter: [0, '35%'],
+                color: '#909399',
+                fontFamily: 'PingFang SC, Helvetica Neue, Arial, sans-serif'
             },
             data: [{
                 value: currentValue,
