@@ -16,7 +16,7 @@ import java.util.Map;
  * Token管理控制器
  */
 @RestController
-@RequestMapping("/token")
+@RequestMapping("/api/token")
 @Tag(name = "Token管理", description = "Token状态查询和刷新")
 public class TokenController {
 
