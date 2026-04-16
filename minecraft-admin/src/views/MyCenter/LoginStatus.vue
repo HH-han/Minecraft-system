@@ -202,7 +202,6 @@ const fetchTokenStatus = async () => {
     
     if (response.code === '200') {
       tokenData.value = response.data
-      ElMessage.success('Token状态获取成功')
     } else {
       throw new Error(response.msg || '获取Token状态失败')
     }

@@ -162,7 +162,7 @@ const fetchUserInfo = async () => {
     //从服务器获取最新数据
     const response = await getUserInfo();
 
-    if (response.code === '0') {
+    if (response.code === 200) {
       userInfo.value = response.data;
       originalUserInfo.value = { ...response.data };
       localStorage.setItem('user', JSON.stringify(response.data));

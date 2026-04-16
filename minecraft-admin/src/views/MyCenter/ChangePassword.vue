@@ -88,7 +88,7 @@ const fetchUserInfo = async () => {
 
         const response = await getUserInfo();
 
-        if (response.code === '0') {
+        if (response.code === 200) {
             userInfo.value = response.data;
             originalUserInfo.value = { ...response.data };
             localStorage.setItem('user', JSON.stringify(response.data));
