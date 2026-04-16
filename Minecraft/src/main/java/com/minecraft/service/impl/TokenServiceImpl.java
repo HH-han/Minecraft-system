@@ -1,6 +1,8 @@
 package com.minecraft.service.impl;
 
+import com.minecraft.entity.User;
 import com.minecraft.service.TokenService;
+import com.minecraft.service.UserService;
 import com.minecraft.utils.JwtUtil;
 import com.minecraft.utils.SecurityUtils;
 import io.jsonwebtoken.Claims;
@@ -19,12 +21,14 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    private UserService userService;
 
     @Override
     public Map<String, Object> getTokenStatus() {
         // 从SecurityContext中获取当前用户信息
         Long userId = SecurityUtils.getCurrentUserId();
-        String username = SecurityUtils.getCurrentUsername();
         String token = SecurityUtils.getCurrentToken();
 
         if (token == null) {
@@ -42,6 +46,18 @@ public class TokenServiceImpl implements TokenService {
         long now = System.currentTimeMillis();
         long exp = expiration.getTime();
         long remainingTime = exp - now;
+
+        // 从数据库中获取真实的用户名
+        String username = "未知用户";
+        if (userId != null) {
+            User user = userService.getById(userId);
+            if (user != null) {
+                username = user.getUsername();
+                if (username == null || username.trim().isEmpty()) {
+                    username = user.getAccount();
+                }
+            }
+        }
 
         // 构建响应数据
         Map<String, Object> tokenData = new HashMap<>();

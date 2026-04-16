@@ -88,15 +88,15 @@
           <el-collapse-item title="权限信息" name="permissions">
             <div class="permissions-list">
               <el-tag 
-                v-for="permission in tokenData?.permissions || []" 
-                :key="permission"
+                v-for="(value, key) in tokenData?.permissions || {}" 
+                :key="key"
                 type="info" 
                 size="small"
                 class="permission-tag"
               >
-                {{ permission }}
+                {{ key }}
               </el-tag>
-              <p v-if="!tokenData?.permissions?.length" class="no-data">暂无权限信息</p>
+              <p v-if="!tokenData?.permissions || Object.keys(tokenData.permissions).length === 0" class="no-data">暂无权限信息</p>
             </div>
           </el-collapse-item>
           
@@ -200,11 +200,11 @@ const fetchTokenStatus = async () => {
     error.value = null
     const response = await tokenApi.getTokenStatus()
     
-    if (response.code === 200) {
+    if (response.code === '200') {
       tokenData.value = response.data
       ElMessage.success('Token状态获取成功')
     } else {
-      throw new Error(response.message || '获取Token状态失败')
+      throw new Error(response.msg || '获取Token状态失败')
     }
   } catch (err) {
     console.error('获取Token状态失败:', err)
@@ -220,11 +220,11 @@ const handleRefreshToken = async () => {
     refreshing.value = true
     const response = await tokenApi.refreshToken()
     
-    if (response.code === 200) {
+    if (response.code === '200') {
       ElMessage.success('Token刷新成功')
       await fetchTokenStatus() // 重新获取状态
     } else {
-      throw new Error(response.message || '刷新Token失败')
+      throw new Error(response.msg || '刷新Token失败')
     }
   } catch (err) {
     console.error('刷新Token失败:', err)
