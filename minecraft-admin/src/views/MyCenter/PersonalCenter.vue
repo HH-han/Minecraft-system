@@ -16,8 +16,8 @@
                     <i class="fas fa-camera"></i>
                     <span>更换头像</span>
                   </div>
-                  <img v-if="!userInfo.image" :src="defaultAvatar" class="avatar-image" alt="默认头像" />
-                  <img v-else :src="userInfo.image" class="avatar-image" alt="用户头像" />
+                  <img v-if="!userInfo.avatar" :src="defaultAvatar" class="avatar-image" alt="默认头像" />
+                  <img v-else :src="userInfo.avatar" class="avatar-image" alt="用户头像" />
                 </div>
 
                 <!-- 上传提示信息 -->
@@ -132,6 +132,7 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
+import { getUserInfo, updateUserInfo, uploadAvatar } from '@/api/user';
 
 const router = useRouter();
 // 响应式数据
@@ -249,13 +250,10 @@ const saveChanges = async () => {
       return;
     }
 
-    // 获取用户信息用于更新
-    const authData = JSON.parse(localStorage.getItem('user') || 'null');
-
     // 发送请求（注意端点与后端@PutMapping("/update")匹配）
     const response = await updateUserInfo(updateData, {
       headers: {
-        'Authorization': `Bearer ${authData.token}`
+        'Authorization': `Bearer ${token}`
       }
     }).catch(error => {
       // 统一处理401错误
@@ -366,10 +364,11 @@ const handleFileUpload = async (event) => {
     const formData = new FormData();
     formData.append('file', file);
 
+    const token = localStorage.getItem('token');
     const response = await uploadAvatar(username, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${token}`
       }
     });
 

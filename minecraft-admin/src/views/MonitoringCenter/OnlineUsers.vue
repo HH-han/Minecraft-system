@@ -23,7 +23,7 @@
       <el-card class="stats-card">
         <div class="stats-item">
           <div class="stats-label">总用户数</div>
-          <div class="stats-value">{{ userStats?.totalCount || 0 }}</div>
+          <div class="stats-value">{{ userCount?.totalCount?.totalCount || 0 }}</div>
           <div class="stats-unit">人</div>
         </div>
       </el-card>
@@ -66,7 +66,7 @@
       
       <el-table :data="onlineUsers" style="width: 100%">
         <el-table-column prop="id" label="用户ID" width="80" />
-        <el-table-column prop="username" label="用户名" width="120" />
+        <el-table-column prop="username" label="用户名" width="160" />
         <el-table-column prop="nickname" label="昵称" width="120" />
         <el-table-column prop="role" label="角色" width="100">
           <template #default="scope">

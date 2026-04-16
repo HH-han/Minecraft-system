@@ -90,7 +90,7 @@ server:
 
 logging:
   level:
-    com.bolan.minecraft: debug
+    com.minecraft: debug
     org.springframework: info
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -2,6 +2,7 @@ package com.minecraft.service.impl;
 
 import com.minecraft.mapper.OnlineUserMapper;
 import com.minecraft.service.OnlineUserService;
+import com.minecraft.service.UserService;
 import com.minecraft.vo.OnlineUserVO;
 import com.minecraft.vo.UserStatsVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     @Autowired
     private OnlineUserMapper onlineUserMapper;
     
+    @Autowired
+    private UserService userService;
+    
     @Override
     public List<OnlineUserVO> getOnlineUsers(int page, int size) {
         // 计算偏移量
@@ -33,9 +37,17 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         
         // 从数据库获取统计数据
         stats.setOnlineCount(onlineUserMapper.getOnlineUserCount());
-        stats.setTodayLoginCount(onlineUserMapper.getTodayLoginCount());
-        stats.setTotalCount(onlineUserMapper.getTotalUserCount());
-        stats.setActiveCount(onlineUserMapper.getActiveUserCount(7)); // 最近7天活跃用户
+        
+        // 获取今日登录次数，如果为null则设置为0
+        Integer todayLoginCount = onlineUserMapper.getTodayLoginCount();
+        stats.setTodayLoginCount(todayLoginCount != null ? todayLoginCount : 0);
+        
+        // 使用UserService的getUserCount方法获取总用户数
+        stats.setTotalCount((int) userService.getUserCount());
+        
+        // 获取活跃用户数，如果为null则设置为0
+        Integer activeCount = onlineUserMapper.getActiveUserCount(7);
+        stats.setActiveCount(activeCount != null ? activeCount : 0);
         stats.setAvgOnlineTime(45.5); // 可以从数据库计算，这里暂时使用固定值
         
         // 获取登录趋势数据
@@ -65,8 +77,14 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     
     @Override
     public boolean forceLogout(Long userId) {
-        int result = onlineUserMapper.deleteOnlineUser(userId);
-        return result > 0;
+        try {
+            // 调用UserService的forceLogout方法，执行完整的下线逻辑
+            userService.forceLogout(userId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     @Override

@@ -48,6 +48,7 @@
 import { ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
+import { getUserInfo, updatePassword } from '@/api/user';
 
 const router = useRouter();
 const loading = ref(false);
@@ -180,7 +181,7 @@ const saveChanges = async () => {
         };
 
         // 发送请求
-        const response = await changePassword(data);
+        const response = await updatePassword(data.oldPassword, data.password);
 
         if (response.code === '0') {
             ElMessage.success('密码修改成功');

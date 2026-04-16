@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.OnlineUserMapper">
+    <!-- 获取在线用户列表 -->
+    <select id="getOnlineUsers" resultType="com.minecraft.vo.OnlineUserVO">
+        SELECT id, username, nickname, role, login_ip as loginIp, login_time as loginTime,
+               last_activity_time as lastActivityTime, browser, os, status
+        FROM online_users
+        ORDER BY last_activity_time DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+    
+    <!-- 获取在线用户总数 -->
+    <select id="getOnlineUserCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM online_users
+    </select>
+    
+    <!-- 根据用户ID获取在线用户 -->
+    <select id="getOnlineUserById" resultType="com.minecraft.vo.OnlineUserVO">
+        SELECT id, username, nickname, role, login_ip as loginIp, login_time as loginTime,
+               last_activity_time as lastActivityTime, browser, os, status
+        FROM online_users
+        WHERE id = #{userId, jdbcType=BIGINT}
+    </select>
+    
+    <!-- 删除在线用户 -->
+    <delete id="deleteOnlineUser">
+        DELETE FROM online_users WHERE id = #{userId, jdbcType=BIGINT}
+    </delete>
+    
+    <!-- 添加在线用户 -->
+    <insert id="addOnlineUser" parameterType="com.minecraft.vo.OnlineUserVO">
+        INSERT INTO online_users (id, username, nickname, role, login_ip, login_time, last_activity_time, browser, os, status)
+        VALUES (#{id, jdbcType=BIGINT}, #{username, jdbcType=VARCHAR}, #{nickname, jdbcType=VARCHAR},
+                #{role, jdbcType=VARCHAR}, #{loginIp, jdbcType=VARCHAR}, #{loginTime, jdbcType=TIMESTAMP},
+                #{lastActivityTime, jdbcType=TIMESTAMP}, #{browser, jdbcType=VARCHAR}, #{os, jdbcType=VARCHAR},
+                #{status, jdbcType=VARCHAR})
+        ON DUPLICATE KEY UPDATE
+        username = VALUES(username),
+        nickname = VALUES(nickname),
+        role = VALUES(role),
+        login_ip = VALUES(login_ip),
+        login_time = VALUES(login_time),
+        last_activity_time = VALUES(last_activity_time),
+        browser = VALUES(browser),
+        os = VALUES(os),
+        status = VALUES(status)
+    </insert>
+    
+    <!-- 获取今日登录次数 -->
+    <select id="getTodayLoginCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM user_login_log
+        WHERE DATE(login_time) = CURDATE()
+    </select>
+    
+    <!-- 获取总用户数 -->
+    <select id="getTotalUserCount" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT user_id) FROM user_login_log
+    </select>
+    
+    <!-- 获取活跃用户数 -->
+    <select id="getActiveUserCount" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT user_id) FROM user_login_log
+        WHERE login_time >= DATE_SUB(NOW(), INTERVAL #{days, jdbcType=INTEGER} DAY)
+    </select>
+    
+    <!-- 获取登录趋势数据 -->
+    <select id="getLoginTrend" resultType="java.util.Map">
+        SELECT DATE_FORMAT(login_time, '%H:00') as timePoint,
+               COUNT(*) as loginCount
+        FROM user_login_log
+        WHERE login_time >= DATE_SUB(NOW(), INTERVAL #{hours, jdbcType=INTEGER} HOUR)
+        GROUP BY timePoint
+        ORDER BY timePoint
+    </select>
+    
+    <!-- 获取用户活动日志 -->
+    <select id="getUserActivity" resultType="java.util.Map">
+        SELECT DATE_FORMAT(activity_time, '%Y-%m-%d %H:%i:%s') as activityTime,
+               activity_content as activityContent
+        FROM user_activity_log
+        WHERE user_id = #{userId, jdbcType=BIGINT}
+        AND activity_time >= DATE_SUB(NOW(), INTERVAL #{days, jdbcType=INTEGER} DAY)
+        ORDER BY activity_time DESC
+    </select>
+</mapper>

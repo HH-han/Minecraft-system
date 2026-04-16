@@ -19,6 +19,8 @@ public interface UserService extends IService<User> {
     String uploadAvatar(Long userId, MultipartFile file);
     void deleteUser(Long userId);
     List<User> getAllUsers();
+    long getUserCount();
     User getUserByAccount(String account);
     LoginResponse adminLogin(LoginRequest request, HttpServletRequest httpRequest);
+    void forceLogout(Long userId);
 }

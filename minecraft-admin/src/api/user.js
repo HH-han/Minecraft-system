@@ -39,6 +39,11 @@ export const getAllUsers = () => {
   return request.get('/user/list')
 }
 
+// 获取用户统总数
+export const getUserCount = () => {
+  return request.get('/user/count')
+}
+
 // 上传头像
 export const uploadAvatar = (formData) => {
   return request.post('/user/avatar', formData, {

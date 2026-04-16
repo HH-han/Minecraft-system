@@ -10,8 +10,8 @@
             <aside class="sidebar">
                 <div class="profile-header">
                     <div class="avatar">
-                        <img v-if="!userInfo.image" :src="defaultAvatar" alt="默认头像" />
-                        <img v-else :src="userInfo.image" alt="用户头像" />
+                        <img v-if="!userInfo.avatar" :src="defaultAvatar" alt="默认头像" />
+                        <img v-else :src="userInfo.avatar" alt="用户头像" />
                     </div>
                     <h2>{{ userInfo.username }}</h2>
                     <p>{{ userInfo.signature }}</p>
@@ -48,10 +48,14 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import PersonalCenter from '@/views/MyCenter/PersonalCenter.vue';
 import ChangePassword from '@/views/MyCenter/ChangePassword.vue';
 import MessageNotification from '@/views/MyCenter/MessageNotification.vue';
 import LoginStatus from '@/views/MyCenter/LoginStatus.vue';
+import { getUserInfo, updateUserInfo, uploadAvatar } from '@/api/user';
+
+const router = useRouter();
 
 // 组件映射对象
 const componentMap = {
@@ -82,15 +86,20 @@ const fetchUserInfo = async () => {
         const localUser = JSON.parse(localStorage.getItem('user') || {});
         userInfo.value = { ...localUser };
 
-        //从服务器获取最新数据
-        const response = await request.get('/api/public/user/info');
+        // 从服务器获取最新数据
+        const response = await getUserInfo();
 
-        if (response.code === '0') {
+        if (response.code === 200) {
             userInfo.value = response.data;
             originalUserInfo.value = { ...response.data };
             localStorage.setItem('user', JSON.stringify(response.data));
+            // 设置头像预览
+            if (response.data.avatar) {
+                // 如果需要头像预览，可以在这里设置
+            }
+            console.log('用户信息:', response.data);
         } else {
-            ElMessage.error(response.msg || '获取用户信息失败');
+            ElMessage.error(response.message || '获取用户信息失败');
         }
     } catch (error) {
         ElMessage.error('获取用户信息失败，请检查网络');

@@ -93,4 +93,11 @@ public class UserController {
         LoginResponse response = userService.adminLogin(request, httpRequest);
         return ApiResponse.success(response);
     }
+
+    @Operation(summary ="获取用户总数")
+    @GetMapping("/count")
+    public ApiResponse<Long> getUserCount() {
+        long count = userService.getUserCount();
+        return ApiResponse.success(count);
+    }
 }

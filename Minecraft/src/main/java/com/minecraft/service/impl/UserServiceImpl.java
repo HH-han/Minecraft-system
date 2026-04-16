@@ -133,10 +133,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         
         // 添加在线用户记录
         try {
+            System.out.println("开始添加在线用户记录");
             OnlineUserVO onlineUser = OnlineUserUtil.createOnlineUserVO(user, httpRequest);
-            onlineUserMapper.addOnlineUser(onlineUser);
+            System.out.println("创建OnlineUserVO对象成功: " + onlineUser);
+            int result = onlineUserMapper.addOnlineUser(onlineUser);
+            System.out.println("添加在线用户记录结果: " + result);
         } catch (Exception e) {
             // 在线用户记录失败，不影响登录流程
+            System.out.println("添加在线用户记录失败: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -377,6 +381,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public long getUserCount() {
+        return this.count();
+    }
+
+    @Override
     public LoginResponse adminLogin(LoginRequest request, HttpServletRequest httpRequest) {
         // 先执行普通登录逻辑
         LoginResponse response = login(request, httpRequest);
@@ -397,5 +406,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         recordLoginLog(httpRequest, request.getAccount(), "1", "管理员登录成功");
         
         return response;
+    }
+
+    @Override
+    public void forceLogout(Long userId) {
+        // 获取用户信息
+        User user = getById(userId);
+        if (user != null) {
+            // 更新用户在线状态为离线
+            updateOnlineStatus(userId, false);
+            
+            // 从在线用户表中删除该用户
+            try {
+                onlineUserMapper.deleteOnlineUser(userId);
+                System.out.println("强制下线用户: " + userId + "，从在线用户表中删除成功");
+            } catch (Exception e) {
+                System.out.println("强制下线用户: " + userId + "，从在线用户表中删除失败: " + e.getMessage());
+                e.printStackTrace();
+            }
+            
+            // 清除用户的登录缓存
+            String cacheKey = "login:user:" + user.getAccount();
+            try {
+                redisUtil.delete(cacheKey);
+                System.out.println("强制下线用户: " + userId + "，清除登录缓存成功");
+            } catch (Exception e) {
+                System.out.println("强制下线用户: " + userId + "，清除登录缓存失败: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 }
