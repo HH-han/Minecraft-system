@@ -1,9 +1,5 @@
 <template>
   <div class="recommendations-container">
-    <div class="recommendations-header">
-      <h2>热门推荐</h2>
-      <a href="#" class="see-more">查看更多</a>
-    </div>
     <!-- 分类 -->
     <div class="category-filter">
       <div class="category-list">
@@ -37,20 +33,15 @@
           <img :src="item.coverImageUrl" :alt="item.name" />
         </div>
         <div class="container">
-          <div class="left">
-            <div class="status-ind"></div>
-          </div>
-          <div class="right">
-            <div class="text-wrap">
-              <h3 class="recommendations-title">{{ item.name }}</h3>
-              <div class="recommendations-category">
-                <span class="category-tag">{{ item.categoryName }}</span>
-              </div>
-              <p class="recommendations-description">{{ (item.summary || item.recommendationReason).substring(0, 100) }}...</p>
-              <div class="recommendations-meta">
-                <span class="recommendations-location">{{ item.city }} {{ item.address }}</span>
-                <span class="recommendations-price">{{ item.isFree ? '免费' : `¥${item.minPrice || 0}` }}</span>
-              </div>
+          <div class="text-wrap">
+            <h3 class="recommendations-title">{{ item.name }}</h3>
+            <div class="recommendations-category">
+              <span class="category-tag">{{ item.categoryName }}</span>
+            </div>
+            <p class="recommendations-description">{{ (item.summary || item.recommendationReason).substring(0, 100) }}...</p>
+            <div class="recommendations-meta">
+              <span class="recommendations-location">{{ item.city }} {{ item.address }}</span>
+              <span class="recommendations-price">{{ item.isFree ? '免费' : `¥${item.minPrice || 0}` }}</span>
             </div>
             <div class="button-wrap">
               <button class="primary-cta" @click="openDetailModal(item)">查看详情</button>
@@ -63,7 +54,7 @@
 
     <!-- 详情模态框 -->
     <div v-if="showDetailModal" class="modal-overlay" @click="closeDetailModal">
-      <div class="modal-content glass-morphism" @click.stop>
+      <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h2>{{ selectedItem?.name }}</h2>
           <button class="close-btn" @click="closeDetailModal">
@@ -216,136 +207,82 @@ const closeDetailModal = () => {
 
 <style scoped>
 .recommendations-container {
-  padding: 40px 0;
-  position: relative;
-  z-index: 1;
+  padding: 0;
 }
 
-.recommendations-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding: 0 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 20px;
-  margin: 0 20px 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.recommendations-header h2 {
-  font-size: 28px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.see-more {
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.see-more:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.2);
-}
-
+/* 分类筛选 */
 .category-filter {
-  padding: 0 20px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 20px;
-  margin: 0 20px 30px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 24px 0;
+  margin-bottom: 32px;
 }
 
 .category-list {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
 
 .price-category-list {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .category-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #f5f5f7;
+  border: 1px solid #d2d2d6;
   border-radius: 20px;
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: #1d1d1f;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .category-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #e8e8ed;
+  border-color: #c7c7cc;
 }
 
 .category-btn.active {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+  background: #1d1d1f;
+  color: #ffffff;
+  border-color: #1d1d1f;
 }
 
+/* 推荐网格 */
 .recommendations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-  gap: 50px;
-  padding: 0 20px;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 32px;
 }
 
+/* 推荐卡片 */
 .recommendations {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  border-radius: 24px;
   overflow: hidden;
-  display: flex;
-  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .recommendations:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.01);
+  box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
 }
 
 .recommendations-image {
-  height: 250px;
-  flex-shrink: 0;
+  height: 200px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .recommendations-image img {
-  max-width: 300px;
+  width: 100%;
   height: 100%;
-  border-radius: 12px;
-  transition: transform 0.5s ease;
   object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
 .recommendations:hover .recommendations-image img {
@@ -353,57 +290,36 @@ const closeDetailModal = () => {
 }
 
 .container {
-  margin-left: 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  flex: 1;
-}
-
-.status-ind {
-  width: 8px;
-  height: 8px;
-  background-color: #ff4757;
-  margin: 6px 0;
-  border-radius: 50%;
-  flex-shrink: 0;
+  padding: 24px;
 }
 
 .text-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  color: #fff;
-  flex: 1;
+  gap: 12px;
 }
 
 .recommendations-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   margin: 0;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  line-height: 1.3;
-}
-
-.recommendations-category {
-  margin-bottom: 8px;
+  color: #1d1d1f;
+  line-height: 1.2;
 }
 
 .category-tag {
   display: inline-block;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  background: #2997ff;
   color: white;
   font-size: 12px;
   font-weight: 500;
   padding: 4px 12px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(79, 172, 254, 0.4);
 }
 
 .recommendations-description {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: #6e6e73;
   margin: 0;
   line-height: 1.4;
   display: -webkit-box;
@@ -416,132 +332,48 @@ const closeDetailModal = () => {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 8px;
-}
-
-.recommendations-location, .recommendations-price {
-  display: flex;
-  align-items: center;
+  color: #6e6e73;
+  margin-top: 4px;
 }
 
 .button-wrap {
   display: flex;
-  flex-direction: row;
-  gap: 16px;
-  align-items: center;
-}
-
-.secondary-cta {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 16px;
-  transition: all 0.3s ease;
-}
-
-.secondary-cta:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  text-decoration: none;
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .primary-cta {
-  font-size: 14px;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  font-weight: 600;
-  color: #fff;
+  background: #2997ff;
+  color: white;
   border: none;
-  border-radius: 16px;
-  cursor: pointer;
+  border-radius: 8px;
   padding: 8px 16px;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex: 1;
 }
 
 .primary-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
-  text-decoration: none;
+  background: #0066cc;
 }
 
-.right {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 14px;
+.secondary-cta {
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border: 1px solid #d2d2d6;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  .recommendations-header {
-    padding: 16px;
-    margin: 0 10px 20px;
-  }
-  
-  .recommendations-header h2 {
-    font-size: 24px;
-  }
-  
-  .category-filter {
-    padding: 16px;
-    margin: 0 10px 20px;
-  }
-  
-  .category-btn {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-  
-  .recommendations-grid {
-    grid-template-columns: 1fr;
-    padding: 0 10px;
-    gap: 20px;
-  }
-  
-  .recommendations {
-    flex-direction: column;
-    padding: 16px;
-  }
-  
-  .recommendations-image {
-    height: 200px;
-    width: 100%;
-  }
-  
-  .recommendations-image img {
-    max-width: 100%;
-  }
-  
-  .container {
-    margin-left: 0;
-    margin-top: 16px;
-  }
-  
-  .recommendations-title {
-    font-size: 16px;
-  }
-  
-  .button-wrap {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .primary-cta,
-  .secondary-cta {
-    width: 100%;
-    text-align: center;
-  }
+.secondary-cta:hover {
+  background: #e8e8ed;
+  border-color: #c7c7cc;
 }
 
 /* 模态框样式 */
@@ -551,7 +383,7 @@ const closeDetailModal = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -560,41 +392,45 @@ const closeDetailModal = () => {
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
   width: 100%;
+  /* 隐藏滚动条 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 隐藏WebKit浏览器的滚动条 */
+.modal-content::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px 24px 0;
 }
 
 .modal-header h2 {
   font-size: 24px;
-  font-weight: 600;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+  color: #1d1d1f;
   margin: 0;
 }
 
 .close-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #f5f5f7;
+  border: 1px solid #d2d2d6;
   cursor: pointer;
-  color: #fff;
+  color: #1d1d1f;
   padding: 8px;
   border-radius: 50%;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -603,8 +439,8 @@ const closeDetailModal = () => {
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: #e8e8ed;
+  border-color: #c7c7cc;
 }
 
 .modal-body {
@@ -614,7 +450,7 @@ const closeDetailModal = () => {
 .modal-image {
   width: 100%;
   height: 300px;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -628,7 +464,7 @@ const closeDetailModal = () => {
 .info-section {
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .info-section:last-child {
@@ -640,8 +476,7 @@ const closeDetailModal = () => {
 .info-section h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  color: #1d1d1f;
   margin: 0 0 12px 0;
   position: relative;
   padding-left: 12px;
@@ -655,13 +490,13 @@ const closeDetailModal = () => {
   transform: translateY(-50%);
   width: 4px;
   height: 16px;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  background: #2997ff;
   border-radius: 2px;
 }
 
 .info-section p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: #6e6e73;
   line-height: 1.5;
   margin: 0;
 }
@@ -676,42 +511,72 @@ const closeDetailModal = () => {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f5f5f7;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .info-item .label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #6e6e73;
 }
 
 .info-item .value {
   font-size: 14px;
-  color: #fff;
+  color: #1d1d1f;
   font-weight: 500;
-}
-
-/* 隐藏滚动条 */
-.modal-content::-webkit-scrollbar {
-  display: none;
-}
-
-.modal-content {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .category-list {
+    gap: 12px;
+  }
+  
+  .category-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .recommendations {
+    border-radius: 20px;
+  }
+  
+  .recommendations-image {
+    height: 180px;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .recommendations-title {
+    font-size: 18px;
+  }
+  
+  .button-wrap {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .primary-cta,
+  .secondary-cta {
+    width: 100%;
+  }
+  
   .modal-content {
     margin: 20px;
     max-height: calc(100vh - 40px);
+    border-radius: 20px;
   }
   
   .modal-header {
-    padding: 16px;
+    padding: 20px 20px 0;
   }
   
   .modal-header h2 {
@@ -719,7 +584,7 @@ const closeDetailModal = () => {
   }
   
   .modal-body {
-    padding: 16px;
+    padding: 20px;
   }
   
   .modal-image {
@@ -737,6 +602,32 @@ const closeDetailModal = () => {
   }
   
   .info-section h3 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-filter {
+    padding: 16px 0;
+  }
+  
+  .recommendations-grid {
+    gap: 16px;
+  }
+  
+  .recommendations {
+    border-radius: 16px;
+  }
+  
+  .recommendations-image {
+    height: 160px;
+  }
+  
+  .container {
+    padding: 16px;
+  }
+  
+  .recommendations-title {
     font-size: 16px;
   }
 }

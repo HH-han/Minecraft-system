@@ -20,7 +20,7 @@
 
         <!-- 安全提示详情模态框 -->
         <div v-if="showModal" class="modal-overlay" @click.self="closeTipDetail">
-            <div class="modal-content glass-card">
+            <div class="modal-content" @click.stop>
                 <div class="modal-header">
                     <h2>{{ selectedTip?.title }}</h2>
                     <button class="close-btn" @click="closeTipDetail">×</button>
@@ -78,12 +78,7 @@ onMounted(fetchSafetyTips);
 
 <style scoped>
 .safety-tips {
-    padding: 60px 40px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    border-radius: 20px;
-    margin: 40px 0;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0;
 }
 
 .section-title {
@@ -91,8 +86,7 @@ onMounted(fetchSafetyTips);
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 40px;
-    color: #fff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: #1d1d1f;
     position: relative;
     padding-bottom: 15px;
 }
@@ -105,7 +99,7 @@ onMounted(fetchSafetyTips);
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background: linear-gradient(90deg, #ff4757, #ff6b81);
+    background: #2997ff;
     border-radius: 2px;
 }
 
@@ -113,8 +107,6 @@ onMounted(fetchSafetyTips);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .tips-item {
@@ -122,18 +114,16 @@ onMounted(fetchSafetyTips);
     align-items: flex-start;
     gap: 16px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #ffffff;
+    border: 1px solid #d2d2d6;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .tips-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.01);
+    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
 }
 
 .tips-icon {
@@ -155,7 +145,7 @@ onMounted(fetchSafetyTips);
     border-radius: 8px;
     overflow: hidden;
     aspect-ratio: 16/9;
-    background: rgba(255, 255, 255, 0.05);
+    background: #f5f5f7;
 }
 
 .tips-image img {
@@ -173,14 +163,13 @@ onMounted(fetchSafetyTips);
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    color: #1d1d1f;
 }
 
 .tips-desc {
     font-size: 14px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.8);
+    color: #6e6e73;
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -191,12 +180,12 @@ onMounted(fetchSafetyTips);
 
 /* 模态框样式 */
 .modal-overlay {
-position: fixed;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -209,17 +198,12 @@ position: fixed;
     max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
-    border-radius: 16px;
+    background: #ffffff;
+    border-radius: 20px;
     padding: 24px;
     position: relative;
     box-sizing: border-box;
-}
-
-.glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header {
@@ -232,15 +216,15 @@ position: fixed;
 .modal-header h2 {
     font-size: 20px;
     font-weight: 600;
-    color: #fff;
+    color: #1d1d1f;
     margin: 0;
 }
 
 .close-btn {
-    background: none;
-    border: none;
+    background: #f5f5f7;
+    border: 1px solid #d2d2d6;
     font-size: 24px;
-    color: #fff;
+    color: #1d1d1f;
     cursor: pointer;
     padding: 0;
     width: 32px;
@@ -249,15 +233,16 @@ position: fixed;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background 0.3s;
+    transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #e8e8ed;
+    border-color: #c7c7cc;
 }
 
 .modal-body {
-    color: #fff;
+    color: #1d1d1f;
 }
 
 .tip-image {
@@ -276,7 +261,7 @@ position: fixed;
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: #6e6e73;
 }
 
 .tip-meta {
@@ -284,43 +269,19 @@ position: fixed;
     flex-wrap: wrap;
     gap: 12px;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6e6e73;
     margin-top: 20px;
 }
 
 .meta-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: #f5f5f7;
     padding: 4px 12px;
     border-radius: 12px;
     flex-shrink: 0;
 }
 
-/* 模态框滚动条样式 */
-.modal-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .safety-tips {
-        padding: 40px 20px;
-        margin: 20px 0;
-    }
-
     .section-title {
         font-size: 24px;
         margin-bottom: 30px;
@@ -333,6 +294,7 @@ position: fixed;
 
     .tips-item {
         padding: 16px;
+        border-radius: 12px;
     }
 
     .tips-icon {
@@ -351,14 +313,19 @@ position: fixed;
         width: 100%;
         padding: 20px;
         max-height: 90vh;
+        border-radius: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 18px;
+    }
+
+    .tip-description {
+        font-size: 14px;
     }
 }
 
 @media (max-width: 480px) {
-    .safety-tips {
-        padding: 30px 15px;
-    }
-
     .section-title {
         font-size: 22px;
         margin-bottom: 25px;
@@ -380,14 +347,6 @@ position: fixed;
 
     .modal-content {
         padding: 16px;
-    }
-
-    .modal-header h2 {
-        font-size: 18px;
-    }
-
-    .tip-description {
-        font-size: 14px;
     }
 }
 </style>

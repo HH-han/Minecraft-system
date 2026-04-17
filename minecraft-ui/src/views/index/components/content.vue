@@ -1,6 +1,5 @@
 <template>
     <div class="content-container">
-
         <!-- 酒店卡片 -->
         <section class="content-section">
             <h2 class="section-title">推荐酒店</h2>
@@ -12,17 +11,12 @@
                         <img :src="hotel.coverImage" alt="酒店图片">
                     </div>
                     <div class="container">
-                        <div class="left">
-                            <div class="status-ind"></div>
-                        </div>
-                        <div class="right">
-                            <div class="text-wrap">
-                                <h3 class="card-title">{{ hotel.name }}</h3>
-                                <p class="card-description">{{ hotel.description.substring(0, 100) }}...</p>
-                                <div class="card-meta">
-                                    <span class="card-location">{{ hotel.city }} {{ hotel.address }}</span>
-                                    <span class="card-price">¥{{ hotel.price }}/晚</span>
-                                </div>
+                        <div class="text-wrap">
+                            <h3 class="card-title">{{ hotel.name }}</h3>
+                            <p class="card-description">{{ hotel.description.substring(0, 100) }}...</p>
+                            <div class="card-meta">
+                                <span class="card-location">{{ hotel.city }} {{ hotel.address }}</span>
+                                <span class="card-price">¥{{ hotel.price }}/晚</span>
                             </div>
                             <div class="button-wrap">
                                 <button class="primary-cta" @click="viewHotelDetail(hotel.id)">查看详情</button>
@@ -45,17 +39,12 @@
                         <img :src="food.coverImage" alt="美食图片">
                     </div>
                     <div class="container">
-                        <div class="left">
-                            <div class="status-ind"></div>
-                        </div>
-                        <div class="right">
-                            <div class="text-wrap">
-                                <h3 class="card-title">{{ food.name }}</h3>
-                                <p class="card-description">{{ food.description.substring(0, 100) }}...</p>
-                                <div class="card-meta">
-                                    <span class="card-location">{{ food.city }} {{ food.restaurant }}</span>
-                                    <span class="card-price">¥{{ food.price }}</span>
-                                </div>
+                        <div class="text-wrap">
+                            <h3 class="card-title">{{ food.name }}</h3>
+                            <p class="card-description">{{ food.description.substring(0, 100) }}...</p>
+                            <div class="card-meta">
+                                <span class="card-location">{{ food.city }} {{ food.restaurant }}</span>
+                                <span class="card-price">¥{{ food.price }}</span>
                             </div>
                             <div class="button-wrap">
                                 <button class="primary-cta" @click="viewFoodDetail(food.id)">查看详情</button>
@@ -78,17 +67,12 @@
                         <img :src="attraction.coverImage" alt="景点图片">
                     </div>
                     <div class="container">
-                        <div class="left">
-                            <div class="status-ind"></div>
-                        </div>
-                        <div class="right">
-                            <div class="text-wrap">
-                                <h3 class="card-title">{{ attraction.name }}</h3>
-                                <p class="card-description">{{ attraction.description.substring(0, 100) }}...</p>
-                                <div class="card-meta">
-                                    <span class="card-location">{{ attraction.city }} {{ attraction.address }}</span>
-                                    <span class="card-price">¥{{ attraction.ticketPrice || 0 }}</span>
-                                </div>
+                        <div class="text-wrap">
+                            <h3 class="card-title">{{ attraction.name }}</h3>
+                            <p class="card-description">{{ attraction.description.substring(0, 100) }}...</p>
+                            <div class="card-meta">
+                                <span class="card-location">{{ attraction.city }} {{ attraction.address }}</span>
+                                <span class="card-price">¥{{ attraction.ticketPrice || 0 }}</span>
                             </div>
                             <div class="button-wrap">
                                 <button class="primary-cta" @click="viewAttractionDetail(attraction.id)">查看详情</button>
@@ -327,29 +311,19 @@ onMounted(() => {
 
 <style scoped>
 .content-container {
-    padding: 40px 20px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
+    padding: 0;
 }
 
 .content-section {
     margin-bottom: 60px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .section-title {
     font-size: 26px;
     font-weight: 700;
     margin-bottom: 25px;
-    color: #fff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    border-left: 4px solid #4facfe;
+    color: #1d1d1f;
+    border-left: 4px solid #2997ff;
     padding-left: 16px;
     position: relative;
 }
@@ -361,47 +335,42 @@ onMounted(() => {
     left: 16px;
     width: 80px;
     height: 2px;
-    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    background: #2997ff;
     border-radius: 1px;
 }
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
-    gap: 50px;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 32px;
 }
 
 .card {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border: 1px solid #d2d2d6;
+    border-radius: 24px;
+    overflow: hidden;
     display: flex;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    padding: 16px;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.01);
+    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
 }
 
 .card-image {
-    height: 250px;
+    height: 200px;
     flex-shrink: 0;
 }
 
 .card-image img {
-    max-width: 300px;
+    max-width: 200px;
     height: 100%;
-    border-radius: 12px;
-    transition: transform 0.5s ease;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
 .card:hover .card-image img {
@@ -410,41 +379,27 @@ onMounted(() => {
 
 .container {
     margin-left: 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
     flex: 1;
-}
-
-.status-ind {
-    width: 8px;
-    height: 8px;
-    background-color: #ff4757;
-    margin: 6px 0;
-    border-radius: 50%;
-    flex-shrink: 0;
 }
 
 .text-wrap {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    color: #fff;
-    flex: 1;
+    gap: 12px;
+    height: 100%;
 }
 
 .card-title {
     font-size: 18px;
     font-weight: 600;
     margin: 0;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    color: #1d1d1f;
     line-height: 1.3;
 }
 
 .card-description {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    color: #6e6e73;
     margin: 0;
     line-height: 1.4;
     display: -webkit-box;
@@ -457,99 +412,69 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 8px;
-}
-
-.card-location, .card-price {
-    display: flex;
-    align-items: center;
+    color: #6e6e73;
+    margin-top: 4px;
 }
 
 .button-wrap {
     display: flex;
-    flex-direction: row;
-    gap: 16px;
-    align-items: center;
-}
-
-.secondary-cta {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 16px;
-    transition: all 0.3s ease;
-}
-
-.secondary-cta:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    text-decoration: none;
+    gap: 12px;
+    margin-top: 8px;
 }
 
 .primary-cta {
-    font-size: 14px;
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-    font-weight: 600;
-    color: #fff;
+    background: #2997ff;
+    color: white;
     border: none;
-    border-radius: 16px;
-    cursor: pointer;
+    border-radius: 8px;
     padding: 8px 16px;
-    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    flex: 1;
 }
 
 .primary-cta:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
-    text-decoration: none;
+    background: #0066cc;
 }
 
-.right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 14px;
+.secondary-cta {
+    background: #f5f5f7;
+    color: #1d1d1f;
+    border: 1px solid #d2d2d6;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.secondary-cta:hover {
+    background: #e8e8ed;
+    border-color: #c7c7cc;
 }
 
 .loading {
     text-align: center;
     padding: 40px;
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.05);
+    color: #6e6e73;
+    background: #f5f5f7;
     border-radius: 12px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .error {
     text-align: center;
     padding: 40px;
     color: #ff4757;
-    background: rgba(255, 71, 87, 0.1);
+    background: #ffebee;
     border-radius: 12px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 71, 87, 0.2);
+    border: 1px solid #ffcdd2;
 }
 
 @media (max-width: 768px) {
-    .content-container {
-        padding: 20px 15px;
-    }
-    
     .content-section {
-        padding: 20px;
         margin-bottom: 40px;
     }
     
@@ -564,11 +489,11 @@ onMounted(() => {
     
     .card {
         flex-direction: column;
-        padding: 16px;
+        border-radius: 20px;
     }
     
     .card-image {
-        height: 200px;
+        height: 180px;
         width: 100%;
     }
     
@@ -578,7 +503,7 @@ onMounted(() => {
     
     .container {
         margin-left: 0;
-        margin-top: 16px;
+        padding: 16px;
     }
     
     .card-title {
@@ -587,14 +512,30 @@ onMounted(() => {
     
     .button-wrap {
         flex-direction: column;
-        align-items: flex-start;
         gap: 8px;
     }
     
     .primary-cta,
     .secondary-cta {
         width: 100%;
-        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        border-radius: 16px;
+    }
+    
+    .card-image {
+        height: 160px;
+    }
+    
+    .container {
+        padding: 14px;
+    }
+    
+    .card-title {
+        font-size: 16px;
     }
 }
 </style>

@@ -5,10 +5,7 @@
         <div v-if="loading.news" class="loading">加载中...</div>
         <div v-else-if="error.news" class="error">{{ error.news }}</div>
         <div v-else class="card-grid">
-            <div v-for="news in newsList" :key="news.id" class="news-card" :style="cardStyle" @click="viewNewsDetail(news.id)">
-                <!-- 玻璃拟态背景层 -->
-                <div class="glass-background"></div>
-
+            <div v-for="news in newsList" :key="news.id" class="news-card" @click="viewNewsDetail(news.id)">
                 <!-- 卡片内容 -->
                 <div class="card-content">
                     <!-- 图片区域 (模拟新闻图) -->
@@ -89,12 +86,6 @@ const modalData = ref({});
 const modalLoading = ref(false);
 const modalError = ref('');
 
-// 卡片样式
-const cardStyle = {
-    '--blur-amount': '10px',
-    '--card-bg': 'rgba(255, 255, 255, 0.1)'
-};
-
 // 格式化日期
 const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -150,53 +141,35 @@ onMounted(() => {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 20px;
-    color: #333;
-    border-left: 4px solid #4facfe;
+    color: #1d1d1f;
+    border-left: 4px solid #2997ff;
     padding-left: 12px;
 }
 
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px;
+    gap: 24px;
 }
 
-/* 卡片容器 — 提供相对定位和圆角阴影 */
+/* 卡片容器 */
 .news-card {
-    position: relative;
     width: 100%;
+    background: #ffffff;
+    border: 1px solid #d2d2d6;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: #1e293b;
-    /* 文字色深一些以保证在玻璃背景上可读 */
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
 }
 
-/* 玻璃背景层 — 真正的半透明底色 */
-.glass-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--card-bg);
-    border-radius: 24px;
-    z-index: 0;
-    /* 增加一点微妙的渐变让玻璃更灵动 */
-    background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.35) 0%,
-            rgba(255, 255, 255, 0.15) 100%);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+.news-card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
 }
 
-/* 内容区域 — 放在玻璃之上 */
+/* 内容区域 */
 .card-content {
-    position: relative;
-    z-index: 1;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -208,7 +181,7 @@ onMounted(() => {
     width: 100%;
     height: 180px;
     overflow: hidden;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid #d2d2d6;
 }
 
 .news-image {
@@ -216,11 +189,11 @@ onMounted(() => {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
 }
 
 .news-card:hover .news-image {
-    transform: scale(1.03);
+    transform: scale(1.05);
 }
 
 /* 分类标签 */
@@ -228,17 +201,12 @@ onMounted(() => {
     position: absolute;
     top: 16px;
     left: 16px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: #2997ff;
+    color: white;
     padding: 4px 12px;
     border-radius: 30px;
-    font-size: 0.75rem;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.3px;
-    color: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     z-index: 2;
 }
 
@@ -247,24 +215,22 @@ onMounted(() => {
     padding: 20px 18px 22px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 }
 
 .news-title {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 18px;
     font-weight: 600;
     line-height: 1.4;
-    color: #0f172a;
-    /* 深色保证可读性 */
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    color: #1d1d1f;
 }
 
 .news-description {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 14px;
     line-height: 1.5;
-    color: #334155;
+    color: #6e6e73;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -277,24 +243,18 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 12px;
-    font-size: 0.8rem;
-    color: #1e293b;
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6e6e73;
+    border-top: 1px solid #d2d2d6;
     padding-top: 12px;
 }
 
 .author,
-.date,
 .stats {
     display: flex;
     align-items: center;
     gap: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    padding: 4px 8px;
-    border-radius: 30px;
-    backdrop-filter: blur(2px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .stats {
@@ -307,26 +267,20 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 2px;
-    font-size: 0.75rem;
-    color: #1e293b;
+    font-size: 12px;
+    color: #6e6e73;
 }
 
 .icon {
     opacity: 0.8;
-}
-
-/* 卡片悬停效果 */
-.news-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: rgba(255, 255, 255, 0.7);
+    color: #6e6e73;
 }
 
 /* 加载和错误状态 */
 .loading {
     text-align: center;
     padding: 40px;
-    color: #666;
+    color: #6e6e73;
 }
 
 .error {
@@ -338,7 +292,8 @@ onMounted(() => {
 /* 响应式微调 */
 @media (max-width: 768px) {
     .card-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     .section-title {
@@ -346,7 +301,7 @@ onMounted(() => {
     }
     
     .news-card {
-        width: 100%;
+        border-radius: 20px;
     }
     
     .text-section {
@@ -354,11 +309,25 @@ onMounted(() => {
     }
     
     .news-title {
-        font-size: 1.1rem;
+        font-size: 16px;
     }
     
     .image-section {
         height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .news-card {
+        border-radius: 16px;
+    }
+    
+    .text-section {
+        padding: 14px 12px 16px;
+    }
+    
+    .image-section {
+        height: 140px;
     }
 }
 </style>
