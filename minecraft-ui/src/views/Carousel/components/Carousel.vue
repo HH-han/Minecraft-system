@@ -309,7 +309,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   padding: 2.5rem;
-  color: #ffffff;
+  color: var(--text-color);
   margin: 0 auto;
   text-align: center;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
