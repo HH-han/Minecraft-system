@@ -385,6 +385,7 @@ onMounted(() => {
 .text-wrap {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 12px;
     height: 100%;
 }

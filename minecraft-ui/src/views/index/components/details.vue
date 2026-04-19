@@ -12,7 +12,7 @@
                     <!-- 新闻详情 -->
                     <div v-if="type === 'news'" class="news-details">
                         <div class="details-image">
-                            <img :src="data.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=news%20article%20placeholder%2C%20simple%20clean%20design&image_size=square'" alt="新闻图片">
+                            <img :src="data.coverImage || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=news%20article%20placeholder%2C%20simple%20clean%20design&image_size=square'" alt="新闻图片">
                         </div>
                         <h3 class="details-title">{{ data.title }}</h3>
                         <div class="details-meta">
@@ -25,7 +25,7 @@
                     <!-- 酒店详情 -->
                     <div v-if="type === 'hotel'" class="hotel-details">
                         <div class="details-image">
-                            <img :src="data.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20exterior%20placeholder%2C%20modern%20design&image_size=square'" alt="酒店图片">
+                            <img :src="data.coverImage || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20exterior%20placeholder%2C%20modern%20design&image_size=square'" alt="酒店图片">
                         </div>
                         <h3 class="details-title">{{ data.name }}</h3>
                         <div class="details-meta">
@@ -38,7 +38,7 @@
                     <!-- 美食详情 -->
                     <div v-if="type === 'food'" class="food-details">
                         <div class="details-image">
-                            <img :src="data.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=delicious%20food%20placeholder%2C%20appetizing%20presentation&image_size=square'" alt="美食图片">
+                            <img :src="data.coverImage || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=delicious%20food%20placeholder%2C%20appetizing%20presentation&image_size=square'" alt="美食图片">
                         </div>
                         <h3 class="details-title">{{ data.name }}</h3>
                         <div class="details-meta">
@@ -51,7 +51,7 @@
                     <!-- 景点详情 -->
                     <div v-if="type === 'attraction'" class="attraction-details">
                         <div class="details-image">
-                            <img :src="data.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tourist%20attraction%20placeholder%2C%20scenic%20view&image_size=square'" alt="景点图片">
+                            <img :src="data.coverImage || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tourist%20attraction%20placeholder%2C%20scenic%20view&image_size=square'" alt="景点图片">
                         </div>
                         <h3 class="details-title">{{ data.name }}</h3>
                         <div class="details-meta">
