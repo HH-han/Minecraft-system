@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minecraft.common.PaymentMethod;
 import com.minecraft.entity.Order;
 import com.minecraft.entity.Payment;
+import com.minecraft.entity.PointsRecord;
 import com.minecraft.enums.PaymentStatus;
 import com.minecraft.mapper.OrderMapper;
 import com.minecraft.mapper.PaymentMapper;
 import com.minecraft.service.OrderService;
 import com.minecraft.service.PaymentService;
+import com.minecraft.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
     private OrderMapper orderMapper;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private UserService userService;
     private static final Random random = new Random();
 
     @Override
@@ -89,6 +93,17 @@ public class PaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> impl
                 // 更新订单状态为已支付
                 orderService.payOrder(orderId);
                 log.info("订单状态更新成功，订单ID：{}", orderId);
+                
+                // 根据支付金额为用户添加积分（1元=1积分）
+                int points = payment.getAmount().intValue();
+                if (points > 0) {
+                    boolean addPointsSuccess = userService.addPoints(userId, points, "支付订单获得积分");
+                    if (addPointsSuccess) {
+                        log.info("用户积分添加成功，用户ID：{}，积分：{}", userId, points);
+                    } else {
+                        log.error("用户积分添加失败，用户ID：{}，积分：{}", userId, points);
+                    }
+                }
             } else {
                 payment.setStatus(PaymentStatus.FAILED.getCode().toString());
                 log.info("支付失败，订单ID：{}，支付编号：{}", orderId, payment.getPaymentNo());

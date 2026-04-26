@@ -270,24 +270,6 @@ const routes = [
       requiresAuth: true,
     },
   },
-  {
-    path: "/points/records",
-    name: "PointsRecords",
-    component: () => import("@/views/Points/records.vue"),
-    meta: {
-      title: "积分记录",
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/points/orders",
-    name: "PointsOrders",
-    component: () => import("@/views/Points/orders.vue"),
-    meta: {
-      title: "兑换订单",
-      requiresAuth: true,
-    },
-  }
 ];
 
 const router = createRouter({

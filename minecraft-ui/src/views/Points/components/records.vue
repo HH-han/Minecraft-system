@@ -52,10 +52,11 @@ const total = ref(0);
 const getRecords = async () => {
   try {
     const response = await getPointsRecords(currentPage.value, pageSize.value);
-    records.value = response.data;
+    records.value = Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     console.error('获取积分记录失败:', error);
     ElMessage.error('获取积分记录失败');
+    records.value = [];
   }
 };
 

@@ -49,10 +49,11 @@ const total = ref(0);
 const getOrders = async () => {
   try {
     const response = await getExchangeOrders(currentPage.value, pageSize.value);
-    orders.value = response.data;
+    orders.value = Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     console.error('获取兑换订单失败:', error);
     ElMessage.error('获取兑换订单失败');
+    orders.value = [];
   }
 };
 
