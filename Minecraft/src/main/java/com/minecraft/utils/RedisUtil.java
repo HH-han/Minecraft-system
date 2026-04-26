@@ -148,4 +148,12 @@ public class RedisUtil {
     public boolean exists(String blockKey) {
         return redisTemplate.hasKey(blockKey);
     }
+    
+    public Boolean setIfAbsent(String key, Object value, long timeout, TimeUnit unit) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit);
+    }
+    
+    public Boolean setIfAbsent(String key, Object value) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value);
+    }
 }

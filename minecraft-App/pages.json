@@ -200,6 +200,30 @@
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}
+		},
+		{
+			"path": "pages/points/index",
+			"style": {
+				"navigationBarTitleText": "积分商城",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/points/records",
+			"style": {
+				"navigationBarTitleText": "积分记录",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/points/orders",
+			"style": {
+				"navigationBarTitleText": "兑换订单",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
 		}
 	],
 	"globalStyle": {

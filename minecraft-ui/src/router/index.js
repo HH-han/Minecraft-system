@@ -259,6 +259,34 @@ const routes = [
       title: "支付页面",
       requiresAuth: false,
     },
+  },
+  // 积分系统
+  {
+    path: "/points",
+    name: "Points",
+    component: () => import("@/views/Points/index.vue"),
+    meta: {
+      title: "积分商城",
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/points/records",
+    name: "PointsRecords",
+    component: () => import("@/views/Points/records.vue"),
+    meta: {
+      title: "积分记录",
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/points/orders",
+    name: "PointsOrders",
+    component: () => import("@/views/Points/orders.vue"),
+    meta: {
+      title: "兑换订单",
+      requiresAuth: true,
+    },
   }
 ];
 

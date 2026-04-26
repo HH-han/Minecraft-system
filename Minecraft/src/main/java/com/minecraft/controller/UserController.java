@@ -4,6 +4,8 @@ import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.LoginResponse;
 import com.minecraft.entity.User;
+import com.minecraft.entity.PointsRecord;
+import com.minecraft.mapper.PointsRecordMapper;
 import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.SecurityUtils;
@@ -25,6 +27,9 @@ public class UserController {
     
     @Autowired
     private LoginLogService loginLogService;
+    
+    @Autowired
+    private PointsRecordMapper pointsRecordMapper;
 
     @Operation(summary ="获取用户信息")
     @GetMapping("/info")
@@ -99,5 +104,28 @@ public class UserController {
     public ApiResponse<Long> getUserCount() {
         long count = userService.getUserCount();
         return ApiResponse.success(count);
+    }
+    
+    @Operation(summary ="获取积分记录")
+    @GetMapping("/points/records")
+    public ApiResponse<List<PointsRecord>> getPointsRecords() {
+        Long userId = SecurityUtils.getCurrentUserId();
+        
+        com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<PointsRecord> wrapper =
+            new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<>();
+        wrapper.eq(PointsRecord::getUserId, userId);
+        wrapper.orderByDesc(PointsRecord::getCreateTime);
+        wrapper.last("limit 50");
+        
+        List<PointsRecord> records = pointsRecordMapper.selectList(wrapper);
+        return ApiResponse.success(records);
+    }
+    
+    @Operation(summary ="获取用户积分")
+    @GetMapping("/points")
+    public ApiResponse<Integer> getUserPoints() {
+        Long userId = SecurityUtils.getCurrentUserId();
+        User user = userService.getUserInfo(userId);
+        return ApiResponse.success(user.getPoints());
     }
 }

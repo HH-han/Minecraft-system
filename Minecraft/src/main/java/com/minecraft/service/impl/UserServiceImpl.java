@@ -6,8 +6,10 @@ import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.request.RegisterRequest;
 import com.minecraft.dto.response.LoginResponse;
 import com.minecraft.entity.LoginLog;
+import com.minecraft.entity.PointsRecord;
 import com.minecraft.entity.User;
 import com.minecraft.exception.BusinessException;
+import com.minecraft.mapper.PointsRecordMapper;
 import com.minecraft.mapper.UserMapper;
 import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
@@ -53,6 +55,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private OnlineUserMapper onlineUserMapper;
+    
+    @Autowired
+    private PointsRecordMapper pointsRecordMapper;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -222,6 +227,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setStatus(1);
+        user.setPoints(0);
         
         // 处理头像上传
         if (request.getAvatar() != null && request.getAvatar().startsWith("data:image")) {
@@ -288,6 +294,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateUser.setSignature(user.getSignature());
         updateUser.setNickname(user.getNickname());
         updateUser.setExperience(user.getExperience());
+        updateUser.setPoints(user.getPoints());
         updateUser.setPermissions(user.getPermissions());
         
         updateById(updateUser);
@@ -435,5 +442,61 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public boolean addPoints(Long userId, Integer points, String remark) {
+        User user = getById(userId);
+        if (user == null) {
+            return false;
+        }
+        
+        int result = getBaseMapper().addPoints(userId, points);
+        if (result > 0) {
+            user = getById(userId);
+            PointsRecord record = new PointsRecord();
+            record.setUserId(userId);
+            record.setPoints(points);
+            record.setBeforePoints(user.getPoints() - points);
+            record.setAfterPoints(user.getPoints());
+            record.setType("INCOME");
+            record.setRemark(remark);
+            pointsRecordMapper.insert(record);
+            
+            // 清除用户登录缓存
+            String cacheKey = "login:user:" + user.getAccount();
+            redisUtil.delete(cacheKey);
+            
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deductPoints(Long userId, Integer points, String remark) {
+        User user = getById(userId);
+        if (user == null) {
+            return false;
+        }
+        
+        int result = getBaseMapper().deductPoints(userId, points);
+        if (result > 0) {
+            user = getById(userId);
+            PointsRecord record = new PointsRecord();
+            record.setUserId(userId);
+            record.setPoints(points);
+            record.setBeforePoints(user.getPoints() + points);
+            record.setAfterPoints(user.getPoints());
+            record.setType("EXCHANGE");
+            record.setRemark(remark);
+            pointsRecordMapper.insert(record);
+            
+            // 清除用户登录缓存
+            String cacheKey = "login:user:" + user.getAccount();
+            redisUtil.delete(cacheKey);
+            
+            return true;
+        }
+        return false;
     }
 }

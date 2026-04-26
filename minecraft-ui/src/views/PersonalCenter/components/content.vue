@@ -54,6 +54,7 @@
           <div class="action-buttons">
             <el-button type="primary" :icon="Edit" @click="openEditModal" round>修改信息</el-button>
             <el-button :icon="Lock" @click="openPasswordModal" round>更改密码</el-button>
+            <el-button type="success" @click="goToPoints" round>积分商城</el-button>
           </div>
         </div>
       </div>
@@ -194,7 +195,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Edit, Lock } from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router';
 import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
+import { getUserPoints } from '@/api/points';
 
 // 用户信息 (根据后端返回完整字段)
 const userInfo = ref({
@@ -219,9 +222,15 @@ const userInfo = ref({
   experience:''
 });
 
+// 积分信息
+const userPoints = ref(0);
+
 // 加载状态
 const loading = ref(false);
 const passwordLoading = ref(false);
+
+// 路由实例
+const router = useRouter();
 
 // 模态框状态
 const showEditModal = ref(false);
@@ -261,6 +270,7 @@ const triggerFileInput = () => {
 // 初始化获取用户信息
 onMounted(() => {
   fetchUserInfo();
+  fetchUserPoints();
 });
 
 // 获取用户信息 (从localStorage获取token)
@@ -285,6 +295,26 @@ const fetchUserInfo = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+// 获取用户积分
+const fetchUserPoints = async () => {
+  try {
+    const response = await getUserPoints();
+    if (response.code === 200) {
+      userPoints.value = response.data;
+      console.log('用户积分:', response.data);
+    } else {
+      ElMessage.error(response.message || '获取用户积分失败');
+    }
+  } catch (error) {
+    console.error('获取用户积分失败:', error);
+  }
+};
+
+// 跳转到积分商城
+const goToPoints = () => {
+  router.push('/points');
 };
 
 // 处理头像上传

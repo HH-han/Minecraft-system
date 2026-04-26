@@ -43,6 +43,8 @@ public class User {
     
     private String experience;
 
+    private Integer points;
+
     private String permissions;
     
     @TableField(fill = FieldFill.INSERT)
