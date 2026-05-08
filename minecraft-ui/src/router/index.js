@@ -40,6 +40,24 @@ const routes = [
         },
       },
       {
+        path: "/ticket",
+        name: "Ticket",
+        component: () => import("@/views/Ticket/index.vue"),
+        meta: {
+          title: "机票",
+          requiresAuth: false,
+        },
+      },
+      {
+        path: "/travel",
+        name: "Travel",
+        component: () => import("@/views/Travel/index.vue"),
+        meta: {
+          title: "旅行计划",
+          requiresAuth: false,
+        },
+      },
+      {
         path: "/souvenir",
         name: "Souvenir",
         component: () => import("@/views/Souvenir/index.vue"),
@@ -267,6 +285,16 @@ const routes = [
     component: () => import("@/views/Points/index.vue"),
     meta: {
       title: "积分商城",
+      requiresAuth: true,
+    },
+  },
+  // 聊天
+  {
+    path: "/chat",
+    name: "Chat",
+    component: () => import("@/views/Im/index.vue"),
+    meta: {
+      title: "聊天",
       requiresAuth: true,
     },
   },

@@ -35,6 +35,8 @@ public class TravelController {
     @Operation(summary ="创建出行计划")
     @PostMapping("/create")
     public ApiResponse<Void> createTravelPlan(@RequestBody TravelPlan travelPlan) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        travelPlan.setUserId(userId);
         travelService.createTravelPlan(travelPlan);
         return ApiResponse.success("创建成功", null);
     }

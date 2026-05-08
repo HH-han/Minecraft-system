@@ -386,6 +386,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         wrapper.eq(User::getAccount, account);
         return getOne(wrapper);
     }
+    
+    @Override
+    public User getUserByPhone(String phone) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getPhone, phone);
+        return getOne(wrapper);
+    }
 
     @Override
     public long getUserCount() {

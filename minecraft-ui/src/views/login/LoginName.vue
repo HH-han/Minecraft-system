@@ -206,6 +206,13 @@
               </div>
             </div>
             <button class="submit-btn" @click="handleLogin">立即登录</button>
+            <div class="agreement-row">
+              <input type="checkbox" id="agreeLogin" v-model="agreeLogin" class="agreement-checkbox" />
+              <span class="agreement-text">已经阅读并同意</span>
+              <a href="#" class="agreement-link" @click.prevent="showUserAgreement">《用户协议》</a>
+              <span class="agreement-text">和</span>
+              <a href="#" class="agreement-link" @click.prevent="showPrivacyPolicy">《隐私政策》</a>
+            </div>
             <div class="form-footer">
               <button @click="showForgotPassword" class="footer-btn">忘记密码？</button>
               <button @click="isRegister = true" class="footer-btn">立即注册</button>
@@ -313,6 +320,18 @@
       <router-view></router-view>
     </div>
   </div>
+  <!-- 用户协议模态框 -->
+  <div v-if="showUserAgreementModal" class="loginpage-modal" @click="closeUserAgreement">
+    <div @click.stop>
+      <UserAgreement @close="closeUserAgreement" />
+    </div>
+  </div>
+  <!-- 隐私政策模态框 -->
+  <div v-if="showPrivacyPolicyModal" class="loginpage-modal" @click="closePrivacyPolicy">
+    <div @click.stop>
+      <PrivacyPolicy @close="closePrivacyPolicy" />
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -325,6 +344,8 @@ import { login, register } from '@/api/auth.js';
 import { getUserByAccount } from '@/api/user.js';
 import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
 import Account from '@/views/login/components/Account.vue'
+import UserAgreement from '@/views/login/components/UserAgreement.vue'
+import PrivacyPolicy from '@/views/login/components/PrivacyPolicy.vue'
 import { useAuthStore } from '@/stores/auth.js'
 
 // 登录-注册切换
@@ -335,6 +356,12 @@ const isModalVisible = ref(false);
 
 // 二维码登录模态框状态
 const isQrCodeVisible = ref(false);
+
+// 用户协议模态框状态
+const showUserAgreementModal = ref(false);
+
+// 隐私政策模态框状态
+const showPrivacyPolicyModal = ref(false);
 
 // 关闭模糊背景模态框
 const closeModal = () => {
@@ -401,6 +428,8 @@ const registerForm = ref({
   avatar: '',
   agreeTerms: false
 });
+
+const agreeLogin = ref(false);
 
 // auth store
 const authStore = useAuthStore();
@@ -612,6 +641,22 @@ const emailLogin = () => {
   // 这里可以添加邮箱登录的具体实现
   isModalVisible.value = true;
   router.push('/login/emaillogin');
+};
+
+const showUserAgreement = () => {
+  showUserAgreementModal.value = true;
+};
+
+const showPrivacyPolicy = () => {
+  showPrivacyPolicyModal.value = true;
+};
+
+const closeUserAgreement = () => {
+  showUserAgreementModal.value = false;
+};
+
+const closePrivacyPolicy = () => {
+  showPrivacyPolicyModal.value = false;
 };
 
 // 挂载逻辑
@@ -1187,7 +1232,7 @@ onMounted(() => {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   animation: slideInUp 0.8s ease-out 1.4s both;
   position: relative;
   overflow: hidden;
@@ -1211,6 +1256,58 @@ onMounted(() => {
 .submit-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.agreement-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.agreement-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.agreement-checkbox:checked {
+  background-color: #8B4513;
+  border-color: #8B4513;
+}
+
+.agreement-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 11px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.agreement-text {
+  font-size: 13px;
+  color: #666;
+}
+
+.agreement-link {
+  font-size: 13px;
+  color: #8B4513;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.agreement-link:hover {
+  color: #A0522D;
+  text-decoration: underline;
 }
 
 .form-footer {

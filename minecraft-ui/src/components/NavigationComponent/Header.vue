@@ -18,11 +18,10 @@
           <div class="dropdown">
             <button class="action-btn dropdown-toggle">更多</button>
             <div class="dropdown-menu_Home_2">
-              <button class="dropdown-item_action-btn" style="border-radius: 0 0 10px 10px"
-                @click="navigateTo('/SettingsFocus')">设置中心</button>
-              <button class="dropdown-item_action-btn" @click="navigateTo('/aboutweb')">关于</button>
-              <button class="dropdown-item_action-btn" @click="navigateTo('/test')">测试页面</button>
-              <button class="dropdown-item_action-btn" @click="navigateTo('/travelstrategy')">社区</button>
+              <button v-for="(item, index) in moreMenuItems" :key="item.path"
+                :style="index === moreMenuItems.length - 1 ? 'border-radius: 0 0 10px 10px' : ''"
+                class="dropdown-item_action-btn"
+                @click="navigateTo(item.path)">{{ item.label }}</button>
             </div>
           </div>
         </div>
@@ -158,6 +157,9 @@ import hotel from '@/views/Hotel/index.vue';
 import scenicspot from '@/views/Scenicspot/index.vue';
 import souvenir from '@/views/Souvenir/index.vue';
 import strategy from '@/views/Strategy/index.vue';
+import ticket from '@/views/Ticket/index.vue';
+import travel from '@/views/Travel/index.vue';
+import community from '@/views/Community/index.vue';
 import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
 import BacktoTop from '@/components/DisplayBox/BacktoTop.vue';
 // 接口
@@ -185,7 +187,16 @@ const navItems = [
   { path: 'food', label: '美食' },
   { path: 'souvenir', label: '小物件' },
   { path: 'strategy', label: '攻略群' },
-  { path: 'community', label: '社区' }
+];
+
+// 更多下拉菜单项
+const moreMenuItems = [
+  { path: '/aboutweb', label: '关于我们' },
+  { path: '/community', label: '旅行社区' },
+  { path: '/ticket', label: '购票服务' },
+  { path: '/travel', label: '出行计划' },
+  { path: '/SettingsFocus', label: '设置中心' },
+  { path: '/test', label: '测试页面' },
 ];
 
 // 用户操作菜单项数据
@@ -219,19 +230,12 @@ const userMenuItems = [
     action: 'localLogout',
     show: true,
     class: 'logout-button'
-  }
+  },
 ];
 
 const router = useRouter();
 
 const handleClick = (path) => {
-  // 特殊处理社区导航，使用路由导航
-  if (path === 'community') {
-    currentComponent.value = null; // 清空当前组件，显示router-view
-    router.push('/community');
-    return;
-  }
-
   // 对于其他导航项，设置组件并导航到对应路由
   const componentMap = {
     'home': home,
@@ -240,7 +244,7 @@ const handleClick = (path) => {
     'hotel': hotel,
     'food': food,
     'souvenir': souvenir,
-    'strategy': strategy
+    'strategy': strategy,
   };
 
   // 映射路径到路由
@@ -251,7 +255,7 @@ const handleClick = (path) => {
     'hotel': '/hotel',
     'food': '/food',
     'souvenir': '/souvenir',
-    'strategy': '/strategy'
+    'strategy': '/strategy',
   };
 
   currentComponent.value = componentMap[path];
@@ -264,6 +268,36 @@ const handleClick = (path) => {
 };
 
 const navigateTo = (path) => {
+  // 路由到组件的映射
+  const moreComponentMap = {
+    '/community': community,
+    '/ticket': ticket,
+    '/travel': travel,
+    '/SettingsFocus': null,
+    '/aboutweb': null,
+    '/test': null,
+  };
+  
+  // 路由到 store 路径的映射
+  const morePathToStore = {
+    '/community': 'community',
+    '/ticket': 'ticket',
+    '/travel': 'travel',
+  };
+  
+  // 处理组件切换
+  if (moreComponentMap[path] === null) {
+    currentComponent.value = null; // 显示 router-view
+  } else if (moreComponentMap[path]) {
+    currentComponent.value = moreComponentMap[path];
+  }
+  
+  // 更新 store 状态
+  if (morePathToStore[path]) {
+    authStore.currentComponentPath = morePathToStore[path];
+  }
+  
+  // 路由跳转
   router.push(path);
 };
 // 默认头像
@@ -439,15 +473,24 @@ onMounted(() => {
     'hotel': hotel,
     'food': food,
     'souvenir': souvenir,
-    'strategy': strategy
+    'strategy': strategy,
+    'ticket': ticket,
+    'travel': travel,
+    'community': community
   };
 
   // 检查当前路由
   const currentRoute = router.currentRoute.value;
 
-  // 如果当前路由是社区页面，清空组件显示router-view
-  if (currentRoute.path === '/community') {
-    currentComponent.value = null;
+  // 如果当前路由是社区、ticket 或 travel 页面
+  if (['/community', '/ticket', '/travel'].includes(currentRoute.path)) {
+    // 直接从路由路径恢复组件
+    const routeComponentMap = {
+      '/community': community,
+      '/ticket': ticket,
+      '/travel': travel,
+    };
+    currentComponent.value = routeComponentMap[currentRoute.path];
   } else {
     // 否则恢复之前的组件状态
     currentComponent.value = savedPath ? componentMap[savedPath] : home;
@@ -466,7 +509,10 @@ onMounted(() => {
       '/hotel': 'hotel',
       '/food': 'food',
       '/souvenir': 'souvenir',
-      '/strategy': 'strategy'
+      '/strategy': 'strategy',
+      '/ticket': 'ticket',
+      '/travel': 'travel',
+      '/community': 'community'
     };
 
     // 如果是已知路由，保存状态

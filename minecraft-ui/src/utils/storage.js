@@ -14,6 +14,7 @@ export const setToken = (token) => {
 export const removeToken = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('username')
+  localStorage.removeItem('userInfo')
 }
 
 // 获取用户名
@@ -29,4 +30,26 @@ export const setUsername = (username) => {
 // 移除用户名
 export const removeUsername = () => {
   localStorage.removeItem('username')
+}
+
+// 获取用户信息
+export const getUserInfo = () => {
+  const userInfoStr = localStorage.getItem('userInfo')
+  try {
+    return userInfoStr ? JSON.parse(userInfoStr) : null
+  } catch {
+    return null
+  }
+}
+
+// 设置用户信息
+export const setUserInfo = (userInfo) => {
+  if (userInfo) {
+    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+  }
+}
+
+// 移除用户信息
+export const removeUserInfo = () => {
+  localStorage.removeItem('userInfo')
 }

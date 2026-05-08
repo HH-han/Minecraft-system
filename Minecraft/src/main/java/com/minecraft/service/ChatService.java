@@ -9,4 +9,6 @@ public interface ChatService extends IService<ChatMessage> {
     void sendMessage(ChatMessage message);
     List<ChatMessage> getChatHistory(Long userId, Long friendId, Integer limit);
     void markAsRead(Long userId, Long friendId);
+    Long getUnreadCount(Long userId, Long friendId);
+    void markMessageAsRead(Long messageId, Long userId);
 }

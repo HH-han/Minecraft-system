@@ -21,6 +21,7 @@ public interface UserService extends IService<User> {
     List<User> getAllUsers();
     long getUserCount();
     User getUserByAccount(String account);
+    User getUserByPhone(String phone);
     LoginResponse adminLogin(LoginRequest request, HttpServletRequest httpRequest);
     void forceLogout(Long userId);
     boolean addPoints(Long userId, Integer points, String remark);

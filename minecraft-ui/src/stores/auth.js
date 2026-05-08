@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getToken, setToken, removeToken, getUsername, setUsername, removeUsername } from '@/utils/storage'
+import { getToken, setToken, removeToken, getUsername, setUsername, removeUsername, getUserInfo, setUserInfo, removeUserInfo } from '@/utils/storage'
 import request from '@/utils/request'
 
 export const useAuthStore = defineStore('auth', {
@@ -7,7 +7,7 @@ export const useAuthStore = defineStore('auth', {
     token: getToken() || '',
     username: getUsername() || '',
     isAuthenticated: !!getToken(),
-    userInfo: null,
+    userInfo: getUserInfo(),
     currentComponentPath: '',
     pageState: {
       payment: {
@@ -35,6 +35,7 @@ export const useAuthStore = defineStore('auth', {
       // 存储到本地
       setToken(userInfo.token)
       setUsername(userInfo.username || userInfo.account)
+      setUserInfo(userInfo)
     },
     
     // 登出
@@ -47,11 +48,13 @@ export const useAuthStore = defineStore('auth', {
       // 从本地存储移除
       removeToken()
       removeUsername()
+      removeUserInfo()
     },
     
     // 更新用户信息
     updateUserInfo(userInfo) {
       this.userInfo = { ...this.userInfo, ...userInfo }
+      setUserInfo(this.userInfo)
     },
     
     // 邮箱登录
