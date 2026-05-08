@@ -28,7 +28,7 @@
     </div>
     
     <div v-if="messages.length === 0" class="no-messages">
-      <i class="el-icon-sms"></i>
+      <Icon name="sms" :size="'64px'" />
       <p>还没有消息，开始聊天吧</p>
     </div>
   </div>
@@ -38,6 +38,7 @@
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { getUserInfo } from '@/api/user'
 import { getToken } from '@/utils/storage'
+import Icon from './Icon.vue'
 
 const props = defineProps({
   messages: {
@@ -178,8 +179,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   color: #999;
 }
 
-.no-messages i {
-  font-size: 64px;
+.no-messages .svg-icon {
   margin-bottom: 16px;
 }
 

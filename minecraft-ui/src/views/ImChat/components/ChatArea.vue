@@ -1,7 +1,7 @@
 <template>
   <div class="im-chat">
     <div v-if="!selectedContact" class="empty-chat">
-      <i class="el-icon-chat-dot-round"></i>
+      <Icon name="chat-round" :size="'80px'" />
       <p>选择一个联系人开始聊天</p>
     </div>
     
@@ -22,13 +22,13 @@
         </div>
         <div class="header-actions">
           <button class="action-btn" @click="onVoiceCall">
-            <i class="el-icon-phone"></i>
+            <Icon name="phone" :size="'16px'" />
           </button>
           <button class="action-btn" @click="onVideoCall">
-            <i class="el-icon-video-camera"></i>
+            <Icon name="video-camera" :size="'16px'" />
           </button>
           <button class="action-btn" @click="onContactInfo">
-            <i class="el-icon-more"></i>
+            <Icon name="more" :size="'16px'" />
           </button>
         </div>
       </div>
@@ -51,6 +51,7 @@
 import { ref } from 'vue'
 import MessageList from './MessageList.vue'
 import ChatInput from './ChatInput.vue'
+import Icon from './Icon.vue'
 
 const props = defineProps({
   selectedContact: {
@@ -105,8 +106,7 @@ defineExpose({ messageListRef })
   background: #fff;
 }
 
-.empty-chat i {
-  font-size: 80px;
+.empty-chat .svg-icon {
   margin-bottom: 20px;
 }
 

@@ -2,13 +2,13 @@
   <div class="chat-input-area">
     <div class="input-tools">
       <button class="tool-btn" @click="onEmoji">
-        <i class="el-icon-smile"></i>
+        <Icon name="smile" :size="'18px'" />
       </button>
       <button class="tool-btn" @click="onImage">
-        <i class="el-icon-picture"></i>
+        <Icon name="picture" :size="'18px'" />
       </button>
       <button class="tool-btn" @click="onFile">
-        <i class="el-icon-paperclip"></i>
+        <Icon name="paperclip" :size="'18px'" />
       </button>
     </div>
     <input 
@@ -23,13 +23,14 @@
       class="send-btn"
       @click="handleSend"
     >
-      <i class="el-icon-send"></i>
+      <Icon name="send" :size="'16px'" />
     </button>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import Icon from './Icon.vue'
 
 const emit = defineEmits(['send', 'emoji', 'image', 'file'])
 

@@ -292,7 +292,7 @@ const routes = [
   {
     path: "/chat",
     name: "Chat",
-    component: () => import("@/views/Im/index.vue"),
+    component: () => import("@/views/ImChat/index.vue"),
     meta: {
       title: "聊天",
       requiresAuth: true,

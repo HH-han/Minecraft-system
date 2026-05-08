@@ -221,7 +221,7 @@ const userMenuItems = [
   },
   {
     label: '好友聊天',
-    path: '/im',
+    path: '/chat',
     show: true,
     class: 'im-button'
   },

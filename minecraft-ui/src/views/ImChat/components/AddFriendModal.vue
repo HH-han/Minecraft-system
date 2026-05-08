@@ -4,7 +4,7 @@
       <div class="modal-header">
         <h3>添加好友</h3>
         <button class="close-btn" @click="onClose">
-          <i class="el-icon-close"></i>
+          <Icon name="close" :size="'14px'" />
         </button>
       </div>
       <div class="modal-body">
@@ -37,6 +37,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import Icon from './Icon.vue'
 
 const props = defineProps({
   visible: {

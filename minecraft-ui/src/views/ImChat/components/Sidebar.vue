@@ -3,7 +3,7 @@
     <div class="sidebar-header">
       <h2 class="sidebar-title">消息</h2>
       <button class="add-btn" @click="onAddFriend">
-        <i class="el-icon-plus"></i>
+        <Icon name="plus" :size="'18px'" />
       </button>
     </div>
     
@@ -22,14 +22,14 @@
         :class="['tab-btn', { active: activeTab === 'friends' }]"
         @click="onTabChange('friends')"
       >
-        <i class="el-icon-user"></i>
+        <Icon name="user" :size="'16px'" />
         <span>好友</span>
       </button>
       <button 
         :class="['tab-btn', { active: activeTab === 'groups' }]"
         @click="onTabChange('groups')"
       >
-        <i class="el-icon-user-solid"></i>
+        <Icon name="users" :size="'16px'" />
         <span>群组</span>
       </button>
     </div>
@@ -57,7 +57,7 @@
       </div>
       
       <div v-if="filteredContacts.length === 0" class="empty-state">
-        <i class="el-icon-message"></i>
+        <Icon name="message" :size="'48px'" />
         <p>暂无{{ activeTab === 'friends' ? '好友' : '群组' }}</p>
       </div>
     </div>
@@ -66,6 +66,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import Icon from './Icon.vue'
 
 const props = defineProps({
   friends: {
@@ -283,8 +284,7 @@ const onSelectContact = (contact) => {
   color: #999;
 }
 
-.empty-state i {
-  font-size: 48px;
+.empty-state .svg-icon {
   margin-bottom: 12px;
 }
 
