@@ -87,7 +87,7 @@ const loadRequests = async () => {
       console.warn('未获取到用户ID')
       return
     }
-    const response = await getPendingFriendRequests(userId)
+    const response = await getPendingFriendRequestsWithInfo(userId)
     if (response.code === 200) {
       requests.value = response.data || []
     }
