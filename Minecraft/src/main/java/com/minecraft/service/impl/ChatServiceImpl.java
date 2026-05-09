@@ -2,12 +2,13 @@ package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.alibaba.fastjson2.JSONObject;
 import com.minecraft.entity.ChatMessage;
+import com.minecraft.handler.WebSocketHandler;
 import com.minecraft.mapper.ChatMessageMapper;
 import com.minecraft.service.ChatService;
 import com.minecraft.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChatServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage> implements ChatService {
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -43,10 +41,18 @@ public class ChatServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage>
         redisUtil.delete(cacheKey);
         
         String unreadKey = UNREAD_COUNT_KEY + message.getReceiverId() + ":" + message.getSenderId();
-        Long count = (Long) redisUtil.get(unreadKey);
+        Integer count = (Integer) redisUtil.get(unreadKey);
         redisUtil.set(unreadKey, (count != null ? count : 0) + 1);
         
-        messagingTemplate.convertAndSendToUser(message.getReceiverId().toString(), "/queue/messages", message);
+        JSONObject wsMessage = new JSONObject();
+        wsMessage.put("type", "PRIVATE_MESSAGE");
+        wsMessage.put("senderId", message.getSenderId());
+        wsMessage.put("receiverId", message.getReceiverId());
+        wsMessage.put("content", message.getContent());
+        wsMessage.put("messageType", message.getMessageType());
+        wsMessage.put("timestamp", System.currentTimeMillis());
+        
+        WebSocketHandler.sendMessage(message.getReceiverId(), wsMessage);
     }
 
     @Override
@@ -97,8 +103,8 @@ public class ChatServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage>
     @Override
     public Long getUnreadCount(Long userId, Long friendId) {
         String unreadKey = UNREAD_COUNT_KEY + userId + ":" + friendId;
-        Long count = (Long) redisUtil.get(unreadKey);
-        return count != null ? count : 0L;
+        Integer count = (Integer) redisUtil.get(unreadKey);
+        return count != null ? count.longValue() : 0L;
     }
 
     @Override
@@ -113,7 +119,7 @@ public class ChatServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage>
             redisUtil.delete(cacheKey);
             
             String unreadKey = UNREAD_COUNT_KEY + userId + ":" + message.getSenderId();
-            Long count = (Long) redisUtil.get(unreadKey);
+            Integer count = (Integer) redisUtil.get(unreadKey);
             if (count != null && count > 0) {
                 redisUtil.set(unreadKey, count - 1);
             }

@@ -6,6 +6,7 @@ import com.minecraft.constant.CacheConstants;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.JwtUtil;
 import com.minecraft.utils.RedisUtil;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private static final Map<Long, WebSocketSession> SESSIONS = new ConcurrentHashMap<>();

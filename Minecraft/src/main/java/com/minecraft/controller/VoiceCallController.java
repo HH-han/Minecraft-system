@@ -1,11 +1,12 @@
 package com.minecraft.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.minecraft.dto.response.ApiResponse;
+import com.minecraft.handler.WebSocketHandler;
 import com.minecraft.utils.RedisUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,11 +22,16 @@ public class VoiceCallController {
     @Autowired
     private RedisUtil redisUtil;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
     private static final String CALL_PREFIX = "voice:call:";
     private static final long CALL_EXPIRE_MINUTES = 5;
+
+    private void sendCallMessage(Long userId, String channel, Map<String, Object> data) {
+        JSONObject message = new JSONObject();
+        message.put("type", "VOICE_CALL");
+        message.put("channel", channel);
+        message.put("data", data);
+        WebSocketHandler.sendMessage(userId, message);
+    }
 
     @Operation(summary = "发起语音通话")
     @PostMapping("/call/initiate")
@@ -43,7 +49,7 @@ public class VoiceCallController {
         
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
-        messagingTemplate.convertAndSendToUser(receiverId.toString(), "/queue/call", callData);
+        sendCallMessage(receiverId, "call", callData);
         
         Map<String, Object> response = new HashMap<>();
         response.put("callId", callId);
@@ -75,7 +81,7 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long callerId = ((Number) callData.get("callerId")).longValue();
-        messagingTemplate.convertAndSendToUser(callerId.toString(), "/queue/call", callData);
+        sendCallMessage(callerId, "call", callData);
         
         Map<String, Object> response = new HashMap<>();
         response.put("callId", callId);
@@ -106,7 +112,7 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long callerId = ((Number) callData.get("callerId")).longValue();
-        messagingTemplate.convertAndSendToUser(callerId.toString(), "/queue/call", callData);
+        sendCallMessage(callerId, "call", callData);
         
         Map<String, Object> response = new HashMap<>();
         response.put("callId", callId);
@@ -139,9 +145,9 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         if (callerId.equals(userId)) {
-            messagingTemplate.convertAndSendToUser(receiverId.toString(), "/queue/call", callData);
+            sendCallMessage(receiverId, "call", callData);
         } else {
-            messagingTemplate.convertAndSendToUser(callerId.toString(), "/queue/call", callData);
+            sendCallMessage(callerId, "call", callData);
         }
         
         Map<String, Object> response = new HashMap<>();
@@ -168,7 +174,7 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long receiverId = ((Number) callData.get("receiverId")).longValue();
-        messagingTemplate.convertAndSendToUser(receiverId.toString(), "/queue/sdp", callData);
+        sendCallMessage(receiverId, "sdp", callData);
         
         return ApiResponse.success("SDP Offer发送成功", null);
     }
@@ -190,7 +196,7 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long callerId = ((Number) callData.get("callerId")).longValue();
-        messagingTemplate.convertAndSendToUser(callerId.toString(), "/queue/sdp", callData);
+        sendCallMessage(callerId, "sdp", callData);
         
         return ApiResponse.success("SDP Answer发送成功", null);
     }
@@ -215,10 +221,14 @@ public class VoiceCallController {
         iceData.put("callId", callId);
         iceData.put("candidate", candidate);
         
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("callId", callId);
+        messageData.put("candidate", candidate);
+        
         if (callerId.equals(Long.parseLong(candidate.split(" ")[1]))) {
-            messagingTemplate.convertAndSendToUser(receiverId.toString(), "/queue/ice", iceData);
+            sendCallMessage(receiverId, "ice", messageData);
         } else {
-            messagingTemplate.convertAndSendToUser(callerId.toString(), "/queue/ice", iceData);
+            sendCallMessage(callerId, "ice", messageData);
         }
         
         return ApiResponse.success("ICE Candidate发送成功", null);
