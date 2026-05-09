@@ -4,6 +4,7 @@ import com.minecraft.dto.request.FriendRequestWithPhoneDTO;
 import com.minecraft.dto.request.GroupChatMessage;
 import com.minecraft.dto.request.SingleChatMessage;
 import com.minecraft.dto.response.ApiResponse;
+import com.minecraft.dto.response.FriendInfoDTO;
 import com.minecraft.entity.ChatMessage;
 import com.minecraft.entity.Friend;
 import com.minecraft.entity.User;
@@ -196,6 +197,13 @@ public class ImController {
     @GetMapping("/friend/list")
     public ApiResponse<List<Friend>> getFriendList(@RequestParam Long userId) {
         List<Friend> friends = friendService.getFriendList(userId);
+        return ApiResponse.success("成功", friends);
+    }
+
+    @Operation(summary = "获取好友信息列表")
+    @GetMapping("/friend/info/list")
+    public ApiResponse<List<FriendInfoDTO>> getFriendInfoList(@RequestParam Long userId) {
+        List<FriendInfoDTO> friends = friendService.getFriendInfoList(userId);
         return ApiResponse.success("成功", friends);
     }
 

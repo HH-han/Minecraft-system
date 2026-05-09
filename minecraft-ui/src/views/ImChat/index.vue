@@ -91,23 +91,11 @@ const sendMessage = async (content) => {
     return
   }
   
-  console.log('[ImChat] Sending message:', {
+  console.log('[ImChat] Sending message via API:', {
     senderId: currentUserId.value,
     receiverId: selectedContact.value.id,
     content: content
   })
-  
-  if (wsService.isConnected) {
-    const sent = wsService.sendPrivateMessage(
-      currentUserId.value,
-      selectedContact.value.id,
-      content,
-      'text'
-    )
-    if (!sent) {
-      console.warn('[ImChat] WebSocket send failed, will try API')
-    }
-  }
   
   const response = await apiSendMessage({
     receiverId: selectedContact.value.id,
@@ -361,16 +349,16 @@ const loadFriends = async () => {
     console.warn('[ImChat] 未获取到用户ID')
     return
   }
-  const response = await getFriendList(userId)
+  const response = await getFriendInfoList(userId)
   if (response.code === 200) {
     friends.value = response.data.map(f => ({
       id: parseInt(f.friendId) || f.friendId,
-      name: f.remark || '未知',
-      avatar: '',
+      name: f.remark || f.username || '未知',
+      avatar: f.avatar || '',
       lastMessage: '',
       time: '',
-      unreadCount: 0,
-      online: false
+      unreadCount: f.unreadCount || 0,
+      online: f.online || false
     }))
   }
 }

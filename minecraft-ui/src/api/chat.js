@@ -118,6 +118,14 @@ export const getFriendList = (userId) => {
   })
 }
 
+export const getFriendInfoList = (userId) => {
+  return request.get('/public/im/friend/info/list', {
+    params: {
+      userId
+    }
+  })
+}
+
 export const deleteFriend = (userId, friendId) => {
   return request.delete('/public/im/friend/delete', {
     params: {

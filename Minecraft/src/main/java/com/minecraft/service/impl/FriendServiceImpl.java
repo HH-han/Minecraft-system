@@ -2,17 +2,32 @@ package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minecraft.dto.response.FriendInfoDTO;
 import com.minecraft.entity.Friend;
+import com.minecraft.entity.User;
 import com.minecraft.enums.FriendStatus;
 import com.minecraft.exception.BusinessException;
+import com.minecraft.handler.WebSocketHandler;
 import com.minecraft.mapper.FriendMapper;
 import com.minecraft.service.FriendService;
+import com.minecraft.service.UserService;
+import com.minecraft.utils.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> implements FriendService {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+    private static final String UNREAD_COUNT_KEY = "chat:unread:";
 
     @Override
     public void addFriend(Long userId, Long friendId) {
@@ -69,6 +84,34 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
         wrapper.eq(Friend::getUserId, userId)
                 .eq(Friend::getStatus, FriendStatus.ACCEPTED.ordinal());
         return list(wrapper);
+    }
+
+    @Override
+    public List<FriendInfoDTO> getFriendInfoList(Long userId) {
+        List<Friend> friends = getFriendList(userId);
+        List<FriendInfoDTO> friendInfoList = new ArrayList<>();
+
+        for (Friend friend : friends) {
+            FriendInfoDTO dto = new FriendInfoDTO();
+            dto.setFriendId(friend.getFriendId());
+            dto.setRemark(friend.getRemark());
+
+            User user = userService.getById(friend.getFriendId());
+            if (user != null) {
+                dto.setUsername(user.getUsername());
+                dto.setAvatar(user.getAvatar());
+            }
+
+            dto.setOnline(WebSocketHandler.isOnline(friend.getFriendId()));
+
+            String unreadKey = UNREAD_COUNT_KEY + userId + ":" + friend.getFriendId();
+            Integer unreadCount = (Integer) redisUtil.get(unreadKey);
+            dto.setUnreadCount(unreadCount != null ? unreadCount : 0);
+
+            friendInfoList.add(dto);
+        }
+
+        return friendInfoList;
     }
 
     @Override
