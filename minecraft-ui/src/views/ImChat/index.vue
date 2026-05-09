@@ -5,9 +5,11 @@
       :groups="groups"
       :active-tab="activeTab"
       :selected-contact="selectedContact"
+      :friend-request-count="pendingRequestCount"
       @add-friend="showAddFriend = true"
       @tab-change="activeTab = $event"
       @select-contact="selectContact"
+      @open-friend-requests="showFriendRequests = true"
     />
     
     <ChatArea
@@ -24,18 +26,28 @@
       v-model:visible="showAddFriend"
       @submit="addFriend"
     />
+    
+    <FriendRequestModal
+      v-model:visible="showFriendRequests"
+      @request-handled="onRequestHandled"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList } from '@/api/chat'
+import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest } from '@/api/chat'
+import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
+import { useAuthStore } from '@/stores/auth'
 import Sidebar from './components/Sidebar.vue'
 import ChatArea from './components/ChatArea.vue'
 import AddFriendModal from './components/AddFriendModal.vue'
+import FriendRequestModal from './components/FriendRequestModal.vue'
 
-const currentUserId = ref(1)
+const authStore = useAuthStore()
+
+const currentUserId = ref(null)
 const currentUserName = ref('用户')
 const currentUserAvatar = ref('')
 
@@ -44,6 +56,7 @@ const selectedContact = ref(null)
 const messages = ref([])
 
 const showAddFriend = ref(false)
+const showFriendRequests = ref(false)
 const showVoiceCall = ref(false)
 const showVideoCall = ref(false)
 const showContactInfo = ref(false)
@@ -51,8 +64,8 @@ const showContactInfo = ref(false)
 const chatAreaRef = ref(null)
 
 const friends = ref([])
-
 const groups = ref([])
+const pendingRequestCount = ref(0)
 
 const selectContact = async (contact) => {
   selectedContact.value = contact
@@ -93,8 +106,34 @@ const sendMessage = async (content) => {
 }
 
 const addFriend = async ({ phone, message }) => {
+  if (!phone.trim()) {
+    alert('请输入手机号')
+    return
+  }
+  
+  const senderId = authStore.userInfo?.id || currentUserId.value
+  
+  if (!senderId) {
+    alert('请先登录')
+    return
+  }
+  
+  try {
+    const receiverResponse = await getUserByAccount(phone)
+    if (receiverResponse.code === 200 && receiverResponse.data) {
+      const receiverId = receiverResponse.data.id
+      
+      if (receiverId === senderId) {
+        alert('不能添加自己为好友')
+        return
+      }
+    }
+  } catch (error) {
+    console.error('查询用户信息失败:', error)
+  }
+  
   const response = await sendFriendRequest({
-    senderId: currentUserId.value,
+    senderId: senderId,
     receiverPhone: phone,
     message: message
   })
@@ -107,7 +146,12 @@ const addFriend = async ({ phone, message }) => {
 }
 
 const loadFriends = async () => {
-  const response = await getFriendList(currentUserId.value)
+  const userId = authStore.userInfo?.id || currentUserId.value
+  if (!userId) {
+    console.warn('未获取到用户ID')
+    return
+  }
+  const response = await getFriendList(userId)
   if (response.code === 200) {
     friends.value = response.data.map(f => ({
       id: f.friendId,
@@ -121,15 +165,39 @@ const loadFriends = async () => {
   }
 }
 
-onMounted(() => {
-  const userInfo = getUserInfo()
+const loadFriendRequests = async () => {
+  const userId = authStore.userInfo?.id || currentUserId.value
+  if (!userId) {
+    console.warn('未获取到用户ID')
+    return
+  }
+  try {
+    const response = await getPendingFriendRequests(userId)
+    if (response.code === 200) {
+      return response.data?.length || 0
+    }
+  } catch (error) {
+    console.error('获取好友申请失败:', error)
+  }
+  return 0
+}
+
+const onRequestHandled = ({ requestId, status }) => {
+  if (status === 'accept') {
+    loadFriends()
+  }
+}
+
+onMounted(async () => {
+  const userInfo = authStore.userInfo || getUserInfo()
   if (userInfo) {
-    currentUserId.value = userInfo.id || 1
+    currentUserId.value = userInfo.id || authStore.userInfo?.id || null
     currentUserName.value = userInfo.username || '用户'
     currentUserAvatar.value = userInfo.avatar || ''
   }
   
-  loadFriends()
+  await loadFriends()
+  pendingRequestCount.value = await loadFriendRequests()
   
   if (friends.value.length > 0) {
     selectContact(friends.value[0])

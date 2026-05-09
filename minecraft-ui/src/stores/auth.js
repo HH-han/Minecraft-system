@@ -27,6 +27,10 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     // 登录成功后设置用户信息
     setUserInfo(userInfo) {
+      // 确保用户ID被正确保存
+      if (!userInfo.id && userInfo.user?.id) {
+        userInfo.id = userInfo.user.id
+      }
       this.userInfo = userInfo
       this.username = userInfo.username || userInfo.account
       this.token = userInfo.token
@@ -61,7 +65,30 @@ export const useAuthStore = defineStore('auth', {
     async emailLogin(data) {
       const response = await request.post('/api/auth/email-login', data)
       if (response.code === 200) {
-        this.setUserInfo(response.data)
+        const userData = response.data
+        const userInfo = {
+          token: userData.token,
+          username: userData.username || userData.user?.username || userData.user?.email,
+          id: userData.id || userData.user?.id,
+          ...(userData.user || {})
+        }
+        this.setUserInfo(userInfo)
+      }
+      return response
+    },
+    
+    // 账号密码登录
+    async login(data) {
+      const response = await request.post('/auth/login', data)
+      if (response.code === 200) {
+        const userData = response.data
+        const userInfo = {
+          token: userData.token,
+          username: userData.username,
+          id: userData.id,
+          ...userData
+        }
+        this.setUserInfo(userInfo)
       }
       return response
     },

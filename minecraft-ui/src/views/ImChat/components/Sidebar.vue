@@ -2,9 +2,15 @@
   <div class="im-sidebar">
     <div class="sidebar-header">
       <h2 class="sidebar-title">消息</h2>
-      <button class="add-btn" @click="onAddFriend">
-        <Icon name="plus" :size="'18px'" />
-      </button>
+      <div class="header-actions">
+        <button class="action-btn" @click="onOpenFriendRequests" title="好友申请">
+          <Icon name="sms" :size="'18px'" />
+          <span v-if="friendRequestCount > 0" class="request-badge">{{ friendRequestCount > 99 ? '99+' : friendRequestCount }}</span>
+        </button>
+        <button class="add-btn" @click="onAddFriend">
+          <Icon name="plus" :size="'18px'" />
+        </button>
+      </div>
     </div>
     
     <div class="search-box">
@@ -84,10 +90,14 @@ const props = defineProps({
   selectedContact: {
     type: Object,
     default: null
+  },
+  friendRequestCount: {
+    type: Number,
+    default: 0
   }
 })
 
-const emit = defineEmits(['add-friend', 'search', 'tab-change', 'select-contact'])
+const emit = defineEmits(['add-friend', 'search', 'tab-change', 'select-contact', 'open-friend-requests'])
 
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
 
@@ -101,6 +111,10 @@ const filteredContacts = computed(() => {
 
 const onAddFriend = () => {
   emit('add-friend')
+}
+
+const onOpenFriendRequests = () => {
+  emit('open-friend-requests')
 }
 
 const onSearch = () => {
@@ -149,6 +163,46 @@ const onSelectContact = (contact) => {
   color: #fff;
   font-size: 18px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f5f5;
+  color: #666;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.action-btn:hover {
+  background: #e0e0e0;
+}
+
+.request-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: #f56c6c;
+  color: #fff;
+  font-size: 11px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;

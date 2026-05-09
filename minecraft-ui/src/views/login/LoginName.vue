@@ -480,35 +480,47 @@ const handleLogin = async () => {
   }
 
   try {
-    // 使用login函数调用后端登录接口
     const response = await login({
       account: loginForm.value.username,
       password: loginForm.value.password
     });
 
-    console.log('登录响应:', response);
+    console.log('登录响应完整数据:', response);
 
     if (response.code === 200) {
-      // 严格验证响应数据结构
-      if (!response.data?.token || !response.data?.username) {
-        throw new Error('响应数据不完整');
+      if (!response.data) {
+        throw new Error('响应数据为空');
       }
 
-      const { token, username } = response.data;
+      const data = Array.isArray(response.data) ? response.data[0] : response.data;
+      
+      console.log('提取的用户数据:', data);
 
-      // 验证必要字段
-      if (!token || !username) {
-        throw new Error('无效的用户数据');
+      if (!data) {
+        throw new Error('用户数据为空');
       }
 
-      // 使用auth store设置用户信息
+      const userId = data.userId;
+      const userName = data.username || data.account;
+
+      console.log('用户ID:', userId, '用户名:', userName);
+
+      if (!userId) {
+        throw new Error('未获取到用户ID');
+      }
+
+      if (!userName) {
+        throw new Error('未获取到用户名');
+      }
+
       authStore.setUserInfo({
-        token,
-        username
+        token: data.token || '',
+        username: userName,
+        id: userId,
+        ...data
       });
 
-      // 记住用户名处理
-      localStorage.setItem('rememberedUsername', username);
+      localStorage.setItem('rememberedUsername', userName);
 
       successMessage.value = '';
       showSucceeded.value = true;
@@ -521,7 +533,7 @@ const handleLogin = async () => {
       showError.value = true;
     }
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '登录失败';
+    errorMessage.value = error.message || error.response?.data?.message || '登录失败';
     showError.value = true;
     console.error('登录失败:', error);
   }
