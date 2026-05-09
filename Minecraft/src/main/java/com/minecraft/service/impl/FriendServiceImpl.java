@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minecraft.dto.response.FriendInfoDTO;
 import com.minecraft.entity.Friend;
 import com.minecraft.entity.User;
+import com.minecraft.constant.CacheConstants;
 import com.minecraft.enums.FriendStatus;
 import com.minecraft.exception.BusinessException;
-import com.minecraft.handler.WebSocketHandler;
 import com.minecraft.mapper.FriendMapper;
 import com.minecraft.service.FriendService;
 import com.minecraft.service.UserService;
@@ -102,7 +102,8 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
                 dto.setAvatar(user.getAvatar());
             }
 
-            dto.setOnline(WebSocketHandler.isOnline(friend.getFriendId()));
+            String onlineStatus = (String) redisUtil.get(CacheConstants.ONLINE_STATUS_KEY + friend.getFriendId());
+            dto.setOnline("1".equals(onlineStatus));
 
             String unreadKey = UNREAD_COUNT_KEY + userId + ":" + friend.getFriendId();
             Integer unreadCount = (Integer) redisUtil.get(unreadKey);

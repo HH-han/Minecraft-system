@@ -110,9 +110,16 @@ defineExpose({ scrollToBottom, currentUserInfo })
 
 <style scoped>
 .message-list {
-  flex: 1;
+  max-height: calc(100vh - 200px);
   overflow-y: auto;
   padding: 20px;
+  /* 隐藏滚动条 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.message-list::-webkit-scrollbar {
+  display: none;
 }
 
 .message-item {

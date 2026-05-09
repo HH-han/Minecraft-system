@@ -54,6 +54,7 @@
             class="contact-avatar"
           />
           <span v-if="contact.unreadCount > 0" class="unread-badge">{{ contact.unreadCount }}</span>
+          <span :class="['online-status', { online: contact.online }]"></span>
         </div>
         <div class="contact-info">
           <h4 class="contact-name">{{ contact.name }}</h4>
@@ -133,10 +134,12 @@ const onSelectContact = (contact) => {
 <style scoped>
 .im-sidebar {
   width: 360px;
+  height: 100%;
   background: #fff;
   border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -159,7 +162,6 @@ const onSelectContact = (contact) => {
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #409eff;
   color: #fff;
   font-size: 18px;
   cursor: pointer;
@@ -253,6 +255,12 @@ const onSelectContact = (contact) => {
 .contact-list {
   flex: 1;
   overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.contact-list::-webkit-scrollbar {
+  display: none;
 }
 
 .contact-item {
@@ -298,6 +306,21 @@ const onSelectContact = (contact) => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.online-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ccc;
+  border: 2px solid #fff;
+}
+
+.online-status.online {
+  background: #67c23a;
 }
 
 .contact-info {

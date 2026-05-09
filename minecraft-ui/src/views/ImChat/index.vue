@@ -36,7 +36,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest } from '@/api/chat'
+import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
 import { useAuthStore } from '@/stores/auth'
