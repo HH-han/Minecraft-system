@@ -5,6 +5,7 @@ import com.minecraft.dto.request.GroupChatMessage;
 import com.minecraft.dto.request.SingleChatMessage;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.FriendInfoDTO;
+import com.minecraft.dto.response.FriendRequestDTO;
 import com.minecraft.entity.ChatMessage;
 import com.minecraft.entity.Friend;
 import com.minecraft.entity.User;
@@ -221,6 +222,13 @@ public class ImController {
     @GetMapping("/friend/request/pending")
     public ApiResponse<List<Friend>> getPendingFriendRequests(@RequestParam Long userId) {
         List<Friend> requests = friendService.getFriendRequestList(userId);
+        return ApiResponse.success("成功", requests);
+    }
+
+    @Operation(summary = "获取待处理好友申请（含用户信息）")
+    @GetMapping("/friend/request/info/pending")
+    public ApiResponse<List<FriendRequestDTO>> getPendingFriendRequestsWithInfo(@RequestParam Long userId) {
+        List<FriendRequestDTO> requests = friendService.getFriendRequestInfoList(userId);
         return ApiResponse.success("成功", requests);
     }
 

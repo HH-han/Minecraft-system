@@ -3,6 +3,7 @@ package com.minecraft.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minecraft.dto.response.FriendInfoDTO;
+import com.minecraft.dto.response.FriendRequestDTO;
 import com.minecraft.entity.Friend;
 import com.minecraft.entity.User;
 import com.minecraft.constant.CacheConstants;
@@ -121,5 +122,30 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
         wrapper.eq(Friend::getFriendId, userId)
                 .eq(Friend::getStatus, FriendStatus.PENDING.ordinal());
         return list(wrapper);
+    }
+
+    @Override
+    public List<FriendRequestDTO> getFriendRequestInfoList(Long userId) {
+        List<Friend> requests = getFriendRequestList(userId);
+        List<FriendRequestDTO> requestInfoList = new ArrayList<>();
+
+        for (Friend request : requests) {
+            FriendRequestDTO dto = new FriendRequestDTO();
+            dto.setId(request.getId());
+            dto.setUserId(request.getUserId());
+            dto.setFriendId(request.getFriendId());
+            dto.setMessage(request.getRemark());
+            dto.setCreateTime(request.getCreateTime() != null ? request.getCreateTime().toString() : null);
+
+            User user = userService.getById(request.getUserId());
+            if (user != null) {
+                dto.setUsername(user.getUsername());
+                dto.setAvatar(user.getAvatar());
+            }
+
+            requestInfoList.add(dto);
+        }
+
+        return requestInfoList;
     }
 }

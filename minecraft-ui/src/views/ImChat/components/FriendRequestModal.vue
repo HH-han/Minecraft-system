@@ -16,11 +16,16 @@
         <div v-else class="request-list">
           <div v-for="req in requests" :key="req.id" class="request-item">
             <div class="request-info">
-              <div class="avatar">
-                <Icon name="user" :size="'32px'" />
+              <div class="avatar-wrapper">
+                <img 
+                  :src="req.avatar || defaultAvatar" 
+                  :alt="req.username"
+                  class="avatar"
+                  @error="handleAvatarError"
+                />
               </div>
               <div class="details">
-                <div class="name">{{ req.fromUsername || req.fromUser?.username || '未知用户' }}</div>
+                <div class="name">{{ req.username || '未知用户' }}</div>
                 <div class="message">{{ req.message || '申请添加你为好友' }}</div>
                 <div class="time">{{ formatTime(req.createTime) }}</div>
               </div>
@@ -45,7 +50,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import Icon from './Icon.vue'
-import { getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest } from '@/api/chat'
+import { getPendingFriendRequestsWithInfo, acceptFriendRequest, rejectFriendRequest } from '@/api/chat'
 import { useAuthStore } from '@/stores/auth'
 import { getUserInfo } from '@/utils/storage'
 
@@ -62,6 +67,7 @@ const emit = defineEmits(['update:visible', 'request-handled'])
 
 const loading = ref(false)
 const requests = ref([])
+const defaultAvatar = '/src/assets/defaultimage/moren.webp'
 
 watch(() => props.visible, async (newVal) => {
   if (newVal) {
@@ -90,6 +96,10 @@ const loadRequests = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const handleAvatarError = (e) => {
+  e.target.src = defaultAvatar
 }
 
 const handleRequest = async (requestId, status) => {
@@ -220,7 +230,7 @@ const onClose = () => {
   margin-bottom: 12px;
 }
 
-.avatar {
+.avatar-wrapper {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -229,6 +239,13 @@ const onClose = () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .details {

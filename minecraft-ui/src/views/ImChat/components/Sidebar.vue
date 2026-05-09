@@ -170,6 +170,10 @@ const onSelectContact = (contact) => {
   justify-content: center;
 }
 
+.add-btn:hover {
+  background: #e8e8e8;
+}
+
 .header-actions {
   display: flex;
   gap: 8px;

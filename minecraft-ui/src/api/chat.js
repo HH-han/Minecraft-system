@@ -143,6 +143,14 @@ export const getPendingFriendRequests = (userId) => {
   })
 }
 
+export const getPendingFriendRequestsWithInfo = (userId) => {
+  return request.get('/public/im/friend/request/info/pending', {
+    params: {
+      userId
+    }
+  })
+}
+
 export const markMessageAsRead = (messageId, userId, groupId = null) => {
   return request.post('/public/im/message/read', null, {
     params: {
