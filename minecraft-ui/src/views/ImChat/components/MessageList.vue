@@ -14,7 +14,24 @@
       />
       <div class="message-content">
         <div :class="['message-bubble', { mine: message.senderId === currentUserInfo?.id }]">
-          <p>{{ message.content }}</p>
+          <p v-if="isTextMessage(message)">{{ message.content }}</p>
+          <img 
+            v-else-if="isImageMessage(message)" 
+            :src="getMessageImageUrl(message.content)" 
+            :alt="'图片'"
+            class="message-image"
+            @click="previewImage(message.content)"
+          />
+          <img 
+            v-else-if="isEmojiMessage(message)" 
+            :src="getMessageImageUrl(message.content)" 
+            :alt="'表情'"
+            class="message-emoji"
+          />
+          <div v-else class="message-other">
+            <Icon name="file" :size="'24px'" />
+            <span>{{ message.content }}</span>
+          </div>
         </div>
         <span class="message-time">{{ formatTime(message.createTime) }}</span>
       </div>
@@ -31,6 +48,10 @@
       <Icon name="sms" :size="'64px'" />
       <p>还没有消息，开始聊天吧</p>
     </div>
+  </div>
+  
+  <div v-if="previewImageUrl" class="image-preview" @click="closePreview">
+    <img :src="previewImageUrl" :alt="'预览'" class="preview-image" />
   </div>
 </template>
 
@@ -64,6 +85,7 @@ const emit = defineEmits(['user-loaded'])
 const messageList = ref(null)
 const currentUserInfo = ref(null)
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
+const previewImageUrl = ref('')
 
 const getSenderAvatar = (message) => {
   if (message.senderAvatar) {
@@ -151,6 +173,37 @@ const loadCurrentUserInfo = async () => {
   }
 }
 
+const isTextMessage = (message) => {
+  const type = message.messageType || 'text'
+  return type.toLowerCase() === 'text'
+}
+
+const isImageMessage = (message) => {
+  const type = message.messageType || 'text'
+  return type.toLowerCase() === 'image'
+}
+
+const isEmojiMessage = (message) => {
+  const type = message.messageType || 'text'
+  return type.toLowerCase() === 'emoji'
+}
+
+const getMessageImageUrl = (url) => {
+  if (!url) return ''
+  if (url.startsWith('http')) {
+    return url
+  }
+  return import.meta.env.VITE_API_BASE_URL + url
+}
+
+const previewImage = (url) => {
+  previewImageUrl.value = getMessageImageUrl(url)
+}
+
+const closePreview = () => {
+  previewImageUrl.value = ''
+}
+
 watch(() => props.messages, async () => {
   await nextTick()
   scrollToBottom()
@@ -169,7 +222,6 @@ defineExpose({ scrollToBottom, currentUserInfo })
   max-height: calc(100vh - 200px);
   overflow-y: auto;
   padding: 20px;
-  /* 隐藏滚动条 */
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -211,6 +263,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   border-radius: 18px;
   margin: 0 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
 }
 
 .message-item.mine .message-bubble {
@@ -221,9 +274,35 @@ defineExpose({ scrollToBottom, currentUserInfo })
   margin: 0;
   font-size: 14px;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .message-item.mine .message-bubble p {
+  color: #fff;
+}
+
+.message-image {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.message-emoji {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.message-other {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+
+.message-item.mine .message-other {
   color: #fff;
 }
 
@@ -249,5 +328,26 @@ defineExpose({ scrollToBottom, currentUserInfo })
 .no-messages p {
   font-size: 14px;
   margin: 0;
+}
+
+.image-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.preview-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: 8px;
 }
 </style>

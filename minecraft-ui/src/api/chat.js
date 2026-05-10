@@ -4,6 +4,55 @@ export const sendMessage = (message) => {
   return request.post('/chat/send', message)
 }
 
+export const uploadEmoji = (file, emojiName) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  if (emojiName) {
+    formData.append('emojiName', emojiName)
+  }
+  return request.post('/emoji/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
+export const getEmojiList = () => {
+  return request.get('/emoji/list')
+}
+
+export const deleteEmoji = (emojiId) => {
+  return request.delete(`/emoji/${emojiId}`)
+}
+
+export const updateEmojiName = (emojiId, emojiName) => {
+  return request.put(`/emoji/${emojiId}`, null, {
+    params: {
+      emojiName
+    }
+  })
+}
+
+export const getEmojiCount = () => {
+  return request.get('/emoji/count')
+}
+
+export const getSystemEmojis = () => {
+  return request.get('/emojis')
+}
+
+export const getSystemEmojiCategories = () => {
+  return request.get('/emojis/categories')
+}
+
+export const getSystemEmojisByCategory = (category) => {
+  return request.get(`/emojis/category/${category}`)
+}
+
+export const getGroupedSystemEmojis = () => {
+  return request.get('/emojis/grouped')
+}
+
 export const getChatHistory = (friendId, limit = 50) => {
   return request.get('/chat/history', {
     params: {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.UserEmojiMapper">
+    <select id="selectByUserId" resultType="com.minecraft.entity.UserEmoji">
+        SELECT * FROM user_emoji 
+        WHERE user_id = #{userId} 
+        ORDER BY sort_order ASC, create_time DESC
+    </select>
+    
+    <select id="countByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM user_emoji WHERE user_id = #{userId}
+    </select>
+</mapper>

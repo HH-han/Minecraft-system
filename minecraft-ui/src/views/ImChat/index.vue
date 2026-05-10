@@ -114,17 +114,23 @@ const loadMessages = async (contactId, isGroup) => {
   }
 }
 
-const sendMessage = async (content) => {
-  if (!selectedContact.value || !content.trim()) return
+const sendMessage = async (messageData) => {
+  if (!selectedContact.value) return
   if (!currentUserId.value) {
     console.error('[ImChat] currentUserId is null, cannot send message')
     return
   }
   
+  const content = typeof messageData === 'string' ? messageData : messageData.content
+  const messageType = typeof messageData === 'string' ? 'text' : (messageData.messageType || 'text')
+  
+  if (!content.trim()) return
+  
   console.log('[ImChat] Sending message via API:', {
     senderId: currentUserId.value,
     receiverId: selectedContact.value.id,
     content: content,
+    messageType: messageType,
     isGroup: selectedContact.value.isGroup
   })
   
@@ -134,14 +140,14 @@ const sendMessage = async (content) => {
       groupId: selectedContact.value.id,
       senderId: currentUserId.value,
       content: content,
-      messageType: 'text'
+      messageType: messageType.toLowerCase()
     })
   } else {
     response = await sendSingleMessage({
       senderId: currentUserId.value,
       receiverId: selectedContact.value.id,
       content: content,
-      messageType: 'text'
+      messageType: messageType.toLowerCase()
     })
   }
   
@@ -151,7 +157,7 @@ const sendMessage = async (content) => {
       senderId: currentUserId.value,
       receiverId: selectedContact.value.id,
       content: content,
-      messageType: 'text',
+      messageType: messageType.toLowerCase(),
       createTime: new Date().toISOString(),
       isRead: false
     })

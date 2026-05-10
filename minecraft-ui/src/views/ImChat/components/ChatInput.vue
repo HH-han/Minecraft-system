@@ -1,13 +1,13 @@
 <template>
   <div class="chat-input-area">
     <div class="input-tools">
-      <button class="tool-btn" @click="onEmoji">
+      <button class="tool-btn" @click="toggleEmojiPanel">
         <Icon name="smile" :size="'18px'" />
       </button>
-      <button class="tool-btn" @click="onImage">
+      <button class="tool-btn" @click="selectImage">
         <Icon name="picture" :size="'18px'" />
       </button>
-      <button class="tool-btn" @click="onFile">
+      <button class="tool-btn" @click="selectFile">
         <Icon name="paperclip" :size="'18px'" />
       </button>
     </div>
@@ -19,51 +19,133 @@
       @keyup.enter="handleSend"
     />
     <button 
-      :disabled="!inputMessage.trim()"
+      :disabled="!canSend"
       class="send-btn"
       @click="handleSend"
     >
       <Icon name="send" :size="'16px'" />
     </button>
+    
+    <input 
+      ref="imageInputRef"
+      type="file" 
+      accept="image/*" 
+      class="hidden-input"
+      @change="handleImageSelect"
+    />
+    <input 
+      ref="fileInputRef"
+      type="file" 
+      class="hidden-input"
+      @change="handleFileSelect"
+    />
+    
+    <EmojiPanel 
+      v-if="showEmojiPanel" 
+      @select-emoji="handleEmojiSelect" 
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Icon from './Icon.vue'
+import EmojiPanel from './EmojiPanel.vue'
+import { uploadFile } from '@/api/upload'
 
-const emit = defineEmits(['send', 'emoji', 'image', 'file'])
+const emit = defineEmits(['send', 'image', 'file'])
 
 const inputMessage = ref('')
+const showEmojiPanel = ref(false)
+const selectedEmoji = ref(null)
+
+const imageInputRef = ref(null)
+const fileInputRef = ref(null)
+
+const canSend = computed(() => {
+  return inputMessage.value.trim() !== '' || selectedEmoji.value
+})
+
+const toggleEmojiPanel = () => {
+  showEmojiPanel.value = !showEmojiPanel.value
+}
+
+const handleEmojiSelect = (emoji) => {
+  selectedEmoji.value = emoji
+  inputMessage.value = emoji.content
+}
+
+const selectImage = () => {
+  imageInputRef.value?.click()
+}
+
+const handleImageSelect = async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+  
+  try {
+    const response = await uploadFile(file)
+    if (response.code === 200) {
+      emit('send', {
+        content: response.data,
+        messageType: 'IMAGE'
+      })
+    }
+  } catch (error) {
+    console.error('上传图片失败:', error)
+  }
+  
+  event.target.value = ''
+}
+
+const selectFile = () => {
+  fileInputRef.value?.click()
+}
+
+const handleFileSelect = (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+  
+  emit('file', file)
+  event.target.value = ''
+}
 
 const handleSend = () => {
-  if (inputMessage.value.trim()) {
-    emit('send', inputMessage.value)
-    inputMessage.value = ''
+  if (!canSend.value) return
+  
+  let messageType = 'TEXT'
+  let content = inputMessage.value.trim()
+  
+  if (selectedEmoji.value) {
+    if (selectedEmoji.value.type === 'system') {
+      messageType = 'EMOJI'
+      content = selectedEmoji.value.content
+    } else if (selectedEmoji.value.type === 'custom') {
+      messageType = 'EMOJI'
+      content = selectedEmoji.value.emojiUrl
+    }
   }
-}
-
-const onEmoji = () => {
-  emit('emoji')
-}
-
-const onImage = () => {
-  emit('image')
-}
-
-const onFile = () => {
-  emit('file')
+  
+  emit('send', {
+    content,
+    messageType
+  })
+  
+  inputMessage.value = ''
+  selectedEmoji.value = null
+  showEmojiPanel.value = false
 }
 </script>
 
 <style scoped>
 .chat-input-area {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   padding: 12px 20px;
   background: #fff;
   border-top: 1px solid #e0e0e0;
   gap: 12px;
+  position: relative;
 }
 
 .input-tools {
@@ -83,6 +165,7 @@ const onFile = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .tool-btn:hover {
@@ -111,10 +194,15 @@ const onFile = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .send-btn:disabled {
   background: #a0cfff;
   cursor: not-allowed;
+}
+
+.hidden-input {
+  display: none;
 }
 </style>
