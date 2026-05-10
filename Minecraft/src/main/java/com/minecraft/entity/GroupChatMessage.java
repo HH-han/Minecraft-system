@@ -15,6 +15,10 @@ public class GroupChatMessage {
     
     private Long senderId;
     
+    private String senderName;
+    
+    private String senderAvatar;
+    
     private String content;
     
     private String messageType;

@@ -752,7 +752,7 @@ const onSettings = () => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #11b860;
+  background: none;
   color: #fff;
   display: flex;
   align-items: center;

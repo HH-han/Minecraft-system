@@ -59,7 +59,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId } from '@/api/chat'
+import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
 import { useAuthStore } from '@/stores/auth'
@@ -99,11 +99,16 @@ const selectContact = async (contact) => {
     contact.unreadCount = 0
     await markAsRead(contact.id)
   }
-  await loadMessages(contact.id)
+  await loadMessages(contact.id, contact.isGroup)
 }
 
-const loadMessages = async (friendId) => {
-  const response = await getChatHistory(friendId)
+const loadMessages = async (contactId, isGroup) => {
+  let response
+  if (isGroup) {
+    response = await getGroupChatHistory(contactId)
+  } else {
+    response = await getSingleChatHistory(currentUserId.value, contactId)
+  }
   if (response.code === 200) {
     messages.value = response.data.reverse()
   }
@@ -119,14 +124,26 @@ const sendMessage = async (content) => {
   console.log('[ImChat] Sending message via API:', {
     senderId: currentUserId.value,
     receiverId: selectedContact.value.id,
-    content: content
+    content: content,
+    isGroup: selectedContact.value.isGroup
   })
   
-  const response = await apiSendMessage({
-    receiverId: selectedContact.value.id,
-    content: content,
-    messageType: 'text'
-  })
+  let response
+  if (selectedContact.value.isGroup) {
+    response = await sendGroupMessage({
+      groupId: selectedContact.value.id,
+      senderId: currentUserId.value,
+      content: content,
+      messageType: 'text'
+    })
+  } else {
+    response = await sendSingleMessage({
+      senderId: currentUserId.value,
+      receiverId: selectedContact.value.id,
+      content: content,
+      messageType: 'text'
+    })
+  }
   
   if (response.code === 200) {
     messages.value.push({
@@ -404,7 +421,8 @@ const loadGroups = async () => {
         lastMessage: '',
         time: '',
         unreadCount: 0,
-        online: true
+        online: true,
+        isGroup: true
       }))
     }
   } catch (error) {
@@ -421,7 +439,8 @@ const onGroupCreated = (group) => {
       lastMessage: '',
       time: '',
       unreadCount: 0,
-      online: true
+      online: true,
+      isGroup: true
     })
   }
 }

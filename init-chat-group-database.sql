@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS `group_chat_message` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '消息ID',
   `group_id` bigint NOT NULL COMMENT '群ID',
   `sender_id` bigint NOT NULL COMMENT '发送者ID',
+  `sender_name` varchar(100) DEFAULT NULL COMMENT '发送者名称',
+  `sender_avatar` varchar(500) DEFAULT NULL COMMENT '发送者头像',
   `content` text NOT NULL COMMENT '消息内容',
   `message_type` varchar(20) DEFAULT 'TEXT' COMMENT '消息类型：TEXT-文本，IMAGE-图片，FILE-文件，VIDEO-视频',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -54,4 +56,7 @@ CREATE TABLE IF NOT EXISTS `group_message_read` (
   KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='群消息已读表';
 
-
+-- 如果已存在表，添加缺失字段
+ALTER TABLE IF EXISTS `group_chat_message` 
+ADD COLUMN IF NOT EXISTS `sender_name` varchar(100) DEFAULT NULL COMMENT '发送者名称',
+ADD COLUMN IF NOT EXISTS `sender_avatar` varchar(500) DEFAULT NULL COMMENT '发送者头像';

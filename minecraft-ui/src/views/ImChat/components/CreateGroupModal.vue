@@ -8,6 +8,35 @@
         </button>
       </div>
       <div class="modal-body">
+        <div class="form-item avatar-item">
+          <label>群组头像</label>
+          <div 
+            class="avatar-upload"
+            @click="triggerUpload"
+            @dragover.prevent="onDragOver"
+            @dragleave.prevent="onDragLeave"
+            @drop.prevent="onDrop"
+          >
+            <img 
+              v-if="groupAvatar" 
+              :src="groupAvatar" 
+              class="preview-avatar"
+              @click.stop
+            />
+            <div v-else class="upload-placeholder">
+              <Icon name="image" :size="'48px'" />
+              <p>点击或拖拽上传头像</p>
+              <p class="hint">支持 jpg、png、gif 格式</p>
+            </div>
+            <input 
+              ref="fileInput"
+              type="file" 
+              accept="image/jpeg,image/png,image/gif"
+              class="file-input"
+              @change="onFileChange"
+            />
+          </div>
+        </div>
         <div class="form-item">
           <label>群组名称</label>
           <input
@@ -85,8 +114,50 @@ const emit = defineEmits(['update:visible', 'group-created'])
 const authStore = useAuthStore()
 const groupName = ref('')
 const groupDescription = ref('')
+const groupAvatar = ref('')
 const selectedFriends = ref([])
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
+const fileInput = ref(null)
+
+const triggerUpload = () => {
+  fileInput.value?.click()
+}
+
+const onDragOver = (e) => {
+  e.currentTarget.classList.add('drag-over')
+}
+
+const onDragLeave = (e) => {
+  e.currentTarget.classList.remove('drag-over')
+}
+
+const onDrop = (e) => {
+  e.currentTarget.classList.remove('drag-over')
+  const files = e.dataTransfer?.files
+  if (files && files.length > 0) {
+    handleFile(files[0])
+  }
+}
+
+const onFileChange = (e) => {
+  const files = e.target?.files
+  if (files && files.length > 0) {
+    handleFile(files[0])
+  }
+}
+
+const handleFile = (file) => {
+  if (!file.type.startsWith('image/')) {
+    ElMessage.warning('请上传图片文件')
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    groupAvatar.value = e.target?.result
+  }
+  reader.readAsDataURL(file)
+}
 
 const toggleFriend = (friendId) => {
   const index = selectedFriends.value.indexOf(friendId)
@@ -112,6 +183,7 @@ const onCreate = async () => {
     const groupData = {
       name: groupName.value.trim(),
       description: groupDescription.value.trim() || null,
+      avatar: groupAvatar.value || null,
       creatorId: userId,
       memberIds: [...selectedFriends.value, userId]
     }
@@ -131,6 +203,7 @@ const onCreate = async () => {
 const onClose = () => {
   groupName.value = ''
   groupDescription.value = ''
+  groupAvatar.value = ''
   selectedFriends.value = []
   emit('update:visible', false)
 }
@@ -205,6 +278,67 @@ const onClose = () => {
   color: #333;
 }
 
+.avatar-item {
+  text-align: center;
+}
+
+.avatar-upload {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  border: 2px dashed #e0e0e0;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.avatar-upload:hover {
+  border-color: #409eff;
+}
+
+.avatar-upload.drag-over {
+  border-color: #409eff;
+  background: #e8f4fd;
+}
+
+.preview-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.upload-placeholder p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.upload-placeholder .hint {
+  font-size: 10px;
+  color: #ccc;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .form-input {
   width: 100%;
   height: 40px;
@@ -238,7 +372,7 @@ const onClose = () => {
 }
 
 .friend-list {
-  max-height: 240px;
+  max-height: 200px;
   overflow-y: auto;
   border: 1px solid #e0e0e0;
   border-radius: 8px;

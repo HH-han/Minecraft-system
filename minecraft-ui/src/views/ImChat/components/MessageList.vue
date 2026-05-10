@@ -7,8 +7,8 @@
     >
       <img 
         v-if="message.senderId !== currentUserInfo?.id"
-        :src="selectedContact?.avatar || defaultAvatar" 
-        :alt="selectedContact?.name"
+        :src="getSenderAvatar(message)" 
+        :alt="getSenderName(message)"
         class="message-avatar"
         @error="handleAvatarError"
       />
@@ -48,6 +48,14 @@ const props = defineProps({
   selectedContact: {
     type: Object,
     default: null
+  },
+  onlineUsers: {
+    type: Object,
+    default: () => ({})
+  },
+  groupMembers: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -56,6 +64,54 @@ const emit = defineEmits(['user-loaded'])
 const messageList = ref(null)
 const currentUserInfo = ref(null)
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
+
+const getSenderAvatar = (message) => {
+  if (message.senderAvatar) {
+    return message.senderAvatar
+  }
+  
+  const senderId = message.senderId
+  if (senderId && props.onlineUsers[senderId]) {
+    return props.onlineUsers[senderId].avatar || defaultAvatar
+  }
+  
+  if (senderId) {
+    const member = props.groupMembers.find(m => m.userId === senderId)
+    if (member && member.avatar) {
+      return member.avatar
+    }
+  }
+  
+  if (!props.selectedContact?.isGroup) {
+    return props.selectedContact?.avatar || defaultAvatar
+  }
+  
+  return defaultAvatar
+}
+
+const getSenderName = (message) => {
+  if (message.senderName) {
+    return message.senderName
+  }
+  
+  const senderId = message.senderId
+  if (senderId && props.onlineUsers[senderId]) {
+    return props.onlineUsers[senderId].username || '用户'
+  }
+  
+  if (senderId) {
+    const member = props.groupMembers.find(m => m.userId === senderId)
+    if (member && member.username) {
+      return member.username
+    }
+  }
+  
+  if (!props.selectedContact?.isGroup) {
+    return props.selectedContact?.name || '用户'
+  }
+  
+  return '用户'
+}
 
 const formatTime = (timeStr) => {
   if (!timeStr) return ''

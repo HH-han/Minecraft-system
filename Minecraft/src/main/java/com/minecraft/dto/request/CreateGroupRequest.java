@@ -8,6 +8,7 @@ import java.util.List;
 public class CreateGroupRequest {
     private String name;
     private String description;
+    private String avatar;
     private Long creatorId;
     private List<Long> memberIds;
 }

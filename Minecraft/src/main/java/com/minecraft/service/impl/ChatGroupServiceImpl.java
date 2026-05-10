@@ -8,6 +8,7 @@ import com.minecraft.entity.GroupMember;
 import com.minecraft.mapper.ChatGroupMapper;
 import com.minecraft.mapper.GroupMemberMapper;
 import com.minecraft.service.ChatGroupService;
+import com.minecraft.utils.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
 
     @Autowired
     private GroupMemberMapper groupMemberMapper;
+
+    @Autowired
+    private ImageUtils imageUtils;
 
     @Override
     public ChatGroup getById(Long id) {
@@ -47,6 +51,16 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
             group.setMaxMembers(200);
         }
         group.setMemberCount(0);
+        
+        if (group.getAvatar() != null && group.getAvatar().startsWith("data:image")) {
+            try {
+                String processedAvatar = imageUtils.processBase64Image(group.getAvatar());
+                group.setAvatar(processedAvatar);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         baseMapper.insert(group);
 
         GroupMember member = new GroupMember();
@@ -70,6 +84,17 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
         group.setCreatorId(request.getCreatorId());
         group.setMaxMembers(200);
         group.setMemberCount(0);
+
+        if (request.getAvatar() != null && request.getAvatar().startsWith("data:image")) {
+            try {
+                String processedAvatar = imageUtils.processBase64Image(request.getAvatar());
+                group.setAvatar(processedAvatar);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            group.setAvatar(request.getAvatar());
+        }
 
         baseMapper.insert(group);
 
@@ -98,6 +123,14 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
 
     @Override
     public boolean updateGroup(ChatGroup group) {
+        if (group.getAvatar() != null && group.getAvatar().startsWith("data:image")) {
+            try {
+                String processedAvatar = imageUtils.processBase64Image(group.getAvatar());
+                group.setAvatar(processedAvatar);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return baseMapper.updateById(group) > 0;
     }
 

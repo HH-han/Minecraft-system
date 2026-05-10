@@ -11,6 +11,7 @@ import com.minecraft.entity.Friend;
 import com.minecraft.entity.User;
 import com.minecraft.service.ChatService;
 import com.minecraft.service.FriendService;
+import com.minecraft.service.GroupChatService;
 import com.minecraft.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,9 @@ public class ImController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private GroupChatService groupChatService;
 
     @Operation(summary = "发送单聊消息（参数方式）")
     @PostMapping("/single/send/param")
@@ -73,13 +77,15 @@ public class ImController {
             @RequestParam String content,
             @RequestParam(defaultValue = "text") String messageType) {
         
+        groupChatService.sendMessage(groupId, senderId, content, messageType);
         return ApiResponse.success("消息发送成功", null);
     }
 
     @Operation(summary = "发送群聊消息（实体方式）")
     @PostMapping("/group/send")
-    public ApiResponse<GroupChatMessage> sendGroupMessage(@RequestBody GroupChatMessage dto) {
-        return ApiResponse.success("消息发送成功", dto);
+    public ApiResponse<Void> sendGroupMessage(@RequestBody GroupChatMessage dto) {
+        groupChatService.sendMessage(dto.getGroupId(), dto.getSenderId(), dto.getContent(), dto.getMessageType());
+        return ApiResponse.success("消息发送成功", null);
     }
 
     @Operation(summary = "获取单聊历史消息")
@@ -95,11 +101,12 @@ public class ImController {
 
     @Operation(summary = "获取群聊历史消息")
     @GetMapping("/group/history")
-    public ApiResponse<List<ChatMessage>> getGroupChatHistory(
+    public ApiResponse<List<com.minecraft.entity.GroupChatMessage>> getGroupChatHistory(
             @RequestParam Long groupId,
             @RequestParam(defaultValue = "50") Integer limit) {
         
-        return ApiResponse.success("成功", null);
+        List<com.minecraft.entity.GroupChatMessage> history = groupChatService.getChatHistory(groupId, limit);
+        return ApiResponse.success("成功", history);
     }
 
     @Operation(summary = "发送好友申请（参数方式）")
@@ -239,7 +246,9 @@ public class ImController {
             @RequestParam Long userId,
             @RequestParam(required = false) Long groupId) {
         
-        if (groupId == null) {
+        if (groupId != null) {
+            groupChatService.markAsRead(userId, groupId);
+        } else {
             chatService.markMessageAsRead(messageId, userId);
         }
         
@@ -253,10 +262,10 @@ public class ImController {
             @RequestParam(required = false) Long groupId) {
         
         Long count = 0L;
-        if (groupId == null) {
-            count = 0L;
+        if (groupId != null) {
+            count = groupChatService.getUnreadCount(userId, groupId);
         } else {
-            count = chatService.getUnreadCount(userId, groupId);
+            count = 0L;
         }
         
         return ApiResponse.success("成功", count);
