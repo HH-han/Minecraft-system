@@ -2,6 +2,7 @@ package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minecraft.dto.request.CreateGroupRequest;
 import com.minecraft.entity.ChatGroup;
 import com.minecraft.entity.GroupMember;
 import com.minecraft.mapper.ChatGroupMapper;
@@ -28,6 +29,11 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
     public List<ChatGroup> getByCreatorId(Long creatorId) {
         return baseMapper.selectByCreatorId(creatorId);
     }
+    
+    @Override
+    public List<ChatGroup> getByUserId(Long userId) {
+        return baseMapper.selectByUserId(userId);
+    }
 
     @Override
     public List<ChatGroup> searchByName(String name) {
@@ -42,16 +48,51 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
         }
         group.setMemberCount(0);
         baseMapper.insert(group);
-        
+
         GroupMember member = new GroupMember();
         member.setGroupId(group.getId());
         member.setUserId(group.getCreatorId());
         member.setRole("admin");
         groupMemberMapper.insert(member);
-        
+
         group.setMemberCount(1);
         baseMapper.updateById(group);
-        
+
+        return group;
+    }
+
+    @Override
+    @Transactional
+    public ChatGroup createGroupWithMembers(CreateGroupRequest request) {
+        ChatGroup group = new ChatGroup();
+        group.setName(request.getName());
+        group.setDescription(request.getDescription());
+        group.setCreatorId(request.getCreatorId());
+        group.setMaxMembers(200);
+        group.setMemberCount(0);
+
+        baseMapper.insert(group);
+
+        List<Long> memberIds = request.getMemberIds();
+        if (memberIds != null && !memberIds.isEmpty()) {
+            for (Long userId : memberIds) {
+                GroupMember member = new GroupMember();
+                member.setGroupId(group.getId());
+                member.setUserId(userId);
+                member.setRole(userId.equals(request.getCreatorId()) ? "admin" : "member");
+                groupMemberMapper.insert(member);
+            }
+            group.setMemberCount(memberIds.size());
+        } else {
+            GroupMember member = new GroupMember();
+            member.setGroupId(group.getId());
+            member.setUserId(request.getCreatorId());
+            member.setRole("admin");
+            groupMemberMapper.insert(member);
+            group.setMemberCount(1);
+        }
+
+        baseMapper.updateById(group);
         return group;
     }
 
@@ -66,7 +107,7 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
         LambdaQueryWrapper<GroupMember> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(GroupMember::getGroupId, id);
         groupMemberMapper.delete(wrapper);
-        
+
         return baseMapper.deleteById(id) > 0;
     }
 
@@ -76,13 +117,13 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
         if (isMember(groupId, userId)) {
             return;
         }
-        
+
         GroupMember member = new GroupMember();
         member.setGroupId(groupId);
         member.setUserId(userId);
         member.setRole(role != null ? role : "member");
         groupMemberMapper.insert(member);
-        
+
         ChatGroup group = baseMapper.selectById(groupId);
         if (group != null) {
             group.setMemberCount(group.getMemberCount() + 1);
@@ -97,7 +138,7 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
         wrapper.eq(GroupMember::getGroupId, groupId)
                .eq(GroupMember::getUserId, userId);
         groupMemberMapper.delete(wrapper);
-        
+
         ChatGroup group = baseMapper.selectById(groupId);
         if (group != null) {
             group.setMemberCount(Math.max(0, group.getMemberCount() - 1));

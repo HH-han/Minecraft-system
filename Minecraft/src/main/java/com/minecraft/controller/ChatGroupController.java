@@ -1,5 +1,6 @@
 package com.minecraft.controller;
 
+import com.minecraft.dto.request.CreateGroupRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.ChatGroup;
 import com.minecraft.entity.GroupMember;
@@ -35,6 +36,13 @@ public class ChatGroupController {
         List<ChatGroup> groups = chatGroupService.getByCreatorId(creatorId);
         return ApiResponse.success("成功", groups);
     }
+    
+    @Operation(summary = "根据用户ID查询所在的所有群组")
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<ChatGroup>> getGroupsByUserId(@PathVariable Long userId) {
+        List<ChatGroup> groups = chatGroupService.getByUserId(userId);
+        return ApiResponse.success("成功", groups);
+    }
 
     @Operation(summary = "根据名称搜索群组")
     @GetMapping("/search")
@@ -52,8 +60,22 @@ public class ChatGroupController {
         if (group.getCreatorId() == null) {
             return ApiResponse.error(400, "创建者ID不能为空");
         }
-        
+
         ChatGroup createdGroup = chatGroupService.createGroup(group);
+        return ApiResponse.success("群组创建成功", createdGroup);
+    }
+
+    @Operation(summary = "创建群组并添加成员")
+    @PostMapping("/with-members")
+    public ApiResponse<ChatGroup> createGroupWithMembers(@RequestBody CreateGroupRequest request) {
+        if (request.getName() == null || request.getName().isEmpty()) {
+            return ApiResponse.error(400, "群名称不能为空");
+        }
+        if (request.getCreatorId() == null) {
+            return ApiResponse.error(400, "创建者ID不能为空");
+        }
+
+        ChatGroup createdGroup = chatGroupService.createGroupWithMembers(request);
         return ApiResponse.success("群组创建成功", createdGroup);
     }
 
@@ -63,12 +85,12 @@ public class ChatGroupController {
         if (group.getId() == null) {
             return ApiResponse.error(400, "群组ID不能为空");
         }
-        
+
         boolean updated = chatGroupService.updateGroup(group);
         if (!updated) {
             return ApiResponse.error(404, "群组不存在");
         }
-        
+
         return ApiResponse.success("群组更新成功", null);
     }
 
@@ -79,7 +101,7 @@ public class ChatGroupController {
         if (!deleted) {
             return ApiResponse.error(404, "群组不存在");
         }
-        
+
         return ApiResponse.success("群组删除成功", null);
     }
 
@@ -89,7 +111,7 @@ public class ChatGroupController {
             @PathVariable Long groupId,
             @RequestParam Long userId,
             @RequestParam(defaultValue = "member") String role) {
-        
+
         chatGroupService.addMember(groupId, userId, role);
         return ApiResponse.success("成员添加成功", null);
     }
@@ -99,7 +121,7 @@ public class ChatGroupController {
     public ApiResponse<Void> removeMember(
             @PathVariable Long groupId,
             @PathVariable Long userId) {
-        
+
         chatGroupService.removeMember(groupId, userId);
         return ApiResponse.success("成员移除成功", null);
     }

@@ -5,22 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="Minecraft-system">
-      <change afterPath="$PROJECT_DIR$/jf.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-error.2026-03-09.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend-mapper.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.2026-03-09.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.2026-03-09.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/logs/tourism-backend.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/ChatGroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/ChatGroupController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/ChatGroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/ChatGroupMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/GroupChatMessageMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/GroupChatMessageMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/GroupMemberMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/GroupMemberMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/utils/RedisUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/utils/RedisUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/ChatGroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/ChatGroupService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/ChatGroupServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/ChatGroupServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/mapper/UserMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-App/pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-App/pages/profile/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-App/pages/profile/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/api/chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/Sidebar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/Sidebar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +63,8 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.Minecraft [org.springframework.boot:spring-boot-maven-plugin:3.0.2:repackage].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Minecraft [org.springframework.boot:spring-boot-maven-plugin:3.0.2:start].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -105,6 +116,9 @@
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="StructureViewState">
+    <option name="selectedTab" value="逻辑" />
+  </component>
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -144,7 +158,14 @@
       <workItem from="1776692324437" duration="40000" />
       <workItem from="1776782603677" duration="1250000" />
       <workItem from="1776868679650" duration="8000" />
-      <workItem from="1777174306719" duration="3241000" />
+      <workItem from="1777174306719" duration="7395000" />
+      <workItem from="1777382717987" duration="1322000" />
+      <workItem from="1777690407679" duration="13000" />
+      <workItem from="1777770538957" duration="4192000" />
+      <workItem from="1778247995575" duration="4836000" />
+      <workItem from="1778333273129" duration="1443000" />
+      <workItem from="1778334752089" duration="2873000" />
+      <workItem from="1778382167687" duration="2472000" />
     </task>
     <task id="LOCAL-00004" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -250,7 +271,127 @@
       <option name="project" value="LOCAL" />
       <updated>1776605670682</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1777187222664</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1777187222664</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1777199922375</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1777199922375</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1777382828576</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1777382828576</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1777772414191</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1777772414191</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778250948449</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1778250948449</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778251090619</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1778251090619</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778252235684</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1778252235684</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778333401808</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1778333401808</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778333760367</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1778333760367</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778333948062</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1778333948062</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778334996564</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1778334996564</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778335540043</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1778335540043</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778337797023</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1778337797023</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778339027903</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1778339027903</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1778339312169</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1778339312169</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

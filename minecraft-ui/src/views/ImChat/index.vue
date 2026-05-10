@@ -6,10 +6,27 @@
       :active-tab="activeTab"
       :selected-contact="selectedContact"
       :friend-request-count="pendingRequestCount"
+      :current-user-avatar="currentUserAvatar"
+      :current-user-name="currentUserName"
       @add-friend="showAddFriend = true"
+      @create-group="showCreateGroup = true"
       @tab-change="activeTab = $event"
       @select-contact="selectContact"
       @open-friend-requests="showFriendRequests = true"
+      @nav-change="handleNavChange"
+      @user-profile="handleUserProfile"
+      @new-friends="showFriendRequests = true"
+      @view-groups="handleViewGroups"
+      @tags="handleTags"
+      @officials="handleOfficials"
+      @moments="handleMoments"
+      @scan="handleScan"
+      @nearby="handleNearby"
+      @shake="handleShake"
+      @services="handleServices"
+      @favorites="handleFavorites"
+      @settings="handleSettings"
+      @select-friend="handleSelectFriend"
     />
     
     <ChatArea
@@ -31,12 +48,18 @@
       v-model:visible="showFriendRequests"
       @request-handled="onRequestHandled"
     />
+    
+    <CreateGroupModal
+      v-model:visible="showCreateGroup"
+      :friends="friends"
+      @group-created="onGroupCreated"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest } from '@/api/chat'
+import { sendMessage as apiSendMessage, getChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
 import { useAuthStore } from '@/stores/auth'
@@ -45,6 +68,7 @@ import Sidebar from './components/Sidebar.vue'
 import ChatArea from './components/ChatArea.vue'
 import AddFriendModal from './components/AddFriendModal.vue'
 import FriendRequestModal from './components/FriendRequestModal.vue'
+import CreateGroupModal from './components/CreateGroupModal.vue'
 
 const authStore = useAuthStore()
 
@@ -58,6 +82,7 @@ const messages = ref([])
 
 const showAddFriend = ref(false)
 const showFriendRequests = ref(false)
+const showCreateGroup = ref(false)
 const showVoiceCall = ref(false)
 const showVideoCall = ref(false)
 const showContactInfo = ref(false)
@@ -363,6 +388,109 @@ const loadFriends = async () => {
   }
 }
 
+const loadGroups = async () => {
+  const userId = authStore.userInfo?.id || currentUserId.value
+  if (!userId) {
+    console.warn('[ImChat] 未获取到用户ID')
+    return
+  }
+  try {
+    const response = await getGroupsByUserId(userId)
+    if (response.code === 200) {
+      groups.value = response.data.map(g => ({
+        id: g.id,
+        name: g.name,
+        avatar: g.avatar || '',
+        lastMessage: '',
+        time: '',
+        unreadCount: 0,
+        online: true
+      }))
+    }
+  } catch (error) {
+    console.error('[ImChat] 加载群组失败:', error)
+  }
+}
+
+const onGroupCreated = (group) => {
+  if (group) {
+    groups.value.push({
+      id: group.id,
+      name: group.name,
+      avatar: group.avatar || '',
+      lastMessage: '',
+      time: '',
+      unreadCount: 0,
+      online: true
+    })
+  }
+}
+
+const handleNavChange = (tab) => {
+  console.log('[ImChat] 导航切换:', tab)
+  // 可以根据不同的 tab 做相应的处理
+}
+
+const handleUserProfile = () => {
+  console.log('[ImChat] 查看个人信息')
+  // 打开个人信息弹窗
+}
+
+const handleViewGroups = () => {
+  console.log('[ImChat] 查看群聊')
+  // 显示群聊列表
+}
+
+const handleTags = () => {
+  console.log('[ImChat] 标签')
+  // 打开标签管理
+}
+
+const handleOfficials = () => {
+  console.log('[ImChat] 公众号')
+  // 打开公众号列表
+}
+
+const handleMoments = () => {
+  console.log('[ImChat] 朋友圈')
+  // 打开朋友圈
+}
+
+const handleScan = () => {
+  console.log('[ImChat] 扫一扫')
+  // 打开扫一扫
+}
+
+const handleNearby = () => {
+  console.log('[ImChat] 附近的人')
+  // 打开附近的人
+}
+
+const handleShake = () => {
+  console.log('[ImChat] 摇一摇')
+  // 打开摇一摇
+}
+
+const handleServices = () => {
+  console.log('[ImChat] 服务')
+  // 打开服务页面
+}
+
+const handleFavorites = () => {
+  console.log('[ImChat] 收藏')
+  // 打开收藏
+}
+
+const handleSettings = () => {
+  console.log('[ImChat] 设置')
+  // 打开设置
+}
+
+const handleSelectFriend = (friend) => {
+  console.log('[ImChat] 选择好友:', friend)
+  // 可以选择好友后跳转到聊天或查看详情
+}
+
 const loadFriendRequests = async () => {
   const userId = authStore.userInfo?.id || currentUserId.value
   if (!userId) {
@@ -395,6 +523,7 @@ onMounted(async () => {
   }
   
   await loadFriends()
+  await loadGroups()
   pendingRequestCount.value = await loadFriendRequests()
   
   if (currentUserId.value) {

@@ -178,6 +178,10 @@ export const getGroupsByCreatorId = (creatorId) => {
   return request.get(`/public/chat-group/creator/${creatorId}`)
 }
 
+export const getGroupsByUserId = (userId) => {
+  return request.get(`/public/chat-group/user/${userId}`)
+}
+
 export const searchGroups = (name) => {
   return request.get('/public/chat-group/search', {
     params: {
@@ -188,6 +192,10 @@ export const searchGroups = (name) => {
 
 export const createGroup = (group) => {
   return request.post('/public/chat-group', group)
+}
+
+export const createGroupWithMembers = (groupData) => {
+  return request.post('/public/chat-group/with-members', groupData)
 }
 
 export const updateGroup = (group) => {
@@ -259,7 +267,6 @@ export const sendSdpOffer = (callId, sdp) => {
     }
   })
 }
-
 
 export const sendSdpAnswer = (callId, sdp) => {
   return request.post('/public/voice/call/sdp-answer', null, {
