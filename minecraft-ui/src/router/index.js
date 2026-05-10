@@ -298,6 +298,80 @@ const routes = [
       requiresAuth: true,
     },
   },
+  // 错误页面
+  {
+    path: "/401",
+    name: "Error401",
+    component: () => import("@/views/Errors/401.vue"),
+    meta: {
+      title: "未授权",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/403",
+    name: "Error403",
+    component: () => import("@/views/Errors/403.vue"),
+    meta: {
+      title: "禁止访问",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/404",
+    name: "Error404",
+    component: () => import("@/views/Errors/404.vue"),
+    meta: {
+      title: "页面不存在",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/500",
+    name: "Error500",
+    component: () => import("@/views/Errors/500.vue"),
+    meta: {
+      title: "服务器错误",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/502",
+    name: "Error502",
+    component: () => import("@/views/Errors/502.vue"),
+    meta: {
+      title: "网关错误",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/503",
+    name: "Error503",
+    component: () => import("@/views/Errors/503.vue"),
+    meta: {
+      title: "服务不可用",
+      requiresAuth: false,
+    },
+  },
+  {
+    path: "/504",
+    name: "Error504",
+    component: () => import("@/views/Errors/504.vue"),
+    meta: {
+      title: "网关超时",
+      requiresAuth: false,
+    },
+  },
+  // 捕获所有未匹配的路由，重定向到404
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("@/views/Errors/404.vue"),
+    meta: {
+      title: "页面不存在",
+      requiresAuth: false,
+    },
+  },
 ];
 
 const router = createRouter({
