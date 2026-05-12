@@ -457,11 +457,28 @@ const handleIncomingCall = (data) => {
   }
   
   const callerId = parseInt(callData.callerId)
-  const caller = friends.value.find(f => f.id === callerId)
+  
+  console.log('[ImChat] Looking for caller in friends list, callerId:', callerId)
+  console.log('[ImChat] Friends list length:', friends.value.length)
+  console.log('[ImChat] Friends list:', friends.value)
+  
+  let caller = friends.value.find(f => f.id === callerId)
+  
+  if (!caller) {
+    console.log('[ImChat] Trying parseInt match')
+    caller = friends.value.find(f => parseInt(f.id) === callerId)
+  }
   
   if (!caller) {
     console.warn('[ImChat] Caller not found in friends list:', callerId)
-    return
+    
+    caller = {
+      id: callerId,
+      name: '未知联系人',
+      avatar: '',
+      online: true
+    }
+    console.log('[ImChat] Created default caller info:', caller)
   }
   
   currentCallId.value = callData.callId
@@ -489,6 +506,36 @@ const handleWsError = (error) => {
   console.error('[ImChat] WebSocket error:', error)
 }
 
+const handleSdpOffer = (data) => {
+  console.log('[ImChat] Received SDP offer:', data)
+  if (!callPanelRef.value) return
+  
+  const sdp = data.data?.sdpOffer || data.data?.sdp
+  if (sdp) {
+    callPanelRef.value.handleSdpOffer(sdp)
+  }
+}
+
+const handleSdpAnswer = (data) => {
+  console.log('[ImChat] Received SDP answer:', data)
+  if (!callPanelRef.value) return
+  
+  const sdp = data.data?.sdpAnswer || data.data?.sdp
+  if (sdp) {
+    callPanelRef.value.handleSdpAnswer(sdp)
+  }
+}
+
+const handleIceCandidate = (data) => {
+  console.log('[ImChat] Received ICE candidate:', data)
+  if (!callPanelRef.value) return
+  
+  const candidate = data.data?.candidate
+  if (candidate) {
+    callPanelRef.value.handleIceCandidate(candidate)
+  }
+}
+
 const initWebSocket = () => {
   if (!currentUserId.value) {
     console.warn('[ImChat] Cannot init WebSocket, currentUserId is null')
@@ -507,6 +554,9 @@ const initWebSocket = () => {
   wsService.on('error', handleWsError)
   wsService.on('voice-call', handleIncomingCall)
   wsService.on('video-call', handleIncomingCall)
+  wsService.on('sdp-offer', handleSdpOffer)
+  wsService.on('sdp-answer', handleSdpAnswer)
+  wsService.on('ice-candidate', handleIceCandidate)
   
   wsService.connect(currentUserId.value)
 }
@@ -524,6 +574,9 @@ const cleanupWebSocket = () => {
   wsService.off('error', handleWsError)
   wsService.off('voice-call', handleIncomingCall)
   wsService.off('video-call', handleIncomingCall)
+  wsService.off('sdp-offer', handleSdpOffer)
+  wsService.off('sdp-answer', handleSdpAnswer)
+  wsService.off('ice-candidate', handleIceCandidate)
   
   wsService.disconnect()
 }
@@ -543,23 +596,46 @@ const formatTime = (timeStr) => {
 
 const loadFriends = async () => {
   const userId = authStore.userInfo?.id || currentUserId.value
+  console.log('[ImChat] Loading friends for userId:', userId)
+  
   if (!userId) {
     console.warn('[ImChat] 未获取到用户ID')
     return
   }
-  const response = await getFriendInfoList(userId)
-  if (response.code === 200) {
-    friends.value = response.data.map(f => ({
-      id: parseInt(f.friendId) || f.friendId,
-      name: f.remark || f.username || '未知',
-      avatar: f.avatar || '',
-      lastMessage: '',
-      time: '',
-      unreadCount: f.unreadCount || 0,
-      online: f.online || false,
-      phone: f.phone || '',
-      email: f.email || ''
-    }))
+  
+  try {
+    const response = await getFriendInfoList(userId)
+    console.log('[ImChat] Friend API response:', response)
+    
+    if (response.code === 200) {
+      if (!response.data || !Array.isArray(response.data)) {
+        console.warn('[ImChat] 好友列表数据格式不正确:', response.data)
+        friends.value = []
+        return
+      }
+      
+      friends.value = response.data.map(f => ({
+        id: parseInt(f.friendId) || f.friendId,
+        name: f.remark || f.username || '未知',
+        avatar: f.avatar || '',
+        lastMessage: '',
+        time: '',
+        unreadCount: f.unreadCount || 0,
+        online: f.online || false,
+        phone: f.phone || '',
+        email: f.email || ''
+      }))
+      
+      console.log('[ImChat] Friends loaded successfully, count:', friends.value.length)
+      console.log('[ImChat] Friends list:', friends.value)
+      
+    } else {
+      console.warn('[ImChat] 获取好友列表失败，状态码:', response.code)
+      friends.value = []
+    }
+  } catch (error) {
+    console.error('[ImChat] 获取好友列表时发生错误:', error)
+    friends.value = []
   }
 }
 

@@ -14,13 +14,18 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private static final Map<Long, WebSocketSession> SESSIONS = new ConcurrentHashMap<>();
     private static final Map<String, Long> SESSION_USER = new ConcurrentHashMap<>();
+    private static final Map<Long, Queue<String>> MESSAGE_QUEUES = new ConcurrentHashMap<>();
+    private static final Map<Long, ReentrantLock> SESSION_LOCKS = new ConcurrentHashMap<>();
 
     private final RedisUtil redisUtil;
     private final UserService userService;
@@ -53,6 +58,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         SESSIONS.put(userId, session);
         SESSION_USER.put(session.getId(), userId);
+        MESSAGE_QUEUES.put(userId, new ConcurrentLinkedQueue<>());
+        SESSION_LOCKS.put(userId, new ReentrantLock());
 
         redisUtil.set(CacheConstants.ONLINE_STATUS_KEY + userId, "1");
         redisUtil.hset(CacheConstants.USER_SESSION_KEY, String.valueOf(userId), session.getId());
@@ -63,7 +70,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         response.put("type", "CONNECT");
         response.put("status", "success");
         response.put("userId", userId);
-        session.sendMessage(new TextMessage(response.toJSONString()));
+        sendMessageInternal(session, response.toJSONString());
     }
 
     @Override
@@ -117,38 +124,33 @@ public class WebSocketHandler extends TextWebSocketHandler {
         Long userId = SESSION_USER.remove(session.getId());
         if (userId != null) {
             SESSIONS.remove(userId);
+            MESSAGE_QUEUES.remove(userId);
+            SESSION_LOCKS.remove(userId);
             redisUtil.delete(CacheConstants.ONLINE_STATUS_KEY + userId);
             redisUtil.hdel(CacheConstants.USER_SESSION_KEY, String.valueOf(userId));
             userService.updateOnlineStatus(userId, false);
         }
     }
 
-    private void handleHeartbeat(WebSocketSession session) throws IOException {
+    private void handleHeartbeat(WebSocketSession session) {
         JSONObject response = new JSONObject();
         response.put("type", "HEARTBEAT");
         response.put("status", "success");
-        session.sendMessage(new TextMessage(response.toJSONString()));
+        sendMessageToSession(session, response.toJSONString());
     }
 
     private void handlePrivateMessage(JSONObject json) {
         Long receiverId = json.getLong("receiverId");
-        WebSocketSession receiverSession = SESSIONS.get(receiverId);
 
-        if (receiverSession != null && receiverSession.isOpen()) {
-            try {
-                JSONObject message = new JSONObject();
-                message.put("type", "PRIVATE_MESSAGE");
-                message.put("senderId", json.getLong("senderId"));
-                message.put("receiverId", receiverId);
-                message.put("content", json.getString("content"));
-                message.put("messageType", json.getString("messageType"));
-                message.put("timestamp", System.currentTimeMillis());
-                receiverSession.sendMessage(new TextMessage(message.toJSONString()));
-            } catch (IOException e) {
-                System.out.println("Error sending private message: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
+        JSONObject message = new JSONObject();
+        message.put("type", "PRIVATE_MESSAGE");
+        message.put("senderId", json.getLong("senderId"));
+        message.put("receiverId", receiverId);
+        message.put("content", json.getString("content"));
+        message.put("messageType", json.getString("messageType"));
+        message.put("timestamp", System.currentTimeMillis());
+
+        sendMessage(receiverId, message);
     }
 
     private void handleGroupMessage(JSONObject json) {
@@ -157,55 +159,41 @@ public class WebSocketHandler extends TextWebSocketHandler {
         Long senderId = json.getLong("senderId");
         String messageType = json.getString("messageType");
 
+        JSONObject message = new JSONObject();
+        message.put("type", "GROUP_MESSAGE");
+        message.put("groupId", groupId);
+        message.put("senderId", senderId);
+        message.put("content", content);
+        message.put("messageType", messageType);
+        message.put("timestamp", System.currentTimeMillis());
+
         SESSIONS.forEach((userId, session) -> {
-            if (session.isOpen() && !userId.equals(senderId)) {
-                try {
-                    JSONObject message = new JSONObject();
-                    message.put("type", "GROUP_MESSAGE");
-                    message.put("groupId", groupId);
-                    message.put("senderId", senderId);
-                    message.put("content", content);
-                    message.put("messageType", messageType);
-                    message.put("timestamp", System.currentTimeMillis());
-                    session.sendMessage(new TextMessage(message.toJSONString()));
-                } catch (IOException e) {
-                }
+            if (!userId.equals(senderId)) {
+                sendMessageToSession(session, message.toJSONString());
             }
         });
     }
 
     private void handleReadReceipt(JSONObject json) {
         Long senderId = json.getLong("senderId");
-        Long messageId = json.getLong("messageId");
-        WebSocketSession senderSession = SESSIONS.get(senderId);
 
-        if (senderSession != null && senderSession.isOpen()) {
-            try {
-                JSONObject receipt = new JSONObject();
-                receipt.put("type", "READ_RECEIPT");
-                receipt.put("readerId", json.getLong("readerId"));
-                receipt.put("messageId", messageId);
-                senderSession.sendMessage(new TextMessage(receipt.toJSONString()));
-            } catch (IOException e) {
-            }
-        }
+        JSONObject receipt = new JSONObject();
+        receipt.put("type", "READ_RECEIPT");
+        receipt.put("readerId", json.getLong("readerId"));
+        receipt.put("messageId", json.getLong("messageId"));
+
+        sendMessage(senderId, receipt);
     }
 
     private void handleTyping(JSONObject json) {
         Long receiverId = json.getLong("receiverId");
-        Long senderId = json.getLong("senderId");
-        WebSocketSession receiverSession = SESSIONS.get(receiverId);
 
-        if (receiverSession != null && receiverSession.isOpen()) {
-            try {
-                JSONObject typing = new JSONObject();
-                typing.put("type", "TYPING");
-                typing.put("senderId", senderId);
-                typing.put("chatType", json.getString("chatType"));
-                receiverSession.sendMessage(new TextMessage(typing.toJSONString()));
-            } catch (IOException e) {
-            }
-        }
+        JSONObject typing = new JSONObject();
+        typing.put("type", "TYPING");
+        typing.put("senderId", json.getLong("senderId"));
+        typing.put("chatType", json.getString("chatType"));
+
+        sendMessage(receiverId, typing);
     }
 
     private String getTokenFromSession(WebSocketSession session) {
@@ -225,12 +213,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public static void sendMessage(Long userId, JSONObject message) {
         WebSocketSession session = SESSIONS.get(userId);
         if (session != null && session.isOpen()) {
-            try {
-                session.sendMessage(new TextMessage(message.toJSONString()));
-            } catch (IOException e) {
-                System.out.println("Error sending WebSocket message: " + e.getMessage());
-                e.printStackTrace();
-            }
+            sendMessageToSession(session, message.toJSONString());
         } else {
             System.out.println("User not online or session closed: " + userId);
         }
@@ -241,20 +224,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     public static void sendGroupMessage(Long groupId, JSONObject message) {
+        String messageStr = message.toJSONString();
         SESSIONS.forEach((userId, session) -> {
-            if (session.isOpen()) {
-                try {
-                    session.sendMessage(new TextMessage(message.toJSONString()));
-                } catch (IOException e) {
-                    System.out.println("Error sending group message: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+            sendMessageToSession(session, messageStr);
         });
     }
 
     private void handleCallMessage(JSONObject json) {
-        String channel = json.getString("channel");
         JSONObject data = json.getJSONObject("data");
         if (data == null) {
             return;
@@ -265,15 +241,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             receiverId = data.getLong("callerId");
         }
 
-        WebSocketSession receiverSession = SESSIONS.get(receiverId);
-        if (receiverSession != null && receiverSession.isOpen()) {
-            try {
-                receiverSession.sendMessage(new TextMessage(json.toJSONString()));
-            } catch (IOException e) {
-                System.out.println("Error sending call message: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
+        sendMessage(receiverId, json);
     }
 
     private void handleSdpMessage(JSONObject json) {
@@ -284,22 +252,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         Long receiverId = data.getLong("receiverId");
         Long callerId = data.getLong("callerId");
-        
+
         Long targetId = receiverId;
         WebSocketSession targetSession = SESSIONS.get(targetId);
-        
+
         if (targetSession == null || !targetSession.isOpen()) {
             targetId = callerId;
             targetSession = SESSIONS.get(targetId);
         }
 
         if (targetSession != null && targetSession.isOpen()) {
-            try {
-                targetSession.sendMessage(new TextMessage(json.toJSONString()));
-            } catch (IOException e) {
-                System.out.println("Error sending SDP message: " + e.getMessage());
-                e.printStackTrace();
-            }
+            sendMessageToSession(targetSession, json.toJSONString());
         }
     }
 
@@ -311,22 +274,54 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         Long receiverId = data.getLong("receiverId");
         Long callerId = data.getLong("callerId");
-        
+
         Long targetId = receiverId;
         WebSocketSession targetSession = SESSIONS.get(targetId);
-        
+
         if (targetSession == null || !targetSession.isOpen()) {
             targetId = callerId;
             targetSession = SESSIONS.get(targetId);
         }
 
         if (targetSession != null && targetSession.isOpen()) {
-            try {
-                targetSession.sendMessage(new TextMessage(json.toJSONString()));
-            } catch (IOException e) {
-                System.out.println("Error sending ICE candidate: " + e.getMessage());
-                e.printStackTrace();
+            sendMessageToSession(targetSession, json.toJSONString());
+        }
+    }
+
+    private static void sendMessageToSession(WebSocketSession session, String message) {
+        if (session == null || !session.isOpen()) {
+            return;
+        }
+
+        Long userId = SESSION_USER.get(session.getId());
+        if (userId == null) {
+            return;
+        }
+
+        ReentrantLock lock = SESSION_LOCKS.get(userId);
+        if (lock == null) {
+            lock = new ReentrantLock();
+            SESSION_LOCKS.put(userId, lock);
+        }
+
+        lock.lock();
+        try {
+            if (session.isOpen()) {
+                session.sendMessage(new TextMessage(message));
             }
+        } catch (IOException e) {
+            System.out.println("Error sending WebSocket message: " + e.getMessage());
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void sendMessageInternal(WebSocketSession session, String message) {
+        try {
+            session.sendMessage(new TextMessage(message));
+        } catch (IOException e) {
+            System.out.println("Error sending WebSocket message: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

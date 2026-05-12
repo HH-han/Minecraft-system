@@ -46,6 +46,7 @@ public class VoiceCallController {
         callData.put("callerId", callerId);
         callData.put("receiverId", receiverId);
         callData.put("status", "initiated");
+        callData.put("callType", "voice");
         
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
@@ -60,7 +61,6 @@ public class VoiceCallController {
 
     @Operation(summary = "接受语音通话")
     @PostMapping("/call/accept")
-    @ResponseBody
     public ApiResponse<Map<String, Object>> acceptCall(
             @RequestParam String callId,
             @RequestParam Long userId) {
@@ -217,19 +217,11 @@ public class VoiceCallController {
         Long callerId = ((Number) callData.get("callerId")).longValue();
         Long receiverId = ((Number) callData.get("receiverId")).longValue();
         
-        Map<String, Object> iceData = new HashMap<>();
-        iceData.put("callId", callId);
-        iceData.put("candidate", candidate);
-        
         Map<String, Object> messageData = new HashMap<>();
         messageData.put("callId", callId);
         messageData.put("candidate", candidate);
         
-        if (callerId.equals(Long.parseLong(candidate.split(" ")[1]))) {
-            sendCallMessage(receiverId, "ice", messageData);
-        } else {
-            sendCallMessage(callerId, "ice", messageData);
-        }
+        sendCallMessage(receiverId, "ice", messageData);
         
         return ApiResponse.success("ICE Candidate发送成功", null);
     }
