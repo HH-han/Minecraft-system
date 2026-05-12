@@ -247,8 +247,12 @@ export const createGroupWithMembers = (groupData) => {
   return request.post('/public/chat-group/with-members', groupData)
 }
 
-export const updateGroup = (group) => {
-  return request.put('/public/chat-group', group)
+export const updateGroup = (formData) => {
+  return request.post('/public/chat-group/update', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 }
 
 export const deleteGroup = (groupId) => {
@@ -266,14 +270,6 @@ export const addGroupMember = (groupId, userId, role = 'member') => {
 
 export const inviteFriendsToGroup = (groupId, friendIds) => {
   return request.post(`/public/chat-group/${groupId}/invite`, friendIds)
-}
-
-export const updateGroup = (formData) => {
-  return request.post('/public/chat-group/update', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
 }
 
 export const updateFriendRemark = (userId, friendId, remark) => {

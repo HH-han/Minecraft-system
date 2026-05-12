@@ -18,6 +18,7 @@
               class="preview-avatar"
             />
             <input 
+              id="avatar-upload"
               type="file" 
               accept="image/*" 
               class="avatar-input"
@@ -27,7 +28,6 @@
               <Icon name="upload" :size="'16px'" />
               <span>更换头像</span>
             </label>
-            <input type="hidden" id="avatar-upload" />
           </div>
         </div>
 
@@ -220,6 +220,12 @@ const handleConfirm = async () => {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.modal-body::-webkit-scrollbar {
+  display: none;
 }
 
 .form-group {

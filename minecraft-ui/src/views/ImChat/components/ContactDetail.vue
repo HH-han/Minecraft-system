@@ -388,7 +388,7 @@ const saveRemark = async () => {
 
 .action-btn {
   width: 100%;
-  padding: 12px 16px;
+  padding: 8px 16px;
   border: none;
   border-radius: 8px;
   font-size: 14px;

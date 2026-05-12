@@ -460,6 +460,7 @@ const loadGroups = async () => {
   try {
     const response = await getGroupsByUserId(userId)
     if (response.code === 200) {
+      const currentUserId = authStore.userInfo?.id || currentUserId.value
       groups.value = response.data.map(g => ({
         id: g.id,
         name: g.name,
@@ -469,7 +470,8 @@ const loadGroups = async () => {
         unreadCount: 0,
         online: true,
         isGroup: true,
-        memberCount: g.memberCount || 0
+        memberCount: g.memberCount || 0,
+        isCreator: g.creatorId === currentUserId
       }))
     }
   } catch (error) {
@@ -488,7 +490,8 @@ const onGroupCreated = (group) => {
       unreadCount: 0,
       online: true,
       isGroup: true,
-      memberCount: group.memberCount || 1
+      memberCount: group.memberCount || 1,
+      isCreator: true
     })
   }
 }
