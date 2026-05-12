@@ -31,4 +31,6 @@ public interface ChatGroupService extends IService<ChatGroup> {
     List<GroupMember> getMembers(Long groupId);
 
     boolean isMember(Long groupId, Long userId);
+
+void inviteMembers(Long groupId, List<Long> userIds);
 }

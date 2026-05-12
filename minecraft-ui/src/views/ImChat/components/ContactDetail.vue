@@ -1,0 +1,323 @@
+<template>
+  <div class="contact-detail" v-if="contact">
+    <div class="detail-header">
+      <button class="close-btn" @click="onClose">
+        <Icon name="close" :size="'18px'" />
+      </button>
+    </div>
+
+    <div class="detail-content">
+      <div class="avatar-section">
+        <img 
+          :src="contact.avatar || defaultAvatar" 
+          :alt="contact.name"
+          class="detail-avatar"
+        />
+        <h3 class="detail-name">{{ contact.name }}</h3>
+      </div>
+
+      <div class="info-section">
+        <div class="info-item">
+          <span class="info-label">ID</span>
+          <span class="info-value">{{ contact.id }}</span>
+        </div>
+        <div class="info-item" v-if="isGroup">
+          <span class="info-label">成员数</span>
+          <span class="info-value">{{ contact.memberCount || 0 }}</span>
+        </div>
+        <div class="info-item" v-if="!isGroup && contact.phone">
+          <span class="info-label">手机号</span>
+          <span class="info-value">{{ contact.phone }}</span>
+        </div>
+        <div class="info-item" v-if="contact.email">
+          <span class="info-label">邮箱</span>
+          <span class="info-value">{{ contact.email }}</span>
+        </div>
+        <div class="info-item" v-if="contact.online !== undefined">
+          <span class="info-label">状态</span>
+          <span :class="['status-badge', { online: contact.online }]">
+            {{ contact.online ? '在线' : '离线' }}
+          </span>
+        </div>
+        <div class="info-item" v-if="contact.createTime">
+          <span class="info-label">添加时间</span>
+          <span class="info-value">{{ formatTime(contact.createTime) }}</span>
+        </div>
+      </div>
+
+      <div class="action-section">
+        <button class="action-btn primary" @click="onSendMessage">
+          <Icon name="message" :size="'16px'" />
+          <span>发送消息</span>
+        </button>
+        <button class="action-btn secondary" v-if="isGroup" @click="onInviteFriend">
+          <Icon name="user-plus" :size="'16px'" />
+          <span>邀请好友</span>
+        </button>
+        <button class="action-btn danger" v-if="!isGroup" @click="onDeleteContact">
+          <Icon name="trash" :size="'16px'" />
+          <span>删除好友</span>
+        </button>
+        <button class="action-btn danger" v-if="isGroup && contact.isCreator" @click="onDeleteGroup">
+          <Icon name="trash" :size="'16px'" />
+          <span>解散群组</span>
+        </button>
+        <button class="action-btn secondary" v-if="isGroup && !contact.isCreator" @click="onLeaveGroup">
+          <Icon name="log-out" :size="'16px'" />
+          <span>退出群组</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="contact-detail-empty" v-else>
+    <Icon name="info" :size="'64px'" />
+    <p>选择联系人查看详情</p>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import Icon from './Icon.vue'
+
+const props = defineProps({
+  contact: {
+    type: Object,
+    default: null
+  }
+})
+
+const emit = defineEmits([
+  'close',
+  'send-message',
+  'delete-contact',
+  'delete-group',
+  'leave-group',
+  'invite-friend'
+])
+
+const defaultAvatar = '/src/assets/defaultimage/moren.webp'
+
+const isGroup = computed(() => {
+  return props.contact?.isGroup || props.contact?.groupId
+})
+
+const formatTime = (timeStr) => {
+  if (!timeStr) return ''
+  const date = new Date(timeStr)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+const onClose = () => {
+  emit('close')
+}
+
+const onSendMessage = () => {
+  emit('send-message', props.contact)
+}
+
+const onDeleteContact = () => {
+  if (confirm('确定要删除此好友吗？')) {
+    emit('delete-contact', props.contact)
+  }
+}
+
+const onDeleteGroup = () => {
+  if (confirm('确定要解散此群组吗？此操作不可恢复！')) {
+    emit('delete-group', props.contact)
+  }
+}
+
+const onLeaveGroup = () => {
+  if (confirm('确定要退出此群组吗？')) {
+    emit('leave-group', props.contact)
+  }
+}
+
+const onInviteFriend = () => {
+  emit('invite-friend', props.contact)
+}
+</script>
+
+<style scoped>
+.contact-detail {
+  width: 320px;
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid #e6e6e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-detail-empty {
+  width: 320px;
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid #e6e6e6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.contact-detail-empty .svg-icon {
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.contact-detail-empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.detail-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.detail-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #181818;
+  margin: 0;
+}
+
+.info-section {
+  margin-bottom: 24px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #333;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: #e6e6e6;
+  color: #666;
+}
+
+.status-badge.online {
+  background: #e6f7e6;
+  color: #67c23a;
+}
+
+.action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.action-btn.primary {
+  background: #11b860;
+  color: #fff;
+}
+
+.action-btn.primary:hover {
+  background: #0da255;
+}
+
+.action-btn.danger {
+  background: #fff;
+  color: #f56c6c;
+  border: 1px solid #f56c6c;
+}
+
+.action-btn.danger:hover {
+  background: #fef0f0;
+}
+
+.action-btn.secondary {
+  background: #fff;
+  color: #666;
+  border: 1px solid #e6e6e6;
+}
+
+.action-btn.secondary:hover {
+  background: #f5f5f5;
+}
+</style>

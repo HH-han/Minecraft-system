@@ -188,4 +188,32 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
     public boolean isMember(Long groupId, Long userId) {
         return groupMemberMapper.countByGroupAndUser(groupId, userId) > 0;
     }
+
+    @Override
+    @Transactional
+    public void inviteMembers(Long groupId, List<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return;
+        }
+
+        int addedCount = 0;
+        for (Long userId : userIds) {
+            if (!isMember(groupId, userId)) {
+                GroupMember member = new GroupMember();
+                member.setGroupId(groupId);
+                member.setUserId(userId);
+                member.setRole("member");
+                groupMemberMapper.insert(member);
+                addedCount++;
+            }
+        }
+
+        if (addedCount > 0) {
+            ChatGroup group = baseMapper.selectById(groupId);
+            if (group != null) {
+                group.setMemberCount(group.getMemberCount() + addedCount);
+                baseMapper.updateById(group);
+            }
+        }
+    }
 }

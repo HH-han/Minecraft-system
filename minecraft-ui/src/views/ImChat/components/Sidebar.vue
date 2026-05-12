@@ -158,22 +158,33 @@
             v-for="contact in filteredContacts" 
             :key="contact.id"
             :class="['contact-item', { active: selectedContact?.id === contact.id }]"
-            @click="onSelectContact(contact)"
           >
-            <div class="avatar-wrapper">
-              <img 
-                :src="contact.avatar || defaultAvatar" 
-                :alt="contact.name"
-                class="contact-avatar"
-              />
-              <span v-if="contact.unreadCount > 0" class="unread-badge">{{ contact.unreadCount }}</span>
-              <span :class="['online-status', { online: contact.online }]"></span>
+            <div 
+              class="contact-content"
+              @click="onSelectContact(contact)"
+            >
+              <div class="avatar-wrapper">
+                <img 
+                  :src="contact.avatar || defaultAvatar" 
+                  :alt="contact.name"
+                  class="contact-avatar"
+                />
+                <span v-if="contact.unreadCount > 0" class="unread-badge">{{ contact.unreadCount }}</span>
+                <span :class="['online-status', { online: contact.online }]"></span>
+              </div>
+              <div class="contact-info">
+                <h4 class="contact-name">{{ contact.name }}</h4>
+                <p class="contact-last-message">{{ contact.lastMessage }}</p>
+              </div>
+              <span class="contact-time">{{ contact.time }}</span>
             </div>
-            <div class="contact-info">
-              <h4 class="contact-name">{{ contact.name }}</h4>
-              <p class="contact-last-message">{{ contact.lastMessage }}</p>
-            </div>
-            <span class="contact-time">{{ contact.time }}</span>
+            <button 
+              class="detail-btn"
+              @click.stop="onOpenDetail(contact)"
+              title="详情"
+            >
+              <Icon name="info" :size="'14px'" />
+            </button>
           </div>
           
           <div v-if="filteredContacts.length === 0" class="empty-state">
@@ -187,18 +198,29 @@
             v-for="contact in filteredFriends" 
             :key="contact.id"
             class="contact-item"
-            @click="onSelectFriend(contact)"
           >
-            <div class="avatar-wrapper">
-              <img 
-                :src="contact.avatar || defaultAvatar" 
-                :alt="contact.name"
-                class="contact-avatar"
-              />
+            <div 
+              class="contact-content"
+              @click="onSelectFriend(contact)"
+            >
+              <div class="avatar-wrapper">
+                <img 
+                  :src="contact.avatar || defaultAvatar" 
+                  :alt="contact.name"
+                  class="contact-avatar"
+                />
+              </div>
+              <div class="contact-info">
+                <h4 class="contact-name">{{ contact.name }}</h4>
+              </div>
             </div>
-            <div class="contact-info">
-              <h4 class="contact-name">{{ contact.name }}</h4>
-            </div>
+            <button 
+              class="detail-btn"
+              @click.stop="onOpenDetail(contact)"
+              title="详情"
+            >
+              <Icon name="info" :size="'14px'" />
+            </button>
           </div>
           
           <div v-if="filteredFriends.length === 0" class="empty-state">
@@ -360,7 +382,8 @@ const emit = defineEmits([
   'services',
   'favorites',
   'settings',
-  'select-friend'
+  'select-friend',
+  'open-detail'
 ])
 
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
@@ -435,6 +458,10 @@ const onSelectContact = (contact) => {
 
 const onSelectFriend = (friend) => {
   emit('select-friend', friend)
+}
+
+const onOpenDetail = (contact) => {
+  emit('open-detail', contact)
 }
 
 const onUserProfile = () => {
@@ -734,6 +761,33 @@ const onSettings = () => {
 
 .contact-item.active {
   background: #ebebeb;
+}
+
+.contact-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.detail-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #b2b2b2;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.detail-btn:hover {
+  background: #e6e6e6;
+  color: #666;
 }
 
 .avatar-wrapper {

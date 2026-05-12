@@ -264,6 +264,12 @@ export const addGroupMember = (groupId, userId, role = 'member') => {
   })
 }
 
+export const inviteFriendsToGroup = (groupId, friendIds) => {
+  return request.post(`/public/chat-group/${groupId}/invite`, {
+    friendIds
+  })
+}
+
 export const removeGroupMember = (groupId, userId) => {
   return request.delete(`/public/chat-group/${groupId}/members/${userId}`)
 }

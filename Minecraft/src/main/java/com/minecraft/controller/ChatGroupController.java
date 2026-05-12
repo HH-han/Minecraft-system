@@ -132,4 +132,18 @@ public class ChatGroupController {
         List<GroupMember> members = chatGroupService.getMembers(groupId);
         return ApiResponse.success("成功", members);
     }
+
+    @Operation(summary = "邀请好友加入群聊")
+    @PostMapping("/{groupId}/invite")
+    public ApiResponse<Void> inviteFriends(
+            @PathVariable Long groupId,
+            @RequestBody List<Long> friendIds) {
+        
+        if (friendIds == null || friendIds.isEmpty()) {
+            return ApiResponse.error(400, "好友ID列表不能为空");
+        }
+
+        chatGroupService.inviteMembers(groupId, friendIds);
+        return ApiResponse.success("邀请成功", null);
+    }
 }

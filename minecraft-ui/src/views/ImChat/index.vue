@@ -27,6 +27,7 @@
       @favorites="handleFavorites"
       @settings="handleSettings"
       @select-friend="handleSelectFriend"
+      @open-detail="handleOpenDetail"
     />
     
     <ChatArea
@@ -37,6 +38,17 @@
       @voice-call="showVoiceCall = true"
       @video-call="showVideoCall = true"
       @contact-info="showContactInfo = true"
+    />
+    
+    <ContactDetail
+      v-if="showDetail"
+      :contact="detailContact"
+      @close="handleCloseDetail"
+      @send-message="handleDetailSendMessage"
+      @delete-contact="handleDeleteContact"
+      @delete-group="handleDeleteGroup"
+      @leave-group="handleLeaveGroup"
+      @invite-friend="handleInviteFriend"
     />
     
     <AddFriendModal
@@ -54,6 +66,14 @@
       :friends="friends"
       @group-created="onGroupCreated"
     />
+    
+    <InviteFriendModal
+      v-model:visible="showInviteModal"
+      :friends="friends"
+      :group-id="inviteGroup?.id"
+      :group-name="inviteGroup?.name"
+      @confirm="handleInviteConfirm"
+    />
   </div>
 </template>
 
@@ -69,6 +89,8 @@ import ChatArea from './components/ChatArea.vue'
 import AddFriendModal from './components/AddFriendModal.vue'
 import FriendRequestModal from './components/FriendRequestModal.vue'
 import CreateGroupModal from './components/CreateGroupModal.vue'
+import ContactDetail from './components/ContactDetail.vue'
+import InviteFriendModal from './components/InviteFriendModal.vue'
 
 const authStore = useAuthStore()
 
@@ -86,6 +108,10 @@ const showCreateGroup = ref(false)
 const showVoiceCall = ref(false)
 const showVideoCall = ref(false)
 const showContactInfo = ref(false)
+const showDetail = ref(false)
+const detailContact = ref(null)
+const showInviteModal = ref(false)
+const inviteGroup = ref(null)
 
 const chatAreaRef = ref(null)
 
@@ -514,6 +540,68 @@ const handleSettings = () => {
 const handleSelectFriend = (friend) => {
   console.log('[ImChat] 选择好友:', friend)
   // 可以选择好友后跳转到聊天或查看详情
+}
+
+const handleOpenDetail = (contact) => {
+  detailContact.value = contact
+  showDetail.value = true
+}
+
+const handleCloseDetail = () => {
+  showDetail.value = false
+  detailContact.value = null
+}
+
+const handleDetailSendMessage = (contact) => {
+  handleCloseDetail()
+  selectContact(contact)
+}
+
+const handleDeleteContact = (contact) => {
+  console.log('[ImChat] 删除好友:', contact)
+  alert('删除好友功能开发中')
+}
+
+const handleDeleteGroup = (group) => {
+  console.log('[ImChat] 解散群组:', group)
+  alert('解散群组功能开发中')
+}
+
+const handleLeaveGroup = (group) => {
+  console.log('[ImChat] 退出群组:', group)
+  alert('退出群组功能开发中')
+}
+
+const handleInviteFriend = (group) => {
+  console.log('[ImChat] 邀请好友加入群组:', group)
+  inviteGroup.value = group
+  showInviteModal.value = true
+}
+
+const handleInviteConfirm = async ({ groupId, friendIds }) => {
+  console.log('[ImChat] 确认邀请好友:', { groupId, friendIds })
+  
+  try {
+    // 调用后端API邀请好友加入群组
+    const response = await inviteFriendsToGroup(groupId, friendIds)
+    if (response.code === 200) {
+      alert('邀请成功')
+      // 更新群组成员数量
+      const groupIndex = groups.value.findIndex(g => g.id === groupId)
+      if (groupIndex !== -1) {
+        groups.value[groupIndex].memberCount = (groups.value[groupIndex].memberCount || 0) + friendIds.length
+      }
+      // 更新详情面板中的群组成员数量
+      if (detailContact.value && detailContact.value.id === groupId) {
+        detailContact.value.memberCount = (detailContact.value.memberCount || 0) + friendIds.length
+      }
+    } else {
+      alert(response.message || '邀请失败')
+    }
+  } catch (error) {
+    console.error('[ImChat] 邀请好友失败:', error)
+    alert('邀请失败')
+  }
 }
 
 const loadFriendRequests = async () => {
