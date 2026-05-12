@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -145,5 +146,39 @@ public class ChatGroupController {
 
         chatGroupService.inviteMembers(groupId, friendIds);
         return ApiResponse.success("邀请成功", null);
+    }
+
+    @Operation(summary = "更新群组信息（支持头像上传）")
+    @PostMapping("/update")
+    public ApiResponse<Void> updateGroupWithFile(
+            @RequestParam Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Integer maxMembers,
+            @RequestParam(required = false) String remark,
+            @RequestParam(required = false) MultipartFile avatar) {
+        
+        if (id == null) {
+            return ApiResponse.error(400, "群组ID不能为空");
+        }
+
+        ChatGroup group = new ChatGroup();
+        group.setId(id);
+        if (name != null && !name.isEmpty()) {
+            group.setName(name);
+        }
+        if (description != null) {
+            group.setDescription(description);
+        }
+        if (maxMembers != null) {
+            group.setMaxMembers(maxMembers);
+        }
+
+        boolean updated = chatGroupService.updateGroupWithFile(group, avatar);
+        if (!updated) {
+            return ApiResponse.error(404, "群组不存在");
+        }
+
+        return ApiResponse.success("群组更新成功", null);
     }
 }

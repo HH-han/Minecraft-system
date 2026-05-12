@@ -49,6 +49,8 @@
       @delete-group="handleDeleteGroup"
       @leave-group="handleLeaveGroup"
       @invite-friend="handleInviteFriend"
+      @update-remark="handleUpdateRemark"
+      @edit-group="handleEditGroup"
     />
     
     <AddFriendModal
@@ -74,13 +76,19 @@
       :group-name="inviteGroup?.name"
       @confirm="handleInviteConfirm"
     />
+    
+    <GroupEditModal
+      v-model:visible="showGroupEditModal"
+      :group="editGroup"
+      @confirm="handleGroupEditConfirm"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId } from '@/api/chat'
+import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId, inviteFriendsToGroup, updateGroup } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
 import { useAuthStore } from '@/stores/auth'
@@ -92,6 +100,7 @@ import FriendRequestModal from './components/FriendRequestModal.vue'
 import CreateGroupModal from './components/CreateGroupModal.vue'
 import ContactDetail from './components/ContactDetail.vue'
 import InviteFriendModal from './components/InviteFriendModal.vue'
+import GroupEditModal from './components/GroupEditModal.vue'
 
 const authStore = useAuthStore()
 
@@ -113,6 +122,8 @@ const showDetail = ref(false)
 const detailContact = ref(null)
 const showInviteModal = ref(false)
 const inviteGroup = ref(null)
+const showGroupEditModal = ref(false)
+const editGroup = ref(null)
 
 const chatAreaRef = ref(null)
 
@@ -457,7 +468,8 @@ const loadGroups = async () => {
         time: '',
         unreadCount: 0,
         online: true,
-        isGroup: true
+        isGroup: true,
+        memberCount: g.memberCount || 0
       }))
     }
   } catch (error) {
@@ -475,7 +487,8 @@ const onGroupCreated = (group) => {
       time: '',
       unreadCount: 0,
       online: true,
-      isGroup: true
+      isGroup: true,
+      memberCount: group.memberCount || 1
     })
   }
 }
@@ -581,6 +594,51 @@ const handleInviteFriend = (group) => {
   showInviteModal.value = true
 }
 
+const handleEditGroup = (group) => {
+  console.log('[ImChat] 编辑群组:', group)
+  editGroup.value = { ...group }
+  showGroupEditModal.value = true
+}
+
+const handleGroupEditConfirm = async (data) => {
+  console.log('[ImChat] 确认编辑群组:', data)
+  
+  try {
+    const formData = new FormData()
+    formData.append('id', data.id)
+    if (data.name) formData.append('name', data.name)
+    if (data.description) formData.append('description', data.description)
+    if (data.maxMembers) formData.append('maxMembers', data.maxMembers)
+    if (data.remark) formData.append('remark', data.remark)
+    if (data.avatar) formData.append('avatar', data.avatar)
+    
+    const response = await updateGroup(formData)
+    if (response.code === 200) {
+      ElMessage.success('修改成功')
+      
+      const groupIndex = groups.value.findIndex(g => g.id === data.id)
+      if (groupIndex !== -1) {
+        if (data.name) groups.value[groupIndex].name = data.name
+        if (data.avatar) groups.value[groupIndex].avatar = URL.createObjectURL(data.avatar)
+        if (data.maxMembers) groups.value[groupIndex].maxMembers = data.maxMembers
+        if (data.remark) groups.value[groupIndex].remark = data.remark
+      }
+      
+      if (detailContact.value && detailContact.value.id === data.id) {
+        if (data.name) detailContact.value.name = data.name
+        if (data.avatar) detailContact.value.avatar = URL.createObjectURL(data.avatar)
+        if (data.maxMembers) detailContact.value.maxMembers = data.maxMembers
+        if (data.remark) detailContact.value.remark = data.remark
+      }
+    } else {
+      ElMessage.error(response.message || '修改失败')
+    }
+  } catch (error) {
+    console.error('[ImChat] 编辑群组失败:', error)
+    ElMessage.error('修改失败')
+  }
+}
+
 const handleInviteConfirm = async ({ groupId, friendIds }) => {
   console.log('[ImChat] 确认邀请好友:', { groupId, friendIds })
   
@@ -627,6 +685,21 @@ const loadFriendRequests = async () => {
 const onRequestHandled = ({ requestId, status }) => {
   if (status === 'accept') {
     loadFriends()
+  }
+}
+
+const handleUpdateRemark = ({ friendId, remark }) => {
+  const friendIndex = friends.value.findIndex(f => f.id === friendId)
+  if (friendIndex !== -1) {
+    friends.value[friendIndex].name = remark
+  }
+
+  if (detailContact.value?.id === friendId) {
+    detailContact.value.name = remark
+  }
+
+  if (selectedContact.value?.id === friendId) {
+    selectedContact.value.name = remark
   }
 }
 

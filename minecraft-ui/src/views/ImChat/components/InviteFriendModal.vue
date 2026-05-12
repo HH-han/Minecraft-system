@@ -83,7 +83,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close', 'confirm'])
+const emit = defineEmits(['update:visible', 'confirm'])
 
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
 const searchKeyword = ref('')
@@ -117,7 +117,7 @@ const toggleFriend = (friend) => {
 const handleClose = () => {
   selectedFriendIds.value = []
   searchKeyword.value = ''
-  emit('close')
+  emit('update:visible', false)
 }
 
 const handleConfirm = () => {

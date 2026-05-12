@@ -13,7 +13,19 @@
           :alt="contact.name"
           class="detail-avatar"
         />
-        <h3 class="detail-name">{{ contact.name }}</h3>
+        <div class="name-section">
+          <h3 class="detail-name">{{ contact.name }}</h3>
+          <button v-if="!isGroup" class="edit-remark-btn" @click="editRemark">
+            <Icon name="edit" :size="'14px'" />
+          </button>
+        </div>
+        <input 
+          v-if="isEditingRemark" 
+          v-model="editingRemark" 
+          class="remark-input" 
+          placeholder="请输入备注"
+          @keyup.enter="saveRemark"
+        />
       </div>
 
       <div class="info-section">
@@ -54,6 +66,10 @@
           <Icon name="user-plus" :size="'16px'" />
           <span>邀请好友</span>
         </button>
+        <button class="action-btn secondary" v-if="isGroup" @click="onEditGroup">
+          <Icon name="settings" :size="'16px'" />
+          <span>{{ contact.isCreator ? '编辑群资料' : '设置备注' }}</span>
+        </button>
         <button class="action-btn danger" v-if="!isGroup" @click="onDeleteContact">
           <Icon name="trash" :size="'16px'" />
           <span>删除好友</span>
@@ -76,8 +92,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { ElMessageBox } from 'element-plus'
+import { computed, ref, watch } from 'vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import { updateFriendRemark } from '@/api/chat'
+import { useAuthStore } from '@/stores/auth'
 import Icon from './Icon.vue'
 
 const props = defineProps({
@@ -93,10 +111,15 @@ const emit = defineEmits([
   'delete-contact',
   'delete-group',
   'leave-group',
-  'invite-friend'
+  'invite-friend',
+  'update-remark',
+  'edit-group'
 ])
 
+const authStore = useAuthStore()
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
+const isEditingRemark = ref(false)
+const editingRemark = ref('')
 
 const isGroup = computed(() => {
   return props.contact?.isGroup || props.contact?.groupId
@@ -154,6 +177,38 @@ const onLeaveGroup = () => {
 
 const onInviteFriend = () => {
   emit('invite-friend', props.contact)
+}
+
+const onEditGroup = () => {
+  emit('edit-group', props.contact)
+}
+
+const editRemark = () => {
+  editingRemark.value = props.contact?.name || ''
+  isEditingRemark.value = true
+}
+
+const saveRemark = async () => {
+  if (!editingRemark.value.trim()) {
+    ElMessage.warning('备注不能为空')
+    return
+  }
+
+  try {
+    const userId = authStore.userInfo?.id
+    const friendId = props.contact?.id
+    if (!userId || !friendId) return
+
+    await updateFriendRemark(userId, friendId, editingRemark.value)
+    ElMessage.success('备注更新成功')
+    isEditingRemark.value = false
+    emit('update-remark', {
+      friendId: friendId,
+      remark: editingRemark.value
+    })
+  } catch (error) {
+    ElMessage.error('备注更新失败')
+  }
 }
 </script>
 
@@ -239,11 +294,51 @@ const onInviteFriend = () => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.name-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .detail-name {
   font-size: 20px;
   font-weight: 600;
   color: #181818;
   margin: 0;
+}
+
+.edit-remark-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #999;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all ease-in-out 0.2s;
+}
+
+.edit-remark-btn:hover {
+  transform: scale(1.1);
+  color: #666;
+}
+
+.remark-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.remark-input:focus {
+  border-color: #11b860;
 }
 
 .info-section {

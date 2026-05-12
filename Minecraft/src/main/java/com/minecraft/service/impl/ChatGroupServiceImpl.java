@@ -216,4 +216,19 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
             }
         }
     }
+
+    @Override
+    public boolean updateGroupWithFile(ChatGroup group, org.springframework.web.multipart.MultipartFile avatar) {
+        try {
+            if (avatar != null && !avatar.isEmpty()) {
+                String processedAvatar = imageUtils.processMultipartFile(avatar);
+                group.setAvatar(processedAvatar);
+            }
+
+            return baseMapper.updateById(group) > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

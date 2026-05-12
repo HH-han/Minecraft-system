@@ -33,4 +33,6 @@ public interface ChatGroupService extends IService<ChatGroup> {
     boolean isMember(Long groupId, Long userId);
 
 void inviteMembers(Long groupId, List<Long> userIds);
+
+    boolean updateGroupWithFile(ChatGroup group, org.springframework.web.multipart.MultipartFile avatar);
 }
