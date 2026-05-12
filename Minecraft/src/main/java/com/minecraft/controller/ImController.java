@@ -227,7 +227,9 @@ public class ImController {
     @Operation(summary = "获取好友信息列表")
     @GetMapping("/friend/info/list")
     public ApiResponse<List<FriendInfoDTO>> getFriendInfoList(@RequestParam Long userId) {
+        System.out.println("[ImController] getFriendInfoList called with userId: " + userId);
         List<FriendInfoDTO> friends = friendService.getFriendInfoList(userId);
+        System.out.println("[ImController] getFriendInfoList returned " + friends.size() + " friends for userId: " + userId);
         return ApiResponse.success("成功", friends);
     }
 
@@ -296,5 +298,30 @@ public class ImController {
         
         friendService.updateRemark(userId, friendId, remark);
         return ApiResponse.success("备注更新成功", null);
+    }
+
+    @Operation(summary = "检查好友关系")
+    @GetMapping("/friend/check")
+    public ApiResponse<Boolean> checkFriend(
+            @RequestParam Long userId,
+            @RequestParam Long friendId) {
+        boolean isFriend = friendService.isFriend(userId, friendId);
+        return ApiResponse.success("成功", isFriend);
+    }
+
+    @Operation(summary = "获取用户的好友列表（调试用）")
+    @GetMapping("/friend/list/debug")
+    public ApiResponse<List<Object>> getFriendListDebug(@RequestParam Long userId) {
+        List<Friend> friends = friendService.getFriendList(userId);
+        List<Object> result = new java.util.ArrayList<>();
+        for (Friend f : friends) {
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", f.getId());
+            map.put("userId", f.getUserId());
+            map.put("friendId", f.getFriendId());
+            map.put("status", f.getStatus());
+            result.add(map);
+        }
+        return ApiResponse.success("成功", result);
     }
 }

@@ -157,6 +157,9 @@ const currentCallId = ref(null)
 const isIncomingCall = ref(false)
 const callContact = ref(null)
 
+const pendingSdpMessages = ref({})
+const pendingIceMessages = ref({})
+
 const friends = ref([])
 const groups = ref([])
 const pendingRequestCount = ref(0)
@@ -448,29 +451,39 @@ const handleVideoCall = async () => {
 }
 
 const handleIncomingCall = (data) => {
-  console.log('[ImChat] Incoming call:', data)
+  console.log('[ImChat] Call message received:', data)
   
+  const channel = data.channel
   const callData = data.data
-  if (!callData || !callData.callId || !callData.callerId) {
-    console.warn('[ImChat] Invalid incoming call data:', data)
+  
+  if (!callData || !callData.callId) {
+    console.warn('[ImChat] Invalid call data:', data)
+    return
+  }
+  
+  if (channel === 'call') {
+    handleCallRequest(callData)
+  } else if (channel === 'sdp') {
+    handleSdpMessage(callData)
+  } else if (channel === 'ice') {
+    handleIceMessage(callData)
+  }
+}
+
+const handleCallRequest = (callData) => {
+  console.log('[ImChat] Handling call request:', callData)
+  
+  if (!callData.callerId) {
+    console.warn('[ImChat] Invalid call request - missing callerId')
     return
   }
   
   const callerId = parseInt(callData.callerId)
-  
-  console.log('[ImChat] Looking for caller in friends list, callerId:', callerId, 'type:', typeof callerId)
-  console.log('[ImChat] Friends list length:', friends.value.length)
-  
-  console.log('[ImChat] Friends list details:')
-  friends.value.forEach((f, index) => {
-    console.log(`  [${index}] id: ${f.id}, type: ${typeof f.id}, name: ${f.name}`)
-  })
+  console.log('[ImChat] Looking for caller:', callerId, ', friends count:', friends.value.length)
   
   let caller = friends.value.find(f => f.id === callerId)
-  console.log('[ImChat] First match result:', caller)
   
   if (!caller) {
-    console.log('[ImChat] Trying parseInt match')
     caller = friends.value.find(f => parseInt(f.id) === callerId)
     console.log('[ImChat] Second match result:', caller)
   }
@@ -478,13 +491,40 @@ const handleIncomingCall = (data) => {
   if (!caller) {
     console.warn('[ImChat] Caller not found in friends list:', callerId)
     
-    caller = {
-      id: callerId,
-      name: '未知联系人',
-      avatar: '',
-      online: true
+    if (friends.value.length === 0) {
+      console.log('[ImChat] Friends list is empty, trying to reload...')
+      loadFriends().then(() => {
+        const reloadedCaller = friends.value.find(f => f.id === callerId) || 
+                              friends.value.find(f => parseInt(f.id) === callerId)
+        if (reloadedCaller) {
+          callData.caller = reloadedCaller
+          handleCallRequest(callData)
+        } else {
+          createDefaultCaller(callData)
+        }
+      })
+      return
     }
-    console.log('[ImChat] Created default caller info:', caller)
+    
+    createDefaultCaller(callData)
+  } else {
+    currentCallId.value = callData.callId
+    currentCallType.value = callData.callType || 'voice'
+    callContact.value = caller
+    isIncomingCall.value = true
+    showCallPanel.value = true
+  }
+}
+
+const createDefaultCaller = (callData) => {
+  const callerId = parseInt(callData.callerId)
+  console.log('[ImChat] Creating default caller for:', callerId)
+  
+  const caller = {
+    id: callerId,
+    name: '未知联系人',
+    avatar: '',
+    online: true
   }
   
   currentCallId.value = callData.callId
@@ -492,6 +532,81 @@ const handleIncomingCall = (data) => {
   callContact.value = caller
   isIncomingCall.value = true
   showCallPanel.value = true
+}
+
+const handleSdpMessage = (callData) => {
+  console.log('[ImChat] Handling SDP message:', callData)
+  
+  const callId = callData.callId
+  
+  if (!callPanelRef.value) {
+    console.log('[ImChat] Call panel not available, caching SDP message')
+    pendingSdpMessages.value[callId] = callData
+    return
+  }
+  
+  const sdpOffer = callData.sdpOffer
+  const sdpAnswer = callData.sdpAnswer
+  
+  if (sdpOffer) {
+    callPanelRef.value.handleSdpOffer(sdpOffer)
+  } else if (sdpAnswer) {
+    callPanelRef.value.handleSdpAnswer(sdpAnswer)
+  }
+}
+
+const handleIceMessage = (callData) => {
+  console.log('[ImChat] Handling ICE message:', callData)
+  
+  const callId = callData.callId
+  
+  if (!callPanelRef.value) {
+    console.log('[ImChat] Call panel not available, caching ICE message')
+    if (!pendingIceMessages.value[callId]) {
+      pendingIceMessages.value[callId] = []
+    }
+    pendingIceMessages.value[callId].push(callData)
+    return
+  }
+  
+  const candidate = callData.candidate
+  if (candidate) {
+    callPanelRef.value.handleIceCandidate(candidate)
+  }
+}
+
+const processPendingMessages = (callId) => {
+  console.log('[ImChat] Processing pending messages for callId:', callId)
+  
+  if (!callPanelRef.value) {
+    console.warn('[ImChat] Call panel not available when processing pending messages')
+    return
+  }
+  
+  if (pendingSdpMessages.value[callId]) {
+    const sdpData = pendingSdpMessages.value[callId]
+    const sdpOffer = sdpData.sdpOffer
+    const sdpAnswer = sdpData.sdpAnswer
+    
+    if (sdpOffer) {
+      callPanelRef.value.handleSdpOffer(sdpOffer)
+    } else if (sdpAnswer) {
+      callPanelRef.value.handleSdpAnswer(sdpAnswer)
+    }
+    
+    delete pendingSdpMessages.value[callId]
+  }
+  
+  if (pendingIceMessages.value[callId]) {
+    pendingIceMessages.value[callId].forEach(iceData => {
+      const candidate = iceData.candidate
+      if (candidate) {
+        callPanelRef.value.handleIceCandidate(candidate)
+      }
+    })
+    
+    delete pendingIceMessages.value[callId]
+  }
 }
 
 const handleCallEnded = () => {
@@ -601,8 +716,17 @@ const formatTime = (timeStr) => {
 }
 
 const loadFriends = async () => {
-  const userId = authStore.userInfo?.id || currentUserId.value
-  console.log('[ImChat] Loading friends for userId:', userId)
+  const authUserId = authStore.userInfo?.id
+  const currentId = currentUserId.value
+  const userId = authUserId || currentId
+  
+  console.log('========================================')
+  console.log('[ImChat] Loading friends:')
+  console.log('[ImChat] - authStore.userInfo:', authStore.userInfo)
+  console.log('[ImChat] - authUserId:', authUserId)
+  console.log('[ImChat] - currentUserId.value:', currentId)
+  console.log('[ImChat] - final userId to API:', userId)
+  console.log('========================================')
   
   if (!userId) {
     console.warn('[ImChat] 未获取到用户ID')
@@ -610,6 +734,7 @@ const loadFriends = async () => {
   }
   
   try {
+    console.log('[ImChat] Calling getFriendInfoList with userId:', userId)
     const response = await getFriendInfoList(userId)
     console.log('[ImChat] Friend API response:', response)
     
@@ -937,11 +1062,22 @@ const handleUpdateRemark = ({ friendId, remark }) => {
 }
 
 onMounted(async () => {
-  const userInfo = authStore.userInfo || getUserInfo()
+  const authUser = authStore.userInfo
+  const storedUser = getUserInfo()
+  const userInfo = authUser || storedUser
+  
+  console.log('[ImChat] onMounted - authStore.userInfo:', authUser)
+  console.log('[ImChat] onMounted - getUserInfo():', storedUser)
+  console.log('[ImChat] onMounted - final userInfo:', userInfo)
+  
   if (userInfo) {
-    currentUserId.value = parseInt(userInfo.id) || userInfo.id || authStore.userInfo?.id || null
+    const userId = parseInt(userInfo.id) || userInfo.id
+    currentUserId.value = userId || authStore.userInfo?.id || null
     currentUserName.value = userInfo.username || '用户'
     currentUserAvatar.value = userInfo.avatar || ''
+    console.log('[ImChat] onMounted - currentUserId set to:', currentUserId.value)
+  } else {
+    console.warn('[ImChat] onMounted - No user info found')
   }
   
   await loadFriends()

@@ -120,7 +120,9 @@ const props = defineProps({
 const emit = defineEmits(['close', 'call-ended'])
 
 const authStore = useAuthStore()
-const currentUserId = authStore.userInfo?.id
+const storedUserId = localStorage.getItem('userId')
+const currentUserId = parseInt(authStore.userInfo?.id) || parseInt(storedUserId) || authStore.userInfo?.id || storedUserId || null
+console.log('[CallPanel] Current user ID:', currentUserId)
 
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
 
