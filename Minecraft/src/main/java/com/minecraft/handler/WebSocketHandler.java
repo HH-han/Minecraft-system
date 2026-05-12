@@ -88,6 +88,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 case "TYPING":
                     handleTyping(json);
                     break;
+                case "VOICE_CALL":
+                    handleCallMessage(json);
+                    break;
+                case "VIDEO_CALL":
+                    handleCallMessage(json);
+                    break;
+                case "SDP_OFFER":
+                    handleSdpMessage(json);
+                    break;
+                case "SDP_ANSWER":
+                    handleSdpMessage(json);
+                    break;
+                case "ICE_CANDIDATE":
+                    handleIceCandidate(json);
+                    break;
                 default:
                     break;
             }
@@ -236,5 +251,82 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         });
+    }
+
+    private void handleCallMessage(JSONObject json) {
+        String channel = json.getString("channel");
+        JSONObject data = json.getJSONObject("data");
+        if (data == null) {
+            return;
+        }
+
+        Long receiverId = data.getLong("receiverId");
+        if (receiverId == null) {
+            receiverId = data.getLong("callerId");
+        }
+
+        WebSocketSession receiverSession = SESSIONS.get(receiverId);
+        if (receiverSession != null && receiverSession.isOpen()) {
+            try {
+                receiverSession.sendMessage(new TextMessage(json.toJSONString()));
+            } catch (IOException e) {
+                System.out.println("Error sending call message: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void handleSdpMessage(JSONObject json) {
+        JSONObject data = json.getJSONObject("data");
+        if (data == null) {
+            return;
+        }
+
+        Long receiverId = data.getLong("receiverId");
+        Long callerId = data.getLong("callerId");
+        
+        Long targetId = receiverId;
+        WebSocketSession targetSession = SESSIONS.get(targetId);
+        
+        if (targetSession == null || !targetSession.isOpen()) {
+            targetId = callerId;
+            targetSession = SESSIONS.get(targetId);
+        }
+
+        if (targetSession != null && targetSession.isOpen()) {
+            try {
+                targetSession.sendMessage(new TextMessage(json.toJSONString()));
+            } catch (IOException e) {
+                System.out.println("Error sending SDP message: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void handleIceCandidate(JSONObject json) {
+        JSONObject data = json.getJSONObject("data");
+        if (data == null) {
+            return;
+        }
+
+        Long receiverId = data.getLong("receiverId");
+        Long callerId = data.getLong("callerId");
+        
+        Long targetId = receiverId;
+        WebSocketSession targetSession = SESSIONS.get(targetId);
+        
+        if (targetSession == null || !targetSession.isOpen()) {
+            targetId = callerId;
+            targetSession = SESSIONS.get(targetId);
+        }
+
+        if (targetSession != null && targetSession.isOpen()) {
+            try {
+                targetSession.sendMessage(new TextMessage(json.toJSONString()));
+            } catch (IOException e) {
+                System.out.println("Error sending ICE candidate: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 }

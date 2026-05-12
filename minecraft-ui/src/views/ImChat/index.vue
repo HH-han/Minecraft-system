@@ -35,8 +35,8 @@
       :selected-contact="selectedContact"
       :messages="messages"
       @send="sendMessage"
-      @voice-call="showVoiceCall = true"
-      @video-call="showVideoCall = true"
+      @voice-call="handleVoiceCall"
+      @video-call="handleVideoCall"
       @contact-info="showContactInfo = true"
     />
     
@@ -89,13 +89,24 @@
       :friend="editFriend"
       @confirm="handleFriendRemarkConfirm"
     />
+    
+    <CallPanel
+      ref="callPanelRef"
+      :visible="showCallPanel"
+      :contact="callContact"
+      :call-type="currentCallType"
+      :call-id="currentCallId"
+      :is-incoming="isIncomingCall"
+      @close="showCallPanel = false"
+      @call-ended="handleCallEnded"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId, inviteFriendsToGroup, updateGroup } from '@/api/chat'
+import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId, inviteFriendsToGroup, updateGroup, updateFriendRemark } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
 import { useAuthStore } from '@/stores/auth'
@@ -109,6 +120,8 @@ import ContactDetail from './components/ContactDetail.vue'
 import InviteFriendModal from './components/InviteFriendModal.vue'
 import GroupEditModal from './components/GroupEditModal.vue'
 import FriendRemarkModal from './components/FriendRemarkModal.vue'
+import CallPanel from './components/CallPanel.vue'
+import { initiateVoiceCall, initiateVideoCall } from '@/api/call'
 
 const authStore = useAuthStore()
 
@@ -136,6 +149,13 @@ const showFriendRemarkModal = ref(false)
 const editFriend = ref(null)
 
 const chatAreaRef = ref(null)
+
+const showCallPanel = ref(false)
+const callPanelRef = ref(null)
+const currentCallType = ref('voice')
+const currentCallId = ref(null)
+const isIncomingCall = ref(false)
+const callContact = ref(null)
 
 const friends = ref([])
 const groups = ref([])
@@ -379,6 +399,84 @@ const handleTyping = (data) => {
   console.log('[ImChat] User typing:', data)
 }
 
+const handleVoiceCall = async () => {
+  if (!selectedContact.value || selectedContact.value.isGroup) {
+    ElMessage.warning('只能与好友进行语音通话')
+    return
+  }
+  
+  currentCallType.value = 'voice'
+  callContact.value = selectedContact.value
+  isIncomingCall.value = false
+  
+  try {
+    const response = await initiateVoiceCall(currentUserId.value, selectedContact.value.id)
+    if (response.code === 200) {
+      currentCallId.value = response.data.callId
+      showCallPanel.value = true
+    } else {
+      ElMessage.error(response.message || '发起通话失败')
+    }
+  } catch (error) {
+    console.error('[ImChat] Failed to initiate voice call:', error)
+    ElMessage.error('发起通话失败')
+  }
+}
+
+const handleVideoCall = async () => {
+  if (!selectedContact.value || selectedContact.value.isGroup) {
+    ElMessage.warning('只能与好友进行视频通话')
+    return
+  }
+  
+  currentCallType.value = 'video'
+  callContact.value = selectedContact.value
+  isIncomingCall.value = false
+  
+  try {
+    const response = await initiateVideoCall(currentUserId.value, selectedContact.value.id)
+    if (response.code === 200) {
+      currentCallId.value = response.data.callId
+      showCallPanel.value = true
+    } else {
+      ElMessage.error(response.message || '发起通话失败')
+    }
+  } catch (error) {
+    console.error('[ImChat] Failed to initiate video call:', error)
+    ElMessage.error('发起通话失败')
+  }
+}
+
+const handleIncomingCall = (data) => {
+  console.log('[ImChat] Incoming call:', data)
+  
+  const callData = data.data
+  if (!callData || !callData.callId || !callData.callerId) {
+    console.warn('[ImChat] Invalid incoming call data:', data)
+    return
+  }
+  
+  const callerId = parseInt(callData.callerId)
+  const caller = friends.value.find(f => f.id === callerId)
+  
+  if (!caller) {
+    console.warn('[ImChat] Caller not found in friends list:', callerId)
+    return
+  }
+  
+  currentCallId.value = callData.callId
+  currentCallType.value = callData.callType || 'voice'
+  callContact.value = caller
+  isIncomingCall.value = true
+  showCallPanel.value = true
+}
+
+const handleCallEnded = () => {
+  showCallPanel.value = false
+  currentCallId.value = null
+  callContact.value = null
+}
+
 const handleWsConnect = (data) => {
   console.log('[ImChat] WebSocket connected:', data)
 }
@@ -407,6 +505,8 @@ const initWebSocket = () => {
   wsService.on('typing', handleTyping)
   wsService.on('disconnect', handleWsDisconnect)
   wsService.on('error', handleWsError)
+  wsService.on('voice-call', handleIncomingCall)
+  wsService.on('video-call', handleIncomingCall)
   
   wsService.connect(currentUserId.value)
 }
@@ -422,6 +522,8 @@ const cleanupWebSocket = () => {
   wsService.off('typing', handleTyping)
   wsService.off('disconnect', handleWsDisconnect)
   wsService.off('error', handleWsError)
+  wsService.off('voice-call', handleIncomingCall)
+  wsService.off('video-call', handleIncomingCall)
   
   wsService.disconnect()
 }

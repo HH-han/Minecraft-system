@@ -113,6 +113,24 @@ class WebSocketService {
       case 'TYPING':
         this.emit('typing', data)
         break
+      case 'VOICE_CALL':
+        this.emit('voice-call', data)
+        break
+      case 'VIDEO_CALL':
+        this.emit('video-call', data)
+        break
+      case 'SDP_OFFER':
+        this.emit('sdp-offer', data)
+        break
+      case 'SDP_ANSWER':
+        this.emit('sdp-answer', data)
+        break
+      case 'ICE_CANDIDATE':
+        this.emit('ice-candidate', data)
+        break
+      case 'CALL_TIMEOUT':
+        this.emit('call-timeout', data)
+        break
       default:
         this.emit('message', data)
     }
