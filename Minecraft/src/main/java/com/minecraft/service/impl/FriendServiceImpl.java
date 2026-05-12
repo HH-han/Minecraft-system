@@ -101,6 +101,8 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
             if (user != null) {
                 dto.setUsername(user.getUsername());
                 dto.setAvatar(user.getAvatar());
+                dto.setPhone(user.getPhone());
+                dto.setEmail(user.getEmail());
             }
 
             String onlineStatus = (String) redisUtil.get(CacheConstants.ONLINE_STATUS_KEY + friend.getFriendId());
@@ -141,6 +143,8 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
             if (user != null) {
                 dto.setUsername(user.getUsername());
                 dto.setAvatar(user.getAvatar());
+                dto.setPhone(user.getPhone());
+                dto.setEmail(user.getEmail());
             }
 
             requestInfoList.add(dto);

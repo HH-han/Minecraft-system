@@ -12,4 +12,6 @@ public class FriendInfoDTO {
     private String lastMessage;
     private String lastMessageTime;
     private Integer unreadCount;
+    private String phone;
+    private String email;
 }

@@ -432,7 +432,9 @@ const loadFriends = async () => {
       lastMessage: '',
       time: '',
       unreadCount: f.unreadCount || 0,
-      online: f.online || false
+      online: f.online || false,
+      phone: f.phone || '',
+      email: f.email || ''
     }))
   }
 }

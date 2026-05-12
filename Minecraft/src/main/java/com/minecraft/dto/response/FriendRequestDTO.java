@@ -11,4 +11,6 @@ public class FriendRequestDTO {
     private String avatar;
     private String message;
     private String createTime;
+    private String phone;
+    private String email;
 }
