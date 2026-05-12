@@ -473,13 +473,32 @@ const handleIncomingCall = (data) => {
 const handleCallRequest = (callData) => {
   console.log('[ImChat] Handling call request:', callData)
   
+  // 如果是已有通话的状态更新（accepted/rejected/ended）
+  if (callData.status && currentCallId.value === callData.callId) {
+    console.log('[ImChat] Call status update for existing call:', callData.status)
+    if (callPanelRef.value && callPanelRef.value.updateCallStatus) {
+      callPanelRef.value.updateCallStatus(callData.status)
+    }
+    if (callData.status === 'ended' || callData.status === 'rejected') {
+      setTimeout(() => {
+        showCallPanel.value = false
+        currentCallId.value = null
+        callContact.value = null
+      }, 2000)
+    }
+    return
+  }
+  
   if (!callData.callerId) {
     console.warn('[ImChat] Invalid call request - missing callerId')
     return
   }
   
   const callerId = callData.callerId
-  console.log('[ImChat] Looking for caller:', callerId, ', friends count:', friends.value.length)
+  console.log('[ImChat] Looking for caller:', callerId, ', friends count:', friends.value.length, ', currentUserId:', currentUserId.value)
+  
+  // 打印所有好友的ID信息
+  console.log('[ImChat] All friends IDs:', friends.value.map(f => ({ id: f.id, name: f.name, type: typeof f.id })))
   
   // 统一的ID比较函数
   const compareIds = (id1, id2) => {
@@ -504,6 +523,7 @@ const handleCallRequest = (callData) => {
   for (const friend of friends.value) {
     if (compareIds(friend.id, callerId)) {
       caller = friend
+      console.log('[ImChat] Found caller:', caller)
       break
     }
   }
@@ -539,6 +559,10 @@ const handleCallRequest = (callData) => {
     callContact.value = caller
     isIncomingCall.value = true
     showCallPanel.value = true
+    // 检查并处理可能已经在队列中的SDP/ICE消息
+    setTimeout(() => {
+      processPendingMessages(callData.callId)
+    }, 500)
   }
 }
 
@@ -558,6 +582,10 @@ const createDefaultCaller = (callData) => {
   callContact.value = caller
   isIncomingCall.value = true
   showCallPanel.value = true
+  // 检查并处理可能已经在队列中的SDP/ICE消息
+  setTimeout(() => {
+    processPendingMessages(callData.callId)
+  }, 500)
 }
 
 const handleSdpMessage = (callData) => {
@@ -636,6 +664,12 @@ const processPendingMessages = (callId) => {
 }
 
 const handleCallEnded = () => {
+  // 先保存callId用于清理缓存，再清空状态
+  const endedCallId = currentCallId.value
+  if (endedCallId) {
+    delete pendingSdpMessages.value[endedCallId]
+    delete pendingIceMessages.value[endedCallId]
+  }
   showCallPanel.value = false
   currentCallId.value = null
   callContact.value = null
@@ -775,6 +809,7 @@ const loadFriends = async () => {
         const friendId = f.friendId
         // 确保ID类型一致：如果是数字字符串，转为数字
         const id = isNaN(parseInt(friendId)) ? friendId : parseInt(friendId)
+        console.log(`[ImChat] Friend mapping: friendId=${friendId}, id=${id}, username=${f.username}, remark=${f.remark}`)
         return {
           id: id,
           name: f.remark || f.username || '未知',

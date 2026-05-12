@@ -187,7 +187,12 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long receiverId = ((Number) callData.get("receiverId")).longValue();
-        sendCallMessage(receiverId, "sdp", callData);
+        
+        // 只发送必要的SDP数据，避免包含无关字段
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("callId", callId);
+        messageData.put("sdpOffer", sdp);
+        sendCallMessage(receiverId, "sdp", messageData);
         
         return ApiResponse.success("SDP Offer发送成功", null);
     }
@@ -209,7 +214,12 @@ public class VoiceCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long callerId = ((Number) callData.get("callerId")).longValue();
-        sendCallMessage(callerId, "sdp", callData);
+        
+        // 只发送sdpAnswer，不发送完整callData（避免sdpOffer干扰前端判断）
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("callId", callId);
+        messageData.put("sdpAnswer", sdp);
+        sendCallMessage(callerId, "sdp", messageData);
         
         return ApiResponse.success("SDP Answer发送成功", null);
     }

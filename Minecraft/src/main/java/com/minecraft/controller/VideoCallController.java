@@ -3,7 +3,6 @@ package com.minecraft.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.handler.WebSocketHandler;
-import com.minecraft.service.FriendService;
 import com.minecraft.utils.RedisUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,9 +21,6 @@ public class VideoCallController {
 
     @Autowired
     private RedisUtil redisUtil;
-    
-    @Autowired
-    private FriendService friendService;
 
     private static final String CALL_PREFIX = "video:call:";
     private static final long CALL_EXPIRE_MINUTES = 5;
@@ -42,10 +38,6 @@ public class VideoCallController {
     public ApiResponse<Map<String, Object>> initiateCall(
             @RequestParam Long callerId,
             @RequestParam Long receiverId) {
-        
-        if (!friendService.isFriend(callerId, receiverId)) {
-            return ApiResponse.error(403, "只有好友之间才能发起通话");
-        }
         
         String callId = UUID.randomUUID().toString();
         
@@ -182,7 +174,12 @@ public class VideoCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long receiverId = ((Number) callData.get("receiverId")).longValue();
-        sendCallMessage(receiverId, "sdp", callData);
+        
+        // 只发送必要的SDP数据
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("callId", callId);
+        messageData.put("sdpOffer", sdp);
+        sendCallMessage(receiverId, "sdp", messageData);
         
         return ApiResponse.success("SDP Offer发送成功", null);
     }
@@ -204,7 +201,12 @@ public class VideoCallController {
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
         Long callerId = ((Number) callData.get("callerId")).longValue();
-        sendCallMessage(callerId, "sdp", callData);
+        
+        // 只发送sdpAnswer，不发送完整callData
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("callId", callId);
+        messageData.put("sdpAnswer", sdp);
+        sendCallMessage(callerId, "sdp", messageData);
         
         return ApiResponse.success("SDP Answer发送成功", null);
     }

@@ -58,7 +58,7 @@
         
         <button 
           class="action-btn hangup-btn" 
-          @click="isConnected ? handleEnd : handleReject"
+          @click="isConnected ? handleEnd() : handleReject()"
         >
           <Icon :name="isConnected ? 'phone-off' : 'phone-off'" :size="'28px'" />
           <span class="btn-label">{{ isConnected ? '挂断' : '取消' }}</span>
@@ -137,6 +137,8 @@ const speakerEnabled = ref(true)
 const callStatus = ref('ringing')
 const isWebRTCInitialized = ref(false)
 const callDuration = ref(0)
+const pendingSdpOffer = ref(null)
+const pendingIceCandidates = ref([])
 let durationInterval = null
 
 const statusText = computed(() => {
@@ -220,6 +222,9 @@ const cleanupWebRTC = () => {
     webrtcClient.value = null
   }
   isWebRTCInitialized.value = false
+  // 清除通话缓存，防止影响下次通话
+  pendingSdpOffer.value = null
+  pendingIceCandidates.value = []
 }
 
 const toggleVideo = () => {
@@ -291,6 +296,27 @@ const initWebRTC = async (isCaller) => {
     await webrtcClient.value.init(props.callType, props.callId, callerId, receiverId)
     isWebRTCInitialized.value = true
     
+    // 如果存在缓存的SDP Offer，立即处理
+    if (pendingSdpOffer.value) {
+      console.log('[CallPanel] Applying cached SDP offer')
+      const sdp = pendingSdpOffer.value
+      pendingSdpOffer.value = null
+      await handleSdpOffer(sdp)
+    }
+    
+    // 处理缓存的ICE候选
+    if (pendingIceCandidates.value.length > 0) {
+      console.log('[CallPanel] Applying cached ICE candidates:', pendingIceCandidates.value.length)
+      for (const candidate of pendingIceCandidates.value) {
+        try {
+          await webrtcClient.value.addIceCandidate(JSON.parse(candidate))
+        } catch (error) {
+          console.error('[CallPanel] Failed to handle cached ICE candidate:', error)
+        }
+      }
+      pendingIceCandidates.value = []
+    }
+    
     if (isCaller) {
       const offer = await webrtcClient.value.createOffer()
       const sendOfferFn = props.callType === 'video' ? sendVideoSdpOffer : sendVoiceSdpOffer
@@ -305,7 +331,11 @@ const initWebRTC = async (isCaller) => {
 }
 
 const handleSdpOffer = async (sdp) => {
-  if (!webrtcClient.value) return
+  if (!webrtcClient.value) {
+    console.log('[CallPanel] WebRTC not initialized yet, caching SDP offer')
+    pendingSdpOffer.value = sdp
+    return
+  }
   
   try {
     await webrtcClient.value.setRemoteDescription(JSON.parse(sdp))
@@ -318,7 +348,11 @@ const handleSdpOffer = async (sdp) => {
 }
 
 const handleSdpAnswer = async (sdp) => {
-  if (!webrtcClient.value) return
+  if (!webrtcClient.value) {
+    console.log('[CallPanel] WebRTC not initialized yet, caching SDP answer')
+    pendingSdpOffer.value = sdp
+    return
+  }
   
   try {
     await webrtcClient.value.setRemoteDescription(JSON.parse(sdp))
@@ -328,7 +362,11 @@ const handleSdpAnswer = async (sdp) => {
 }
 
 const handleIceCandidate = async (candidate) => {
-  if (!webrtcClient.value) return
+  if (!webrtcClient.value) {
+    console.log('[CallPanel] WebRTC not initialized yet, caching ICE candidate')
+    pendingIceCandidates.value.push(candidate)
+    return
+  }
   
   try {
     await webrtcClient.value.addIceCandidate(JSON.parse(candidate))
@@ -345,6 +383,19 @@ const handleCallEnd = () => {
     emit('close')
     emit('call-ended')
   }, 1500)
+}
+
+const updateCallStatus = (status) => {
+  console.log('[CallPanel] Updating call status to:', status)
+  callStatus.value = status
+  if (status === 'accepted') {
+    // Caller side: receiver accepted, start connecting
+    if (!isWebRTCInitialized.value) {
+      initWebRTC(true)
+    }
+  } else if (status === 'ended' || status === 'rejected') {
+    handleCallEnd()
+  }
 }
 
 watch(() => props.visible, async (val) => {
@@ -383,7 +434,8 @@ defineExpose({
   handleSdpOffer,
   handleSdpAnswer,
   handleIceCandidate,
-  handleCallEnd
+  handleCallEnd,
+  updateCallStatus
 })
 </script>
 
