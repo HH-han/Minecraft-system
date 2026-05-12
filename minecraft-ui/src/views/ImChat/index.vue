@@ -478,24 +478,50 @@ const handleCallRequest = (callData) => {
     return
   }
   
-  const callerId = parseInt(callData.callerId)
+  const callerId = callData.callerId
   console.log('[ImChat] Looking for caller:', callerId, ', friends count:', friends.value.length)
   
-  let caller = friends.value.find(f => f.id === callerId)
+  // 统一的ID比较函数
+  const compareIds = (id1, id2) => {
+    if (id1 == null || id2 == null) return false
+    
+    // 如果两个值相同（包括数字和字符串比较）
+    if (id1 == id2) return true
+    
+    // 尝试解析为数字进行比较
+    const num1 = parseInt(id1)
+    const num2 = parseInt(id2)
+    if (!isNaN(num1) && !isNaN(num2) && num1 === num2) return true
+    
+    // 作为字符串比较（去除空格）
+    const str1 = String(id1).trim()
+    const str2 = String(id2).trim()
+    return str1 === str2
+  }
   
-  if (!caller) {
-    caller = friends.value.find(f => parseInt(f.id) === callerId)
-    console.log('[ImChat] Second match result:', caller)
+  // 在好友列表中查找来电者
+  let caller = null
+  for (const friend of friends.value) {
+    if (compareIds(friend.id, callerId)) {
+      caller = friend
+      break
+    }
   }
   
   if (!caller) {
-    console.warn('[ImChat] Caller not found in friends list:', callerId)
+    console.warn('[ImChat] Caller not found in friends list:', callerId, 'type:', typeof callerId)
     
     if (friends.value.length === 0) {
       console.log('[ImChat] Friends list is empty, trying to reload...')
       loadFriends().then(() => {
-        const reloadedCaller = friends.value.find(f => f.id === callerId) || 
-                              friends.value.find(f => parseInt(f.id) === callerId)
+        let reloadedCaller = null
+        for (const friend of friends.value) {
+          if (compareIds(friend.id, callerId)) {
+            reloadedCaller = friend
+            break
+          }
+        }
+        
         if (reloadedCaller) {
           callData.caller = reloadedCaller
           handleCallRequest(callData)
@@ -517,7 +543,7 @@ const handleCallRequest = (callData) => {
 }
 
 const createDefaultCaller = (callData) => {
-  const callerId = parseInt(callData.callerId)
+  const callerId = callData.callerId
   console.log('[ImChat] Creating default caller for:', callerId)
   
   const caller = {
@@ -745,17 +771,22 @@ const loadFriends = async () => {
         return
       }
       
-      friends.value = response.data.map(f => ({
-        id: parseInt(f.friendId) || f.friendId,
-        name: f.remark || f.username || '未知',
-        avatar: f.avatar || '',
-        lastMessage: '',
-        time: '',
-        unreadCount: f.unreadCount || 0,
-        online: f.online || false,
-        phone: f.phone || '',
-        email: f.email || ''
-      }))
+      friends.value = response.data.map(f => {
+        const friendId = f.friendId
+        // 确保ID类型一致：如果是数字字符串，转为数字
+        const id = isNaN(parseInt(friendId)) ? friendId : parseInt(friendId)
+        return {
+          id: id,
+          name: f.remark || f.username || '未知',
+          avatar: f.avatar || '',
+          lastMessage: '',
+          time: '',
+          unreadCount: f.unreadCount || 0,
+          online: f.online || false,
+          phone: f.phone || '',
+          email: f.email || ''
+        }
+      })
       
       console.log('[ImChat] Friends loaded successfully, count:', friends.value.length)
       console.log('[ImChat] Friends list:', friends.value)
