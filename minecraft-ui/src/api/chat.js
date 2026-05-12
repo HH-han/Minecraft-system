@@ -270,6 +270,16 @@ export const inviteFriendsToGroup = (groupId, friendIds) => {
   })
 }
 
+export const updateFriendRemark = (userId, friendId, remark) => {
+  return request.put('/public/im/friend/remark', null, {
+    params: {
+      userId,
+      friendId,
+      remark
+    }
+  })
+}
+
 export const removeGroupMember = (groupId, userId) => {
   return request.delete(`/public/chat-group/${groupId}/members/${userId}`)
 }

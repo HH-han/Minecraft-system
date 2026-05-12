@@ -79,6 +79,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
 import { getToken, getUserInfo } from '@/utils/storage'
@@ -201,14 +202,14 @@ const scrollToBottom = () => {
 
 const addFriend = async ({ phone, message }) => {
   if (!phone.trim()) {
-    alert('请输入手机号')
+    ElMessage.warning('请输入手机号')
     return
   }
   
   const senderId = authStore.userInfo?.id || currentUserId.value
   
   if (!senderId) {
-    alert('请先登录')
+    ElMessage.warning('请先登录')
     return
   }
   
@@ -218,7 +219,7 @@ const addFriend = async ({ phone, message }) => {
       const receiverId = receiverResponse.data.id
       
       if (receiverId === senderId) {
-        alert('不能添加自己为好友')
+        ElMessage.warning('不能添加自己为好友')
         return
       }
     }
@@ -233,9 +234,9 @@ const addFriend = async ({ phone, message }) => {
   })
   
   if (response.code === 200) {
-    alert('好友请求发送成功')
+    ElMessage.success('好友请求发送成功')
   } else {
-    alert(response.message || '发送失败')
+    ElMessage.error(response.message || '发送失败')
   }
 }
 
@@ -561,17 +562,17 @@ const handleDetailSendMessage = (contact) => {
 
 const handleDeleteContact = (contact) => {
   console.log('[ImChat] 删除好友:', contact)
-  alert('删除好友功能开发中')
+  ElMessage.info('删除好友功能开发中')
 }
 
 const handleDeleteGroup = (group) => {
   console.log('[ImChat] 解散群组:', group)
-  alert('解散群组功能开发中')
+  ElMessage.info('解散群组功能开发中')
 }
 
 const handleLeaveGroup = (group) => {
   console.log('[ImChat] 退出群组:', group)
-  alert('退出群组功能开发中')
+  ElMessage.info('退出群组功能开发中')
 }
 
 const handleInviteFriend = (group) => {
@@ -587,7 +588,7 @@ const handleInviteConfirm = async ({ groupId, friendIds }) => {
     // 调用后端API邀请好友加入群组
     const response = await inviteFriendsToGroup(groupId, friendIds)
     if (response.code === 200) {
-      alert('邀请成功')
+      ElMessage.success('邀请成功')
       // 更新群组成员数量
       const groupIndex = groups.value.findIndex(g => g.id === groupId)
       if (groupIndex !== -1) {
@@ -598,11 +599,11 @@ const handleInviteConfirm = async ({ groupId, friendIds }) => {
         detailContact.value.memberCount = (detailContact.value.memberCount || 0) + friendIds.length
       }
     } else {
-      alert(response.message || '邀请失败')
+      ElMessage.error(response.message || '邀请失败')
     }
   } catch (error) {
     console.error('[ImChat] 邀请好友失败:', error)
-    alert('邀请失败')
+    ElMessage.error('邀请失败')
   }
 }
 

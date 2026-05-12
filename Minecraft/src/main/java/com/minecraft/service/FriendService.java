@@ -11,6 +11,7 @@ public interface FriendService extends IService<Friend> {
     void addFriend(Long userId, Long friendId);
     void acceptFriend(Long userId, Long friendId);
     void deleteFriend(Long userId, Long friendId);
+    void updateRemark(Long userId, Long friendId, String remark);
     List<Friend> getFriendList(Long userId);
     List<FriendInfoDTO> getFriendInfoList(Long userId);
     List<Friend> getFriendRequestList(Long userId);

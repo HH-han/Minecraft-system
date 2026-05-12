@@ -80,6 +80,18 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
     }
 
     @Override
+    public void updateRemark(Long userId, Long friendId, String remark) {
+        LambdaQueryWrapper<Friend> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Friend::getUserId, userId)
+                .eq(Friend::getFriendId, friendId);
+        Friend friend = getOne(wrapper);
+        if (friend != null) {
+            friend.setRemark(remark);
+            updateById(friend);
+        }
+    }
+
+    @Override
     public List<Friend> getFriendList(Long userId) {
         LambdaQueryWrapper<Friend> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Friend::getUserId, userId)

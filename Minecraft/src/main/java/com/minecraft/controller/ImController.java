@@ -286,4 +286,15 @@ public class ImController {
         
         return ApiResponse.success("成功", count);
     }
+
+    @Operation(summary = "更新好友备注")
+    @PutMapping("/friend/remark")
+    public ApiResponse<Void> updateFriendRemark(
+            @RequestParam Long userId,
+            @RequestParam Long friendId,
+            @RequestParam String remark) {
+        
+        friendService.updateRemark(userId, friendId, remark);
+        return ApiResponse.success("备注更新成功", null);
+    }
 }

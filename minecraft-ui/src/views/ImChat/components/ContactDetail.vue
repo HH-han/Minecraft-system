@@ -77,6 +77,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { ElMessageBox } from 'element-plus'
 import Icon from './Icon.vue'
 
 const props = defineProps({
@@ -122,21 +123,33 @@ const onSendMessage = () => {
 }
 
 const onDeleteContact = () => {
-  if (confirm('确定要删除此好友吗？')) {
+  ElMessageBox.confirm('确定要删除此好友吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
     emit('delete-contact', props.contact)
-  }
+  }).catch(() => {})
 }
 
 const onDeleteGroup = () => {
-  if (confirm('确定要解散此群组吗？此操作不可恢复！')) {
+  ElMessageBox.confirm('确定要解散此群组吗？此操作不可恢复！', '警告', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'error'
+  }).then(() => {
     emit('delete-group', props.contact)
-  }
+  }).catch(() => {})
 }
 
 const onLeaveGroup = () => {
-  if (confirm('确定要退出此群组吗？')) {
+  ElMessageBox.confirm('确定要退出此群组吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
     emit('leave-group', props.contact)
-  }
+  }).catch(() => {})
 }
 
 const onInviteFriend = () => {
