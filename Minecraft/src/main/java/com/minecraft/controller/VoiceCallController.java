@@ -3,6 +3,7 @@ package com.minecraft.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.handler.WebSocketHandler;
+import com.minecraft.service.FriendService;
 import com.minecraft.utils.RedisUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +23,9 @@ public class VoiceCallController {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private FriendService friendService;
+
     private static final String CALL_PREFIX = "voice:call:";
     private static final long CALL_EXPIRE_MINUTES = 5;
 
@@ -39,6 +43,10 @@ public class VoiceCallController {
             @RequestParam Long callerId,
             @RequestParam Long receiverId) {
         
+        if (!friendService.isFriend(callerId, receiverId)) {
+            return ApiResponse.error(403, "只有好友之间才能发起通话");
+        }
+
         String callId = UUID.randomUUID().toString();
         
         Map<String, Object> callData = new HashMap<>();
@@ -77,10 +85,15 @@ public class VoiceCallController {
             return ApiResponse.error(403, "无权操作此通话");
         }
         
+        Long callerId = ((Number) callData.get("callerId")).longValue();
+        
+        if (!friendService.isFriend(callerId, receiverId)) {
+            return ApiResponse.error(403, "双方必须互为好友才能通话");
+        }
+        
         callData.put("status", "accepted");
         redisUtil.set(CALL_PREFIX + callId, callData, CALL_EXPIRE_MINUTES, TimeUnit.MINUTES);
         
-        Long callerId = ((Number) callData.get("callerId")).longValue();
         sendCallMessage(callerId, "call", callData);
         
         Map<String, Object> response = new HashMap<>();

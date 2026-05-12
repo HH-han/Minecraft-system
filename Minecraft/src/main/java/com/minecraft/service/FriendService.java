@@ -16,4 +16,5 @@ public interface FriendService extends IService<Friend> {
     List<FriendInfoDTO> getFriendInfoList(Long userId);
     List<Friend> getFriendRequestList(Long userId);
     List<FriendRequestDTO> getFriendRequestInfoList(Long userId);
+    boolean isFriend(Long userId, Long friendId);
 }

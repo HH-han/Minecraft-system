@@ -458,15 +458,21 @@ const handleIncomingCall = (data) => {
   
   const callerId = parseInt(callData.callerId)
   
-  console.log('[ImChat] Looking for caller in friends list, callerId:', callerId)
+  console.log('[ImChat] Looking for caller in friends list, callerId:', callerId, 'type:', typeof callerId)
   console.log('[ImChat] Friends list length:', friends.value.length)
-  console.log('[ImChat] Friends list:', friends.value)
+  
+  console.log('[ImChat] Friends list details:')
+  friends.value.forEach((f, index) => {
+    console.log(`  [${index}] id: ${f.id}, type: ${typeof f.id}, name: ${f.name}`)
+  })
   
   let caller = friends.value.find(f => f.id === callerId)
+  console.log('[ImChat] First match result:', caller)
   
   if (!caller) {
     console.log('[ImChat] Trying parseInt match')
     caller = friends.value.find(f => parseInt(f.id) === callerId)
+    console.log('[ImChat] Second match result:', caller)
   }
   
   if (!caller) {

@@ -139,6 +139,17 @@ public class FriendServiceImpl extends ServiceImpl<FriendMapper, Friend> impleme
     }
 
     @Override
+    public boolean isFriend(Long userId, Long friendId) {
+        LambdaQueryWrapper<Friend> wrapper = new LambdaQueryWrapper<>();
+        wrapper.and(w -> w.eq(Friend::getUserId, userId).eq(Friend::getFriendId, friendId))
+                .or()
+                .eq(Friend::getUserId, friendId)
+                .eq(Friend::getFriendId, userId);
+        wrapper.eq(Friend::getStatus, FriendStatus.ACCEPTED.ordinal());
+        return count(wrapper) > 0;
+    }
+
+    @Override
     public List<FriendRequestDTO> getFriendRequestInfoList(Long userId) {
         List<Friend> requests = getFriendRequestList(userId);
         List<FriendRequestDTO> requestInfoList = new ArrayList<>();
