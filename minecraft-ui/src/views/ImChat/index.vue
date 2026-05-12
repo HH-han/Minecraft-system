@@ -51,6 +51,7 @@
       @invite-friend="handleInviteFriend"
       @update-remark="handleUpdateRemark"
       @edit-group="handleEditGroup"
+      @edit-friend-remark="handleEditFriendRemark"
     />
     
     <AddFriendModal
@@ -82,6 +83,12 @@
       :group="editGroup"
       @confirm="handleGroupEditConfirm"
     />
+    
+    <FriendRemarkModal
+      v-model:visible="showFriendRemarkModal"
+      :friend="editFriend"
+      @confirm="handleFriendRemarkConfirm"
+    />
   </div>
 </template>
 
@@ -101,6 +108,7 @@ import CreateGroupModal from './components/CreateGroupModal.vue'
 import ContactDetail from './components/ContactDetail.vue'
 import InviteFriendModal from './components/InviteFriendModal.vue'
 import GroupEditModal from './components/GroupEditModal.vue'
+import FriendRemarkModal from './components/FriendRemarkModal.vue'
 
 const authStore = useAuthStore()
 
@@ -124,6 +132,8 @@ const showInviteModal = ref(false)
 const inviteGroup = ref(null)
 const showGroupEditModal = ref(false)
 const editGroup = ref(null)
+const showFriendRemarkModal = ref(false)
+const editFriend = ref(null)
 
 const chatAreaRef = ref(null)
 
@@ -601,6 +611,42 @@ const handleEditGroup = (group) => {
   console.log('[ImChat] 编辑群组:', group)
   editGroup.value = { ...group }
   showGroupEditModal.value = true
+}
+
+const handleEditFriendRemark = (friend) => {
+  console.log('[ImChat] 编辑好友备注:', friend)
+  editFriend.value = { ...friend }
+  showFriendRemarkModal.value = true
+}
+
+const handleFriendRemarkConfirm = async ({ friendId, remark }) => {
+  console.log('[ImChat] 确认修改好友备注:', { friendId, remark })
+  
+  try {
+    const userId = authStore.userInfo?.id || currentUserId.value
+    const response = await updateFriendRemark(userId, friendId, remark)
+    if (response.code === 200) {
+      ElMessage.success('备注修改成功')
+      
+      const friendIndex = friends.value.findIndex(f => f.id === friendId)
+      if (friendIndex !== -1) {
+        friends.value[friendIndex].name = remark
+      }
+      
+      if (detailContact.value && detailContact.value.id === friendId) {
+        detailContact.value.name = remark
+      }
+      
+      if (selectedContact.value && selectedContact.value.id === friendId) {
+        selectedContact.value.name = remark
+      }
+    } else {
+      ElMessage.error(response.message || '修改失败')
+    }
+  } catch (error) {
+    console.error('[ImChat] 修改好友备注失败:', error)
+    ElMessage.error('修改失败')
+  }
 }
 
 const handleGroupEditConfirm = async (data) => {

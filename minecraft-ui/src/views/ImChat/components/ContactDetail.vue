@@ -15,17 +15,10 @@
         />
         <div class="name-section">
           <h3 class="detail-name">{{ contact.name }}</h3>
-          <button v-if="!isGroup" class="edit-remark-btn" @click="editRemark">
+          <button v-if="!isGroup" class="edit-remark-btn" @click="onEditFriendRemark">
             <Icon name="edit" :size="'14px'" />
           </button>
         </div>
-        <input 
-          v-if="isEditingRemark" 
-          v-model="editingRemark" 
-          class="remark-input" 
-          placeholder="请输入备注"
-          @keyup.enter="saveRemark"
-        />
       </div>
 
       <div class="info-section">
@@ -113,13 +106,12 @@ const emit = defineEmits([
   'leave-group',
   'invite-friend',
   'update-remark',
-  'edit-group'
+  'edit-group',
+  'edit-friend-remark'
 ])
 
 const authStore = useAuthStore()
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
-const isEditingRemark = ref(false)
-const editingRemark = ref('')
 
 const isGroup = computed(() => {
   return props.contact?.isGroup || props.contact?.groupId
@@ -183,32 +175,8 @@ const onEditGroup = () => {
   emit('edit-group', props.contact)
 }
 
-const editRemark = () => {
-  editingRemark.value = props.contact?.name || ''
-  isEditingRemark.value = true
-}
-
-const saveRemark = async () => {
-  if (!editingRemark.value.trim()) {
-    ElMessage.warning('备注不能为空')
-    return
-  }
-
-  try {
-    const userId = authStore.userInfo?.id
-    const friendId = props.contact?.id
-    if (!userId || !friendId) return
-
-    await updateFriendRemark(userId, friendId, editingRemark.value)
-    ElMessage.success('备注更新成功')
-    isEditingRemark.value = false
-    emit('update-remark', {
-      friendId: friendId,
-      remark: editingRemark.value
-    })
-  } catch (error) {
-    ElMessage.error('备注更新失败')
-  }
+const onEditFriendRemark = () => {
+  emit('edit-friend-remark', props.contact)
 }
 </script>
 
