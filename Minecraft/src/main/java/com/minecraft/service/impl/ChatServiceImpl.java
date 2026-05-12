@@ -7,6 +7,7 @@ import com.minecraft.entity.ChatMessage;
 import com.minecraft.handler.WebSocketHandler;
 import com.minecraft.mapper.ChatMessageMapper;
 import com.minecraft.service.ChatService;
+import com.minecraft.utils.ImageUtils;
 import com.minecraft.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class ChatServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage>
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private ImageUtils imageUtils;
+
     private static final String CHAT_HISTORY_KEY = "chat:history:";
     private static final String UNREAD_COUNT_KEY = "chat:unread:";
     private static final long CACHE_EXPIRE_MINUTES = 30;
@@ -33,6 +37,15 @@ public class ChatServiceImpl extends ServiceImpl<ChatMessageMapper, ChatMessage>
         }
         if (message.getMessageType() == null) {
             message.setMessageType("text");
+        }
+        
+        if ("image".equalsIgnoreCase(message.getMessageType()) && message.getContent() != null && message.getContent().startsWith("data:image")) {
+            try {
+                String processedImage = imageUtils.processBase64Image(message.getContent());
+                message.setContent(processedImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         
         save(message);

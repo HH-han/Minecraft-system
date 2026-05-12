@@ -11,6 +11,7 @@ import com.minecraft.mapper.GroupChatMessageMapper;
 import com.minecraft.mapper.GroupMemberMapper;
 import com.minecraft.mapper.UserMapper;
 import com.minecraft.service.GroupChatService;
+import com.minecraft.utils.ImageUtils;
 import com.minecraft.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class GroupChatServiceImpl extends ServiceImpl<GroupChatMessageMapper, Gr
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private ImageUtils imageUtils;
+
     private static final String GROUP_CHAT_HISTORY_KEY = "group:chat:history:";
     private static final String GROUP_UNREAD_COUNT_KEY = "group:unread:";
     private static final long CACHE_EXPIRE_MINUTES = 30;
@@ -38,11 +42,22 @@ public class GroupChatServiceImpl extends ServiceImpl<GroupChatMessageMapper, Gr
     @Override
     @Transactional
     public void sendMessage(Long groupId, Long senderId, String content, String messageType) {
+        String processedContent = content;
+        String finalMessageType = messageType != null ? messageType : "text";
+        
+        if ("image".equalsIgnoreCase(finalMessageType) && content != null && content.startsWith("data:image")) {
+            try {
+                processedContent = imageUtils.processBase64Image(content);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
         GroupChatMessage message = new GroupChatMessage();
         message.setGroupId(groupId);
         message.setSenderId(senderId);
-        message.setContent(content);
-        message.setMessageType(messageType != null ? messageType : "text");
+        message.setContent(processedContent);
+        message.setMessageType(finalMessageType);
 
         User sender = userMapper.selectById(senderId);
         if (sender != null) {
@@ -74,7 +89,7 @@ public class GroupChatServiceImpl extends ServiceImpl<GroupChatMessageMapper, Gr
                 wsMessage.put("senderId", senderId);
                 wsMessage.put("senderName", senderName);
                 wsMessage.put("senderAvatar", senderAvatar);
-                wsMessage.put("content", content);
+                wsMessage.put("content", processedContent);
                 wsMessage.put("messageType", message.getMessageType());
                 wsMessage.put("timestamp", System.currentTimeMillis());
 

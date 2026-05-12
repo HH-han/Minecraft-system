@@ -13,7 +13,9 @@ import com.minecraft.service.ChatService;
 import com.minecraft.service.FriendService;
 import com.minecraft.service.GroupChatService;
 import com.minecraft.service.UserService;
+import com.minecraft.utils.FileUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.web.multipart.MultipartFile;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,20 @@ public class ImController {
 
     @Autowired
     private GroupChatService groupChatService;
+
+    @Autowired
+    private FileUtils fileUtils;
+
+    @Operation(summary = "上传文件")
+    @PostMapping("/upload")
+    public ApiResponse<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            String filePath = fileUtils.uploadFile(file);
+            return ApiResponse.success("上传成功", filePath);
+        } catch (Exception e) {
+            return ApiResponse.error("上传失败" + e.getMessage());
+        }
+    }
 
     @Operation(summary = "发送单聊消息（参数方式）")
     @PostMapping("/single/send/param")

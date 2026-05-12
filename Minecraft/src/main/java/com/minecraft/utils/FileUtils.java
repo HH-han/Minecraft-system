@@ -2,6 +2,7 @@ package com.minecraft.utils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,44 +17,47 @@ import java.util.UUID;
 @Component
 public class FileUtils {
 
-    // 暂时使用硬编码路径来测试
-    private String windowsDir = "D:/Image/";
-    private String unixDir = "/tmp/images/";
+    private final String windowsUploadDir;
+    private final String unixUploadDir;
+    private final String windowsBaseUrl;
+    private final String unixBaseUrl;
 
     private Path uploadPath;
+    private String baseUrl;
 
-    // 初始化上传路径
-    public FileUtils() {
+    public FileUtils(
+            @Value("${image.upload.windows-dir}") String windowsUploadDir,
+            @Value("${image.upload.unix-dir}") String unixUploadDir,
+            @Value("${image.upload.windows-url}") String windowsBaseUrl,
+            @Value("${image.upload.unix-url}") String unixBaseUrl) {
+        this.windowsUploadDir = windowsUploadDir;
+        this.unixUploadDir = unixUploadDir;
+        this.windowsBaseUrl = windowsBaseUrl;
+        this.unixBaseUrl = unixBaseUrl;
         this.uploadPath = getUploadPath();
+        this.baseUrl = getBaseUrl();
         log.info("文件上传路径初始化: {}", uploadPath);
+        log.info("文件访问URL初始化: {}", baseUrl);
     }
 
-    // 获取上传路径，与 WebConfig 保持一致
     private Path getUploadPath() {
-        // 自动检测操作系统
         String os = System.getProperty("os.name").toLowerCase();
         Path imagePath = null;
 
-        // Windows 系统配置
         if (os.contains("win")) {
-            // 检查D盘是否存在
             File dDrive = new File("D:/");
             if (dDrive.exists()) {
-                imagePath = Paths.get(windowsDir);
+                imagePath = Paths.get(windowsUploadDir);
                 createDirectoryIfNotExists(imagePath);
                 log.info("使用目录: {}", imagePath);
             } else {
-                // 如果D盘不存在，使用用户主目录下的images文件夹
                 String userHome = System.getProperty("user.home");
                 imagePath = Paths.get(userHome, "images");
                 createDirectoryIfNotExists(imagePath);
                 log.info("创建的目录: {}", imagePath);
             }
-        }
-        // Linux/Mac 系统配置
-        else {
-            // 使用配置文件中的Unix目录
-            imagePath = Paths.get(unixDir);
+        } else {
+            imagePath = Paths.get(unixUploadDir);
             try {
                 createDirectoryIfNotExists(imagePath);
                 log.info("使用目录: {}", imagePath);
@@ -65,12 +69,16 @@ public class FileUtils {
         return imagePath;
     }
 
+    private String getBaseUrl() {
+        String os = System.getProperty("os.name").toLowerCase();
+        return os.contains("win") ? windowsBaseUrl : unixBaseUrl;
+    }
+
     public String uploadFile(MultipartFile file) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileName = UUID.randomUUID().toString() + extension;
 
-        // 确保上传路径存在
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
@@ -78,7 +86,7 @@ public class FileUtils {
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath);
 
-        return "/upload/" + fileName;
+        return baseUrl + fileName;
     }
 
     public String uploadChunk(MultipartFile file, String fileMd5, Integer chunkIndex, Integer totalChunks) throws IOException {
@@ -109,7 +117,7 @@ public class FileUtils {
             }
 
             deleteDirectory(chunkDir.toFile());
-            return "/upload/" + fileName;
+            return baseUrl + fileName;
         } catch (IOException e) {
             throw e;
         }
@@ -131,7 +139,13 @@ public class FileUtils {
 
     public boolean deleteFile(String filePath) {
         try {
-            Path path = uploadPath.resolve(filePath.replace("/upload/", ""));
+            String fileName = filePath;
+            if (filePath.contains("/upload/")) {
+                fileName = filePath.substring(filePath.lastIndexOf("/upload/") + "/upload/".length());
+            } else if (filePath.contains(baseUrl)) {
+                fileName = filePath.substring(filePath.lastIndexOf(baseUrl) + baseUrl.length());
+            }
+            Path path = uploadPath.resolve(fileName);
             return Files.deleteIfExists(path);
         } catch (IOException e) {
             return false;

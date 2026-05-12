@@ -13,7 +13,7 @@
         @error="handleAvatarError"
       />
       <div class="message-content">
-        <div :class="['message-bubble', { mine: message.senderId === currentUserInfo?.id }]">
+        <div :class="['message-bubble', { mine: message.senderId === currentUserInfo?.id, 'no-blue-bg': isImageMessage(message) || isEmojiMessage(message) }]">
           <p v-if="isTextMessage(message)">{{ message.content }}</p>
           <img 
             v-else-if="isImageMessage(message)" 
@@ -289,6 +289,13 @@ defineExpose({ scrollToBottom, currentUserInfo })
 
 .message-item.mine .message-bubble {
   background: #409eff;
+}
+
+.message-item .message-bubble.no-blue-bg {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .message-bubble.emoji-bubble {
