@@ -15,13 +15,6 @@
           我的表情包
         </button>
       </div>
-      <button 
-        v-if="activeTab === 'custom'" 
-        class="upload-emoji-btn" 
-        @click="uploadEmoji"
-      >
-        <Icon name="plus" :size="'14px'" />
-      </button>
     </div>
     
     <div v-if="activeTab === 'system'" class="emoji-content">
@@ -49,6 +42,14 @@
     
     <div v-else class="emoji-content">
       <div class="emoji-grid">
+        <div 
+          class="emoji-item upload-item"
+          @click="uploadEmoji"
+        >
+          <div class="upload-icon">
+            <Icon name="upload" :size="'24px'" />
+          </div>
+        </div>
         <div 
           v-for="emoji in customEmojis" 
           :key="emoji.id" 
@@ -305,20 +306,6 @@ defineExpose({
   background: #f5f5f5;
 }
 
-.upload-emoji-btn {
-  width: 28px;
-  height: 28px;
-  border: none;
-  background: #409eff;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .emoji-content {
   flex: 1;
   overflow: hidden;
@@ -362,13 +349,14 @@ defineExpose({
 
 .emoji-grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(16, 1fr);
   gap: 8px;
   overflow-y: auto;
   flex: 1;
 }
 
 .emoji-item {
+  height: 60px;
   aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
@@ -384,6 +372,24 @@ defineExpose({
   background: #f8f9fa;
 }
 
+.emoji-item.upload-item {
+  border: 2px dashed #d9d9d9;
+  background: #fafafa;
+}
+
+.emoji-item.upload-item:hover {
+  border-color: #409eff;
+  background: #e8f4ff;
+}
+
+.upload-icon {
+  color: #999;
+}
+
+.emoji-item.upload-item:hover .upload-icon {
+  color: #409eff;
+}
+
 .emoji-unicode {
   font-size: 24px;
 }
@@ -395,7 +401,7 @@ defineExpose({
 }
 
 .empty-emoji {
-  grid-column: 1 / -1;
+  grid-column: 2 / -1;
   text-align: center;
   color: #999;
   padding: 20px;

@@ -22,12 +22,21 @@
             class="message-image"
             @click="previewImage(message.content)"
           />
-          <img 
+          <span 
+            v-else-if="isEmojiMessage(message) && isUnicodeEmoji(message.content)" 
+            class="message-emoji-text"
+          >{{ message.content }}</span>
+          <div 
             v-else-if="isEmojiMessage(message)" 
-            :src="getMessageImageUrl(message.content)" 
-            :alt="'表情'"
-            class="message-emoji"
-          />
+            class="emoji-container"
+          >
+            <img 
+              :src="getMessageImageUrl(message.content)" 
+              :alt="'表情'"
+              class="message-emoji-image"
+              @error="handleEmojiError"
+            />
+          </div>
           <div v-else class="message-other">
             <Icon name="file" :size="'24px'" />
             <span>{{ message.content }}</span>
@@ -158,6 +167,11 @@ const handleAvatarError = (e) => {
   e.target.src = defaultAvatar
 }
 
+const handleEmojiError = (e) => {
+  e.target.style.display = 'none'
+  e.target.parentElement.style.display = 'none'
+}
+
 const loadCurrentUserInfo = async () => {
   const token = getToken()
   if (token) {
@@ -186,6 +200,12 @@ const isImageMessage = (message) => {
 const isEmojiMessage = (message) => {
   const type = message.messageType || 'text'
   return type.toLowerCase() === 'emoji'
+}
+
+const isUnicodeEmoji = (content) => {
+  if (!content) return false
+  const emojiRegex = /[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/u
+  return emojiRegex.test(content) && !content.startsWith('http') && !content.startsWith('/')
 }
 
 const getMessageImageUrl = (url) => {
@@ -264,10 +284,16 @@ defineExpose({ scrollToBottom, currentUserInfo })
   margin: 0 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   max-width: 100%;
+  display: inline-block;
 }
 
 .message-item.mine .message-bubble {
   background: #409eff;
+}
+
+.message-bubble.emoji-bubble {
+  padding: 6px;
+  border-radius: 16px;
 }
 
 .message-bubble p {
@@ -289,10 +315,30 @@ defineExpose({ scrollToBottom, currentUserInfo })
   object-fit: cover;
 }
 
-.message-emoji {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+.message-emoji-text {
+  background: none;
+  line-height: 1;
+  display: block;
+}
+
+.emoji-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-emoji-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease;
+}
+
+.message-emoji-image:hover {
+  transform: scale(1.05);
 }
 
 .message-other {
