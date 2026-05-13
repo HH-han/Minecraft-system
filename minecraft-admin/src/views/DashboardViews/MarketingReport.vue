@@ -123,9 +123,12 @@ onMounted(() => {
 .marketing-item-img {
   width: 300px;
   height: 200px;
-  background-image: url(@/assets/scenery/jingwailipei.png);
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(0, 184, 148, 0.1) 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
 }
 
 .progress-container {

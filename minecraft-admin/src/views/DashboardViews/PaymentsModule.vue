@@ -7,7 +7,7 @@
         <div class="payments-change negative">-3.8% 最近7天</div>
       </div>
       <div class="payments-chart">
-        <canvas ref="barCanvas"></canvas>
+        <div ref="barCanvas" class="bar-chart"></div>
       </div>
     </div>
 
@@ -41,50 +41,62 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-
-ChartJS.register(...registerables)
+import { ref, onMounted, onUnmounted } from 'vue'
+import * as echarts from 'echarts'
 
 const barCanvas = ref(null)
+let chartInstance = null
+
+const initChart = () => {
+  if (!barCanvas.value) return
+  
+  chartInstance = echarts.init(barCanvas.value)
+  
+  const option = {
+    grid: {
+      left: '0%',
+      right: '0%',
+      bottom: '0%',
+      top: '0%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月'],
+      show: false
+    },
+    yAxis: {
+      type: 'value',
+      show: false
+    },
+    series: [{
+      type: 'bar',
+      data: [1200, 1900, 1500, 1800, 2200, 2400, 2100],
+      itemStyle: {
+        color: function(params) {
+          const colors = ['#6c5ce7', '#00b894']
+          return colors[params.dataIndex % 2]
+        },
+        borderRadius: [8, 8, 0, 0]
+      }
+    }]
+  }
+  
+  chartInstance.setOption(option)
+}
+
+const handleResize = () => {
+  chartInstance?.resize()
+}
 
 onMounted(() => {
-  const ctx = barCanvas.value.getContext('2d')
+  initChart()
+  window.addEventListener('resize', handleResize)
+})
 
-  new ChartJS(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['一月', '二月', '三月', '四月', '五月', '六月', '七月'],
-      datasets: [{
-        data: [1200, 1900, 1500, 1800, 2200, 2400, 2100],
-        backgroundColor: [
-          'rgba(108, 92, 231, 0.7)',
-          'rgba(0, 184, 148, 0.7)',
-          'rgba(108, 92, 231, 0.7)',
-          'rgba(0, 184, 148, 0.7)',
-          'rgba(108, 92, 231, 0.7)',
-          'rgba(0, 184, 148, 0.7)',
-          'rgba(108, 92, 231, 0.7)'
-        ],
-        borderRadius: 10,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        x: { display: false },
-        y: { display: false }
-      },
-      animation: {
-        duration: 1000,
-        easing: 'easeOutBounce'
-      }
-    }
-  })
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  chartInstance?.dispose()
 })
 </script>
 
@@ -99,7 +111,7 @@ onMounted(() => {
 .payments-amount {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--dark);
+  color: #333;
 }
 
 .payments-change {
@@ -107,9 +119,18 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
+.payments-change.negative {
+  color: #d63031;
+}
+
 .payments-chart {
   width: 150px;
   height: 60px;
+}
+
+.bar-chart {
+  width: 100%;
+  height: 100%;
 }
 
 .payments-methods {
@@ -119,7 +140,7 @@ onMounted(() => {
 .payments-methods h4 {
   font-size: 1rem;
   margin-bottom: 1rem;
-  color: var(--dark);
+  color: #333;
   opacity: 0.8;
 }
 
@@ -136,7 +157,7 @@ onMounted(() => {
   padding: 0.8rem;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .method:hover {
@@ -163,6 +184,6 @@ onMounted(() => {
 
 .method-percent {
   font-weight: 600;
-  color: var(--dark);
+  color: #333;
 }
 </style>

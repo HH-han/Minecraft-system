@@ -7,15 +7,12 @@
         <div>类别</div>
         <div>销售</div>
         <div>收益</div>
-        <div>科技</div>
+        <div>标签</div>
       </div>
 
       <div v-for="(product, index) in products" :key="index" class="table-row"
         :style="`animation-delay: ${index * 0.1}s`">
         <div class="product-info">
-          <!-- <div class="product-avatar">
-              <img :src="product.image" :alt="product.name">
-            </div> -->
           <div class="product-name">{{ product.name }}</div>
         </div>
         <div>
@@ -25,9 +22,9 @@
         </div>
         <div class="product-sales">{{ product.sales }}</div>
         <div class="product-revenue">{{ product.revenue }}</div>
-        <div class="product-tech">
-          <span v-for="(tech, techIndex) in product.tech" :key="techIndex" class="tech-icon">
-            {{ tech }}
+        <div class="product-tags">
+          <span v-for="(tag, tagIndex) in product.tags" :key="tagIndex" class="tag-icon">
+            {{ tag }}
           </span>
         </div>
       </div>
@@ -40,35 +37,34 @@ const products = [
   {
     name: '黄山',
     category: '旅游景区',
-    categoryColor: 'rgba(0, 184, 148, 0.1)',
+    categoryColor: 'rgba(0, 184, 148, 0.15)',
     sales: 234,
     revenue: '￥45,200',
-    tech: ['📱', '⚡']
+    tags: ['📱', '⚡']
   },
   {
     name: '北京烤鸭',
     category: '美食',
-    categoryColor: 'rgba(253, 203, 110, 0.1)',
+    categoryColor: 'rgba(253, 203, 110, 0.15)',
     sales: 189,
     revenue: '￥32,150',
-    tech: ['📺', '🔄']
+    tags: ['📺', '🔄']
   },
   {
     name: '巴黎铁塔',
     category: '海外',
-    categoryColor: 'rgba(108, 92, 231, 0.1)',
+    categoryColor: 'rgba(108, 92, 231, 0.15)',
     sales: 156,
     revenue: '￥28,750',
-    tech: ['🎧', '🔋']
+    tags: ['🎧', '🔋']
   },
   {
     name: '普洱茶',
-    // image: 'https://via.placeholder.com/40',
-    category: '小物件',
-    categoryColor: 'rgba(9, 132, 227, 0.1)',
+    category: '特产',
+    categoryColor: 'rgba(9, 132, 227, 0.15)',
     sales: 132,
     revenue: '￥24,890',
-    tech: ['⌚', '❤️']
+    tags: ['⌚', '❤️']
   }
 ]
 </script>
@@ -76,7 +72,6 @@ const products = [
 <style scoped>
 .products-table {
   width: 100%;
-  border-collapse: collapse;
 }
 
 .table-header {
@@ -85,8 +80,9 @@ const products = [
   padding: 1rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   font-weight: 600;
-  color: var(--dark);
-  opacity: 0.7;
+  color: #4b5563;
+  opacity: 0.8;
+  font-size: 0.9rem;
 }
 
 .table-row {
@@ -94,7 +90,7 @@ const products = [
   grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
   padding: 1rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: var(--transition);
+  transition: all 0.3s ease;
   animation: fadeIn 0.5s ease-out forwards;
   opacity: 0;
 }
@@ -110,52 +106,68 @@ const products = [
   gap: 1rem;
 }
 
-.product-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.product-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .product-name {
   font-weight: 500;
+  color: #1f2937;
 }
 
 .product-category {
-  padding: 5px 10px;
+  padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 500;
+  color: #4b5563;
 }
 
-.product-sales,
-.product-revenue {
+.product-sales {
   font-weight: 500;
-  color: var(--dark);
+  color: #374151;
 }
 
 .product-revenue {
-  color: var(--primary);
+  color: #6c5ce7;
   font-weight: 600;
 }
 
-.product-tech {
+.product-tags {
   display: flex;
   gap: 0.5rem;
 }
 
-.tech-icon {
+.tag-icon {
   font-size: 1.1rem;
-  transition: var(--transition);
+  transition: transform 0.3s ease;
 }
 
-.tech-icon:hover {
+.tag-icon:hover {
   transform: scale(1.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .table-header {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .table-row {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .product-revenue,
+  .product-tags {
+    display: none;
+  }
 }
 </style>

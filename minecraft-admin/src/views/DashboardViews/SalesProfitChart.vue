@@ -10,7 +10,7 @@
     </div>
 
     <div class="chart-container">
-      <canvas ref="chartCanvas"></canvas>
+      <div ref="chartCanvas" class="line-chart"></div>
     </div>
 
     <div class="chart-footer">
@@ -30,9 +30,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-
-ChartJS.register(...registerables)
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import * as echarts from 'echarts'
 
 const chartCanvas = ref(null)
 const activeTab = ref('利润')
@@ -40,60 +39,84 @@ const tabs = ['利润', '成本']
 let chartInstance = null
 
 const initChart = () => {
+  if (!chartCanvas.value) return
+  
   if (chartInstance) {
-    chartInstance.destroy()
+    chartInstance.dispose()
   }
-
-  const ctx = chartCanvas.value.getContext('2d')
-
-  chartInstance = new ChartJS(ctx, {
-    type: 'line',
-    data: {
-      labels: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月'],
-      datasets: [{
-        label: activeTab.value,
-        data: [45000, 42000, 48000, 51000, 58000, 63000, 62000, 65000],
-        borderColor: activeTab.value === '利润' ? '#00b894' : '#d63031',
-        backgroundColor: activeTab.value === '利润' ? 'rgba(0, 184, 148, 0.1)' : 'rgba(214, 48, 49, 0.1)',
-        borderWidth: 3,
-        tension: 0.4,
-        fill: true,
-        pointBackgroundColor: '#fff',
-        pointBorderColor: activeTab.value === '利润' ? '#00b894' : '#d63031',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7
-      }]
+  
+  chartInstance = echarts.init(chartCanvas.value)
+  
+  const colors = activeTab.value === '利润' ? ['#00b894', 'rgba(0, 184, 148, 0.1)'] : ['#d63031', 'rgba(214, 48, 49, 0.1)']
+  
+  const option = {
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      top: '10%',
+      containLabel: true
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
+    xAxis: {
+      type: 'category',
+      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月'],
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { color: '#999', fontSize: 12 }
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { show: false },
+      splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
+    },
+    series: [{
+      type: 'line',
+      data: [45000, 42000, 48000, 51000, 58000, 63000, 62000, 65000],
+      smooth: true,
+      symbol: 'circle',
+      symbolSize: 8,
+      lineStyle: {
+        width: 3,
+        color: colors[0]
       },
-      scales: {
-        y: {
-          beginAtZero: false,
-          grid: { color: 'rgba(0,0,0,0.05)' }
-        },
-        x: {
-          grid: { display: false }
-        }
+      itemStyle: {
+        color: '#fff',
+        borderColor: colors[0],
+        borderWidth: 2
       },
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: colors[1] },
+          { offset: 1, color: 'transparent' }
+        ])
       }
-    }
-  })
+    }]
+  }
+  
+  chartInstance.setOption(option)
 }
 
-onMounted(initChart)
+const handleResize = () => {
+  chartInstance?.resize()
+}
+
+onMounted(() => {
+  initChart()
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  chartInstance?.dispose()
+})
+
 watch(activeTab, initChart)
 </script>
 
 <style scoped>
-.chart-header {
+.dashboard-chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -114,17 +137,22 @@ watch(activeTab, initChart)
   border-radius: 50px;
   cursor: pointer;
   font-weight: 500;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .chart-tabs button.active {
-  background: var(--primary);
+  background: #6c5ce7;
   color: white;
 }
 
 .chart-container {
-  height: 250px;
+  height: 220px;
   margin: 1rem 0;
+}
+
+.line-chart {
+  width: 100%;
+  height: 100%;
 }
 
 .chart-footer {
@@ -150,15 +178,23 @@ watch(activeTab, initChart)
   font-weight: 500;
 }
 
+.change.positive {
+  color: #00b894;
+}
+
+.change.negative {
+  color: #d63031;
+}
+
 .view-details {
-  background: var(--primary);
+  background: #6c5ce7;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 50px;
   cursor: pointer;
   font-weight: 500;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
 }
 

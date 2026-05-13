@@ -2,7 +2,7 @@
   <div class="dashboard-card" style="grid-column: 1 / -1;">
     <div class="transactions-header">
       <h3 class="dashboard-card-title">近期交易</h3>
-      <button class="view-all">查看所有交易 </button>
+      <button class="view-all">查看所有交易</button>
     </div>
 
     <div class="transactions-list">
@@ -35,7 +35,7 @@ const transactions = [
   },
   {
     icon: '💰',
-    title: '工资收入',
+    title: '订单收入',
     date: '2023-05-01 10:00',
     amount: '+￥2,500.00',
     amountClass: 'positive',
@@ -70,17 +70,17 @@ const transactions = [
 
 .view-all {
   background: none;
-  border: 1px solid var(--primary);
-  color: var(--primary);
+  border: 1px solid #6c5ce7;
+  color: #6c5ce7;
   padding: 8px 20px;
   border-radius: 50px;
   cursor: pointer;
   font-weight: 500;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .view-all:hover {
-  background: var(--primary);
+  background: #6c5ce7;
   color: white;
   box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
 }
@@ -97,7 +97,7 @@ const transactions = [
   padding: 1rem;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
   animation: fadeIn 0.5s ease-out forwards;
   opacity: 0;
 }
@@ -116,7 +116,7 @@ const transactions = [
   justify-content: center;
   font-size: 1.2rem;
   margin-right: 1rem;
-  transition: var(--transition);
+  transition: transform 0.3s ease;
 }
 
 .transaction-item:hover .transaction-icon {
@@ -129,25 +129,35 @@ const transactions = [
 
 .transaction-title {
   font-weight: 500;
-  color: var(--dark);
+  color: #1f2937;
   margin-bottom: 0.3rem;
 }
 
 .transaction-date {
   font-size: 0.8rem;
-  color: var(--dark);
-  opacity: 0.6;
+  color: #6b7280;
 }
 
 .transaction-amount {
   font-weight: 600;
 }
 
-.positive {
-  color: var(--success);
+.transaction-amount.positive {
+  color: #00b894;
 }
 
-.negative {
-  color: var(--danger);
+.transaction-amount.negative {
+  color: #d63031;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

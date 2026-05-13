@@ -298,9 +298,7 @@ header p {
 .content-area {
     flex: 3;
     min-width: 300px;
-    background-image: url("@/assets/scenery/scenery-3.webp");
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.05) 0%, rgba(155, 89, 182, 0.05) 100%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;

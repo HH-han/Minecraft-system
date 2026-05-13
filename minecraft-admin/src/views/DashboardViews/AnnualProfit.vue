@@ -7,7 +7,7 @@
         <div class="profit-rate">18.4%</div>
       </div>
       <div class="profit-chart">
-        <canvas ref="lineCanvas"></canvas>
+        <div ref="lineCanvas" class="mini-chart"></div>
       </div>
     </div>
     
@@ -32,49 +32,73 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-
-ChartJS.register(...registerables)
+import { ref, onMounted, onUnmounted } from 'vue'
+import * as echarts from 'echarts'
 
 const lineCanvas = ref(null)
+let chartInstance = null
+
+const initChart = () => {
+  if (!lineCanvas.value) return
+  
+  chartInstance = echarts.init(lineCanvas.value)
+  
+  const option = {
+    grid: {
+      left: '0%',
+      right: '0%',
+      bottom: '0%',
+      top: '0%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: ['Q1', 'Q2', 'Q3', 'Q4'],
+      show: false
+    },
+    yAxis: {
+      type: 'value',
+      show: false
+    },
+    series: [{
+      type: 'line',
+      data: [15000, 18000, 21000, 24000],
+      smooth: true,
+      symbol: 'circle',
+      symbolSize: 6,
+      lineStyle: {
+        width: 2,
+        color: '#6c5ce7'
+      },
+      itemStyle: {
+        color: '#fff',
+        borderColor: '#6c5ce7',
+        borderWidth: 2
+      },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: 'rgba(108, 92, 231, 0.2)' },
+          { offset: 1, color: 'transparent' }
+        ])
+      }
+    }]
+  }
+  
+  chartInstance.setOption(option)
+}
+
+const handleResize = () => {
+  chartInstance?.resize()
+}
 
 onMounted(() => {
-  const ctx = lineCanvas.value.getContext('2d')
-  
-  new ChartJS(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-      datasets: [{
-        data: [15000, 18000, 21000, 24000],
-        borderColor: '#6c5ce7',
-        backgroundColor: 'rgba(108, 92, 231, 0.1)',
-        borderWidth: 3,
-        tension: 0.4,
-        fill: true,
-        pointBackgroundColor: '#fff',
-        pointBorderColor: '#6c5ce7',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        x: { display: false },
-        y: { display: false }
-      },
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
-      }
-    }
-  })
+  initChart()
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  chartInstance?.dispose()
 })
 </script>
 
@@ -88,7 +112,7 @@ onMounted(() => {
 
 .profit-label {
   font-size: 0.9rem;
-  color: var(--dark);
+  color: #666;
   opacity: 0.7;
   margin-bottom: 0.3rem;
 }
@@ -96,12 +120,17 @@ onMounted(() => {
 .profit-rate {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--primary);
+  color: #6c5ce7;
 }
 
 .profit-chart {
   width: 150px;
   height: 80px;
+}
+
+.mini-chart {
+  width: 100%;
+  height: 100%;
 }
 
 .profit-stats {
@@ -114,7 +143,7 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.7);
   padding: 1rem;
   border-radius: 10px;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .profit-stat:hover {
@@ -131,11 +160,19 @@ onMounted(() => {
 
 .stat-amount {
   font-weight: 700;
-  color: var(--dark);
+  color: #333;
 }
 
 .stat-change {
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.stat-change.positive {
+  color: #00b894;
+}
+
+.stat-change.negative {
+  color: #d63031;
 }
 </style>
