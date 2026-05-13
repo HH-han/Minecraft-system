@@ -37,14 +37,14 @@ const removePending = (config) => {
 // 跳转到错误页面
 const redirectToErrorPage = (status) => {
   const errorPages = {
-    400: '/errors/400',
-    401: '/errors/401',
-    403: '/errors/403',
-    404: '/errors/404',
-    500: '/errors/500',
-    502: '/errors/502',
-    503: '/errors/503',
-    504: '/errors/504'
+    400: '/400',
+    401: '/401',
+    403: '/403',
+    404: '/404',
+    500: '/500',
+    502: '/502',
+    503: '/503',
+    504: '/504'
   }
   const path = errorPages[status]
   if (path) {
