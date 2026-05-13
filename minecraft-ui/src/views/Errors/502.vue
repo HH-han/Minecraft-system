@@ -41,7 +41,7 @@ const refreshPage = () => {
 }
 
 const goHome = () => {
-  router.push('/home')
+  router.push('/')
 }
 </script>
 
