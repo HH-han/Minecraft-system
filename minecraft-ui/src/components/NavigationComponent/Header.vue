@@ -28,7 +28,7 @@
         <div class="actions">
           <ThemeSwitching />
           <!-- 微信 -->
-          <button class="action-btn-iocn">
+          <button class="action-btn-iocn" @click="openSocialLogin('wechat')">
             <svg t="1737552806004" class="action-btn-iocn-size" viewBox="0 0 1024 1024" version="1.1"
               xmlns="http://www.w3.org/2000/svg" p-id="6242">
               <path
@@ -40,7 +40,7 @@
             </svg>
           </button>
           <!-- QQ -->
-          <button class="action-btn-iocn">
+          <button class="action-btn-iocn" @click="openSocialLogin('qq')">
             <svg t="1737552871738" class="action-btn-iocn-size" viewBox="0 0 1024 1024" version="1.1"
               xmlns="http://www.w3.org/2000/svg" p-id="7246">
               <path
@@ -49,7 +49,7 @@
             </svg>
           </button>
           <!--微博  -->
-          <button class="action-btn-iocn">
+          <button class="action-btn-iocn" @click="openSocialLogin('weibo')">
             <svg t="1737552907646" class="action-btn-iocn-size" viewBox="0 0 1024 1024" version="1.1"
               xmlns="http://www.w3.org/2000/svg" p-id="8263">
               <path
@@ -143,6 +143,13 @@
   <div>
     <BacktoTop />
   </div>
+  
+  <!-- 社交平台登录模态框 -->
+  <SocialLoginModal 
+    :visible="showSocialLoginModal" 
+    :platform="currentPlatform"
+    @close="closeSocialLoginModal" 
+  />
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
@@ -162,6 +169,7 @@ import travel from '@/views/Travel/index.vue';
 import community from '@/views/Community/index.vue';
 import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
 import BacktoTop from '@/components/DisplayBox/BacktoTop.vue';
+import SocialLoginModal from '@/components/PromptComponent/SocialLoginModal.vue';
 // 接口
 import { useAuthStore } from '@/stores/auth';
 import { getUserInfo, logout } from '@/api/user';
@@ -311,9 +319,21 @@ const EnrolFirst = () => {
   router.push('/login');
   ElMessage.success('前往注册！');
 };
+
+const openSocialLogin = (platform) => {
+  currentPlatform.value = platform;
+  showSocialLoginModal.value = true;
+};
+
+const closeSocialLoginModal = () => {
+  showSocialLoginModal.value = false;
+};
+
 const isLoggedIn = ref(false);
 const isDropdownVisible = ref(false);
 const showLogoutConfirm = ref(false);
+const showSocialLoginModal = ref(false);
+const currentPlatform = ref('wechat');
 const toggleDropdown = () => {
   isDropdownVisible.value = !isDropdownVisible.value;
 };

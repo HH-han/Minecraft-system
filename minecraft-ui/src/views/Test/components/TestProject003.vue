@@ -188,7 +188,7 @@
   </div>
   <!-- 成功提示框 -->
   <div>
-    <LoginSucceeded v-if="showSucceeded" :username="loginForm.username" :message="successMessage"
+    <LoginSucceeded v-if="showSucceeded" :username="loggedInUsername" :message="successMessage"
       @close="showSucceeded = false" />
   </div>
   <!-- 错误提示框 -->
@@ -265,6 +265,7 @@ const showError = ref(false);
 const showSucceeded = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+const loggedInUsername = ref('');
 
 // 登录表单数据
 const loginForm = ref({
@@ -353,6 +354,8 @@ const handleLogin = async () => {
       } else {
         localStorage.removeItem('rememberedUsername');
       }
+      
+      loggedInUsername.value = username;
 
       successMessage.value = '登录成功！';
       showSucceeded.value = true;

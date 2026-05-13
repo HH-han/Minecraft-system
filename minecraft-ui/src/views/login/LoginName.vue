@@ -297,7 +297,7 @@
   </div>
   <!-- 成功提示框 -->
   <div>
-    <LoginSucceeded v-if="showSucceeded" :username="loginForm.username" :message="successMessage"
+    <LoginSucceeded v-if="showSucceeded" :username="loggedInUsername" :message="successMessage"
       @close="showSucceeded = false" />
   </div>
   <!-- 账号信息模态框 -->
@@ -405,6 +405,7 @@ const showAccountModal = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
 const generatedAccount = ref('');
+const loggedInUsername = ref('');
 
 // 图片引入
 const defaultAvatar = new URL('@/assets/defaultimage/mrtx.png', import.meta.url).href
@@ -521,6 +522,8 @@ const handleLogin = async () => {
       });
 
       localStorage.setItem('rememberedUsername', userName);
+      
+      loggedInUsername.value = userName;
 
       successMessage.value = '';
       showSucceeded.value = true;
