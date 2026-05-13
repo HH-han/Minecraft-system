@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import router from '@/router'
 
 // 存储pending中的请求
 const pendingMap = new Map()
@@ -30,6 +31,24 @@ const removePending = (config) => {
     const cancel = pendingMap.get(key)
     cancel(key)
     pendingMap.delete(key)
+  }
+}
+
+// 跳转到错误页面
+const redirectToErrorPage = (status) => {
+  const errorPages = {
+    400: '/errors/400',
+    401: '/errors/401',
+    403: '/errors/403',
+    404: '/errors/404',
+    500: '/errors/500',
+    502: '/errors/502',
+    503: '/errors/503',
+    504: '/errors/504'
+  }
+  const path = errorPages[status]
+  if (path) {
+    router.push(path).catch(() => {})
   }
 }
 
@@ -94,21 +113,26 @@ request.interceptors.response.use(
     switch (status) {
       case 400:
         ElMessage.error('请求参数错误')
+        redirectToErrorPage(400)
         break
       case 401:
         ElMessage.error('登录已过期，请重新登录')
+        redirectToErrorPage(401)
         break
       case 403:
         ElMessage.error('没有权限访问')
+        redirectToErrorPage(403)
         break
       case 404:
         ElMessage.error('请求资源不存在')
+        redirectToErrorPage(404)
         break
       case 500:
         ElMessage.error('服务器内部错误')
+        redirectToErrorPage(500)
         break
       default:
-        if (!error.config?.silent) { // 支持静默失败
+        if (!error.config?.silent) {
           ElMessage.error(msg)
         }
     }
