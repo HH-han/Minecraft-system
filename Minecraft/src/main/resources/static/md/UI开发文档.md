@@ -357,6 +357,7 @@ li {
 ### 6.1 导航栏组件
 
 ```vue
+
 <template>
   <nav class="navbar">
     <div class="navbar-container">
@@ -376,78 +377,78 @@ li {
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+  import {ref, onMounted} from 'vue'
 
-const isDarkTheme = ref(false)
+  const isDarkTheme = ref(false)
 
-const toggleTheme = () => {
-  isDarkTheme.value = !isDarkTheme.value
-  document.documentElement.setAttribute('data-theme', isDarkTheme.value ? 'dark' : 'light')
-  localStorage.setItem('theme', isDarkTheme.value ? 'dark' : 'light')
-}
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme) {
-    isDarkTheme.value = savedTheme === 'dark'
-    document.documentElement.setAttribute('data-theme', savedTheme)
+  const toggleTheme = () => {
+    isDarkTheme.value = !isDarkTheme.value
+    document.documentElement.setAttribute('data-theme', isDarkTheme.value ? 'dark' : 'light')
+    localStorage.setItem('theme', isDarkTheme.value ? 'dark' : 'light')
   }
-})
+
+  onMounted(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme) {
+      isDarkTheme.value = savedTheme === 'dark'
+      document.documentElement.setAttribute('data-theme', savedTheme)
+    }
+  })
 </script>
 
 <style scoped>
-.navbar {
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-light);
-  padding: var(--space-4) 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
-}
-
-.navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.navbar-brand {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-500);
-  text-decoration: none;
-}
-
-.navbar-menu {
-  display: flex;
-  gap: var(--space-6);
-}
-
-.navbar-link {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color var(--transition-fast);
-}
-
-.navbar-link:hover {
-  color: var(--text-primary);
-}
-
-.navbar-actions {
-  display: flex;
-  gap: var(--space-4);
-}
-
-@media (max-width: 768px) {
-  .navbar-menu {
-    display: none;
+  .navbar {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
+    padding: var(--space-4) 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background-color var(--transition-normal), border-color var(--transition-normal);
   }
-}
+
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-500);
+    text-decoration: none;
+  }
+
+  .navbar-menu {
+    display: flex;
+    gap: var(--space-6);
+  }
+
+  .navbar-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+  }
+
+  .navbar-link:hover {
+    color: var(--text-primary);
+  }
+
+  .navbar-actions {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 768px) {
+    .navbar-menu {
+      display: none;
+    }
+  }
 </style>
 ```
 
