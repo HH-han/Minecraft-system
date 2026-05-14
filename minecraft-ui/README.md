@@ -190,6 +190,23 @@ npm run build
 
 MIT
 
+## 运行截图
+
+![系统截图1](../Minecraft/src/main/resources/static/image/1778768949754.png)
+
+![系统截图2](../Minecraft/src/main/resources/static/image/1778768999404.png)
+
+![系统截图3](../Minecraft/src/main/resources/static/image/1778769030051.png)
+
+![系统截图4](../Minecraft/src/main/resources/static/image/1778769059676.png)
+
+![系统截图5](../Minecraft/src/main/resources/static/image/1778769109945.png)
+
+![系统截图6](../Minecraft/src/main/resources/static/image/1778769302914.png)
+
+![系统截图7](../Minecraft/src/main/resources/static/image/1778769327901.png)
+
+
 ## 联系方式
 
 如有问题或建议，请联系项目维护者。
