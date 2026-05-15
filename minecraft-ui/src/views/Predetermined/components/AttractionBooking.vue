@@ -1,6 +1,5 @@
 <template>
   <div class="attraction-booking">
-    <!-- 景点基本信息 -->
     <div class="attraction-info">
       <div class="attraction-images">
         <div class="main-image">
@@ -26,6 +25,11 @@
         <div class="attraction-tags">
           <span class="tag" v-for="tag in tags" :key="tag">{{ tag }}</span>
         </div>
+        <div class="attraction-facilities">
+          <span class="facility-label">配套设施：</span>
+          <span v-if="loadingFacilities" class="loading-text">加载中...</span>
+          <span class="facility-tag" v-for="(facility, index) in displayFacilities" :key="index">{{ facility }}</span>
+        </div>
         <div class="attraction-time">
           <i class="time-icon">⏰</i>
           <span>开放时间：08:00-17:30</span>
@@ -33,24 +37,24 @@
       </div>
     </div>
 
-    <!-- 预订表单区域 -->
     <div class="booking-form">
       <h3>门票预订</h3>
       
-      <!-- 日期选择 -->
       <DatePicker 
         :dateFields="dateFields"
         @dateChange="handleDateChange"
       />
 
-      <!-- 票种选择 -->
+      <div v-if="loadingTickets" class="loading-container">
+        <span class="loading-text">加载门票中...</span>
+      </div>
       <TicketSelector 
+        v-else
         :tickets="tickets"
         :initialQuantities="ticketQuantities"
         @quantityChange="handleQuantityChange"
       />
 
-      <!-- 预订表单 -->
       <div v-if="hasSelectedTickets">
         <BookingForm 
           :totalPrice="totalPrice"
@@ -79,116 +83,162 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { defineProps, ref, computed, onMounted, watch } from 'vue'
 import DatePicker from './DatePicker.vue'
 import TicketSelector from './TicketSelector.vue'
 import TouristInfoForm from './TouristInfoForm.vue'
 import BookingForm from './BookingForm.vue'
+import { getAttractionFacilities } from '@/api/attractionFacility'
 
-export default {
-  components: {
-    DatePicker,
-    TicketSelector,
-    TouristInfoForm,
-    BookingForm
+const props = defineProps({
+  dateFields: {
+    type: Array,
+    required: true
   },
-  props: {
-    dateFields: {
-      type: Array,
-      required: true
-    },
-    tags: {
-      type: Array,
-      required: true
-    },
-    tickets: {
-      type: Array,
-      required: true
-    },
-    attractionData: {
-      type: Object,
-      default: null
-    }
+  tags: {
+    type: Array,
+    required: true
   },
-  data() {
-    return {
-      visitDate: '',
-      ticketQuantities: {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0
-      },
-      tourists: {}
-    }
+  tickets: {
+    type: Array,
+    required: true
   },
-  computed: {
-    selectedTickets() {
-      return this.tickets.filter(ticket => this.ticketQuantities[ticket.id] > 0)
-    },
-    hasSelectedTickets() {
-      return this.selectedTickets.length > 0
-    },
-    totalPrice() {
-      return this.tickets.reduce((total, ticket) => {
-        return total + (ticket.price * this.ticketQuantities[ticket.id])
-      }, 0)
-    }
+  attractionData: {
+    type: Object,
+    default: null
   },
-  methods: {
-    handleDateChange(dateData) {
-      if (dateData.visitDate) {
-        this.visitDate = dateData.visitDate
-      }
-    },
-    handleQuantityChange(quantityData) {
-      const ticketId = Object.keys(quantityData)[0]
-      this.ticketQuantities[ticketId] = quantityData[ticketId]
-      // 初始化游客信息数组
-      if (!this.tourists[ticketId]) {
-        this.tourists[ticketId] = []
-      }
-    },
-    handleTouristInfoChange(ticketId, info) {
-      this.tourists[ticketId] = info
-    },
-    submitBooking(bookingData) {
-      if (!this.visitDate) {
-        alert('请选择游玩日期')
-        return
-      }
-      if (this.selectedTickets.length === 0) {
-        alert('请至少选择一种票种')
-        return
-      }
-      // 检查游客信息
-      let hasEmptyTouristInfo = false
-      this.selectedTickets.forEach(ticket => {
-        const touristInfo = this.tourists[ticket.id] || []
-        for (let i = 0; i < touristInfo.length; i++) {
-          if (!touristInfo[i].name || !touristInfo[i].idCard) {
-            hasEmptyTouristInfo = true
-          }
-        }
-      })
-      if (hasEmptyTouristInfo) {
-        alert('请填写完整的游客信息')
-        return
-      }
-      // 这里可以添加提交预订的逻辑
-      console.log('预订信息:', {
-        ...bookingData,
-        visitDate: this.visitDate,
-        tickets: this.selectedTickets.map(ticket => ({
-          ...ticket,
-          quantity: this.ticketQuantities[ticket.id],
-          tourists: this.tourists[ticket.id] || []
-        }))
-      })
-      alert('预订提交成功！')
+  attractionId: {
+    type: [Number, null],
+    default: null
+  }
+})
+
+const visitDate = ref('')
+const ticketQuantities = ref({})
+const tourists = ref({})
+const attractionFacilities = ref([])
+const loadingFacilities = ref(false)
+const loadingTickets = ref(false)
+const displayFacilities = computed(() => {
+  return attractionFacilities.value.length > 0 
+    ? attractionFacilities.value.map(f => f.facilityName || f)
+    : ['停车场', '休息区', '卫生间', '观光车']
+})
+
+const initTicketQuantities = () => {
+  const initial = {}
+  props.tickets.forEach(ticket => {
+    initial[ticket.id] = 0
+  })
+  ticketQuantities.value = initial
+}
+
+const selectedTickets = computed(() => {
+  return props.tickets.filter(ticket => ticketQuantities.value[ticket.id] > 0)
+})
+
+const hasSelectedTickets = computed(() => {
+  return selectedTickets.value.length > 0
+})
+
+const totalPrice = computed(() => {
+  return props.tickets.reduce((total, ticket) => {
+    return total + (ticket.price * (ticketQuantities.value[ticket.id] || 0))
+  }, 0)
+})
+
+const loadAttractionFacilities = async () => {
+  if (!props.attractionId) return
+  
+  loadingFacilities.value = true
+  try {
+    const response = await getAttractionFacilities(props.attractionId)
+    if (response.code === 200 && response.data) {
+      attractionFacilities.value = response.data
     }
+  } catch (error) {
+    console.error('获取景点设施失败:', error)
+  } finally {
+    loadingFacilities.value = false
   }
 }
+
+const handleDateChange = (dateData) => {
+  if (dateData.visitDate) {
+    visitDate.value = dateData.visitDate
+  }
+}
+
+const handleQuantityChange = (quantityData) => {
+  const ticketId = Object.keys(quantityData)[0]
+  ticketQuantities.value[ticketId] = quantityData[ticketId]
+  if (!tourists.value[ticketId]) {
+    tourists.value[ticketId] = []
+  }
+}
+
+const handleTouristInfoChange = (ticketId, info) => {
+  tourists.value[ticketId] = info
+}
+
+const submitBooking = (bookingData) => {
+  if (!visitDate.value) {
+    alert('请选择游玩日期')
+    return
+  }
+  if (selectedTickets.value.length === 0) {
+    alert('请至少选择一种票种')
+    return
+  }
+  let hasEmptyTouristInfo = false
+  selectedTickets.value.forEach(ticket => {
+    const touristInfo = tourists.value[ticket.id] || []
+    for (let i = 0; i < touristInfo.length; i++) {
+      if (!touristInfo[i].name || !touristInfo[i].idCard) {
+        hasEmptyTouristInfo = true
+      }
+    }
+  })
+  if (hasEmptyTouristInfo) {
+    alert('请填写完整的游客信息')
+    return
+  }
+  console.log('预订信息:', {
+    ...bookingData,
+    visitDate: visitDate.value,
+    tickets: selectedTickets.value.map(ticket => ({
+      ...ticket,
+      quantity: ticketQuantities.value[ticket.id],
+      tourists: tourists.value[ticket.id] || []
+    }))
+  })
+  alert('预订提交成功！')
+}
+
+let debounceTimer = null
+
+const debounceLoadFacilities = () => {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+  }
+  debounceTimer = setTimeout(() => {
+    loadAttractionFacilities()
+  }, 300)
+}
+
+onMounted(() => {
+  initTicketQuantities()
+  debounceLoadFacilities()
+})
+
+watch(() => props.attractionId, () => {
+  debounceLoadFacilities()
+})
+
+watch(() => props.tickets, () => {
+  initTicketQuantities()
+}, { deep: true })
 </script>
 
 <style scoped>
@@ -196,6 +246,16 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.loading-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 14px;
 }
 
 .attraction-info {
@@ -330,6 +390,29 @@ export default {
   background: rgba(255, 106, 0, 0.1);
   color: #ff6a00;
   border-color: rgba(255, 106, 0, 0.3);
+}
+
+.attraction-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.facility-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.facility-tag {
+  background: rgba(52, 144, 222, 0.1);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #3490de;
+  border: 1px solid rgba(52, 144, 222, 0.2);
 }
 
 .attraction-time {

@@ -22,24 +22,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    rooms: {
-      type: Array,
-      default: () => []
-    },
-    selectedRoom: {
-      type: Object,
-      default: null
-    }
+<script setup>
+import { defineProps, defineEmits } from 'vue'
+
+defineProps({
+  rooms: {
+    type: Array,
+    default: () => []
   },
-  emits: ['roomSelect'],
-  methods: {
-    selectRoom(room) {
-      this.$emit('roomSelect', room)
-    }
+  selectedRoom: {
+    type: Object,
+    default: null
   }
+})
+
+const emit = defineEmits(['roomSelect'])
+
+const selectRoom = (room) => {
+  emit('roomSelect', room)
 }
 </script>
 

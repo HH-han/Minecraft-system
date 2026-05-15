@@ -7,34 +7,39 @@
         v-model="dateField.value"
         :min="dateField.min"
         :max="dateField.max"
-        @change="$emit('dateChange', { [dateField.name]: dateField.value })"
+        @change="handleDateChange(dateField)"
       >
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    dateFields: {
-      type: Array,
-      default: () => [
-        {
-          name: 'checkInDate',
-          label: '入住日期',
-          value: '',
-          min: new Date().toISOString().split('T')[0]
-        },
-        {
-          name: 'checkOutDate',
-          label: '离店日期',
-          value: '',
-          min: new Date().toISOString().split('T')[0]
-        }
-      ]
-    }
-  },
-  emits: ['dateChange']
+<script setup>
+import { defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
+  dateFields: {
+    type: Array,
+    default: () => [
+      {
+        name: 'checkInDate',
+        label: '入住日期',
+        value: '',
+        min: new Date().toISOString().split('T')[0]
+      },
+      {
+        name: 'checkOutDate',
+        label: '离店日期',
+        value: '',
+        min: new Date().toISOString().split('T')[0]
+      }
+    ]
+  }
+})
+
+const emit = defineEmits(['dateChange'])
+
+const handleDateChange = (dateField) => {
+  emit('dateChange', { [dateField.name]: dateField.value })
 }
 </script>
 

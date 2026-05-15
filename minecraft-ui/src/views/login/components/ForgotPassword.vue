@@ -1,9 +1,6 @@
 <template>
   <div>
     <div>
-      <Login_background />
-    </div>
-    <div>
       <div class="ForgotPassword">
         <div class="card_forgotPassword">
           <!-- 保持原有SVG和样式结构 -->
@@ -40,9 +37,7 @@
 </template>
 
 <script>
-import Login_background from '../../../components/LoginComponent/Login_background.vue'
 import axios from 'axios'
-
 export default {
   name: 'ForgotPassword',
   components: {
@@ -125,6 +120,16 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 20px;
+  overflow: hidden;
+}
+
+.ForgotPassword::-webkit-scrollbar {
+  display: none;
+}
+
+.ForgotPassword {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .ForgotPassword_button button {

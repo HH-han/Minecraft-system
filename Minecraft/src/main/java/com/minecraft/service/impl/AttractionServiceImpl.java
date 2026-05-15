@@ -6,16 +6,26 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Attraction;
+import com.minecraft.entity.AttractionFacility;
+import com.minecraft.entity.AttractionTicket;
+import com.minecraft.mapper.AttractionFacilityMapper;
 import com.minecraft.mapper.AttractionMapper;
+import com.minecraft.mapper.AttractionTicketMapper;
 import com.minecraft.service.AttractionService;
 import com.minecraft.service.LikeService;
 import com.minecraft.utils.ImageUtils;
+import com.minecraft.vo.AttractionDetailVO;
+import com.minecraft.vo.AttractionListVO;
+import com.minecraft.vo.AttractionTicketVO;
 import com.minecraft.vo.AttractionVO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,9 +35,15 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
     private LikeService likeService;
     @Autowired
     private ImageUtils imageUtils;
+    @Autowired
+    private AttractionTicketMapper attractionTicketMapper;
+    @Autowired
+    private AttractionFacilityMapper attractionFacilityMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
-    public PageResponse<AttractionVO> getAttractionList(PageRequest request) {
+    public PageResponse<AttractionListVO> getAttractionList(PageRequest request) {
         Page<Attraction> page = new Page<>(request.getPageNum(), request.getPageSize());
         LambdaQueryWrapper<Attraction> wrapper = new LambdaQueryWrapper<>();
 
@@ -50,10 +66,73 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         }
 
         Page<Attraction> result = page(page, wrapper);
-
-        List<AttractionVO> voList = result.getRecords().stream().map(item -> {
-            AttractionVO vo = new AttractionVO();
-            BeanUtils.copyProperties(item, vo);
+        
+        List<Attraction> attractions = result.getRecords();
+        if (attractions.isEmpty()) {
+            return new PageResponse<>(new ArrayList<>(), result.getTotal(), request.getPageNum(), request.getPageSize());
+        }
+        
+        List<Long> attractionIds = attractions.stream().map(Attraction::getId).collect(Collectors.toList());
+        
+        LambdaQueryWrapper<AttractionTicket> ticketWrapper = new LambdaQueryWrapper<>();
+        ticketWrapper.in(AttractionTicket::getAttractionId, attractionIds);
+        List<AttractionTicket> allTickets = attractionTicketMapper.selectList(ticketWrapper);
+        Map<Long, List<AttractionTicket>> ticketsMap = allTickets.stream()
+                .collect(Collectors.groupingBy(AttractionTicket::getAttractionId));
+        
+        LambdaQueryWrapper<AttractionFacility> facilityWrapper = new LambdaQueryWrapper<>();
+        facilityWrapper.in(AttractionFacility::getAttractionId, attractionIds);
+        List<AttractionFacility> allFacilities = attractionFacilityMapper.selectList(facilityWrapper);
+        Map<Long, List<AttractionFacility>> facilitiesMap = allFacilities.stream()
+                .collect(Collectors.groupingBy(AttractionFacility::getAttractionId));
+        
+        List<AttractionListVO> voList = attractions.stream().map(attraction -> {
+            AttractionListVO vo = new AttractionListVO();
+            BeanUtils.copyProperties(attraction, vo);
+            
+            if (attraction.getImages() != null && !attraction.getImages().isEmpty()) {
+                try {
+                    vo.setImages(objectMapper.readValue(attraction.getImages(), new TypeReference<List<String>>() {}));
+                } catch (JsonProcessingException e) {
+                    vo.setImages(List.of(attraction.getImages().split(",")));
+                }
+            } else {
+                vo.setImages(new ArrayList<>());
+            }
+            
+            if (attraction.getTags() != null) {
+                try {
+                    vo.setTags(objectMapper.readValue(attraction.getTags(), new TypeReference<List<String>>() {}));
+                } catch (JsonProcessingException e) {
+                    vo.setTags(new ArrayList<>());
+                }
+            } else {
+                vo.setTags(new ArrayList<>());
+            }
+            
+            List<AttractionTicket> attractionTickets = ticketsMap.getOrDefault(attraction.getId(), Collections.emptyList());
+            List<AttractionTicketVO> ticketVOList = attractionTickets.stream().map(ticket -> {
+                AttractionTicketVO ticketVO = new AttractionTicketVO();
+                BeanUtils.copyProperties(ticket, ticketVO);
+                if (ticket.getRules() != null) {
+                    try {
+                        ticketVO.setRules(objectMapper.readValue(ticket.getRules(), new TypeReference<List<String>>() {}));
+                    } catch (JsonProcessingException e) {
+                        ticketVO.setRules(new ArrayList<>());
+                    }
+                } else {
+                    ticketVO.setRules(new ArrayList<>());
+                }
+                return ticketVO;
+            }).collect(Collectors.toList());
+            vo.setTickets(ticketVOList);
+            
+            List<AttractionFacility> attractionFacilities = facilitiesMap.getOrDefault(attraction.getId(), Collections.emptyList());
+            List<String> facilityNames = attractionFacilities.stream()
+                    .map(AttractionFacility::getFacilityName)
+                    .collect(Collectors.toList());
+            vo.setFacilities(facilityNames);
+            
             return vo;
         }).collect(Collectors.toList());
 
@@ -61,14 +140,66 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
     }
 
     @Override
-    public AttractionVO getAttractionDetail(Long id, Long userId) {
+    public AttractionDetailVO getAttractionDetail(Long id, Long userId) {
         Attraction attraction = getById(id);
-        AttractionVO vo = new AttractionVO();
+        if (attraction == null) {
+            return null;
+        }
+        
+        AttractionDetailVO vo = new AttractionDetailVO();
         BeanUtils.copyProperties(attraction, vo);
+
+        if (attraction.getImages() != null && !attraction.getImages().isEmpty()) {
+            try {
+                vo.setImages(objectMapper.readValue(attraction.getImages(), new TypeReference<List<String>>() {}));
+            } catch (JsonProcessingException e) {
+                vo.setImages(List.of(attraction.getImages().split(",")));
+            }
+        } else {
+            vo.setImages(new ArrayList<>());
+        }
+        
+        if (attraction.getTags() != null) {
+            try {
+                vo.setTags(objectMapper.readValue(attraction.getTags(), new TypeReference<List<String>>() {}));
+            } catch (JsonProcessingException e) {
+                vo.setTags(new ArrayList<>());
+            }
+        } else {
+            vo.setTags(new ArrayList<>());
+        }
 
         if (userId != null) {
             vo.setIsLiked(likeService.isLiked("attraction", id, userId));
         }
+        
+        LambdaQueryWrapper<AttractionTicket> ticketWrapper = new LambdaQueryWrapper<>();
+        ticketWrapper.eq(AttractionTicket::getAttractionId, id);
+        List<AttractionTicket> tickets = attractionTicketMapper.selectList(ticketWrapper);
+        
+        List<AttractionTicketVO> ticketVOList = tickets.stream().map(ticket -> {
+            AttractionTicketVO ticketVO = new AttractionTicketVO();
+            BeanUtils.copyProperties(ticket, ticketVO);
+            if (ticket.getRules() != null) {
+                try {
+                    ticketVO.setRules(objectMapper.readValue(ticket.getRules(), new TypeReference<List<String>>() {}));
+                } catch (JsonProcessingException e) {
+                    ticketVO.setRules(new ArrayList<>());
+                }
+            } else {
+                ticketVO.setRules(new ArrayList<>());
+            }
+            return ticketVO;
+        }).collect(Collectors.toList());
+        vo.setTickets(ticketVOList);
+        
+        LambdaQueryWrapper<AttractionFacility> facilityWrapper = new LambdaQueryWrapper<>();
+        facilityWrapper.eq(AttractionFacility::getAttractionId, id);
+        List<AttractionFacility> facilities = attractionFacilityMapper.selectList(facilityWrapper);
+        List<String> facilityNames = facilities.stream()
+                .map(AttractionFacility::getFacilityName)
+                .collect(Collectors.toList());
+        vo.setFacilities(facilityNames);
 
         return vo;
     }
@@ -134,16 +265,13 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
     @Override
     public boolean save(Attraction attraction) {
         try {
-            // 处理封面图片上传
             if (attraction.getCoverImage() != null && attraction.getCoverImage().startsWith("data:image")) {
                 String processedCoverImage = imageUtils.processBase64Image(attraction.getCoverImage());
                 attraction.setCoverImage(processedCoverImage);
             }
             
-            // 处理多图片上传（如果是Base64数组）
             if (attraction.getImages() != null && attraction.getImages().startsWith("[")) {
                 try {
-                    // 解析图片数组
                     String[] imageArray = attraction.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
                     StringBuilder processedImages = new StringBuilder();
                     
@@ -162,7 +290,6 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
                     
                     attraction.setImages(processedImages.toString());
                 } catch (Exception e) {
-                    // 如果解析失败，保持原数据
                     e.printStackTrace();
                 }
             }
@@ -177,16 +304,13 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
     @Override
     public boolean updateById(Attraction attraction) {
         try {
-            // 处理封面图片上传
             if (attraction.getCoverImage() != null && attraction.getCoverImage().startsWith("data:image")) {
                 String processedCoverImage = imageUtils.processBase64Image(attraction.getCoverImage());
                 attraction.setCoverImage(processedCoverImage);
             }
             
-            // 处理多图片上传（如果是Base64数组）
             if (attraction.getImages() != null && attraction.getImages().startsWith("[")) {
                 try {
-                    // 解析图片数组
                     String[] imageArray = attraction.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
                     StringBuilder processedImages = new StringBuilder();
                     
@@ -205,7 +329,6 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
                     
                     attraction.setImages(processedImages.toString());
                 } catch (Exception e) {
-                    // 如果解析失败，保持原数据
                     e.printStackTrace();
                 }
             }

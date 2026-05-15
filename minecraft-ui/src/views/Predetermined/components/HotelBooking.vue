@@ -1,6 +1,5 @@
 <template>
   <div class="hotel-booking">
-    <!-- 酒店基本信息 -->
     <div class="hotel-info">
       <div class="hotel-images">
         <div class="main-image">
@@ -24,22 +23,20 @@
           <span>{{ hotelData?.address || '城市中心，距离地铁站步行5分钟' }}</span>
         </div>
         <div class="hotel-facilities">
-          <span class="facility-tag" v-for="(tag, index) in (hotelData?.tags || facilities)" :key="index">{{ tag }}</span>
+          <span v-if="loadingFacilities" class="loading-text">加载中...</span>
+          <span class="facility-tag" v-for="(tag, index) in displayFacilities" :key="index">{{ tag }}</span>
         </div>
       </div>
     </div>
 
-    <!-- 预订表单区域 -->
     <div class="booking-form">
       <h3>预订信息</h3>
       
-      <!-- 日期选择 -->
       <DatePicker 
         :dateFields="dateFields"
         @dateChange="handleDateChange"
       />
 
-      <!-- 住客信息 -->
       <div class="guest-info">
         <label>住客</label>
         <div class="guest-selector">
@@ -49,14 +46,16 @@
         </div>
       </div>
 
-      <!-- 房型选择 -->
+      <div v-if="loadingRooms" class="loading-container">
+        <span class="loading-text">加载房型中...</span>
+      </div>
       <RoomSelector 
+        v-else
         :rooms="rooms"
         :selectedRoom="selectedRoom"
         @roomSelect="selectRoom"
       />
 
-      <!-- 预订表单 -->
       <div v-if="selectedRoom">
         <BookingForm 
           :totalPrice="totalPrice + serviceFee"
@@ -78,96 +77,137 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { defineProps, ref, computed, onMounted, watch } from 'vue'
 import DatePicker from './DatePicker.vue'
 import RoomSelector from './RoomSelector.vue'
 import BookingForm from './BookingForm.vue'
+import { getHotelFacilities } from '@/api/hotelFacility'
 
-export default {
-  components: {
-    DatePicker,
-    RoomSelector,
-    BookingForm
+const props = defineProps({
+  dateFields: {
+    type: Array,
+    required: true
   },
-  props: {
-    dateFields: {
-      type: Array,
-      required: true
-    },
-    facilities: {
-      type: Array,
-      required: true
-    },
-    rooms: {
-      type: Array,
-      required: true
-    },
-    hotelData: {
-      type: Object,
-      default: null
-    }
+  facilities: {
+    type: Array,
+    required: true
   },
-  data() {
-    return {
-      checkInDate: '',
-      checkOutDate: '',
-      guests: 2,
-      selectedRoom: null
-    }
+  rooms: {
+    type: Array,
+    required: true
   },
-  computed: {
-    nights() {
-      if (!this.checkInDate || !this.checkOutDate) return 0
-      const start = new Date(this.checkInDate)
-      const end = new Date(this.checkOutDate)
-      return Math.ceil((end - start) / (1000 * 60 * 60 * 24))
-    },
-    totalPrice() {
-      return this.selectedRoom ? this.selectedRoom.price * this.nights : 0
-    },
-    serviceFee() {
-      return Math.round(this.totalPrice * 0.1)
-    }
+  hotelData: {
+    type: Object,
+    default: null
   },
-  methods: {
-    handleDateChange(dateData) {
-      if (dateData.checkInDate) {
-        this.checkInDate = dateData.checkInDate
-      }
-      if (dateData.checkOutDate) {
-        this.checkOutDate = dateData.checkOutDate
-      }
-    },
-    increaseGuests() {
-      if (this.guests < 10) {
-        this.guests++
-      }
-    },
-    decreaseGuests() {
-      if (this.guests > 1) {
-        this.guests--
-      }
-    },
-    selectRoom(room) {
-      this.selectedRoom = room
-    },
-    submitBooking(bookingData) {
-      if (!this.checkInDate || !this.checkOutDate) {
-        alert('请选择入住和离店日期')
-        return
-      }
-      // 这里可以添加提交预订的逻辑
-      console.log('预订信息:', {
-        ...bookingData,
-        checkInDate: this.checkInDate,
-        checkOutDate: this.checkOutDate,
-        guests: this.guests,
-        room: this.selectedRoom
-      })
-      alert('预订提交成功！')
+  hotelId: {
+    type: [Number, null],
+    default: null
+  }
+})
+
+const checkInDate = ref('')
+const checkOutDate = ref('')
+const guests = ref(2)
+const selectedRoom = ref(null)
+const hotelFacilities = ref([])
+const loadingFacilities = ref(false)
+const loadingRooms = ref(false)
+
+const nights = computed(() => {
+  if (!checkInDate.value || !checkOutDate.value) return 0
+  const start = new Date(checkInDate.value)
+  const end = new Date(checkOutDate.value)
+  return Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+})
+
+const totalPrice = computed(() => {
+  return selectedRoom.value ? selectedRoom.value.price * nights.value : 0
+})
+
+const serviceFee = computed(() => {
+  return Math.round(totalPrice.value * 0.1)
+})
+
+const displayFacilities = computed(() => {
+  return hotelFacilities.value.length > 0 ? hotelFacilities.value.map(f => f.facilityName) : props.facilities
+})
+
+const loadHotelFacilities = async () => {
+  if (!props.hotelId) return
+  
+  loadingFacilities.value = true
+  try {
+    const response = await getHotelFacilities(props.hotelId)
+    if (response.code === 200 && response.data) {
+      hotelFacilities.value = response.data
     }
+  } catch (error) {
+    console.error('获取酒店设施失败:', error)
+  } finally {
+    loadingFacilities.value = false
   }
 }
+
+const handleDateChange = (dateData) => {
+  if (dateData.checkInDate) {
+    checkInDate.value = dateData.checkInDate
+  }
+  if (dateData.checkOutDate) {
+    checkOutDate.value = dateData.checkOutDate
+  }
+}
+
+const increaseGuests = () => {
+  if (guests.value < 10) {
+    guests.value++
+  }
+}
+
+const decreaseGuests = () => {
+  if (guests.value > 1) {
+    guests.value--
+  }
+}
+
+const selectRoom = (room) => {
+  selectedRoom.value = room
+}
+
+const submitBooking = (bookingData) => {
+  if (!checkInDate.value || !checkOutDate.value) {
+    alert('请选择入住和离店日期')
+    return
+  }
+  console.log('预订信息:', {
+    ...bookingData,
+    checkInDate: checkInDate.value,
+    checkOutDate: checkOutDate.value,
+    guests: guests.value,
+    room: selectedRoom.value
+  })
+  alert('预订提交成功！')
+}
+
+let debounceTimer = null
+
+const debounceLoadFacilities = () => {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+  }
+  debounceTimer = setTimeout(() => {
+    loadHotelFacilities()
+  }, 300)
+}
+
+onMounted(() => {
+  debounceLoadFacilities()
+})
+
+watch(() => props.hotelId, () => {
+  debounceLoadFacilities()
+})
 </script>
 
 <style scoped>
@@ -175,6 +215,16 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.loading-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 14px;
 }
 
 .hotel-info {

@@ -701,7 +701,7 @@ onMounted(() => {
 
 .left-section {
   width: 50%;
-  background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+  background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
   color: white;
   padding: 60px;
   display: flex;
@@ -834,7 +834,7 @@ onMounted(() => {
   left: -100px;
   width: 400px;
   height: 400px;
-  background: rgba(139, 69, 19, 0.05);
+  background: rgba(52, 144, 222, 0.05);
   border-radius: 50%;
   animation: floating 8s ease-in-out infinite reverse;
 }
@@ -865,7 +865,7 @@ onMounted(() => {
 
 .login-form h3,
 .register-form h3 {
-  color: #8B4513;
+  color: #3490de;
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -907,7 +907,7 @@ onMounted(() => {
 .user-icon svg {
   width: 32px;
   height: 32px;
-  fill: #8B4513;
+  fill: #3490de;
 }
 
 /* 头像显示样式 */
@@ -923,8 +923,8 @@ onMounted(() => {
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #8B4513;
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+  border: 3px solid #3490de;
+  box-shadow: 0 4px 12px rgba(52, 144, 222, 0.3);
   animation: scaleIn 0.8s ease-out 1s both;
 }
 
@@ -957,13 +957,13 @@ onMounted(() => {
   position: relative;
   cursor: pointer;
   border: 4px solid #fff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(52, 144, 222, 0.2);
   transition: all 0.3s ease;
 }
 
 .registered-avatar-preview:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(52, 144, 222, 0.3);
 }
 
 .registered-avatar-upload-label {
@@ -1009,7 +1009,7 @@ onMounted(() => {
 
 .userlogin-userIcon {
   position: absolute;
-  fill: #8B4513;
+  fill: #3490de;
   width: 16px;
   height: 16px;
   top: -23px;
@@ -1224,13 +1224,13 @@ onMounted(() => {
 
 .input-animation:focus {
   outline: none;
-  border-color: #8B4513;
-  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+  border-color: #3490de;
+  box-shadow: 0 0 0 3px rgba(52, 144, 222, 0.1);
   transform: translateY(-2px);
 }
 
 .input-animation:focus::placeholder {
-  color: #8B4513;
+  color: #3490de;
   transform: translateY(-25px);
   font-size: 12px;
   opacity: 0.8;
@@ -1239,7 +1239,7 @@ onMounted(() => {
 .submit-btn {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+  background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -1270,7 +1270,7 @@ onMounted(() => {
 
 .submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+  box-shadow: 0 4px 12px rgba(52, 144, 222, 0.3);
 }
 
 .agreement-row {
@@ -1294,8 +1294,8 @@ onMounted(() => {
 }
 
 .agreement-checkbox:checked {
-  background-color: #8B4513;
-  border-color: #8B4513;
+  background-color: #3490de;
+  border-color: #3490de;
 }
 
 .agreement-checkbox:checked::after {
@@ -1315,13 +1315,13 @@ onMounted(() => {
 
 .agreement-link {
   font-size: 13px;
-  color: #8B4513;
+  color: #3490de;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .agreement-link:hover {
-  color: #A0522D;
+  color: #1e6bb8;
   text-decoration: underline;
 }
 
@@ -1335,7 +1335,7 @@ onMounted(() => {
 .form-footer button {
   background: none;
   border: none;
-  color: #8B4513;
+  color: #3490de;
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -1373,14 +1373,14 @@ onMounted(() => {
 
 .registered-css-input-field:focus {
   outline: none;
-  border-bottom-color: #8B4513;
+  border-bottom-color: #3490de;
 }
 
 .registered-css-input-field:focus+.registered-css-input-label,
 .registered-css-input-field:not(:placeholder-shown)+.registered-css-input-label {
   transform: translateY(-25px);
   font-size: 14px;
-  color: #8B4513;
+  color: #3490de;
 }
 
 .registered-css-input-label {
@@ -1398,7 +1398,7 @@ onMounted(() => {
   left: 0;
   height: 2px;
   width: 0;
-  background-color: #8B4513;
+  background-color: #3490de;
   transition: all 0.4s ease;
 }
 
@@ -1426,8 +1426,8 @@ onMounted(() => {
 }
 
 .registered-css-a-container input[type="checkbox"]:checked {
-  background-color: #8B4513;
-  border-color: #8B4513;
+  background-color: #3490de;
+  border-color: #3490de;
 }
 
 .registered-css-a-container input[type="checkbox"]:checked::after {
@@ -1441,14 +1441,14 @@ onMounted(() => {
 }
 
 .agreement-a4 {
-  color: #8B4513;
+  color: #3490de;
   text-decoration: none;
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 .agreement-a4:hover {
-  color: #A0522D;
+  color: #1e6bb8;
   text-decoration: underline;
 }
 
@@ -1459,7 +1459,7 @@ onMounted(() => {
 }
 
 .registered-css-input-registered {
-  background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+  background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
   color: white;
   border: none;
   padding: 12px 30px;
@@ -1469,14 +1469,14 @@ onMounted(() => {
   width: 100%;
   font-weight: 600;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+  box-shadow: 0 4px 15px rgba(52, 144, 222, 0.4);
   transition: all 0.3s ease;
   margin-bottom: 15px;
 }
 
 .registered-css-input-registered:hover {
   transform: translateY(-3px);
-  box-shadow: 0 7px 20px rgba(139, 69, 19, 0.6);
+  box-shadow: 0 7px 20px rgba(52, 144, 222, 0.6);
 }
 
 .registered-css-input-registered:active {
@@ -1674,17 +1674,17 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #8B4513;
-  background: rgba(139, 69, 19, 0.1);
+  color: #3490de;
+  background: rgba(52, 144, 222, 0.1);
   border-radius: 50%;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .loginpage-qr-link:hover {
-  background: rgba(139, 69, 19, 0.2);
+  background: rgba(52, 144, 222, 0.2);
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+  box-shadow: 0 4px 12px rgba(52, 144, 222, 0.2);
 }
 
 .loginpage-qr-icon svg {

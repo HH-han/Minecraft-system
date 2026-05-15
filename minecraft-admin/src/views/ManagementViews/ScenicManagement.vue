@@ -1,18 +1,17 @@
 <template>
   <div class="management-page-background">
     <div class="container-management">
-      <!-- 操作栏 -->
       <div class="action-bar">
         <div class="search-bar">
           <div class="search-box-management">
             <input type="text" v-model="searchKeyword" placeholder="输入景点ID或名称搜索" class="search-input-management" />
           </div>
           <button class="btn search-btn" @click="handleSearch">搜索</button>
-          <button class="btn delete-btn" @click="handleReset">批量删除</button>
+          <button class="btn delete-btn" @click="handleBatchDelete">批量删除</button>
         </div>
         <button class="btn add-btn" @click="showAddDialog">新增景点</button>
       </div>
-      <!-- 数据表格 -->
+
       <div class="data-table-container">
         <div class="data-table-wrapper">
           <table class="data-table">
@@ -41,9 +40,27 @@
                 <td>{{ card.collectCount }}</td>
                 <td>{{ card.commentCount }}</td>
                 <td>{{ card.season }}</td>
+                <td>
+                  <div class="ticket-info">
+                    <div class="ticket-count">{{ card.tickets ? card.tickets.length : 0 }}种门票</div>
+                    <div class="ticket-names" v-if="card.tickets && card.tickets.length > 0">
+                      <span v-for="ticket in card.tickets.slice(0, 3)" :key="ticket.id" class="ticket-tag">{{ ticket.name }}</span>
+                      <span v-if="card.tickets.length > 3" class="ticket-more">+{{ card.tickets.length - 3 }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="facility-info">
+                    <div class="facility-count">{{ card.facilities ? card.facilities.length : 0 }}项设施</div>
+                    <div class="facility-names" v-if="card.facilities && card.facilities.length > 0">
+                      <span v-for="facility in card.facilities.slice(0, 3)" :key="facility" class="facility-tag">{{ facility }}</span>
+                      <span v-if="card.facilities.length > 3" class="facility-more">+{{ card.facilities.length - 3 }}</span>
+                    </div>
+                  </div>
+                </td>
                 <td>{{ formatDate(card.createTime) }}</td>
                 <td class="table-btn-display">
-                  <button class="btn details-btn" @click="showEditDialog(card)">详情</button>
+                  <button class="btn details-btn" @click="showDetailsDialog(card)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(card)">编辑</button>
                   <button class="btn delete-btn" @click="handleDelete(card.id)">删除</button>
                 </td>
@@ -52,14 +69,14 @@
           </table>
         </div>
       </div>
-      <!-- 分页器 -->
+
       <div class="block">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
           :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
       </div>
-      <!-- 新增/编辑弹窗 -->
+
       <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
         <div class="dialog" @click.stop>
           <h2>{{ isEditing ? '编辑景点' : '新增景点' }}</h2>
@@ -86,7 +103,6 @@
                   </div>
                 </div>
 
-                <!-- 图片预览区域 -->
                 <div class="preview-container" v-if="previewImage">
                   <div class="preview-card">
                     <img :src="previewImage" alt="预览图片" class="preview-image" />
@@ -123,7 +139,7 @@
               </div>
               <div class="form-group">
                 <label>景点价格:</label>
-                <input v-model="formData.price" required />
+                <input v-model="formData.price" required type="number" step="0.01" />
               </div>
               <div class="form-group">
                 <label>城市:</label>
@@ -152,7 +168,35 @@
                 <input v-model="formData.season" required />
               </div>
             </div>
-            <!-- 创建修改时间 -->
+
+            <div class="form-group">
+              <label>选择景点设施:</label>
+              <select v-model="selectedFacilities" multiple class="multiselect" size="4">
+                <option v-for="facility in allFacilities" :key="facility" :value="facility">
+                  {{ facility }}
+                </option>
+              </select>
+              <p class="select-hint">按住 Ctrl 或 Cmd 键可多选</p>
+            </div>
+
+            <div class="form-group">
+              <label>门票列表:</label>
+              <div class="ticket-list">
+                <div v-for="(ticket, index) in formData.tickets" :key="ticket.id || index" class="ticket-item">
+                  <div class="ticket-header">
+                    <span>门票 {{ index + 1 }}</span>
+                    <button class="btn remove-ticket-btn" @click="removeTicket(index)">删除</button>
+                  </div>
+                  <div class="ticket-form">
+                    <input v-model="ticket.name" placeholder="门票名称" class="ticket-input" />
+                    <input v-model="ticket.description" placeholder="门票描述" class="ticket-input" />
+                    <input v-model="ticket.price" placeholder="价格" type="number" step="0.01" class="ticket-input" />
+                  </div>
+                </div>
+                <button class="btn add-ticket-btn" @click="addTicket">添加门票</button>
+              </div>
+            </div>
+
             <div class="dialog-buttons">
               <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
               <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
@@ -161,19 +205,94 @@
         </div>
       </div>
 
-      <!-- 删除提示框组件 -->
+      <div v-if="showDetails" class="dialog-overlay" @click.self="closeDetailsDialog">
+        <div class="dialog" @click.stop>
+          <h2>景点详情</h2>
+          <div class="details-container">
+            <div class="detail-item">
+              <label>景点名称:</label>
+              <span>{{ selectedCard?.name }}</span>
+            </div>
+            <div class="detail-item">
+              <label>价格:</label>
+              <span>￥{{ selectedCard?.price }}</span>
+            </div>
+            <div class="detail-item">
+              <label>城市:</label>
+              <span>{{ selectedCard?.city }}</span>
+            </div>
+            <div class="detail-item">
+              <label>省份:</label>
+              <span>{{ selectedCard?.province }}</span>
+            </div>
+            <div class="detail-item">
+              <label>地址:</label>
+              <span>{{ selectedCard?.address }}</span>
+            </div>
+            <div class="detail-item">
+              <label>描述:</label>
+              <span>{{ selectedCard?.description }}</span>
+            </div>
+            <div class="detail-item">
+              <label>评分:</label>
+              <span>{{ selectedCard?.rating }}</span>
+            </div>
+            <div class="detail-item">
+              <label>点赞数:</label>
+              <span>{{ selectedCard?.likeCount }}</span>
+            </div>
+            <div class="detail-item">
+              <label>收藏数:</label>
+              <span>{{ selectedCard?.collectCount }}</span>
+            </div>
+            <div class="detail-item">
+              <label>评论数:</label>
+              <span>{{ selectedCard?.commentCount }}</span>
+            </div>
+            <div class="detail-item">
+              <label>最佳季节:</label>
+              <span>{{ selectedCard?.season }}</span>
+            </div>
+            <div class="detail-item">
+              <label>创建时间:</label>
+              <span>{{ formatDate(selectedCard?.createTime) }}</span>
+            </div>
+            <div class="detail-item" v-if="selectedCard?.tickets && selectedCard.tickets.length > 0">
+              <label>门票类型:</label>
+              <div class="detail-list">
+                <div v-for="ticket in selectedCard.tickets" :key="ticket.id" class="detail-sub-item">
+                  <span>{{ ticket.name }}</span>
+                  <span>{{ ticket.description }}</span>
+                  <span>￥{{ ticket.price }}</span>
+                  <span v-if="ticket.rules">规则: {{ ticket.rules.join(', ') }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="detail-item" v-if="selectedCard?.facilities && selectedCard.facilities.length > 0">
+              <label>景点设施:</label>
+              <div class="tags-container">
+                <span v-for="facility in selectedCard.facilities" :key="facility" class="tag-item">
+                  {{ facility }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="dialog-buttons">
+            <button type="button" class="btn cancel-btn" @click="closeDetailsDialog">关闭</button>
+          </div>
+        </div>
+      </div>
+
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
-      <!-- 自定义提示框组件 -->
       <ToastType v-if="showToast" :toastMessage="toastMessage" :toastType="toastType" />
     </div>
   </div>
-
 </template>
 
 <script setup>
 
 import { ref, computed, onMounted } from 'vue';
-import { getAttractionList, addAttraction, updateAttraction, deleteAttraction } from '@/api/attraction';
+import { getAttractionList, getAttractionDetail, addAttraction, updateAttraction, deleteAttraction } from '@/api/attraction';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -191,15 +310,26 @@ const columns = [
   { key: 'collectCount', title: '收藏数' },
   { key: 'commentCount', title: '评论数' },
   { key: 'season', title: '最佳季节' },
+  { key: 'tickets', title: '门票' },
+  { key: 'facilities', title: '设施' },
   { key: 'createTime', title: '创建时间' },
 ];
+
+const allFacilities = [
+  '免费WiFi', '停车场', '卫生间', '游船', '观光车',
+  '导游服务', '餐饮服务', '休息区', '纪念品店', '医疗服务',
+  '无障碍设施', '儿童游乐区', '宠物友好', '露营地', '停车场'
+];
+
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
 const cards = ref([]);
 const searchKeyword = ref('');
 const showDialog = ref(false);
+const showDetails = ref(false);
 const isEditing = ref(false);
+const selectedCard = ref(null);
 const formData = ref({
   id: null,
   name: '',
@@ -218,16 +348,32 @@ const formData = ref({
   likeCount: 0,
   images: null,
   tags: null,
+  tickets: [],
+  facilities: [],
 });
 
-// 格式化日期显示
+const selectedFacilities = ref([]);
+
 const formatDate = (date) => {
   if (!date) return '未知日期';
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return new Intl.DateTimeFormat('zh-CN', options).format(new Date(date));
 };
 
-// 搜索功能
+const addTicket = () => {
+  formData.value.tickets.push({
+    id: null,
+    name: '',
+    description: '',
+    price: '',
+    rules: []
+  });
+};
+
+const removeTicket = (index) => {
+  formData.value.tickets.splice(index, 1);
+};
+
 const filteredCards = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
   return (cards.value || []).filter(
@@ -237,36 +383,28 @@ const filteredCards = computed(() => {
   );
 });
 
-// 处理搜索
 const handleSearch = () => {
   currentPage.value = 1;
   fetchScenic();
 };
 
-// 处理重置
-const handleReset = () => {
-  // 实现批量删除逻辑
+const handleBatchDelete = () => {
   const selectedCards = cards.value.filter(card => card.checked);
   if (selectedCards.length === 0) {
     showToastMessage('请选择要删除的景点', 'warning');
     return;
   }
-  // 这里可以实现批量删除逻辑
-  showToastMessage(`已选择 ${selectedCards.length} 个景点`, 'info');
+  showToastMessage(`已选择 ${selectedCards.length} 个景点，请逐个删除`, 'info');
 };
 
-// 处理复选框
 const handleCheck = (card) => {
   card.checked = !card.checked;
 };
 
-// 分页功能
-// 分页相关变量
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 
-// 分页处理函数
 const handleSizeChange = (newSize) => {
   pageSize.value = newSize;
   currentPage.value = 1;
@@ -277,18 +415,18 @@ const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
   fetchScenic();
 };
-// 获取景点数据
+
 const fetchScenic = async () => {
   try {
     const params = {
-      page: currentPage.value,
-      size: pageSize.value
+      pageNum: currentPage.value,
+      pageSize: pageSize.value,
+      keyword: searchKeyword.value || null
     };
     const response = await getAttractionList(params);
-    // 检查响应格式
-    if (response.code === "0" || response.code === 200) {
-      // 为每个卡片添加checked属性
-      const data = response.data?.records || response.data?.list || [];
+    
+    if (response.code === 200) {
+      const data = response.data?.list || response.data?.records || [];
       cards.value = data.map(card => ({
         ...card,
         checked: false
@@ -306,7 +444,6 @@ const fetchScenic = async () => {
   }
 };
 
-// 显示新增对话框
 const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
@@ -327,21 +464,69 @@ const showAddDialog = () => {
     likeCount: 0,
     images: null,
     tags: null,
+    tickets: [{
+      id: null,
+      name: '',
+      description: '',
+      price: '',
+      rules: []
+    }],
+    facilities: [],
   };
+  selectedFacilities.value = [];
   previewImage.value = '';
   fileName.value = '';
   fileSize.value = '';
   showDialog.value = true;
 };
 
-// 显示编辑对话框
-const showEditDialog = (card) => {
+const showEditDialog = async (card) => {
   isEditing.value = true;
-  formData.value = { ...card };
+  try {
+    const response = await getAttractionDetail(card.id);
+    if (response.code === 200 && response.data) {
+      formData.value = { 
+        ...response.data,
+        tickets: response.data.tickets || [{ id: null, name: '', description: '', price: '', rules: [] }]
+      };
+      selectedFacilities.value = response.data.facilities || [];
+    } else {
+      formData.value = { 
+        ...card,
+        tickets: card.tickets || [{ id: null, name: '', description: '', price: '', rules: [] }]
+      };
+      selectedFacilities.value = card.facilities || [];
+    }
+  } catch (error) {
+    console.error('获取景点详情失败:', error);
+    formData.value = { 
+      ...card,
+      tickets: card.tickets || [{ id: null, name: '', description: '', price: '', rules: [] }]
+    };
+    selectedFacilities.value = card.facilities || [];
+  }
   previewImage.value = card.coverImage || '';
   showDialog.value = true;
 };
-// 显示提示消息的方法
+
+const showDetailsDialog = async (card) => {
+  selectedCard.value = card;
+  try {
+    const response = await getAttractionDetail(card.id);
+    if (response.code === 200 && response.data) {
+      selectedCard.value = response.data;
+    }
+  } catch (error) {
+    console.error('获取景点详情失败:', error);
+  }
+  showDetails.value = true;
+};
+
+const closeDetailsDialog = () => {
+  showDetails.value = false;
+  selectedCard.value = null;
+};
+
 const showToastMessage = (message, type = 'success') => {
   toastMessage.value = message;
   toastType.value = type;
@@ -350,10 +535,73 @@ const showToastMessage = (message, type = 'success') => {
     showToast.value = false;
   }, 3000);
 };
-// 提交表单
+
+const validateForm = () => {
+  if (!formData.value.name || !formData.value.city || !formData.value.province || !formData.value.address) {
+    showToastMessage('请填写所有必填字段', 'error');
+    return false;
+  }
+  if (!formData.value.price) {
+    showToastMessage('请填写价格', 'error');
+    return false;
+  }
+  return true;
+};
+
+const debounceUpdateTicket = (() => {
+  let timer = null;
+  return async (ticket) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(async () => {
+      if (isEditing.value && ticket.id && ticket.name) {
+        try {
+          await updateAttractionTicket({ ...ticket, attractionId: formData.value.id });
+        } catch (error) {
+          console.error('更新门票失败:', error);
+        }
+      }
+    }, 500);
+  };
+})();
+
+watch(() => formData.value.tickets, (newTickets, oldTickets) => {
+  if (!isEditing.value || !formData.value.id) return;
+  
+  if (newTickets && oldTickets) {
+    newTickets.forEach((ticket, index) => {
+      const oldTicket = oldTickets[index];
+      if (ticket.id && oldTicket && ticket.id === oldTicket.id) {
+        if (ticket.name !== oldTicket.name || ticket.description !== oldTicket.description || ticket.price !== oldTicket.price) {
+          debounceUpdateTicket(ticket);
+        }
+      }
+    });
+  }
+}, { deep: true });
+
+watch(selectedFacilities, async (newFacilities, oldFacilities) => {
+  if (!isEditing.value || !formData.value.id) return;
+  
+  const oldSet = new Set(oldFacilities || []);
+  const newSet = new Set(newFacilities || []);
+  
+  const added = [...newSet].filter(f => !oldSet.has(f));
+  
+  for (const facility of added) {
+    try {
+      await addAttractionFacility({ attractionId: formData.value.id, facility });
+    } catch (error) {
+      console.error('添加设施失败:', error);
+    }
+  }
+});
+
 const submitForm = async () => {
+  if (!validateForm()) return;
+
+  formData.value.facilities = selectedFacilities.value;
+
   try {
-    // 自动设置时间
     if (isEditing.value) {
       formData.value.updateTime = new Date().toISOString();
       await updateAttraction(formData.value);
@@ -373,7 +621,6 @@ const submitForm = async () => {
   }
 };
 
-// 删除卡片
 const isDeletePromptVisible = ref(false);
 const deleteCardId = ref(null);
 
@@ -386,7 +633,7 @@ const closeDeletePrompt = () => {
   isDeletePromptVisible.value = false;
   deleteCardId.value = null;
 };
-//删除
+
 const confirmDelete = async () => {
   if (deleteCardId.value) {
     try {
@@ -397,19 +644,16 @@ const confirmDelete = async () => {
     } catch (error) {
       console.error('删除失败:', error);
       showToastMessage('删除景点失败', 'error');
-
     } finally {
       closeDeletePrompt();
     }
   }
 };
 
-// 关闭对话框
 const closeDialog = () => {
   showDialog.value = false;
 };
 
-// 图片上传相关状态
 const dragOver = ref(false);
 const previewImage = ref('');
 const fileName = ref('');
@@ -417,7 +661,6 @@ const fileSize = ref('');
 const uploading = ref(false);
 const progress = ref(0);
 
-// 格式化文件大小
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -426,30 +669,25 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-// 处理文件上传
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  // 验证文件类型
   const validTypes = ['image/jpeg', 'image/png'];
   if (!validTypes.includes(file.type)) {
     showToastMessage('只支持JPG/PNG格式图片', 'error');
     return;
   }
 
-  // 验证文件大小
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 5 * 1024 * 1024;
   if (file.size > maxSize) {
     showToastMessage('图片大小不能超过5MB', 'error');
     return;
   }
 
-  // 显示文件信息
   fileName.value = file.name;
   fileSize.value = formatFileSize(file.size);
 
-  // 读取并预览图片
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
@@ -457,7 +695,6 @@ const handleFileUpload = (event) => {
   };
   reader.readAsDataURL(file);
 
-  // 模拟上传进度
   uploading.value = true;
   const interval = setInterval(() => {
     if (progress.value < 100) {
@@ -465,13 +702,13 @@ const handleFileUpload = (event) => {
     } else {
       clearInterval(interval);
       uploading.value = false;
+      progress.value = 0;
     }
   }, 100);
 
   return file;
 };
 
-// 处理拖放上传
 const handleDrop = (event) => {
   dragOver.value = false;
   const file = event.dataTransfer.files[0];
@@ -481,7 +718,6 @@ const handleDrop = (event) => {
   }
 };
 
-// 移除图片
 const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
@@ -489,26 +725,192 @@ const removeImage = () => {
   formData.value.coverImage = '';
 };
 
-// 触发文件输入框
-const triggerFileInput = (card) => {
+const triggerFileInput = () => {
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
-  fileInput.onchange = (event) => {
-    const file = handleFileUpload(event);
-    if (file && card) {
-      // 这里可以实现单个卡片的图片更新逻辑
-      showToastMessage('图片已更新', 'success');
-    }
-  };
+  fileInput.onchange = handleFileUpload;
   fileInput.click();
 };
 
 onMounted(fetchScenic);
-
-
 </script>
 
 <style scoped>
 @import '@/css/Management/BackgroundManagement.css';
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag-item {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+}
+
+.details-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.detail-item label {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.detail-item span {
+  color: #666;
+}
+
+.detail-list {
+  margin-top: 8px;
+}
+
+.detail-sub-item {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.detail-sub-item span {
+  color: #666;
+  font-size: 14px;
+}
+
+.detail-sub-item span:first-child {
+  font-weight: bold;
+  color: #333;
+}
+
+.multiselect {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.select-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.ticket-list {
+  margin-top: 8px;
+}
+
+.ticket-item {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ticket-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-ticket-btn, .remove-ticket-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-ticket-btn {
+  background-color: #1976d2;
+  color: white;
+  margin-top: 8px;
+}
+
+.add-ticket-btn:hover {
+  background-color: #1565c0;
+}
+
+.remove-ticket-btn {
+  background-color: #ef5350;
+  color: white;
+}
+
+.remove-ticket-btn:hover {
+  background-color: #e53935;
+}
+
+.ticket-info, .facility-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.ticket-count, .facility-count {
+  font-weight: bold;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.ticket-names, .facility-names {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.ticket-tag, .facility-tag {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.ticket-more, .facility-more {
+  color: #999;
+  font-size: 11px;
+  flex-shrink: 0;
+}
 </style>

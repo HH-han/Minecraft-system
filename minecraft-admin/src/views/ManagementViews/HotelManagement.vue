@@ -1,19 +1,17 @@
 <template>
   <div class="management-page-background">
     <div class="container-management">
-      <!-- 操作栏 -->
       <div class="action-bar">
         <div class="search-bar">
           <div class="search-box-management">
             <input type="text" v-model="searchKeyword" placeholder="输入酒店ID或名称搜索" class="search-input-management" />
           </div>
           <button class="btn search-btn" @click="handleSearch">搜索</button>
-          <button class="btn delete-btn" @click="handleReset">批量删除</button>
+          <button class="btn delete-btn" @click="handleBatchDelete">批量删除</button>
         </div>
         <button class="btn add-btn" @click="showAddDialog">新增酒店</button>
       </div>
 
-      <!-- 数据表格 -->
       <div class="data-table-container">
         <div class="data-table-wrapper">
           <table class="data-table">
@@ -33,7 +31,7 @@
                 <td>{{ hotel.city }}</td>
                 <td>{{ hotel.province }}</td>
                 <td>{{ hotel.address }}</td>
-                <td>{{ hotel.description }}</td>
+                <td>{{ hotel.description ? hotel.description.substring(0, 20) : '未设置' }}</td>
                 <td>
                   <img :src="hotel.coverImage?.replace(/[`\s]/g, '')" alt="酒店图片" style="width: 35px; height: 35px;"
                     @click="triggerFileInput(hotel)" />
@@ -43,9 +41,27 @@
                 <td>{{ hotel.likeCount }}</td>
                 <td>{{ hotel.collectCount }}</td>
                 <td>{{ hotel.commentCount }}</td>
+                <td>
+                  <div class="room-info">
+                    <div class="room-count">{{ hotel.rooms ? hotel.rooms.length : 0 }}种房型</div>
+                    <div class="room-names" v-if="hotel.rooms && hotel.rooms.length > 0">
+                      <span v-for="room in hotel.rooms.slice(0, 3)" :key="room.id" class="room-tag">{{ room.name }}</span>
+                      <span v-if="hotel.rooms.length > 3" class="room-more">+{{ hotel.rooms.length - 3 }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="facility-info">
+                    <div class="facility-count">{{ hotel.facilities ? hotel.facilities.length : 0 }}项设施</div>
+                    <div class="facility-names" v-if="hotel.facilities && hotel.facilities.length > 0">
+                      <span v-for="facility in hotel.facilities.slice(0, 3)" :key="facility" class="facility-tag">{{ facility }}</span>
+                      <span v-if="hotel.facilities.length > 3" class="facility-more">+{{ hotel.facilities.length - 3 }}</span>
+                    </div>
+                  </div>
+                </td>
                 <td>{{ formatDate(hotel.createTime) }}</td>
                 <td class="table-btn-display">
-                  <button class="btn details-btn" @click="showEditDialog(hotel)">详情</button>
+                  <button class="btn details-btn" @click="showDetailsDialog(hotel)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(hotel)">编辑</button>
                   <button class="btn delete-btn" @click="handleDelete(hotel.id)">删除</button>
                 </td>
@@ -54,7 +70,7 @@
           </table>
         </div>
       </div>
-      <!-- 分页器 -->
+
       <div class="block">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
           :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
@@ -89,7 +105,6 @@
                   </div>
                 </div>
 
-                <!-- 图片预览区域 -->
                 <div class="preview-container" v-if="previewImage">
                   <div class="preview-card">
                     <img :src="previewImage" alt="预览图片" class="preview-image" />
@@ -120,7 +135,6 @@
               </div>
             </div>
             <div class="form-row">
-
               <div class="form-group">
                 <label>酒店名称:</label>
                 <input v-model="formData.name" required />
@@ -137,32 +151,57 @@
                 <label>地址:</label>
                 <input v-model="formData.address" required />
               </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label>描述:</label>
-                <input v-model="formData.description" required />
+                <textarea v-model="formData.description" required></textarea>
               </div>
               <div class="form-group">
                 <label>价格:</label>
-                <input v-model="formData.price" required />
+                <input v-model="formData.price" required type="number" step="0.01" />
               </div>
               <div class="form-group" v-if="isEditing">
                 <label>评分:</label>
-                <input v-model="formData.rating" required />
-              </div>
-              <div class="form-group" v-if="isEditing">
-                <label>点赞数:</label>
-                <input v-model="formData.likeCount" required />
-              </div>
-              <div class="form-group" v-if="isEditing">
-                <label>收藏数:</label>
-                <input v-model="formData.collectCount" required />
-              </div>
-              <div class="form-group" v-if="isEditing">
-                <label>评论数:</label>
-                <input v-model="formData.commentCount" required />
+                <input v-model="formData.rating" required type="number" min="0" max="5" step="0.1" />
               </div>
             </div>
-            <!-- 表单提交按钮 -->
+
+            <!-- 酒店设施下拉框 -->
+            <div class="form-group">
+              <label>选择酒店设施:</label>
+              <select v-model="selectedFacilities" multiple class="multiselect" size="4">
+                <option v-for="facility in allFacilities" :key="facility" :value="facility">
+                  {{ facility }}
+                </option>
+              </select>
+              <p class="select-hint">按住 Ctrl 或 Cmd 键可多选</p>
+            </div>
+
+            <!-- 房型管理 -->
+            <div class="form-group">
+              <label>房型列表:</label>
+              <div class="room-list">
+                <div v-for="(room, index) in formData.rooms" :key="room.id || index" class="room-item">
+                  <div class="room-header">
+                    <span>房型 {{ index + 1 }}</span>
+                    <button class="btn remove-room-btn" @click="removeRoom(index)">删除</button>
+                  </div>
+                  <div class="room-form">
+                    <input v-model="room.name" placeholder="房型名称" class="room-input" />
+                    <input v-model="room.description" placeholder="房型描述" class="room-input" />
+                    <input v-model="room.price" placeholder="价格" type="number" step="0.01" class="room-input" />
+                    <select v-model="room.facilities" multiple class="room-facilities-select" size="3">
+                      <option v-for="facility in roomFacilities" :key="facility" :value="facility">
+                        {{ facility }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <button class="btn add-room-btn" @click="addRoom">添加房型</button>
+              </div>
+            </div>
+
             <div class="dialog-buttons">
               <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
               <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
@@ -171,18 +210,74 @@
         </div>
       </div>
 
-      <!-- 删除提示框组件 -->
+      <!-- 详情弹窗 -->
+      <div v-if="showDetails" class="dialog-overlay" @click.self="closeDetailsDialog">
+        <div class="dialog" @click.stop>
+          <h2>酒店详情</h2>
+          <div class="details-container">
+            <div class="detail-item">
+              <label>酒店名称:</label>
+              <span>{{ selectedHotel?.name }}</span>
+            </div>
+            <div class="detail-item">
+              <label>城市:</label>
+              <span>{{ selectedHotel?.city }}</span>
+            </div>
+            <div class="detail-item">
+              <label>省份:</label>
+              <span>{{ selectedHotel?.province }}</span>
+            </div>
+            <div class="detail-item">
+              <label>地址:</label>
+              <span>{{ selectedHotel?.address }}</span>
+            </div>
+            <div class="detail-item">
+              <label>描述:</label>
+              <span>{{ selectedHotel?.description }}</span>
+            </div>
+            <div class="detail-item">
+              <label>价格:</label>
+              <span>￥{{ selectedHotel?.price }}</span>
+            </div>
+            <div class="detail-item">
+              <label>评分:</label>
+              <span>{{ selectedHotel?.rating }}</span>
+            </div>
+            <div class="detail-item">
+              <label>酒店设施:</label>
+              <div class="tags-container">
+                <span v-for="facility in selectedHotel?.facilities" :key="facility" class="tag-item">
+                  {{ facility }}
+                </span>
+              </div>
+            </div>
+            <div class="detail-item" v-if="selectedHotel?.rooms && selectedHotel.rooms.length > 0">
+              <label>酒店房型:</label>
+              <div class="detail-list">
+                <div v-for="room in selectedHotel.rooms" :key="room.id" class="detail-sub-item">
+                  <span>{{ room.name }}</span>
+                  <span>{{ room.description }}</span>
+                  <span>￥{{ room.price }}</span>
+                  <span v-if="room.facilities">设施: {{ room.facilities.join(', ') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dialog-buttons">
+            <button type="button" class="btn cancel-btn" @click="closeDetailsDialog">关闭</button>
+          </div>
+        </div>
+      </div>
+
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
-      <!-- 自定义提示框组件 -->
       <ToastType v-if="showToast" :toastMessage="toastMessage" :toastType="toastType" />
     </div>
   </div>
-
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getHotelList, addHotel, updateHotel, deleteHotel } from '@/api/hotel';
+import { getHotelList, getHotelDetail, addHotel, updateHotel, deleteHotel } from '@/api/hotel';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -200,6 +295,8 @@ const columns = [
   { key: 'likeCount', title: '点赞数' },
   { key: 'collectCount', title: '收藏数' },
   { key: 'commentCount', title: '评论数' },
+  { key: 'rooms', title: '房型' },
+  { key: 'facilities', title: '设施' },
   { key: 'createTime', title: '创建时间' },
 ];
 
@@ -209,7 +306,21 @@ const toastType = ref('success');
 const hotels = ref([]);
 const searchKeyword = ref('');
 const showDialog = ref(false);
+const showDetails = ref(false);
 const isEditing = ref(false);
+const selectedHotel = ref(null);
+
+const allFacilities = [
+  '免费WiFi', '游泳池', '健身房', '停车场', '餐厅',
+  '空调', '电视', '独立卫浴', '迷你吧', '行政酒廊',
+  '商务中心', '会议设施', '洗衣服务', '24小时前台', '客房服务'
+];
+
+const roomFacilities = [
+  '免费WiFi', '空调', '电视', '独立卫浴', '迷你吧',
+  '浴缸', '淋浴', '吹风机', '热水', '阳台'
+];
+
 const formData = ref({
   id: null,
   name: '',
@@ -220,22 +331,23 @@ const formData = ref({
   coverImage: '',
   images: '',
   price: '',
-  rating: '',
-  likeCount: '',
-  collectCount: '',
-  commentCount: '',
+  rating: 0,
+  likeCount: 0,
+  collectCount: 0,
+  commentCount: 0,
   createTime: '',
+  rooms: [],
+  facilities: [],
 });
 
+const selectedFacilities = ref([]);
 
-// 格式化日期显示
 const formatDate = (date) => {
   if (!date) return '未知日期';
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return new Intl.DateTimeFormat('zh-CN', options).format(new Date(date));
 };
 
-// 搜索功能
 const filteredHotels = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
   return (hotels.value || []).filter(
@@ -245,13 +357,10 @@ const filteredHotels = computed(() => {
   );
 });
 
-// 分页功能
-// 分页相关变量
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 
-// 分页处理函数
 const handleSizeChange = (newSize) => {
   pageSize.value = newSize;
   currentPage.value = 1;
@@ -262,17 +371,46 @@ const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
   fetchHotels();
 };
-// 获取酒店数据
+
+const handleSearch = () => {
+  currentPage.value = 1;
+  fetchHotels();
+};
+
+const handleCheck = (hotel) => {
+  hotel.checked = !hotel.checked;
+};
+
+const handleBatchDelete = () => {
+  const selectedHotels = hotels.value.filter(hotel => hotel.checked);
+  if (selectedHotels.length === 0) {
+    showToastMessage('请选择要删除的酒店', 'warning');
+    return;
+  }
+  showToastMessage(`已选择 ${selectedHotels.length} 个酒店，请逐个删除`, 'info');
+};
+
 const fetchHotels = async () => {
   try {
     const params = {
-      page: currentPage.value,
+      pageNum: currentPage.value,
       pageSize: pageSize.value,
-      keyword: searchKeyword.value
+      keyword: searchKeyword.value || null
     };
     const response = await getHotelList(params);
-    hotels.value = response.data?.records || [];
-    total.value = response.data?.total || 0;
+    
+    if (response.code === 200) {
+      const data = response.data?.list || response.data?.records || [];
+      hotels.value = data.map(hotel => ({
+        ...hotel,
+        checked: false
+      }));
+      total.value = response.data?.total || 0;
+    } else {
+      console.error('获取酒店数据失败:', response.msg || response.message || '未知错误');
+      hotels.value = [];
+      total.value = 0;
+    }
   } catch (error) {
     console.error('获取酒店数据失败:', error);
     hotels.value = [];
@@ -280,15 +418,20 @@ const fetchHotels = async () => {
   }
 };
 
-
-
-// 搜索按钮点击事件
-const handleSearch = () => {
-  currentPage.value = 1; // 搜索时重置到第一页
-  fetchHotels();
+const addRoom = () => {
+  formData.value.rooms.push({
+    id: null,
+    name: '',
+    description: '',
+    price: '',
+    facilities: []
+  });
 };
 
-// 显示新增对话框
+const removeRoom = (index) => {
+  formData.value.rooms.splice(index, 1);
+};
+
 const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
@@ -301,21 +444,73 @@ const showAddDialog = () => {
     coverImage: '',
     images: '',
     price: '',
-    rating: '',
-    likeCount: '',
-    collectCount: '',
-    commentCount: '',
+    rating: 0,
+    likeCount: 0,
+    collectCount: 0,
+    commentCount: 0,
+    rooms: [{
+      id: null,
+      name: '',
+      description: '',
+      price: '',
+      facilities: []
+    }],
+    facilities: [],
   };
+  selectedFacilities.value = [];
+  previewImage.value = '';
+  fileName.value = '';
+  fileSize.value = '';
   showDialog.value = true;
 };
 
-// 显示编辑对话框
-const showEditDialog = (hotel) => {
+const showEditDialog = async (hotel) => {
   isEditing.value = true;
-  formData.value = { ...hotel };
+  try {
+    const response = await getHotelDetail(hotel.id);
+    if (response.code === 200 && response.data) {
+      formData.value = { 
+        ...response.data,
+        rooms: response.data.rooms || [{ id: null, name: '', description: '', price: '', facilities: [] }]
+      };
+      selectedFacilities.value = response.data.facilities || [];
+    } else {
+      formData.value = { 
+        ...hotel,
+        rooms: hotel.rooms || [{ id: null, name: '', description: '', price: '', facilities: [] }]
+      };
+      selectedFacilities.value = hotel.facilities || [];
+    }
+  } catch (error) {
+    console.error('获取酒店详情失败:', error);
+    formData.value = { 
+      ...hotel,
+      rooms: hotel.rooms || [{ id: null, name: '', description: '', price: '', facilities: [] }]
+    };
+    selectedFacilities.value = hotel.facilities || [];
+  }
+  previewImage.value = hotel.coverImage || '';
   showDialog.value = true;
 };
-// 显示提示消息的方法
+
+const showDetailsDialog = async (hotel) => {
+  selectedHotel.value = hotel;
+  try {
+    const response = await getHotelDetail(hotel.id);
+    if (response.code === 200 && response.data) {
+      selectedHotel.value = response.data;
+    }
+  } catch (error) {
+    console.error('获取酒店详情失败:', error);
+  }
+  showDetails.value = true;
+};
+
+const closeDetailsDialog = () => {
+  showDetails.value = false;
+  selectedHotel.value = null;
+};
+
 const showToastMessage = (message, type = 'success') => {
   toastMessage.value = message;
   toastType.value = type;
@@ -324,23 +519,23 @@ const showToastMessage = (message, type = 'success') => {
     showToast.value = false;
   }, 3000);
 };
-// 提交表单
+
 const validateForm = () => {
-  if (!formData.value.name || !formData.value.description || !formData.value.price || !formData.value.city || !formData.value.province || !formData.value.address) {
+  if (!formData.value.name || !formData.value.city || !formData.value.province || !formData.value.address) {
     showToastMessage('请填写所有必填字段', 'error');
     return false;
   }
-
-  if (!isEditing.value && !formData.value.coverImage) {
-    showToastMessage('请上传酒店图片', 'error');
+  if (!formData.value.price) {
+    showToastMessage('请填写价格', 'error');
     return false;
   }
-
   return true;
 };
 
 const submitForm = async () => {
   if (!validateForm()) return;
+
+  formData.value.facilities = selectedFacilities.value;
 
   try {
     if (isEditing.value) {
@@ -359,7 +554,6 @@ const submitForm = async () => {
   }
 };
 
-// 删除酒店
 const isDeletePromptVisible = ref(false);
 const deleteHotelId = ref(null);
 
@@ -379,9 +573,7 @@ const confirmDelete = async () => {
       await deleteHotel(deleteHotelId.value);
       await fetchHotels();
       showToastMessage('删除酒店成功');
-
     } catch (error) {
-      console.error('删除失败:', error.response?.data || error.message);
       console.error('删除失败:', error);
       showToastMessage('删除酒店失败', 'error');
     } finally {
@@ -390,12 +582,10 @@ const confirmDelete = async () => {
   }
 };
 
-// 关闭对话框
 const closeDialog = () => {
   showDialog.value = false;
 };
 
-// 图片上传相关状态
 const dragOver = ref(false);
 const previewImage = ref('');
 const fileName = ref('');
@@ -403,7 +593,6 @@ const fileSize = ref('');
 const uploading = ref(false);
 const progress = ref(0);
 
-// 格式化文件大小
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -412,30 +601,25 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-// 处理文件上传
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  // 验证文件类型
   const validTypes = ['image/jpeg', 'image/png'];
   if (!validTypes.includes(file.type)) {
     showToastMessage('只支持JPG/PNG格式图片', 'error');
     return;
   }
 
-  // 验证文件大小
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 5 * 1024 * 1024;
   if (file.size > maxSize) {
     showToastMessage('图片大小不能超过5MB', 'error');
     return;
   }
 
-  // 显示文件信息
   fileName.value = file.name;
   fileSize.value = formatFileSize(file.size);
 
-  // 读取并预览图片
   const reader = new FileReader();
   reader.onload = (e) => {
     previewImage.value = e.target.result;
@@ -443,7 +627,6 @@ const handleFileUpload = (event) => {
   };
   reader.readAsDataURL(file);
 
-  // 模拟上传进度
   uploading.value = true;
   const interval = setInterval(() => {
     if (progress.value < 100) {
@@ -451,13 +634,13 @@ const handleFileUpload = (event) => {
     } else {
       clearInterval(interval);
       uploading.value = false;
+      progress.value = 0;
     }
   }, 100);
 
   return file;
 };
 
-// 处理拖放上传
 const handleDrop = (event) => {
   dragOver.value = false;
   const file = event.dataTransfer.files[0];
@@ -467,7 +650,6 @@ const handleDrop = (event) => {
   }
 };
 
-// 移除图片
 const removeImage = () => {
   previewImage.value = '';
   fileName.value = '';
@@ -475,25 +657,199 @@ const removeImage = () => {
   formData.value.coverImage = '';
 };
 
-// 触发文件输入框
 const triggerFileInput = () => {
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = 'image/*';
-  fileInput.onchange = (event) => {
-    const file = handleFileUpload(event);
-    if (file) {
-      formData.value.file = file;
-    }
-  };
+  fileInput.onchange = handleFileUpload;
   fileInput.click();
 };
 
 onMounted(fetchHotels);
-
-
 </script>
 
 <style scoped>
 @import '@/css/Management/BackgroundManagement.css';
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag-item {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+}
+
+.details-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.detail-item label {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.detail-item span {
+  color: #666;
+}
+
+.detail-list {
+  margin-top: 8px;
+}
+
+.detail-sub-item {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.detail-sub-item span {
+  color: #666;
+  font-size: 14px;
+}
+
+.detail-sub-item span:first-child {
+  font-weight: bold;
+  color: #333;
+}
+
+.multiselect {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.select-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.room-list {
+  margin-top: 8px;
+}
+
+.room-item {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.room-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.room-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.room-facilities-select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-room-btn, .remove-room-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-room-btn {
+  background-color: #1976d2;
+  color: white;
+  margin-top: 8px;
+}
+
+.add-room-btn:hover {
+  background-color: #1565c0;
+}
+
+.remove-room-btn {
+  background-color: #ef5350;
+  color: white;
+}
+
+.remove-room-btn:hover {
+  background-color: #e53935;
+}
+
+.room-info, .facility-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.room-count, .facility-count {
+  font-weight: bold;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.room-names, .facility-names {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.room-tag, .facility-tag {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.room-more, .facility-more {
+  color: #999;
+  font-size: 11px;
+  flex-shrink: 0;
+}
 </style>

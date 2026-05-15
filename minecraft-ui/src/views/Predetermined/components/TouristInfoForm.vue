@@ -26,61 +26,53 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    ticketName: {
-      type: String,
-      required: true
-    },
-    quantity: {
-      type: Number,
-      default: 0
-    },
-    initialTourists: {
-      type: Array,
-      default: () => []
-    }
+<script setup>
+import { defineProps, defineEmits, ref, watch } from 'vue'
+
+const props = defineProps({
+  ticketName: {
+    type: String,
+    required: true
   },
-  emits: ['touristInfoChange'],
-  data() {
-    return {
-      tourists: []
-    }
+  quantity: {
+    type: Number,
+    default: 0
   },
-  watch: {
-    quantity: {
-      handler(newQuantity) {
-        this.updateTouristsArray(newQuantity)
-      },
-      immediate: true
-    },
-    initialTourists: {
-      handler(newTourists) {
-        if (newTourists.length > 0) {
-          this.tourists = [...newTourists]
-        }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    updateTouristsArray(quantity) {
-      const newTourists = []
-      for (let i = 0; i < quantity; i++) {
-        newTourists.push({
-          name: this.tourists[i]?.name || '',
-          idCard: this.tourists[i]?.idCard || ''
-        })
-      }
-      this.tourists = newTourists
-      this.updateTouristInfo()
-    },
-    updateTouristInfo() {
-      this.$emit('touristInfoChange', this.tourists)
-    }
+  initialTourists: {
+    type: Array,
+    default: () => []
   }
+})
+
+const emit = defineEmits(['touristInfoChange'])
+
+const tourists = ref([])
+
+const updateTouristsArray = (newQuantity) => {
+  const newTourists = []
+  for (let i = 0; i < newQuantity; i++) {
+    newTourists.push({
+      name: tourists.value[i]?.name || '',
+      idCard: tourists.value[i]?.idCard || ''
+    })
+  }
+  tourists.value = newTourists
+  updateTouristInfo()
 }
+
+const updateTouristInfo = () => {
+  emit('touristInfoChange', tourists.value)
+}
+
+watch(() => props.quantity, (newQuantity) => {
+  updateTouristsArray(newQuantity)
+}, { immediate: true })
+
+watch(() => props.initialTourists, (newTourists) => {
+  if (newTourists.length > 0) {
+    tourists.value = [...newTourists]
+  }
+}, { immediate: true })
 </script>
 
 <style scoped>

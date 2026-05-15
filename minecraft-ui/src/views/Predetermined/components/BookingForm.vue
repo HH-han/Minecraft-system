@@ -29,41 +29,38 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    totalPrice: {
-      type: Number,
-      default: 0
-    },
-    showSpecialRequest: {
-      type: Boolean,
-      default: true
-    }
+<script setup>
+import { defineProps, defineEmits, ref } from 'vue'
+
+defineProps({
+  totalPrice: {
+    type: Number,
+    default: 0
   },
-  emits: ['submit'],
-  data() {
-    return {
-      contactName: '',
-      contactPhone: '',
-      contactEmail: '',
-      specialRequest: ''
-    }
-  },
-  methods: {
-    submitBooking() {
-      if (!this.contactName || !this.contactPhone || !this.contactEmail) {
-        alert('请填写完整的联系人信息')
-        return
-      }
-      this.$emit('submit', {
-        contactName: this.contactName,
-        contactPhone: this.contactPhone,
-        contactEmail: this.contactEmail,
-        specialRequest: this.specialRequest
-      })
-    }
+  showSpecialRequest: {
+    type: Boolean,
+    default: true
   }
+})
+
+const emit = defineEmits(['submit'])
+
+const contactName = ref('')
+const contactPhone = ref('')
+const contactEmail = ref('')
+const specialRequest = ref('')
+
+const submitBooking = () => {
+  if (!contactName.value || !contactPhone.value || !contactEmail.value) {
+    alert('请填写完整的联系人信息')
+    return
+  }
+  emit('submit', {
+    contactName: contactName.value,
+    contactPhone: contactPhone.value,
+    contactEmail: contactEmail.value,
+    specialRequest: specialRequest.value
+  })
 }
 </script>
 

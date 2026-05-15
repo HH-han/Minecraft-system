@@ -24,43 +24,41 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    tickets: {
-      type: Array,
-      default: () => []
-    },
-    initialQuantities: {
-      type: Object,
-      default: () => {}
-    }
+<script setup>
+import { defineProps, defineEmits, reactive, onMounted } from 'vue'
+
+const props = defineProps({
+  tickets: {
+    type: Array,
+    default: () => []
   },
-  emits: ['quantityChange'],
-  data() {
-    return {
-      quantities: {}
-    }
-  },
-  mounted() {
-    // 初始化票种数量
-    this.tickets.forEach(ticket => {
-      this.quantities[ticket.id] = this.initialQuantities[ticket.id] || 0
-    })
-  },
-  methods: {
-    increaseQuantity(ticketId) {
-      if (this.quantities[ticketId] < 10) {
-        this.quantities[ticketId]++
-        this.$emit('quantityChange', { [ticketId]: this.quantities[ticketId] })
-      }
-    },
-    decreaseQuantity(ticketId) {
-      if (this.quantities[ticketId] > 0) {
-        this.quantities[ticketId]--
-        this.$emit('quantityChange', { [ticketId]: this.quantities[ticketId] })
-      }
-    }
+  initialQuantities: {
+    type: Object,
+    default: () => {}
+  }
+})
+
+const emit = defineEmits(['quantityChange'])
+
+const quantities = reactive({})
+
+onMounted(() => {
+  props.tickets.forEach(ticket => {
+    quantities[ticket.id] = props.initialQuantities[ticket.id] || 0
+  })
+})
+
+const increaseQuantity = (ticketId) => {
+  if (quantities[ticketId] < 10) {
+    quantities[ticketId]++
+    emit('quantityChange', { [ticketId]: quantities[ticketId] })
+  }
+}
+
+const decreaseQuantity = (ticketId) => {
+  if (quantities[ticketId] > 0) {
+    quantities[ticketId]--
+    emit('quantityChange', { [ticketId]: quantities[ticketId] })
   }
 }
 </script>

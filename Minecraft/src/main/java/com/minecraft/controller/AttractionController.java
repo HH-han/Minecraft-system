@@ -5,6 +5,8 @@ import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.service.AttractionService;
 import com.minecraft.utils.SecurityUtils;
+import com.minecraft.vo.AttractionDetailVO;
+import com.minecraft.vo.AttractionListVO;
 import com.minecraft.vo.AttractionVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,15 +23,15 @@ public class AttractionController {
     @Autowired
     private AttractionService attractionService;
 
-    @Operation(summary ="获取景点列表")
+    @Operation(summary ="获取景点列表（包含门票和设施）")
     @GetMapping("/list")
-    public ApiResponse<PageResponse<AttractionVO>> getAttractionList(PageRequest request) {
+    public ApiResponse<PageResponse<AttractionListVO>> getAttractionList(PageRequest request) {
         return ApiResponse.success(attractionService.getAttractionList(request));
     }
 
-    @Operation(summary ="获取景点详情")
+    @Operation(summary ="获取景点详情（包含门票和设施）")
     @GetMapping("/{id}")
-    public ApiResponse<AttractionVO> getAttractionDetail(@PathVariable Long id) {
+    public ApiResponse<AttractionDetailVO> getAttractionDetail(@PathVariable Long id) {
         Long userId = SecurityUtils.getCurrentUserId();
         return ApiResponse.success(attractionService.getAttractionDetail(id, userId));
     }

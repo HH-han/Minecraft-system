@@ -5,6 +5,8 @@ import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Hotel;
 import com.minecraft.service.HotelService;
+import com.minecraft.vo.HotelDetailVO;
+import com.minecraft.vo.HotelListVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +22,15 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @Operation(summary ="获取酒店列表")
+    @Operation(summary ="获取酒店列表（包含床型和设施）")
     @GetMapping("/list")
-    public ApiResponse<PageResponse<?>> getHotelList(PageRequest request) {
+    public ApiResponse<PageResponse<HotelListVO>> getHotelList(PageRequest request) {
         return ApiResponse.success(hotelService.getHotelList(request));
     }
 
-    @Operation(summary ="获取酒店详情")
+    @Operation(summary ="获取酒店详情（包含床型和设施）")
     @GetMapping("/{id}")
-    public ApiResponse<Hotel> getHotelDetail(@PathVariable Long id) {
+    public ApiResponse<HotelDetailVO> getHotelDetail(@PathVariable Long id) {
         return ApiResponse.success(hotelService.getHotelDetail(id));
     }
 

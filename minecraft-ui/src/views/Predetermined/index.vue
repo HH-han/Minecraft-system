@@ -2,125 +2,88 @@
   <div class="predetermined-container">
     <h1>预订服务</h1>
 
-    <!-- 切换选项卡 -->
-    <div class="tab-switcher">
-      <button class="tab-btn" :class="{ active: activeTab === 'hotel' }" @click="activeTab = 'hotel'">
-        酒店预订
-      </button>
-      <button class="tab-btn" :class="{ active: activeTab === 'attraction' }" @click="activeTab = 'attraction'">
-        景点预订
-      </button>
-    </div>
-
-    <!-- 内容区域 -->
-    <div class="content-area">
-      <HotelBooking v-if="activeTab === 'hotel'" :dateFields="hotelDateFields" :facilities="hotelFacilities"
-        :rooms="hotelRooms" :hotelData="hotelData" />
-      <AttractionBooking v-if="activeTab === 'attraction'" :dateFields="attractionDateFields" :tags="attractionTags"
-        :tickets="attractionTickets" :attractionData="attractionData" />
-    </div>
+    <main class="content-area">
+      <div v-if="loading" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">加载中...</span>
+      </div>
+      
+      <Transition name="fade" mode="out-in">
+        <KeepAlive>
+          <component :is="currentComponent" :key="currentTab" />
+        </KeepAlive>
+      </Transition>
+    </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import HotelBooking from './components/HotelBooking.vue'
-import AttractionBooking from './components/AttractionBooking.vue'
+import { ref, computed, onMounted, watch, defineAsyncComponent } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useBookingStore } from '@/stores/bookingStore.js'
 
+const router = useRouter()
+const route = useRoute()
 const bookingStore = useBookingStore()
-const activeTab = ref('hotel')
-const attractionData = ref(null)
-const hotelData = ref(null)
-// 酒店数据
-const hotelDateFields = [
-  {
-    name: 'checkInDate',
-    label: '入住日期',
-    value: '',
-    min: new Date().toISOString().split('T')[0]
-  },
-  {
-    name: 'checkOutDate',
-    label: '离店日期',
-    value: '',
-    min: new Date().toISOString().split('T')[0]
-  }
-];
-const hotelFacilities = ['免费WiFi', '游泳池', '健身房', '停车场', '餐厅'];
-const hotelRooms = [
-  {
-    id: 1,
-    name: '豪华大床房',
-    description: '20平方米，1张1.8米大床，城市景观',
-    facilities: ['免费WiFi', '空调', '电视', '独立卫浴'],
-    price: 888
-  },
-  {
-    id: 2,
-    name: '豪华双床房',
-    description: '25平方米，2张1.2米单人床，城市景观',
-    facilities: ['免费WiFi', '空调', '电视', '独立卫浴'],
-    price: 988
-  },
-  {
-    id: 3,
-    name: '行政套房',
-    description: '40平方米，1张2米大床，行政礼遇，城市景观',
-    facilities: ['免费WiFi', '空调', '电视', '独立卫浴', '迷你吧', '行政酒廊'],
-    price: 1688
-  }
-];
-// 景点数据
-const attractionDateFields = [
-  {
-    name: 'visitDate',
-    label: '游玩日期',
-    value: '',
-    min: new Date().toISOString().split('T')[0]
-  }
-];
-const attractionTags = ['自然风光', '5A景区', '避暑胜地', '亲子游', '摄影天堂'];
-const attractionTickets = [
-  {
-    id: 1,
-    name: '成人票',
-    description: '适用于18-60周岁成人',
-    rules: ['有效期当天一次入园', '需携带身份证'],
-    price: 120
-  },
-  {
-    id: 2,
-    name: '儿童票',
-    description: '适用于1.2-1.5米儿童',
-    rules: ['有效期当天一次入园', '需携带身份证或户口本'],
-    price: 60
-  },
-  {
-    id: 3,
-    name: '老人票',
-    description: '适用于60周岁以上老人',
-    rules: ['有效期当天一次入园', '需携带身份证'],
-    price: 60
-  },
-  {
-    id: 4,
-    name: '学生票',
-    description: '适用于全日制学生',
-    rules: ['有效期当天一次入园', '需携带学生证'],
-    price: 80
-  }
-];
+const loading = ref(true)
+const currentTab = ref('hotel')
 
-// 组件挂载时从 Pinia 获取数据
+const hotelModule = defineAsyncComponent(() => import('./modules/HotelBookingModule.vue'))
+const attractionModule = defineAsyncComponent(() => import('./modules/AttractionBookingModule.vue'))
+
+const currentComponent = computed(() => {
+  return currentTab.value === 'hotel' ? hotelModule : attractionModule
+})
+
+const getInitialTab = () => {
+  const queryTab = route.query.tab
+  if (queryTab === 'attraction') {
+    return 'attraction'
+  }
+  const storeTab = bookingStore.activeTab
+  if (storeTab === 'attraction') {
+    return 'attraction'
+  }
+  return 'hotel'
+}
+
+const updateQuery = (tab) => {
+  router.replace({
+    query: {
+      ...route.query,
+      tab
+    }
+  })
+}
+
 onMounted(() => {
-  // 从 Pinia 中获取数据
-  activeTab.value = bookingStore.getActiveTab
-  attractionData.value = bookingStore.getAttractionData
-  hotelData.value = bookingStore.getHotelData
-  
-  // 清除 Pinia 中的数据，避免重复使用
-  bookingStore.clearData()
+  const tab = getInitialTab()
+  currentTab.value = tab
+  bookingStore.activeTab = tab
+  updateQuery(tab)
+  loading.value = false
+})
+
+watch(() => bookingStore.activeTab, (newTab) => {
+  if (newTab && newTab !== currentTab.value) {
+    loading.value = true
+    setTimeout(() => {
+      currentTab.value = newTab
+      updateQuery(newTab)
+      loading.value = false
+    }, 300)
+  }
+})
+
+watch(() => route.query.tab, (newTab) => {
+  if (newTab && newTab !== currentTab.value) {
+    loading.value = true
+    setTimeout(() => {
+      currentTab.value = newTab
+      bookingStore.activeTab = newTab
+      loading.value = false
+    }, 300)
+  }
 })
 </script>
 
@@ -131,6 +94,7 @@ onMounted(() => {
   background-image: url('@/assets/scenery/scenery-2.webp');
   background-size: cover;
   background-position: center;
+  min-height: 100vh;
 }
 
 h1 {
@@ -141,36 +105,54 @@ h1 {
   color: #333;
 }
 
-.tab-switcher {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
-  gap: 20px;
-}
-
-.tab-btn {
-  padding: 12px 30px;
-  border: 2px solid #ff6a00;
-  border-radius: 25px;
-  background-color: white;
-  color: #ff6a00;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.tab-btn:hover {
-  background-color: #fff5ee;
-}
-
-.tab-btn.active {
-  background-color: #ff6a00;
-  color: white;
-}
-
 .content-area {
+  flex: 1;
   min-height: 600px;
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 100;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #ff6a00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 15px;
+  color: #666;
+  font-size: 16px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 @media (max-width: 768px) {
@@ -180,16 +162,6 @@ h1 {
 
   h1 {
     font-size: 24px;
-  }
-
-  .tab-switcher {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .tab-btn {
-    width: 80%;
-    text-align: center;
   }
 }
 </style>
