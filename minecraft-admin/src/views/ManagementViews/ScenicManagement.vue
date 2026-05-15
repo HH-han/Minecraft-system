@@ -169,32 +169,14 @@
               </div>
             </div>
 
+            <!-- 景点设施选择 -->
             <div class="form-group">
-              <label>选择景点设施:</label>
-              <select v-model="selectedFacilities" multiple class="multiselect" size="4">
-                <option v-for="facility in allFacilities" :key="facility" :value="facility">
-                  {{ facility }}
-                </option>
-              </select>
-              <p class="select-hint">按住 Ctrl 或 Cmd 键可多选</p>
+              <FacilitySelector v-model="selectedFacilities" :facilities="allFacilities" label="选择景点设施" />
             </div>
 
+            <!-- 门票管理 -->
             <div class="form-group">
-              <label>门票列表:</label>
-              <div class="ticket-list">
-                <div v-for="(ticket, index) in formData.tickets" :key="ticket.id || index" class="ticket-item">
-                  <div class="ticket-header">
-                    <span>门票 {{ index + 1 }}</span>
-                    <button class="btn remove-ticket-btn" @click="removeTicket(index)">删除</button>
-                  </div>
-                  <div class="ticket-form">
-                    <input v-model="ticket.name" placeholder="门票名称" class="ticket-input" />
-                    <input v-model="ticket.description" placeholder="门票描述" class="ticket-input" />
-                    <input v-model="ticket.price" placeholder="价格" type="number" step="0.01" class="ticket-input" />
-                  </div>
-                </div>
-                <button class="btn add-ticket-btn" @click="addTicket">添加门票</button>
-              </div>
+              <TicketManager v-model="formData.tickets" label="门票列表" title="门票" />
             </div>
 
             <div class="dialog-buttons">
@@ -293,6 +275,8 @@
 
 import { ref, computed, onMounted } from 'vue';
 import { getAttractionList, getAttractionDetail, addAttraction, updateAttraction, deleteAttraction } from '@/api/attraction';
+import FacilitySelector from '@/components/FacilitySelector.vue';
+import TicketManager from '@/components/TicketManager.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -358,20 +342,6 @@ const formatDate = (date) => {
   if (!date) return '未知日期';
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return new Intl.DateTimeFormat('zh-CN', options).format(new Date(date));
-};
-
-const addTicket = () => {
-  formData.value.tickets.push({
-    id: null,
-    name: '',
-    description: '',
-    price: '',
-    rules: []
-  });
-};
-
-const removeTicket = (index) => {
-  formData.value.tickets.splice(index, 1);
 };
 
 const filteredCards = computed(() => {
@@ -758,79 +728,6 @@ onMounted(fetchScenic);
 .detail-sub-item span:first-child {
   font-weight: bold;
   color: #333;
-}
-
-.multiselect {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.select-hint {
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
-}
-
-.ticket-list {
-  margin-top: 8px;
-}
-
-.ticket-item {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 8px;
-}
-
-.ticket-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  font-weight: bold;
-}
-
-.ticket-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.ticket-input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.add-ticket-btn, .remove-ticket-btn {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.add-ticket-btn {
-  background-color: #1976d2;
-  color: white;
-  margin-top: 8px;
-}
-
-.add-ticket-btn:hover {
-  background-color: #1565c0;
-}
-
-.remove-ticket-btn {
-  background-color: #ef5350;
-  color: white;
-}
-
-.remove-ticket-btn:hover {
-  background-color: #e53935;
 }
 
 .ticket-info, .facility-info {

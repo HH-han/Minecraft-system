@@ -167,39 +167,14 @@
               </div>
             </div>
 
-            <!-- 酒店设施下拉框 -->
+            <!-- 酒店设施选择 -->
             <div class="form-group">
-              <label>选择酒店设施:</label>
-              <select v-model="selectedFacilities" multiple class="multiselect" size="4">
-                <option v-for="facility in allFacilities" :key="facility" :value="facility">
-                  {{ facility }}
-                </option>
-              </select>
-              <p class="select-hint">按住 Ctrl 或 Cmd 键可多选</p>
+              <FacilitySelector v-model="selectedFacilities" :facilities="allFacilities" label="选择酒店设施" />
             </div>
 
             <!-- 房型管理 -->
             <div class="form-group">
-              <label>房型列表:</label>
-              <div class="room-list">
-                <div v-for="(room, index) in formData.rooms" :key="room.id || index" class="room-item">
-                  <div class="room-header">
-                    <span>房型 {{ index + 1 }}</span>
-                    <button class="btn remove-room-btn" @click="removeRoom(index)">删除</button>
-                  </div>
-                  <div class="room-form">
-                    <input v-model="room.name" placeholder="房型名称" class="room-input" />
-                    <input v-model="room.description" placeholder="房型描述" class="room-input" />
-                    <input v-model="room.price" placeholder="价格" type="number" step="0.01" class="room-input" />
-                    <select v-model="room.facilities" multiple class="room-facilities-select" size="3">
-                      <option v-for="facility in roomFacilities" :key="facility" :value="facility">
-                        {{ facility }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <button class="btn add-room-btn" @click="addRoom">添加房型</button>
-              </div>
+              <RoomManager v-model="formData.rooms" :room-facilities="roomFacilities" label="房型列表" title="房型" />
             </div>
 
             <div class="dialog-buttons">
@@ -278,6 +253,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getHotelList, getHotelDetail, addHotel, updateHotel, deleteHotel } from '@/api/hotel';
+import FacilitySelector from '@/components/FacilitySelector.vue';
+import RoomManager from '@/components/RoomManager.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -416,20 +393,6 @@ const fetchHotels = async () => {
     hotels.value = [];
     total.value = 0;
   }
-};
-
-const addRoom = () => {
-  formData.value.rooms.push({
-    id: null,
-    name: '',
-    description: '',
-    price: '',
-    facilities: []
-  });
-};
-
-const removeRoom = (index) => {
-  formData.value.rooms.splice(index, 1);
 };
 
 const showAddDialog = () => {
@@ -738,86 +701,6 @@ onMounted(fetchHotels);
 .detail-sub-item span:first-child {
   font-weight: bold;
   color: #333;
-}
-
-.multiselect {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.select-hint {
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
-}
-
-.room-list {
-  margin-top: 8px;
-}
-
-.room-item {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 12px;
-  margin-bottom: 8px;
-}
-
-.room-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  font-weight: bold;
-}
-
-.room-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.room-input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.room-facilities-select {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.add-room-btn, .remove-room-btn {
-  padding: 6px 12px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.add-room-btn {
-  background-color: #1976d2;
-  color: white;
-  margin-top: 8px;
-}
-
-.add-room-btn:hover {
-  background-color: #1565c0;
-}
-
-.remove-room-btn {
-  background-color: #ef5350;
-  color: white;
-}
-
-.remove-room-btn:hover {
-  background-color: #e53935;
 }
 
 .room-info, .facility-info {
