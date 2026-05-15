@@ -7,6 +7,7 @@ import com.minecraft.entity.Hotel;
 import com.minecraft.service.HotelService;
 import com.minecraft.vo.HotelDetailVO;
 import com.minecraft.vo.HotelListVO;
+import com.minecraft.vo.HotelVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,15 +45,15 @@ public class HotelController {
 
     @Operation(summary ="添加酒店")
     @PostMapping("/add")
-    public ApiResponse<Void> addHotel(@RequestBody Hotel hotel) {
-        hotelService.addHotel(hotel);
+    public ApiResponse<Void> addHotel(@RequestBody HotelVO hotelVO) {
+        hotelService.addHotel(hotelVO);
         return ApiResponse.success("添加成功", null);
     }
 
     @Operation(summary ="更新酒店")
     @PutMapping("/update")
-    public ApiResponse<Void> updateHotel(@RequestBody Hotel hotel) {
-        hotelService.updateHotel(hotel);
+    public ApiResponse<Void> updateHotel(@RequestBody HotelVO hotelVO) {
+        hotelService.updateHotel(hotelVO);
         return ApiResponse.success("更新成功", null);
     }
 

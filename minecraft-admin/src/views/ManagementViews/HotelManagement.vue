@@ -377,12 +377,15 @@ const fetchHotels = async () => {
     const response = await getHotelList(params);
     
     if (response.code === 200) {
-      const data = response.data?.list || response.data?.records || [];
+      const responseData = response.data || {};
+      const data = responseData.list || responseData.records || [];
       hotels.value = data.map(hotel => ({
         ...hotel,
-        checked: false
+        checked: false,
+        rooms: hotel.rooms || [],
+        facilities: hotel.facilities || []
       }));
-      total.value = response.data?.total || 0;
+      total.value = responseData.total || 0;
     } else {
       console.error('获取酒店数据失败:', response.msg || response.message || '未知错误');
       hotels.value = [];
@@ -432,15 +435,16 @@ const showEditDialog = async (hotel) => {
   try {
     const response = await getHotelDetail(hotel.id);
     if (response.code === 200 && response.data) {
+      const detailData = response.data;
       formData.value = { 
-        ...response.data,
-        rooms: response.data.rooms || [{ id: null, name: '', description: '', price: '', facilities: [] }]
+        ...detailData,
+        rooms: detailData.rooms?.length > 0 ? detailData.rooms : [{ id: null, name: '', description: '', price: '', facilities: [] }]
       };
-      selectedFacilities.value = response.data.facilities || [];
+      selectedFacilities.value = detailData.facilities || [];
     } else {
       formData.value = { 
         ...hotel,
-        rooms: hotel.rooms || [{ id: null, name: '', description: '', price: '', facilities: [] }]
+        rooms: hotel.rooms?.length > 0 ? hotel.rooms : [{ id: null, name: '', description: '', price: '', facilities: [] }]
       };
       selectedFacilities.value = hotel.facilities || [];
     }
@@ -448,7 +452,7 @@ const showEditDialog = async (hotel) => {
     console.error('获取酒店详情失败:', error);
     formData.value = { 
       ...hotel,
-      rooms: hotel.rooms || [{ id: null, name: '', description: '', price: '', facilities: [] }]
+      rooms: hotel.rooms?.length > 0 ? hotel.rooms : [{ id: null, name: '', description: '', price: '', facilities: [] }]
     };
     selectedFacilities.value = hotel.facilities || [];
   }
@@ -457,11 +461,19 @@ const showEditDialog = async (hotel) => {
 };
 
 const showDetailsDialog = async (hotel) => {
-  selectedHotel.value = hotel;
+  selectedHotel.value = {
+    ...hotel,
+    rooms: hotel.rooms || [],
+    facilities: hotel.facilities || []
+  };
   try {
     const response = await getHotelDetail(hotel.id);
     if (response.code === 200 && response.data) {
-      selectedHotel.value = response.data;
+      selectedHotel.value = {
+        ...response.data,
+        rooms: response.data.rooms || [],
+        facilities: response.data.facilities || []
+      };
     }
   } catch (error) {
     console.error('获取酒店详情失败:', error);
@@ -498,12 +510,11 @@ const validateForm = () => {
 const submitForm = async () => {
   if (!validateForm()) return;
 
-  formData.value.facilities = selectedFacilities.value;
-  
   const validRooms = formData.value.rooms.filter(room => room.name && room.name.trim() !== '');
   const submitData = {
     ...formData.value,
-    rooms: validRooms
+    rooms: validRooms,
+    facilityList: selectedFacilities.value
   };
 
   try {

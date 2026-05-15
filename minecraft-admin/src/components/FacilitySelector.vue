@@ -34,10 +34,10 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const localSelected = ref([...props.modelValue]);
+const localSelected = ref([...(props.modelValue || [])]);
 
 watch(() => props.modelValue, (newVal) => {
-  const newValue = [...newVal];
+  const newValue = [...(newVal || [])];
   if (JSON.stringify(localSelected.value) !== JSON.stringify(newValue)) {
     localSelected.value = newValue;
   }

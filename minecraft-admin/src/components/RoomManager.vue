@@ -18,7 +18,7 @@
           </select>
         </div>
       </div>
-      <button class="btn add-room-btn" @click="addRoom">添加{{ title }}</button>
+      <button type="button" class="btn add-room-btn" @click="addRoom">添加{{ title }}</button>
     </div>
   </div>
 </template>
@@ -47,7 +47,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const localRooms = ref(props.modelValue.length > 0 ? [...props.modelValue] : [{
+const localRooms = ref((props.modelValue && props.modelValue.length > 0) ? [...props.modelValue] : [{
   id: null,
   name: '',
   description: '',
@@ -56,7 +56,7 @@ const localRooms = ref(props.modelValue.length > 0 ? [...props.modelValue] : [{
 }]);
 
 watch(() => props.modelValue, (newVal) => {
-  const newValue = newVal.length > 0 ? [...newVal] : [{
+  const newValue = (newVal && newVal.length > 0) ? [...newVal] : [{
     id: null,
     name: '',
     description: '',

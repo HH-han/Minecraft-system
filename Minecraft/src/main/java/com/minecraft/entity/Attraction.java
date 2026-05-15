@@ -47,4 +47,10 @@ public class Attraction {
     
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+    
+    @TableField(exist = false)
+    private java.util.List<java.util.Map<String, Object>> tickets;
+    
+    @TableField(exist = false)
+    private java.util.List<String> facilities;
 }

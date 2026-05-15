@@ -247,96 +247,134 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
     public void addAttraction(AttractionVO attractionVO) {
         Attraction attraction = new Attraction();
         BeanUtils.copyProperties(attractionVO, attraction);
+        
+        // 处理 images 字段转换
+        if (attractionVO.getImages() != null && !attractionVO.getImages().isEmpty()) {
+            try {
+                attraction.setImages(objectMapper.writeValueAsString(attractionVO.getImages()));
+            } catch (JsonProcessingException e) {
+                attraction.setImages(String.join(",", attractionVO.getImages()));
+            }
+        }
+        
+        // 处理 tags 字段转换
+        if (attractionVO.getTags() != null && !attractionVO.getTags().isEmpty()) {
+            try {
+                attraction.setTags(objectMapper.writeValueAsString(attractionVO.getTags()));
+            } catch (JsonProcessingException e) {
+                attraction.setTags(String.join(",", attractionVO.getTags()));
+            }
+        }
+        
         save(attraction);
+        
+        if (attractionVO.getTickets() != null && !attractionVO.getTickets().isEmpty()) {
+            try {
+                for (AttractionTicketVO ticketVO : attractionVO.getTickets()) {
+                    if (ticketVO.getName() == null || ticketVO.getName().trim().isEmpty()) {
+                        continue;
+                    }
+                    
+                    AttractionTicket ticket = new AttractionTicket();
+                    ticket.setAttractionId(attraction.getId());
+                    ticket.setName(ticketVO.getName());
+                    ticket.setDescription(ticketVO.getDescription());
+                    if (ticketVO.getPrice() != null) {
+                        ticket.setPrice(ticketVO.getPrice());
+                    }
+                    if (ticketVO.getRules() != null) {
+                        ticket.setRules(objectMapper.writeValueAsString(ticketVO.getRules()));
+                    }
+                    ticket.setStatus(1);
+                    attractionTicketMapper.insert(ticket);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if (attractionVO.getFacilities() != null && !attractionVO.getFacilities().isEmpty()) {
+            for (String facilityName : attractionVO.getFacilities()) {
+                AttractionFacility facility = new AttractionFacility();
+                facility.setAttractionId(attraction.getId());
+                facility.setFacilityName(facilityName);
+                facility.setStatus(1);
+                attractionFacilityMapper.insert(facility);
+            }
+        }
     }
 
     @Override
     public void updateAttraction(AttractionVO attractionVO) {
         Attraction attraction = new Attraction();
         BeanUtils.copyProperties(attractionVO, attraction);
+        
+        // 处理 images 字段转换
+        if (attractionVO.getImages() != null && !attractionVO.getImages().isEmpty()) {
+            try {
+                attraction.setImages(objectMapper.writeValueAsString(attractionVO.getImages()));
+            } catch (JsonProcessingException e) {
+                attraction.setImages(String.join(",", attractionVO.getImages()));
+            }
+        }
+        
+        // 处理 tags 字段转换
+        if (attractionVO.getTags() != null && !attractionVO.getTags().isEmpty()) {
+            try {
+                attraction.setTags(objectMapper.writeValueAsString(attractionVO.getTags()));
+            } catch (JsonProcessingException e) {
+                attraction.setTags(String.join(",", attractionVO.getTags()));
+            }
+        }
+        
         updateById(attraction);
+        
+        LambdaQueryWrapper<AttractionTicket> ticketWrapper = new LambdaQueryWrapper<>();
+        ticketWrapper.eq(AttractionTicket::getAttractionId, attraction.getId());
+        attractionTicketMapper.delete(ticketWrapper);
+        
+        LambdaQueryWrapper<AttractionFacility> facilityWrapper = new LambdaQueryWrapper<>();
+        facilityWrapper.eq(AttractionFacility::getAttractionId, attraction.getId());
+        attractionFacilityMapper.delete(facilityWrapper);
+        
+        if (attractionVO.getTickets() != null && !attractionVO.getTickets().isEmpty()) {
+            try {
+                for (AttractionTicketVO ticketVO : attractionVO.getTickets()) {
+                    if (ticketVO.getName() == null || ticketVO.getName().trim().isEmpty()) {
+                        continue;
+                    }
+                    
+                    AttractionTicket ticket = new AttractionTicket();
+                    ticket.setAttractionId(attraction.getId());
+                    ticket.setName(ticketVO.getName());
+                    ticket.setDescription(ticketVO.getDescription());
+                    if (ticketVO.getPrice() != null) {
+                        ticket.setPrice(ticketVO.getPrice());
+                    }
+                    if (ticketVO.getRules() != null) {
+                        ticket.setRules(objectMapper.writeValueAsString(ticketVO.getRules()));
+                    }
+                    ticket.setStatus(1);
+                    attractionTicketMapper.insert(ticket);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if (attractionVO.getFacilities() != null && !attractionVO.getFacilities().isEmpty()) {
+            for (String facilityName : attractionVO.getFacilities()) {
+                AttractionFacility facility = new AttractionFacility();
+                facility.setAttractionId(attraction.getId());
+                facility.setFacilityName(facilityName);
+                facility.setStatus(1);
+                attractionFacilityMapper.insert(facility);
+            }
+        }
     }
 
     @Override
     public void deleteAttraction(Long id) {
         removeById(id);
-    }
-    
-    @Override
-    public boolean save(Attraction attraction) {
-        try {
-            if (attraction.getCoverImage() != null && attraction.getCoverImage().startsWith("data:image")) {
-                String processedCoverImage = imageUtils.processBase64Image(attraction.getCoverImage());
-                attraction.setCoverImage(processedCoverImage);
-            }
-            
-            if (attraction.getImages() != null && attraction.getImages().startsWith("[")) {
-                try {
-                    String[] imageArray = attraction.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
-                    StringBuilder processedImages = new StringBuilder();
-                    
-                    for (String image : imageArray) {
-                        if (image.trim().startsWith("data:image")) {
-                            String processedImage = imageUtils.processBase64Image(image.trim());
-                            processedImages.append(processedImage).append(",");
-                        } else {
-                            processedImages.append(image.trim()).append(",");
-                        }
-                    }
-                    
-                    if (processedImages.length() > 0) {
-                        processedImages.setLength(processedImages.length() - 1);
-                    }
-                    
-                    attraction.setImages(processedImages.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            return super.save(attraction);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    @Override
-    public boolean updateById(Attraction attraction) {
-        try {
-            if (attraction.getCoverImage() != null && attraction.getCoverImage().startsWith("data:image")) {
-                String processedCoverImage = imageUtils.processBase64Image(attraction.getCoverImage());
-                attraction.setCoverImage(processedCoverImage);
-            }
-            
-            if (attraction.getImages() != null && attraction.getImages().startsWith("[")) {
-                try {
-                    String[] imageArray = attraction.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
-                    StringBuilder processedImages = new StringBuilder();
-                    
-                    for (String image : imageArray) {
-                        if (image.trim().startsWith("data:image")) {
-                            String processedImage = imageUtils.processBase64Image(image.trim());
-                            processedImages.append(processedImage).append(",");
-                        } else {
-                            processedImages.append(image.trim()).append(",");
-                        }
-                    }
-                    
-                    if (processedImages.length() > 0) {
-                        processedImages.setLength(processedImages.length() - 1);
-                    }
-                    
-                    attraction.setImages(processedImages.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            return super.updateById(attraction);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }

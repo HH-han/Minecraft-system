@@ -13,17 +13,17 @@ import com.minecraft.mapper.HotelMapper;
 import com.minecraft.mapper.HotelRoomMapper;
 import com.minecraft.service.HotelService;
 import com.minecraft.utils.ImageUtils;
-import com.minecraft.vo.AttractionVO;
 import com.minecraft.vo.HotelDetailVO;
 import com.minecraft.vo.HotelListVO;
 import com.minecraft.vo.HotelRoomVO;
+import com.minecraft.vo.HotelVO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -193,95 +193,120 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
     }
 
     @Override
-    public void addHotel(Hotel hotel) {
+    public void addHotel(HotelVO hotelVO) {
+        Hotel hotel = new Hotel();
+        BeanUtils.copyProperties(hotelVO, hotel);
+        
+        // 处理 images 字段转换
+        if (hotelVO.getImages() != null && !hotelVO.getImages().isEmpty()) {
+            try {
+                hotel.setImages(objectMapper.writeValueAsString(hotelVO.getImages()));
+            } catch (JsonProcessingException e) {
+                hotel.setImages(String.join(",", hotelVO.getImages()));
+            }
+        }
+        
         save(hotel);
+        
+        if (hotelVO.getRooms() != null && !hotelVO.getRooms().isEmpty()) {
+            try {
+                for (HotelRoomVO roomVO : hotelVO.getRooms()) {
+                    if (roomVO.getName() == null || roomVO.getName().trim().isEmpty()) {
+                        continue;
+                    }
+                    
+                    HotelRoom room = new HotelRoom();
+                    room.setHotelId(hotel.getId());
+                    room.setName(roomVO.getName());
+                    room.setDescription(roomVO.getDescription());
+                    if (roomVO.getPrice() != null) {
+                        room.setPrice(roomVO.getPrice());
+                    }
+                    if (roomVO.getFacilities() != null) {
+                        room.setFacilities(objectMapper.writeValueAsString(roomVO.getFacilities()));
+                    }
+                    room.setStatus(1);
+                    hotelRoomMapper.insert(room);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if (hotelVO.getFacilityList() != null && !hotelVO.getFacilityList().isEmpty()) {
+            for (String facilityName : hotelVO.getFacilityList()) {
+                HotelFacility facility = new HotelFacility();
+                facility.setHotelId(hotel.getId());
+                facility.setFacilityName(facilityName);
+                facility.setStatus(1);
+                hotelFacilityMapper.insert(facility);
+            }
+        }
     }
 
     @Override
-    public void updateHotel(Hotel hotel) {
+    public void updateHotel(HotelVO hotelVO) {
+        Hotel hotel = new Hotel();
+        BeanUtils.copyProperties(hotelVO, hotel);
+        
+        // 处理 images 字段转换
+        if (hotelVO.getImages() != null && !hotelVO.getImages().isEmpty()) {
+            try {
+                hotel.setImages(objectMapper.writeValueAsString(hotelVO.getImages()));
+            } catch (JsonProcessingException e) {
+                hotel.setImages(String.join(",", hotelVO.getImages()));
+            }
+        }
+        
         updateById(hotel);
+        
+        LambdaQueryWrapper<HotelRoom> roomWrapper = new LambdaQueryWrapper<>();
+        roomWrapper.eq(HotelRoom::getHotelId, hotel.getId());
+        hotelRoomMapper.delete(roomWrapper);
+        
+        LambdaQueryWrapper<HotelFacility> facilityWrapper = new LambdaQueryWrapper<>();
+        facilityWrapper.eq(HotelFacility::getHotelId, hotel.getId());
+        hotelFacilityMapper.delete(facilityWrapper);
+        
+        if (hotelVO.getRooms() != null && !hotelVO.getRooms().isEmpty()) {
+            try {
+                for (HotelRoomVO roomVO : hotelVO.getRooms()) {
+                    if (roomVO.getName() == null || roomVO.getName().trim().isEmpty()) {
+                        continue;
+                    }
+                    
+                    HotelRoom room = new HotelRoom();
+                    room.setHotelId(hotel.getId());
+                    room.setName(roomVO.getName());
+                    room.setDescription(roomVO.getDescription());
+                    if (roomVO.getPrice() != null) {
+                        room.setPrice(roomVO.getPrice());
+                    }
+                    if (roomVO.getFacilities() != null) {
+                        room.setFacilities(objectMapper.writeValueAsString(roomVO.getFacilities()));
+                    }
+                    room.setStatus(1);
+                    hotelRoomMapper.insert(room);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if (hotelVO.getFacilityList() != null && !hotelVO.getFacilityList().isEmpty()) {
+            for (String facilityName : hotelVO.getFacilityList()) {
+                HotelFacility facility = new HotelFacility();
+                facility.setHotelId(hotel.getId());
+                facility.setFacilityName(facilityName);
+                facility.setStatus(1);
+                hotelFacilityMapper.insert(facility);
+            }
+        }
     }
 
     @Override
     public void deleteHotel(Long id) {
         removeById(id);
     }
-    
-    @Override
-    public boolean save(Hotel hotel) {
-        try {
-            if (hotel.getCoverImage() != null && hotel.getCoverImage().startsWith("data:image")) {
-                String processedCoverImage = imageUtils.processBase64Image(hotel.getCoverImage());
-                hotel.setCoverImage(processedCoverImage);
-            }
-            
-            if (hotel.getImages() != null && hotel.getImages().startsWith("[")) {
-                try {
-                    String[] imageArray = hotel.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
-                    StringBuilder processedImages = new StringBuilder();
-                    
-                    for (String image : imageArray) {
-                        if (image.trim().startsWith("data:image")) {
-                            String processedImage = imageUtils.processBase64Image(image.trim());
-                            processedImages.append(processedImage).append(",");
-                        } else {
-                            processedImages.append(image.trim()).append(",");
-                        }
-                    }
-                    
-                    if (processedImages.length() > 0) {
-                        processedImages.setLength(processedImages.length() - 1);
-                    }
-                    
-                    hotel.setImages(processedImages.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            return super.save(hotel);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
-    @Override
-    public boolean updateById(Hotel hotel) {
-        try {
-            if (hotel.getCoverImage() != null && hotel.getCoverImage().startsWith("data:image")) {
-                String processedCoverImage = imageUtils.processBase64Image(hotel.getCoverImage());
-                hotel.setCoverImage(processedCoverImage);
-            }
-            
-            if (hotel.getImages() != null && hotel.getImages().startsWith("[")) {
-                try {
-                    String[] imageArray = hotel.getImages().replace("[", "").replace("]", "").replaceAll("\\\"", "").split(",");
-                    StringBuilder processedImages = new StringBuilder();
-                    
-                    for (String image : imageArray) {
-                        if (image.trim().startsWith("data:image")) {
-                            String processedImage = imageUtils.processBase64Image(image.trim());
-                            processedImages.append(processedImage).append(",");
-                        } else {
-                            processedImages.append(image.trim()).append(",");
-                        }
-                    }
-                    
-                    if (processedImages.length() > 0) {
-                        processedImages.setLength(processedImages.length() - 1);
-                    }
-                    
-                    hotel.setImages(processedImages.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            return super.updateById(hotel);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }
+

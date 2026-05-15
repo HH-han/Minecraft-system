@@ -13,7 +13,7 @@
           <input v-model="ticket.price" placeholder="价格" type="number" step="0.01" class="ticket-input" />
         </div>
       </div>
-      <button class="btn add-ticket-btn" @click="addTicket">添加{{ title }}</button>
+      <button type="button" class="btn add-ticket-btn" @click="addTicket">添加{{ title }}</button>
     </div>
   </div>
 </template>
@@ -38,7 +38,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const localTickets = ref(props.modelValue.length > 0 ? [...props.modelValue] : [{
+const localTickets = ref((props.modelValue && props.modelValue.length > 0) ? [...props.modelValue] : [{
   id: null,
   name: '',
   description: '',
@@ -47,7 +47,7 @@ const localTickets = ref(props.modelValue.length > 0 ? [...props.modelValue] : [
 }]);
 
 watch(() => props.modelValue, (newVal) => {
-  const newValue = newVal.length > 0 ? [...newVal] : [{
+  const newValue = (newVal && newVal.length > 0) ? [...newVal] : [{
     id: null,
     name: '',
     description: '',

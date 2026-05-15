@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class AttractionVO {
+public class HotelVO {
     private Long id;
     private String name;
     private String city;
@@ -17,15 +17,13 @@ public class AttractionVO {
     private String coverImage;
     private List<String> images;
     private BigDecimal price;
-    private String season;
+    private Integer starLevel;
     private Integer rating;
     private Integer likeCount;
     private Integer collectCount;
     private Integer commentCount;
-    private List<String> tags;
-    private Boolean isLiked;
-    private Boolean isCollected;
+    private List<HotelRoomVO> rooms;
+    private List<String> facilityList;
     private LocalDateTime createTime;
-    private List<AttractionTicketVO> tickets;
-    private List<String> facilities;
+    private LocalDateTime updateTime;
 }

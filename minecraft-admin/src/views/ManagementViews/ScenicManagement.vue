@@ -396,12 +396,15 @@ const fetchScenic = async () => {
     const response = await getAttractionList(params);
     
     if (response.code === 200) {
-      const data = response.data?.list || response.data?.records || [];
+      const responseData = response.data || {};
+      const data = responseData.list || responseData.records || [];
       cards.value = data.map(card => ({
         ...card,
-        checked: false
+        checked: false,
+        tickets: card.tickets || [],
+        facilities: card.facilities || []
       }));
-      total.value = response.data?.total || 0;
+      total.value = responseData.total || 0;
     } else {
       console.error('获取景点数据失败:', response.msg || response.message || '未知错误');
       cards.value = [];
@@ -455,15 +458,16 @@ const showEditDialog = async (card) => {
   try {
     const response = await getAttractionDetail(card.id);
     if (response.code === 200 && response.data) {
+      const detailData = response.data;
       formData.value = { 
-        ...response.data,
-        tickets: response.data.tickets || [{ id: null, name: '', description: '', price: '', rules: [] }]
+        ...detailData,
+        tickets: detailData.tickets?.length > 0 ? detailData.tickets : [{ id: null, name: '', description: '', price: '', rules: [] }]
       };
-      selectedFacilities.value = response.data.facilities || [];
+      selectedFacilities.value = detailData.facilities || [];
     } else {
       formData.value = { 
         ...card,
-        tickets: card.tickets || [{ id: null, name: '', description: '', price: '', rules: [] }]
+        tickets: card.tickets?.length > 0 ? card.tickets : [{ id: null, name: '', description: '', price: '', rules: [] }]
       };
       selectedFacilities.value = card.facilities || [];
     }
@@ -471,7 +475,7 @@ const showEditDialog = async (card) => {
     console.error('获取景点详情失败:', error);
     formData.value = { 
       ...card,
-      tickets: card.tickets || [{ id: null, name: '', description: '', price: '', rules: [] }]
+      tickets: card.tickets?.length > 0 ? card.tickets : [{ id: null, name: '', description: '', price: '', rules: [] }]
     };
     selectedFacilities.value = card.facilities || [];
   }
@@ -480,11 +484,19 @@ const showEditDialog = async (card) => {
 };
 
 const showDetailsDialog = async (card) => {
-  selectedCard.value = card;
+  selectedCard.value = {
+    ...card,
+    tickets: card.tickets || [],
+    facilities: card.facilities || []
+  };
   try {
     const response = await getAttractionDetail(card.id);
     if (response.code === 200 && response.data) {
-      selectedCard.value = response.data;
+      selectedCard.value = {
+        ...response.data,
+        tickets: response.data.tickets || [],
+        facilities: response.data.facilities || []
+      };
     }
   } catch (error) {
     console.error('获取景点详情失败:', error);
