@@ -536,13 +536,19 @@ const submitForm = async () => {
   if (!validateForm()) return;
 
   formData.value.facilities = selectedFacilities.value;
+  
+  const validRooms = formData.value.rooms.filter(room => room.name && room.name.trim() !== '');
+  const submitData = {
+    ...formData.value,
+    rooms: validRooms
+  };
 
   try {
     if (isEditing.value) {
-      await updateHotel(formData.value);
+      await updateHotel(submitData);
       showToastMessage('更新酒店成功');
     } else {
-      await addHotel(formData.value);
+      await addHotel(submitData);
       showToastMessage('新增酒店成功');
     }
     await fetchHotels();

@@ -548,68 +548,26 @@ const validateForm = () => {
   return true;
 };
 
-const debounceUpdateTicket = (() => {
-  let timer = null;
-  return async (ticket) => {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(async () => {
-      if (isEditing.value && ticket.id && ticket.name) {
-        try {
-          await updateAttractionTicket({ ...ticket, attractionId: formData.value.id });
-        } catch (error) {
-          console.error('更新门票失败:', error);
-        }
-      }
-    }, 500);
-  };
-})();
-
-watch(() => formData.value.tickets, (newTickets, oldTickets) => {
-  if (!isEditing.value || !formData.value.id) return;
-  
-  if (newTickets && oldTickets) {
-    newTickets.forEach((ticket, index) => {
-      const oldTicket = oldTickets[index];
-      if (ticket.id && oldTicket && ticket.id === oldTicket.id) {
-        if (ticket.name !== oldTicket.name || ticket.description !== oldTicket.description || ticket.price !== oldTicket.price) {
-          debounceUpdateTicket(ticket);
-        }
-      }
-    });
-  }
-}, { deep: true });
-
-watch(selectedFacilities, async (newFacilities, oldFacilities) => {
-  if (!isEditing.value || !formData.value.id) return;
-  
-  const oldSet = new Set(oldFacilities || []);
-  const newSet = new Set(newFacilities || []);
-  
-  const added = [...newSet].filter(f => !oldSet.has(f));
-  
-  for (const facility of added) {
-    try {
-      await addAttractionFacility({ attractionId: formData.value.id, facility });
-    } catch (error) {
-      console.error('添加设施失败:', error);
-    }
-  }
-});
-
 const submitForm = async () => {
   if (!validateForm()) return;
 
   formData.value.facilities = selectedFacilities.value;
+  
+  const validTickets = formData.value.tickets.filter(ticket => ticket.name && ticket.name.trim() !== '');
+  const submitData = {
+    ...formData.value,
+    tickets: validTickets
+  };
 
   try {
     if (isEditing.value) {
-      formData.value.updateTime = new Date().toISOString();
-      await updateAttraction(formData.value);
+      submitData.updateTime = new Date().toISOString();
+      await updateAttraction(submitData);
       showToastMessage('更新景点成功');
     } else {
-      formData.value.createTime = new Date().toISOString();
-      formData.value.updateTime = new Date().toISOString();
-      await addAttraction(formData.value);
+      submitData.createTime = new Date().toISOString();
+      submitData.updateTime = new Date().toISOString();
+      await addAttraction(submitData);
       showToastMessage('新增景点成功');
     }
     await fetchScenic();
