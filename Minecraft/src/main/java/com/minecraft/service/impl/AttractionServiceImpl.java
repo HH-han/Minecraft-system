@@ -75,13 +75,15 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         List<Long> attractionIds = attractions.stream().map(Attraction::getId).collect(Collectors.toList());
         
         LambdaQueryWrapper<AttractionTicket> ticketWrapper = new LambdaQueryWrapper<>();
-        ticketWrapper.in(AttractionTicket::getAttractionId, attractionIds);
+        ticketWrapper.in(AttractionTicket::getAttractionId, attractionIds)
+                .eq(AttractionTicket::getStatus, 1);
         List<AttractionTicket> allTickets = attractionTicketMapper.selectList(ticketWrapper);
         Map<Long, List<AttractionTicket>> ticketsMap = allTickets.stream()
                 .collect(Collectors.groupingBy(AttractionTicket::getAttractionId));
         
         LambdaQueryWrapper<AttractionFacility> facilityWrapper = new LambdaQueryWrapper<>();
-        facilityWrapper.in(AttractionFacility::getAttractionId, attractionIds);
+        facilityWrapper.in(AttractionFacility::getAttractionId, attractionIds)
+                .eq(AttractionFacility::getStatus, 1);
         List<AttractionFacility> allFacilities = attractionFacilityMapper.selectList(facilityWrapper);
         Map<Long, List<AttractionFacility>> facilitiesMap = allFacilities.stream()
                 .collect(Collectors.groupingBy(AttractionFacility::getAttractionId));
@@ -89,6 +91,11 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         List<AttractionListVO> voList = attractions.stream().map(attraction -> {
             AttractionListVO vo = new AttractionListVO();
             BeanUtils.copyProperties(attraction, vo);
+            
+            // 设置默认值
+            if (vo.getLikeCount() == null) vo.setLikeCount(0);
+            if (vo.getCollectCount() == null) vo.setCollectCount(0);
+            if (vo.getCommentCount() == null) vo.setCommentCount(0);
             
             if (attraction.getImages() != null && !attraction.getImages().isEmpty()) {
                 try {
@@ -148,6 +155,11 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         
         AttractionDetailVO vo = new AttractionDetailVO();
         BeanUtils.copyProperties(attraction, vo);
+        
+        // 设置默认值
+        if (vo.getLikeCount() == null) vo.setLikeCount(0);
+        if (vo.getCollectCount() == null) vo.setCollectCount(0);
+        if (vo.getCommentCount() == null) vo.setCommentCount(0);
 
         if (attraction.getImages() != null && !attraction.getImages().isEmpty()) {
             try {
@@ -174,7 +186,8 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         }
         
         LambdaQueryWrapper<AttractionTicket> ticketWrapper = new LambdaQueryWrapper<>();
-        ticketWrapper.eq(AttractionTicket::getAttractionId, id);
+        ticketWrapper.eq(AttractionTicket::getAttractionId, id)
+                .eq(AttractionTicket::getStatus, 1);
         List<AttractionTicket> tickets = attractionTicketMapper.selectList(ticketWrapper);
         
         List<AttractionTicketVO> ticketVOList = tickets.stream().map(ticket -> {
@@ -194,7 +207,8 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         vo.setTickets(ticketVOList);
         
         LambdaQueryWrapper<AttractionFacility> facilityWrapper = new LambdaQueryWrapper<>();
-        facilityWrapper.eq(AttractionFacility::getAttractionId, id);
+        facilityWrapper.eq(AttractionFacility::getAttractionId, id)
+                .eq(AttractionFacility::getStatus, 1);
         List<AttractionFacility> facilities = attractionFacilityMapper.selectList(facilityWrapper);
         List<String> facilityNames = facilities.stream()
                 .map(AttractionFacility::getFacilityName)

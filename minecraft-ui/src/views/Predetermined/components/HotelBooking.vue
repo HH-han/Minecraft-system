@@ -23,7 +23,6 @@
           <span>{{ hotelData?.address || '城市中心，距离地铁站步行5分钟' }}</span>
         </div>
         <div class="hotel-facilities">
-          <span v-if="loadingFacilities" class="loading-text">加载中...</span>
           <span class="facility-tag" v-for="(tag, index) in displayFacilities" :key="index">{{ tag }}</span>
         </div>
       </div>
@@ -31,8 +30,8 @@
 
     <div class="booking-form">
       <h3>预订信息</h3>
-      
-      <DatePicker 
+
+      <DatePicker
         :dateFields="dateFields"
         @dateChange="handleDateChange"
       />
@@ -46,18 +45,14 @@
         </div>
       </div>
 
-      <div v-if="loadingRooms" class="loading-container">
-        <span class="loading-text">加载房型中...</span>
-      </div>
-      <RoomSelector 
-        v-else
+      <RoomSelector
         :rooms="rooms"
         :selectedRoom="selectedRoom"
         @roomSelect="selectRoom"
       />
 
       <div v-if="selectedRoom">
-        <BookingForm 
+        <BookingForm
           :totalPrice="totalPrice + serviceFee"
           @submit="submitBooking"
         >
@@ -78,11 +73,10 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed, onMounted, watch } from 'vue'
+import { defineProps, ref, computed } from 'vue'
 import DatePicker from './DatePicker.vue'
 import RoomSelector from './RoomSelector.vue'
 import BookingForm from './BookingForm.vue'
-import { getHotelFacilities } from '@/api/hotelFacility'
 
 const props = defineProps({
   dateFields: {
@@ -91,7 +85,7 @@ const props = defineProps({
   },
   facilities: {
     type: Array,
-    required: true
+    default: () => []
   },
   rooms: {
     type: Array,
@@ -100,10 +94,6 @@ const props = defineProps({
   hotelData: {
     type: Object,
     default: null
-  },
-  hotelId: {
-    type: [Number, null],
-    default: null
   }
 })
 
@@ -111,9 +101,6 @@ const checkInDate = ref('')
 const checkOutDate = ref('')
 const guests = ref(2)
 const selectedRoom = ref(null)
-const hotelFacilities = ref([])
-const loadingFacilities = ref(false)
-const loadingRooms = ref(false)
 
 const nights = computed(() => {
   if (!checkInDate.value || !checkOutDate.value) return 0
@@ -131,24 +118,8 @@ const serviceFee = computed(() => {
 })
 
 const displayFacilities = computed(() => {
-  return hotelFacilities.value.length > 0 ? hotelFacilities.value.map(f => f.facilityName) : props.facilities
+  return props.facilities && props.facilities.length > 0 ? props.facilities : ['停车场', '免费WiFi', '餐厅', '健身房']
 })
-
-const loadHotelFacilities = async () => {
-  if (!props.hotelId) return
-  
-  loadingFacilities.value = true
-  try {
-    const response = await getHotelFacilities(props.hotelId)
-    if (response.code === 200 && response.data) {
-      hotelFacilities.value = response.data
-    }
-  } catch (error) {
-    console.error('获取酒店设施失败:', error)
-  } finally {
-    loadingFacilities.value = false
-  }
-}
 
 const handleDateChange = (dateData) => {
   if (dateData.checkInDate) {
@@ -189,25 +160,6 @@ const submitBooking = (bookingData) => {
   })
   alert('预订提交成功！')
 }
-
-let debounceTimer = null
-
-const debounceLoadFacilities = () => {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer)
-  }
-  debounceTimer = setTimeout(() => {
-    loadHotelFacilities()
-  }, 300)
-}
-
-onMounted(() => {
-  debounceLoadFacilities()
-})
-
-watch(() => props.hotelId, () => {
-  debounceLoadFacilities()
-})
 </script>
 
 <style scoped>
@@ -683,24 +635,24 @@ watch(() => props.hotelId, () => {
   .hotel-info {
     flex-direction: column;
   }
-  
+
   .hotel-details {
     padding: 20px;
   }
-  
+
   .booking-form {
     padding: 20px;
   }
-  
+
   .date-selection {
     flex-direction: column;
   }
-  
+
   .room-option {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .room-price {
     margin-top: 15px;
     align-self: flex-end;

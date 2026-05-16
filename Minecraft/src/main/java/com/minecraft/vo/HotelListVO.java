@@ -18,6 +18,8 @@ public class HotelListVO {
     private List<String> images;
     private BigDecimal price;
     private Integer rating;
+    private Integer likeCount;
+    private Integer collectCount;
     private Integer commentCount;
     private LocalDateTime createTime;
     

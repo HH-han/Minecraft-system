@@ -11,7 +11,12 @@
             <!-- 搜索 -->
             <SearchBox />
             <!-- 内容 -->
-            <Content />
+            <Content 
+                :attractions="attractions" 
+                :loading="loading" 
+                :error="error"
+                @retry="fetchAttractions"
+            />
         </main>
         <footer>
             <BottomPage />
@@ -24,16 +29,21 @@ import Carousel from '@/views/Carousel/components/Carousel.vue';
 import SearchBox from '@/components/DisplayBox/SearchBox.vue';
 import Recommend from './recommend.vue';
 import Content from './content.vue';
-import BottomPage from '@/components/DisplayBox/BottomPage.vue'
+import BottomPage from '@/components/DisplayBox/BottomPage.vue';
 import carouselApi from '@/api/carousel.js';
+import { getAttractionList } from '@/api/attraction.js';
 
 // 轮播图数据
 const mediaList = ref({ images: [] });
 
+// 景点数据
+const attractions = ref([]);
+const loading = ref(false);
+const error = ref('');
+
 // 获取轮播图数据
 const fetchcarousel = async () => {
   try {
-    // 使用API获取轮播图数据
     const response = await carouselApi.getAttractionCarousels();
     if (response.code === 200 && response.data) {
       mediaList.value.images = response.data.map((item) => ({
@@ -43,13 +53,30 @@ const fetchcarousel = async () => {
         updatedAt: item.updatedAt || '默认描述'
       }));
     }
-  } catch (error) {
-    console.error('获取轮播图数据失败：', error)
+  } catch (err) {
+    console.error('获取轮播图数据失败:', err);
   }
-}
+};
+
+// 获取景点数据
+const fetchAttractions = async () => {
+  loading.value = true;
+  error.value = '';
+  
+  try {
+    const response = await getAttractionList();
+    attractions.value = response.data?.records || [];
+  } catch (err) {
+    error.value = err.message || '获取数据失败';
+    console.error('获取景点数据失败:', err);
+  } finally {
+    loading.value = false;
+  }
+};
 
 // 初始化
 onMounted(() => {
   fetchcarousel();
+  fetchAttractions();
 });
 </script>

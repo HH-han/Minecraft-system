@@ -22,6 +22,7 @@ import HotelBooking from '../components/HotelBooking.vue'
 import { useBookingStore } from '@/stores/bookingStore.js'
 import { getHotelDetail } from '@/api/hotel.js'
 
+
 const bookingStore = useBookingStore()
 const hotelData = ref(null)
 const rooms = ref([])

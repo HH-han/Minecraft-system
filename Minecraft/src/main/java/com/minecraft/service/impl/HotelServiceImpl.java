@@ -72,13 +72,15 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         List<Long> hotelIds = hotels.stream().map(Hotel::getId).collect(Collectors.toList());
         
         LambdaQueryWrapper<HotelRoom> roomWrapper = new LambdaQueryWrapper<>();
-        roomWrapper.in(HotelRoom::getHotelId, hotelIds);
+        roomWrapper.in(HotelRoom::getHotelId, hotelIds)
+                .eq(HotelRoom::getStatus, 1);
         List<HotelRoom> allRooms = hotelRoomMapper.selectList(roomWrapper);
         Map<Long, List<HotelRoom>> roomsMap = allRooms.stream()
                 .collect(Collectors.groupingBy(HotelRoom::getHotelId));
         
         LambdaQueryWrapper<HotelFacility> facilityWrapper = new LambdaQueryWrapper<>();
-        facilityWrapper.in(HotelFacility::getHotelId, hotelIds);
+        facilityWrapper.in(HotelFacility::getHotelId, hotelIds)
+                .eq(HotelFacility::getStatus, 1);
         List<HotelFacility> allFacilities = hotelFacilityMapper.selectList(facilityWrapper);
         Map<Long, List<HotelFacility>> facilitiesMap = allFacilities.stream()
                 .collect(Collectors.groupingBy(HotelFacility::getHotelId));
@@ -86,6 +88,11 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         List<HotelListVO> voList = hotels.stream().map(hotel -> {
             HotelListVO vo = new HotelListVO();
             BeanUtils.copyProperties(hotel, vo);
+            
+            // 设置默认值
+            if (vo.getLikeCount() == null) vo.setLikeCount(0);
+            if (vo.getCollectCount() == null) vo.setCollectCount(0);
+            if (vo.getCommentCount() == null) vo.setCommentCount(0);
             
             if (hotel.getImages() != null && !hotel.getImages().isEmpty()) {
                 try {
@@ -136,6 +143,11 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         HotelDetailVO vo = new HotelDetailVO();
         BeanUtils.copyProperties(hotel, vo);
         
+        // 设置默认值
+        if (vo.getLikeCount() == null) vo.setLikeCount(0);
+        if (vo.getCollectCount() == null) vo.setCollectCount(0);
+        if (vo.getCommentCount() == null) vo.setCommentCount(0);
+        
         if (hotel.getImages() != null && !hotel.getImages().isEmpty()) {
             try {
                 vo.setImages(objectMapper.readValue(hotel.getImages(), new TypeReference<List<String>>() {}));
@@ -147,7 +159,8 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         }
         
         LambdaQueryWrapper<HotelRoom> roomWrapper = new LambdaQueryWrapper<>();
-        roomWrapper.eq(HotelRoom::getHotelId, id);
+        roomWrapper.eq(HotelRoom::getHotelId, id)
+                .eq(HotelRoom::getStatus, 1);
         List<HotelRoom> rooms = hotelRoomMapper.selectList(roomWrapper);
         
         List<HotelRoomVO> roomVOList = rooms.stream().map(room -> {
@@ -167,7 +180,8 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         vo.setRooms(roomVOList);
         
         LambdaQueryWrapper<HotelFacility> facilityWrapper = new LambdaQueryWrapper<>();
-        facilityWrapper.eq(HotelFacility::getHotelId, id);
+        facilityWrapper.eq(HotelFacility::getHotelId, id)
+                .eq(HotelFacility::getStatus, 1);
         List<HotelFacility> facilities = hotelFacilityMapper.selectList(facilityWrapper);
         List<String> facilityNames = facilities.stream()
                 .map(HotelFacility::getFacilityName)

@@ -5,7 +5,7 @@
     </div>
     <div v-else-if="error" class="error-state">
         <p>加载失败: {{ error }}</p>
-        <button @click="fetchHotels" class="btn retry">重试</button>
+        <button @click="$emit('retry')" class="btn retry">重试</button>
     </div>
     <div v-else class="card-container">
         <div v-for="hotel in hotels" :key="hotel.id" class="card" @click="openDetail(hotel)">
@@ -64,6 +64,35 @@
                         <h3>酒店介绍</h3>
                         <p>{{ selectedHotel?.description }}</p>
                     </div>
+                    <!-- 设施列表 -->
+                    <div v-if="selectedHotel?.facilities?.length" class="modal-facilities">
+                        <h3>酒店设施</h3>
+                        <div class="facilities-list">
+                            <span v-for="(facility, index) in selectedHotel.facilities" :key="index" class="facility-tag">
+                                {{ facility }}
+                            </span>
+                        </div>
+                    </div>
+                    <!-- 房型列表 -->
+                    <div v-if="selectedHotel?.rooms?.length" class="modal-rooms">
+                        <h3>房型列表</h3>
+                        <div class="rooms-list">
+                            <div v-for="(room, index) in selectedHotel.rooms" :key="room.id || index" class="room-item">
+                                <div class="room-info">
+                                    <h4>{{ room.name }}</h4>
+                                    <p class="room-desc">{{ room.description }}</p>
+                                    <div class="room-facilities" v-if="room.facilities?.length">
+                                        <span v-for="(facility, fIndex) in room.facilities" :key="fIndex" class="room-facility-tag">
+                                            {{ facility }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="room-price">
+                                    ¥{{ room.price }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-stats">
                         <div class="stat-item">
                             <span class="stat-label">收藏数</span>
@@ -88,40 +117,33 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getHotelList } from '@/api/hotel.js'
 import { useBookingStore } from '@/stores/bookingStore.js'
 
-// 响应式数据
-const hotels = ref([])
-const loading = ref(false)
-const error = ref('')
+// 定义 props
+const props = defineProps({
+    hotels: {
+        type: Array,
+        default: () => []
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    },
+    error: {
+        type: String,
+        default: ''
+    }
+})
+
+// 定义 emits
+const emit = defineEmits(['retry'])
+
 const router = useRouter()
 const showModal = ref(false)
 const selectedHotel = ref(null)
 const bookingStore = useBookingStore()
-
-// 获取酒店数据
-const fetchHotels = async () => {
-    loading.value = true
-    error.value = ''
-    
-    try {
-        const response = await getHotelList()
-        hotels.value = response.data?.records || []
-    } catch (err) {
-        error.value = err.message || '获取数据失败'
-        console.error('获取酒店数据失败:', err)
-    } finally {
-        loading.value = false
-    }
-}
-
-// 组件挂载时获取数据
-onMounted(() => {
-    fetchHotels()
-})
 
 // 打开详情页
 const openDetail = (hotel) => {
@@ -138,7 +160,6 @@ const closeModal = () => {
 // 跳转到订单详情页
 const OrderDetails = (hotel) => {
     console.log('前往预订:', hotel)
-    // 使用 Pinia 存储酒店数据
     bookingStore.bookHotel(hotel)
     router.push('/predetermined')
     closeModal()
@@ -281,6 +302,7 @@ const OrderDetails = (hotel) => {
   max-height: 80vh;
   overflow-y: auto;
   animation: slideUp 0.3s ease-out;
+  position: relative;
 }
 
 @keyframes slideUp {
@@ -393,6 +415,94 @@ const OrderDetails = (hotel) => {
   color: #666;
   line-height: 1.6;
   font-size: 14px;
+}
+
+/* 设施列表样式 */
+.modal-facilities {
+  margin-top: 10px;
+}
+
+.modal-facilities h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.facilities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.facility-tag {
+  background: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 房型列表样式 */
+.modal-rooms {
+  margin-top: 10px;
+}
+
+.modal-rooms h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.rooms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.room-info h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.room-desc {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
+.room-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.room-facility-tag {
+  background: #e8f4ff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  color: #1976d2;
+}
+
+.room-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e74c3c;
 }
 
 .modal-stats {

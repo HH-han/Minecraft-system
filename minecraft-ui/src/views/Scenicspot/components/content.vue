@@ -5,7 +5,7 @@
     </div>
     <div v-else-if="error" class="error-state">
         <p>加载失败: {{ error }}</p>
-        <button @click="fetchAttractions" class="btn retry">重试</button>
+        <button @click="$emit('retry')" class="btn retry">重试</button>
     </div>
     <div v-else class="card-container">
         <div v-for="attraction in attractions" :key="attraction.id" class="card" @click="openDetail(attraction)">
@@ -64,6 +64,35 @@
                         <h3>景点介绍</h3>
                         <p>{{ selectedAttraction?.description }}</p>
                     </div>
+                    <!-- 标签列表 -->
+                    <div v-if="selectedAttraction?.tags?.length" class="modal-tags">
+                        <h3>景点标签</h3>
+                        <div class="tags-list">
+                            <span v-for="(tag, index) in selectedAttraction.tags" :key="index" class="tag">
+                                {{ tag }}
+                            </span>
+                        </div>
+                    </div>
+                    <!-- 门票列表 -->
+                    <div v-if="selectedAttraction?.tickets?.length" class="modal-tickets">
+                        <h3>门票列表</h3>
+                        <div class="tickets-list">
+                            <div v-for="(ticket, index) in selectedAttraction.tickets" :key="ticket.id || index" class="ticket-item">
+                                <div class="ticket-info">
+                                    <h4>{{ ticket.name }}</h4>
+                                    <p class="ticket-desc">{{ ticket.description }}</p>
+                                    <div class="ticket-rules" v-if="ticket.rules?.length">
+                                        <span v-for="(rule, rIndex) in ticket.rules" :key="rIndex" class="rule-tag">
+                                            {{ rule }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="ticket-price">
+                                    ¥{{ ticket.price }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-stats">
                         <div class="stat-item">
                             <span class="stat-label">收藏数</span>
@@ -92,40 +121,33 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAttractionList } from '@/api/attraction.js'
 import { useBookingStore } from '@/stores/bookingStore.js'
 
-// 响应式数据
-const attractions = ref([])
-const loading = ref(false)
-const error = ref('')
+// 定义 props
+const props = defineProps({
+    attractions: {
+        type: Array,
+        default: () => []
+    },
+    loading: {
+        type: Boolean,
+        default: false
+    },
+    error: {
+        type: String,
+        default: ''
+    }
+})
+
+// 定义 emits
+const emit = defineEmits(['retry'])
+
 const router = useRouter()
 const showModal = ref(false)
 const selectedAttraction = ref(null)
 const bookingStore = useBookingStore()
-
-// 获取景点数据
-const fetchAttractions = async () => {
-    loading.value = true
-    error.value = ''
-    
-    try {
-        const response = await getAttractionList()
-        attractions.value = response.data?.records || []
-    } catch (err) {
-        error.value = err.message || '获取数据失败'
-        console.error('获取景点数据失败:', err)
-    } finally {
-        loading.value = false
-    }
-}
-
-// 组件挂载时获取数据
-onMounted(() => {
-    fetchAttractions()
-})
 
 // 打开详情页
 const openDetail = (attraction) => {
@@ -142,7 +164,6 @@ const closeModal = () => {
 // 跳转到订单详情页
 const OrderDetails = (attraction) => {
     console.log('前往预订:', attraction)
-    // 使用 Pinia 存储景点数据
     bookingStore.bookAttraction(attraction)
     router.push('/predetermined')
     closeModal()
@@ -285,6 +306,7 @@ const OrderDetails = (attraction) => {
   max-height: 80vh;
   overflow-y: auto;
   animation: slideUp 0.3s ease-out;
+  position: relative;
 }
 
 @keyframes slideUp {
@@ -397,6 +419,94 @@ const OrderDetails = (attraction) => {
   color: #666;
   line-height: 1.6;
   font-size: 14px;
+}
+
+/* 标签列表样式 */
+.modal-tags {
+  margin-top: 10px;
+}
+
+.modal-tags h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 门票列表样式 */
+.modal-tickets {
+  margin-top: 10px;
+}
+
+.modal-tickets h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.ticket-info h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.ticket-desc {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
+.ticket-rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rule-tag {
+  background: #e8f4ff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  color: #1976d2;
+}
+
+.ticket-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e74c3c;
 }
 
 .modal-stats {

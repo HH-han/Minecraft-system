@@ -27,7 +27,6 @@
         </div>
         <div class="attraction-facilities">
           <span class="facility-label">配套设施：</span>
-          <span v-if="loadingFacilities" class="loading-text">加载中...</span>
           <span class="facility-tag" v-for="(facility, index) in displayFacilities" :key="index">{{ facility }}</span>
         </div>
         <div class="attraction-time">
@@ -39,31 +38,27 @@
 
     <div class="booking-form">
       <h3>门票预订</h3>
-      
-      <DatePicker 
+
+      <DatePicker
         :dateFields="dateFields"
         @dateChange="handleDateChange"
       />
 
-      <div v-if="loadingTickets" class="loading-container">
-        <span class="loading-text">加载门票中...</span>
-      </div>
-      <TicketSelector 
-        v-else
+      <TicketSelector
         :tickets="tickets"
         :initialQuantities="ticketQuantities"
         @quantityChange="handleQuantityChange"
       />
 
       <div v-if="hasSelectedTickets">
-        <BookingForm 
+        <BookingForm
           :totalPrice="totalPrice"
           :showSpecialRequest="false"
           @submit="submitBooking"
         >
           <template #additional-info>
             <div v-for="ticket in selectedTickets" :key="ticket.id">
-              <TouristInfoForm 
+              <TouristInfoForm
                 :ticketName="ticket.name"
                 :quantity="ticketQuantities[ticket.id]"
                 :initialTourists="tourists[ticket.id] || []"
@@ -89,7 +84,6 @@ import DatePicker from './DatePicker.vue'
 import TicketSelector from './TicketSelector.vue'
 import TouristInfoForm from './TouristInfoForm.vue'
 import BookingForm from './BookingForm.vue'
-import { getAttractionFacilities } from '@/api/attractionFacility'
 
 const props = defineProps({
   dateFields: {
@@ -98,7 +92,11 @@ const props = defineProps({
   },
   tags: {
     type: Array,
-    required: true
+    default: () => []
+  },
+  facilities: {
+    type: Array,
+    default: () => []
   },
   tickets: {
     type: Array,
@@ -107,22 +105,16 @@ const props = defineProps({
   attractionData: {
     type: Object,
     default: null
-  },
-  attractionId: {
-    type: [Number, null],
-    default: null
   }
 })
 
 const visitDate = ref('')
 const ticketQuantities = ref({})
 const tourists = ref({})
-const attractionFacilities = ref([])
-const loadingFacilities = ref(false)
-const loadingTickets = ref(false)
+
 const displayFacilities = computed(() => {
-  return attractionFacilities.value.length > 0 
-    ? attractionFacilities.value.map(f => f.facilityName || f)
+  return props.facilities && props.facilities.length > 0
+    ? props.facilities
     : ['停车场', '休息区', '卫生间', '观光车']
 })
 
@@ -147,22 +139,6 @@ const totalPrice = computed(() => {
     return total + (ticket.price * (ticketQuantities.value[ticket.id] || 0))
   }, 0)
 })
-
-const loadAttractionFacilities = async () => {
-  if (!props.attractionId) return
-  
-  loadingFacilities.value = true
-  try {
-    const response = await getAttractionFacilities(props.attractionId)
-    if (response.code === 200 && response.data) {
-      attractionFacilities.value = response.data
-    }
-  } catch (error) {
-    console.error('获取景点设施失败:', error)
-  } finally {
-    loadingFacilities.value = false
-  }
-}
 
 const handleDateChange = (dateData) => {
   if (dateData.visitDate) {
@@ -216,24 +192,8 @@ const submitBooking = (bookingData) => {
   alert('预订提交成功！')
 }
 
-let debounceTimer = null
-
-const debounceLoadFacilities = () => {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer)
-  }
-  debounceTimer = setTimeout(() => {
-    loadAttractionFacilities()
-  }, 300)
-}
-
 onMounted(() => {
   initTicketQuantities()
-  debounceLoadFacilities()
-})
-
-watch(() => props.attractionId, () => {
-  debounceLoadFacilities()
 })
 
 watch(() => props.tickets, () => {
@@ -715,29 +675,29 @@ watch(() => props.tickets, () => {
   .attraction-info {
     flex-direction: column;
   }
-  
+
   .attraction-details {
     padding: 20px;
   }
-  
+
   .booking-form {
     padding: 20px;
   }
-  
+
   .ticket-option {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .ticket-price {
     margin-top: 15px;
     align-self: flex-end;
   }
-  
+
   .form-row {
     flex-direction: column;
   }
-  
+
   .form-group.half {
     width: 100%;
   }
