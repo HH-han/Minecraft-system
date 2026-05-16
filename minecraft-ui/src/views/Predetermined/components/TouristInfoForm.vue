@@ -77,56 +77,69 @@ watch(() => props.initialTourists, (newTourists) => {
 
 <style scoped>
 .tourist-info-form {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
   margin-top: 25px;
   padding-top: 25px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .tourist-info-form h5 {
   margin-bottom: 20px;
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #1a1a1a;
 }
 
 .tourist-form {
-  background: rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.9);
   padding: 20px;
   border-radius: 12px;
   margin-bottom: 15px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .form-row {
+  box-sizing: border-box;
   display: flex;
   gap: 15px;
   margin-bottom: 15px;
 }
 
 .form-group {
+  box-sizing: border-box;
   margin-bottom: 20px;
 }
 
 .form-group.half {
+  box-sizing: border-box;
   flex: 1;
+  min-width: 0;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #3d3d3d;
 }
 
 .form-group input {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   padding: 12px 16px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   font-size: 14px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.8);
+  color: #333333;
   transition: all 0.3s ease;
 }
 
@@ -143,6 +156,7 @@ watch(() => props.initialTourists, (newTourists) => {
   
   .form-group.half {
     width: 100%;
+    max-width: 100%;
   }
 }
 </style>

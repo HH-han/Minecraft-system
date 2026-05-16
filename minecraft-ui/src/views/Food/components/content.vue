@@ -40,14 +40,9 @@
       <p>暂无美食数据</p>
     </div>
   </div>
-  
+
   <!-- 商品详情模态框 -->
-  <Select 
-    :visible="showSelectModal" 
-    :productId="selectedFoodId" 
-    :commodity="'0'" 
-    @close="closeSelectModal"
-  />
+  <Select :visible="showSelectModal" :productId="selectedFoodId" :commodity="'0'" @close="closeSelectModal" />
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -96,76 +91,7 @@ const closeSelectModal = () => {
 }
 </script>
 <style scoped>
-/* 美食卡片 */
-.card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
-}
-
-.card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
-  cursor: pointer;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.card-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.card-content {
-  padding: 20px;
-}
-
-.card-title {
-  color: #2c3e50;
-  margin-bottom: 10px;
-  font-size: 1.2em;
-}
-
-.card-desc {
-  color: #7f8c8d;
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 15px;
-}
-
-.card-stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  color: #e74c3c;
-  font-size: 14px;
-}
-
-.card-sales,
-.card-rating {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-price {
-  color: #e74c3c;
-  font-size: 1.2em;
-  font-weight: bold;
-}
+@import '@/css/cart/card.css';
 
 /* 分页 */
 .pagination {

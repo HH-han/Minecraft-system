@@ -9,6 +9,7 @@
       v-else
       :dateFields="dateFields" 
       :tags="tags"
+      :facilities="facilities"
       :tickets="tickets" 
       :attractionData="attractionData" 
       :attractionId="currentAttractionId" 
@@ -26,6 +27,7 @@ const bookingStore = useBookingStore()
 const attractionData = ref(null)
 const tickets = ref([])
 const tags = ref([])
+const facilities = ref([])
 const loading = ref(false)
 
 let loadTimer = null
@@ -64,9 +66,11 @@ const loadData = async () => {
       attractionData.value = response.data
       tickets.value = response.data.tickets || []
       tags.value = response.data.tags || []
+      facilities.value = response.data.facilities || []
     } else {
       tickets.value = []
       tags.value = []
+      facilities.value = []
     }
   } catch (error) {
     if (error.message && !error.message.includes('取消')) {
@@ -74,6 +78,7 @@ const loadData = async () => {
     }
     tickets.value = []
     tags.value = []
+    facilities.value = []
   } finally {
     loading.value = false
   }
