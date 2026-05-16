@@ -170,3 +170,44 @@ This generated password is for development use only. Your security configuration
 2026-05-16 21:49:34.244 [RMI TCP Connection(1)-10.195.133.149] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
 2026-05-16 21:51:12.686 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
 2026-05-16 21:51:12.693 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2026-05-16 21:51:17.605 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-05-16 21:51:17.638 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 2104 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)
+2026-05-16 21:51:17.639 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-05-16 21:51:17.639 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-05-16 21:51:18.637 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-05-16 21:51:18.639 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-05-16 21:51:18.678 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 30 ms. Found 0 Redis repository interfaces.
+2026-05-16 21:51:18.959 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-05-16 21:51:18.960 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
+2026-05-16 21:51:19.384 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-05-16 21:51:19.390 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-05-16 21:51:19.390 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-16 21:51:19.390 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-05-16 21:51:19.472 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-16 21:51:19.472 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1799 ms
+2026-05-16 21:51:19.621 [main] DEBUG c.m.handler.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-16 21:51:19.908 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-05-16 21:51:20.216 [main] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-05-16 21:51:21.475 [main] INFO  com.minecraft.utils.FileUtils - 使用目录: D:\Image
+2026-05-16 21:51:21.475 [main] INFO  com.minecraft.utils.FileUtils - 文件上传路径初始化: D:\Image
+2026-05-16 21:51:21.475 [main] INFO  com.minecraft.utils.FileUtils - 文件访问URL初始化: http://localhost:8080/upload/
+2026-05-16 21:51:22.002 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-05-16 21:51:22.111 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 0e18a5aa-5f17-4b4e-8a1a-1bf54b9a1ddc
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-05-16 21:51:22.193 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-05-16 21:51:22.290 [main] INFO  com.minecraft.config.WebConfig - 使用目录: D:\Image
+2026-05-16 21:51:22.796 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-05-16 21:51:22.832 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4b708c16, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2700f556, org.springframework.security.web.context.SecurityContextHolderFilter@8947a4b, org.springframework.security.web.header.HeaderWriterFilter@70c2a046, org.springframework.security.web.authentication.logout.LogoutFilter@4163f505, com.minecraft.handler.JwtAuthenticationFilter@6fa2a006, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@31d64d0f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7f514dfe, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6def1699, org.springframework.security.web.session.SessionManagementFilter@63bb52ea, org.springframework.security.web.access.ExceptionTranslationFilter@5713e35f, org.springframework.security.web.access.intercept.AuthorizationFilter@5f72aaed]
+2026-05-16 21:51:23.231 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-05-16 21:51:23.242 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-05-16 21:51:23.251 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 6.078 seconds (process running for 6.611)
+2026-05-16 21:51:23.390 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
+2026-05-16 21:51:23.845 [RMI TCP Connection(2)-10.195.133.149] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-16 21:51:23.845 [RMI TCP Connection(2)-10.195.133.149] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-16 21:51:23.846 [RMI TCP Connection(2)-10.195.133.149] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-05-16 22:00:03.245 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HotelController
+2026-05-16 22:00:39.090 [http-nio-8080-exec-7] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.AttractionController
