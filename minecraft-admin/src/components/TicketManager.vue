@@ -5,7 +5,7 @@
       <div v-for="(ticket, index) in localTickets" :key="ticket.id || index" class="ticket-item">
         <div class="ticket-header">
           <span>{{ title }} {{ index + 1 }}</span>
-          <button class="btn remove-ticket-btn" @click="removeTicket(index)">删除</button>
+          <button type="button" class="btn remove-ticket-btn" @click="removeTicket(index, ticket)">删除</button>
         </div>
         <div class="ticket-form">
           <input v-model="ticket.name" placeholder="名称" class="ticket-input" />
@@ -14,12 +14,15 @@
         </div>
       </div>
       <button type="button" class="btn add-ticket-btn" @click="addTicket">添加{{ title }}</button>
+      <button type="button" class="btn save-ticket-btn" @click="emitUpdate">保存{{ title }}</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { deleteAttractionTicket } from '@/api/attractionTicket';
 
 const props = defineProps({
   modelValue: {
@@ -72,13 +75,49 @@ const addTicket = () => {
     price: '',
     rules: []
   });
-  emitUpdate();
 };
 
-const removeTicket = (index) => {
-  if (localTickets.value.length > 1) {
+const removeTicket = async (index, ticket) => {
+  console.log('删除门票被点击');
+  console.log('Index:', index);
+  console.log('Ticket:', ticket);
+  console.log('当前门票列表:', localTickets.value);
+  
+  if (localTickets.value.length <= 1) {
+    ElMessage.warning('至少保留一个门票');
+    return;
+  }
+  
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除"${ticket.name || '该门票'}"吗？`,
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    );
+    
+    // 如果有 id 就调用删除 API
+    if (ticket.id !== null && ticket.id !== undefined && ticket.id !== '') {
+      console.log('调用删除 API, ID:', ticket.id);
+      await deleteAttractionTicket(ticket.id);
+      console.log('删除 API 调用成功');
+      ElMessage.success('删除成功');
+    }
+    
+    // 从本地数组中移除
     localTickets.value.splice(index, 1);
+    
+    // 通知父组件更新
     emitUpdate();
+    
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除失败:', error);
+      ElMessage.error('删除失败: ' + (error.response?.data?.message || error.message || '未知错误'));
+    }
   }
 };
 </script>
@@ -126,7 +165,7 @@ const removeTicket = (index) => {
   font-size: 14px;
 }
 
-.add-ticket-btn, .remove-ticket-btn {
+.add-ticket-btn, .remove-ticket-btn, .save-ticket-btn {
   padding: 6px 12px;
   font-size: 14px;
   border: none;
@@ -138,6 +177,7 @@ const removeTicket = (index) => {
   background-color: #1976d2;
   color: white;
   margin-top: 8px;
+  margin-right: 8px;
 }
 
 .add-ticket-btn:hover {
@@ -151,5 +191,15 @@ const removeTicket = (index) => {
 
 .remove-ticket-btn:hover {
   background-color: #e53935;
+}
+
+.save-ticket-btn {
+  background-color: #4caf50;
+  color: white;
+  margin-top: 8px;
+}
+
+.save-ticket-btn:hover {
+  background-color: #43a047;
 }
 </style>
