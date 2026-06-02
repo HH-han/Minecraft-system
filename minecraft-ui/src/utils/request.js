@@ -109,6 +109,16 @@ request.interceptors.response.use(
     // 统一错误提示
     const status = error.response?.status
     const msg = error.response?.data?.message || '网络异常'
+    const url = error.config?.url || ''
+    
+    // 对于 /user/info 请求的 401/403 错误，不显示提示也不跳转页面
+    const isUserInfoRequest = url.includes('/user/info')
+    const isAuthError = status === 401 || status === 403
+    
+    if (isUserInfoRequest && isAuthError) {
+      // 静默处理，让调用方自己处理
+      return Promise.reject(error)
+    }
     
     switch (status) {
       case 400:

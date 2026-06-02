@@ -1,459 +1,564 @@
 <template>
-  <div class="arc-tabs-container">
-    <!-- 弧形选项卡头部 -->
-    <div class="tabs-header">
-      <div class="tabs-wrapper">
-        <div 
-          v-for="(tab, index) in tabs" 
-          :key="tab.value"
-          class="tab-item"
-          :class="{
-            active: activeTab === tab.value,
-            'arc-left': index === 0,
-            'arc-right': index === tabs.length - 1
-          }"
-          @click="handleTabClick(tab.value)"
-        >
-          <div class="tab-inner">
-            <div class="tab-icon" v-if="tab.icon">
-              <el-icon><component :is="tab.icon" /></el-icon>
-            </div>
-            <span class="tab-label">{{ tab.label }}</span>
-            <div class="tab-badge" v-if="tab.badge">{{ tab.badge }}</div>
-          </div>
-          <!-- 弧形装饰 -->
-          <div class="arc-decoration top"></div>
-          <div class="arc-decoration bottom"></div>
+  <div class="test-project-005">
+    <!-- 复杂的加载过渡层 -->
+    <div class="loader-overlay" :class="{ 'loader-hidden': !isLoading }">
+      <div class="loader-content">
+        <div class="loader-ring"></div>
+        <div class="loader-ring"></div>
+        <div class="loader-ring"></div>
+        <div class="loader-text" data-text="LOADING">LOADING</div>
+        <div class="loader-particles">
+          <span v-for="n in 20" :key="n" class="particle" :style="getParticleStyle(n)"></span>
         </div>
       </div>
-      <!-- 活动指示器 -->
-      <div class="active-indicator" :style="indicatorStyle"></div>
     </div>
 
-    <!-- 选项卡内容区域 -->
-    <div class="tabs-content">
-      <transition 
-        name="fade-slide" 
-        mode="out-in"
-      >
-        <div :key="activeTab" class="content-pane">
-          <slot :name="activeTab" :tab="getCurrentTab">
-            <div class="empty-content">暂无内容</div>
-          </slot>
+    <!-- 主内容区域 -->
+    <div class="main-content" :class="{ 'content-visible': !isLoading }">
+      <div class="background-layer">
+        <div class="gradient-bg"></div>
+        <div class="noise"></div>
+      </div>
+      
+      <div class="hero-section">
+        <h1 class="glitch-title" data-text="博览旅行">博览旅行</h1>
+        <div class="subtitle">
+          <span class="line"></span>
+          <span class="text">沉浸式视觉体验</span>
+          <span class="line"></span>
         </div>
-      </transition>
+        <div class="scroll-indicator">
+          <span>探索更多</span>
+          <div class="mouse">
+            <div class="wheel"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="floating-elements">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
-const props = defineProps({
-  // 选项卡数据
-  tabs: {
-    type: Array,
-    required: true,
-    default: () => []
-    // 格式: [{ label: '选项卡1', value: 'tab1', icon: 'Star', badge: 0 }]
-  },
-  // 默认激活的选项卡
-  modelValue: {
-    type: [String, Number],
-    default: ''
-  },
-  // 是否自动滚动到激活项
-  autoScroll: {
-    type: Boolean,
-    default: true
-  },
-  // 弧形样式配置
-  arcConfig: {
-    type: Object,
-    default: () => ({
-      radius: '20px',      // 弧形半径
-      depth: '12px',       // 弧形深度
-      color: '#667eea'     // 弧形颜色
-    })
-  }
-})
+const isLoading = ref(true)
 
-const emit = defineEmits(['update:modelValue', 'change'])
-
-// 当前激活的选项卡
-const activeTab = ref(props.modelValue || (props.tabs[0]?.value || ''))
-
-// 获取当前选项卡对象
-const getCurrentTab = computed(() => {
-  return props.tabs.find(tab => tab.value === activeTab.value)
-})
-
-// 计算指示器位置
-const indicatorStyle = computed(() => {
-  const activeIndex = props.tabs.findIndex(tab => tab.value === activeTab.value)
-  if (activeIndex === -1) return {}
-  
-  // 获取对应选项卡DOM元素
-  const tabElements = document.querySelectorAll('.tab-item')
-  if (!tabElements.length) return {}
-  
-  const activeElement = tabElements[activeIndex]
-  if (!activeElement) return {}
-  
-  const rect = activeElement.getBoundingClientRect()
-  const containerRect = document.querySelector('.tabs-wrapper')?.getBoundingClientRect()
-  
-  if (!containerRect) return {}
-  
+// 随机粒子样式
+const getParticleStyle = (index) => {
+  const duration = 1 + Math.random() * 2
+  const delay = index * 0.1
+  const x = Math.random() * 100
+  const y = Math.random() * 100
   return {
-    left: `${rect.left - containerRect.left}px`,
-    width: `${rect.width}px`,
-    opacity: 1
+    '--duration': `${duration}s`,
+    '--delay': `${delay}s`,
+    '--x': `${x}%`,
+    '--y': `${y}%`,
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    animationDelay: `${delay}s`,
+    animationDuration: `${duration}s`
   }
-})
-
-// 处理选项卡点击
-const handleTabClick = (tabValue) => {
-  if (activeTab.value === tabValue) return
-  
-  activeTab.value = tabValue
-  emit('update:modelValue', tabValue)
-  emit('change', tabValue)
-  
-  // 自动滚动到可视区域
-  if (props.autoScroll) {
-    scrollToActiveTab()
-  }
-}
-
-// 滚动到激活的选项卡
-const scrollToActiveTab = () => {
-  const activeIndex = props.tabs.findIndex(tab => tab.value === activeTab.value)
-  if (activeIndex === -1) return
-  
-  const tabElements = document.querySelectorAll('.tab-item')
-  const activeElement = tabElements[activeIndex]
-  const wrapper = document.querySelector('.tabs-wrapper')
-  
-  if (activeElement && wrapper) {
-    const offsetLeft = activeElement.offsetLeft
-    const offsetWidth = activeElement.offsetWidth
-    const wrapperWidth = wrapper.clientWidth
-    
-    // 计算需要滚动的距离，使激活项居中
-    const scrollLeft = offsetLeft - (wrapperWidth / 2) + (offsetWidth / 2)
-    wrapper.scrollTo({
-      left: scrollLeft,
-      behavior: 'smooth'
-    })
-  }
-}
-
-// 监听tabs变化，重新计算指示器
-watch(() => props.tabs, () => {
-  setTimeout(() => {
-    indicatorStyle.value
-  }, 100)
-}, { deep: true })
-
-// 监听modelValue外部变化
-watch(() => props.modelValue, (newVal) => {
-  if (newVal && newVal !== activeTab.value) {
-    activeTab.value = newVal
-    setTimeout(() => {
-      scrollToActiveTab()
-    }, 100)
-  }
-})
-
-// 监听窗口大小变化，重新计算指示器
-const handleResize = () => {
-  indicatorStyle.value
 }
 
 onMounted(() => {
+  // 模拟加载过程
   setTimeout(() => {
-    scrollToActiveTab()
-  }, 100)
-  window.addEventListener('resize', handleResize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-})
-
-// 暴露方法供父组件调用
-defineExpose({
-  setActiveTab: (tabValue) => handleTabClick(tabValue),
-  getActiveTab: () => activeTab.value
+    isLoading.value = false
+  }, 2500)
 })
 </script>
 
 <style scoped>
-.arc-tabs-container {
+.test-project-005 {
   width: 100%;
-  background: transparent;
-}
-
-/* 选项卡头部容器 */
-.tabs-header {
+  height: 100vh;
+  overflow: hidden;
   position: relative;
-  margin-bottom: 24px;
-  padding: 8px 0;
+  font-family: 'Arial', 'Microsoft YaHei', sans-serif;
 }
 
-/* 选项卡滚动容器 */
-.tabs-wrapper {
+/* ==================== 加载动画层 ==================== */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  z-index: 1000;
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.8s cubic-bezier(0.77, 0, 0.18, 1), visibility 0.8s;
+  opacity: 1;
+  visibility: visible;
+}
+
+.loader-overlay.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader-content {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 环形动画 */
+.loader-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  animation: ringRotate 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.loader-ring:nth-child(1) {
+  border-top-color: #ff006e;
+  border-right-color: #ff006e;
+  animation-delay: 0s;
+}
+
+.loader-ring:nth-child(2) {
+  width: 80%;
+  height: 80%;
+  border-bottom-color: #00f5d4;
+  border-left-color: #00f5d4;
+  animation-delay: 0.3s;
+  animation-direction: reverse;
+}
+
+.loader-ring:nth-child(3) {
+  width: 55%;
+  height: 55%;
+  border-top-color: #ffbe0b;
+  border-right-color: #ffbe0b;
+  border-bottom-color: #ffbe0b;
+  animation-delay: 0.6s;
+  animation-duration: 1.5s;
+}
+
+/* 加载文字 */
+.loader-text {
+  position: relative;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  animation: textPulse 1.5s ease-in-out infinite;
+}
+
+.loader-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: textReveal 1.5s ease-in-out infinite;
+}
+
+/* 粒子系统 */
+.loader-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, #fff, #ff006e);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFloat var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+/* ==================== 主内容区域 ==================== */
+.main-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  opacity: 0;
+  transform: scale(1.1);
+  transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1), transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.content-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 背景层 */
+.background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.gradient-bg {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, #0f0f1f 0%, #000000 100%);
+  position: relative;
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 0, 110, 0.03) 0px,
+    rgba(255, 0, 110, 0.03) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+.noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08' /%3E%3C/svg%3E");
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* 英雄区域 */
+.hero-section {
   position: relative;
   z-index: 2;
-  padding: 4px 0 12px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px);
 }
 
-.tabs-wrapper::-webkit-scrollbar {
-  height: 3px;
-}
-
-.tabs-wrapper::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-}
-
-.tabs-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
-  border-radius: 10px;
-}
-
-.tabs-wrapper::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.6);
-}
-
-/* 单个选项卡 */
-.tab-item {
+/* 故障风格标题 */
+.glitch-title {
+  font-size: 8vw;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffffff 0%, #ff006e 50%, #00f5d4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   position: relative;
-  flex-shrink: 0;
-  padding: 12px 28px;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
-  border-radius: 40px 40px 30px 30px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  margin: 0;
+  padding: 0;
+  animation: titleFloat 3s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.glitch-title::before,
+.glitch-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #ff006e 50%, #00f5d4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.glitch-title::before {
+  animation: glitchShift 0.3s infinite;
+  left: 2px;
+  text-shadow: -2px 0 #ff006e;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+}
+
+.glitch-title::after {
+  animation: glitchShift 0.3s infinite reverse;
+  left: -2px;
+  text-shadow: 2px 0 #00f5d4;
+  clip-path: polygon(0 80%, 100% 20%, 100% 100%, 0 100%);
+}
+
+/* 副标题 */
+.subtitle {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 0.5s forwards;
+}
+
+.subtitle .line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ff006e, #00f5d4, transparent);
+}
+
+.subtitle .text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+/* 滚动指示器 */
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 1s forwards;
+}
+
+.scroll-indicator span {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.mouse {
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  position: relative;
+}
+
+.wheel {
+  width: 3px;
+  height: 8px;
+  background: #ff006e;
+  border-radius: 2px;
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: wheelScroll 1.5s ease-in-out infinite;
+}
+
+/* 浮动装饰元素 */
+.floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
   overflow: hidden;
 }
 
-/* 弧形左边框样式 */
-.tab-item.arc-left {
-  border-radius: 40px 30px 30px 40px;
-}
-
-/* 弧形右边框样式 */
-.tab-item.arc-right {
-  border-radius: 30px 40px 40px 30px;
-}
-
-/* 激活状态 */
-.tab-item.active {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
-  border-color: rgba(102, 126, 234, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px -8px rgba(102, 126, 234, 0.3);
-}
-
-/* 弧形装饰 - 顶部 */
-.arc-decoration.top {
+.floating-shape {
   position: absolute;
-  top: -8px;
-  left: 0;
-  right: 0;
-  height: 12px;
-  background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.15;
+  animation: floatShape 8s ease-in-out infinite;
 }
 
-/* 弧形装饰 - 底部 */
-.arc-decoration.bottom {
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  right: 0;
-  height: 12px;
-  background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.4) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-  transform: rotate(180deg);
+.shape-1 {
+  width: 300px;
+  height: 300px;
+  background: #ff006e;
+  top: -100px;
+  left: -100px;
+  animation-delay: 0s;
 }
 
-.tab-item.active .arc-decoration.top,
-.tab-item.active .arc-decoration.bottom {
-  opacity: 0.6;
+.shape-2 {
+  width: 400px;
+  height: 400px;
+  background: #00f5d4;
+  bottom: -150px;
+  right: -150px;
+  animation-delay: 2s;
+  animation-duration: 12s;
 }
 
-/* 选项卡内部内容 */
-.tab-inner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-  z-index: 2;
+.shape-3 {
+  width: 250px;
+  height: 250px;
+  background: #ffbe0b;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 4s;
+  animation-duration: 10s;
+  opacity: 0.1;
 }
 
-.tab-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #667eea;
-  transition: transform 0.2s;
+/* ==================== 动画定义 ==================== */
+@keyframes ringRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.tab-item.active .tab-icon {
-  transform: scale(1.05);
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
-.tab-label {
-  font-size: 15px;
-  font-weight: 500;
-  color: #334155;
-  white-space: nowrap;
-  transition: color 0.2s;
+@keyframes textReveal {
+  0%, 100% {
+    clip-path: inset(0 0 0 0);
+  }
+  50% {
+    clip-path: inset(0 0 0 50%);
+  }
 }
 
-.tab-item.active .tab-label {
-  color: #667eea;
-  font-weight: 600;
+@keyframes particleFloat {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(-10px + 20px * var(--random)), calc(-10px + 20px * var(--random))) scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--x) * 0.5), calc(var(--y) * 0.5)) scale(0);
+  }
 }
 
-.tab-badge {
-  background: linear-gradient(135deg, #f56565, #ed8936);
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 20px;
-  margin-left: 4px;
-  min-width: 20px;
-  text-align: center;
+@keyframes titleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-/* 活动指示器 */
-.active-indicator {
-  position: absolute;
-  bottom: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  border-radius: 3px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
-  z-index: 3;
+@keyframes glitchShift {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
 }
 
-.active-indicator[style*="opacity: 1"] {
-  opacity: 1;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* 内容区域 */
-.tabs-content {
-  min-height: 200px;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(12px);
-  border-radius: 28px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s;
+@keyframes wheelScroll {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(15px);
+  }
 }
 
-.content-pane {
-  width: 100%;
+@keyframes floatShape {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
 }
 
-/* 过渡动画 */
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-.empty-content {
-  text-align: center;
-  padding: 40px;
-  color: #94a3b8;
-}
-
-/* 悬浮效果 */
-.tab-item:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.8);
-  transform: translateY(-1px);
-  border-color: rgba(102, 126, 234, 0.2);
-}
-
-.tab-item:hover:not(.active) .tab-label {
-  color: #667eea;
-}
-
-/* 暗色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .tab-item {
-    background: rgba(30, 41, 59, 0.6);
-    border-color: rgba(255, 255, 255, 0.1);
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .glitch-title {
+    font-size: 12vw;
   }
   
-  .tab-label {
-    color: #cbd5e1;
+  .subtitle .line {
+    width: 30px;
   }
   
-  .tab-item.active {
-    background: rgba(102, 126, 234, 0.2);
+  .subtitle .text {
+    font-size: 10px;
   }
   
-  .tab-item.active .tab-label {
-    color: #a5b4fc;
+  .floating-shape {
+    filter: blur(40px);
   }
   
-  .tabs-content {
-    background: rgba(30, 41, 59, 0.4);
-    border-color: rgba(255, 255, 255, 0.1);
+  .shape-1 {
+    width: 200px;
+    height: 200px;
   }
   
-  .empty-content {
-    color: #64748b;
-  }
-}
-
-/* 响应式 */
-@media (max-width: 640px) {
-  .tab-item {
-    padding: 8px 20px;
-  }
-  
-  .tab-label {
-    font-size: 13px;
-  }
-  
-  .tab-icon {
-    font-size: 16px;
-  }
-  
-  .tabs-content {
-    padding: 16px;
+  .shape-2 {
+    width: 250px;
+    height: 250px;
   }
 }
 </style>

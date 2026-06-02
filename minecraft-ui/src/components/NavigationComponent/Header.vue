@@ -443,7 +443,7 @@ const fetchUserInfo = async () => {
     //检查是否有token
     const token = localStorage.getItem('token');
     if (!token || token === 'anonymousUser') {
-      ElMessage.warning('登录后享受完整服务');
+      isLoggedIn.value = false;
       return;
     }
     // 先从本地存储获取，优化用户体验
@@ -452,6 +452,7 @@ const fetchUserInfo = async () => {
       try {
         const localUser = JSON.parse(localUserStr);
         userInfo.value = { ...localUser };
+        isLoggedIn.value = true;
       } catch (e) {
         console.error('解析本地用户数据失败:', e);
       }
@@ -464,17 +465,26 @@ const fetchUserInfo = async () => {
       userInfo.value = response.data;
       localStorage.setItem('user', JSON.stringify(response.data));
       isLoggedIn.value = true;
-    } else if (response.code === 401) {
-      ElMessage.warning('用户未登录');
-      isLoggedIn.value = false;
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
     } else {
-      ElMessage.error(response.message || '获取用户信息失败');
+      console.warn('获取用户信息返回非200状态:', response);
     }
   } catch (error) {
-    ElMessage.error('获取用户信息失败，请检查网络');
     console.error('获取用户信息失败:', error);
+    // 检查是否是 401 或 403 错误
+    const status = error.response?.status;
+    if (status === 401 || status === 403) {
+      // 清除无效的登录状态
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('rememberedUsername');
+      localStorage.removeItem('tokenTimestamp');
+      isLoggedIn.value = false;
+      userInfo.value = {
+        username: '',
+        permissions: '',
+        avatar: ''
+      };
+    }
   } finally {
     loading.value = false;
   }
