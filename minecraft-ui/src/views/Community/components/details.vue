@@ -19,103 +19,170 @@
 
     <!-- 帖子详情 -->
     <div v-else-if="post" class="detail-content">
-      <div class="post-header">
-        <div class="post-author">
-          <div class="author-avatar">{{ post.authorName?.charAt(0) || '?' }}</div>
-          <div class="author-info">
-            <h3>{{ post.authorName || '未知用户' }}</h3>
-            <p class="post-time">{{ formatDate(post.createTime) }}</p>
+      <div class="main-content">
+        <!-- 帖子图片 -->
+        <div class="post-image-container">
+          <img v-if="post.image" :src="post.image" alt="帖子图片" class="post-image">
+          <div v-else class="post-image-placeholder">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
           </div>
         </div>
-      </div>
 
-      <div class="post-content">
-        <h1 class="post-title">{{ post.title }}</h1>
-        <div class="post-text">{{ post.content }}</div>
-      </div>
-
-      <div class="post-footer">
-        <div class="post-stats">
-          <span class="stat-item">
-            <svg t="1771774195840" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-              p-id="5808" width="256" height="256">
-              <path d="M511.4368 512m-432.3328 0a432.3328 432.3328 0 1 0 864.6656 0 432.3328 432.3328 0 1 0-864.6656 0Z"
-                fill="#FF6161" p-id="5809"></path>
-              <path
-                d="M286.464 417.8432c-85.0432 0-160.4096 41.3696-207.104 105.0624 4.5568 182.7328 122.368 337.3056 285.952 396.032 103.2192-33.28 177.92-130.048 177.92-244.3776 0-141.7728-114.944-256.7168-256.768-256.7168z"
-                fill="#FF7D7D" p-id="5810"></path>
-              <path
-                d="M342.6304 721.6128h6.7584V427.9808h-6.7584c-36.096 0-65.3824 29.2864-65.3824 65.3824v162.9184c0.0512 36.0448 29.2864 65.3312 65.3824 65.3312z"
-                fill="#FFCAC7" p-id="5811"></path>
-              <path
-                d="M710.656 390.9632h-136.8064c10.6496-34.9696 24.9344-106.8032-25.088-137.1648-23.5008-14.1824-78.8992-24.1664-77.568 37.9904 1.28 62.1568-2.2528 130.4064-81.152 136.192v293.632h280.2688c31.744 0 59.136-22.3232 65.4848-53.4528l40.2944-196.9152c8.5504-41.472-23.0912-80.2816-65.4336-80.2816z"
-                fill="#FFFFFF" p-id="5812"></path>
+        <!-- 互动按钮区域 -->
+        <div class="post-actions">
+          <button class="action-btn" @click="sendGift">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <path d="M12 17.25l-6 3.75 1.5-7.5 6 3.75 6-3.75 1.5 7.5-6-3.75z"></path>
             </svg>
-            {{ post.likeCount || 0 }}</span>
-          <span class="stat-item">
-            <svg t="1771774227524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-              p-id="7673" width="256" height="256">
-              <path
-                d="M170.666667 136.533333m136.533333 0l512 0q136.533333 0 136.533333 136.533334l0 307.2q0 136.533333-136.533333 136.533333l-512 0q-136.533333 0-136.533333-136.533333l0-307.2q0-136.533333 136.533333-136.533334Z"
-                fill="#FC7300" p-id="7674"></path>
-              <path
-                d="M170.666667 170.666667m136.533333 0l512 0q136.533333 0 136.533333 136.533333l0 307.2q0 136.533333-136.533333 136.533333l-512 0q-136.533333 0-136.533333-136.533333l0-307.2q0-136.533333 136.533333-136.533333Z"
-                fill="#FA8511" p-id="7675"></path>
-              <path
-                d="M170.666667 273.066667h512a136.533333 136.533333 0 0 1 136.533333 136.533333v307.2a136.533333 136.533333 0 0 1-136.533333 136.533333h-188.757334l-67.242666 67.4816L359.1168 853.333333H170.666667a136.533333 136.533333 0 0 1-136.533334-136.533333v-307.2a136.533333 136.533333 0 0 1 136.533334-136.533333z"
-                fill="#FBC476" p-id="7676"></path>
-              <path
-                d="M170.666667 307.2h512a136.533333 136.533333 0 0 1 136.533333 136.533333v307.2a136.533333 136.533333 0 0 1-136.533333 136.533334h-188.757334l-67.242666 67.4816L359.1168 887.466667H170.666667a136.533333 136.533333 0 0 1-136.533334-136.533334v-307.2a136.533333 136.533333 0 0 1 136.533334-136.533333z"
-                fill="#FAB85F" p-id="7677"></path>
-              <path
-                d="M204.8 477.866667m34.133333 0l375.466667 0q34.133333 0 34.133333 34.133333l0 0q0 34.133333-34.133333 34.133333l-375.466667 0q-34.133333 0-34.133333-34.133333l0 0q0-34.133333 34.133333-34.133333Z"
-                fill="#FFFFFF" p-id="7678"></path>
-              <path
-                d="M204.8 648.533333m34.133333 0l273.066667 0q34.133333 0 34.133333 34.133334l0 0q0 34.133333-34.133333 34.133333l-273.066667 0q-34.133333 0-34.133333-34.133333l0 0q0-34.133333 34.133333-34.133334Z"
-                fill="#FFFFFF" p-id="7679"></path>
+            <span class="action-text">礼物</span>
+          </button>
+          <button class="action-btn" @click="focusComment">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
-            {{ post.commentCount || 0 }}</span>
-          <span class="stat-item">👁
-            <svg t="1771774293176" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-              p-id="14939" width="256" height="256">
-              <path
-                d="M819.2 563.2c-113.1 0-204.8 91.7-204.8 204.8 0 113.1 91.7 204.8 204.8 204.8 24.2 0 47-4.9 68.6-12.6l48.8 48.8c20 20 52.4 20 72.4 0 20-20 20-52.4 0-72.4l-35.4-35.4c31-35.9 50.4-82.1 50.4-133.2 0-113.1-91.7-204.8-204.8-204.8z"
-                fill="#00A2FF" p-id="14940"></path>
-              <path
-                d="M921.6 0H102.4C46.1 0 0 46.1 0 102.4v819.2C0 977.9 46.1 1024 102.4 1024h547.1C566.7 969 512 874.9 512 768c0-169.7 137.5-307.2 307.2-307.2 78.8 0 150.4 29.9 204.8 78.7V102.4C1024 46.1 977.9 0 921.6 0z m-512 716.8H204.8c-28.2 0-51.2-23-51.2-51.2 0-28.2 23-51.2 51.2-51.2h204.8c28.2 0 51.2 23 51.2 51.2 0 28.2-23 51.2-51.2 51.2zM512 512H204.8c-28.2 0-51.2-23-51.2-51.2 0-28.2 23-51.2 51.2-51.2H512c28.2 0 51.2 23 51.2 51.2 0 28.2-23 51.2-51.2 51.2z m307.2-204.8H204.8c-28.2 0-51.2-23-51.2-51.2s23-51.2 51.2-51.2h614.4c28.2 0 51.2 23 51.2 51.2s-23 51.2-51.2 51.2z"
-                fill="#00A2FF" p-id="14941"></path>
+            <span class="action-text">{{ post.commentCount || 0 }}</span>
+          </button>
+          <button class="action-btn like-btn" :class="{ liked: isLiked }" @click="toggleLike">
+            <svg class="action-icon" viewBox="0 0 24 24" :fill="isLiked ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="1.5">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
-            {{ post.viewCount || 0 }}</span>
-        </div>
-        <div class="post-tags">
-          <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
-        </div>
-      </div>
-
-      <!-- 评论区 -->
-      <div class="comments-section">
-        <h3>评论 ({{ post.commentCount || 0 }})</h3>
-        <div class="comment-form">
-          <textarea v-model="commentContent" placeholder="写下你的评论..." rows="3"></textarea>
-          <button class="submit-comment-btn" @click="submitComment" :disabled="!commentContent.trim()">
-            发表评论
+            <span class="action-text">{{ likeCount }}</span>
+          </button>
+          <button class="action-btn" @click="sharePost">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span class="action-text">分享</span>
+          </button>
+          <button class="action-btn more-btn">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+              <circle cx="5" cy="12" r="1"></circle>
+            </svg>
           </button>
         </div>
 
-        <div class="comments-list">
-          <div v-for="comment in comments" :key="comment.id" class="comment-item">
-            <div class="comment-author">
-              <div class="author-avatar">{{ comment.authorName?.charAt(0) || '?' }}</div>
-              <div class="author-info">
-                <h4>{{ comment.authorName || '未知用户' }}</h4>
-                <p class="comment-time">{{ formatDate(comment.createTime) }}</p>
-              </div>
+        <!-- 帖子标题和内容 -->
+        <div class="post-content">
+          <h1 class="post-title">{{ post.title }}</h1>
+          <p class="post-text">{{ post.content }}</p>
+        </div>
+
+        <!-- 帖子标签 -->
+        <div class="post-tags">
+          <span v-for="tag in post.tags" :key="tag" class="tag">#{{ tag }}</span>
+        </div>
+
+        <!-- 评论区 -->
+        <div class="comments-section">
+          <div class="comments-header">
+            <h3>评论 ({{ post.commentCount || 0 }})</h3>
+            <div class="sort-buttons">
+              <button 
+                class="sort-btn" 
+                :class="{ active: sortType === 'latest' }" 
+                @click="sortType = 'latest'"
+              >最新</button>
+              <button 
+                class="sort-btn" 
+                :class="{ active: sortType === 'hot' }" 
+                @click="sortType = 'hot'"
+              >最热</button>
             </div>
-            <div class="comment-content">{{ comment.content }}</div>
           </div>
 
-          <div v-if="comments.length === 0" class="no-comments">
-            <p>暂无评论，快来抢沙发吧！</p>
+          <div class="comment-form">
+            <div class="comment-input-wrapper">
+              <input 
+                v-model="commentContent" 
+                type="text" 
+                placeholder="写下你的评论..." 
+                class="comment-input"
+                @keyup.enter="submitComment"
+              >
+              <button class="submit-comment-btn" @click="submitComment" :disabled="!commentContent.trim()">
+                发布
+              </button>
+            </div>
+          </div>
+
+          <div class="comments-list">
+            <div v-for="comment in comments" :key="comment.id" class="comment-item">
+              <div class="comment-author">
+                <div class="author-avatar">{{ comment.authorName?.charAt(0) || '?' }}</div>
+                <div class="author-info">
+                  <div class="author-name-row">
+                    <h4>{{ comment.authorName || '未知用户' }}</h4>
+                    <span v-if="comment.isVip" class="vip-badge">✨</span>
+                  </div>
+                  <p class="comment-time">{{ formatDate(comment.createTime) }}</p>
+                </div>
+              </div>
+              <div class="comment-content">{{ comment.content }}</div>
+              <div class="comment-actions">
+                <button class="comment-action-btn" @click="likeComment(comment)">
+                  <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                  <span>{{ comment.likeCount || 0 }}</span>
+                </button>
+                <button class="comment-action-btn reply-btn" @click="replyComment(comment)">
+                  <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"></path>
+                  </svg>
+                  <span>回复</span>
+                </button>
+              </div>
+            </div>
+
+            <div v-if="comments.length === 0" class="no-comments">
+              <p>暂无评论，快来抢沙发吧！</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧作者信息卡片 -->
+      <div class="sidebar">
+        <div class="author-card">
+          <div class="author-header">
+            <div class="author-avatar-large">{{ post.authorName?.charAt(0) || '?' }}</div>
+            <div class="author-basic">
+              <h3>{{ post.authorName || '未知用户' }}</h3>
+              <button class="follow-btn" @click="toggleFollow">
+                {{ isFollowing ? '已关注' : '+ 关注' }}
+              </button>
+            </div>
+          </div>
+          <div class="author-stats">
+            <div class="stat-item">
+              <span class="stat-value">{{ post.followerCount || 0 }}</span>
+              <span class="stat-label">粉丝</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-value">{{ post.postCount || 0 }}</span>
+              <span class="stat-label">作品</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="stat-value">{{ post.likeCount || 0 }}</span>
+              <span class="stat-label">获赞</span>
+            </div>
+          </div>
+          <div class="author-desc">
+            {{ post.authorDesc || '暂无简介' }}
+          </div>
+          <div class="author-tags">
+            <span v-for="tag in authorTags" :key="tag" class="author-tag">{{ tag }}</span>
           </div>
         </div>
       </div>
@@ -132,24 +199,24 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import {
-  getPostDetail
-} from '@/api/community';
+import { getPostDetail } from '@/api/community';
 
 const route = useRoute();
 const router = useRouter();
 
-// 状态管理
 const post = ref(null);
 const comments = ref([]);
 const loading = ref(false);
 const error = ref(null);
 const commentContent = ref('');
+const sortType = ref('latest');
+const isLiked = ref(false);
+const likeCount = ref(0);
+const isFollowing = ref(false);
+const authorTags = ref([]);
 
-// 获取帖子ID
 const postId = route.params.id;
 
-// 获取帖子详情
 const fetchPostDetail = async () => {
   if (!postId) return;
 
@@ -161,6 +228,31 @@ const fetchPostDetail = async () => {
 
     if (response.code === 200 && response.data) {
       post.value = response.data;
+      likeCount.value = response.data.likeCount || 0;
+      authorTags.value = response.data.authorTags || [];
+      
+      if (response.data.comments) {
+        comments.value = response.data.comments;
+      } else {
+        comments.value = [
+          {
+            id: 1,
+            authorName: '测试用户',
+            content: '太棒了一句话：好酷好帅的帖子',
+            createTime: '2025-06-28 22:44:56',
+            likeCount: 0,
+            isVip: true
+          },
+          {
+            id: 2,
+            authorName: '另一个用户',
+            content: '这个名字很酷',
+            createTime: '2025-06-28 18:45:02',
+            likeCount: 2,
+            isVip: false
+          }
+        ];
+      }
     } else {
       error.value = '获取帖子详情失败';
     }
@@ -172,23 +264,62 @@ const fetchPostDetail = async () => {
   }
 };
 
-// 提交评论
 const submitComment = async () => {
   if (!commentContent.value.trim()) return;
-
-  // 这里可以调用评论接口，暂时模拟
+  
   console.log('提交评论:', commentContent.value);
+  
+  const newComment = {
+    id: Date.now(),
+    authorName: '当前用户',
+    content: commentContent.value,
+    createTime: new Date().toISOString(),
+    likeCount: 0,
+    isVip: false
+  };
+  
+  if (sortType.value === 'latest') {
+    comments.value.unshift(newComment);
+  } else {
+    comments.value.push(newComment);
+  }
+  
   commentContent.value = '';
-  // 模拟评论成功
-  alert('评论功能暂未实现');
 };
 
-// 返回列表
+const toggleLike = () => {
+  isLiked.value = !isLiked.value;
+  likeCount.value += isLiked.value ? 1 : -1;
+};
+
+const likeComment = (comment) => {
+  comment.likeCount = (comment.likeCount || 0) + 1;
+};
+
+const replyComment = (comment) => {
+  commentContent.value = `@${comment.authorName} `;
+};
+
+const toggleFollow = () => {
+  isFollowing.value = !isFollowing.value;
+};
+
+const sendGift = () => {
+  alert('礼物功能暂未实现');
+};
+
+const focusComment = () => {
+  document.querySelector('.comment-input')?.focus();
+};
+
+const sharePost = () => {
+  alert('分享功能暂未实现');
+};
+
 const goBack = () => {
   router.push('/community');
 };
 
-// 格式化日期
 const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -201,7 +332,6 @@ const formatDate = (dateString) => {
   });
 };
 
-// 初始化加载
 onMounted(() => {
   fetchPostDetail();
 });
@@ -209,228 +339,269 @@ onMounted(() => {
 
 <style scoped>
 .post-detail {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
 .detail-header {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .back-btn {
-  padding: 10px 20px;
-  background-color: #f0f0f0;
+  padding: 8px 16px;
+  background-color: #f5f5f5;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
+  color: #333;
+  transition: all 0.3s;
 }
 
 .back-btn:hover {
-  background-color: #e0e0e0;
+  background-color: #e8e8e8;
 }
 
-/* 加载状态 */
-.loading-state {
+.loading-state, .error-state, .not-found {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 100px 0;
+  text-align: center;
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  border: 3px solid #f0f0f0;
+  border-top: 3px solid #00A2FF;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* 错误状态 */
-.error-state {
-  text-align: center;
-  padding: 60px 0;
-  color: #e74c3c;
+.error-state p {
+  color: #ff4d4f;
+  margin: 0 0 15px 0;
 }
 
 .retry-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #3498db;
+  padding: 10px 24px;
+  background-color: #00A2FF;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
 }
 
-/* 帖子详情 */
+.not-found p {
+  color: #999;
+  margin: 0 0 15px 0;
+}
+
 .detail-content {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-}
-
-.post-header {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.post-author {
   display: flex;
-  align-items: center;
+  gap: 30px;
 }
 
-.author-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #3498db;
-  color: white;
+.main-content {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.post-image-container {
+  width: 100%;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-image-placeholder {
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 18px;
-  margin-right: 15px;
 }
 
-.author-info h3 {
-  margin: 0 0 6px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+.placeholder-icon {
+  width: 64px;
+  height: 64px;
+  color: #ccc;
 }
 
-.post-time {
-  margin: 0;
-  font-size: 14px;
-  color: #999;
+.post-actions {
+  display: flex;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s;
+}
+
+.action-btn:hover {
+  color: #00A2FF;
+}
+
+.action-btn.liked {
+  color: #FF6161;
+}
+
+.action-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.action-text {
+  font-size: 12px;
+}
+
+.more-btn {
+  margin-left: auto;
 }
 
 .post-content {
-  margin-bottom: 30px;
+  padding: 20px;
 }
 
 .post-title {
-  margin: 0 0 20px 0;
-  font-size: 24px;
+  margin: 0 0 15px 0;
+  font-size: 20px;
   font-weight: 600;
-  color: #333;
-  line-height: 1.3;
+  color: #1a1a1a;
+  line-height: 1.4;
 }
 
 .post-text {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   color: #333;
-  line-height: 1.6;
-}
-
-.post-footer {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.post-stats {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.stat-item {
-  font-size: 16px;
-  color: #666;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.stat-item svg {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
+  line-height: 1.8;
 }
 
 .post-tags {
+  padding: 0 20px 20px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
 .tag {
-  padding: 6px 16px;
-  font-size: 14px;
-  background-color: #f0f0f0;
-  border-radius: 16px;
-  color: #666;
+  padding: 5px 12px;
+  font-size: 13px;
+  background: #e8f4fd;
+  color: #00A2FF;
+  border-radius: 15px;
 }
 
-/* 评论区 */
 .comments-section {
-  margin-top: 40px;
+  padding: 20px;
+  border-top: 1px solid #f0f0f0;
 }
 
-.comments-section h3 {
-  margin: 0 0 20px 0;
-  font-size: 20px;
+.comments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.comments-header h3 {
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
   color: #333;
 }
 
-.comment-form {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 30px;
+.sort-buttons {
+  display: flex;
+  gap: 15px;
 }
 
-.comment-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.sort-btn {
+  padding: 5px 12px;
   font-size: 14px;
-  resize: vertical;
-  margin-bottom: 10px;
-  box-sizing: border-box;
+  color: #999;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.sort-btn.active {
+  color: #00A2FF;
+  background: #e8f4fd;
+}
+
+.comment-form {
+  margin-bottom: 25px;
+}
+
+.comment-input-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.comment-input:focus {
+  border-color: #00A2FF;
 }
 
 .submit-comment-btn {
-  padding: 10px 24px;
-  background-color: #4CAF50;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #00A2FF 0%, #0088e6 100%);
   color: white;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  border-radius: 25px;
   font-size: 14px;
-  transition: background-color 0.3s;
+  cursor: pointer;
+  transition: opacity 0.3s;
 }
 
 .submit-comment-btn:hover:not(:disabled) {
-  background-color: #45a049;
+  opacity: 0.9;
 }
 
 .submit-comment-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .comments-list {
@@ -440,29 +611,54 @@ onMounted(() => {
 }
 
 .comment-item {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .comment-author {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-.comment-author .author-avatar {
-  width: 36px;
-  height: 36px;
-  font-size: 14px;
-  margin-right: 10px;
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #999;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 12px;
 }
 
-.comment-author h4 {
-  margin: 0 0 4px 0;
+.author-info {
+  flex: 1;
+}
+
+.author-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.author-info h4 {
+  margin: 0 0 3px 0;
   font-size: 14px;
   font-weight: 600;
   color: #333;
+}
+
+.vip-badge {
+  font-size: 12px;
 }
 
 .comment-time {
@@ -474,52 +670,208 @@ onMounted(() => {
 .comment-content {
   font-size: 14px;
   color: #333;
-  line-height: 1.5;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  padding-left: 52px;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 20px;
+  padding-left: 52px;
+}
+
+.comment-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  color: #999;
+  transition: color 0.3s;
+}
+
+.comment-action-btn:hover {
+  color: #00A2FF;
+}
+
+.mini-icon {
+  width: 14px;
+  height: 14px;
 }
 
 .no-comments {
   text-align: center;
   padding: 40px 0;
   color: #999;
-  background-color: #f9f9f9;
+  background: #fafafa;
   border-radius: 8px;
 }
 
-/* 未找到 */
-.not-found {
-  text-align: center;
-  padding: 100px 0;
+.no-comments p {
+  margin: 0;
+}
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.author-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+}
+
+.author-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.author-avatar-large {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #999;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.author-basic {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.author-basic h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.follow-btn {
+  align-self: flex-start;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, #00A2FF 0%, #0088e6 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.follow-btn:hover {
+  opacity: 0.9;
+}
+
+.author-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 15px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.stat-label {
+  font-size: 12px;
   color: #999;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
+.stat-divider {
+  width: 1px;
+  background: #f0f0f0;
+}
+
+.author-desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.author-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.author-tag {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: #f5f5f5;
+  color: #666;
+  border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .detail-content {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+  }
+  
   .post-detail {
     padding: 10px;
   }
-
-  .detail-content {
-    padding: 20px;
+  
+  .post-image-container {
+    max-height: 400px;
   }
-
+  
   .post-title {
-    font-size: 20px;
+    font-size: 18px;
   }
-
+  
   .post-text {
     font-size: 14px;
   }
-
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
+  
+  .action-btn {
+    padding: 10px 15px;
   }
-
-  .loading-state,
-  .error-state,
-  .not-found {
-    padding: 60px 0;
+  
+  .action-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .author-card {
+    padding: 15px;
+  }
+  
+  .author-avatar-large {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
   }
 }
 </style>
