@@ -144,24 +144,28 @@ watchEffect(() => {
 <style scoped>
 /* 通用样式 */
 .phonelogin-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 卡片样式 */
 .phonelogin-card {
   width: 100%;
   min-width: 420px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  padding: 40px;
-  animation: phonelogin-fadeIn 0.6s ease-out;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12),
+              0 8px 24px rgba(0, 0, 0, 0.06),
+              0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 40px 32px;
+  animation: phonelogin-fadeIn 0.3s ease-out;
 }
 
 @keyframes phonelogin-fadeIn {
@@ -169,7 +173,6 @@ watchEffect(() => {
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -180,139 +183,169 @@ watchEffect(() => {
 .phonelogin-title {
   font-size: 28px;
   font-weight: 600;
-  color: #333;
-  text-align: center;
-  margin-bottom: 30px;
-  position: relative;
-}
-
-.phonelogin-title::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  margin: 10px auto 0;
-  border-radius: 2px;
+  color: #1d1d1f;
+  text-align: left;
+  margin: 0 0 32px 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 /* 输入框 */
 .phonelogin-input-container {
-  margin-bottom: 25px;
+  margin-bottom: 8px;
 }
 
 /* 输入框组 */
 .phonelogin-input-group {
   display: flex;
   align-items: center;
-  background: #f5f7fa;
-  border-radius: 10px;
-  padding: 0 15px;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
-  border: 1px solid #e1e5eb;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0 16px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #d2d2d6;
 }
 
 .phonelogin-input-group:focus-within {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-  transform: translateY(-2px);
+  border-color: #0071e3;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
 }
 
 /* svg样式 */
 .phonelogin-svg-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   margin-right: 12px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6e6e73;
+}
+
+.phonelogin-svg-icon .icon {
+  width: 20px;
+  height: 20px;
 }
 
 /* 输入样式 */
 .phonelogin-input {
   flex: 1;
-  height: 50px;
+  height: 48px;
   border: none;
   background: transparent;
   font-size: 16px;
-  color: #333;
+  color: #1d1d1f;
   outline: none;
-  padding: 5px 0;
+  padding: 0;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .phonelogin-input::placeholder {
-  color: #a8a8a8;
-  font-weight: 300;
+  color: #a1a1a6;
+  font-weight: 400;
 }
 
-/* 按钮样式 */
+/* 按钮样式 — 获取验证码按钮 */
 .phonelogin-code-btn {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  padding: 12px 24px;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border: 1px solid #d2d2d6;
+  border-radius: 980px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  margin: 16px 0 12px 0;
+  font-family: inherit;
 }
 
-.phonelogin-code-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+.phonelogin-code-btn:hover:not(:disabled) {
+  background: #ebebee;
+}
+
+.phonelogin-code-btn:active:not(:disabled) {
+  background: #dcdce0;
+  transform: scale(0.99);
 }
 
 .phonelogin-code-btn:disabled {
-  background: #ccc;
+  background: #f5f5f7;
+  color: #a1a1a6;
+  border-color: #d2d2d6;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
-/* 登录按钮样式 */
+/* 登录按钮样式 — Apple 胶囊主按钮 */
 .phonelogin-submit-btn {
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  padding: 14px 24px;
+  background: #0071e3;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: 600;
+  border-radius: 980px;
+  font-size: 17px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.phonelogin-submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+.phonelogin-submit-btn:hover:not(:disabled) {
+  background: #0077ed;
+  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.25);
+}
+
+.phonelogin-submit-btn:active:not(:disabled) {
+  background: #006edc;
+  transform: scale(0.99);
 }
 
 .phonelogin-submit-btn:disabled {
-  background: #ccc;
+  background: #a1a1a6;
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
+  opacity: 0.6;
 }
 
 /* 响应式 */
 @media (max-width: 480px) {
   .phonelogin-card {
-    padding: 30px 20px;
+    padding: 32px 24px;
+    min-width: auto;
+    width: calc(100% - 40px);
+    border-radius: 20px;
   }
 
   .phonelogin-title {
     font-size: 24px;
+    margin-bottom: 28px;
   }
 
   .phonelogin-input {
-    font-size: 15px;
+    font-size: 16px;
+    height: 44px;
+  }
+
+  .phonelogin-input-group {
+    padding: 0 14px;
+    margin-bottom: 12px;
+  }
+
+  .phonelogin-code-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .phonelogin-submit-btn {
+    padding: 14px 24px;
+    font-size: 17px;
   }
 }
 </style>

@@ -206,52 +206,61 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12),
+              0 8px 24px rgba(0, 0, 0, 0.06),
+              0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 40px 32px;
   width: 90%;
   max-width: 400px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 10;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 标题样式 */
 .login {
-  text-align: center;
-  font-size: 24px;
+  text-align: left;
+  font-size: 28px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 30px;
+  color: #1d1d1f;
+  margin: 0 0 32px 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 /* 表单容器 */
 .loginform-3-center {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 /* 输入框容器 */
 .input-container-3 {
   position: relative;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
-/* 输入框样式 */
+/* 输入框样式 — Apple 风格圆角输入框 */
 .input-container-3 input {
   width: 100%;
-  padding: 15px 10px 10px;
-  border: none;
-  border-bottom: 2px solid #e0e0e0;
-  background: transparent;
+  padding: 16px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
+  background: #ffffff;
   font-size: 16px;
-  color: #333;
-  transition: all 0.3s ease;
+  color: #1d1d1f;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .input-container-3 input:focus {
   outline: none;
-  border-bottom-color: #4CAF50;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
 }
 
 .input-container-3 input::placeholder {
@@ -261,79 +270,92 @@ onMounted(() => {
 /* 标签样式 */
 .input-container-3 .label {
   position: absolute;
-  top: 15px;
-  left: 10px;
+  top: 16px;
+  left: 16px;
   font-size: 16px;
-  color: #999;
-  transition: all 0.3s ease;
+  color: #a1a1a6;
+  transition: all 0.2s ease;
   pointer-events: none;
+  background: transparent;
 }
 
 .input-container-3 input:focus + .label,
 .input-container-3 input:not(:placeholder-shown) + .label {
-  top: -5px;
-  left: 5px;
+  top: -8px;
+  left: 12px;
   font-size: 12px;
-  color: #4CAF50;
+  color: #6e6e73;
   font-weight: 500;
+  background: #ffffff;
+  padding: 0 6px;
 }
 
-/* 下划线动画 */
+/* 下划线动画 — 弱化以契合 Apple 简洁风格 */
 .underline {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 16px;
   width: 0;
   height: 2px;
-  background: #4CAF50;
-  transition: width 0.3s ease;
+  background: #0071e3;
+  border-radius: 2px;
+  transition: width 0.2s ease;
+  opacity: 0;
 }
 
 .input-container-3 input:focus ~ .underline {
-  width: 100%;
+  width: calc(100% - 32px);
+  opacity: 1;
 }
 
 /* 按钮容器 */
 .btn-conteiner {
+  margin-top: 8px;
   margin-bottom: 20px;
 }
 
-/* 登录按钮 */
+/* 登录按钮 — Apple 风格胶囊按钮 */
 .btn-content {
   width: 100%;
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: #0071e3;
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 980px;
+  padding: 14px 24px;
+  font-size: 17px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  font-family: inherit;
+  letter-spacing: -0.01em;
 }
 
 .btn-content:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  background: #0077ed;
+  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.25);
 }
 
 .btn-content:active {
-  transform: translateY(0);
+  background: #006edc;
+  transform: scale(0.99);
 }
 
 /* 箭头图标动画 */
 .icon-arrow {
-  transition: transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
 }
 
 .btn-content:hover .icon-arrow {
-  transform: translateX(5px);
+  transform: translateX(4px);
 }
 
 /* 选项容器 */
@@ -342,7 +364,8 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  color: #666;
+  color: #6e6e73;
+  margin-top: 20px;
 }
 
 /* 记住用户名选项 */
@@ -355,22 +378,26 @@ onMounted(() => {
 .radio_1 input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #4CAF50;
+  accent-color: #0071e3;
+  cursor: pointer;
 }
 
 /* 手机号登录按钮 */
 .phone {
   background: transparent;
   border: none;
-  color: #4CAF50;
+  color: #0071e3;
   font-size: 14px;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
+  font-family: inherit;
+  padding: 0;
 }
 
 .phone:hover {
-  color: #45a049;
+  color: #0077ed;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* 错误提示框 */
@@ -378,11 +405,11 @@ onMounted(() => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #ffebee;
-  border-left: 4px solid #f44336;
-  border-radius: 4px;
-  padding: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  border-left: 4px solid #ff3b30;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 1000;
   animation: slideIn 0.3s ease-out;
 }
@@ -390,7 +417,7 @@ onMounted(() => {
 .error-content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .error-icon {
@@ -399,7 +426,7 @@ onMounted(() => {
 
 .error-text {
   flex: 1;
-  color: #c62828;
+  color: #1d1d1f;
   font-size: 14px;
 }
 
@@ -407,13 +434,16 @@ onMounted(() => {
   background: none;
   border: none;
   font-size: 18px;
-  color: #666;
+  color: #8e8e93;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 6px;
 }
 
 .error-close:hover {
-  color: #333;
+  color: #1d1d1f;
+  background: #f5f5f7;
 }
 
 /* 成功提示框 */
@@ -421,11 +451,11 @@ onMounted(() => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #e8f5e8;
-  border-left: 4px solid #4CAF50;
-  border-radius: 4px;
-  padding: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  border-left: 4px solid #34c759;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 1000;
   animation: slideIn 0.3s ease-out;
 }
@@ -433,7 +463,7 @@ onMounted(() => {
 .success-content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .success-icon {
@@ -442,7 +472,7 @@ onMounted(() => {
 
 .success-text {
   flex: 1;
-  color: #2e7d32;
+  color: #1d1d1f;
   font-size: 14px;
 }
 
@@ -450,48 +480,70 @@ onMounted(() => {
   background: none;
   border: none;
   font-size: 18px;
-  color: #666;
+  color: #8e8e93;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 6px;
 }
 
 .success-close:hover {
-  color: #333;
+  color: #1d1d1f;
+  background: #f5f5f7;
 }
 
 /* 动画效果 */
 @keyframes slideIn {
   from {
-    transform: translateX(100%);
     opacity: 0;
+    transform: translateX(20px);
   }
   to {
-    transform: translateX(0);
     opacity: 1;
+    transform: translateX(0);
   }
 }
 
 /* 响应式设计 */
 @media (max-width: 480px) {
   .loginform-3 {
-    padding: 25px;
-    width: 95%;
+    width: 100%;
+    max-width: none;
+    padding: 32px 24px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   }
-  
+
   .login {
-    font-size: 22px;
+    font-size: 24px;
+    margin-bottom: 28px;
   }
-  
+
   .input-container-3 input {
-    padding: 12px 10px 8px;
+    padding: 14px 16px;
+    font-size: 16px;
   }
-  
+
+  .input-container-3 .label {
+    top: 14px;
+  }
+
+  .input-container-3 input:focus + .label,
+  .input-container-3 input:not(:placeholder-shown) + .label {
+    top: -8px;
+    font-size: 12px;
+  }
+
   .btn-content {
-    padding: 12px;
+    padding: 14px 24px;
+    font-size: 17px;
   }
-  
-  .radio_1 {
-    font-size: 13px;
+
+  .error-message,
+  .success-message {
+    left: 20px;
+    right: 20px;
+    top: 16px;
   }
 }
 </style>

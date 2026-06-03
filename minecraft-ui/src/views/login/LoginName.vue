@@ -337,11 +337,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { login, register } from '@/api/auth.js';
+import { getUserByAccount } from '@/api/user.js';
 import Login_background from '@/components/LoginComponent/Login_background.vue';
 import LoginSucceeded from '@/components/PromptComponent/LoginSucceeded.vue';
 import ErrorMessage from '@/components/PromptComponent/ErrorMessage.vue';
-import { login, register } from '@/api/auth.js';
-import { getUserByAccount } from '@/api/user.js';
 import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
 import Account from '@/views/login/components/Account.vue'
 import UserAgreement from '@/views/login/components/UserAgreement.vue'

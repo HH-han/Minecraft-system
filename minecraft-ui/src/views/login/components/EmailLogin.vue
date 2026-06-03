@@ -188,7 +188,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 登录内容容器 */
@@ -196,44 +199,63 @@ onUnmounted(() => {
   display: flex;
   width: 90%;
   max-width: 1200px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08),
+              0 2px 8px rgba(0, 0, 0, 0.04);
   overflow: hidden;
 }
 
-/* 左侧内容 */
+/* 左侧内容 — Apple 风格深色品牌区 */
 .login-left {
   flex: 1;
-  padding: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: 56px 48px;
+  background: #000000;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top left, rgba(41, 151, 255, 0.12), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(102, 126, 234, 0.08), transparent 50%);
+  pointer-events: none;
 }
 
 .login-left h1 {
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 700;
-  margin-bottom: 20px;
-  line-height: 1.2;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  position: relative;
 }
 
 .login-left p {
   font-size: 18px;
-  margin-bottom: 40px;
-  opacity: 0.9;
+  color: #a1a1a6;
+  margin: 0 0 48px 0;
+  line-height: 1.4;
+  position: relative;
 }
 
 .login-image {
-  margin-top: 40px;
+  position: relative;
 }
 
 .login-image img {
   width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  opacity: 0.95;
+  display: block;
 }
 
 /* 右侧内容 */
@@ -242,221 +264,258 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px;
+  padding: 56px 48px;
 }
 
 .login-form-wrapper {
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
 }
 
 .login-form-wrapper h2 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 40px;
-  text-align: center;
+  color: #1d1d1f;
+  margin: 0 0 8px 0;
+  text-align: left;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 /* 表单容器 */
 .login-form {
   width: 100%;
+  margin-top: 32px;
 }
 
 /* 输入框容器 */
 .input-container {
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-/* 输入框样式 */
+/* 输入框样式 — Apple 风格圆角输入框 */
 .input-container input {
   width: 100%;
-  padding: 16px 0px 16px 0px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: #f9f9f9;
+  padding: 16px 16px 16px 16px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
+  background: #ffffff;
   font-size: 16px;
-  color: #333;
-  transition: all 0.3s ease;
+  color: #1d1d1f;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .input-container input:focus {
   outline: none;
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #0071e3;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
 }
 
 .input-container input::placeholder {
-  color: #999;
+  color: #a1a1a6;
 }
 
 /* 标签样式 */
 .input-container .label {
   position: absolute;
   top: -10px;
-  left: 15px;
-  padding: 0 10px;
-  font-size: 14px;
-  color: #666;
+  left: 12px;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #6e6e73;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: color 0.2s ease;
+  background: #ffffff;
+  pointer-events: none;
 }
 
 .input-container input:focus + .label {
-  color: #667eea;
+  color: #0071e3;
 }
 
-/* 下划线动画 */
+/* 下划线动画 — 弱化以契合 Apple 简洁风格 */
 .underline {
   position: absolute;
   bottom: 0;
-  left: 0;
+  left: 16px;
   width: 0;
-  height: 3px;
-  background: #667eea;
-  border-radius: 3px;
-  transition: width 0.3s ease;
+  height: 2px;
+  background: #0071e3;
+  border-radius: 2px;
+  transition: width 0.2s ease;
+  opacity: 0;
 }
 
 .input-container input:focus ~ .underline {
-  width: 100%;
+  width: calc(100% - 32px);
+  opacity: 1;
 }
 
 /* 验证码按钮 */
 .code-btn {
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 20px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.code-btn:hover:not(:disabled) {
-  background: #5a6fd8;
-  transform: translateY(-50%) translateY(-1px);
-}
-
-.code-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-/* 登录按钮 */
-.submit-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0071e3;
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  font-family: inherit;
+}
+
+.code-btn:hover:not(:disabled) {
+  background: #0077ed;
+}
+
+.code-btn:active:not(:disabled) {
+  background: #006edc;
+}
+
+.code-btn:disabled {
+  background: #a1a1a6;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 登录按钮 — Apple 风格胶囊按钮 */
+.submit-btn {
+  width: 100%;
+  background: #0071e3;
+  color: white;
+  border: none;
+  border-radius: 980px;
+  padding: 14px 24px;
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
-  margin-top: 20px;
+  margin-top: 8px;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  font-family: inherit;
+  letter-spacing: -0.01em;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: #0077ed;
+  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.25);
 }
 
 .submit-btn:active {
-  transform: translateY(0);
+  background: #006edc;
+  transform: scale(0.99);
+}
+
+.btn-title {
+  display: inline-block;
 }
 
 /* 箭头图标动画 */
 .icon-arrow {
-  transition: transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
 }
 
 .submit-btn:hover .icon-arrow {
-  transform: translateX(5px);
+  transform: translateX(4px);
 }
 
 .icon-arrow svg {
-  width: 24px;
-  height: 24px;
-  fill: white;
+  width: 20px;
+  height: 20px;
 }
 
-/* 返回链接 */
+/* 返回链接 — Apple 风格文字链接 */
 .back-link {
-  margin-top: 25px;
+  margin-top: 24px;
   text-align: center;
 }
 
 .back-link a {
-  color: #667eea;
+  color: #0071e3;
   text-decoration: none;
   font-size: 14px;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
 .back-link a:hover {
-  color: #5a6fd8;
+  color: #0077ed;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* 响应式设计 */
 @media (max-width: 992px) {
   .login-content {
     flex-direction: column;
+    max-width: 520px;
   }
-  
+
   .login-left {
-    padding: 40px;
+    padding: 48px 40px;
     text-align: center;
   }
-  
+
   .login-right {
-    padding: 40px;
+    padding: 48px 40px;
   }
-  
+
   .login-left h1 {
-    font-size: 28px;
+    font-size: 36px;
+  }
+
+  .login-form-wrapper h2 {
+    text-align: center;
   }
 }
 
 @media (max-width: 480px) {
   .login-container {
-    padding: 20px;
+    padding: 0;
+    background: #ffffff;
   }
-  
+
   .login-content {
     width: 100%;
+    border-radius: 0;
+    box-shadow: none;
   }
-  
-  .login-left,
+
+  .login-left {
+    display: none;
+  }
+
   .login-right {
-    padding: 30px 20px;
+    padding: 40px 24px;
   }
-  
+
   .login-form-wrapper h2 {
-    font-size: 20px;
+    font-size: 24px;
   }
-  
+
   .input-container input {
-    padding: 15px 12px 10px;
+    padding: 14px 16px;
+    font-size: 16px;
   }
-  
+
   .submit-btn {
-    padding: 15px;
+    padding: 14px 24px;
+    font-size: 17px;
   }
 }
 </style>
