@@ -10,6 +10,7 @@ public class CommunityPostVO {
     private Long userId;
     private String username;
     private String avatar;
+    private String bio;
     private String title;
     private String content;
     private String images;

@@ -36,6 +36,11 @@ public class CommunityController {
     @Operation(summary ="创建帖子")
     @PostMapping("/create")
     public ApiResponse<Void> createPost(@RequestBody CommunityPost post) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        if (userId == null) {
+            return ApiResponse.error("用户未登录");
+        }
+        post.setUserId(userId);
         communityService.createPost(post);
         return ApiResponse.success("发布成功", null);
     }

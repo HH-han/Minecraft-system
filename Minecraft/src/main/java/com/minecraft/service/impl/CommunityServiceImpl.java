@@ -9,9 +9,11 @@ import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.CommunityPost;
 import com.minecraft.mapper.CommunityPostMapper;
+import com.minecraft.entity.User;
 import com.minecraft.service.CollectionService;
 import com.minecraft.service.CommunityService;
 import com.minecraft.service.LikeService;
+import com.minecraft.service.UserService;
 import com.minecraft.utils.ImageUtils;
 import com.minecraft.vo.CommunityPostVO;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +36,9 @@ public class CommunityServiceImpl extends ServiceImpl<CommunityPostMapper, Commu
     @Autowired
     private ImageUtils imageUtils;
 
+    @Autowired
+    private UserService userService;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -48,6 +53,8 @@ public class CommunityServiceImpl extends ServiceImpl<CommunityPostMapper, Commu
         List<CommunityPostVO> voList = result.getRecords().stream().map(item -> {
             CommunityPostVO vo = new CommunityPostVO();
             BeanUtils.copyProperties(item, vo);
+            // 根据 userId 查询用户信息
+            fillUserInfo(vo);
             return vo;
         }).collect(Collectors.toList());
 
@@ -59,6 +66,9 @@ public class CommunityServiceImpl extends ServiceImpl<CommunityPostMapper, Commu
         CommunityPost post = getById(id);
         CommunityPostVO vo = new CommunityPostVO();
         BeanUtils.copyProperties(post, vo);
+
+        // 根据 userId 查询用户信息
+        fillUserInfo(vo);
 
         if (userId != null) {
             vo.setIsLiked(likeService.isLiked("post", id, userId));
@@ -197,5 +207,49 @@ public class CommunityServiceImpl extends ServiceImpl<CommunityPostMapper, Commu
             }
         }
         return result;
+    }
+
+    /**
+     * 根据帖子的 userId 查询用户信息并填充到 VO 中
+     */
+    private void fillUserInfo(CommunityPostVO vo) {
+        if (vo.getUserId() == null) {
+            vo.setUsername("未知用户");
+            vo.setAvatar(null);
+            vo.setBio(null);
+            return;
+        }
+
+        try {
+            User user = userService.getUserInfo(vo.getUserId());
+            if (user != null) {
+                // 优先使用 nickname，其次使用 username，最后使用 account
+                if (user.getNickname() != null && !user.getNickname().isEmpty()) {
+                    vo.setUsername(user.getNickname());
+                } else if (user.getUsername() != null && !user.getUsername().isEmpty()) {
+                    vo.setUsername(user.getUsername());
+                } else if (user.getAccount() != null && !user.getAccount().isEmpty()) {
+                    vo.setUsername(user.getAccount());
+                } else {
+                    vo.setUsername("未知用户");
+                }
+                
+                // 设置头像
+                vo.setAvatar(user.getAvatar());
+                
+                // 设置简介（bio）
+                vo.setBio(user.getBio());
+            } else {
+                vo.setUsername("未知用户");
+                vo.setAvatar(null);
+                vo.setBio(null);
+            }
+        } catch (Exception e) {
+            // 查询用户信息失败时使用默认值
+            vo.setUsername("未知用户");
+            vo.setAvatar(null);
+            vo.setBio(null);
+            e.printStackTrace();
+        }
     }
 }
