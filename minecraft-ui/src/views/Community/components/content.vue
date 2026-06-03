@@ -108,14 +108,14 @@
     </div>
 
     <!-- 创建帖子模态框 -->
-    <div v-if="showCreateModal" class="modal-overlay" @click.self="showCreateModal = false">
+    <div v-if="showCreateModal" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
         <div class="modal-header">
           <h3>发布帖子</h3>
-          <button class="close-btn" @click="showCreateModal = false">×</button>
+          <button class="close-btn" @click="closeModal">×</button>
         </div>
         <div class="modal-body">
-          <form @submit.prevent="createPost">
+          <form @submit.prevent="handleSubmit">
             <div class="form-group">
               <label for="title">标题</label>
               <input type="text" id="title" v-model="newPost.title" required placeholder="请输入标题">
@@ -124,14 +124,58 @@
               <label for="content">内容</label>
               <textarea id="content" v-model="newPost.content" required placeholder="请输入内容" rows="5"></textarea>
             </div>
+            
+            <!-- 图片上传区域 -->
+            <div class="form-group">
+              <label>图片（最多9张，支持 JPG、PNG、GIF、WebP，每张不超过2MB）</label>
+              <div class="image-upload-area">
+                <!-- 图片预览列表 -->
+                <div v-if="selectedImages.length > 0" class="image-preview-list">
+                  <div v-for="(img, index) in selectedImages" :key="index" class="image-preview-item">
+                    <img :src="img.preview" :alt="`图片${index + 1}`">
+                    <div v-if="img.uploading" class="upload-progress">
+                      <div class="progress-bar" :style="{ width: img.progress + '%' }"></div>
+                    </div>
+                    <div v-if="img.error" class="upload-error">
+                      <span>上传失败</span>
+                    </div>
+                    <button type="button" class="remove-image-btn" @click="removeImage(index)" :disabled="img.uploading">×</button>
+                  </div>
+                </div>
+                
+                <!-- 上传按钮 -->
+                <div v-if="selectedImages.length < 9" class="upload-trigger" @click="triggerFileInput">
+                  <input 
+                    type="file" 
+                    ref="fileInputRef" 
+                    @change="handleFileSelect" 
+                    accept="image/jpeg,image/png,image/gif,image/webp" 
+                    multiple 
+                    class="file-input-hidden"
+                  >
+                  <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                      <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                  </div>
+                  <span>点击上传图片</span>
+                </div>
+              </div>
+              
+              <!-- 错误提示 -->
+              <div v-if="uploadError" class="upload-error-message">{{ uploadError }}</div>
+            </div>
+            
             <div class="form-group">
               <label for="tags">标签（用逗号分隔）</label>
               <input type="text" id="tags" v-model="newPost.tags" placeholder="例如：旅行,摄影,美食">
             </div>
             <div class="form-actions">
-              <button type="button" class="cancel-btn" @click="showCreateModal = false">取消</button>
-              <button type="submit" class="submit-btn" :disabled="creatingPost">
-                {{ creatingPost ? '发布中...' : '发布' }}
+              <button type="button" class="cancel-btn" @click="closeModal">取消</button>
+              <button type="submit" class="submit-btn" :disabled="isSubmitting || selectedImages.some(img => img.uploading)">
+                {{ isSubmitting ? '发布中...' : '发布' }}
               </button>
             </div>
           </form>
@@ -142,8 +186,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 import {
   getPostList,
   createPost as createPostApi
@@ -162,12 +207,22 @@ const totalPages = ref(1);
 
 // 创建帖子相关
 const showCreateModal = ref(false);
-const creatingPost = ref(false);
+const isSubmitting = ref(false);
 const newPost = ref({
   title: '',
   content: '',
   tags: ''
 });
+
+// 图片上传相关
+const fileInputRef = ref(null);
+const selectedImages = ref([]);
+const uploadError = ref('');
+
+// 文件大小限制：2MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
+// 允许的文件类型
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 // 获取帖子列表
 const fetchPosts = async () => {
@@ -208,40 +263,131 @@ const goToDetail = (postId) => {
   router.push(`/community/detail/${postId}`);
 };
 
-// 发布帖子
-const createPost = async () => {
-  if (!newPost.value.title || !newPost.value.content) {
+// 触发文件选择
+const triggerFileInput = () => {
+  fileInputRef.value?.click();
+};
+
+// 验证文件
+const validateFile = (file) => {
+  // 检查文件类型
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return '仅支持 JPG、PNG、GIF、WebP 格式的图片';
+  }
+  
+  // 检查文件大小
+  if (file.size > MAX_FILE_SIZE) {
+    return '图片大小不能超过 2MB';
+  }
+  
+  return null;
+};
+
+// 处理文件选择
+const handleFileSelect = (event) => {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+  
+  uploadError.value = '';
+  
+  // 检查是否超过数量限制
+  const remainingSlots = 9 - selectedImages.value.length;
+  if (files.length > remainingSlots) {
+    uploadError.value = `最多只能选择 ${remainingSlots} 张图片`;
+    event.target.value = ''; // 清空输入
     return;
   }
+  
+  // 处理每个文件
+  Array.from(files).forEach(file => {
+    const error = validateFile(file);
+    if (error) {
+      uploadError.value = error;
+      return;
+    }
+    
+    // 创建预览
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageData = {
+        file: file,
+        preview: e.target.result,
+        uploading: false,
+        progress: 0,
+        error: false,
+        base64: e.target.result
+      };
+      selectedImages.value.push(imageData);
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // 清空输入，允许重新选择相同文件
+  event.target.value = '';
+};
 
-  creatingPost.value = true;
+// 移除图片
+const removeImage = (index) => {
+  selectedImages.value.splice(index, 1);
+};
 
+// 关闭模态框
+const closeModal = () => {
+  showCreateModal.value = false;
+  // 重置表单
+  newPost.value = {
+    title: '',
+    content: '',
+    tags: ''
+  };
+  selectedImages.value = [];
+  uploadError.value = '';
+};
+
+// 提交表单
+const handleSubmit = async () => {
+  if (!newPost.value.title || !newPost.value.content) {
+    ElMessage.warning('请填写标题和内容');
+    return;
+  }
+  
+  // 检查是否有上传失败的图片
+  if (selectedImages.value.some(img => img.error)) {
+    ElMessage.warning('请移除上传失败的图片后重试');
+    return;
+  }
+  
+  isSubmitting.value = true;
+  
   try {
-    const response = await createPostApi({
+    // 将图片转换为 Base64 数组
+    const images = selectedImages.value
+      .filter(img => !img.error)
+      .map(img => img.base64);
+    
+    const postData = {
       title: newPost.value.title,
       content: newPost.value.content,
-      tags: newPost.value.tags
-    });
-
+      tags: newPost.value.tags,
+      images: images.length > 0 ? JSON.stringify(images) : null
+    };
+    
+    const response = await createPostApi(postData);
+    
     if (response.code === 200) {
-      showCreateModal.value = false;
-      // 重置表单
-      newPost.value = {
-        title: '',
-        content: '',
-        tags: ''
-      };
+      ElMessage.success('发布成功');
+      closeModal();
       // 重新加载帖子列表
       currentPage.value = 1;
       fetchPosts();
     } else {
-      error.value = response.message || '发布失败';
+      ElMessage.error(response.message || '发布失败');
     }
   } catch (err) {
-    error.value = '网络错误，请稍后重试';
     console.error('发布帖子失败:', err);
+    ElMessage.error('网络错误，请稍后重试');
   } finally {
-    creatingPost.value = false;
+    isSubmitting.value = false;
   }
 };
 
@@ -602,6 +748,130 @@ onMounted(() => {
 .submit-btn:disabled {
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+/* 图片上传区域 */
+.image-upload-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-preview-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.upload-progress .progress-bar {
+  height: 100%;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.upload-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.remove-image-btn:hover:not(:disabled) {
+  background: rgba(255, 0, 0, 0.7);
+}
+
+.remove-image-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.upload-trigger {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed #d0d0d0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #999;
+}
+
+.upload-trigger:hover {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.upload-icon svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+
+.upload-trigger span {
+  font-size: 11px;
+}
+
+.upload-error-message {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 8px;
 }
 
 /* 响应式设计 */
