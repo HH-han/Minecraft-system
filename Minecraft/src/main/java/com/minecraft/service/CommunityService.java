@@ -8,6 +8,7 @@ import com.minecraft.vo.CommunityPostVO;
 
 public interface CommunityService extends IService<CommunityPost> {
     PageResponse<CommunityPostVO> getPostList(PageRequest request);
+    PageResponse<CommunityPostVO> getMyPosts(Long userId, PageRequest request);
     CommunityPostVO getPostDetail(Long id, Long userId);
     void createPost(CommunityPost post);
     void updatePost(CommunityPost post);

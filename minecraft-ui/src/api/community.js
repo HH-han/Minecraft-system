@@ -9,6 +9,11 @@ export const getPostList = (params) => {
   return request.get('/community/list', { params })
 }
 
+// 获取我的帖子列表
+export const getMyPosts = (params) => {
+  return request.get('/community/my', { params })
+}
+
 // 获取帖子详情
 export const getPostDetail = (id) => {
   return request.get(`/community/${id}`)

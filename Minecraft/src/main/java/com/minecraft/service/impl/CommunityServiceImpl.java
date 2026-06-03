@@ -62,6 +62,31 @@ public class CommunityServiceImpl extends ServiceImpl<CommunityPostMapper, Commu
     }
 
     @Override
+    public PageResponse<CommunityPostVO> getMyPosts(Long userId, PageRequest request) {
+        Page<CommunityPost> page = new Page<>(request.getPageNum(), request.getPageSize());
+        LambdaQueryWrapper<CommunityPost> wrapper = new LambdaQueryWrapper<>();
+        
+        // 只查询当前用户的帖子
+        if (userId != null) {
+            wrapper.eq(CommunityPost::getUserId, userId);
+        }
+        wrapper.eq(CommunityPost::getStatus, 1)
+               .orderByDesc(CommunityPost::getCreateTime);
+
+        Page<CommunityPost> result = page(page, wrapper);
+
+        List<CommunityPostVO> voList = result.getRecords().stream().map(item -> {
+            CommunityPostVO vo = new CommunityPostVO();
+            BeanUtils.copyProperties(item, vo);
+            // 填充用户信息
+            fillUserInfo(vo);
+            return vo;
+        }).collect(Collectors.toList());
+
+        return new PageResponse<>(voList, result.getTotal(), request.getPageNum(), request.getPageSize());
+    }
+
+    @Override
     public CommunityPostVO getPostDetail(Long id, Long userId) {
         CommunityPost post = getById(id);
         CommunityPostVO vo = new CommunityPostVO();

@@ -151,10 +151,21 @@
           <div class="comments-list">
             <div v-for="comment in comments" :key="comment.id" class="comment-item">
               <div class="comment-author">
-                <div class="author-avatar">{{ comment.authorName?.charAt(0) || '?' }}</div>
+                <div class="author-avatar">
+                  <img 
+                    v-if="comment.avatar && comment.avatar.trim() !== ''" 
+                    :src="comment.avatar" 
+                    alt="用户头像" 
+                    class="avatar-image"
+                    @error="handleAvatarError($event)"
+                  >
+                  <div v-else class="avatar-placeholder">
+                    {{ getAvatarInitial(comment.username) }}
+                  </div>
+                </div>
                 <div class="author-info">
                   <div class="author-name-row">
-                    <h4>{{ comment.authorName || '未知用户' }}</h4>
+                    <h4>{{ comment.username || '未知用户' }}</h4>
                     <span v-if="comment.isVip" class="vip-badge">✨</span>
                   </div>
                   <p class="comment-time">{{ formatDate(comment.createTime) }}</p>
@@ -188,9 +199,20 @@
       <div class="sidebar">
         <div class="author-card">
           <div class="author-header">
-            <div class="author-avatar-large">{{ post.authorName?.charAt(0) || '?' }}</div>
+            <div class="author-avatar-large">
+              <img 
+                v-if="post.avatar && post.avatar.trim() !== ''" 
+                :src="post.avatar" 
+                alt="用户头像" 
+                class="avatar-image"
+                @error="handleAvatarError($event)"
+              >
+              <div v-else class="avatar-placeholder">
+                {{ getAvatarInitial(post.username) }}
+              </div>
+            </div>
             <div class="author-basic">
-              <h3>{{ post.authorName || '未知用户' }}</h3>
+              <h3>{{ post.username || '未知用户' }}</h3>
               <button class="follow-btn" @click="toggleFollow">
                 {{ isFollowing ? '已关注' : '+ 关注' }}
               </button>
@@ -213,7 +235,7 @@
             </div>
           </div>
           <div class="author-desc">
-            {{ post.authorDesc || '暂无简介' }}
+            {{ post.bio || '暂无简介' }}
           </div>
           <div class="author-tags">
             <span v-for="tag in authorTags" :key="tag" class="author-tag">{{ tag }}</span>
@@ -435,6 +457,26 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit'
   });
+};
+
+// 获取头像首字母
+const getAvatarInitial = (name) => {
+  if (!name || name === '未知用户') return '?';
+  return name.charAt(0).toUpperCase();
+};
+
+// 头像加载失败处理
+const handleAvatarError = (event) => {
+  const img = event.target;
+  const parent = img.parentElement;
+  // 隐藏图片，显示占位符
+  img.style.display = 'none';
+  if (parent && !parent.querySelector('.avatar-placeholder')) {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'avatar-placeholder';
+    placeholder.textContent = '?';
+    parent.appendChild(placeholder);
+  }
 };
 
 onMounted(() => {
@@ -842,6 +884,19 @@ onMounted(() => {
   font-weight: 600;
   font-size: 16px;
   margin-right: 12px;
+  overflow: hidden;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #0088e6;
 }
 
 .author-info {
@@ -941,13 +996,33 @@ onMounted(() => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #999;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 24px;
+  overflow: hidden;
+}
+
+.author-avatar-large .avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.author-avatar-large .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  background-color: #0088e6;
 }
 
 .author-basic {

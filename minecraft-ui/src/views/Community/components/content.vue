@@ -22,9 +22,20 @@
       <div v-for="post in posts" :key="post.id" class="post-card" @click="goToDetail(post.id)">
         <div class="post-header">
           <div class="post-author">
-            <div class="author-avatar">{{ post.authorName?.charAt(0) || '?' }}</div>
+            <div class="author-avatar">
+              <img 
+                v-if="post.avatar && post.avatar.trim() !== ''" 
+                :src="post.avatar" 
+                alt="用户头像" 
+                class="avatar-image"
+                @error="handleAvatarError($event)"
+              >
+              <div v-else class="avatar-placeholder">
+                {{ getAvatarInitial(post.username) }}
+              </div>
+            </div>
             <div class="author-info">
-              <h3>{{ post.authorName || '未知用户' }}</h3>
+              <h3>{{ post.username || '未知用户' }}</h3>
               <p class="post-time">{{ formatDate(post.createTime) }}</p>
             </div>
           </div>
@@ -404,6 +415,26 @@ const formatDate = (dateString) => {
   });
 };
 
+// 获取头像首字母
+const getAvatarInitial = (name) => {
+  if (!name || name === '未知用户') return '?';
+  return name.charAt(0).toUpperCase();
+};
+
+// 头像加载失败处理
+const handleAvatarError = (event) => {
+  const img = event.target;
+  const parent = img.parentElement;
+  // 隐藏图片，显示占位符
+  img.style.display = 'none';
+  if (parent && !parent.querySelector('.avatar-placeholder')) {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'avatar-placeholder';
+    placeholder.textContent = '?';
+    parent.appendChild(placeholder);
+  }
+};
+
 // 初始化加载
 onMounted(() => {
   fetchPosts();
@@ -532,6 +563,26 @@ onMounted(() => {
   justify-content: center;
   font-weight: 600;
   margin-right: 12px;
+  overflow: hidden;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #3498db;
 }
 
 .author-info h3 {

@@ -372,6 +372,16 @@ const routes = [
       requiresAuth: false,
     },
   },
+  // 私有社区
+  {
+    path: "/privatecommunity",
+    name: "PrivateCommunity",
+    component: () => import("@/views/PersonalCenter/Community/index.vue"),
+    meta: {
+      title: "私有社区",
+      requiresAuth: true,
+    },
+  },
 ];
 
 const router = createRouter({

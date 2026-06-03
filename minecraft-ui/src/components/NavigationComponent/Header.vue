@@ -216,6 +216,12 @@ const userMenuItems = [
     show: true
   },
   {
+    label: '社区帖子',
+    path: '/privatecommunity',
+    style: 'border-radius: 0 0 10px 10px;',
+    show: true
+  },
+  {
     label: '支付中心',
     path: '/payment',
     style: 'border-radius: 0 0 10px 10px;',
