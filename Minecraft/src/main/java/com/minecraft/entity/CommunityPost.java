@@ -17,8 +17,10 @@ public class CommunityPost {
     
     private String content;
     
+    @TableField("images")
     private String images;
     
+    @TableField("videos")
     private String videos;
     
     private Integer likeCount;

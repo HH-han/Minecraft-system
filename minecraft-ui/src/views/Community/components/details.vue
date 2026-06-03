@@ -20,16 +20,50 @@
     <!-- 帖子详情 -->
     <div v-else-if="post" class="detail-content">
       <div class="main-content">
-        <!-- 帖子图片 -->
-        <div class="post-image-container">
-          <img v-if="post.image" :src="post.image" alt="帖子图片" class="post-image">
-          <div v-else class="post-image-placeholder">
-            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
+        <!-- 帖子图片轮播 -->
+        <div class="post-image-container" v-if="postImages.length > 0">
+          <div class="carousel-wrapper">
+            <div class="carousel-container" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+              <div class="carousel-track" :style="{ transform: `translateX(-${currentImageIndex * 100}%)` }">
+                <div v-for="(img, index) in postImages" :key="index" class="carousel-item">
+                  <img :src="img" :alt="`图片${index + 1}`" class="post-image" @error="handleImageError($event)">
+                </div>
+              </div>
+            </div>
+            
+            <!-- 左右切换按钮 -->
+            <button class="carousel-prev" @click="prevImage" v-show="postImages.length > 1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button class="carousel-next" @click="nextImage" v-show="postImages.length > 1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            
+            <!-- 指示器 -->
+            <div class="carousel-indicators" v-show="postImages.length > 1">
+              <span 
+                v-for="(_, index) in postImages" 
+                :key="index" 
+                class="indicator"
+                :class="{ active: currentImageIndex === index }"
+                @click="goToImage(index)"
+              ></span>
+            </div>
+            
+            <!-- 图片数量提示 -->
+            <div class="image-count">{{ currentImageIndex + 1 }} / {{ postImages.length }}</div>
           </div>
+        </div>
+        <div v-else class="post-image-placeholder">
+          <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
         </div>
 
         <!-- 互动按钮区域 -->
@@ -215,6 +249,12 @@ const likeCount = ref(0);
 const isFollowing = ref(false);
 const authorTags = ref([]);
 
+// 轮播相关
+const postImages = ref([]);
+const currentImageIndex = ref(0);
+const touchStartX = ref(0);
+const touchEndX = ref(0);
+
 const postId = route.params.id;
 
 const fetchPostDetail = async () => {
@@ -230,6 +270,10 @@ const fetchPostDetail = async () => {
       post.value = response.data;
       likeCount.value = response.data.likeCount || 0;
       authorTags.value = response.data.authorTags || [];
+      
+      // 解析图片（支持JSON数组和逗号分隔两种格式）
+      postImages.value = parseImages(response.data.images);
+      currentImageIndex.value = 0;
       
       if (response.data.comments) {
         comments.value = response.data.comments;
@@ -262,6 +306,67 @@ const fetchPostDetail = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+// 解析图片字符串，支持JSON数组和逗号分隔两种格式
+const parseImages = (imagesStr) => {
+  if (!imagesStr) return [];
+  try {
+    const images = JSON.parse(imagesStr);
+    if (Array.isArray(images)) {
+      return images.map(img => img.replace(/`/g, '').trim()).filter(img => img);
+    }
+  } catch (e) {
+    // 如果不是JSON数组，尝试按逗号分割
+    return imagesStr.split(',').map(img => img.trim()).filter(img => img);
+  }
+  return [];
+};
+
+// 轮播控制函数
+const nextImage = () => {
+  if (currentImageIndex.value < postImages.value.length - 1) {
+    currentImageIndex.value++;
+  } else {
+    currentImageIndex.value = 0;
+  }
+};
+
+const prevImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+  } else {
+    currentImageIndex.value = postImages.value.length - 1;
+  }
+};
+
+const goToImage = (index) => {
+  currentImageIndex.value = index;
+};
+
+// 触摸滑动事件处理
+const handleTouchStart = (e) => {
+  touchStartX.value = e.touches[0].clientX;
+};
+
+const handleTouchMove = (e) => {
+  touchEndX.value = e.touches[0].clientX;
+};
+
+const handleTouchEnd = () => {
+  const diff = touchStartX.value - touchEndX.value;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) {
+      nextImage();
+    } else {
+      prevImage();
+    }
+  }
+};
+
+// 图片加载错误处理
+const handleImageError = (event) => {
+  event.target.style.display = 'none';
 };
 
 const submitComment = async () => {
@@ -426,10 +531,109 @@ onMounted(() => {
   overflow: hidden;
 }
 
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
 .post-image {
   width: 100%;
   height: auto;
   display: block;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.carousel-prev,
+.carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  z-index: 10;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-prev {
+  left: 15px;
+}
+
+.carousel-next {
+  right: 15px;
+}
+
+.carousel-prev svg,
+.carousel-next svg {
+  width: 20px;
+  height: 20px;
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.indicator.active {
+  width: 24px;
+  border-radius: 5px;
+  background: white;
+}
+
+.image-count {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  z-index: 10;
 }
 
 .post-image-placeholder {

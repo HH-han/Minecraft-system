@@ -54,14 +54,22 @@ public class ImageUtils {
         }
     }
     
+    /**
+     * 处理 Base64 图片并返回 URL。遇到错误时抛出异常。
+     */
     public String processBase64Image(String base64Image) throws Exception {
         if (base64Image == null || !base64Image.startsWith("data:image")) {
             return null;
         }
-        
-        // 解码base64图片
-        String[] parts = base64Image.split(",");
-        byte[] imageBytes = DatatypeConverter.parseBase64Binary(parts[1]);
+
+        // 解码base64图片 - 只分割第一个逗号，避免base64内容中包含逗号的问题
+        int commaIndex = base64Image.indexOf(",");
+        if (commaIndex < 0 || commaIndex >= base64Image.length() - 1) {
+            logger.error("Base64图片格式不正确，缺少数据部分");
+            throw new Exception("Base64图片格式不正确");
+        }
+        String dataPart = base64Image.substring(commaIndex + 1);
+        byte[] imageBytes = DatatypeConverter.parseBase64Binary(dataPart);
 
         // 生成唯一文件名
         String fileName = UUID.randomUUID().toString() + ".png";
@@ -92,6 +100,18 @@ public class ImageUtils {
 
         // 返回图片URL
         return baseUrl + fileName;
+    }
+
+    /**
+     * 安全版本的 Base64 图片处理。遇到任何错误时返回 null 而不是抛出异常。
+     */
+    public String processBase64ImageSafe(String base64Image) {
+        try {
+            return processBase64Image(base64Image);
+        } catch (Exception e) {
+            logger.error("处理Base64图片失败: {}", e.getMessage());
+            return null;
+        }
     }
     
     public String processMultipartFile(MultipartFile file) throws Exception {
