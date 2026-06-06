@@ -90,7 +90,6 @@ watch(() => route.query.tab, (newTab) => {
 <style scoped>
 .predetermined-container {
   margin: 0 auto;
-  padding: 20px;
   background-image: url('@/assets/scenery/scenery-2.webp');
   background-size: cover;
   background-position: center;
@@ -103,6 +102,9 @@ h1 {
   font-size: 28px;
   font-weight: bold;
   color: #333;
+  background-color: rgba(255, 255, 255, 0.4);
+  padding: 15px 20px;
+  backdrop-filter: blur(5px);
 }
 
 .content-area {
