@@ -20,10 +20,13 @@
                         :key="menu.id"
                         :class="{ 'admin-active': activeMenu === menu.id }"
                         @click="handleMenuClick(menu.id)"
-                    >
+                    >   
+                    <div class="admin-nav-item">
                         <span class="admin-nav-icon">{{ menu.icon }}</span>
                         <span class="admin-nav-text">{{ menu.title }}</span>
                         <span class="menu-arrow" :class="{ expanded: activeMenu === menu.id }">›</span>
+                    </div>
+
                         <ul v-if="activeMenu === menu.id" class="sub-menu">
                             <li
                                 v-for="child in menu.children"
@@ -135,21 +138,22 @@ onMounted(() => {
     bottom: 0;
     display: flex;
     justify-content: flex-end;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
+    backdrop-filter: blur(10px);
 }
 
 /* 侧边栏样式 */
 .admin-sidebar {
-    width: 250px;
-    background: #fff;
-    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    width: 280px;
+    background: #ffffff;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1), 0 20px 60px -20px rgba(0, 0, 0, 0.05);
     height: 100vh;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
-    border-right: 2px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid #d2d2d6;
 }
 
 .admin-logo {
@@ -157,80 +161,109 @@ onMounted(() => {
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    padding: 1.5rem 1rem;
-    font-size: 1.2rem;
-    font-weight: 800;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 600;
     text-align: center;
-    color: #4e73df;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1d1d1f;
+    border-bottom: 1px solid #d2d2d6;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
 }
 .admin-logo button {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 15px;
-    color: #4e73df;
+    padding: 8px 12px;
+    border-radius: 12px;
+    color: #6e6e73;
     display: flex;
     align-items: center;
-    gap: 5px;
-    transition: all 0.3s ease-in-out;
+    gap: 6px;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
 }
 .admin-logo button:hover { 
-    background-color: rgba(78, 115, 223, 0.1);
+    background-color: #f5f5f7;
+    color: #2997ff;
 }
 .admin-nav-menu {
     flex: 1;
     overflow-y: auto;
+    padding: 16px 0;
 }
 
-.admin-nav-menu ul {
+.admin-nav-menu > ul {
     list-style: none;
-    padding: 0.5rem 0;
+    padding: 0;
+    margin: 0;
 }
 
-.admin-nav-menu li {
-    margin: 0.2rem 1rem;
-    padding: 5px 0.5rem;
-    border-radius: 0.35rem;
+.admin-nav-menu > ul > li {
+    margin: 4px 16px;
+    padding: 10px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    color: #1d1d1f;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+}   
+
+.admin-nav-menu > ul > li:hover {
+    background-color: #f5f5f7;
+    transform: scale(1.01);
 }
 
-.admin-nav-menu li:hover {
-    background-color: rgba(78, 115, 223, 0.1);
-}
-
-.admin-nav-menu li.admin-active {
-    background-color: #4e73df;
-    color: #fff;
-}
-
-.admin-nav-menu li.admin-active .admin-nav-icon {
-    color: #fff;
+.admin-nav-menu > ul > li.admin-active {
+    background-color: #f5f5f7;
+    color: #2997ff;
 }
 
 .admin-nav-icon {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
-    text-align: center;
-    color: #4e73df;
-    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    font-size: 16px;
+    color: #6e6e73;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.admin-nav-menu > ul > li:hover .admin-nav-icon,
+.admin-nav-menu > ul > li.admin-active .admin-nav-icon {
+    color: #2997ff;
 }
 
 .admin-nav-text {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    flex: 1;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .menu-arrow {
-    float: right;
-    font-size: 0.85rem;
-    color: #a0aec0;
-    transition: transform 0.3s ease;
+    font-size: 14px;
+    color: #a1a1a6;
+    transition: transform 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.admin-nav-menu > ul > li:hover .menu-arrow,
+.admin-nav-menu > ul > li.admin-active .menu-arrow {
+    color: #2997ff;
 }
 
 .menu-arrow.expanded {
@@ -239,47 +272,96 @@ onMounted(() => {
 
 .sub-menu {
     list-style: none;
-    padding: 0.25rem 0;
-    margin: 0.25rem 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 8px 0;
+    margin: 4px 0;
+    border-top: 1px solid #d2d2d6;
 }
 
 .sub-menu-item {
-    padding: 6px 1.5rem;
-    margin: 0 !important;
-    font-size: 0.75rem;
-    color: #6b7280;
-    border-radius: 0 !important;
+    padding: 10px 16px 10px 0px;
+    margin: 0;
+    font-size: 13px;
+    color: #6e6e73;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
 }
 
 .sub-menu-item:hover {
-    background-color: rgba(78, 115, 223, 0.08) !important;
-    color: #4e73df;
-    padding-left: 1.75rem !important;
+    color: #000000;
+    background-color: rgba(55, 158, 255, 0.514);
+    padding-left: 56px;
+    border-radius: 0 12px 12px 0;
 }
 
 .admin-sidebar-footer {
-    padding: 1rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 16px 20px;
+    border-top: 1px solid #d2d2d6;
+    background-color: #f5f5f7;
 }
 
 .admin-user-info {
     display: flex;
     align-items: center;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .admin-user-avatar {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    margin-right: 0.75rem;
+    margin-right: 12px;
     object-fit: cover;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .admin-user-name {
-    font-size: 0.85rem;
+    font-size: 14px;
     font-weight: 600;
+    color: #1d1d1f;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.admin-user-detail {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-user-role {
+    display: block;
+    font-size: 12px;
+    color: #6e6e73;
+    margin-top: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.admin-user-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #d2d2d6;
+    font-size: 12px;
+    color: #6e6e73;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #a1a1a6;
+}
+
+.status-dot.online {
+    background-color: #34c759;
+    box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+}
+
+.status-dot.offline {
+    background-color: #a1a1a6;
 }
 </style>
