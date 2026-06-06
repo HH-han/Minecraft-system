@@ -20,9 +20,13 @@
                         :key="menu.id"
                         :class="{ 'admin-active': activeMenu === menu.id }"
                         @click="handleMenuClick(menu.id)"
-                    >   
+                    >
                     <div class="admin-nav-item">
-                        <span class="admin-nav-icon">{{ menu.icon }}</span>
+                        <span class="admin-nav-icon">
+                            <svg :viewBox="menu.icon.viewBox" fill="currentColor">
+                                <path :d="menu.icon.path" />
+                            </svg>
+                        </span>
                         <span class="admin-nav-text">{{ menu.title }}</span>
                         <span class="menu-arrow" :class="{ expanded: activeMenu === menu.id }">›</span>
                     </div>
@@ -68,7 +72,10 @@ const navMenu = ref([
     {
         id: 1,
         title: '系统设置',
-        icon: '⚙️',
+        icon: {
+            viewBox: '0 0 24 24',
+            path: 'M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.39,12.65 19.31,12.32 19.19,12H21.95C21.88,12.68 21.71,13.33 21.46,13.94L19.43,12.97M12,6.54C12.32,6.5 12.65,6.42 12.97,6.38L13.94,4.35C13.33,4.1 12.68,3.93 12,3.86V6.54M4.57,11.03C4.61,11.35 4.69,11.68 4.81,12H2.05C2.12,11.32 2.29,10.67 2.54,10.06L4.57,11.03M12,17.46C11.68,17.5 11.35,17.58 11.03,17.62L10.06,19.65C10.67,19.9 11.32,20.07 12,20.14V17.46M16.97,7.61C17.22,7.82 17.46,8.04 17.68,8.28L19.71,7.31C19.35,6.76 18.92,6.26 18.43,5.83L16.97,7.61M7.03,16.39C6.78,16.18 6.54,15.96 6.32,15.72L4.29,16.69C4.65,17.24 5.08,17.74 5.57,18.17L7.03,16.39M16.97,16.39L18.43,18.17C18.92,17.74 19.35,17.24 19.71,16.69L17.68,15.72C17.46,15.96 17.22,16.18 16.97,16.39M7.03,7.61L5.57,5.83C5.08,6.26 4.65,6.76 4.29,7.31L6.32,8.28C6.54,8.04 6.78,7.82 7.03,7.61M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'
+        },
         children: [
             { id: 11, title: '基础配置', path: '/admin/settings/basic' },
             { id: 12, title: '权限管理', path: '/admin/settings/permissions' },
@@ -78,7 +85,10 @@ const navMenu = ref([
     {
         id: 2,
         title: '内容管理',
-        icon: '📝',
+        icon: {
+            viewBox: '0 0 24 24',
+            path: 'M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M19,5V19H5V5H19M10,7V9H17V7H10M10,11V13H17V11H10M10,15V17H14V15H10Z'
+        },
         children: [
             { id: 21, title: '月度推荐', path: '/admin/content/monthly' },
             { id: 22, title: '用户管理', path: '/admin/content/users' },
@@ -89,7 +99,10 @@ const navMenu = ref([
     {
         id: 3,
         title: '数据统计',
-        icon: '📊',
+        icon: {
+            viewBox: '0 0 24 24',
+            path: 'M22,21H2V3H4V19H6V10H10V19H12V6H16V19H18V14H22V21Z'
+        },
         children: [
             { id: 31, title: '访问统计', path: '/admin/analytics/visits' },
             { id: 32, title: '用户分析', path: '/admin/analytics/users' },
@@ -99,7 +112,10 @@ const navMenu = ref([
     {
         id: 4,
         title: '系统监控',
-        icon: '🔍',
+        icon: {
+            viewBox: '0 0 24 24',
+            path: 'M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z'
+        },
         children: [
             { id: 41, title: '服务器状态', path: '/admin/monitor/server' },
             { id: 42, title: '数据库监控', path: '/admin/monitor/database' },
@@ -235,10 +251,15 @@ onMounted(() => {
     justify-content: center;
     width: 18px;
     height: 18px;
-    font-size: 16px;
     color: #6e6e73;
     transition: color 0.2s ease;
     flex-shrink: 0;
+}
+
+.admin-nav-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 .admin-nav-menu > ul > li:hover .admin-nav-icon,
