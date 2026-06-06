@@ -15,8 +15,24 @@
             </div>
             <nav class="admin-nav-menu">
                 <ul>
-                    <li>
-                        <span>系统设置</span>
+                    <li
+                        v-for="menu in navMenu"
+                        :key="menu.id"
+                        :class="{ 'admin-active': activeMenu === menu.id }"
+                        @click="handleMenuClick(menu.id)"
+                    >
+                        <span class="admin-nav-icon">{{ menu.icon }}</span>
+                        <span class="admin-nav-text">{{ menu.title }}</span>
+                        <span class="menu-arrow" :class="{ expanded: activeMenu === menu.id }">›</span>
+                        <ul v-if="activeMenu === menu.id" class="sub-menu">
+                            <li
+                                v-for="child in menu.children"
+                                :key="child.id"
+                                class="sub-menu-item"
+                            >
+                                <span>{{ child.title }}</span>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </nav>
@@ -43,6 +59,60 @@ const userInfo = ref({
     image: '',
     username: '',
 });
+
+// 导航菜单模拟数据
+const navMenu = ref([
+    {
+        id: 1,
+        title: '系统设置',
+        icon: '⚙️',
+        children: [
+            { id: 11, title: '基础配置', path: '/admin/settings/basic' },
+            { id: 12, title: '权限管理', path: '/admin/settings/permissions' },
+            { id: 13, title: '日志管理', path: '/admin/settings/logs' },
+        ],
+    },
+    {
+        id: 2,
+        title: '内容管理',
+        icon: '📝',
+        children: [
+            { id: 21, title: '月度推荐', path: '/admin/content/monthly' },
+            { id: 22, title: '用户管理', path: '/admin/content/users' },
+            { id: 23, title: '美食管理', path: '/admin/content/foods' },
+            { id: 24, title: '轮播图管理', path: '/admin/content/banners' },
+        ],
+    },
+    {
+        id: 3,
+        title: '数据统计',
+        icon: '📊',
+        children: [
+            { id: 31, title: '访问统计', path: '/admin/analytics/visits' },
+            { id: 32, title: '用户分析', path: '/admin/analytics/users' },
+            { id: 33, title: '销售报表', path: '/admin/analytics/sales' },
+        ],
+    },
+    {
+        id: 4,
+        title: '系统监控',
+        icon: '🔍',
+        children: [
+            { id: 41, title: '服务器状态', path: '/admin/monitor/server' },
+            { id: 42, title: '数据库监控', path: '/admin/monitor/database' },
+            { id: 43, title: '缓存状态', path: '/admin/monitor/cache' },
+        ],
+    },
+]);
+
+// 当前激活的菜单
+const activeMenu = ref(1);
+
+// 切换菜单
+const handleMenuClick = (menuId) => {
+    activeMenu.value = menuId;
+};
+
 const loading = ref(false);
 // 获取用户信息
 const fetchUserInfo = async () => {
@@ -153,6 +223,39 @@ onMounted(() => {
 .admin-nav-text {
     font-size: 0.85rem;
     font-weight: 600;
+    margin-left: 8px;
+}
+
+.menu-arrow {
+    float: right;
+    font-size: 0.85rem;
+    color: #a0aec0;
+    transition: transform 0.3s ease;
+}
+
+.menu-arrow.expanded {
+    transform: rotate(90deg);
+}
+
+.sub-menu {
+    list-style: none;
+    padding: 0.25rem 0;
+    margin: 0.25rem 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sub-menu-item {
+    padding: 6px 1.5rem;
+    margin: 0 !important;
+    font-size: 0.75rem;
+    color: #6b7280;
+    border-radius: 0 !important;
+}
+
+.sub-menu-item:hover {
+    background-color: rgba(78, 115, 223, 0.08) !important;
+    color: #4e73df;
+    padding-left: 1.75rem !important;
 }
 
 .admin-sidebar-footer {

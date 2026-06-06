@@ -143,32 +143,38 @@
         <img :src="defaultImage" alt="无结果" />
         <p>没有找到匹配的目的地 😞</p>
       </div>
-      <!-- 详情页面 -->
+      <!-- 详情页面（Apple 风格） -->
       <div v-if="selectedDestination" class="destination-detail" @click.self="closeDetail">
         <div class="destination-detail-content" @click.stop>
-          <!-- 关闭按钮 -->
-          <div class="destination-detail-header-top">
-            <h3>详细信息</h3>
-            <button class="destination-detail-close" @click="closeDetail">×</button>
+          <button class="destination-detail-close" @click="closeDetail" aria-label="关闭">×</button>
+          <div class="destination-detail-image-wrapper">
+            <img :src="selectedDestination.image || defaultImage" :alt="selectedDestination.name"
+              class="destination-detail-image" />
           </div>
-          <div class="destination-detail-info-container">
-            <div class="destination-detail-image-container">
-              <img :src="selectedDestination.image || defaultImage" :alt="selectedDestination.name"
-                class="destination-detail-image" />
+          <div class="destination-detail-info-wrapper">
+            <h1 class="destination-detail-name">{{ selectedDestination.name }}</h1>
+            <p class="destination-detail-description">
+              {{ selectedDestination.description ? selectedDestination.description.substring(0, 145) + '...' : '' }}
+            </p>
+            <p class="destination-detail-meta">{{ selectedDestination.detailedinformation }}</p>
+            <div class="destination-detail-stats">
+              <div class="stat-item">
+                <span class="stat-label">价格</span>
+                <span class="stat-value">¥ {{ selectedDestination.price }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">评价</span>
+                <span class="stat-value">{{ selectedDestination.rating }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">销量</span>
+                <span class="stat-value">{{ selectedDestination.sales }}</span>
+              </div>
             </div>
-            <div class="destination-detail-info-background">
-              <h2 class="destination-detail-name">{{ selectedDestination.name }}</h2>
-              <p class="destination-detail-description">描述:{{ selectedDestination.description ?
-                selectedDestination.description.substring(0, 145) + '...' : '' }}</p>
-              <p class="destination-detail-price">价格: {{ selectedDestination.price }}￥</p>
-              <p class="destination-detail-s">评价: {{ selectedDestination.rating }}</p>
-              <p class="destination-detail-ww">销量: {{ selectedDestination.sales }}</p>
-              <p class="destination-detail-xx">详细信息: {{ selectedDestination.detailedinformation }}</p>
+            <div class="destination-detail-actions">
+              <button @click="OrderDetails(selectedDestination.id)" class="btn btn-primary">前往购买</button>
+              <a @click.prevent="collection(selectedBlog.id)" class="btn-link">了解更多 ›</a>
             </div>
-          </div>
-          <div class="btn-container-collection">
-            <button @click="OrderDetails(selectedDestination.id)" class="btn pay">前往购买</button>
-            <button @click="collection(selectedBlog.id)" class="btn collection">收藏</button>
           </div>
         </div>
       </div>
@@ -481,5 +487,250 @@ const forceUpdate = () => {
 .loading-overlay,
 .error-overlay {
   transition: opacity 0.3s ease;
+}
+
+.destination-detail {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 24px;
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  animation: detail-fade-in 0.3s ease-out;
+}
+
+@keyframes detail-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.destination-detail-content {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.25),
+              0 10px 20px -10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #1d1d1f;
+  animation: detail-pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes detail-pop-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.destination-detail-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.08);
+  color: #1d1d1f;
+  border: none;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.destination-detail-close:hover {
+  background: rgb(255, 0, 0);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.destination-detail-image-wrapper {
+  flex: 1 1 50%;
+  min-height: 420px;
+  background: #f5f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.destination-detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.destination-detail-image-wrapper:hover .destination-detail-image {
+  transform: scale(1.01);
+}
+
+.destination-detail-info-wrapper {
+  flex: 1 1 50%;
+  padding: 48px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.destination-detail-name {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #1d1d1f;
+  margin: 0;
+}
+
+.destination-detail-description {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.47;
+  color: #1d1d1f;
+  margin: 0;
+}
+
+.destination-detail-meta {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #6e6e73;
+  margin: 0;
+}
+
+.destination-detail-stats {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  background: #f5f5f7;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6e6e73;
+  letter-spacing: 0.02em;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.destination-detail-actions {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.btn.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn.btn-primary:hover {
+  background: #1d1d1f;
+  transform: translateY(-1px);
+}
+
+.btn-link {
+  font-size: 16px;
+  font-weight: 400;
+  color: #2997ff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-link:hover {
+  color: #0066cc;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* 响应式：平板 - 单列堆叠 */
+@media (max-width: 880px) {
+  .destination-detail-content {
+    flex-direction: column;
+    max-width: 640px;
+  }
+  .destination-detail-image-wrapper {
+    min-height: 280px;
+    flex: 1 1 auto;
+  }
+  .destination-detail-info-wrapper {
+    padding: 32px 32px 40px;
+  }
+  .destination-detail-name { font-size: 28px; }
+}
+
+/* 响应式：手机 - 紧凑布局 */
+@media (max-width: 480px) {
+  .destination-detail {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .destination-detail-content {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .destination-detail-image-wrapper { min-height: 200px; }
+  .destination-detail-info-wrapper {
+    padding: 24px 20px 32px;
+    gap: 12px;
+  }
+  .destination-detail-name { font-size: 24px; }
+  .destination-detail-description { font-size: 15px; }
+  .destination-detail-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+  .stat-value { font-size: 16px; }
+  .destination-detail-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .btn.btn-primary {
+    width: 100%;
+  }
 }
 </style>

@@ -25,10 +25,13 @@
         <!-- 数据展示 -->
         <div v-else class="recommendation-grid">
             <div v-for="destination in getRecommendationsForMonth(currentMonth)" :key="destination.id"
-                class="destination-card">
+                class="destination-card" @click="openDetail(destination)">
                 <div class="image-wrapper">
                     <img :src="destination.imageUrl" :alt="destination.name + '图片'" class="destination-image" />
                     <div class="image-overlay"></div>
+                    <div class="card-overlay-indicator">
+                        <span>查看详情 ›</span>
+                    </div>
                 </div>
                 <div class="destination-info">
                     <h3 class="destination-name">{{ destination.name }}</h3>
@@ -44,6 +47,51 @@
                 <p>暂无该月份的推荐数据</p>
             </div>
         </div>
+        
+        <!-- 详情弹窗（Apple 风格） -->
+        <div v-if="selectedDestination" class="detail-modal" @click.self="closeDetail">
+            <div class="detail-modal-content" @click.stop>
+                <button class="detail-close-btn" @click="closeDetail" aria-label="关闭">×</button>
+                <div class="detail-image-container">
+                    <img :src="selectedDestination.imageUrl" :alt="selectedDestination.name" class="detail-image" />
+                </div>
+                <div class="detail-info-container">
+                    <h1 class="detail-title">{{ selectedDestination.name }}</h1>
+                    <p class="detail-description">{{ selectedDestination.description }}</p>
+                    
+                    <div class="detail-section">
+                        <h3 class="section-label">季节特色</h3>
+                        <p class="section-content">{{ selectedDestination.seasonFeatures }}</p>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3 class="section-label">气候信息</h3>
+                        <p class="section-content">{{ selectedDestination.climateInfo }}</p>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3 class="section-label">推荐天数</h3>
+                        <p class="section-content">{{ selectedDestination.recommendedDays }} 天</p>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3 class="section-label">旅行贴士</h3>
+                        <p class="section-content">{{ selectedDestination.travelTips }}</p>
+                    </div>
+                    
+                    <div class="detail-tags">
+                        <span v-for="tag in selectedDestination.parsedTags" :key="tag" class="detail-tag">
+                            {{ tag }}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-actions">
+                        <button class="btn-primary" @click="handleVisit(selectedDestination.id)">前往预订</button>
+                        <a href="#" class="btn-link">了解更多 ›</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -57,6 +105,7 @@ import {
 const currentMonth = ref('一月')
 const loading = ref(false)
 const error = ref(null)
+const selectedDestination = ref(null)
 
 const months = ref(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'])
 
@@ -87,6 +136,20 @@ const getRecommendationsForMonth = (month) => {
 
 const handleMonthChange = (month) => {
     currentMonth.value = month
+}
+
+const openDetail = (destination) => {
+    selectedDestination.value = destination
+    document.body.style.overflow = 'hidden'
+}
+
+const closeDetail = () => {
+    selectedDestination.value = null
+    document.body.style.overflow = ''
+}
+
+const handleVisit = (destinationId) => {
+    closeDetail()
 }
 
 // 获取推荐数据
@@ -380,6 +443,280 @@ watch(currentMonth, (newMonth) => {
     background: #f3f3f3;
     border-radius: 20px;
     color: #666;
+}
+
+.card-overlay-indicator {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2997ff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.destination-card:hover .card-overlay-indicator {
+    opacity: 1;
+}
+
+/* ===========================================================
+   详情弹窗（Apple 风格）
+   设计规范参考：officialwebsite.md
+   =========================================================== */
+
+.detail-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 24px;
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    animation: modal-fade-in 0.3s ease-out;
+}
+
+@keyframes modal-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.detail-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 980px;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.25),
+                0 10px 20px -10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                 "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #1d1d1f;
+    animation: modal-pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-pop-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.detail-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.08);
+    color: #1d1d1f;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.detail-close-btn:hover {
+    background: rgba(0, 0, 0, 0.16);
+    transform: scale(1.05);
+}
+
+.detail-image-container {
+    flex: 1 1 50%;
+    min-height: 420px;
+    background: #f5f5f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.detail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.detail-image-container:hover .detail-image {
+    transform: scale(1.01);
+}
+
+.detail-info-container {
+    flex: 1 1 50%;
+    padding: 48px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.detail-title {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: #1d1d1f;
+    margin: 0;
+}
+
+.detail-description {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.47;
+    color: #1d1d1f;
+    margin: 0;
+}
+
+.detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: #f5f5f7;
+    border-radius: 12px;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6e6e73;
+    letter-spacing: 0.02em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.section-content {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #1d1d1f;
+    margin: 0;
+}
+
+.detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detail-tag {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #f5f5f7;
+    border-radius: 20px;
+    color: #6e6e73;
+    transition: all 0.2s ease;
+}
+
+.detail-tag:hover {
+    background: #e8e8ed;
+    color: #1d1d1f;
+}
+
+.detail-actions {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: #1d1d1f;
+    transform: translateY(-1px);
+}
+
+.btn-link {
+    font-size: 16px;
+    font-weight: 400;
+    color: #2997ff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-link:hover {
+    color: #0066cc;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* 响应式：平板 */
+@media (max-width: 880px) {
+    .detail-modal-content {
+        flex-direction: column;
+        max-width: 640px;
+    }
+    .detail-image-container {
+        min-height: 280px;
+        flex: 1 1 auto;
+    }
+    .detail-info-container {
+        padding: 32px;
+    }
+    .detail-title { font-size: 28px; }
+}
+
+/* 响应式：手机 */
+@media (max-width: 480px) {
+    .detail-modal {
+        padding: 0;
+        align-items: flex-end;
+    }
+    .detail-modal-content {
+        border-radius: 20px 20px 0 0;
+        max-height: 92vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .detail-image-container { min-height: 200px; }
+    .detail-info-container {
+        padding: 24px 20px 32px;
+        gap: 16px;
+    }
+    .detail-title { font-size: 24px; }
+    .detail-description { font-size: 15px; }
+    .detail-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    .btn-primary {
+        width: 100%;
+    }
 }
 
 @media (max-width: 768px) {
