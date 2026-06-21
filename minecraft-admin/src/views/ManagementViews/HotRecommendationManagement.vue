@@ -66,286 +66,21 @@
                     layout="total, sizes, prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
-            <!-- 新增/编辑弹窗 -->
-            <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-                <div class="dialog" @click.stop>
-                    <h2>{{ isEditing ? '编辑推荐' : '新增推荐' }}</h2>
-                    <form @submit.prevent="submitForm" class="form-container">
-                        <div class="form-group">
-                            <div class="image-upload-container">
-                                <div class="upload-header">
-                                    <h3>上传封面图片</h3>
-                                    <p>支持 JPG, PNG 格式，最大 5MB</p>
-                                </div>
-
-                                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                                    @dragleave="dragOver = false" @drop.prevent="handleDrop"
-                                    :class="{ 'drag-active': dragOver }">
-                                    <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*"
-                                        class="file-input" />
-
-                                    <div class="upload-content">
-                                        <div class="upload-icon">
-                                            <svg viewBox="0 0 24 24">
-                                                <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                                            </svg>
-                                        </div>
-                                        <p class="upload-text">点击或拖拽文件到此处</p>
-                                        <p class="upload-hint">推荐尺寸：1200×800px</p>
-                                    </div>
-                                </div>
-
-                                <!-- 图片预览区域 -->
-                                <div class="preview-container" v-if="previewImage">
-                                    <div class="preview-card">
-                                        <img :src="previewImage" alt="预览图片" class="preview-image" />
-                                        <div class="preview-actions">
-                                            <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn-image delete-btn-image" @click="removeImage">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class="preview-footer">
-                                            <div class="file-info">
-                                                <span class="file-name">{{ fileName }}</span>
-                                                <span class="file-size">{{ fileSize }}</span>
-                                            </div>
-                                            <div class="upload-progress" v-if="uploading">
-                                                <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>推荐名称:</label>
-                                <input v-model="formData.name" required />
-                            </div>
-                            <div class="form-group">
-                                <label>英文名:</label>
-                                <input v-model="formData.englishName" />
-                            </div>
-                            <div class="form-group">
-                                <label>别名:</label>
-                                <input v-model="formData.aliasName" />
-                            </div>
-                            <div class="form-group">
-                                <label>分类:</label>
-                                <el-select v-model="formData.categoryId" placeholder="请选择分类" clearable style="width: 100%" required>
-                                    <el-option 
-                                        v-for="option in categoryOptions" 
-                                        :key="option.value" 
-                                        :label="option.label" 
-                                        :value="option.value" 
-                                    />
-                                </el-select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>国家:</label>
-                                <input v-model="formData.country" />
-                            </div>
-                            <div class="form-group">
-                                <label>省份:</label>
-                                <input v-model="formData.province" />
-                            </div>
-                            <div class="form-group">
-                                <label>城市:</label>
-                                <input v-model="formData.city" required />
-                            </div>
-                            <div class="form-group">
-                                <label>区县:</label>
-                                <input v-model="formData.district" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>地址:</label>
-                                <input v-model="formData.address" />
-                            </div>
-                            <div class="form-group">
-                                <label>交通:</label>
-                                <input v-model="formData.transportation" />
-                            </div>
-                            <div class="form-group">
-                                <label>状态:</label>
-                                <el-select v-model="formData.status" placeholder="请选择状态" clearable style="width: 100%" required>
-                                    <el-option 
-                                        v-for="option in statusOptions" 
-                                        :key="option.value" 
-                                        :label="option.label" 
-                                        :value="option.value" 
-                                    />
-                                </el-select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>推荐理由:</label>
-                                <textarea v-model="formData.recommendationReason" rows="3" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>亮点特色:</label>
-                                <textarea v-model="formData.highlights" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>最佳时间:</label>
-                                <input v-model="formData.bestTravelTime" />
-                            </div>
-                            <div class="form-group">
-                                <label>游玩时长:</label>
-                                <input v-model="formData.visitDuration" />
-                            </div>
-                            <div class="form-group">
-                                <label>季节:</label>
-                                <input v-model="formData.season" />
-                            </div>
-                            <div class="form-group">
-                                <label>节日:</label>
-                                <input v-model="formData.festival" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>门票价格:</label>
-                                <input v-model="formData.ticketPriceDescription" />
-                            </div>
-                            <div class="form-group">
-                                <label>最低价格:</label>
-                                <input v-model="formData.minPrice" type="number" step="0.01" />
-                            </div>
-                            <div class="form-group">
-                                <label>最高价格:</label>
-                                <input v-model="formData.maxPrice" type="number" step="0.01" />
-                            </div>
-                            <div class="form-group">
-                                <label>货币:</label>
-                                <input v-model="formData.priceCurrency" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>平日开放时间:</label>
-                                <input v-model="formData.openingHoursWeekday" />
-                            </div>
-                            <div class="form-group">
-                                <label>周末开放时间:</label>
-                                <input v-model="formData.openingHoursWeekend" />
-                            </div>
-                            <div class="form-group">
-                                <label>开放时间说明:</label>
-                                <input v-model="formData.openingHoursDescription" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>联系电话:</label>
-                                <input v-model="formData.contactPhone" />
-                            </div>
-                            <div class="form-group">
-                                <label>官网:</label>
-                                <input v-model="formData.officialWebsite" />
-                            </div>
-                            <div class="form-group">
-                                <label>社交媒体:</label>
-                                <input v-model="formData.socialMedia" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>标签:</label>
-                                <input v-model="formData.tags" />
-                            </div>
-                            <div class="form-group">
-                                <label>适合人群:</label>
-                                <input v-model="formData.suitableCrowd" />
-                            </div>
-                            <div class="form-group">
-                                <label>设施信息:</label>
-                                <input v-model="formData.facilityInfo" />
-                            </div>
-                            <div class="form-group">
-                                <label>小贴士:</label>
-                                <input v-model="formData.tips" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>是否热门:</label>
-                                <el-switch v-model="formData.isHot" />
-                            </div>
-                            <div class="form-group">
-                                <label>是否新晋:</label>
-                                <el-switch v-model="formData.isNew" />
-                            </div>
-                            <div class="form-group">
-                                <label>是否置顶:</label>
-                                <el-switch v-model="formData.isTop" />
-                            </div>
-                            <div class="form-group">
-                                <label>是否免费:</label>
-                                <el-switch v-model="formData.isFree" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>摘要:</label>
-                                <textarea v-model="formData.summary" rows="2"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>内容:</label>
-                                <textarea v-model="formData.content" rows="2"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>SEO标题:</label>
-                                <input v-model="formData.seoTitle" />
-                            </div>
-                            <div class="form-group">
-                                <label>SEO关键词:</label>
-                                <input v-model="formData.seoKeywords" />
-                            </div>
-                            <div class="form-group">
-                                <label>SEO描述:</label>
-                                <input v-model="formData.seoDescription" />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>来源:</label>
-                                <input v-model="formData.source" />
-                            </div>
-                            <div class="form-group">
-                                <label>作者:</label>
-                                <input v-model="formData.author" />
-                            </div>
-                            <div class="form-group">
-                                <label>排序权重:</label>
-                                <input v-model="formData.weight" type="number" />
-                            </div>
-                        </div>
-                        <!-- 创建修改时间 -->
-                        <div class="dialog-buttons">
-                            <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-                            <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <!-- 通用新增/编辑弹窗 -->
+            <FormDialog
+                v-model:visible="showDialog"
+                title="推荐"
+                :isEdit="isEditing"
+                :fields="formFields"
+                :initialData="formData"
+                :showImageUpload="true"
+                imageUploadLabel="上传封面图片"
+                recommendedSize="推荐尺寸：1200×800px"
+                imageField="coverImageUrl"
+                :validateFn="validateForm"
+                :submitFn="handleSubmit"
+                @error="handleError"
+            />
 
             <!-- 删除提示框组件 -->
             <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -360,6 +95,7 @@
 import { ref, computed, onMounted } from 'vue';
 import request from '@/utils/request';
 import { getHomeRecommendationsList, addHomeRecommendation, updateHomeRecommendation, deleteHomeRecommendation } from '@/api/homeRecommendations';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -458,6 +194,109 @@ const formData = ref({
     author: '',
     weight: 100,
 });
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'name', label: '推荐名称', type: 'text', required: true, placeholder: '请输入推荐名称' },
+    { name: 'englishName', label: '英文名', type: 'text', placeholder: '请输入英文名' },
+    { name: 'aliasName', label: '别名', type: 'text', placeholder: '请输入别名' },
+    { name: 'categoryId', label: '分类', type: 'select', required: true, options: [
+      { value: 1, label: '自然风光' },
+      { value: 2, label: '历史文化' },
+      { value: 3, label: '主题乐园' },
+      { value: 4, label: '美食探店' },
+      { value: 5, label: '休闲度假' },
+    ]},
+  ],
+  [
+    { name: 'country', label: '国家', type: 'text', placeholder: '请输入国家' },
+    { name: 'province', label: '省份', type: 'text', placeholder: '请输入省份' },
+    { name: 'city', label: '城市', type: 'text', required: true, placeholder: '请输入城市' },
+    { name: 'district', label: '区县', type: 'text', placeholder: '请输入区县' },
+  ],
+  [
+    { name: 'address', label: '地址', type: 'text', placeholder: '请输入地址' },
+    { name: 'transportation', label: '交通', type: 'text', placeholder: '请输入交通信息' },
+    { name: 'status', label: '状态', type: 'select', required: true, options: [
+      { value: 0, label: '下架' },
+      { value: 1, label: '上架' },
+      { value: 2, label: '审核中' },
+      { value: 3, label: '待发布' },
+    ]},
+  ],
+  [
+    { name: 'recommendationReason', label: '推荐理由', type: 'textarea', rows: 3, placeholder: '请输入推荐理由' },
+    { name: 'highlights', label: '亮点特色', type: 'textarea', rows: 3, placeholder: '请输入亮点特色' },
+  ],
+  [
+    { name: 'bestTravelTime', label: '最佳时间', type: 'text', placeholder: '如：春季、全年' },
+    { name: 'visitDuration', label: '游玩时长', type: 'text', placeholder: '如：2-3小时' },
+    { name: 'season', label: '季节', type: 'text', placeholder: '如：四季皆宜' },
+    { name: 'festival', label: '节日', type: 'text', placeholder: '如：春节、国庆' },
+  ],
+  [
+    { name: 'ticketPriceDescription', label: '门票价格说明', type: 'text', placeholder: '如：免费' },
+    { name: 'minPrice', label: '最低价格', type: 'number', step: 0.01, placeholder: '请输入最低价格' },
+    { name: 'maxPrice', label: '最高价格', type: 'number', step: 0.01, placeholder: '请输入最高价格' },
+    { name: 'priceCurrency', label: '货币', type: 'text', placeholder: '如：CNY' },
+  ],
+  [
+    { name: 'openingHoursWeekday', label: '平日开放时间', type: 'text', placeholder: '如：09:00-18:00' },
+    { name: 'openingHoursWeekend', label: '周末开放时间', type: 'text', placeholder: '如：09:00-20:00' },
+    { name: 'openingHoursDescription', label: '开放时间说明', type: 'text', placeholder: '请输入开放时间说明' },
+  ],
+  [
+    { name: 'contactPhone', label: '联系电话', type: 'text', placeholder: '请输入联系电话' },
+    { name: 'officialWebsite', label: '官网', type: 'text', placeholder: '请输入官网地址' },
+    { name: 'socialMedia', label: '社交媒体', type: 'text', placeholder: '请输入社交媒体' },
+  ],
+  [
+    { name: 'tags', label: '标签', type: 'text', placeholder: '请输入标签，多个用逗号分隔' },
+    { name: 'suitableCrowd', label: '适合人群', type: 'text', placeholder: '如：家庭、情侣' },
+    { name: 'facilityInfo', label: '设施信息', type: 'text', placeholder: '请输入设施信息' },
+    { name: 'tips', label: '小贴士', type: 'text', placeholder: '请输入小贴士' },
+  ],
+  [
+    { name: 'isHot', label: '是否热门', type: 'switch' },
+    { name: 'isNew', label: '是否新晋', type: 'switch' },
+    { name: 'isTop', label: '是否置顶', type: 'switch' },
+    { name: 'isFree', label: '是否免费', type: 'switch' },
+  ],
+  [
+    { name: 'summary', label: '摘要', type: 'textarea', rows: 2, placeholder: '请输入摘要' },
+    { name: 'content', label: '内容', type: 'textarea', rows: 2, placeholder: '请输入内容' },
+  ],
+  [
+    { name: 'seoTitle', label: 'SEO标题', type: 'text', placeholder: '请输入SEO标题' },
+    { name: 'seoKeywords', label: 'SEO关键词', type: 'text', placeholder: '请输入SEO关键词' },
+    { name: 'seoDescription', label: 'SEO描述', type: 'text', placeholder: '请输入SEO描述' },
+  ],
+  [
+    { name: 'source', label: '来源', type: 'text', placeholder: '请输入来源' },
+    { name: 'author', label: '作者', type: 'text', placeholder: '请输入作者' },
+    { name: 'weight', label: '排序权重', type: 'number', min: 0, placeholder: '数字越大越靠前' },
+  ],
+];
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.name || !data.city) {
+    return '请填写推荐名称和城市';
+  }
+  if (!isEdit && !data.coverImageUrl) {
+    return '请上传封面图片';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  if (isEdit) {
+    await updateHomeRecommendation(data);
+  } else {
+    await addHomeRecommendation(data);
+  }
+};
 
 // 格式化日期显示
 const formatDate = (date) => {
@@ -604,23 +443,10 @@ const showToastMessage = (message, type = 'success') => {
         showToast.value = false;
     }, 3000);
 };
-// 提交表单
-const submitForm = async () => {
-    try {
-        if (isEditing.value) {
-            await updateHomeRecommendation(formData.value);
-            showToastMessage('更新推荐成功');
-        } else {
-            await addHomeRecommendation(formData.value);
-            showToastMessage('新增推荐成功');
-        }
-        await fetchScenic();
-        closeDialog();
-    } catch (error) {
-        const message = isEditing.value ? '更新失败' : '新增失败';
-        showToastMessage(message, 'error');
-        console.error('操作失败:', error);
-    }
+
+// 处理错误
+const handleError = (error) => {
+    showToastMessage(error.message || '操作失败', 'error');
 };
 
 // 删除卡片
@@ -651,97 +477,6 @@ const confirmDelete = async () => {
             closeDeletePrompt();
         }
     }
-};
-
-// 关闭对话框
-const closeDialog = () => {
-    showDialog.value = false;
-};
-
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // 验证文件类型
-    const validTypes = ['image/jpeg', 'image/png'];
-    if (!validTypes.includes(file.type)) {
-        showToastMessage('仅支持JPG/PNG格式图片', 'error');
-        return;
-    }
-
-    // 验证文件大小 (5MB)
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-        showToastMessage('图片大小不能超过5MB', 'error');
-        return;
-    }
-
-    // 显示预览
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        previewImage.value = e.target.result;
-        fileName.value = file.name;
-        fileSize.value = formatFileSize(file.size);
-        formData.value.coverImageUrl = e.target.result;
-    };
-    reader.readAsDataURL(file);
-
-    // 模拟上传进度
-    uploading.value = true;
-    progress.value = 0;
-    const interval = setInterval(() => {
-        progress.value += 10;
-        if (progress.value >= 100) {
-            clearInterval(interval);
-            uploading.value = false;
-            showToastMessage('图片上传成功');
-        }
-    }, 200);
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-    dragOver.value = false;
-    const file = event.dataTransfer.files[0];
-    if (file) {
-        const inputEvent = { target: { files: [file] } };
-        handleFileUpload(inputEvent);
-    }
-};
-
-// 移除图片
-const removeImage = () => {
-    previewImage.value = '';
-    fileName.value = '';
-    fileSize.value = '';
-    formData.value.coverImageUrl = '';
-};
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = (event) => handleFileUpload(event);
-    fileInput.click();
 };
 
 onMounted(fetchScenic);

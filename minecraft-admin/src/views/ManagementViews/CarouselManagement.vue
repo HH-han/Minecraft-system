@@ -14,8 +14,8 @@
       </div>
       <!-- 位置筛选按钮 -->
       <div class="position-filter">
-        <button 
-          v-for="(label, value) in positionOptions" 
+        <button
+          v-for="(label, value) in positionOptions"
           :key="value"
           class="position-btn"
           :class="{ active: selectedPosition === value }"
@@ -70,185 +70,21 @@
         </el-pagination>
       </div>
 
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑轮播' : '新增轮播' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传轮播图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
-                </div>
-
-                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" />
-
-                  <div class="upload-content">
-                    <div class="upload-icon">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                      </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1920×1080px</p>
-                  </div>
-                </div>
-
-                <!-- 图片预览区域 -->
-                <div class="preview-container" v-if="previewImage">
-                  <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                        </svg>
-                      </button>
-                      <button class="action-btn-image delete-btn-image" @click="removeImage">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="preview-footer">
-                      <div class="file-info">
-                        <span class="file-name">{{ fileName }}</span>
-                        <span class="file-size">{{ fileSize }}</span>
-                      </div>
-                      <div class="upload-progress" v-if="uploading">
-                        <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>轮播标题:</label>
-                <input v-model="formData.title" required />
-              </div>
-              <div class="form-group">
-                <label>副标题:</label>
-                <input v-model="formData.subtitle" />
-              </div>
-              <div class="form-group">
-                <label>位置:</label>
-                <el-select v-model="formData.position" placeholder="请选择位置" clearable style="width: 100%" required>
-                  <el-option value="home_top" label="首页顶部" />
-                  <el-option value="home_middle" label="首页中部" />
-                  <el-option value="destination" label="目的地" />
-                  <el-option value="attraction" label="景点" />
-                  <el-option value="hotel" label="酒店" />
-                  <el-option value="food" label="美食" />
-                  <el-option value="souvenir" label="纪念品" />
-                  <el-option value="strategy" label="攻略群" />
-                  <el-option value="community" label="社区" />
-                </el-select>
-              </div>
-              <div class="form-group">
-                <label>链接类型:</label>
-                <input v-model="formData.linkType" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>链接URL:</label>
-                <input v-model="formData.linkUrl" />
-              </div>
-              <div class="form-group">
-                <label>链接目标:</label>
-                <input v-model="formData.linkTarget" />
-              </div>
-              <div class="form-group">
-                <label>目标ID:</label>
-                <input v-model="formData.targetId" type="number" />
-              </div>
-              <div class="form-group">
-                <label>按钮文本:</label>
-                <input v-model="formData.buttonText" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>按钮颜色:</label>
-                <input v-model="formData.buttonColor" />
-              </div>
-              <div class="form-group">
-                <label>文本颜色:</label>
-                <input v-model="formData.textColor" />
-              </div>
-              <div class="form-group">
-                <label>文本阴影:</label>
-                <el-switch v-model="formData.textShadow" />
-              </div>
-              <div class="form-group">
-                <label>叠加颜色:</label>
-                <input v-model="formData.overlayColor" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>叠加透明度:</label>
-                <input v-model="formData.overlayOpacity" type="number" step="0.1" min="0" max="1" />
-              </div>
-              <div class="form-group">
-                <label>设备类型:</label>
-                <input v-model="formData.deviceType" />
-              </div>
-              <div class="form-group">
-                <label>用户类型:</label>
-                <input v-model="formData.userType" />
-              </div>
-              <div class="form-group">
-                <label>排序顺序:</label>
-                <input v-model="formData.sortOrder" type="number" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>开始时间:</label>
-                <input v-model="formData.startTime" type="datetime-local" />
-              </div>
-              <div class="form-group">
-                <label>结束时间:</label>
-                <input v-model="formData.endTime" type="datetime-local" />
-              </div>
-              <div class="form-group">
-                <label>是否始终显示:</label>
-                <el-switch v-model="formData.isAlwaysShow" />
-              </div>
-              <div class="form-group">
-                <label>是否激活:</label>
-                <el-switch v-model="formData.isActive" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>备注:</label>
-                <textarea v-model="formData.remark" rows="3"></textarea>
-              </div>
-              <div class="form-group">
-                <label>移动端图片:</label>
-                <input v-model="formData.mobileImageUrl" />
-              </div>
-              <div class="form-group">
-                <label>缩略图:</label>
-                <input v-model="formData.thumbnailUrl" />
-              </div>
-            </div>
-            <!-- 表单提交按钮 -->
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="轮播"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传轮播图片"
+        recommendedSize="推荐尺寸：1920×1080px"
+        imageField="imageUrl"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 删除提示框组件 -->
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -256,12 +92,12 @@
       <ToastType v-if="showToast" :toastMessage="toastMessage" :toastType="toastType" />
     </div>
   </div>
-
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import carouselApi from '@/api/carousel';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -286,6 +122,7 @@ const searchKeyword = ref('');
 const showDialog = ref(false);
 const isEditing = ref(false);
 const selectedPosition = ref('all');
+
 const formData = ref({
   id: null,
   title: '',
@@ -320,6 +157,56 @@ const formData = ref({
   updatedAt: null,
 });
 
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'title', label: '轮播标题', type: 'text', required: true, placeholder: '请输入轮播标题' },
+    { name: 'subtitle', label: '副标题', type: 'text', placeholder: '请输入副标题' },
+    { name: 'position', label: '位置', type: 'select', required: true, placeholder: '请选择位置', options: [
+      { value: 'home_top', label: '首页顶部' },
+      { value: 'home_middle', label: '首页中部' },
+      { value: 'destination', label: '目的地' },
+      { value: 'attraction', label: '景点' },
+      { value: 'hotel', label: '酒店' },
+      { value: 'food', label: '美食' },
+      { value: 'souvenir', label: '纪念品' },
+      { value: 'strategy', label: '攻略群' },
+      { value: 'community', label: '社区' },
+    ]},
+    { name: 'linkType', label: '链接类型', type: 'text', placeholder: '请输入链接类型' },
+  ],
+  [
+    { name: 'linkUrl', label: '链接URL', type: 'text', placeholder: '请输入链接地址' },
+    { name: 'linkTarget', label: '链接目标', type: 'text', placeholder: '请输入链接目标' },
+    { name: 'targetId', label: '目标ID', type: 'number', placeholder: '请输入目标ID' },
+    { name: 'buttonText', label: '按钮文本', type: 'text', placeholder: '请输入按钮文本' },
+  ],
+  [
+    { name: 'buttonColor', label: '按钮颜色', type: 'text', placeholder: '如：#2997ff' },
+    { name: 'textColor', label: '文本颜色', type: 'text', placeholder: '如：#ffffff' },
+    { name: 'textShadow', label: '文本阴影', type: 'switch' },
+    { name: 'overlayColor', label: '叠加颜色', type: 'text', placeholder: '如：#000000' },
+  ],
+  [
+    { name: 'overlayOpacity', label: '叠加透明度', type: 'number', min: 0, max: 1, step: 0.1, placeholder: '0-1之间' },
+    { name: 'deviceType', label: '设备类型', type: 'text', placeholder: '如：PC/Mobile/All' },
+    { name: 'userType', label: '用户类型', type: 'text', placeholder: '如：VIP/普通用户' },
+    { name: 'sortOrder', label: '排序顺序', type: 'number', min: 0, placeholder: '数字越小越靠前' },
+  ],
+  [
+    { name: 'startTime', label: '开始时间', type: 'datetime' },
+    { name: 'endTime', label: '结束时间', type: 'datetime' },
+    { name: 'isAlwaysShow', label: '是否始终显示', type: 'switch' },
+    { name: 'isActive', label: '是否激活', type: 'switch' },
+  ],
+  [
+    { name: 'mobileImageUrl', label: '移动端图片', type: 'text', placeholder: '移动端图片URL' },
+    { name: 'thumbnailUrl', label: '缩略图', type: 'text', placeholder: '缩略图URL' },
+  ],
+  [
+    { name: 'remark', label: '备注', type: 'textarea', fullWidth: true, rows: 3, placeholder: '请输入备注信息' },
+  ],
+];
 
 // 位置映射
 const positionMap = {
@@ -377,7 +264,6 @@ const filteredCarousels = computed(() => {
 });
 
 // 分页功能
-// 分页相关变量
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
@@ -393,6 +279,7 @@ const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
   fetchCarousels();
 };
+
 // 获取轮播数据
 const fetchCarousels = async () => {
   try {
@@ -406,12 +293,9 @@ const fetchCarousels = async () => {
   }
 };
 
-
-
-
 // 搜索按钮点击事件
 const handleSearch = () => {
-  currentPage.value = 1; // 搜索时重置到第一页
+  currentPage.value = 1;
   fetchCarousels();
 };
 
@@ -455,7 +339,6 @@ const showAddDialog = () => {
 // 处理日期时间格式，去除秒部分
 const formatDateTimeForInput = (dateTimeString) => {
   if (!dateTimeString) return null;
-  // 检查是否包含秒，如果包含则去除
   if (dateTimeString.includes(':')) {
     const parts = dateTimeString.split(':');
     if (parts.length >= 3) {
@@ -469,7 +352,6 @@ const formatDateTimeForInput = (dateTimeString) => {
 const showEditDialog = (carousel) => {
   isEditing.value = true;
   const formattedCarousel = { ...carousel };
-  // 处理日期时间格式
   if (formattedCarousel.startTime) {
     formattedCarousel.startTime = formatDateTimeForInput(formattedCarousel.startTime);
   }
@@ -479,6 +361,48 @@ const showEditDialog = (carousel) => {
   formData.value = formattedCarousel;
   showDialog.value = true;
 };
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.title || !data.position) {
+    return '请填写轮播标题和位置';
+  }
+  if (!isEdit && !data.imageUrl) {
+    return '请上传轮播图片';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  const submitData = { ...data };
+  // 处理日期时间格式
+  if (submitData.startTime) {
+    if (submitData.startTime.includes('T') && !submitData.startTime.includes(':')) {
+      submitData.startTime = submitData.startTime + ':00';
+    }
+  }
+  if (submitData.endTime) {
+    if (submitData.endTime.includes('T') && !submitData.endTime.includes(':')) {
+      submitData.endTime = submitData.endTime + ':00';
+    }
+  }
+
+  if (isEdit) {
+    await carouselApi.updateCarousel(submitData);
+    showToastMessage('更新轮播成功');
+  } else {
+    await carouselApi.addCarousel(submitData);
+    showToastMessage('新增轮播成功');
+  }
+  await fetchCarousels();
+};
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
+};
+
 // 显示提示消息的方法
 const showToastMessage = (message, type = 'success') => {
   toastMessage.value = message;
@@ -487,60 +411,6 @@ const showToastMessage = (message, type = 'success') => {
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
-};
-// 提交表单
-const validateForm = () => {
-  if (!formData.value.title || !formData.value.position) {
-    showToastMessage('请填写轮播标题和位置', 'error');
-    return false;
-  }
-
-  if (!isEditing.value && !formData.value.imageUrl) {
-    showToastMessage('请上传轮播图片', 'error');
-    return false;
-  }
-
-  return true;
-};
-
-// 处理表单提交时的日期时间格式
-const prepareFormDataForSubmit = (formData) => {
-  const submitData = { ...formData };
-  // 确保日期时间格式正确
-  if (submitData.startTime) {
-    // 如果包含T但没有秒，添加秒部分
-    if (submitData.startTime.includes('T') && !submitData.startTime.includes(':')) {
-      submitData.startTime = submitData.startTime + ':00';
-    }
-  }
-  if (submitData.endTime) {
-    // 如果包含T但没有秒，添加秒部分
-    if (submitData.endTime.includes('T') && !submitData.endTime.includes(':')) {
-      submitData.endTime = submitData.endTime + ':00';
-    }
-  }
-  return submitData;
-};
-
-const submitForm = async () => {
-  if (!validateForm()) return;
-
-  try {
-    const submitData = prepareFormDataForSubmit(formData.value);
-    if (isEditing.value) {
-      await carouselApi.updateCarousel(submitData);
-      showToastMessage('更新轮播成功');
-    } else {
-      await carouselApi.addCarousel(submitData);
-      showToastMessage('新增轮播成功');
-    }
-    await fetchCarousels();
-    closeDialog();
-  } catch (error) {
-    const message = isEditing.value ? '更新轮播失败' : '新增轮播失败';
-    showToastMessage(message, 'error');
-    console.error('操作失败:', error);
-  }
 };
 
 // 删除轮播
@@ -563,9 +433,7 @@ const confirmDelete = async () => {
       await carouselApi.deleteCarousel(deleteCarouselId.value);
       await fetchCarousels();
       showToastMessage('删除轮播成功');
-
     } catch (error) {
-      console.error('删除失败:', error.response?.data || error.message);
       console.error('删除失败:', error);
       showToastMessage('删除轮播失败', 'error');
     } finally {
@@ -574,109 +442,30 @@ const confirmDelete = async () => {
   }
 };
 
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false;
-};
-
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  // 验证文件类型
-  const validTypes = ['image/jpeg', 'image/png'];
-  if (!validTypes.includes(file.type)) {
-    showToastMessage('只支持JPG/PNG格式图片', 'error');
-    return;
-  }
-
-  // 验证文件大小
-  const maxSize = 5 * 1024 * 1024; // 5MB
-  if (file.size > maxSize) {
-    showToastMessage('图片大小不能超过5MB', 'error');
-    return;
-  }
-
-  // 显示文件信息
-  fileName.value = file.name;
-  fileSize.value = formatFileSize(file.size);
-
-  // 读取并预览图片
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    previewImage.value = e.target.result;
-    formData.value.imageUrl = e.target.result;
-  };
-  reader.readAsDataURL(file);
-
-  // 模拟上传进度
-  uploading.value = true;
-  const interval = setInterval(() => {
-    if (progress.value < 100) {
-      progress.value += 10;
-    } else {
-      clearInterval(interval);
-      uploading.value = false;
-    }
-  }, 100);
-
-  return file;
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-  dragOver.value = false;
-  const file = event.dataTransfer.files[0];
-  if (file) {
-    const fakeEvent = { target: { files: [file] } };
-    handleFileUpload(fakeEvent);
-  }
-};
-
-// 移除图片
-const removeImage = () => {
-  previewImage.value = '';
-  fileName.value = '';
-  fileSize.value = '';
-  formData.value.imageUrl = '';
-};
-
 // 触发文件输入框
-const triggerFileInput = () => {
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = 'image/*';
-  fileInput.onchange = (event) => {
-    const file = handleFileUpload(event);
-    if (file) {
-      formData.value.file = file;
-    }
-  };
-  fileInput.click();
+const triggerFileInput = (carousel) => {
+  // 显示大图预览
+  if (carousel.imageUrl) {
+    window.open(carousel.imageUrl, '_blank');
+  }
+};
+
+// 处理复选框
+const handleCheck = (carousel) => {
+  carousel.checked = !carousel.checked;
+};
+
+// 处理批量重置
+const handleReset = () => {
+  const selected = carousels.value.filter(c => c.checked);
+  if (selected.length === 0) {
+    showToastMessage('请先选择要删除的轮播', 'warning');
+    return;
+  }
+  showToastMessage(`已选择 ${selected.length} 个轮播，请逐个删除`, 'info');
 };
 
 onMounted(fetchCarousels);
-
-
-
 </script>
 
 <style scoped>

@@ -64,124 +64,21 @@
           :total="total" />
       </div>
 
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑美食' : '新增美食' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
-                </div>
-
-                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" />
-
-                  <div class="upload-content">
-                    <div class="upload-icon">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                      </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1200×800px</p>
-                  </div>
-                </div>
-
-                <!-- 图片预览区域 -->
-                <div class="preview-container" v-if="previewImage">
-                  <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                        </svg>
-                      </button>
-                      <button class="action-btn-image delete-btn-image" @click="removeImage">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="preview-footer">
-                      <div class="file-info">
-                        <span class="file-name">{{ fileName }}</span>
-                        <span class="file-size">{{ fileSize }}</span>
-                      </div>
-                      <div class="upload-progress" v-if="uploading">
-                        <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-
-              <div class="form-group">
-                <label>美食名称:</label>
-                <input v-model="formData.name" required />
-              </div>
-              <div class="form-group">
-                <label>美食描述:</label>
-                <input v-model="formData.description" required />
-              </div>
-              <div class="form-group">
-                <label>商品:</label>
-                <input v-model="formData.commodity" required />
-              </div>
-              <div class="form-group">
-                <label>美食价格:</label>
-                <input v-model="formData.price" required />
-              </div>
-              <div class="form-group">
-                <label>销量:</label>
-                <input v-model="formData.sales" required />
-              </div>
-              <div class="form-group">
-                <label>评分:</label>
-                <input v-model="formData.rating" required />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>城市:</label>
-                <input v-model="formData.city" />
-              </div>
-              <div class="form-group">
-                <label>省份:</label>
-                <input v-model="formData.province" />
-              </div>
-              <div class="form-group">
-                <label>地址:</label>
-                <input v-model="formData.address" />
-              </div>
-              <div class="form-group">
-                <label>菜系类型:</label>
-                <input v-model="formData.cuisineType" />
-              </div>
-              <div class="form-group">
-                <label>状态:</label>
-                <input v-model="formData.status" type="number" />
-              </div>
-              <div class="form-group">
-                <label>标签:</label>
-                <input v-model="formData.tags" />
-              </div>
-            </div>
-            <!-- 提交按钮 -->
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="美食"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传美食图片"
+        recommendedSize="推荐尺寸：1200×800px"
+        imageField="coverImage"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 删除提示框组件 -->
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -195,6 +92,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getFoodList, addFood, updateFood, deleteFood } from '@/api/food';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -214,6 +112,30 @@ const columns = [
   { key: 'rating', title: '评分' },
   { key: 'created_at', title: '创建时间' },
   { key: 'updated_at', title: '更新时间' },
+];
+
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'name', label: '美食名称', type: 'text', required: true, placeholder: '请输入美食名称' },
+    { name: 'description', label: '美食描述', type: 'text', required: true, placeholder: '请输入美食描述' },
+    { name: 'commodity', label: '商品', type: 'text', placeholder: '请输入商品名称' },
+  ],
+  [
+    { name: 'price', label: '美食价格', type: 'number', required: true, placeholder: '请输入美食价格', min: 0 },
+    { name: 'sales', label: '销量', type: 'number', placeholder: '请输入销量', min: 0 },
+    { name: 'rating', label: '评分', type: 'number', placeholder: '请输入评分', min: 0, max: 5, step: 0.1 },
+  ],
+  [
+    { name: 'city', label: '城市', type: 'text', placeholder: '请输入城市' },
+    { name: 'province', label: '省份', type: 'text', placeholder: '请输入省份' },
+    { name: 'address', label: '地址', type: 'text', placeholder: '请输入详细地址' },
+  ],
+  [
+    { name: 'cuisineType', label: '菜系类型', type: 'text', placeholder: '请输入菜系类型' },
+    { name: 'status', label: '状态', type: 'number', placeholder: '请输入状态' },
+    { name: 'tags', label: '标签', type: 'text', placeholder: '请输入标签，多个用逗号分隔' },
+  ],
 ];
 const showToast = ref(false);
 const toastMessage = ref('');
@@ -322,12 +244,6 @@ const showAddDialog = () => {
     likeCount: 0,
     images: [],
   };
-  // 重置图片上传相关状态
-  previewImage.value = null;
-  fileName.value = '';
-  fileSize.value = '';
-  progress.value = 0;
-  uploading.value = false;
   showDialog.value = true;
 };
 
@@ -356,12 +272,6 @@ const showEditDialog = (food) => {
     likeCount: food.likeCount || 0,
     images: food.images || [],
   };
-  // 显示已有的图片预览
-  if (formData.value.coverImage) {
-    previewImage.value = formData.value.coverImage;
-    fileName.value = '已上传图片';
-    fileSize.value = '';
-  }
   showDialog.value = true;
 };
 // 显示提示消息的方法
@@ -373,35 +283,42 @@ const showToastMessage = (message, type = 'success') => {
     showToast.value = false;
   }, 3000);
 };
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.name) {
+    return '请输入美食名称';
+  }
+  if (!data.description) {
+    return '请输入美食描述';
+  }
+  if (!data.price && data.price !== 0) {
+    return '请输入美食价格';
+  }
+  return null;
+};
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
+};
+
 // 提交表单
-const submitForm = async () => {
-  // 表单验证
-  if (!formData.value.name) {
-    showToastMessage('请输入美食名称', 'error');
-    return;
-  }
-  if (!formData.value.description) {
-    showToastMessage('请输入美食描述', 'error');
-    return;
-  }
-  if (!formData.value.price) {
-    showToastMessage('请输入美食价格', 'error');
-    return;
-  }
+const handleSubmit = async (data, isEdit) => {
   try {
-    if (isEditing.value) {
-      await updateFood(formData.value);
+    if (isEdit) {
+      await updateFood(data);
       showToastMessage('更新美食成功');
     } else {
-      await addFood(formData.value);
+      await addFood(data);
       showToastMessage('新增美食成功');
     }
     await fetchFoods();
-    closeDialog();
   } catch (error) {
     console.error('操作失败:', error);
-    const message = isEditing.value ? '更新美食失败' : '新增美食失败';
+    const message = isEdit ? '更新美食失败' : '新增美食失败';
     showToastMessage(message, 'error');
+    throw error;
   }
 };
 
@@ -435,86 +352,6 @@ const confirmDelete = async () => {
   }
 };
 
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false;
-};
-
-// 处理文件上传
-const dragOver = ref(false);
-const previewImage = ref(null);
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-const handleFileUpload = (event) => {
-  dragOver.value = false;
-  const file = event.target.files[0] || event.dataTransfer?.files[0];
-
-  if (!file) return;
-
-  if (!file.type.match('image.*')) {
-    showToastMessage('请选择图片文件', 'error');
-    return;
-  }
-
-  if (file.size > 5 * 1024 * 1024) {
-    showToastMessage('文件大小不能超过5MB', 'error');
-    return;
-  }
-
-  fileName.value = file.name;
-  fileSize.value = formatFileSize(file.size);
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    previewImage.value = e.target.result;
-    formData.value.coverImage = e.target.result;
-  };
-  reader.readAsDataURL(file);
-
-  // 模拟上传进度
-  uploading.value = true;
-  const interval = setInterval(() => {
-    progress.value += Math.random() * 10;
-    if (progress.value >= 100) {
-      clearInterval(interval);
-      setTimeout(() => {
-        uploading.value = false;
-      }, 500);
-    }
-  }, 300);
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-  document.querySelector('.file-input')?.click();
-};
-
-const handleDrop = (e) => {
-  e.preventDefault();
-  handleFileUpload(e);
-};
-
-const removeImage = () => {
-  previewImage.value = null;
-  fileName.value = '';
-  fileSize.value = '';
-  progress.value = 0;
-  uploading.value = false;
-  formData.value.coverImage = '';
-  document.querySelector('.file-input').value = '';
-};
-
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
 // 前端分页逻辑（如果后端不支持分页）
 const paginatedFoods = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
@@ -524,6 +361,17 @@ const paginatedFoods = computed(() => {
 
 onMounted(fetchFoods);
 
+// 处理复选框
+const handleCheck = (food) => {
+  food.checked = !food.checked;
+};
+
+// 触发文件输入框 - 点击表格图片时打开大图预览
+const triggerFileInput = (food) => {
+  if (food.coverImage) {
+    window.open(food.coverImage, '_blank');
+  }
+};
 
 </script>
 

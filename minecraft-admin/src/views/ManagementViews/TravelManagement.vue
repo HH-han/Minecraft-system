@@ -54,36 +54,18 @@
                     layout="total, sizes, prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
-            <!-- 新增/编辑弹窗 -->
-            <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-                <div class="dialog" @click.stop>
-                    <h2>{{ isEditing ? '编辑出行计划' : '新增出行计划' }}</h2>
-                    <form @submit.prevent="submitForm" class="form-container">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>目的地:</label>
-                                <input v-model="formData.destination" required />
-                            </div>
-                            <div class="form-group">
-                                <label>开始日期:</label>
-                                <input type="date" v-model="formData.startDate" required />
-                            </div>
-                            <div class="form-group">
-                                <label>结束日期:</label>
-                                <input type="date" v-model="formData.endDate" required />
-                            </div>
-                            <div class="form-group">
-                                <label>状态:</label>
-                                <input v-model="formData.status" required />
-                            </div>
-                        </div>
-                        <div class="dialog-buttons">
-                            <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-                            <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <!-- 通用新增/编辑弹窗 -->
+            <FormDialog
+                v-model:visible="showDialog"
+                title="出行计划"
+                :isEdit="isEditing"
+                :fields="formFields"
+                :initialData="formData"
+                :showImageUpload="false"
+                :validateFn="validateForm"
+                :submitFn="handleSubmit"
+                @error="handleError"
+            />
 
             <!-- 删除提示框组件 -->
             <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -98,6 +80,7 @@
 
 import { ref, computed, onMounted } from 'vue';
 import { getTravelPlanList, createTravelPlan, updateTravelPlan, deleteTravelPlan } from '@/api/travel';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -123,6 +106,16 @@ const formData = ref({
     endDate: '',
     status: '',
 });
+
+// 表单字段配置
+const formFields = [
+    [
+        { name: 'destination', label: '目的地', type: 'text', required: true, placeholder: '请输入目的地' },
+        { name: 'startDate', label: '开始日期', type: 'text', required: true, placeholder: '请输入开始日期' },
+        { name: 'endDate', label: '结束日期', type: 'text', required: true, placeholder: '请输入结束日期' },
+        { name: 'status', label: '状态', type: 'text', required: true, placeholder: '请输入状态' },
+    ],
+];
 
 // 格式化日期显示
 const formatDate = (date) => {
@@ -195,6 +188,32 @@ const showEditDialog = (card) => {
     formData.value = { ...card };
     showDialog.value = true;
 };
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+    if (!data.destination || !data.startDate || !data.endDate || !data.status) {
+        return '请填写所有必填字段';
+    }
+    return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+    if (isEdit) {
+        await updateTravelPlan(data);
+        showToastMessage('更新成功');
+    } else {
+        await createTravelPlan(data);
+        showToastMessage('新增成功');
+    }
+    await fetchScenic();
+};
+
+// 处理错误
+const handleError = (error) => {
+    showToastMessage(error.message || '操作失败', 'error');
+};
+
 // 显示提示消息的方法
 const showToastMessage = (message, type = 'success') => {
     toastMessage.value = message;
@@ -204,25 +223,6 @@ const showToastMessage = (message, type = 'success') => {
         showToast.value = false;
     }, 3000);
 };
-// 提交表单
-const submitForm = async () => {
-    try {
-        if (isEditing.value) {
-            await updateTravelPlan(formData.value);
-            showToastMessage('更新成功');
-        } else {
-            await createTravelPlan(formData.value);
-            showToastMessage('新增成功');
-        }
-        await fetchScenic();
-        closeDialog();
-    } catch (error) {
-        const message = isEditing.value ? '更新失败' : '新增失败';
-        showToastMessage(message, 'error');
-        console.error('操作失败:', error);
-    }
-};
-
 // 删除卡片
 const isDeletePromptVisible = ref(false);
 const deleteCardId = ref(null);
@@ -252,105 +252,6 @@ const confirmDelete = async () => {
             closeDeletePrompt();
         }
     }
-};
-
-// 关闭对话框
-const closeDialog = () => {
-    showDialog.value = false;
-};
-
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // 验证文件类型
-    const validTypes = ['image/jpeg', 'image/png'];
-    if (!validTypes.includes(file.type)) {
-        showToastMessage('只支持JPG/PNG格式图片', 'error');
-        return;
-    }
-
-    // 验证文件大小
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-        showToastMessage('图片大小不能超过5MB', 'error');
-        return;
-    }
-
-    // 显示文件信息
-    fileName.value = file.name;
-    fileSize.value = formatFileSize(file.size);
-
-    // 读取并预览图片
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        previewImage.value = e.target.result;
-        formData.value.coverImage = e.target.result;
-    };
-    reader.readAsDataURL(file);
-
-    // 模拟上传进度
-    uploading.value = true;
-    const interval = setInterval(() => {
-        if (progress.value < 100) {
-            progress.value += 10;
-        } else {
-            clearInterval(interval);
-            uploading.value = false;
-        }
-    }, 100);
-
-    return file;
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-    dragOver.value = false;
-    const file = event.dataTransfer.files[0];
-    if (file) {
-        const fakeEvent = { target: { files: [file] } };
-        handleFileUpload(fakeEvent);
-    }
-};
-
-// 移除图片
-const removeImage = () => {
-    previewImage.value = '';
-    fileName.value = '';
-    fileSize.value = '';
-    formData.value.coverImage = '';
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = (event) => {
-        const file = handleFileUpload(event);
-        if (file) {
-            formData.value.coverImage = file;
-        }
-    };
-    fileInput.click();
 };
 
 onMounted(fetchScenic);

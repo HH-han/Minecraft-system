@@ -55,37 +55,18 @@
           :total="total">
         </el-pagination>
       </div>
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑订单' : '新增订单' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-row">
-              <div class="form-group">
-                <label>用户名:</label>
-                <input v-model="formData.username" required />
-              </div>
-              <div class="form-group">
-                <label>订单标题:</label>
-                <input v-model="formData.itemName" required />
-              </div>
-              <div class="form-group">
-                <label>订单编号:</label>
-                <input v-model="formData.orderId" required />
-              </div>
-              <div class="form-group">
-                <label>价格:</label>
-                <input v-model="formData.amount" type="number" required />
-              </div>
-            </div>
-            <!-- 创建修改时间 -->
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="订单"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="false"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 删除提示框组件 -->
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -100,6 +81,7 @@
 
 import { ref, computed, onMounted } from 'vue';
 import request from '@/utils/request';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -124,13 +106,44 @@ const showDialog = ref(false);
 const isEditing = ref(false);
 const formData = ref({
   id: null,
-  title: '',
-  subtitle: '',
-  image: '',
-  price: '',
-  createdAt: '',
-  updatedAt: '',
+  username: '',
+  itemName: '',
+  orderId: '',
+  amount: 0,
 });
+
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'username', label: '用户名', type: 'text', required: true, placeholder: '请输入用户名' },
+    { name: 'itemName', label: '订单标题', type: 'text', required: true, placeholder: '请输入订单标题' },
+  ],
+  [
+    { name: 'orderId', label: '订单编号', type: 'text', required: true, placeholder: '请输入订单编号' },
+    { name: 'amount', label: '价格', type: 'number', required: true, min: 0, placeholder: '请输入价格' },
+  ],
+];
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.username || !data.itemName || !data.orderId) {
+    return '请填写所有必填字段';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  try {
+    if (isEdit) {
+      await request.put(`/api/public/payment/${data.id}`, data);
+    } else {
+      await request.post('/api/public/payment', data);
+    }
+  } catch (error) {
+    throw new Error(isEdit ? '更新订单失败' : '新增订单失败');
+  }
+};
 
 // 格式化日期显示
 const formatDate = (date) => {
@@ -189,12 +202,10 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    title: '',
-    subtitle: '',
-    image: '',
-    price: '',
-    createdAt: '',
-    updatedAt: '',
+    username: '',
+    itemName: '',
+    orderId: '',
+    amount: 0,
   };
   showDialog.value = true;
 };
@@ -214,23 +225,10 @@ const showToastMessage = (message, type = 'success') => {
     showToast.value = false;
   }, 3000);
 };
-// 提交表单
-const submitForm = async () => {
-  try {
-    if (isEditing.value) {
-      await request.put(`/api/public/payment/${formData.value.id}`, formData.value);
-      showToastMessage('更新订单成功');
-    } else {
-      await request.post('/api/public/payment', formData.value);
-      showToastMessage('新增订单成功');
-    }
-    await fetchScenic();
-    closeDialog();
-  } catch (error) {
-    const message = isEditing.value ? '更新订单失败' : '新增订单失败';
-    showToastMessage(message, 'error');
-    console.error('操作失败:', error);
-  }
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
 };
 
 // 删除卡片
@@ -262,11 +260,6 @@ const confirmDelete = async () => {
       closeDeletePrompt();
     }
   }
-};
-
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false;
 };
 onMounted(fetchScenic);
 

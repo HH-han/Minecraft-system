@@ -63,113 +63,21 @@
                     layout="total, sizes, prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
-            <!-- 新增/编辑弹窗 -->
-            <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-                <div class="dialog" @click.stop>
-                    <h2>{{ isEditing ? '编辑新闻' : '新增新闻' }}</h2>
-                    <form @submit.prevent="submitForm" class="form-container">
-                        <div class="form-group">
-                            <div class="image-upload-container">
-                                <div class="upload-header">
-                                    <h3>上传图片</h3>
-                                    <p>支持 JPG, PNG 格式，最大 5MB</p>
-                                </div>
-
-                                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                                    @dragleave="dragOver = false" @drop.prevent="handleDrop"
-                                    :class="{ 'drag-active': dragOver }">
-                                    <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*"
-                                        class="file-input" />
-
-                                    <div class="upload-content">
-                                        <div class="upload-icon">
-                                            <svg viewBox="0 0 24 24">
-                                                <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                                            </svg>
-                                        </div>
-                                        <p class="upload-text">点击或拖拽文件到此处</p>
-                                        <p class="upload-hint">推荐尺寸：1200×800px</p>
-                                    </div>
-                                </div>
-
-                                <!-- 图片预览区域 -->
-                                <div class="preview-container" v-if="previewImage">
-                                    <div class="preview-card">
-                                        <img :src="previewImage" alt="预览图片" class="preview-image" />
-                                        <div class="preview-actions">
-                                            <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn-image delete-btn-image" @click="removeImage">
-                                                <svg viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class="preview-footer">
-                                            <div class="file-info">
-                                                <span class="file-name">{{ fileName }}</span>
-                                                <span class="file-size">{{ fileSize }}</span>
-                                            </div>
-                                            <div class="upload-progress" v-if="uploading">
-                                                <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>新闻标题:</label>
-                                <input v-model="formData.title" required />
-                            </div>
-                            <div class="form-group">
-                                <label>新闻来源:</label>
-                                <input v-model="formData.source" required />
-                            </div>
-                            <div class="form-group">
-                                <label>新闻内容:</label>
-                                <textarea v-model="formData.content" required rows="4"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>浏览量:</label>
-                                <input type="number" v-model="formData.viewCount" min="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>点赞数:</label>
-                                <input type="number" v-model="formData.likeCount" min="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>评论数:</label>
-                                <input type="number" v-model="formData.commentCount" min="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>收藏数:</label>
-                                <input type="number" v-model="formData.collectCount" min="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>状态:</label>
-                                <select v-model="formData.status">
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- 创建修改时间 -->
-                        <div class="dialog-buttons">
-                            <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-                            <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <!-- 通用新增/编辑弹窗 -->
+            <FormDialog
+                v-model:visible="showDialog"
+                title="新闻"
+                :isEdit="isEditing"
+                :fields="formFields"
+                :initialData="formData"
+                :showImageUpload="true"
+                imageUploadLabel="上传新闻封面"
+                recommendedSize="推荐尺寸：1200×800px"
+                imageField="coverImage"
+                :validateFn="validateForm"
+                :submitFn="handleSubmit"
+                @error="handleError"
+            />
 
             <!-- 删除提示框组件 -->
             <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -184,6 +92,7 @@
 
 import { ref, computed, onMounted } from 'vue';
 import { getNewsList, addNews, updateNews, deleteNews } from '@/api/news';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -224,6 +133,29 @@ const formData = ref({
     status: 1,
     viewCount: 0,
 });
+
+// 表单字段配置
+const formFields = [
+    [
+        { name: 'title', label: '新闻标题', type: 'text', required: true, placeholder: '请输入新闻标题' },
+        { name: 'source', label: '新闻来源', type: 'text', required: true, placeholder: '请输入新闻来源' },
+    ],
+    [
+        { name: 'content', label: '新闻内容', type: 'textarea', required: true, rows: 4, placeholder: '请输入新闻内容' },
+    ],
+    [
+        { name: 'viewCount', label: '浏览量', type: 'number', min: 0, placeholder: '请输入浏览量' },
+        { name: 'likeCount', label: '点赞数', type: 'number', min: 0, placeholder: '请输入点赞数' },
+        { name: 'commentCount', label: '评论数', type: 'number', min: 0, placeholder: '请输入评论数' },
+        { name: 'collectCount', label: '收藏数', type: 'number', min: 0, placeholder: '请输入收藏数' },
+    ],
+    [
+        { name: 'status', label: '状态', type: 'select', required: true, options: [
+            { value: 1, label: '启用' },
+            { value: 0, label: '禁用' },
+        ]},
+    ],
+];
 
 // 格式化日期显示
 const formatDate = (date) => {
@@ -303,6 +235,38 @@ const showEditDialog = (card) => {
     formData.value = { ...card };
     showDialog.value = true;
 };
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+    if (!data.title || !data.source || !data.content) {
+        return '请填写所有必填字段';
+    }
+    if (!isEdit && !data.coverImage) {
+        return '请上传新闻封面图片';
+    }
+    return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+    if (isEdit) {
+        data.updateTime = new Date().toISOString();
+        await updateNews(data);
+        showToastMessage('更新成功');
+    } else {
+        data.createTime = new Date().toISOString();
+        data.updateTime = new Date().toISOString();
+        await addNews(data);
+        showToastMessage('新增成功');
+    }
+    await fetchScenic();
+};
+
+// 处理错误
+const handleError = (error) => {
+    showToastMessage(error.message || '操作失败', 'error');
+};
+
 // 显示提示消息的方法
 const showToastMessage = (message, type = 'success') => {
     toastMessage.value = message;
@@ -311,28 +275,7 @@ const showToastMessage = (message, type = 'success') => {
     setTimeout(() => {
         showToast.value = false;
     }, 3000);
-};
-// 提交表单
-const submitForm = async () => {
-    try {
-        // 自动设置时间
-        if (isEditing.value) {
-            formData.value.updateTime = new Date().toISOString();
-            await updateNews(formData.value);
-            showToastMessage('更新成功');
-        } else {
-            formData.value.createTime = new Date().toISOString();
-            formData.value.updateTime = new Date().toISOString();
-            await addNews(formData.value);
-            showToastMessage('新增成功');
-        }
-        await fetchScenic();
-        closeDialog();
-    } catch (error) {
-        const message = isEditing.value ? '更新失败' : '新增失败';
-        showToastMessage(message, 'error');
-        console.error('操作失败:', error);
-    }
+}
 };
 
 // 删除卡片
@@ -364,105 +307,6 @@ const confirmDelete = async () => {
             closeDeletePrompt();
         }
     }
-};
-
-// 关闭对话框
-const closeDialog = () => {
-    showDialog.value = false;
-};
-
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // 验证文件类型
-    const validTypes = ['image/jpeg', 'image/png'];
-    if (!validTypes.includes(file.type)) {
-        showToastMessage('只支持JPG/PNG格式图片', 'error');
-        return;
-    }
-
-    // 验证文件大小
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-        showToastMessage('图片大小不能超过5MB', 'error');
-        return;
-    }
-
-    // 显示文件信息
-    fileName.value = file.name;
-    fileSize.value = formatFileSize(file.size);
-
-    // 读取并预览图片
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        previewImage.value = e.target.result;
-        formData.value.coverImage = e.target.result;
-    };
-    reader.readAsDataURL(file);
-
-    // 模拟上传进度
-    uploading.value = true;
-    const interval = setInterval(() => {
-        if (progress.value < 100) {
-            progress.value += 10;
-        } else {
-            clearInterval(interval);
-            uploading.value = false;
-        }
-    }, 100);
-
-    return file;
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-    dragOver.value = false;
-    const file = event.dataTransfer.files[0];
-    if (file) {
-        const fakeEvent = { target: { files: [file] } };
-        handleFileUpload(fakeEvent);
-    }
-};
-
-// 移除图片
-const removeImage = () => {
-    previewImage.value = '';
-    fileName.value = '';
-    fileSize.value = '';
-    formData.value.coverImage = '';
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = (event) => {
-        const file = handleFileUpload(event);
-        if (file) {
-            formData.value.coverImage = file;
-        }
-    };
-    fileInput.click();
 };
 
 onMounted(fetchScenic);

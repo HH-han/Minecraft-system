@@ -64,121 +64,21 @@
           :total="total" />
       </div>
 
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑产品' : '新增产品' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
-                </div>
-
-                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" />
-
-                  <div class="upload-content">
-                    <div class="upload-icon">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                      </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1200×800px</p>
-                  </div>
-                </div>
-
-                <!-- 图片预览区域 -->
-                <div class="preview-container" v-if="previewImage">
-                  <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                        </svg>
-                      </button>
-                      <button class="action-btn-image delete-btn-image" @click="removeImage">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="preview-footer">
-                      <div class="file-info">
-                        <span class="file-name">{{ fileName }}</span>
-                        <span class="file-size">{{ fileSize }}</span>
-                      </div>
-                      <div class="upload-progress" v-if="uploading">
-                        <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>产品名称:</label>
-                <input v-model="formData.name" required />
-              </div>
-              <div class="form-group">
-                <label>产品类型:</label>
-                <input v-model="formData.type" required />
-              </div>
-              <div class="form-group">
-                <label>商品:</label>
-                <input v-model="formData.commodity" required />
-              </div>
-              <div class="form-group">
-                <label>城市:</label>
-                <input v-model="formData.city" required />
-              </div>
-              <div class="form-group">
-                <label>省份:</label>
-                <input v-model="formData.province" required />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>产品描述:</label>
-                <input v-model="formData.description" required />
-              </div>
-              <div class="form-group">
-                <label>产品价格:</label>
-                <input v-model="formData.price" required />
-              </div>
-              <div class="form-group">
-                <label>库存:</label>
-                <input v-model="formData.stock" type="number" required />
-              </div>
-              <div class="form-group">
-                <label>评分:</label>
-                <input v-model="formData.rating" type="number" required />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>状态:</label>
-                <input v-model="formData.status" type="number" />
-              </div>
-              <div class="form-group">
-                <label>标签:</label>
-                <input v-model="formData.tags" />
-              </div>
-            </div>
-            <!-- 提交按钮 -->
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="产品"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传图片"
+        recommendedSize="推荐尺寸：1200×800px"
+        imageField="coverImage"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 删除提示框组件 -->
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -192,6 +92,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getProductList, addProduct, updateProduct, deleteProduct } from '@/api/product';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -240,6 +141,29 @@ const formData = ref({
   likeCount: 0,
   images: [],
 });
+
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'name', label: '产品名称', type: 'text', required: true, placeholder: '请输入产品名称' },
+    { name: 'type', label: '产品类型', type: 'text', required: true, placeholder: '请输入产品类型' },
+    { name: 'commodity', label: '商品', type: 'text', required: true, placeholder: '请输入商品' },
+    { name: 'city', label: '城市', type: 'text', required: true, placeholder: '请输入城市' },
+  ],
+  [
+    { name: 'province', label: '省份', type: 'text', required: true, placeholder: '请输入省份' },
+    { name: 'description', label: '产品描述', type: 'textarea', required: true, rows: 3, placeholder: '请输入产品描述' },
+  ],
+  [
+    { name: 'price', label: '产品价格', type: 'text', required: true, placeholder: '请输入产品价格' },
+    { name: 'stock', label: '库存', type: 'number', required: true, placeholder: '请输入库存' },
+    { name: 'rating', label: '评分', type: 'number', required: true, placeholder: '请输入评分' },
+    { name: 'status', label: '状态', type: 'number', placeholder: '请输入状态' },
+  ],
+  [
+    { name: 'tags', label: '标签', type: 'text', placeholder: '请输入标签' },
+  ],
+];
 
 // 分页相关变量
 const currentPage = ref(1);
@@ -350,14 +274,51 @@ const showEditDialog = (product) => {
     likeCount: product.likeCount || 0,
     images: product.images || [],
   };
-  // 显示已有的图片预览
-  if (formData.value.coverImage) {
-    previewImage.value = formData.value.coverImage;
-    fileName.value = '已上传图片';
-    fileSize.value = '';
-  }
   showDialog.value = true;
 };
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.name) {
+    return '请输入产品名称';
+  }
+  if (!data.type) {
+    return '请输入产品类型';
+  }
+  if (!data.city) {
+    return '请输入城市';
+  }
+  if (!data.province) {
+    return '请输入省份';
+  }
+  if (!data.description) {
+    return '请输入产品描述';
+  }
+  if (!data.price) {
+    return '请输入产品价格';
+  }
+  if (!data.stock && data.stock !== 0) {
+    return '请输入库存';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  if (isEdit) {
+    await updateProduct(data);
+    showToastMessage('更新产品成功');
+  } else {
+    await addProduct(data);
+    showToastMessage('新增产品成功');
+  }
+  await fetchProducts();
+};
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
+};
+
 // 显示提示消息的方法
 const showToastMessage = (message, type = 'success') => {
   toastMessage.value = message;
@@ -367,54 +328,6 @@ const showToastMessage = (message, type = 'success') => {
     showToast.value = false;
   }, 3000);
 };
-// 提交表单
-const submitForm = async () => {
-  // 表单验证
-  if (!formData.value.name) {
-    showToastMessage('请输入产品名称', 'error');
-    return;
-  }
-  if (!formData.value.type) {
-    showToastMessage('请输入产品类型', 'error');
-    return;
-  }
-  if (!formData.value.city) {
-    showToastMessage('请输入城市', 'error');
-    return;
-  }
-  if (!formData.value.province) {
-    showToastMessage('请输入省份', 'error');
-    return;
-  }
-  if (!formData.value.description) {
-    showToastMessage('请输入产品描述', 'error');
-    return;
-  }
-  if (!formData.value.price) {
-    showToastMessage('请输入产品价格', 'error');
-    return;
-  }
-  if (!formData.value.stock) {
-    showToastMessage('请输入库存', 'error');
-    return;
-  }
-  try {
-    if (isEditing.value) {
-      await updateProduct(formData.value);
-      showToastMessage('更新产品成功');
-    } else {
-      await addProduct(formData.value);
-      showToastMessage('新增产品成功');
-    }
-    await fetchProducts();
-    closeDialog();
-  } catch (error) {
-    console.error('操作失败:', error);
-    const message = isEditing.value ? '更新产品失败' : '新增产品失败';
-    showToastMessage(message, 'error');
-  }
-};
-
 // 删除产品
 const isDeletePromptVisible = ref(false);
 const deleteProductId = ref(null);
@@ -445,11 +358,6 @@ const confirmDelete = async () => {
   }
 };
 
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false;
-};
-
 // 处理复选框选择
 const handleCheck = (product) => {
   product.checked = !product.checked;
@@ -474,81 +382,6 @@ const handleReset = async () => {
     console.error('批量删除失败:', error);
     showToastMessage('批量删除失败', 'error');
   }
-};
-
-// 处理文件上传
-const dragOver = ref(false);
-const previewImage = ref(null);
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-const handleFileUpload = (event) => {
-  dragOver.value = false;
-  const file = event.target.files[0] || event.dataTransfer?.files[0];
-
-  if (!file) return;
-
-  if (!file.type.match('image.*')) {
-    showToastMessage('请选择图片文件', 'error');
-    return;
-  }
-
-  if (file.size > 5 * 1024 * 1024) {
-    showToastMessage('文件大小不能超过5MB', 'error');
-    return;
-  }
-
-  fileName.value = file.name;
-  fileSize.value = formatFileSize(file.size);
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    previewImage.value = e.target.result;
-    formData.value.coverImage = e.target.result;
-  };
-  reader.readAsDataURL(file);
-
-  // 模拟上传进度
-  uploading.value = true;
-  const interval = setInterval(() => {
-    progress.value += Math.random() * 10;
-    if (progress.value >= 100) {
-      clearInterval(interval);
-      setTimeout(() => {
-        uploading.value = false;
-      }, 500);
-    }
-  }, 300);
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-  document.querySelector('.file-input')?.click();
-};
-
-const handleDrop = (e) => {
-  e.preventDefault();
-  handleFileUpload(e);
-};
-
-const removeImage = () => {
-  previewImage.value = null;
-  fileName.value = '';
-  fileSize.value = '';
-  progress.value = 0;
-  uploading.value = false;
-  formData.value.coverImage = '';
-  document.querySelector('.file-input').value = '';
-};
-
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 // 前端分页逻辑（如果后端不支持分页）

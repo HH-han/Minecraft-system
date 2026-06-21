@@ -60,109 +60,21 @@
           :total="total" />
       </div>
 
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑订单' : '新增订单' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
-                </div>
-
-                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" />
-
-                  <div class="upload-content">
-                    <div class="upload-icon">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                      </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1200×800px</p>
-                  </div>
-                </div>
-
-                <!-- 图片预览区域 -->
-                <div class="preview-container" v-if="previewImage">
-                  <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                        </svg>
-                      </button>
-                      <button class="action-btn-image delete-btn-image" @click="removeImage">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="preview-footer">
-                      <div class="file-info">
-                        <span class="file-name">{{ fileName }}</span>
-                        <span class="file-size">{{ fileSize }}</span>
-                      </div>
-                      <div class="upload-progress" v-if="uploading">
-                        <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-
-              <div class="form-group">
-                <label>商品价格:</label>
-                <input v-model="formData.price" required />
-              </div>
-              <div class="form-group">
-                <label>订单总金额:</label>
-                <input v-model="formData.totalAmount" required />
-              </div>
-              <div class="form-group">
-                <label>订单状态:</label>
-                <!-- <input v-model="formData.status" required /> -->
-                <select v-model="formData.status" required>
-                  <option value="PENDING">PENDING</option>
-                  <option value="PAID">PAID</option>
-                  <option value="SHIPPED">SHIPPED</option>
-                  <option value="COMPLETED">COMPLETED</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>下单时间:</label>
-                <span class="auto-time">
-                  {{ isEditing ? formatDateTime(formData.orderDate) : '系统自动生成' }}
-                </span>
-              </div>
-              <div class="form-group">
-                <label>支付方式:</label>
-                <select v-model="formData.paymentMethod" required>
-                  <option value="BANK">银行转账</option>
-                  <option value="PAYPAL">PayPal</option>
-                  <option value="WECHAT">微信支付</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>商品编号:</label>
-                <input v-model="formData.sku" required />
-              </div>
-            </div>
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="订单"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传图片"
+        recommendedSize="推荐尺寸：1200×800px"
+        imageField="image"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 删除提示框组件 -->
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -177,6 +89,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import request from '@/utils/request';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -211,6 +124,28 @@ const formData = ref({
   sku: '',
 });
 
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'price', label: '商品价格', type: 'text', required: true, placeholder: '请输入商品价格' },
+    { name: 'totalAmount', label: '订单总金额', type: 'text', required: true, placeholder: '请输入订单总金额' },
+    { name: 'status', label: '订单状态', type: 'select', required: true, placeholder: '请选择订单状态', options: [
+      { value: 'PENDING', label: 'PENDING' },
+      { value: 'PAID', label: 'PAID' },
+      { value: 'SHIPPED', label: 'SHIPPED' },
+      { value: 'COMPLETED', label: 'COMPLETED' },
+    ]},
+    { name: 'paymentMethod', label: '支付方式', type: 'select', required: true, placeholder: '请选择支付方式', options: [
+      { value: 'BANK', label: '银行转账' },
+      { value: 'PAYPAL', label: 'PayPal' },
+      { value: 'WECHAT', label: '微信支付' },
+    ]},
+  ],
+  [
+    { name: 'sku', label: '商品编号', type: 'text', required: true, placeholder: '请输入商品编号' },
+  ],
+];
+
 // 分页相关
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -229,10 +164,6 @@ const deleteOrderId = ref(null);
 const formatDate = (date) => {
   if (!date) return '未记录';
   return new Date(date).toLocaleString('zh-CN');
-};
-
-const closeDialog = () => {
-  showDialog.value = false;
 };
 
 const closeDeletePrompt = () => {
@@ -259,6 +190,47 @@ const fetchOrders = async () => {
   }
 };
 
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.price) {
+    return '请输入商品价格';
+  }
+  if (!data.totalAmount) {
+    return '请输入订单总金额';
+  }
+  if (!data.status) {
+    return '请选择订单状态';
+  }
+  if (!data.paymentMethod) {
+    return '请选择支付方式';
+  }
+  if (!data.sku) {
+    return '请输入商品编号';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  const payload = {
+    ...data,
+    orderDate: isEdit ? data.orderDate : new Date().toISOString(),
+  };
+  if (isEdit) {
+    await request.put(`/api/public/order/${data.id}`, payload);
+    showToastMessage('更新订单成功');
+  } else {
+    await request.post('/api/public/order', payload);
+    showToastMessage('新增订单成功');
+  }
+  await fetchOrders();
+};
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
+};
+
 const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
@@ -279,27 +251,6 @@ const showEditDialog = (order) => {
   isEditing.value = true;
   formData.value = { ...order };
   showDialog.value = true;
-};
-
-const submitForm = async () => {
-  try {
-    const payload = {
-      ...formData.value,
-      orderDate: isEditing.value ? formData.value.orderDate : new Date().toISOString(),
-    };
-
-    if (isEditing.value) {
-      await request.put(`/api/public/order/${formData.value.id}`, payload);
-      showToastMessage('更新成功');
-    } else {
-      await request.post('/api/public/order', payload);
-      showToastMessage('创建成功');
-    }
-    fetchOrders();
-    closeDialog();
-  } catch (error) {
-    showToastMessage(isEditing.value ? '更新失败' : '创建失败', 'error');
-  }
 };
 
 const handleDelete = (id) => {
@@ -341,91 +292,6 @@ const handleCurrentChange = (val) => {
 
 const handleSearch = fetchOrders;
 
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  // 验证文件类型
-  const validTypes = ['image/jpeg', 'image/png'];
-  if (!validTypes.includes(file.type)) {
-    showToastMessage('仅支持JPG/PNG格式图片', 'error');
-    return;
-  }
-
-  // 验证文件大小 (5MB)
-  const maxSize = 5 * 1024 * 1024;
-  if (file.size > maxSize) {
-    showToastMessage('图片大小不能超过5MB', 'error');
-    return;
-  }
-
-  // 显示预览
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    previewImage.value = e.target.result;
-    fileName.value = file.name;
-    fileSize.value = formatFileSize(file.size);
-    formData.value.image = e.target.result;
-  };
-  reader.readAsDataURL(file);
-
-  // 模拟上传进度
-  uploading.value = true;
-  progress.value = 0;
-  const interval = setInterval(() => {
-    progress.value += 10;
-    if (progress.value >= 100) {
-      clearInterval(interval);
-      uploading.value = false;
-      showToastMessage('图片上传成功');
-    }
-  }, 200);
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-  dragOver.value = false;
-  const file = event.dataTransfer.files[0];
-  if (file) {
-    const inputEvent = { target: { files: [file] } };
-    handleFileUpload(inputEvent);
-  }
-};
-
-// 移除图片
-const removeImage = () => {
-  previewImage.value = '';
-  fileName.value = '';
-  fileSize.value = '';
-  formData.value.image = '';
-};
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = 'image/*';
-  fileInput.onchange = (event) => handleFileUpload(event);
-  fileInput.click();
-};
 const filteredOrders = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
   return keyword

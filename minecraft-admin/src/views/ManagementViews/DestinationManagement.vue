@@ -70,134 +70,22 @@
             layout="total, sizes, prev, pager, next, jumper" :total="total" />
         </div>
 
-        <!-- 新增/编辑弹窗 -->
-        <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-          <div class="dialog" @click.stop>
-            <h2>{{ isEditing ? '编辑项目' : '新增项目' }}</h2>
-            <form @submit.prevent="submitForm" class="form-container">
-              <div class="form-group">
-                <div class="image-upload-container">
-                  <div class="upload-header">
-                    <h3>上传图片</h3>
-                    <p>支持 JPG, PNG 格式，最大 5MB</p>
-                  </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="目的地"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传图片"
+        recommendedSize="推荐尺寸：1200×800px"
+        imageField="image"
+        :submitFn="handleSubmit"
+        @error="handleDialogError"
+      />
 
-                  <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                    @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                    <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" />
-
-                    <div class="upload-content">
-                      <div class="upload-icon">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                        </svg>
-                      </div>
-                      <p class="upload-text">点击或拖拽文件到此处</p>
-                      <p class="upload-hint">推荐尺寸：1200×800px</p>
-                    </div>
-                  </div>
-
-                  <!-- 图片预览区域 -->
-                  <div class="preview-container" v-if="previewImage">
-                    <div class="preview-card">
-                      <img :src="previewImage" alt="预览图片" class="preview-image" />
-                      <div class="preview-actions">
-                        <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                          <svg viewBox="0 0 24 24">
-                            <path
-                              d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                          </svg>
-                        </button>
-                        <button class="action-btn-image delete-btn-image" @click="removeImage">
-                          <svg viewBox="0 0 24 24">
-                            <path
-                              d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                          </svg>
-                        </button>
-                      </div>
-                      <div class="preview-footer">
-                        <div class="file-info">
-                          <span class="file-name">{{ fileName }}</span>
-                          <span class="file-size">{{ fileSize }}</span>
-                        </div>
-                        <div class="upload-progress" v-if="uploading">
-                          <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>名称:</label>
-                  <input v-model="formData.name" required />
-                </div>
-                <div class="form-group">
-                  <label>中文名称:</label>
-                  <input v-model="formData.chineseName" required />
-                </div>
-                <div class="form-group">
-                  <label>大洲ID:</label>
-                  <input v-model="formData.continentId" type="number" required />
-                </div>
-                <div class="form-group">
-                  <label>首都:</label>
-                  <input v-model="formData.capital" />
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>面积:</label>
-                  <input v-model="formData.area" type="number" step="0.01" />
-                </div>
-                <div class="form-group">
-                  <label>人口:</label>
-                  <input v-model="formData.population" type="number" />
-                </div>
-                <div class="form-group">
-                  <label>货币:</label>
-                  <input v-model="formData.currency" />
-                </div>
-                <div class="form-group">
-                  <label>官方语言:</label>
-                  <input v-model="formData.language" />
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>时区:</label>
-                  <input v-model="formData.timezone" />
-                </div>
-                <div class="form-group">
-                  <label>国家代码:</label>
-                  <input v-model="formData.countryCode" />
-                </div>
-                <div class="form-group">
-                  <label>电话区号:</label>
-                  <input v-model="formData.phoneCode" />
-                </div>
-                <div class="form-group">
-                  <label>国旗emoji:</label>
-                  <input v-model="formData.flagEmoji" />
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>描述:</label>
-                  <textarea v-model="formData.description" placeholder="最多 255 字" maxlength="255"></textarea>
-                </div>
-              </div>
-              <!-- 提交按钮 -->
-              <div class="dialog-buttons">
-                <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-                <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- 删除提示框组件 -->
+      <!-- 删除提示框组件 -->
         <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
 
         <!-- 自定义提示框组件 -->
@@ -211,6 +99,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import countriesApi from '@/api/countries';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -234,6 +123,31 @@ const columns = [
   { key: 'createdAt', title: '创建时间' }
 ];
 
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'name', label: '名称', type: 'text', required: true, placeholder: '请输入国家名称' },
+    { name: 'chineseName', label: '中文名称', type: 'text', required: true, placeholder: '请输入中文名称' },
+    { name: 'continentId', label: '大洲ID', type: 'number', required: true, placeholder: '请输入大洲ID' },
+    { name: 'capital', label: '首都', type: 'text', placeholder: '请输入首都' },
+  ],
+  [
+    { name: 'area', label: '面积', type: 'number', step: 0.01, placeholder: '请输入面积' },
+    { name: 'population', label: '人口', type: 'number', placeholder: '请输入人口' },
+    { name: 'currency', label: '货币', type: 'text', placeholder: '请输入货币' },
+    { name: 'language', label: '官方语言', type: 'text', placeholder: '请输入官方语言' },
+  ],
+  [
+    { name: 'timezone', label: '时区', type: 'text', placeholder: '请输入时区' },
+    { name: 'countryCode', label: '国家代码', type: 'text', placeholder: '请输入国家代码' },
+    { name: 'phoneCode', label: '电话区号', type: 'text', placeholder: '请输入电话区号' },
+    { name: 'flagEmoji', label: '国旗emoji', type: 'text', placeholder: '请输入国旗emoji' },
+  ],
+  [
+    { name: 'description', label: '描述', type: 'textarea', fullWidth: true, rows: 3, placeholder: '最多 255 字' },
+  ],
+];
+
 // 数据相关
 const items = ref([]);
 const loading = ref(true);
@@ -243,17 +157,20 @@ const isEditing = ref(false);
 const formData = ref({
   id: null,
   name: '',
-  category: '',
-  cities: '',
+  chineseName: '',
   image: '',
-  created_at: '',
+  continentId: 0,
+  capital: '',
+  area: 0,
+  population: 0,
+  currency: '',
+  language: '',
+  timezone: '',
+  countryCode: '',
+  phoneCode: '',
+  flagEmoji: '',
   description: '',
-  price: 0,
-
 });
-const closeDialog = () => {
-  showDialog.value = false;
-};
 // 提示框相关
 const showToast = ref(false);
 const toastMessage = ref('');
@@ -358,32 +275,28 @@ const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
     id: item.id,
-    name: item.name,
-    chineseName: item.chineseName,
+    name: item.name || '',
+    chineseName: item.chineseName || '',
     image: item.image || '',
-    continentId: item.continentId,
-    capital: item.capital,
-    area: item.area,
-    population: item.population,
-    currency: item.currency,
-    language: item.language,
-    timezone: item.timezone,
-    countryCode: item.countryCode,
-    phoneCode: item.phoneCode,
-    flagEmoji: item.flagEmoji,
-    description: item.description,
+    continentId: item.continentId || 0,
+    capital: item.capital || '',
+    area: item.area || 0,
+    population: item.population || 0,
+    currency: item.currency || '',
+    language: item.language || '',
+    timezone: item.timezone || '',
+    countryCode: item.countryCode || '',
+    phoneCode: item.phoneCode || '',
+    flagEmoji: item.flagEmoji || '',
+    description: item.description || '',
   };
   showDialog.value = true;
 };
 
-// 提交表单
-const submitForm = async () => {
+// 提交表单 (供 FormDialog 调用)
+const handleSubmit = async (data, isEdit) => {
   try {
-    const data = {
-      ...formData.value,
-    };
-
-    if (isEditing.value) {
+    if (isEdit) {
       await countriesApi.updateCountries(data);
       showToastMessage('更新国家成功');
     } else {
@@ -391,12 +304,15 @@ const submitForm = async () => {
       showToastMessage('新增国家成功');
     }
     await fetchItems();
-    closeDialog();
   } catch (error) {
-    const message = isEditing.value ? '更新国家失败' : '新增国家失败';
-    showToastMessage(message, 'error');
-    console.error('操作失败:', error);
+    const message = isEdit ? '更新国家失败' : '新增国家失败';
+    throw new Error(message);
   }
+};
+
+// 处理弹窗错误
+const handleDialogError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
 };
 
 // 删除项目
@@ -434,91 +350,6 @@ const showToastMessage = (message, type = 'success') => {
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
-};
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  // 验证文件类型
-  const validTypes = ['image/jpeg', 'image/png'];
-  if (!validTypes.includes(file.type)) {
-    showToastMessage('仅支持JPG/PNG格式图片', 'error');
-    return;
-  }
-
-  // 验证文件大小 (5MB)
-  const maxSize = 5 * 1024 * 1024;
-  if (file.size > maxSize) {
-    showToastMessage('图片大小不能超过5MB', 'error');
-    return;
-  }
-
-  // 显示预览
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    previewImage.value = e.target.result;
-    fileName.value = file.name;
-    fileSize.value = formatFileSize(file.size);
-    formData.value.image = e.target.result;
-  };
-  reader.readAsDataURL(file);
-
-  // 模拟上传进度
-  uploading.value = true;
-  progress.value = 0;
-  const interval = setInterval(() => {
-    progress.value += 10;
-    if (progress.value >= 100) {
-      clearInterval(interval);
-      uploading.value = false;
-      showToastMessage('图片上传成功');
-    }
-  }, 200);
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-  dragOver.value = false;
-  const file = event.dataTransfer.files[0];
-  if (file) {
-    const inputEvent = { target: { files: [file] } };
-    handleFileUpload(inputEvent);
-  }
-};
-
-// 移除图片
-const removeImage = () => {
-  previewImage.value = '';
-  fileName.value = '';
-  fileSize.value = '';
-  formData.value.image = '';
-};
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = 'image/*';
-  fileInput.onchange = (event) => handleFileUpload(event);
-  fileInput.click();
 };
 
 // 分页处理

@@ -80,65 +80,54 @@
         />
       </div>
 
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑帖子' : '新增帖子' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <label>帖子标题:</label>
-              <input v-model="formData.title" required placeholder="请输入帖子标题" />
-            </div>
-            <div class="form-group">
-              <label>帖子内容:</label>
-              <textarea v-model="formData.content" required rows="5" placeholder="请输入帖子内容"></textarea>
-            </div>
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="帖子"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="false"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      >
+        <template #custom-fields>
+          <div class="form-group">
+            <div class="image-upload-container">
+              <div class="upload-header">
+                <h3>上传图片</h3>
+                <p>支持 JPG, PNG 格式，最大 5MB</p>
+              </div>
+              <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
+                @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
+                <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" multiple />
+                <div class="upload-content">
+                  <div class="upload-icon">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                    </svg>
+                  </div>
+                  <p class="upload-text">点击或拖拽文件到此处</p>
+                  <p class="upload-hint">推荐尺寸：1200×800px，可上传多张</p>
                 </div>
-                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" multiple />
-                  <div class="upload-content">
-                    <div class="upload-icon">
+              </div>
+              <div class="preview-container" v-if="previewImages.length > 0">
+                <div class="preview-card" v-for="(img, index) in previewImages" :key="index">
+                  <img :src="img" alt="预览图片" class="preview-image" />
+                  <div class="preview-actions">
+                    <button class="action-btn-image delete-btn-image" @click="removeImage(index)">
                       <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                       </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1200×800px，可上传多张</p>
-                  </div>
-                </div>
-                <div class="preview-container" v-if="previewImages.length > 0">
-                  <div class="preview-card" v-for="(img, index) in previewImages" :key="index">
-                    <img :src="img" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button class="action-btn-image delete-btn-image" @click="removeImage(index)">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                      </button>
-                    </div>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>视频链接:</label>
-                <input v-model="formData.videos" placeholder="请输入视频链接（可选）" />
-              </div>
-            </div>
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+          </div>
+        </template>
+      </FormDialog>
 
       <!-- 详情弹窗 -->
       <div v-if="showDetail" class="dialog-overlay" @click.self="closeDetailDialog">
@@ -209,6 +198,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getPostList, createPost, updatePost, deletePost } from '@/api/community';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -249,6 +239,17 @@ const formData = ref({
   commentCount: 0,
   createTime: '',
 });
+
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'title', label: '帖子标题', type: 'text', required: true, placeholder: '请输入帖子标题' },
+    { name: 'videos', label: '视频链接', type: 'text', placeholder: '请输入视频链接（可选）' },
+  ],
+  [
+    { name: 'content', label: '帖子内容', type: 'textarea', required: true, rows: 4, placeholder: '请输入帖子内容' },
+  ],
+];
 
 // 分页相关变量
 const currentPage = ref(1);
@@ -428,6 +429,38 @@ const closeDetailDialog = () => {
   showDetail.value = false;
 };
 
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.title) {
+    return '请输入帖子标题';
+  }
+  if (!data.content) {
+    return '请输入帖子内容';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  const submitData = {
+    ...data,
+    images: previewImages.value.length > 0 ? JSON.stringify(previewImages.value) : '',
+  };
+  if (isEdit) {
+    await updatePost(submitData);
+    showToastMessage('更新帖子成功');
+  } else {
+    await createPost(submitData);
+    showToastMessage('新增帖子成功');
+  }
+  await fetchPosts();
+};
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
+};
+
 // 显示提示消息的方法
 const showToastMessage = (message, type = 'success') => {
   toastMessage.value = message;
@@ -436,37 +469,6 @@ const showToastMessage = (message, type = 'success') => {
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
-};
-
-// 提交表单
-const submitForm = async () => {
-  if (!formData.value.title) {
-    showToastMessage('请输入帖子标题', 'error');
-    return;
-  }
-  if (!formData.value.content) {
-    showToastMessage('请输入帖子内容', 'error');
-    return;
-  }
-  try {
-    const submitData = {
-      ...formData.value,
-      images: previewImages.value.length > 0 ? JSON.stringify(previewImages.value) : '',
-    };
-    if (isEditing.value) {
-      await updatePost(submitData);
-      showToastMessage('更新帖子成功');
-    } else {
-      await createPost(submitData);
-      showToastMessage('新增帖子成功');
-    }
-    await fetchPosts();
-    closeDialog();
-  } catch (error) {
-    console.error('操作失败:', error);
-    const message = isEditing.value ? '更新帖子失败' : '新增帖子失败';
-    showToastMessage(message, 'error');
-  }
 };
 
 // 删除帖子
@@ -513,11 +515,6 @@ const confirmDelete = async () => {
       closeDeletePrompt();
     }
   }
-};
-
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false;
 };
 
 // 处理文件上传

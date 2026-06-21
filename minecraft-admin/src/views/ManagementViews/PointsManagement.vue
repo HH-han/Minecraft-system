@@ -54,48 +54,18 @@
           :total="total">
         </el-pagination>
       </div>
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑商品' : '新增商品' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-row">
-              <div class="form-group">
-                <label>商品名称:</label>
-                <input v-model="formData.name" required />
-              </div>
-              <div class="form-group">
-                <label>商品描述:</label>
-                <input v-model="formData.description" required />
-              </div>
-              <div class="form-group">
-                <label>积分价格:</label>
-                <input v-model="formData.pointsPrice" type="number" required />
-              </div>
-              <div class="form-group">
-                <label>库存:</label>
-                <input v-model="formData.stock" type="number" required />
-              </div>
-              <div class="form-group">
-                <label>图片URL:</label>
-                <input v-model="formData.imageUrl" />
-              </div>
-              <div class="form-group">
-                <label>状态:</label>
-                <select v-model="formData.status">
-                  <option value="1">上架</option>
-                  <option value="0">下架</option>
-                </select>
-              </div>
-            </div>
-            <!-- 创建修改时间 -->
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="商品"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="false"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 删除提示框组件 -->
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -110,6 +80,7 @@
 
 import { ref, computed, onMounted } from 'vue';
 import { getProducts } from '@/api/points';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -139,9 +110,43 @@ const formData = ref({
   stock: 0,
   imageUrl: '',
   status: 1,
-  createTime: '',
-  updateTime: '',
 });
+
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'name', label: '商品名称', type: 'text', required: true, placeholder: '请输入商品名称' },
+    { name: 'description', label: '商品描述', type: 'text', required: true, placeholder: '请输入商品描述' },
+  ],
+  [
+    { name: 'pointsPrice', label: '积分价格', type: 'number', required: true, min: 0, placeholder: '请输入积分价格' },
+    { name: 'stock', label: '库存', type: 'number', required: true, min: 0, placeholder: '请输入库存' },
+  ],
+  [
+    { name: 'imageUrl', label: '图片URL', type: 'text', placeholder: '请输入图片URL' },
+    { name: 'status', label: '状态', type: 'select', required: true, options: [
+      { value: 1, label: '上架' },
+      { value: 0, label: '下架' },
+    ]},
+  ],
+];
+
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.name || !data.description) {
+    return '请填写商品名称和描述';
+  }
+  return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+  // 这里需要根据实际的API接口实现
+  // 暂时模拟成功
+  if (!isEdit) {
+    // 新增
+  }
+};
 
 // 格式化日期显示
 const formatDate = (date) => {
@@ -222,8 +227,6 @@ const showAddDialog = () => {
     stock: 0,
     imageUrl: '',
     status: 1,
-    createTime: '',
-    updateTime: '',
   };
   showDialog.value = true;
 };
@@ -245,19 +248,9 @@ const showToastMessage = (message, type = 'success') => {
   }, 3000);
 };
 
-// 提交表单
-const submitForm = async () => {
-  try {
-    // 这里需要根据实际的API接口实现
-    // 暂时模拟成功
-    showToastMessage(isEditing.value ? '更新商品成功' : '新增商品成功');
-    await fetchProducts();
-    closeDialog();
-  } catch (error) {
-    const message = isEditing.value ? '更新商品失败' : '新增商品失败';
-    showToastMessage(message, 'error');
-    console.error('操作失败:', error);
-  }
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
 };
 
 // 删除商品
@@ -290,11 +283,6 @@ const confirmDelete = async () => {
       closeDeletePrompt();
     }
   }
-};
-
-// 关闭对话框
-const closeDialog = () => {
-  showDialog.value = false;
 };
 
 onMounted(fetchProducts);

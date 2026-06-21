@@ -30,7 +30,7 @@
                 <td>{{ card.name }}</td>
                 <td>{{ card.price }}</td>
                 <td>
-                  <img :src="card.coverImage" alt="景点图片" style="width: 35px; height: 35px;" @click="triggerFileInput(card)">
+                  <img :src="card.coverImage" alt="景点图片" style="width: 35px; height: 35px;" @click="previewImage(card)">
                 </td>
                 <td>{{ card.description ? card.description.substring(0, 15) : '未设置' }}</td>
                 <td>{{ card.city }}</td>
@@ -75,116 +75,6 @@
           :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
-      </div>
-
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑景点' : '新增景点' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
-                </div>
-
-                <div class="upload-area" @click="triggerFileInput" @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false" @drop.prevent="handleDrop" :class="{ 'drag-active': dragOver }">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="file-input" />
-
-                  <div class="upload-content">
-                    <div class="upload-icon">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                      </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1200×800px</p>
-                  </div>
-                </div>
-
-                <div class="preview-container" v-if="previewImage">
-                  <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button class="action-btn-image edit-btn-image" @click="triggerFileInput">
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                        </svg>
-                      </button>
-                      <button class="action-btn-image delete-btn-image" @click="removeImage">
-                        <svg viewBox="0 0 24 24">
-                          <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="preview-footer">
-                      <div class="file-info">
-                        <span class="file-name">{{ fileName }}</span>
-                        <span class="file-size">{{ fileSize }}</span>
-                      </div>
-                      <div class="upload-progress" v-if="uploading">
-                        <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>景点名称:</label>
-                <input v-model="formData.name" required />
-              </div>
-              <div class="form-group">
-                <label>景点价格:</label>
-                <input v-model="formData.price" required type="number" step="0.01" />
-              </div>
-              <div class="form-group">
-                <label>城市:</label>
-                <input v-model="formData.city" required />
-              </div>
-              <div class="form-group">
-                <label>省份:</label>
-                <input v-model="formData.province" required />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>地址:</label>
-                <input v-model="formData.address" required />
-              </div>
-              <div class="form-group">
-                <label>描述:</label>
-                <textarea v-model="formData.description" required></textarea>
-              </div>
-              <div class="form-group">
-                <label>评分:</label>
-                <input v-model="formData.rating" required type="number" min="0" max="5" step="0.1" />
-              </div>
-              <div class="form-group">
-                <label>最佳季节:</label>
-                <input v-model="formData.season" required />
-              </div>
-            </div>
-
-            <!-- 景点设施选择 -->
-            <div class="form-group">
-              <FacilitySelector v-model="selectedFacilities" :facilities="allFacilities" label="选择景点设施" />
-            </div>
-
-            <!-- 门票管理 -->
-            <div class="form-group">
-              <TicketManager v-model="formData.tickets" label="门票列表" title="门票" />
-            </div>
-
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-            </div>
-          </form>
-        </div>
       </div>
 
       <div v-if="showDetails" class="dialog-overlay" @click.self="closeDetailsDialog">
@@ -265,6 +155,31 @@
         </div>
       </div>
 
+      <!-- 通用新增/编辑弹窗 -->
+      <FormDialog
+        v-model:visible="showDialog"
+        title="景点"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传景点图片"
+        recommendedSize="推荐尺寸：1200×800px"
+        imageField="coverImage"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      >
+        <template #custom-fields>
+          <div class="form-group">
+            <FacilitySelector v-model="selectedFacilities" :facilities="allFacilities" label="选择景点设施" />
+          </div>
+          <div class="form-group">
+            <TicketManager v-model="formData.tickets" label="门票列表" title="门票" />
+          </div>
+        </template>
+      </FormDialog>
+
       <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
       <ToastType v-if="showToast" :toastMessage="toastMessage" :toastType="toastType" />
     </div>
@@ -277,6 +192,7 @@ import { ref, computed, onMounted } from 'vue';
 import { getAttractionList, getAttractionDetail, addAttraction, updateAttraction, deleteAttraction } from '@/api/attraction';
 import FacilitySelector from '@/components/FacilitySelector.vue';
 import TicketManager from '@/components/TicketManager.vue';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -337,6 +253,28 @@ const formData = ref({
 });
 
 const selectedFacilities = ref([]);
+
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'name', label: '景点名称', type: 'text', required: true, placeholder: '请输入景点名称' },
+    { name: 'price', label: '景点价格', type: 'number', required: true, placeholder: '请输入景点价格' },
+  ],
+  [
+    { name: 'city', label: '城市', type: 'text', required: true, placeholder: '请输入城市' },
+    { name: 'province', label: '省份', type: 'text', required: true, placeholder: '请输入省份' },
+  ],
+  [
+    { name: 'address', label: '地址', type: 'text', required: true, placeholder: '请输入详细地址' },
+  ],
+  [
+    { name: 'description', label: '描述', type: 'textarea', required: true, placeholder: '请输入景点描述', fullWidth: true, rows: 3 },
+  ],
+  [
+    { name: 'rating', label: '评分', type: 'number', min: 0, max: 5, step: 0.1, placeholder: '0-5分' },
+    { name: 'season', label: '最佳季节', type: 'text', placeholder: '如：春季、夏季' },
+  ],
+];
 
 const formatDate = (date) => {
   if (!date) return '未知日期';
@@ -447,9 +385,6 @@ const showAddDialog = () => {
     facilities: [],
   };
   selectedFacilities.value = [];
-  previewImage.value = '';
-  fileName.value = '';
-  fileSize.value = '';
   showDialog.value = true;
 };
 
@@ -479,7 +414,6 @@ const showEditDialog = async (card) => {
     };
     selectedFacilities.value = card.facilities || [];
   }
-  previewImage.value = card.coverImage || '';
   showDialog.value = true;
 };
 
@@ -518,47 +452,38 @@ const showToastMessage = (message, type = 'success') => {
   }, 3000);
 };
 
-const validateForm = () => {
-  if (!formData.value.name || !formData.value.city || !formData.value.province || !formData.value.address) {
-    showToastMessage('请填写所有必填字段', 'error');
-    return false;
+const validateForm = (data, isEdit) => {
+  if (!data.name || !data.city || !data.province || !data.address) {
+    return '请填写所有必填字段（名称、城市、省份、地址）';
   }
-  if (!formData.value.price) {
-    showToastMessage('请填写价格', 'error');
-    return false;
+  if (!data.price) {
+    return '请填写价格';
   }
-  return true;
+  return null;
 };
 
-const submitForm = async () => {
-  if (!validateForm()) return;
-
-  formData.value.facilities = selectedFacilities.value;
+const handleSubmit = async (data, isEdit) => {
+  const submitData = { ...data };
+  submitData.facilities = selectedFacilities.value;
   
-  const validTickets = formData.value.tickets.filter(ticket => ticket.name && ticket.name.trim() !== '');
-  const submitData = {
-    ...formData.value,
-    tickets: validTickets
-  };
+  const validTickets = (submitData.tickets || []).filter(ticket => ticket.name && ticket.name.trim() !== '');
+  submitData.tickets = validTickets;
 
-  try {
-    if (isEditing.value) {
-      submitData.updateTime = new Date().toISOString();
-      await updateAttraction(submitData);
-      showToastMessage('更新景点成功');
-    } else {
-      submitData.createTime = new Date().toISOString();
-      submitData.updateTime = new Date().toISOString();
-      await addAttraction(submitData);
-      showToastMessage('新增景点成功');
-    }
-    await fetchScenic();
-    closeDialog();
-  } catch (error) {
-    const message = isEditing.value ? '更新景点失败' : '新增景点失败';
-    showToastMessage(message, 'error');
-    console.error('操作失败:', error);
+  if (isEdit) {
+    submitData.updateTime = new Date().toISOString();
+    await updateAttraction(submitData);
+    showToastMessage('更新景点成功');
+  } else {
+    submitData.createTime = new Date().toISOString();
+    submitData.updateTime = new Date().toISOString();
+    await addAttraction(submitData);
+    showToastMessage('新增景点成功');
   }
+  await fetchScenic();
+};
+
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
 };
 
 const isDeletePromptVisible = ref(false);
@@ -594,83 +519,11 @@ const closeDialog = () => {
   showDialog.value = false;
 };
 
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-const handleFileUpload = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const validTypes = ['image/jpeg', 'image/png'];
-  if (!validTypes.includes(file.type)) {
-    showToastMessage('只支持JPG/PNG格式图片', 'error');
-    return;
+// 预览图片
+const previewImage = (card) => {
+  if (card.coverImage) {
+    window.open(card.coverImage, '_blank');
   }
-
-  const maxSize = 5 * 1024 * 1024;
-  if (file.size > maxSize) {
-    showToastMessage('图片大小不能超过5MB', 'error');
-    return;
-  }
-
-  fileName.value = file.name;
-  fileSize.value = formatFileSize(file.size);
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    previewImage.value = e.target.result;
-    formData.value.coverImage = e.target.result;
-  };
-  reader.readAsDataURL(file);
-
-  uploading.value = true;
-  const interval = setInterval(() => {
-    if (progress.value < 100) {
-      progress.value += 10;
-    } else {
-      clearInterval(interval);
-      uploading.value = false;
-      progress.value = 0;
-    }
-  }, 100);
-
-  return file;
-};
-
-const handleDrop = (event) => {
-  dragOver.value = false;
-  const file = event.dataTransfer.files[0];
-  if (file) {
-    const fakeEvent = { target: { files: [file] } };
-    handleFileUpload(fakeEvent);
-  }
-};
-
-const removeImage = () => {
-  previewImage.value = '';
-  fileName.value = '';
-  fileSize.value = '';
-  formData.value.coverImage = '';
-};
-
-const triggerFileInput = () => {
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = 'image/*';
-  fileInput.onchange = handleFileUpload;
-  fileInput.click();
 };
 
 onMounted(fetchScenic);
