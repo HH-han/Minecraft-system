@@ -19,8 +19,8 @@
               <p class="sub-sub-heading_forgotPassword">输入要恢复的账号注册邮箱</p>
             </div>
             <form @submit.prevent="handleSubmit" class="form_forgotPassword">
-              <input v-model="phone" class="Phone_forgotPassword" placeholder="Phone" type="tel"
-                @input="validatePhone" />
+              <input v-model="email" class="Phone_forgotPassword" placeholder="Email" type="email"
+                @input="validateEmail" />
               <p v-if="errorMsg" class="error-message">{{ errorMsg }}</p>
               <button class="card-btn_forgotPassword" type="submit">重置密码</button>
             </form>
@@ -31,52 +31,47 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
-export default {
-  name: 'ForgotPassword',
-  data() {
-    return {
-      phone: '',
-      errorMsg: '',
-      isLoading: false
-    }
-  },
-  methods: {
-    validatePhone() {
-      // 实时验证手机号格式
-      const phoneRegex = /^1[3-9]\d{9}$/
-      if (!this.phone) {
-        this.errorMsg = '手机号不能为空'
-      } else if (!phoneRegex.test(this.phone)) {
-        this.errorMsg = '请输入有效的手机号码'
-      } else {
-        this.errorMsg = ''
-      }
-    },
-    async handleSubmit() {
-      // 提交前再次验证
-      if (this.errorMsg) return
 
-      this.isLoading = true
-      try {
-        const response = await axios.post('/api/auth/reset-password', {
-          phone: this.phone
-        })
+const router = useRouter()
 
-        if (response.data.success) {
-          // 跳转到验证码验证页面
-          this.$router.push({
-            path: '/reset-password',
-            query: { phone: this.phone }
-          })
-        }
-      } catch (error) {
-        this.errorMsg = error.response?.data?.message || '请求失败，请稍后重试'
-      } finally {
-        this.isLoading = false
-      }
+const email = ref('')
+const errorMsg = ref('')
+const isLoading = ref(false)
+
+const validateEmail = () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!email.value) {
+    errorMsg.value = '邮箱不能为空'
+  } else if (!emailRegex.test(email.value)) {
+    errorMsg.value = '请输入有效的邮箱地址'
+  } else {
+    errorMsg.value = ''
+  }
+}
+
+const handleSubmit = async () => {
+  if (errorMsg.value) return
+
+  isLoading.value = true
+  try {
+    const response = await axios.post('/api/auth/reset-password', {
+      email: email.value
+    })
+
+    if (response.data.success) {
+      router.push({
+        path: '/reset-password',
+        query: { email: email.value }
+      })
     }
+  } catch (error) {
+    errorMsg.value = error.response?.data?.message || '请求失败，请稍后重试'
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
