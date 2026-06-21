@@ -262,12 +262,28 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         Attraction attraction = new Attraction();
         BeanUtils.copyProperties(attractionVO, attraction);
         
-        // 处理 images 字段转换
+        // 处理 coverImage Base64 图片
+        if (attractionVO.getCoverImage() != null && attractionVO.getCoverImage().startsWith("data:image")) {
+            attraction.setCoverImage(imageUtils.processBase64ImageSafe(attractionVO.getCoverImage()));
+        }
+        
+        // 处理 images 字段转换（含 Base64 图片）
         if (attractionVO.getImages() != null && !attractionVO.getImages().isEmpty()) {
+            List<String> processedImages = new ArrayList<>();
+            for (String img : attractionVO.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    String url = imageUtils.processBase64ImageSafe(img);
+                    if (url != null) {
+                        processedImages.add(url);
+                    }
+                } else {
+                    processedImages.add(img);
+                }
+            }
             try {
-                attraction.setImages(objectMapper.writeValueAsString(attractionVO.getImages()));
+                attraction.setImages(objectMapper.writeValueAsString(processedImages));
             } catch (JsonProcessingException e) {
-                attraction.setImages(String.join(",", attractionVO.getImages()));
+                attraction.setImages(String.join(",", processedImages));
             }
         }
         
@@ -323,12 +339,28 @@ public class AttractionServiceImpl extends ServiceImpl<AttractionMapper, Attract
         Attraction attraction = new Attraction();
         BeanUtils.copyProperties(attractionVO, attraction);
         
-        // 处理 images 字段转换
+        // 处理 coverImage Base64 图片
+        if (attractionVO.getCoverImage() != null && attractionVO.getCoverImage().startsWith("data:image")) {
+            attraction.setCoverImage(imageUtils.processBase64ImageSafe(attractionVO.getCoverImage()));
+        }
+        
+        // 处理 images 字段转换（含 Base64 图片）
         if (attractionVO.getImages() != null && !attractionVO.getImages().isEmpty()) {
+            List<String> processedImages = new ArrayList<>();
+            for (String img : attractionVO.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    String url = imageUtils.processBase64ImageSafe(img);
+                    if (url != null) {
+                        processedImages.add(url);
+                    }
+                } else {
+                    processedImages.add(img);
+                }
+            }
             try {
-                attraction.setImages(objectMapper.writeValueAsString(attractionVO.getImages()));
+                attraction.setImages(objectMapper.writeValueAsString(processedImages));
             } catch (JsonProcessingException e) {
-                attraction.setImages(String.join(",", attractionVO.getImages()));
+                attraction.setImages(String.join(",", processedImages));
             }
         }
         
