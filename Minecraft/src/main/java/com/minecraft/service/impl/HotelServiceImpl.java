@@ -211,12 +211,28 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         Hotel hotel = new Hotel();
         BeanUtils.copyProperties(hotelVO, hotel);
         
-        // 处理 images 字段转换
+        // 处理 coverImage Base64 图片
+        if (hotelVO.getCoverImage() != null && hotelVO.getCoverImage().startsWith("data:image")) {
+            hotel.setCoverImage(imageUtils.processBase64ImageSafe(hotelVO.getCoverImage()));
+        }
+        
+        // 处理 images 字段转换（含 Base64 图片）
         if (hotelVO.getImages() != null && !hotelVO.getImages().isEmpty()) {
+            List<String> processedImages = new ArrayList<>();
+            for (String img : hotelVO.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    String url = imageUtils.processBase64ImageSafe(img);
+                    if (url != null) {
+                        processedImages.add(url);
+                    }
+                } else {
+                    processedImages.add(img);
+                }
+            }
             try {
-                hotel.setImages(objectMapper.writeValueAsString(hotelVO.getImages()));
+                hotel.setImages(objectMapper.writeValueAsString(processedImages));
             } catch (JsonProcessingException e) {
-                hotel.setImages(String.join(",", hotelVO.getImages()));
+                hotel.setImages(String.join(",", processedImages));
             }
         }
         
@@ -263,12 +279,28 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         Hotel hotel = new Hotel();
         BeanUtils.copyProperties(hotelVO, hotel);
         
-        // 处理 images 字段转换
+        // 处理 coverImage Base64 图片
+        if (hotelVO.getCoverImage() != null && hotelVO.getCoverImage().startsWith("data:image")) {
+            hotel.setCoverImage(imageUtils.processBase64ImageSafe(hotelVO.getCoverImage()));
+        }
+        
+        // 处理 images 字段转换（含 Base64 图片）
         if (hotelVO.getImages() != null && !hotelVO.getImages().isEmpty()) {
+            List<String> processedImages = new ArrayList<>();
+            for (String img : hotelVO.getImages()) {
+                if (img != null && img.startsWith("data:image")) {
+                    String url = imageUtils.processBase64ImageSafe(img);
+                    if (url != null) {
+                        processedImages.add(url);
+                    }
+                } else {
+                    processedImages.add(img);
+                }
+            }
             try {
-                hotel.setImages(objectMapper.writeValueAsString(hotelVO.getImages()));
+                hotel.setImages(objectMapper.writeValueAsString(processedImages));
             } catch (JsonProcessingException e) {
-                hotel.setImages(String.join(",", hotelVO.getImages()));
+                hotel.setImages(String.join(",", processedImages));
             }
         }
         
