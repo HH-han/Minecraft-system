@@ -393,12 +393,12 @@ const searchKeyword = ref('')
 
 const currentTabTitle = computed(() => {
   const titles = {
-    chat: '微信',
+    chat: '博览通讯',
     contacts: '通讯录',
     discover: '发现',
     me: '我'
   }
-  return titles[currentTab.value] || '微信'
+  return titles[currentTab.value] || '博览通讯'
 })
 
 const searchPlaceholder = computed(() => {
