@@ -328,8 +328,7 @@ const showToastMessage = (message, type = 'success') => {
   setTimeout(() => {
     showToast.value = false;
   }, 3000);
-}
-
+};
 
 // 删除卡片
 const isDeletePromptVisible = ref(false);

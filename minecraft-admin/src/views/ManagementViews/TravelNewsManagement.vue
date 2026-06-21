@@ -276,7 +276,6 @@ const showToastMessage = (message, type = 'success') => {
         showToast.value = false;
     }, 3000);
 }
-};
 
 // 删除卡片
 const isDeletePromptVisible = ref(false);
