@@ -24,6 +24,7 @@
                 </div>
 
                 <div
+                  v-if="!previewImage"
                   class="upload-area"
                   :class="{ 'drag-active': dragOver }"
                   @click="triggerFileInput"
@@ -39,7 +40,7 @@
                     class="file-input"
                   />
 
-                  <div class="upload-content" v-if="!previewImage">
+                  <div class="upload-content">
                     <div class="upload-icon">
                       <svg viewBox="0 0 24 24">
                         <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
@@ -53,7 +54,9 @@
                 <!-- 图片预览区域 -->
                 <div class="preview-container" v-if="previewImage">
                   <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
+                    <div class="preview-image-wrapper">
+                      <img :src="previewImage" alt="预览图片" class="preview-image" />
+                    </div>
                     <div class="preview-actions">
                       <button type="button" class="action-btn-image edit-btn-image" @click="triggerFileInput">
                         <svg viewBox="0 0 24 24">
@@ -193,6 +196,15 @@
                     :required="fieldItem.required"
                     class="form-input"
                   />
+
+                  <!-- 时间选择 -->
+                  <input
+                    v-else-if="fieldItem.type === 'time'"
+                    v-model="formData[fieldItem.name]"
+                    type="time"
+                    :required="fieldItem.required"
+                    class="form-input"
+                  />
                 </div>
               </div>
             </div>
@@ -323,6 +335,11 @@ const initFormData = () => {
   fieldNames.forEach(name => {
     data[name] = props.initialData[name] ?? '';
   });
+
+  // 保留 id 字段（编辑模式下用于标识当前记录，避免后端因 id 缺失导致关联数据插入失败）
+  if (props.initialData.id !== undefined && props.initialData.id !== null) {
+    data.id = props.initialData.id;
+  }
 
   // 设置图片预览
   if (props.showImageUpload && props.initialData[props.imageField]) {
@@ -658,15 +675,25 @@ defineExpose({
 .preview-card {
   background: #ffffff;
   border-radius: 16px;
-  padding: 16px;
+  padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.preview-image {
-  width: 100%;
-  max-height: 200px;
-  object-fit: contain;
+.preview-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f8f8;
   border-radius: 12px;
+  padding: 20px;
+  min-height: 120px;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
 .preview-actions {
@@ -755,20 +782,21 @@ defineExpose({
 .form-fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-group {
   flex: 1;
-  min-width: 200px;
+  min-width: calc(33.333% - 14px);
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .form-group.full-width {
@@ -780,7 +808,7 @@ defineExpose({
   font-size: 14px;
   font-weight: 500;
   color: #1d1d1f;
-  margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .form-group label.required::after {
@@ -836,6 +864,7 @@ defineExpose({
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: 4px;
 }
 
 .switch-label {
@@ -973,6 +1002,17 @@ input:checked + .slider:before {
 }
 
 /* 响应式 */
+@media (max-width: 1024px) {
+  .form-dialog {
+    width: 92%;
+    max-width: 700px;
+  }
+
+  .form-group {
+    min-width: calc(50% - 10px);
+  }
+}
+
 @media (max-width: 768px) {
   .form-dialog {
     width: 95%;
@@ -989,7 +1029,7 @@ input:checked + .slider:before {
   }
 
   .dialog-body {
-    padding: 24px;
+    padding: 20px;
   }
 
   .form-group {
@@ -1009,12 +1049,58 @@ input:checked + .slider:before {
     padding: 24px 16px;
   }
 
+  .preview-card {
+    padding: 16px;
+  }
+
+  .preview-image-wrapper {
+    padding: 12px;
+    min-height: 100px;
+  }
+
+  .preview-image {
+    max-height: 200px;
+  }
+
   .dialog-footer {
     flex-direction: column;
   }
 
   .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-dialog {
+    width: 98%;
+    border-radius: 16px;
+  }
+
+  .dialog-header {
+    padding: 16px 20px;
+  }
+
+  .dialog-title {
+    font-size: 18px;
+  }
+
+  .dialog-body {
+    padding: 16px;
+  }
+
+  .upload-area {
+    padding: 20px 12px;
+  }
+
+  .upload-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .upload-icon svg {
+    width: 20px;
+    height: 20px;
   }
 }
 </style>

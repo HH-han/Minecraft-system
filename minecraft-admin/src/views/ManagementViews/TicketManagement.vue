@@ -60,83 +60,16 @@
                     layout="total, sizes, prev, pager, next, jumper" :total="total">
                 </el-pagination>
             </div>
-            <!-- 新增/编辑弹窗 -->
-            <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-                <div class="dialog" @click.stop>
-                    <h2>{{ isEditing ? '编辑票务' : '新增票务' }}</h2>
-                    <form @submit.prevent="submitForm" class="form-container">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>类型:</label>
-                                <select v-model="formData.type" required>
-                                    <option value="">请选择</option>
-                                    <option v-for="opt in typeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>出发城市:</label>
-                                <select v-model="formData.departureCity" required>
-                                    <option value="">请选择</option>
-                                    <option v-for="opt in cityOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>到达城市:</label>
-                                <select v-model="formData.arrivalCity" required>
-                                    <option value="">请选择</option>
-                                    <option v-for="opt in cityOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>出发时间:</label>
-                                <input type="time" v-model="formData.departureTime" required />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>到达时间:</label>
-                                <input type="time" v-model="formData.arrivalTime" required />
-                            </div>
-                            <div class="form-group">
-                                <label>承运方:</label>
-                                <select v-model="formData.carrier" required>
-                                    <option value="">请选择</option>
-                                    <option v-for="opt in carrierOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>价格:</label>
-                                <input type="number" v-model="formData.price" min="0" required />
-                            </div>
-                            <div class="form-group">
-                                <label>库存:</label>
-                                <input type="number" v-model="formData.stock" min="0" required />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>座位等级:</label>
-                                <select v-model="formData.seatClass" required>
-                                    <option value="">请选择</option>
-                                    <option v-for="opt in seatClassOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>状态:</label>
-                                <select v-model="formData.status">
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                </select>
-                            </div>
-                        </div>
-                        <!-- 创建修改时间 -->
-                        <div class="dialog-buttons">
-                            <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-                            <button type="submit" class="btn confirm-btn">{{ isEditing ? '保存' : '创建' }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <FormDialog
+                v-model:visible="showDialog"
+                title="票务"
+                :isEdit="isEditing"
+                :fields="formFields"
+                :initialData="formData"
+                :validateFn="validateForm"
+                :submitFn="handleSubmit"
+                @error="handleError"
+            />
 
             <!-- 删除提示框组件 -->
             <DeleteConfirmation v-if="isDeletePromptVisible" @close="closeDeletePrompt" @confirm="confirmDelete" />
@@ -151,6 +84,7 @@
 
 import { ref, computed, onMounted } from 'vue';
 import { getTicketList, addTicket, updateTicket, deleteTicket } from '@/api/ticket';
+import FormDialog from '@/components/FormDialog.vue';
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue';
 import ToastType from '@/components/PromptComponent/ToastType.vue';
 
@@ -277,6 +211,26 @@ const formData = ref({
     status: 1,
 });
 
+// 表单字段配置
+const formFields = [
+    [
+        { name: 'type', label: '类型', type: 'select', required: true, options: typeOptions, placeholder: '请选择类型' },
+        { name: 'departureCity', label: '出发城市', type: 'select', required: true, options: cityOptions, placeholder: '请选择出发城市' },
+        { name: 'arrivalCity', label: '到达城市', type: 'select', required: true, options: cityOptions, placeholder: '请选择到达城市' },
+        { name: 'departureTime', label: '出发时间', type: 'time', required: true },
+    ],
+    [
+        { name: 'arrivalTime', label: '到达时间', type: 'time', required: true },
+        { name: 'carrier', label: '承运方', type: 'select', required: true, options: carrierOptions, placeholder: '请选择承运方' },
+        { name: 'price', label: '价格', type: 'number', min: 0, required: true, placeholder: '请输入价格' },
+        { name: 'stock', label: '库存', type: 'number', min: 0, required: true, placeholder: '请输入库存' },
+    ],
+    [
+        { name: 'seatClass', label: '座位等级', type: 'select', required: true, options: seatClassOptions, placeholder: '请选择座位等级' },
+        { name: 'status', label: '状态', type: 'select', options: [{ value: 1, label: '启用' }, { value: 0, label: '禁用' }] },
+    ],
+];
+
 // 格式化日期显示
 const formatDate = (date) => {
     if (!date || isNaN(new Date(date))) return '未知日期';
@@ -364,26 +318,36 @@ const showToastMessage = (message, type = 'success') => {
         showToast.value = false;
     }, 3000);
 };
-// 提交表单
-const submitForm = async () => {
-    try {
-        if (isEditing.value) {
-            formData.value.updateTime = new Date().toISOString();
-            await updateTicket(formData.value);
-            showToastMessage('更新成功');
-        } else {
-            formData.value.createTime = new Date().toISOString();
-            formData.value.updateTime = new Date().toISOString();
-            await addTicket(formData.value);
-            showToastMessage('新增成功');
-        }
-        await fetchScenic();
-        closeDialog();
-    } catch (error) {
-        const message = isEditing.value ? '更新失败' : '新增失败';
-        showToastMessage(message, 'error');
-        console.error('操作失败:', error);
+// 表单验证
+const validateForm = (data, isEdit) => {
+    if (!data.type || !data.departureCity || !data.arrivalCity || !data.departureTime || !data.arrivalTime || !data.carrier) {
+        return '请填写所有必填字段';
     }
+    return null;
+};
+
+// 提交表单
+const handleSubmit = async (data, isEdit) => {
+    const payload = {
+        ...data,
+        updateTime: new Date().toISOString(),
+    };
+    if (!isEdit) {
+        payload.createTime = new Date().toISOString();
+    }
+    if (isEdit) {
+        await updateTicket(payload);
+        showToastMessage('更新成功');
+    } else {
+        await addTicket(payload);
+        showToastMessage('新增成功');
+    }
+    await fetchScenic();
+};
+
+// 处理错误
+const handleError = (error) => {
+    showToastMessage(error.message || '操作失败', 'error');
 };
 
 // 删除卡片
@@ -418,104 +382,6 @@ const confirmDelete = async () => {
 };
 
 // 关闭对话框
-const closeDialog = () => {
-    showDialog.value = false;
-};
-
-// 图片上传相关状态
-const dragOver = ref(false);
-const previewImage = ref('');
-const fileName = ref('');
-const fileSize = ref('');
-const uploading = ref(false);
-const progress = ref(0);
-
-// 格式化文件大小
-const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
-
-// 处理文件上传
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // 验证文件类型
-    const validTypes = ['image/jpeg', 'image/png'];
-    if (!validTypes.includes(file.type)) {
-        showToastMessage('只支持JPG/PNG格式图片', 'error');
-        return;
-    }
-
-    // 验证文件大小
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-        showToastMessage('图片大小不能超过5MB', 'error');
-        return;
-    }
-
-    // 显示文件信息
-    fileName.value = file.name;
-    fileSize.value = formatFileSize(file.size);
-
-    // 读取并预览图片
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        previewImage.value = e.target.result;
-        formData.value.coverImage = e.target.result;
-    };
-    reader.readAsDataURL(file);
-
-    // 模拟上传进度
-    uploading.value = true;
-    const interval = setInterval(() => {
-        if (progress.value < 100) {
-            progress.value += 10;
-        } else {
-            clearInterval(interval);
-            uploading.value = false;
-        }
-    }, 100);
-
-    return file;
-};
-
-// 处理拖放上传
-const handleDrop = (event) => {
-    dragOver.value = false;
-    const file = event.dataTransfer.files[0];
-    if (file) {
-        const fakeEvent = { target: { files: [file] } };
-        handleFileUpload(fakeEvent);
-    }
-};
-
-// 移除图片
-const removeImage = () => {
-    previewImage.value = '';
-    fileName.value = '';
-    fileSize.value = '';
-    formData.value.coverImage = '';
-};
-
-// 触发文件输入框
-const triggerFileInput = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
-    fileInput.onchange = (event) => {
-        const file = handleFileUpload(event);
-        if (file) {
-            formData.value.coverImage = file;
-        }
-    };
-    fileInput.click();
-};
-
 onMounted(fetchScenic);
 
 

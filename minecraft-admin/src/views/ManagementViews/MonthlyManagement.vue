@@ -124,200 +124,20 @@
         />
       </div>
 
-      <!-- 新增/编辑弹窗 -->
-      <div v-if="showDialog" class="dialog-overlay" @click.self="closeDialog">
-        <div class="dialog" @click.stop>
-          <h2>{{ isEditing ? '编辑推荐' : '新增推荐' }}</h2>
-          <form @submit.prevent="submitForm" class="form-container">
-            <div class="form-group">
-              <div class="image-upload-container">
-                <div class="upload-header">
-                  <h3>上传图片</h3>
-                  <p>支持 JPG, PNG 格式，最大 5MB</p>
-                </div>
-
-                <div
-                  class="upload-area"
-                  @click="triggerFileInput"
-                  @dragover.prevent="dragOver = true"
-                  @dragleave="dragOver = false"
-                  @drop.prevent="handleDrop"
-                  :class="{ 'drag-active': dragOver }"
-                >
-                  <input
-                    type="file"
-                    ref="fileInput"
-                    @change="handleFileUpload"
-                    accept="image/*"
-                    class="file-input"
-                  />
-
-                  <div class="upload-content">
-                    <div class="upload-icon">
-                      <svg viewBox="0 0 24 24">
-                        <path
-                          d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                        />
-                      </svg>
-                    </div>
-                    <p class="upload-text">点击或拖拽文件到此处</p>
-                    <p class="upload-hint">推荐尺寸：1200×800px</p>
-                  </div>
-                </div>
-
-                <div class="preview-container" v-if="previewImage">
-                  <div class="preview-card">
-                    <img :src="previewImage" alt="预览图片" class="preview-image" />
-                    <div class="preview-actions">
-                      <button
-                        class="action-btn-image edit-btn-image"
-                        @click="triggerFileInput"
-                        type="button"
-                      >
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        class="action-btn-image delete-btn-image"
-                        @click="removeImage"
-                        type="button"
-                      >
-                        <svg viewBox="0 0 24 24">
-                          <path
-                            d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="preview-footer">
-                      <div class="file-info">
-                        <span class="file-name">{{ fileName }}</span>
-                        <span class="file-size">{{ fileSize }}</span>
-                      </div>
-                      <div class="upload-progress" v-if="uploading">
-                        <div
-                          class="progress-bar"
-                          :style="{ width: progress + '%' }"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 基本信息 -->
-            <div class="form-section-title">基本信息</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>目的地名称 <span class="req">*</span></label>
-                <input v-model="formData.destinationName" required placeholder="如：哈尔滨" />
-              </div>
-              <div class="form-group">
-                <label>关联月份 <span class="req">*</span></label>
-                <select v-model.number="formData.monthId" class="form-select">
-                  <option
-                    v-for="month in monthOptions"
-                    :key="month.value"
-                    :value="month.value"
-                  >
-                    {{ month.label }}
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>推荐游玩天数</label>
-                <input
-                  v-model.number="formData.recommendedDays"
-                  type="number"
-                  min="1"
-                  placeholder="如：3"
-                />
-              </div>
-              <div class="form-group">
-                <label>排序</label>
-                <input
-                  v-model.number="formData.sortOrder"
-                  type="number"
-                  min="0"
-                  placeholder="数字越小越靠前"
-                />
-              </div>
-            </div>
-
-            <!-- 描述信息 -->
-            <div class="form-section-title">描述信息</div>
-            <div class="form-row">
-              <div class="form-group form-group-full">
-                <label>目的地描述 <span class="req">*</span></label>
-                <textarea
-                  v-model="formData.description"
-                  rows="2"
-                  required
-                  placeholder="简要描述该目的地的特点"
-                ></textarea>
-              </div>
-              <div class="form-group form-group-full">
-                <label>季节特色</label>
-                <textarea
-                  v-model="formData.seasonFeatures"
-                  rows="2"
-                  placeholder="如：哈尔滨国际冰雪节，欣赏精美冰雕雪雕"
-                ></textarea>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group form-group-half">
-                <label>气候信息</label>
-                <input
-                  v-model="formData.climateInfo"
-                  placeholder="如：气温约-20℃至-10℃，寒冷干燥"
-                />
-              </div>
-              <div class="form-group form-group-half">
-                <label>旅行贴士</label>
-                <input
-                  v-model="formData.travelTips"
-                  placeholder="如：注意保暖，穿羽绒服、雪地靴"
-                />
-              </div>
-            </div>
-
-            <!-- 标签与状态 -->
-            <div class="form-section-title">标签与状态</div>
-            <div class="form-row">
-              <div class="form-group form-group-half">
-                <label>标签（英文逗号分隔）</label>
-                <input v-model="tagsInput" placeholder='如：["冰雪","冰雕","滑雪"] 或 冰雪,冰雕,滑雪' />
-                <small class="hint">支持 JSON 数组或逗号分隔文本</small>
-              </div>
-              <div class="form-group">
-                <label>浏览量</label>
-                <input v-model.number="formData.viewCount" type="number" min="0" placeholder="0" />
-              </div>
-              <div class="form-group">
-                <label>是否推荐</label>
-                <select v-model.number="formData.isRecommended" class="form-select">
-                  <option :value="1">推荐中</option>
-                  <option :value="0">已下架</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- 提交按钮 -->
-            <div class="dialog-buttons">
-              <button type="button" class="btn cancel-btn" @click="closeDialog">取消</button>
-              <button type="submit" class="btn confirm-btn" :disabled="submitting">
-                {{ submitting ? '提交中...' : (isEditing ? '保存' : '创建') }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <FormDialog
+        v-model:visible="showDialog"
+        title="推荐"
+        :isEdit="isEditing"
+        :fields="formFields"
+        :initialData="formData"
+        :showImageUpload="true"
+        imageUploadLabel="上传图片"
+        recommendedSize="推荐尺寸：1200×800px"
+        imageField="imageUrl"
+        :validateFn="validateForm"
+        :submitFn="handleSubmit"
+        @error="handleError"
+      />
 
       <!-- 详情弹窗 -->
       <div v-if="showDetail" class="dialog-overlay" @click.self="closeDetailDialog">
@@ -372,6 +192,7 @@ import {
   updateRecommendation,
   deleteRecommendation
 } from '@/api/monthlyRecommendations'
+import FormDialog from '@/components/FormDialog.vue'
 import DeleteConfirmation from '@/components/PromptComponent/DeleteConfirmation.vue'
 import ToastType from '@/components/PromptComponent/ToastType.vue'
 
@@ -455,16 +276,28 @@ function createEmptyForm() {
   }
 }
 
-// 标签的输入控件（文本形式，提交时再转换为 JSON 字符串）
-const tagsInput = ref('')
-
-// 图片上传相关
-const dragOver = ref(false)
-const previewImage = ref(null)
-const fileName = ref('')
-const fileSize = ref('')
-const uploading = ref(false)
-const progress = ref(0)
+// 表单字段配置
+const formFields = [
+  [
+    { name: 'destinationName', label: '目的地名称', type: 'text', required: true, placeholder: '如：哈尔滨' },
+    { name: 'monthId', label: '关联月份', type: 'select', required: true, options: monthOptions },
+    { name: 'recommendedDays', label: '推荐游玩天数', type: 'number', min: 1, placeholder: '如：3' },
+    { name: 'sortOrder', label: '排序', type: 'number', min: 0, placeholder: '数字越小越靠前' },
+  ],
+  [
+    { name: 'description', label: '目的地描述', type: 'textarea', fullWidth: true, rows: 2, required: true, placeholder: '简要描述该目的地的特点' },
+    { name: 'seasonFeatures', label: '季节特色', type: 'textarea', fullWidth: true, rows: 2, placeholder: '如：哈尔滨国际冰雪节，欣赏精美冰雕雪雕' },
+  ],
+  [
+    { name: 'climateInfo', label: '气候信息', type: 'text', placeholder: '如：气温约-20℃至-10℃，寒冷干燥' },
+    { name: 'travelTips', label: '旅行贴士', type: 'text', placeholder: '如：注意保暖，穿羽绒服、雪地靴' },
+  ],
+  [
+    { name: 'tags', label: '标签（英文逗号分隔）', type: 'text', placeholder: '如：冰雪,冰雕,滑雪' },
+    { name: 'viewCount', label: '浏览量', type: 'number', min: 0, placeholder: '0' },
+    { name: 'isRecommended', label: '是否推荐', type: 'select', options: [{ value: 1, label: '推荐中' }, { value: 0, label: '已下架' }] },
+  ],
+]
 
 // 删除提示
 const isDeletePromptVisible = ref(false)
@@ -616,78 +449,10 @@ const checkedIds = computed(() => {
   return recommendations.value.filter((it) => it.checked).map((it) => it.id)
 })
 
-// ============ 图片上传（前端仅转成 base64 保存在 formData.imageUrl）============
-const handleFileUpload = (event) => {
-  dragOver.value = false
-  const file = event.target.files?.[0] || event.dataTransfer?.files?.[0]
-  if (!file) return
-  if (!file.type.match('image.*')) {
-    showToastMessage('请选择图片文件', 'error')
-    return
-  }
-  if (file.size > 5 * 1024 * 1024) {
-    showToastMessage('文件大小不能超过 5MB', 'error')
-    return
-  }
-  fileName.value = file.name
-  fileSize.value = formatFileSize(file.size)
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    previewImage.value = e.target.result
-    formData.value.imageUrl = e.target.result
-  }
-  reader.readAsDataURL(file)
-
-  // 模拟上传进度
-  uploading.value = true
-  const interval = setInterval(() => {
-    progress.value += Math.random() * 15
-    if (progress.value >= 100) {
-      clearInterval(interval)
-      setTimeout(() => {
-        uploading.value = false
-        progress.value = 100
-      }, 300)
-    }
-  }, 200)
-}
-
-const triggerFileInput = () => {
-  const input = document.querySelector('.file-input')
-  input && input.click()
-}
-
-const handleDrop = (e) => {
-  e.preventDefault()
-  handleFileUpload(e)
-}
-
-const removeImage = () => {
-  previewImage.value = null
-  fileName.value = ''
-  fileSize.value = ''
-  progress.value = 0
-  uploading.value = false
-  formData.value.imageUrl = ''
-  const input = document.querySelector('.file-input')
-  if (input) input.value = ''
-}
-
-const formatFileSize = (bytes) => {
-  if (!bytes) return '0 Bytes'
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
 // ============ 新增/编辑弹窗 ============
 const showAddDialog = () => {
   isEditing.value = false
   formData.value = createEmptyForm()
-  tagsInput.value = ''
-  resetUploadState()
   showDialog.value = true
 }
 
@@ -708,30 +473,7 @@ const showEditDialog = (item) => {
     viewCount: Number(item.viewCount) ?? 0,
     tags: item.tags || '[]'
   }
-  // tags 回显：支持 JSON 字符串或数组
-  const tagsArr = parseTags(item.tags)
-  tagsInput.value = tagsArr.join(',')
-  if (formData.value.imageUrl) {
-    previewImage.value = formData.value.imageUrl
-    fileName.value = '已有图片'
-    fileSize.value = ''
-  } else {
-    resetUploadState()
-  }
   showDialog.value = true
-}
-
-const resetUploadState = () => {
-  previewImage.value = null
-  fileName.value = ''
-  fileSize.value = ''
-  progress.value = 0
-  uploading.value = false
-}
-
-const closeDialog = () => {
-  if (submitting.value) return
-  showDialog.value = false
 }
 
 // ============ 详情弹窗 ============
@@ -750,75 +492,67 @@ const openImagePreview = (url) => {
   window.open(url, '_blank')
 }
 
-// ============ 表单提交 ============
-const submitForm = async () => {
-  if (!formData.value.destinationName) {
-    showToastMessage('请输入目的地名称', 'error')
-    return
+// 表单验证
+const validateForm = (data, isEdit) => {
+  if (!data.destinationName) {
+    return '请输入目的地名称'
   }
-  if (!formData.value.description) {
-    showToastMessage('请输入目的地描述', 'error')
-    return
+  if (!data.description) {
+    return '请输入目的地描述'
   }
-  if (!formData.value.imageUrl) {
-    showToastMessage('请上传或填写图片地址', 'error')
-    return
+  if (!data.imageUrl) {
+    return '请上传或填写图片地址'
+  }
+  return null
+}
+
+// 表单提交
+const handleSubmit = async (data, isEdit) => {
+  const payload = { ...data }
+  if (!isEdit) {
+    delete payload.id
   }
 
-  // 将 tags 输入转为 JSON 字符串
-  if (tagsInput.value && tagsInput.value.trim()) {
-    const input = tagsInput.value.trim()
+  if (payload.tags && payload.tags.trim()) {
+    const input = payload.tags.trim()
     if (input.startsWith('[') || input.startsWith('"')) {
-      // 尝试 JSON 解析
       try {
         const arr = JSON.parse(input)
-        formData.value.tags = JSON.stringify(Array.isArray(arr) ? arr : [input])
+        payload.tags = JSON.stringify(Array.isArray(arr) ? arr : [input])
       } catch {
         const parts = input.split(/[,，]/).map((s) => s.trim()).filter(Boolean)
-        formData.value.tags = JSON.stringify(parts)
+        payload.tags = JSON.stringify(parts)
       }
     } else {
       const parts = input.split(/[,，]/).map((s) => s.trim()).filter(Boolean)
-      formData.value.tags = JSON.stringify(parts)
+      payload.tags = JSON.stringify(parts)
     }
   } else {
-    formData.value.tags = JSON.stringify([])
+    payload.tags = JSON.stringify([])
   }
 
-  submitting.value = true
-  try {
-    // 发送到后端的 payload 按后端约定组织
-    const payload = { ...formData.value }
-    if (!isEditing.value) {
-      // 新增：移除 id
-      delete payload.id
-    }
-
-    if (isEditing.value) {
-      const res = await updateRecommendation(payload)
-      if (res && (res.code === 200 || res.code === '200' || res.code === 0 || res.code === '0' || res.success === true)) {
-        showToastMessage('更新推荐成功')
-      } else {
-        showToastMessage(res?.msg || res?.message || '更新推荐成功', 'success')
-      }
+  if (isEdit) {
+    const res = await updateRecommendation(payload)
+    if (res && (res.code === 200 || res.code === '200' || res.code === 0 || res.code === '0' || res.success === true)) {
+      showToastMessage('更新推荐成功')
     } else {
-      const res = await addRecommendation(payload)
-      if (res && (res.code === 200 || res.code === '200' || res.code === 0 || res.code === '0' || res.success === true)) {
-        showToastMessage('新增推荐成功')
-      } else {
-        showToastMessage(res?.msg || res?.message || '新增推荐成功', 'success')
-      }
+      showToastMessage(res?.msg || res?.message || '更新推荐成功', 'success')
     }
-
-    await fetchData()
-    closeDialog()
-  } catch (error) {
-    console.error('操作失败：', error)
-    const msg = isEditing.value ? '更新推荐失败' : '新增推荐失败'
-    showToastMessage(msg, 'error')
-  } finally {
-    submitting.value = false
+  } else {
+    const res = await addRecommendation(payload)
+    if (res && (res.code === 200 || res.code === '200' || res.code === 0 || res.code === '0' || res.success === true)) {
+      showToastMessage('新增推荐成功')
+    } else {
+      showToastMessage(res?.msg || res?.message || '新增推荐成功', 'success')
+    }
   }
+
+  await fetchData()
+}
+
+// 处理错误
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error')
 }
 
 // ============ 删除 ============
