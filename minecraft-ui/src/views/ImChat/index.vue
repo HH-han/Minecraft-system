@@ -1172,6 +1172,132 @@ watch(selectedContact, () => {
 .im-container {
   display: flex;
   height: 100vh;
-  background: #f5f5f5;
+  background: #f5f5f7;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1d1d1f;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:global(html) {
+  scroll-behavior: smooth;
+}
+
+:global(body) {
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1d1d1f;
+  background: #f5f5f7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.im-container :deep(*) {
+  scrollbar-width: thin;
+  scrollbar-color: #d2d2d6 transparent;
+}
+
+.im-container :deep(*::-webkit-scrollbar) {
+  width: 6px;
+  height: 6px;
+}
+
+.im-container :deep(*::-webkit-scrollbar-track) {
+  background: transparent;
+}
+
+.im-container :deep(*::-webkit-scrollbar-thumb) {
+  background: #d2d2d6;
+  border-radius: 3px;
+}
+
+.im-container :deep(*::-webkit-scrollbar-thumb:hover) {
+  background: #a1a1a6;
+}
+
+.im-container :deep(a) {
+  color: #2997ff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.im-container :deep(a:hover) {
+  color: #0066cc;
+}
+
+.im-container :deep(button) {
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.im-container :deep(input),
+.im-container :deep(textarea) {
+  font-family: inherit;
+  color: #1d1d1f;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.im-container :deep(input:focus),
+.im-container :deep(textarea:focus) {
+  outline: none;
+  border-color: #2997ff;
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.15);
+}
+
+.im-container :deep(.text-primary) {
+  color: #1d1d1f;
+}
+
+.im-container :deep(.text-secondary) {
+  color: #6e6e73;
+}
+
+.im-container :deep(.accent) {
+  color: #2997ff;
+  transition: color 0.2s ease;
+}
+
+.im-container :deep(.accent:hover) {
+  color: #0066cc;
+}
+
+.im-container :deep(.accent-bg) {
+  background: #2997ff;
+  color: #ffffff;
+  transition: background 0.2s ease;
+}
+
+.im-container :deep(.accent-bg:hover) {
+  background: #0066cc;
+}
+
+.im-container :deep(.divider) {
+  border: none;
+  border-top: 1px solid #d2d2d6;
+}
+
+.im-container :deep(.card) {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease;
+}
+
+.im-container :deep(.card:hover) {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.im-container :deep(.list-item) {
+  transition: background-color 0.2s ease;
+}
+
+.im-container :deep(.list-item:hover) {
+  background-color: #f5f5f7;
+}
+
+.im-container :deep(.list-item.active) {
+  background-color: rgba(41, 151, 255, 0.08);
 }
 </style>

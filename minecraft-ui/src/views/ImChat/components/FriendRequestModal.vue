@@ -145,7 +145,8 @@ const onClose = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,42 +156,52 @@ const onClose = () => {
 .modal-content {
   width: 420px;
   max-height: 80vh;
-  background: #fff;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 24px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.01em;
 }
 
 .close-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: none;
-  background: #f5f5f5;
+  background: #f5f5f7;
   border-radius: 50%;
-  color: #666;
+  color: #6e6e73;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #e8e8ed;
+  color: #1d1d1f;
 }
 
 .modal-body {
-  padding: 16px 20px;
+  padding: 16px 24px;
   overflow-y: auto;
   flex: 1;
 }
@@ -198,13 +209,14 @@ const onClose = () => {
 .loading {
   text-align: center;
   padding: 40px;
-  color: #999;
+  color: #6e6e73;
+  font-size: 14px;
 }
 
 .no-requests {
   text-align: center;
   padding: 40px;
-  color: #999;
+  color: #6e6e73;
 }
 
 .no-requests p {
@@ -219,9 +231,14 @@ const onClose = () => {
 }
 
 .request-item {
-  padding: 12px;
-  background: #f9f9f9;
-  border-radius: 8px;
+  padding: 14px;
+  background: #f5f5f7;
+  border-radius: 16px;
+  transition: 0.2s ease;
+}
+
+.request-item:hover {
+  background: #e8e8ed;
 }
 
 .request-info {
@@ -234,7 +251,7 @@ const onClose = () => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #e0e0e0;
+  background: #d2d2d6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -256,13 +273,13 @@ const onClose = () => {
 .name {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #1d1d1f;
   margin-bottom: 4px;
 }
 
 .message {
   font-size: 13px;
-  color: #666;
+  color: #6e6e73;
   margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -271,7 +288,7 @@ const onClose = () => {
 
 .time {
   font-size: 12px;
-  color: #999;
+  color: #86868b;
 }
 
 .actions {
@@ -283,29 +300,33 @@ const onClose = () => {
 .btn {
   padding: 6px 16px;
   border: none;
-  border-radius: 6px;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .btn-accept {
-  background: #409eff;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
+  border-radius: 40px;
 }
 
 .btn-accept:hover {
-  background: #66b1ff;
+  background: #0066cc;
 }
 
 .btn-reject {
-  background: #f5f5f5;
-  color: #666;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-radius: 12px;
 }
 
 .btn-reject:hover {
-  background: #e0e0e0;
+  background: #e8e8ed;
 }
 </style>

@@ -216,7 +216,8 @@ const onClose = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,56 +227,70 @@ const onClose = () => {
 .modal-content {
   width: 480px;
   max-height: 80vh;
-  background: #fff;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 24px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.01em;
 }
 
 .close-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: none;
-  background: #f5f5f5;
+  background: #f5f5f7;
   border-radius: 50%;
-  color: #666;
+  color: #6e6e73;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #e8e8ed;
+  color: #1d1d1f;
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 24px;
   overflow-y: auto;
   flex: 1;
 }
 
 .form-item {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
 }
 
 .form-item label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: #1d1d1f;
 }
 
 .avatar-item {
@@ -286,21 +301,23 @@ const onClose = () => {
   width: 120px;
   height: 120px;
   margin: 0 auto;
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed #d2d2d6;
   border-radius: 50%;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.2s;
+  transition: 0.2s ease;
+  background: #f5f5f7;
 }
 
 .avatar-upload:hover {
-  border-color: #409eff;
+  border-color: #2997ff;
+  background: rgba(41, 151, 255, 0.05);
 }
 
 .avatar-upload.drag-over {
-  border-color: #409eff;
-  background: #e8f4fd;
+  border-color: #2997ff;
+  background: rgba(41, 151, 255, 0.08);
 }
 
 .preview-avatar {
@@ -316,7 +333,7 @@ const onClose = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: #6e6e73;
 }
 
 .upload-placeholder p {
@@ -326,7 +343,7 @@ const onClose = () => {
 
 .upload-placeholder .hint {
   font-size: 10px;
-  color: #ccc;
+  color: #86868b;
 }
 
 .file-input {
@@ -341,60 +358,77 @@ const onClose = () => {
 
 .form-input {
   width: 100%;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
   font-size: 14px;
+  color: #1d1d1f;
   outline: none;
-  transition: border-color 0.2s;
+  transition: 0.2s ease;
   box-sizing: border-box;
+  background: #ffffff;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
+}
+
+.form-input::placeholder {
+  color: #6e6e73;
 }
 
 .form-input:focus {
-  border-color: #409eff;
+  border-color: #2997ff;
+  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
 }
 
 .form-textarea {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 10px 14px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
   font-size: 14px;
+  color: #1d1d1f;
   outline: none;
   resize: none;
-  transition: border-color 0.2s;
+  transition: 0.2s ease;
   box-sizing: border-box;
+  background: #ffffff;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
+}
+
+.form-textarea::placeholder {
+  color: #6e6e73;
 }
 
 .form-textarea:focus {
-  border-color: #409eff;
+  border-color: #2997ff;
+  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
 }
 
 .friend-list {
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
   padding: 8px;
+  background: #f5f5f7;
 }
 
 .friend-item {
   display: flex;
   align-items: center;
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s ease;
   position: relative;
 }
 
 .friend-item:hover {
-  background: #f5f5f5;
+  background: #ffffff;
 }
 
 .friend-item.selected {
-  background: #e8f4fd;
+  background: rgba(41, 151, 255, 0.1);
 }
 
 .friend-avatar {
@@ -408,15 +442,16 @@ const onClose = () => {
 .friend-name {
   flex: 1;
   font-size: 14px;
-  color: #333;
+  color: #1d1d1f;
+  font-weight: 500;
 }
 
 .check-icon {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #409eff;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -426,35 +461,38 @@ const onClose = () => {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding: 16px 20px;
-  border-top: 1px solid #e0e0e0;
+  padding: 16px 24px 24px;
+  border-top: 1px solid #d2d2d6;
 }
 
 .btn {
   padding: 10px 24px;
   border: none;
-  border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .btn-cancel {
-  background: #f5f5f5;
-  color: #666;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-radius: 12px;
 }
 
 .btn-cancel:hover {
-  background: #e0e0e0;
+  background: #e8e8ed;
 }
 
 .btn-confirm {
-  background: #409eff;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
+  border-radius: 40px;
 }
 
 .btn-confirm:hover:not(:disabled) {
-  background: #66b1ff;
+  background: #0066cc;
 }
 
 .btn-confirm:disabled {

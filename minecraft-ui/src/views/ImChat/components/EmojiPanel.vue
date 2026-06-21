@@ -260,16 +260,17 @@ defineExpose({
   bottom: 100%;
   left: 20px;
   right: 20px;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  border-radius: 24px;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08), 0 -4px 12px rgba(0, 0, 0, 0.04);
+  padding: 16px;
   margin-bottom: 12px;
   max-height: 400px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .emoji-panel-header {
@@ -277,8 +278,8 @@ defineExpose({
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f5f5f7;
 }
 
 .emoji-tabs {
@@ -290,20 +291,23 @@ defineExpose({
   padding: 6px 16px;
   border: none;
   background: transparent;
-  color: #666;
+  color: #6e6e73;
   font-size: 14px;
   cursor: pointer;
   border-radius: 16px;
-  transition: all 0.2s;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
+  font-weight: 500;
 }
 
 .tab-btn.active {
-  background: #409eff;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
 }
 
 .tab-btn:hover:not(.active) {
-  background: #f5f5f5;
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
 .emoji-content {
@@ -316,10 +320,10 @@ defineExpose({
 .category-tabs {
   display: flex;
   gap: 6px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f5f5f7;
   overflow-x: auto;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .category-tabs::-webkit-scrollbar {
@@ -330,21 +334,24 @@ defineExpose({
   padding: 4px 12px;
   border: none;
   background: transparent;
-  color: #666;
+  color: #6e6e73;
   font-size: 12px;
   cursor: pointer;
   border-radius: 12px;
   white-space: nowrap;
-  transition: all 0.2s;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
+  font-weight: 500;
 }
 
 .category-btn.active {
-  background: #e8f4ff;
-  color: #409eff;
+  background: rgba(41, 151, 255, 0.1);
+  color: #2997ff;
 }
 
 .category-btn:hover:not(.active) {
-  background: #f5f5f5;
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
 .emoji-grid {
@@ -358,36 +365,38 @@ defineExpose({
 .emoji-item {
   height: 60px;
   aspect-ratio: 1;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #f5f5f7;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.2s ease;
 }
 
 .emoji-item:hover {
-  border-color: #409eff;
-  background: #f8f9fa;
+  border-color: #2997ff;
+  background: #f5f5f7;
 }
 
 .emoji-item.upload-item {
-  border: 2px dashed #d9d9d9;
-  background: #fafafa;
+  border: 2px dashed #d2d2d6;
+  background: #f5f5f7;
 }
 
 .emoji-item.upload-item:hover {
-  border-color: #409eff;
-  background: #e8f4ff;
+  border-color: #2997ff;
+  background: rgba(41, 151, 255, 0.08);
 }
 
 .upload-icon {
-  color: #999;
+  color: #6e6e73;
+  transition: 0.2s ease;
 }
 
 .emoji-item.upload-item:hover .upload-icon {
-  color: #409eff;
+  color: #2997ff;
 }
 
 .emoji-unicode {
@@ -403,7 +412,7 @@ defineExpose({
 .empty-emoji {
   grid-column: 2 / -1;
   text-align: center;
-  color: #999;
+  color: #6e6e73;
   padding: 20px;
 }
 
@@ -418,11 +427,11 @@ defineExpose({
 
 .context-menu {
   position: fixed;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 6px;
   z-index: 1000;
 }
 
@@ -432,14 +441,17 @@ defineExpose({
   padding: 8px 12px;
   border: none;
   background: transparent;
-  color: #333;
+  color: #1d1d1f;
   font-size: 14px;
   cursor: pointer;
   text-align: left;
-  border-radius: 4px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .context-menu-item:hover {
-  background: #f5f5f5;
+  background: #f5f5f7;
+  color: #ff453a;
 }
 </style>

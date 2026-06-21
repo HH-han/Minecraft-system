@@ -446,35 +446,36 @@ defineExpose({
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(12px);
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .call-window {
   width: 420px;
-  background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  background: #1d1d1f;
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 
 .call-header {
   text-align: center;
-  padding: 40px 20px 20px;
+  padding: 48px 24px 24px;
 }
 
 .caller-avatar-wrapper {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 16px;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto 20px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .caller-avatar {
@@ -485,27 +486,30 @@ defineExpose({
 
 .caller-name {
   font-size: 20px;
-  color: #fff;
+  color: #ffffff;
   margin: 0 0 8px 0;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .call-status {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #6e6e73;
   margin: 0;
+  font-weight: 400;
 }
 
 .call-timer {
   font-size: 16px;
-  color: #00d68f;
+  color: #2997ff;
   margin-top: 12px;
-  font-weight: 500;
-  font-family: monospace;
+  font-weight: 600;
+  font-family: 'SF Mono', monospace;
+  letter-spacing: 0.05em;
 }
 
 .call-content {
-  padding: 20px;
+  padding: 24px;
   min-height: 120px;
   display: flex;
   align-items: center;
@@ -516,8 +520,8 @@ defineExpose({
   position: relative;
   width: 100%;
   height: 240px;
-  background: #000;
-  border-radius: 8px;
+  background: #000000;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -529,12 +533,12 @@ defineExpose({
 
 .local-video {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 80px;
-  height: 60px;
-  border-radius: 6px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  bottom: 10px;
+  right: 10px;
+  width: 88px;
+  height: 66px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
   object-fit: cover;
 }
 
@@ -554,7 +558,7 @@ defineExpose({
 .wave-bar {
   width: 4px;
   height: 12px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 2px;
   transition: height 0.1s ease;
 }
@@ -577,8 +581,8 @@ defineExpose({
 .call-actions {
   display: flex;
   justify-content: center;
-  gap: 32px;
-  padding: 24px 20px 32px;
+  gap: 28px;
+  padding: 24px 24px 40px;
 }
 
 .action-btn {
@@ -586,18 +590,19 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border: none;
   border-radius: 50%;
-  width: 64px;
-  height: 64px;
-  color: #fff;
+  width: 68px;
+  height: 68px;
+  color: #ffffff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .action-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
 
@@ -606,54 +611,62 @@ defineExpose({
 }
 
 .action-btn.disabled {
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .btn-label {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: -4px;
+  position: absolute;
+  bottom: -22px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  font-weight: 400;
 }
 
 .mic-btn {
-  color: #fff;
+  color: #ffffff;
+  position: relative;
 }
 
 .mic-btn.disabled {
-  color: #ff4757;
+  color: #ff453a;
 }
 
 .accept-btn {
-  background: #00d68f;
-  color: #000;
+  background: #30d158;
+  color: #1d1d1f;
+  position: relative;
 }
 
 .accept-btn:hover {
-  background: #00e89c;
+  background: #34c759;
 }
 
 .hangup-btn {
-  background: #ff4757;
-  color: #fff;
+  background: #ff453a;
+  color: #ffffff;
+  position: relative;
 }
 
 .hangup-btn:hover {
-  background: #ff5a6a;
+  background: #e03a30;
 }
 
 .video-btn {
-  color: #fff;
+  color: #ffffff;
+  position: relative;
 }
 
 .video-btn.disabled {
-  color: #ff4757;
+  color: #ff453a;
 }
 
 .speaker-btn {
-  color: #fff;
+  color: #ffffff;
+  position: relative;
 }
 
 .speaker-btn.disabled {
-  color: #00d68f;
+  color: #30d158;
 }
 </style>

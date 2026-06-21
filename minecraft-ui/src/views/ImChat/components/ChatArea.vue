@@ -94,6 +94,7 @@ defineExpose({ messageListRef })
   flex: 1;
   display: flex;
   flex-direction: column;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .empty-chat {
@@ -102,8 +103,8 @@ defineExpose({ messageListRef })
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #999;
-  background: #fff;
+  color: #6e6e73;
+  background: #f5f5f7;
 }
 
 .empty-chat .svg-icon {
@@ -120,16 +121,16 @@ defineExpose({ messageListRef })
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #e8e8e8;
+  background: #f5f5f7;
 }
 
 .chat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  background: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 14px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .header-info {
@@ -148,17 +149,17 @@ defineExpose({ messageListRef })
 .header-text h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #1d1d1f;
   margin: 0 0 4px 0;
 }
 
 .online-status {
   font-size: 13px;
-  color: #999;
+  color: #6e6e73;
 }
 
 .online-status.online {
-  color: #67c23a;
+  color: #34c759;
 }
 
 .header-actions {
@@ -170,17 +171,19 @@ defineExpose({ messageListRef })
   width: 36px;
   height: 36px;
   border: none;
-  border-radius: 50%;
-  background: #f5f5f5;
-  color: #666;
+  border-radius: 12px;
+  background: #f5f5f7;
+  color: #6e6e73;
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.2s ease;
 }
 
 .action-btn:hover {
-  background: #e8e8e8;
+  background: #e8e8ed;
+  color: #1d1d1f;
 }
 </style>

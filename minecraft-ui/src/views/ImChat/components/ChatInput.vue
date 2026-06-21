@@ -142,10 +142,11 @@ const handleSend = () => {
   display: flex;
   align-items: flex-end;
   padding: 12px 20px;
-  background: #fff;
-  border-top: 1px solid #e0e0e0;
+  background: #ffffff;
+  border-top: 1px solid #d2d2d6;
   gap: 12px;
   position: relative;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .input-tools {
@@ -157,44 +158,64 @@ const handleSend = () => {
   width: 40px;
   height: 40px;
   border: none;
-  background: #f5f5f5;
-  border-radius: 50%;
-  color: #666;
+  background: #f5f5f7;
+  border-radius: 12px;
+  color: #6e6e73;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: 0.2s ease;
 }
 
 .tool-btn:hover {
-  background: #e8e8e8;
+  background: #e8e8ed;
+  color: #1d1d1f;
 }
 
 .message-input {
   flex: 1;
   height: 40px;
   padding: 0 16px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #d2d2d6;
   border-radius: 20px;
   font-size: 14px;
+  color: #1d1d1f;
+  background: #ffffff;
   outline: none;
+  transition: 0.2s ease;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.message-input::placeholder {
+  color: #6e6e73;
+}
+
+.message-input:focus {
+  border-color: #2997ff;
+  background: #ffffff;
 }
 
 .send-btn {
   width: 40px;
   height: 40px;
   border: none;
-  background: #409eff;
+  background: #2997ff;
   border-radius: 50%;
-  color: #fff;
+  color: #ffffff;
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: 0.2s ease;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #0077ed;
 }
 
 .send-btn:disabled {

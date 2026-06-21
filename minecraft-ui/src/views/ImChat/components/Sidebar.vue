@@ -517,36 +517,44 @@ const onSettings = () => {
 .im-sidebar {
   width: 320px;
   height: 100%;
-  background: #fff;
+  background: #ffffff;
   display: flex;
   overflow: hidden;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .sidebar-left {
   width: 64px;
   height: 100%;
-  background: #2e3238;
+  background: #f5f5f7;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 16px 0;
   flex-shrink: 0;
+  border-right: 1px solid #d2d2d6;
 }
 
 .user-avatar {
   width: 44px;
   height: 44px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   margin-bottom: 8px;
   overflow: hidden;
   flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-avatar:hover {
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .avatar-img {
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
@@ -563,23 +571,24 @@ const onSettings = () => {
   height: 44px;
   border: none;
   background: transparent;
-  border-radius: 8px;
-  color: #9e9e9e;
+  border-radius: 12px;
+  color: #6e6e73;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .nav-item:hover {
-  background: #3a3f45;
+  background: rgba(0, 0, 0, 0.06);
+  transform: scale(1.01);
 }
 
 .nav-item.active {
-  background: #11b860;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
 }
 
 .nav-badge {
@@ -589,9 +598,10 @@ const onSettings = () => {
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
-  background: #f56c6c;
-  color: #fff;
+  background: #ff3b30;
+  color: #ffffff;
   font-size: 11px;
+  font-weight: 600;
   border-radius: 9px;
   display: flex;
   align-items: center;
@@ -601,10 +611,10 @@ const onSettings = () => {
 .sidebar-right {
   flex: 1;
   height: 100%;
-  background: #f7f7f7;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #e6e6e6;
+  border-right: 1px solid #d2d2d6;
   overflow: hidden;
 }
 
@@ -613,32 +623,34 @@ const onSettings = () => {
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: #fff;
-  border-bottom: 1px solid #e6e6e6;
+  background: #ffffff;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .sidebar-title {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: #1d1d1f;
   margin: 0;
 }
 
 .add-btn {
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: 12px;
   border: none;
   background: transparent;
-  color: #333;
+  color: #1d1d1f;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .add-btn:hover {
-  background: #f0f0f0;
+  background: #f5f5f7;
+  transform: scale(1.01);
 }
 
 .header-actions {
@@ -649,19 +661,21 @@ const onSettings = () => {
 .action-btn {
   width: 32px;
   height: 32px;
-  border-radius: 4px;
+  border-radius: 12px;
   border: none;
   background: transparent;
-  color: #333;
+  color: #1d1d1f;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  transition: all 0.2s ease;
 }
 
 .action-btn:hover {
-  background: #f0f0f0;
+  background: #f5f5f7;
+  transform: scale(1.01);
 }
 
 .request-badge {
@@ -671,9 +685,10 @@ const onSettings = () => {
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
-  background: #f56c6c;
-  color: #fff;
+  background: #ff3b30;
+  color: #ffffff;
   font-size: 11px;
+  font-weight: 600;
   border-radius: 9px;
   display: flex;
   align-items: center;
@@ -682,25 +697,37 @@ const onSettings = () => {
 
 .search-box {
   padding: 10px 12px;
-  background: #f7f7f7;
+  background: #f5f5f7;
 }
 
 .search-input {
   width: 100%;
   height: 32px;
   padding: 0 12px;
-  background: #ebebeb;
-  border: none;
-  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
   font-size: 14px;
+  color: #1d1d1f;
   outline: none;
   box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.search-input::placeholder {
+  color: #6e6e73;
+}
+
+.search-input:focus {
+  border-color: #2997ff;
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.15);
 }
 
 .tabs {
   display: flex;
   padding: 8px 12px;
-  background: #fff;
+  background: #ffffff;
   gap: 8px;
 }
 
@@ -708,28 +735,32 @@ const onSettings = () => {
   flex: 1;
   padding: 6px 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   background: transparent;
-  color: #333;
+  color: #6e6e73;
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .tab-btn:hover {
-  background: #f0f0f0;
+  background: #f5f5f7;
+  transform: scale(1.01);
 }
 
 .tab-btn.active {
-  background: #ebebeb;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  font-weight: 600;
 }
 
 .contacts-actions {
-  background: #fff;
+  background: #ffffff;
   padding: 8px 0;
 }
 
@@ -738,7 +769,7 @@ const onSettings = () => {
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  background: #fff;
+  background: #ffffff;
 }
 
 .contact-list::-webkit-scrollbar {
@@ -750,17 +781,19 @@ const onSettings = () => {
   align-items: center;
   padding: 12px 16px;
   cursor: pointer;
-  transition: background 0.2s;
-  background: #fff;
+  transition: background 0.2s ease;
+  background: #ffffff;
   position: relative;
 }
 
 .contact-item:hover {
-  background: #f5f5f5;
+  background: #f5f5f7;
+  transform: scale(1.01);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .contact-item.active {
-  background: #ebebeb;
+  background: #f5f5f7;
 }
 
 .contact-content {
@@ -775,19 +808,20 @@ const onSettings = () => {
   height: 28px;
   border: none;
   background: transparent;
-  color: #b2b2b2;
+  color: #6e6e73;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
 .detail-btn:hover {
-  background: #e6e6e6;
-  color: #666;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  transform: scale(1.01);
 }
 
 .avatar-wrapper {
@@ -806,11 +840,17 @@ const onSettings = () => {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: none;
-  color: #fff;
+  background: #f5f5f7;
+  color: #2997ff;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.icon-avatar:hover {
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .unread-badge {
@@ -820,9 +860,10 @@ const onSettings = () => {
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-  background: #f56c6c;
-  color: #fff;
+  background: #ff3b30;
+  color: #ffffff;
   font-size: 12px;
+  font-weight: 600;
   border-radius: 9px;
   display: flex;
   align-items: center;
@@ -836,12 +877,12 @@ const onSettings = () => {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ccc;
-  border: 2px solid #fff;
+  background: #d2d2d6;
+  border: 2px solid #ffffff;
 }
 
 .online-status.online {
-  background: #67c23a;
+  background: #34c759;
 }
 
 .contact-info {
@@ -852,7 +893,7 @@ const onSettings = () => {
 .contact-name {
   font-size: 16px;
   font-weight: 400;
-  color: #181818;
+  color: #1d1d1f;
   margin: 0 0 4px 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -861,7 +902,7 @@ const onSettings = () => {
 
 .contact-last-message {
   font-size: 14px;
-  color: #999;
+  color: #6e6e73;
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -870,7 +911,7 @@ const onSettings = () => {
 
 .contact-time {
   font-size: 12px;
-  color: #b2b2b2;
+  color: #6e6e73;
 }
 
 .arrow-icon {
@@ -880,9 +921,9 @@ const onSettings = () => {
 
 .section-divider {
   height: 8px;
-  background: #f7f7f7;
-  border-top: 1px solid #e6e6e6;
-  border-bottom: 1px solid #e6e6e6;
+  background: #f5f5f7;
+  border-top: 1px solid #d2d2d6;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .empty-state {
@@ -891,7 +932,7 @@ const onSettings = () => {
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: #999;
+  color: #6e6e73;
 }
 
 .empty-state .svg-icon {

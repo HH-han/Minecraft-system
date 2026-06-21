@@ -81,7 +81,8 @@ const onSubmit = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,83 +91,126 @@ const onSubmit = () => {
 
 .modal-content {
   width: 400px;
-  background: #fff;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 24px;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 24px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.01em;
 }
 
 .close-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: none;
-  background: #f5f5f5;
+  background: #f5f5f7;
   border-radius: 50%;
-  color: #666;
+  color: #6e6e73;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #e8e8ed;
+  color: #1d1d1f;
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 24px;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-group label {
   display: block;
   font-size: 14px;
-  color: #333;
+  color: #1d1d1f;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .form-input {
   width: 100%;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
   font-size: 14px;
+  color: #1d1d1f;
+  background: #ffffff;
   outline: none;
+  box-sizing: border-box;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
+}
+
+.form-input::placeholder {
+  color: #6e6e73;
+}
+
+.form-input:focus {
+  border-color: #2997ff;
+  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  padding: 16px 20px;
-  border-top: 1px solid #e0e0e0;
+  padding: 16px 24px 24px;
   gap: 12px;
 }
 
 .btn {
-  padding: 8px 20px;
+  padding: 10px 24px;
   border: none;
-  border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .btn-secondary {
-  background: #f5f5f5;
-  color: #666;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-radius: 12px;
+}
+
+.btn-secondary:hover {
+  background: #e8e8ed;
 }
 
 .btn-primary {
-  background: #409eff;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
+  border-radius: 40px;
+}
+
+.btn-primary:hover {
+  background: #0066cc;
 }
 </style>

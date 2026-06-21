@@ -184,39 +184,42 @@ const onEditFriendRemark = () => {
 .contact-detail {
   width: 320px;
   height: 100%;
-  background: #fff;
-  border-left: 1px solid #e6e6e6;
+  background: #ffffff;
+  border-left: 1px solid #d2d2d6;
   display: flex;
   flex-direction: column;
+  font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .contact-detail-empty {
   width: 320px;
   height: 100%;
-  background: #fff;
-  border-left: 1px solid #e6e6e6;
+  background: #ffffff;
+  border-left: 1px solid #d2d2d6;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: #6e6e73;
+  font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .contact-detail-empty .svg-icon {
   margin-bottom: 16px;
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 .contact-detail-empty p {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
+  letter-spacing: 0.2px;
 }
 
 .detail-header {
   display: flex;
   justify-content: flex-end;
-  padding: 12px;
-  border-bottom: 1px solid #e6e6e6;
+  padding: 16px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .close-btn {
@@ -224,33 +227,33 @@ const onEditFriendRemark = () => {
   height: 32px;
   border: none;
   background: transparent;
-  color: #666;
+  color: #6e6e73;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: 0.2s ease;
 }
 
 .close-btn:hover {
-  background: #f5f5f5;
-  color: #333;
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
 .detail-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
 }
 
 .avatar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid #f5f5f7;
+  margin-bottom: 24px;
 }
 
 .detail-avatar {
@@ -258,8 +261,8 @@ const onEditFriendRemark = () => {
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .name-section {
@@ -271,8 +274,9 @@ const onEditFriendRemark = () => {
 .detail-name {
   font-size: 20px;
   font-weight: 600;
-  color: #181818;
+  color: #1d1d1f;
   margin: 0;
+  letter-spacing: -0.2px;
 }
 
 .edit-remark-btn {
@@ -280,72 +284,76 @@ const onEditFriendRemark = () => {
   height: 32px;
   border: none;
   background: transparent;
-  color: #999;
+  color: #6e6e73;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all ease-in-out 0.2s;
+  transition: 0.2s ease;
 }
 
 .edit-remark-btn:hover {
-  transform: scale(1.1);
-  color: #666;
+  color: #2997ff;
+  background: #f5f5f7;
 }
 
 .remark-input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e6e6e6;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
   font-size: 14px;
   margin-top: 12px;
   outline: none;
   box-sizing: border-box;
+  font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: 0.2s ease;
 }
 
 .remark-input:focus {
-  border-color: #11b860;
+  border-color: #2997ff;
 }
 
 .info-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #f5f5f5;
+  padding: 14px 0;
+  border-bottom: 1px solid #f5f5f7;
 }
 
 .info-label {
   font-size: 14px;
-  color: #666;
+  color: #6e6e73;
 }
 
 .info-value {
   font-size: 14px;
-  color: #333;
+  color: #1d1d1f;
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .status-badge {
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
-  background: #e6e6e6;
-  color: #666;
+  background: #f5f5f7;
+  color: #6e6e73;
+  font-weight: 500;
 }
 
 .status-badge.online {
-  background: #e6f7e6;
-  color: #67c23a;
+  background: #e8f5e9;
+  color: #34c759;
 }
 
 .action-section {
@@ -356,44 +364,49 @@ const onEditFriendRemark = () => {
 
 .action-btn {
   width: 100%;
-  padding: 8px 16px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .action-btn.primary {
-  background: #11b860;
-  color: #fff;
+  background: #1d1d1f;
+  color: #ffffff;
+  border-radius: 40px;
 }
 
 .action-btn.primary:hover {
-  background: #0da255;
-}
-
-.action-btn.danger {
-  background: #fff;
-  color: #f56c6c;
-  border: 1px solid #f56c6c;
-}
-
-.action-btn.danger:hover {
-  background: #fef0f0;
+  background: #000000;
+  transform: scale(1.02);
 }
 
 .action-btn.secondary {
-  background: #fff;
-  color: #666;
-  border: 1px solid #e6e6e6;
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
 .action-btn.secondary:hover {
-  background: #f5f5f5;
+  background: #e8e8ed;
+  transform: scale(1.02);
+}
+
+.action-btn.danger {
+  background: #ffffff;
+  color: #ff3b30;
+  border: 1px solid #ff3b30;
+}
+
+.action-btn.danger:hover {
+  background: #fff5f5;
+  transform: scale(1.02);
 }
 </style>

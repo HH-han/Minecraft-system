@@ -244,6 +244,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   padding: 20px;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .message-list::-webkit-scrollbar {
@@ -278,17 +279,17 @@ defineExpose({ scrollToBottom, currentUserInfo })
 }
 
 .message-bubble {
-  background: #fff;
+  background: #f5f5f7;
   padding: 10px 14px;
   border-radius: 18px;
   margin: 0 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   max-width: 100%;
   display: inline-block;
+  transition: 0.2s ease;
 }
 
 .message-item.mine .message-bubble {
-  background: #409eff;
+  background: #2997ff;
 }
 
 .message-item .message-bubble.no-blue-bg {
@@ -308,24 +309,28 @@ defineExpose({ scrollToBottom, currentUserInfo })
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
+  color: #1d1d1f;
+  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .message-item.mine .message-bubble p {
-  color: #fff;
+  color: #ffffff;
 }
 
 .message-image {
   max-width: 200px;
   max-height: 200px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   object-fit: cover;
+  display: block;
 }
 
 .message-emoji-text {
   background: none;
   line-height: 1;
   display: block;
+  font-size: 32px;
 }
 
 .emoji-container {
@@ -339,8 +344,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   height: 120px;
   object-fit: cover;
   border-radius: 12px;
-  background: #f5f5f5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #f5f5f7;
   transition: transform 0.15s ease;
 }
 
@@ -352,17 +356,19 @@ defineExpose({ scrollToBottom, currentUserInfo })
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
+  color: #1d1d1f;
+  font-size: 14px;
 }
 
 .message-item.mine .message-other {
-  color: #fff;
+  color: #ffffff;
 }
 
 .message-time {
-  font-size: 12px;
-  color: #999;
+  font-size: 11px;
+  color: #6e6e73;
   margin: 4px 10px;
+  font-weight: 400;
 }
 
 .no-messages {
@@ -371,7 +377,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   align-items: center;
   justify-content: center;
   padding: 60px;
-  color: #999;
+  color: #6e6e73;
 }
 
 .no-messages .svg-icon {
@@ -401,6 +407,6 @@ defineExpose({ scrollToBottom, currentUserInfo })
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 </style>

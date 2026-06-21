@@ -141,7 +141,8 @@ const handleConfirm = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,50 +152,54 @@ const handleConfirm = () => {
 .modal-content {
   width: 480px;
   max-height: 600px;
-  background: #fff;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e6e6e6;
+  padding: 20px 24px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .modal-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
-  color: #333;
+  color: #1d1d1f;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .close-btn {
   width: 32px;
   height: 32px;
   border: none;
-  background: transparent;
-  color: #666;
+  background: #f5f5f7;
+  color: #6e6e73;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: 0.2s ease;
 }
 
 .close-btn:hover {
-  background: #f5f5f5;
+  background: #e8e8ed;
+  color: #1d1d1f;
 }
 
 .modal-body {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 20px 24px;
 }
 
 .search-box {
@@ -203,14 +208,27 @@ const handleConfirm = () => {
 
 .search-input {
   width: 100%;
-  height: 36px;
-  padding: 0 12px;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 8px;
+  height: 40px;
+  padding: 0 14px;
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 12px;
   font-size: 14px;
+  color: #1d1d1f;
   outline: none;
   box-sizing: border-box;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
+}
+
+.search-input::placeholder {
+  color: #6e6e73;
+}
+
+.search-input:focus {
+  background: #ffffff;
+  border-color: #2997ff;
+  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
 }
 
 .friend-list {
@@ -223,17 +241,17 @@ const handleConfirm = () => {
   display: flex;
   align-items: center;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s ease;
 }
 
 .friend-item:hover {
-  background: #f5f5f5;
+  background: #f5f5f7;
 }
 
 .friend-item.selected {
-  background: #e6f7e6;
+  background: rgba(41, 151, 255, 0.1);
 }
 
 .friend-avatar {
@@ -252,32 +270,32 @@ const handleConfirm = () => {
 .friend-name {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: #1d1d1f;
   margin: 0 0 4px 0;
 }
 
 .friend-status {
   font-size: 12px;
-  color: #999;
+  color: #6e6e73;
   margin: 0;
 }
 
 .checkbox {
-  width: 22px;
-  height: 22px;
-  border: 2px solid #d9d9d9;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #d2d2d6;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: 0.2s ease;
   color: transparent;
 }
 
 .checkbox.checked {
-  background: #11b860;
-  border-color: #11b860;
-  color: #fff;
+  background: #2997ff;
+  border-color: #2997ff;
+  color: #ffffff;
 }
 
 .empty-state {
@@ -286,7 +304,7 @@ const handleConfirm = () => {
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  color: #999;
+  color: #6e6e73;
 }
 
 .empty-state .svg-icon {
@@ -303,35 +321,38 @@ const handleConfirm = () => {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding: 16px 20px;
-  border-top: 1px solid #e6e6e6;
+  padding: 16px 24px 24px;
+  border-top: 1px solid #d2d2d6;
 }
 
 .btn {
-  padding: 8px 24px;
+  padding: 10px 24px;
   border: none;
-  border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s ease;
+  font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .btn-cancel {
-  background: #f5f5f5;
-  color: #666;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border-radius: 12px;
 }
 
 .btn-cancel:hover {
-  background: #e6e6e6;
+  background: #e8e8ed;
 }
 
 .btn-confirm {
-  background: #11b860;
-  color: #fff;
+  background: #2997ff;
+  color: #ffffff;
+  border-radius: 40px;
 }
 
 .btn-confirm:hover:not(:disabled) {
-  background: #0da255;
+  background: #0066cc;
 }
 
 .btn-confirm:disabled {
