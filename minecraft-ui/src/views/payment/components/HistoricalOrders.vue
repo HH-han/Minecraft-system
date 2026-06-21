@@ -36,15 +36,15 @@
         <div class="order-content">
           <div class="order-info">
             <div class="info-item">
-              <span class="label">下单时间：</span>
+              <span class="label">下单时间</span>
               <span class="value">{{ order.createTime }}</span>
             </div>
             <div class="info-item">
-              <span class="label">支付时间：</span>
+              <span class="label">支付时间</span>
               <span class="value">{{ order.updateTime || '未支付' }}</span>
             </div>
             <div class="info-item">
-              <span class="label">订单金额：</span>
+              <span class="label">订单金额</span>
               <span class="value price">{{ order.totalPrice }} 元</span>
             </div>
           </div>
@@ -303,69 +303,63 @@ watch(activeFilter, () => {
 </script>
 
 <style scoped>
+/* Apple Design System - 极简白色设计 */
 .historical-orders {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  margin-bottom: 30px;
-  transition: all 0.3s ease;
-}
-
-.historical-orders:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.15);
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 32px;
+  font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .orders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .orders-header h2 {
-  font-size: 20px;
+  font-size: 32px;
   font-weight: 700;
-  color: #fff;
+  color: #1d1d1f;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.5px;
 }
 
 .order-filters {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 8px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  padding: 10px 20px;
+  border: 1px solid #d2d2d6;
+  border-radius: 40px;
+  background: #ffffff;
+  color: #1d1d1f;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  font-weight: 400;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
 }
 
 .filter-btn:hover {
+  border-color: #2997ff;
+  color: #2997ff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .filter-btn.active {
-  background: rgba(255, 77, 79, 0.1);
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
+  background: #1d1d1f;
+  border-color: #1d1d1f;
+  color: #ffffff;
 }
 
 .empty-orders {
@@ -378,167 +372,171 @@ watch(activeFilter, () => {
 
 .empty-icon {
   font-size: 64px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #f5f5f7;
 }
 
 .empty-icon svg {
-  width: 48px;
-  height: 48px;
-  color: rgba(255, 255, 255, 0.5);
+  width: 56px;
+  height: 56px;
+  color: #6e6e73;
 }
 
 .empty-text {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 25px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #6e6e73;
+  margin-bottom: 32px;
+  font-weight: 400;
 }
 
 .order-item {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  background: #f5f5f7;
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .order-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: scale(1.01);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
 .order-id {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  color: #1d1d1f;
   font-weight: 500;
 }
 
 .order-status {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  align-items: center;
 }
 
+/* Apple风格状态标签颜色 */
 .order-status.unpaid {
-  background: rgba(255, 243, 205, 0.2);
-  color: #ffd700;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: #fff5e6;
+  color: #ff9500;
 }
 
 .order-status.paid {
-  background: rgba(209, 236, 241, 0.2);
-  color: #4ecdc4;
-  border: 1px solid rgba(78, 205, 196, 0.3);
+  background: #e8f5ff;
+  color: #2997ff;
 }
 
 .order-status.shipping {
-  background: rgba(231, 243, 255, 0.2);
-  color: #4a90e2;
-  border: 1px solid rgba(74, 144, 226, 0.3);
+  background: #e3f2ff;
+  color: #007aff;
 }
 
 .order-status.completed {
-  background: rgba(212, 237, 218, 0.2);
-  color: #2ecc71;
-  border: 1px solid rgba(46, 204, 113, 0.3);
+  background: #e8f5e9;
+  color: #34c759;
 }
 
 .order-status.cancelled {
-  background: rgba(248, 215, 218, 0.2);
-  color: #e74c3c;
-  border: 1px solid rgba(231, 76, 60, 0.3);
+  background: #ffebee;
+  color: #ff3b30;
+}
+
+.order-status.refunded {
+  background: #f3e5f5;
+  color: #af52de;
 }
 
 .order-content {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .order-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .info-item .label {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  color: #6e6e73;
+  font-weight: 400;
 }
 
 .info-item .value {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
+  font-size: 16px;
+  color: #1d1d1f;
+  font-weight: 400;
 }
 
 .info-item .price {
-  color: #ff4d4f;
+  color: #1d1d1f;
   font-weight: 600;
 }
 
 .order-products {
   display: flex;
-  gap: 15px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
 .product-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  min-width: 200px;
+  gap: 12px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 16px;
+  min-width: 240px;
   flex: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .product-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
   overflow: hidden;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #f5f5f7;
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.product-image:hover img {
+.product-item:hover .product-image img {
   transform: scale(1.05);
 }
 
@@ -548,9 +546,9 @@ watch(activeFilter, () => {
 }
 
 .product-name {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 5px;
+  font-size: 16px;
+  color: #1d1d1f;
+  margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -561,180 +559,181 @@ watch(activeFilter, () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .product-price .price {
-  color: #ff4d4f;
+  color: #1d1d1f;
   font-weight: 600;
 }
 
 .product-price .quantity {
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px 8px;
-  border-radius: 8px;
+  color: #6e6e73;
+  background: #f5f5f7;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
 }
 
 .order-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  border-top: 1px solid #d2d2d6;
 }
 
 .order-total {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  color: #1d1d1f;
+  font-weight: 400;
 }
 
 .total-price {
-  color: #ff4d4f;
-  font-weight: 600;
-  margin-left: 5px;
-  font-size: 16px;
+  color: #1d1d1f;
+  font-weight: 700;
+  margin-left: 8px;
+  font-size: 20px;
 }
 
 .order-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .btn {
-  padding: 6px 16px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 10px 24px;
+  border-radius: 40px;
+  font-size: 14px;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  font-weight: 400;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
-  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
-  color: #fff;
-  border-color: #00aaff94;
-  box-shadow: 0 4px 12px rgba(77, 193, 255, 0.3);
+  background: #1d1d1f;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-  border-color: #66a6ff;
+  background: #333333;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(77, 193, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border: 1px solid #d2d2d6;
 }
 
 .btn-secondary:hover {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
+  background: #e8e8ed;
+  border-color: #b8b8bf;
 }
 
 .btn-delete {
-  background: rgba(231, 76, 60, 0.1);
-  color: #e74c3c;
-  border-color: rgba(231, 76, 60, 0.3);
+  background: #ffffff;
+  color: #ff3b30;
+  border: 1px solid #ff3b30;
 }
 
 .btn-delete:hover {
-  background: rgba(231, 76, 60, 0.2);
-  border-color: rgba(231, 76, 60, 0.5);
-  color: #e74c3c;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+  background: #ff3b30;
+  color: #ffffff;
 }
 
 .btn-link {
   background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
+  color: #2997ff;
+  padding: 10px 16px;
 }
 
 .btn-link:hover {
-  color: #ff4d4f;
-  background: none;
-  transform: none;
-  box-shadow: none;
+  text-decoration: underline;
 }
 
 .orders-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 24px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #d2d2d6;
 }
 
 .page-btn {
-  padding: 8px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  padding: 12px 24px;
+  border: 1px solid #d2d2d6;
+  border-radius: 40px;
+  background: #ffffff;
+  color: #1d1d1f;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  font-weight: 400;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
 }
 
 .page-btn:hover:not(:disabled) {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
+  border-color: #2997ff;
+  color: #2997ff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
-  background: rgba(255, 77, 79, 0.05);
+  box-shadow: 0 4px 16px rgba(41, 151, 255, 0.12);
 }
 
 .page-btn:disabled {
-  color: rgba(255, 255, 255, 0.3);
+  color: #d2d2d6;
   cursor: not-allowed;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: #e8e8ed;
+  background: #f5f5f7;
 }
 
 .page-info {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  color: #1d1d1f;
   font-weight: 500;
 }
 
-@media (max-width: 768px) {
+/* 响应式设计 - Apple风格 */
+@media (max-width: 767px) {
   .historical-orders {
-    padding: 20px;
+    padding: 24px;
+    border-radius: 20px;
   }
   
   .orders-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 20px;
+  }
+  
+  .orders-header h2 {
+    font-size: 28px;
   }
   
   .order-filters {
     width: 100%;
+    gap: 8px;
   }
   
   .filter-btn {
     flex: 1;
     text-align: center;
+    padding: 10px 16px;
   }
   
   .order-info {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
   
   .order-products {
@@ -748,44 +747,63 @@ watch(activeFilter, () => {
   .order-footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 16px;
   }
   
   .order-actions {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 8px;
   }
   
   .btn {
-    flex: 1;
-    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  
+  .orders-pagination {
+    gap: 16px;
+  }
+  
+  .page-btn {
+    padding: 10px 20px;
   }
 }
 
 @media (max-width: 480px) {
   .historical-orders {
-    padding: 15px;
+    padding: 20px;
+    border-radius: 16px;
   }
   
   .orders-header h2 {
-    font-size: 18px;
+    font-size: 24px;
   }
   
   .order-item {
-    padding: 15px;
+    padding: 20px;
+    border-radius: 20px;
   }
   
   .order-id {
-    font-size: 12px;
+    font-size: 14px;
   }
   
   .product-item {
-    padding: 8px;
+    padding: 12px;
   }
   
   .product-image {
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
+  }
+  
+  .product-name {
+    font-size: 14px;
+  }
+  
+  .total-price {
+    font-size: 18px;
   }
 }
 </style>

@@ -13,23 +13,18 @@
           </div>
 
           <div class="content_forgotPassword">
-            <p class="heading_forgotPassword">可爱的朋友啊!</p>
-            <p class="sub-heading_forgotPassword">忘记密码啦?</p>
-            <p class="sub-sub-heading_forgotPassword">输入要恢复的手机号</p>
-
-            <form @submit.prevent="handleSubmit">
+            <div>
+              <p class="heading_forgotPassword">可爱的朋友啊!</p>
+              <p class="sub-heading_forgotPassword">忘记密码啦?</p>
+              <p class="sub-sub-heading_forgotPassword">输入要恢复的账号注册邮箱</p>
+            </div>
+            <form @submit.prevent="handleSubmit" class="form_forgotPassword">
               <input v-model="phone" class="Phone_forgotPassword" placeholder="Phone" type="tel"
                 @input="validatePhone" />
               <p v-if="errorMsg" class="error-message">{{ errorMsg }}</p>
               <button class="card-btn_forgotPassword" type="submit">重置密码</button>
             </form>
           </div>
-        </div>
-
-        <div class="ForgotPassword_button">
-          <router-link to="/login">
-            <button>返回登录</button>
-          </router-link>
         </div>
       </div>
     </div>
@@ -40,9 +35,6 @@
 import axios from 'axios'
 export default {
   name: 'ForgotPassword',
-  components: {
-    Login_background
-  },
   data() {
     return {
       phone: '',
@@ -110,10 +102,6 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   height: 500px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -130,17 +118,6 @@ export default {
 .ForgotPassword {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-.ForgotPassword_button button {
-  width: 300px;
-  height: 40px;
-  background-color: #007bff;
-  border: none;
-  border-radius: 15px;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
 }
 
 .ForgotPassword-content_forgotPassword button {
@@ -195,7 +172,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   padding: 25px;
   box-sizing: border-box;
   color: rgb(30, 30, 30);
@@ -221,6 +198,14 @@ export default {
   margin: 5px 0;
   font-size: 0.7em;
   color: rgb(128, 128, 128);
+}
+
+.form_forgotPassword {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .Phone_forgotPassword {

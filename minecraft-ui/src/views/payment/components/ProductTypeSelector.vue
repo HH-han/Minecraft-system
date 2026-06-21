@@ -1,7 +1,7 @@
 <template>
   <div class="product-type-selector">
     <div class="type-item" v-for="(type, index) in types" :key="index">
-      <div class="type-label">{{ type.label }}：</div>
+      <div class="type-label">{{ type.label }}</div>
       <div class="type-options">
         <div 
           v-for="(option, optionIndex) in type.options" 
@@ -64,22 +64,14 @@ const selectOption = (typeLabel, optionValue) => {
 <style scoped>
 .product-type-selector {
   margin-bottom: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 25px;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.product-type-selector:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px;
+  font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .type-item {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .type-item:last-child {
@@ -88,10 +80,10 @@ const selectOption = (typeLabel, optionValue) => {
 
 .type-label {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 12px;
   font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #1d1d1f;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
 }
 
 .type-options {
@@ -102,36 +94,41 @@ const selectOption = (typeLabel, optionValue) => {
 
 .option-item {
   padding: 10px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid transparent;
   border-radius: 12px;
   font-size: 14px;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  font-weight: 500;
+  transition: all 0.2s ease;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  user-select: none;
 }
 
 .option-item:hover {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
-  background: rgba(255, 77, 79, 0.05);
+  transform: scale(1.01);
+  background: #e8e8ed;
 }
 
 .option-item.active {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-  background: rgba(255, 77, 79, 0.1);
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
-  transform: translateY(-1px);
+  border-color: #2997ff;
+  color: #2997ff;
+  background: rgba(41, 151, 255, 0.08);
+  font-weight: 500;
 }
 
-@media (max-width: 768px) {
+.option-item.active:hover {
+  background: rgba(41, 151, 255, 0.12);
+}
+
+@media (max-width: 767px) {
   .product-type-selector {
     padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .type-item {
+    margin-bottom: 20px;
   }
   
   .type-options {
@@ -145,18 +142,8 @@ const selectOption = (typeLabel, optionValue) => {
   }
   
   .type-label {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .product-type-selector {
-    padding: 15px;
-  }
-  
-  .option-item {
-    padding: 6px 12px;
-    font-size: 12px;
+    font-size: 15px;
+    margin-bottom: 12px;
   }
 }
 </style>

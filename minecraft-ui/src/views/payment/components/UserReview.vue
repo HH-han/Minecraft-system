@@ -131,7 +131,7 @@ const reviews = ref([
     images: [],
     spec: 'Java版 终极版'
   }
-]);
+])
 
 
 const currentPage = ref(1)
@@ -157,40 +157,41 @@ const ratingDistribution = computed(() => {
 </script>
 
 <style scoped>
+/* Apple Design System Variables */
 .user-review {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  margin-bottom: 30px;
-  transition: all 0.3s ease;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --accent: #2997ff;
+  --divider: #d2d2d6;
+  
+  font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
-.user-review:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.15);
-}
-
+/* Header Section */
 .review-header {
-  margin-bottom: 25px;
+  margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--divider);
 }
 
 .review-header h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
   margin: 0 0 20px 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.02em;
 }
 
+/* Rating Stats */
 .review-stats {
   display: flex;
-  gap: 40px;
+  gap: 32px;
   align-items: flex-start;
 }
 
@@ -198,55 +199,54 @@ const ratingDistribution = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  min-width: 120px;
+  background: var(--bg-secondary);
+  padding: 24px;
+  border-radius: 24px;
+  min-width: 140px;
 }
 
 .rating-score {
-  font-size: 32px;
+  font-size: 48px;
   font-weight: 700;
-  color: #ff4d4f;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.03em;
 }
 
 .rating-stars {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   display: flex;
   gap: 4px;
 }
 
 .star {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+  font-size: 18px;
+  color: var(--divider);
+  transition: color 0.2s ease;
 }
 
 .star.active {
-  color: #ff4d4f;
-  text-shadow: 0 0 10px rgba(255, 77, 79, 0.5);
+  color: var(--accent);
 }
 
 .rating-count {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
+/* Rating Distribution */
 .rating-distribution {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
+  padding: 24px;
+  border-radius: 24px;
 }
 
 .rating-bar {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-size: 14px;
 }
 
@@ -255,81 +255,76 @@ const ratingDistribution = computed(() => {
 }
 
 .star-label {
-  width: 50px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  width: 44px;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .bar-container {
   flex: 1;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  margin: 0 15px;
+  height: 8px;
+  background: var(--divider);
+  border-radius: 4px;
+  margin: 0 12px;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .bar {
   height: 100%;
-  background: linear-gradient(90deg, #ff4d4f 0%, #ff7875 100%);
-  border-radius: 5px;
+  background: var(--accent);
+  border-radius: 4px;
   transition: width 0.5s ease;
-  box-shadow: 0 0 10px rgba(255, 77, 79, 0.3);
 }
 
 .count {
-  width: 40px;
+  width: 32px;
   text-align: right;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
+/* Review List */
 .review-list {
-  margin-bottom: 25px;
+  margin-bottom: 24px;
 }
 
 .review-item {
-  padding: 25px;
-  margin-bottom: 20px;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  padding: 24px;
+  margin-bottom: 16px;
+  border-radius: 24px;
+  background: var(--bg-secondary);
+  transition: background 0.2s ease;
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
 }
 
 .review-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateX(5px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: #ebebed;
 }
 
+/* Review User */
 .review-user {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  gap: 15px;
+  margin-bottom: 16px;
+  gap: 16px;
 }
 
 .user-avatar {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--divider);
 }
 
 .user-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.user-avatar:hover img {
-  transform: scale(1.1);
 }
 
 .user-info {
@@ -339,13 +334,14 @@ const ratingDistribution = computed(() => {
 .username {
   font-size: 16px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 5px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
 }
 
 .review-time {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .review-rating {
@@ -353,21 +349,20 @@ const ratingDistribution = computed(() => {
   gap: 2px;
 }
 
+/* Review Content */
 .review-content {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary);
   line-height: 1.6;
-  margin-bottom: 15px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  border-left: 4px solid #ff4d4f;
+  margin-bottom: 16px;
 }
 
+/* Review Images */
 .review-images {
   display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
@@ -375,71 +370,70 @@ const ratingDistribution = computed(() => {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  transition: transform 0.2s ease;
+  border: 1px solid var(--divider);
 }
 
 .review-image:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
 }
 
+/* Review Spec */
 .review-spec {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 6px 12px;
-  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  padding: 8px 16px;
+  border-radius: 12px;
   display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--divider);
 }
 
+/* Pagination */
 .review-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  margin-top: 30px;
+  gap: 24px;
+  margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--divider);
 }
 
 .page-btn {
-  padding: 8px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border: 1px solid var(--divider);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  font-weight: 500;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .page-btn:hover:not(:disabled) {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.2);
-  background: rgba(255, 77, 79, 0.05);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .page-btn:disabled {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--divider);
   cursor: not-allowed;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
 }
 
 .page-info {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (max-width: 767px) {
   .user-review {
     padding: 20px;
   }
@@ -450,25 +444,27 @@ const ratingDistribution = computed(() => {
   }
   
   .average-rating {
-    padding: 15px;
-  }
-  
-  .rating-distribution {
-    padding: 15px;
-  }
-  
-  .review-user {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .user-info {
+    padding: 20px;
     width: 100%;
   }
   
+  .rating-distribution {
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .review-user {
+    flex-wrap: wrap;
+  }
+  
+  .user-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
   .review-rating {
-    align-self: flex-start;
+    width: 100%;
+    margin-top: 8px;
   }
   
   .review-images {
@@ -483,11 +479,20 @@ const ratingDistribution = computed(() => {
   .review-item {
     padding: 20px;
   }
+  
+  .review-header h3 {
+    font-size: 20px;
+  }
+  
+  .rating-score {
+    font-size: 36px;
+  }
 }
 
 @media (max-width: 480px) {
   .user-review {
-    padding: 15px;
+    padding: 16px;
+    border-radius: 20px;
   }
   
   .review-header h3 {
@@ -495,7 +500,7 @@ const ratingDistribution = computed(() => {
   }
   
   .rating-score {
-    font-size: 24px;
+    font-size: 28px;
   }
   
   .star {
@@ -503,7 +508,8 @@ const ratingDistribution = computed(() => {
   }
   
   .review-item {
-    padding: 15px;
+    padding: 16px;
+    border-radius: 20px;
   }
   
   .user-avatar {
@@ -511,9 +517,23 @@ const ratingDistribution = computed(() => {
     height: 40px;
   }
   
+  .username {
+    font-size: 15px;
+  }
+  
+  .review-content {
+    font-size: 15px;
+  }
+  
   .review-image {
     width: 70px;
     height: 70px;
+    border-radius: 12px;
+  }
+  
+  .page-btn {
+    padding: 8px 16px;
+    font-size: 13px;
   }
 }
 </style>

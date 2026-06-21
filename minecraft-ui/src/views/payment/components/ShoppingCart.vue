@@ -1,10 +1,10 @@
 <template>
   <div class="shopping-cart">
     <div class="cart-header">
-      <h2>购物车</h2>
+      <h2 class="cart-title">购物车</h2>
       <div class="cart-actions">
-        <button class="btn btn-secondary" @click="selectAll">全选</button>
-        <button class="btn btn-danger" @click="deleteSelected">删除选中</button>
+        <button class="action-link" @click="selectAll">全选</button>
+        <button class="action-link delete-link" @click="deleteSelected">删除选中</button>
       </div>
     </div>
     
@@ -14,37 +14,25 @@
           <svg t="1773668799267" class="icon" viewBox="0 0 1024 1024" version="1.1"
                 xmlns="http://www.w3.org/2000/svg" p-id="20586" width="256" height="256">
                 <path d="M509.6448 511.3856m-450.816 0a450.816 450.816 0 1 0 901.632 0 450.816 450.816 0 1 0-901.632 0Z"
-                  fill="#FF9552" p-id="20587"></path>
+                  fill="#d2d2d6" p-id="20587"></path>
                 <path
                   d="M277.6576 319.3344c-15.104 0-29.5424-0.7168-43.8272 0.1536-24.9344 1.5872-46.6944-28.5696-34.56-56.6272 4.7616-10.9568 14.4896-16.1792 26.112-16.384 23.808-0.4096 47.6672-0.5632 71.4752 0.1024 19.9168 0.5632 31.0272 9.3696 36.0448 28.8256 2.7648 10.8032 3.1232 22.272 4.5568 33.4336 1.2288 9.984 2.4576 19.968 3.6864 30.3616h442.7776c11.3152 0 22.1184 1.8432 31.488 8.7552 10.9056 8.0384 13.824 20.992 8.2944 37.1712-7.5776 22.0672-15.5136 44.032-23.04 66.1504-8.6528 25.4464-16.384 51.2-25.5488 76.4416-8.8064 24.2176-25.1904 37.5296-52.0192 37.376-107.8272-0.512-215.7056-0.2048-323.5328-0.2048h-9.6256c2.9696 18.0736 6.0416 35.4304 8.6528 52.8896 0.768 5.2224 4.096 4.7616 7.68 4.7616h118.2208c63.488 0 126.976-0.0512 190.4128 0.0512 6.3488 0 12.7488 0.4096 18.944 1.6384 9.3184 1.792 14.8992 8.0384 16.384 17.3056 2.9696 18.5344-5.12 37.3248-29.7984 37.2224-109.7216-0.4096-219.4432-0.5632-329.1648 0.1024-28.5184 0.2048-43.8272-16.7424-50.2272-41.9328-10.1888-40.1408-17.2032-81.0496-25.2416-121.7536-12.288-62.464-24.2688-124.9792-36.4032-187.4432-0.4608-2.56-1.024-5.0688-1.7408-8.3968zM674.816 815.3088c-26.9824 1.2288-61.3888-28.5184-60.0576-58.2656 1.536-33.5872 23.7056-59.2384 58.4704-59.8016 34.5088-0.512 61.2352 24.8832 61.9008 57.9584 0.5632 32-28.0064 60.0576-60.3136 60.1088zM407.6544 812.6976c-32.4608 0.0512-58.9312-25.7536-59.1872-57.7024-0.256-30.9248 26.4704-58.3168 57.1392-58.5728 33.6896-0.256 61.5936 25.9584 61.5424 57.9072-0.0512 32.256-26.624 58.3168-59.4944 58.368z"
-                  fill="#FFFFFF" p-id="20588"></path>
+                  fill="#6e6e73" p-id="20588"></path>
               </svg>
         </div>
-        <div class="empty empty-text">购物车是空的</div>
-        <router-link to="/product" class="btn btn-primary">去购物</router-link>
+        <div class="empty-text">购物车是空的</div>
+        <router-link to="/product" class="primary-button">去购物</router-link>
       </div>
       <div v-else class="items-list">
         <div v-for="item in cartItems" :key="item.id" class="cart-item">
           <div class="item-checkbox">
-            <label class="ios-checkbox red">
+            <label class="apple-checkbox">
               <input 
                 type="checkbox" 
                 v-model="item.selected"
                 @change="updateTotal"
               >
-              <div class="checkbox-wrapper">
-                <div class="checkbox-bg"></div>
-                <svg class="checkbox-icon" viewBox="0 0 24 24" fill="none">
-                  <path 
-                    class="check-path" 
-                    d="M4 12L10 18L20 6" 
-                    stroke="currentColor" 
-                    stroke-width="3" 
-                    stroke-linecap="round" 
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-              </div>
+              <span class="checkbox-custom"></span>
             </label>
           </div>
           <div class="item-image">
@@ -57,10 +45,10 @@
               <span class="price">{{ item.price }} 元</span>
               <div class="quantity-control">
                 <button 
-                  class="quantity-btn minus" 
+                  class="quantity-btn" 
                   @click="decreaseQuantity(item)"
                   :disabled="item.quantity <= 1"
-                >-</button>
+                >−</button>
                 <input 
                   type="number" 
                   v-model.number="item.quantity" 
@@ -69,7 +57,7 @@
                   @change="updateTotal"
                 >
                 <button 
-                  class="quantity-btn plus" 
+                  class="quantity-btn" 
                   @click="increaseQuantity(item)"
                 >+</button>
               </div>
@@ -77,7 +65,7 @@
             </div>
           </div>
           <div class="item-actions">
-            <button class="btn btn-link" @click="removeItem(item.id)">删除</button>
+            <button class="action-link delete-link" @click="removeItem(item.id)">删除</button>
           </div>
         </div>
       </div>
@@ -85,35 +73,23 @@
     
     <div class="cart-footer" v-if="cartItems.length > 0">
       <div class="footer-left">
-        <label class="ios-checkbox red">
+        <label class="apple-checkbox">
           <input 
             type="checkbox" 
             v-model="selectAllFlag"
             @change="toggleSelectAll"
           >
-          <div class="checkbox-wrapper">
-            <div class="checkbox-bg"></div>
-            <svg class="checkbox-icon" viewBox="0 0 24 24" fill="none">
-              <path 
-                class="check-path" 
-                d="M4 12L10 18L20 6" 
-                stroke="currentColor" 
-                stroke-width="3" 
-                stroke-linecap="round" 
-                stroke-linejoin="round"
-              ></path>
-            </svg>
-          </div>
+          <span class="checkbox-custom"></span>
         </label>
-        <span>全选</span>
+        <span class="select-label">全选</span>
         <span class="selected-count">已选择 {{ selectedCount }} 件商品</span>
       </div>
       <div class="footer-right">
         <div class="total-price">
-          <span>合计：</span>
-          <span class="price">{{ totalPrice.toFixed(2) }} 元</span>
+          <span class="total-label">合计：</span>
+          <span class="price-value">{{ totalPrice.toFixed(2) }} 元</span>
         </div>
-        <button class="btn btn-primary checkout-btn" @click="checkout">去结算</button>
+        <button class="primary-button checkout-btn" @click="checkout">去结算</button>
       </div>
     </div>
   </div>
@@ -323,786 +299,420 @@ watch(cartItems, () => {
 </script>
 
 <style scoped>
+/* Apple Design System */
 .shopping-cart {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
+  background: #ffffff;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  padding: 30px;
+  padding: 40px;
   margin-bottom: 30px;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  position: relative;
+  font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
-.shopping-cart::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.shopping-cart:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.shopping-cart:hover::before {
-  opacity: 1;
-}
-
+/* Header */
 .cart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 25px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #d2d2d6;
 }
 
-.cart-header::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 80px;
-  height: 3px;
-  background: linear-gradient(90deg, #ff4d4f, #ff7875);
-  border-radius: 3px;
-}
-
-.cart-header h2 {
-  font-size: 24px;
+.cart-title {
+  font-size: 40px;
   font-weight: 700;
-  color: #fff;
+  color: #1d1d1f;
   margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.cart-header h2::before {
-  content: '';
-  font-size: 28px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  letter-spacing: -0.5px;
+  line-height: 1.1;
 }
 
 .cart-actions {
-  min-width: 350px;
   display: flex;
-  gap: 15px;
+  gap: 24px;
   align-items: center;
 }
 
-.btn {
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 14px;
+/* Action Links */
+.action-link {
+  background: none;
+  border: none;
+  color: #2997ff;
+  font-size: 17px;
+  font-weight: 400;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  padding: 0;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.2);
+.action-link:hover {
+  text-decoration: underline;
 }
 
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+.delete-link {
+  color: #1d1d1f;
 }
 
-.btn-secondary:hover {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
+.delete-link:hover {
+  color: #ff3b30;
+  text-decoration: underline;
 }
 
-.btn-danger {
-  background: rgba(255, 77, 79, 0.1);
-  color: #ff4d4f;
-  border-color: rgba(255, 77, 79, 0.3);
+/* Primary Button */
+.primary-button {
+  display: inline-block;
+  background: #1d1d1f;
+  color: #ffffff;
+  border: none;
+  border-radius: 40px;
+  padding: 12px 28px;
+  font-size: 17px;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.btn-danger:hover {
-  background: #ff4d4f;
-  color: #fff;
-  border-color: #ff4d4f;
+.primary-button:hover {
+  background: #2d2d2f;
+  transform: scale(1.02);
 }
 
+.primary-button:active {
+  transform: scale(0.98);
+}
+
+/* Empty Cart */
 .empty-cart {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 100px 0;
+  padding: 80px 0;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.empty-cart::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 77, 79, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    opacity: 0.8;
-  }
 }
 
 .empty-icon {
-  font-size: 64px;
-  margin-bottom: 30px;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s ease;
-}
-
-.empty-icon:hover {
-  transform: scale(1.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .empty-icon svg {
-  width: 56px;
-  height: 56px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  animation: float 3s ease-in-out infinite;
+  width: 100%;
+  height: 100%;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.empty.empty-text {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 1;
-  font-weight: 500;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
-  color: #fff;
-  border-color: #ff4d4f;
-  padding: 10px 24px;
-  text-decoration: none;
+.empty-text {
+  font-size: 21px;
+  color: #1d1d1f;
+  margin-bottom: 24px;
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(255, 77, 79, 0.3);
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
-  border-color: #ff7875;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
-}
-
+/* Cart Items */
 .items-list {
-  margin-bottom: 25px;
+  margin-bottom: 24px;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
-  padding: 24px;
-  margin-bottom: 20px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.cart-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-  transition: left 0.5s ease;
+  padding: 24px 32px;
+  margin-bottom: 16px;
+  border-radius: 24px;
+  background: #f5f5f7;
+  transition: all 0.2s ease;
 }
 
 .cart-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  border-color: rgba(255, 77, 79, 0.3);
+  transform: scale(1.01);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.cart-item:hover::before {
-  left: 100%;
-}
-
+/* Apple Checkbox */
 .item-checkbox {
   margin-right: 20px;
   flex-shrink: 0;
 }
 
-/* iOS 风格 Checkbox 样式 */
-/* From Uiverse.io by Tsiangana */ 
-.checkbox-container {
-  display: flex;
-  gap: 20px;
-  padding: 10px;
-  background: #f8fafc;
-  border-radius: 12px;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -2px rgba(0, 0, 0, 0.05);
-}
-
-.ios-checkbox {
-  --checkbox-size: 28px;
-  --checkbox-color: #3b82f6;
-  --checkbox-bg: #dbeafe;
-  --checkbox-border: #93c5fd;
-
+.apple-checkbox {
   position: relative;
   display: inline-block;
   cursor: pointer;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
-.ios-checkbox input {
-  display: none;
-}
-
-.checkbox-wrapper {
-  position: relative;
-  width: var(--checkbox-size);
-  height: var(--checkbox-size);
-  border-radius: 8px;
-  transition: transform 0.2s ease;
-}
-
-.checkbox-bg {
+.apple-checkbox input {
   position: absolute;
-  inset: 0;
-  border-radius: 8px;
-  border: 2px solid var(--checkbox-border);
-  background: white;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-custom {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #d2d2d6;
+  border-radius: 50%;
+  background: #ffffff;
   transition: all 0.2s ease;
-}
-
-.checkbox-icon {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 80%;
-  height: 80%;
-  color: white;
-  transform: scale(0);
-  transition: all 0.2s ease;
-}
-
-.check-path {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  transition: stroke-dashoffset 0.3s ease 0.1s;
-}
-
-/* Checked State */
-.ios-checkbox input:checked + .checkbox-wrapper .checkbox-bg {
-  background: var(--checkbox-color);
-  border-color: var(--checkbox-color);
-}
-
-.ios-checkbox input:checked + .checkbox-wrapper .checkbox-icon {
-  transform: scale(1);
-}
-
-.ios-checkbox input:checked + .checkbox-wrapper .check-path {
-  stroke-dashoffset: 0;
-}
-
-/* Hover Effects */
-.ios-checkbox:hover .checkbox-wrapper {
-  transform: scale(1.05);
-}
-
-/* Active Animation */
-.ios-checkbox:active .checkbox-wrapper {
-  transform: scale(0.95);
-}
-
-/* Focus Styles */
-.ios-checkbox input:focus + .checkbox-wrapper .checkbox-bg {
-  box-shadow: 0 0 0 4px var(--checkbox-bg);
-}
-
-.ios-checkbox.red {
-  --checkbox-color: #ef4444;
-  --checkbox-bg: #fee2e2;
-  --checkbox-border: #fca5a5;
-}
-
-/* Animation */
-@keyframes bounce {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-.ios-checkbox input:checked + .checkbox-wrapper {
-  animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-
-/* Animation */
-@keyframes bounce {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-.ios-checkbox input:checked + .checkbox-wrapper {
-  animation: bounce 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.item-image {
-  width: 110px;
-  height: 110px;
-  margin-right: 24px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
   position: relative;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.item-image::before {
+.apple-checkbox input:checked + .checkbox-custom {
+  background: #1d1d1f;
+  border-color: #1d1d1f;
+}
+
+.apple-checkbox input:checked + .checkbox-custom::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 77, 79, 0.2), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
+  left: 6px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
-.item-image:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+.apple-checkbox:hover .checkbox-custom {
+  border-color: #1d1d1f;
 }
 
-.item-image:hover::before {
-  opacity: 1;
+/* Item Image */
+.item-image {
+  width: 100px;
+  height: 100px;
+  margin-right: 24px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
 }
 
 .item-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
 }
 
-.item-image:hover img {
-  transform: scale(1.1);
-}
-
+/* Item Info */
 .item-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  position: relative;
-  z-index: 1;
+  gap: 8px;
 }
 
 .item-name {
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.95);
+  font-size: 17px;
+  color: #1d1d1f;
   line-height: 1.4;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.cart-item:hover .item-name {
-  color: #fff;
+  font-weight: 600;
 }
 
 .item-spec {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 77, 79, 0.1);
+  color: #6e6e73;
+  background: #ffffff;
   padding: 4px 12px;
   border-radius: 12px;
   align-self: flex-start;
-  border: 1px solid rgba(255, 77, 79, 0.2);
-  transition: all 0.3s ease;
-}
-
-.cart-item:hover .item-spec {
-  background: rgba(255, 77, 79, 0.2);
-  border-color: rgba(255, 77, 79, 0.4);
+  font-weight: 400;
 }
 
 .item-price {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 8px;
+  gap: 16px;
 }
 
 .price {
-  color: #ff4d4f;
+  color: #1d1d1f;
   font-weight: 600;
-  font-size: 18px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: 17px;
 }
 
+/* Quantity Control */
 .quantity-control {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  border-radius: 24px;
-  transition: all 0.3s ease;
-}
-
-.cart-item:hover .quantity-control {
-  border-color: rgba(255, 77, 79, 0.3);
+  gap: 8px;
 }
 
 .quantity-btn {
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d2d2d6;
+  background: #ffffff;
+  color: #1d1d1f;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   border-radius: 50%;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.quantity-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 77, 79, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .quantity-btn:hover:not(:disabled) {
-  border-color: #ff4d4f;
-  color: #ff4d4f;
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
-}
-
-.quantity-btn:hover:not(:disabled)::before {
-  width: 100px;
-  height: 100px;
+  background: #f5f5f7;
+  border-color: #1d1d1f;
 }
 
 .quantity-btn:disabled {
-  color: rgba(255, 255, 255, 0.3);
+  color: #d2d2d6;
   cursor: not-allowed;
-  border-color: rgba(255, 255, 255, 0.05);
+  border-color: #f5f5f7;
 }
 
 .quantity-input {
-  width: 70px;
-  height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 18px;
+  width: 60px;
+  height: 32px;
+  border: 1px solid #d2d2d6;
+  border-radius: 8px;
   text-align: center;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-  font-weight: 500;
+  font-size: 15px;
+  background: #ffffff;
+  color: #1d1d1f;
+  font-weight: 400;
+  font-family: inherit;
 }
 
 .quantity-input:focus {
   outline: none;
-  border-color: #ff4d4f;
-  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.2);
-  background: rgba(255, 255, 255, 0.15);
+  border-color: #2997ff;
+  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.1);
 }
 
 .item-total {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  min-width: 110px;
+  color: #1d1d1f;
+  min-width: 100px;
   text-align: right;
-  transition: color 0.3s ease;
 }
 
-.cart-item:hover .item-total {
-  color: #ff4d4f;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
+/* Item Actions */
 .item-actions {
   margin-left: 20px;
   flex-shrink: 0;
 }
 
-.btn-link {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.btn-link:hover {
-  color: #ff4d4f;
-  background: rgba(255, 77, 79, 0.1);
-}
-
+/* Cart Footer */
 .cart-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  margin-top: 30px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.cart-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 77, 79, 0.3), transparent);
+  padding: 32px;
+  border-radius: 24px;
+  background: #f5f5f7;
+  margin-top: 24px;
 }
 
 .footer-left {
   display: flex;
   align-items: center;
-  gap: 20px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  position: relative;
-  z-index: 1;
+  gap: 16px;
 }
 
-.footer-left span:first-of-type {
-  margin-left: 8px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  transition: color 0.3s ease;
-}
-
-.footer-left:hover span:first-of-type {
-  color: #fff;
+.select-label {
+  font-size: 17px;
+  color: #1d1d1f;
+  font-weight: 400;
 }
 
 .selected-count {
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 77, 79, 0.1);
+  font-size: 14px;
+  color: #6e6e73;
   padding: 4px 12px;
+  background: #ffffff;
   border-radius: 12px;
-  border: 1px solid rgba(255, 77, 79, 0.2);
-  transition: all 0.3s ease;
-}
-
-.footer-left:hover .selected-count {
-  background: rgba(255, 77, 79, 0.2);
-  border-color: rgba(255, 77, 79, 0.4);
-  color: #ff4d4f;
 }
 
 .footer-right {
   display: flex;
   align-items: center;
-  gap: 30px;
-  position: relative;
-  z-index: 1;
+  gap: 24px;
 }
 
 .total-price {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 500;
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: 8px;
 }
 
-.total-price span:first-of-type {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
+.total-label {
+  font-size: 17px;
+  color: #6e6e73;
+  font-weight: 400;
 }
 
-.total-price .price {
+.price-value {
   font-size: 28px;
   font-weight: 700;
-  margin-left: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  animation: pricePulse 2s ease-in-out infinite;
-}
-
-@keyframes pricePulse {
-  0%, 100% {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  50% {
-    text-shadow: 0 0 15px rgba(255, 77, 79, 0.5);
-  }
+  color: #1d1d1f;
+  letter-spacing: -0.5px;
 }
 
 .checkout-btn {
-  padding: 14px 40px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
-  color: #fff;
-  border: 1px solid #ff4d4f;
-  box-shadow: 0 4px 16px rgba(255, 77, 79, 0.3);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  min-width: 120px;
 }
 
-.checkout-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.5s ease, height 0.5s ease;
-}
-
-.checkout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
-  background: linear-gradient(135deg, #ff7875 0%, #ff4d4f 100%);
-  border-color: #ff7875;
-}
-
-.checkout-btn:hover::before {
-  width: 200px;
-  height: 200px;
-}
-
-.checkout-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
-}
-
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (max-width: 767px) {
   .shopping-cart {
-    padding: 20px;
+    padding: 24px;
+    border-radius: 20px;
   }
   
   .cart-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 16px;
+  }
+  
+  .cart-title {
+    font-size: 32px;
   }
   
   .cart-actions {
     width: 100%;
-    justify-content: space-between;
-    min-width: unset;
+    justify-content: flex-start;
+    gap: 16px;
   }
   
   .cart-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
     padding: 20px;
+    gap: 16px;
+  }
+  
+  .item-checkbox {
+    margin-right: 0;
+  }
+  
+  .item-image {
+    width: 100%;
+    height: 200px;
+    margin-right: 0;
     border-radius: 12px;
-    margin-bottom: 15px;
   }
   
   .item-info {
@@ -1112,7 +722,7 @@ watch(cartItems, () => {
   .item-price {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 12px;
     width: 100%;
   }
   
@@ -1123,14 +733,24 @@ watch(cartItems, () => {
   .item-total {
     align-self: flex-start;
     text-align: left;
-    margin-top: 10px;
+    margin-top: 8px;
+  }
+  
+  .item-actions {
+    margin-left: 0;
+    margin-top: 8px;
   }
   
   .cart-footer {
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-    padding: 20px;
+    padding: 24px;
+  }
+  
+  .footer-left {
+    width: 100%;
+    flex-wrap: wrap;
   }
   
   .footer-right {
@@ -1140,51 +760,46 @@ watch(cartItems, () => {
   }
   
   .checkout-btn {
-    width: 140px;
-    padding: 10px 24px;
+    width: auto;
   }
   
   .empty-icon {
     width: 100px;
     height: 100px;
   }
-  
-  .empty-icon svg {
-    width: 40px;
-    height: 40px;
-  }
 }
 
 @media (max-width: 480px) {
   .shopping-cart {
-    padding: 15px;
+    padding: 20px;
+    border-radius: 16px;
   }
   
-  .cart-header h2 {
-    font-size: 18px;
+  .cart-title {
+    font-size: 28px;
   }
   
   .cart-item {
-    padding: 15px;
+    padding: 16px;
+    border-radius: 16px;
   }
   
   .item-image {
-    width: 80px;
-    height: 80px;
+    height: 160px;
   }
   
   .cart-footer {
-    padding: 15px;
+    padding: 20px;
+    border-radius: 16px;
   }
   
-  .total-price .price {
-    font-size: 20px;
+  .price-value {
+    font-size: 24px;
   }
   
   .checkout-btn {
-    width: 120px;
-    padding: 8px 20px;
-    font-size: 14px;
+    padding: 10px 24px;
+    font-size: 15px;
   }
 }
 </style>
