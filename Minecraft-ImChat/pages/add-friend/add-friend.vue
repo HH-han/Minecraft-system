@@ -1,6 +1,5 @@
 <template>
   <view class="add-friend-page">
-    <!-- 搜索区域 -->
     <view class="search-section">
       <view class="search-input-wrapper">
         <text class="search-icon">🔍</text>
@@ -8,18 +7,21 @@
           class="search-input"
           v-model="searchKeyword"
           placeholder="输入手机号搜索用户"
+          placeholder-class="search-placeholder"
           type="number"
           maxlength="11"
           @confirm="searchUser"
         />
+        <view v-if="searchKeyword" class="clear-btn" @click="clearSearch">
+          <text>✕</text>
+        </view>
       </view>
       <view class="search-btn" @click="searchUser">
         <text>搜索</text>
       </view>
     </view>
 
-    <!-- 搜索结果 -->
-    <view v-if="searchResult" class="search-result">
+    <view v-if="searchResult" class="search-result slide-up">
       <view class="result-header">
         <text class="result-title">搜索结果</text>
       </view>
@@ -42,7 +44,6 @@
       </view>
     </view>
 
-    <!-- 添加说明 -->
     <view class="tips-section">
       <view class="tips-header">
         <text class="tips-title">温馨提示</text>
@@ -63,7 +64,6 @@
       </view>
     </view>
 
-    <!-- 添加历史 -->
     <view v-if="searchHistory.length > 0" class="history-section">
       <view class="history-header">
         <text class="history-title">搜索历史</text>
@@ -73,7 +73,8 @@
         <view
           v-for="(item, index) in searchHistory"
           :key="index"
-          class="history-item"
+          :style="{ animationDelay: `${index * 0.05}s` }"
+          class="history-item fade-in"
           @click="selectHistory(item)"
         >
           <text class="history-phone">{{ item.phone }}</text>
@@ -120,7 +121,6 @@ export default {
           this.isAdded = false
           this.isFriend = false
 
-          // 保存搜索历史
           this.saveToHistory(this.searchResult)
         } else {
           this.searchResult = null
@@ -194,7 +194,6 @@ export default {
         avatar: user.avatar
       })
 
-      // 只保留最近10条
       this.searchHistory = history.slice(0, 10)
       uni.setStorageSync('friendSearchHistory', JSON.stringify(this.searchHistory))
     },
@@ -212,6 +211,10 @@ export default {
       })
     },
 
+    clearSearch() {
+      this.searchKeyword = ''
+    },
+
     selectHistory(item) {
       this.searchKeyword = item.phone
       this.searchResult = item
@@ -223,7 +226,6 @@ export default {
 </script>
 
 <style scoped>
-/* 仿 Apple 官网设计规范 */
 .add-friend-page {
   display: flex;
   flex-direction: column;
@@ -233,7 +235,6 @@ export default {
   box-sizing: border-box;
 }
 
-/* 搜索区域 */
 .search-section {
   display: flex;
   align-items: center;
@@ -248,31 +249,63 @@ export default {
   border-radius: 36rpx;
   padding: 16rpx 24rpx;
   margin-right: 20rpx;
-  border: 1rpx solid #d2d2d6;
+  border: 1rpx solid #e5e5e5;
+  transition: all 0.25s ease;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #2997ff;
+  box-shadow: 0 0 0 3rpx rgba(41, 151, 255, 0.1);
 }
 
 .search-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .search-input {
   flex: 1;
   font-size: 28rpx;
   color: #1d1d1f;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.search-placeholder {
+  color: #a1a1a6;
+}
+
+.clear-btn {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d2d2d6;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:active {
+  background-color: #a1a1a6;
+}
+
+.clear-btn text {
+  font-size: 24rpx;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .search-btn {
   padding: 16rpx 36rpx;
-  background-color: #2997ff;
+  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
   border-radius: 36rpx;
   transition: all 0.2s ease;
-  cursor: pointer;
 }
 
 .search-btn:active {
-  background-color: #0066cc;
   transform: scale(0.97);
 }
 
@@ -282,12 +315,12 @@ export default {
   font-weight: 500;
 }
 
-/* 搜索结果 */
 .search-result {
   margin-top: 24rpx;
   background-color: #ffffff;
   border-radius: 24rpx;
   overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .result-header {
@@ -336,14 +369,12 @@ export default {
 
 .add-btn {
   padding: 16rpx 32rpx;
-  background-color: #2997ff;
+  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
   border-radius: 36rpx;
   transition: all 0.2s ease;
-  cursor: pointer;
 }
 
 .add-btn:active {
-  background-color: #0066cc;
   transform: scale(0.97);
 }
 
@@ -354,19 +385,20 @@ export default {
 }
 
 .add-btn.added {
-  background-color: #d2d2d6;
+  background-color: #e5e5e5;
+  background: none;
 }
 
 .add-btn.added text {
   color: #6e6e73;
 }
 
-/* 提示区域 */
 .tips-section {
   margin-top: 32rpx;
   background-color: #ffffff;
   border-radius: 24rpx;
   overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .tips-header {
@@ -403,12 +435,12 @@ export default {
   line-height: 1.5;
 }
 
-/* 搜索历史 */
 .history-section {
   margin-top: 32rpx;
   background-color: #ffffff;
   border-radius: 24rpx;
   overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .history-header {
@@ -426,12 +458,6 @@ export default {
   letter-spacing: -0.3rpx;
 }
 
-.clear-btn {
-  font-size: 26rpx;
-  color: #2997ff;
-  cursor: pointer;
-}
-
 .history-list {
   display: flex;
   flex-wrap: wrap;
@@ -443,8 +469,7 @@ export default {
   padding: 16rpx 32rpx;
   background-color: #f5f5f7;
   border-radius: 36rpx;
-  transition: background-color 0.2s ease;
-  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .history-item:active {
@@ -454,5 +479,36 @@ export default {
 .history-phone {
   font-size: 26rpx;
   color: #6e6e73;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

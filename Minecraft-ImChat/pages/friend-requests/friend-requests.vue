@@ -1,10 +1,17 @@
 <template>
   <view class="friend-requests-page">
-    <scroll-view class="request-list" scroll-y>
+    <scroll-view
+      class="request-list"
+      scroll-y
+      :refresher-enabled="true"
+      :refresher-triggered="isRefreshing"
+      @refresherrefresh="onRefresh"
+    >
       <view
-        v-for="request in requests"
+        v-for="(request, index) in requests"
         :key="request.id"
-        class="request-item"
+        :style="{ animationDelay: `${index * 0.05}s` }"
+        class="request-item fade-in"
       >
         <image
           class="request-avatar"
@@ -49,6 +56,7 @@ export default {
     return {
       requests: [],
       isLoading: false,
+      isRefreshing: false,
       defaultAvatar: '/static/default-avatar.png'
     }
   },
@@ -77,13 +85,18 @@ export default {
       }
     },
 
+    async onRefresh() {
+      this.isRefreshing = true
+      await this.loadRequests()
+      this.isRefreshing = false
+    },
+
     async handleRequest(request, action) {
       const api = action === 'accept' ? acceptFriendRequest : rejectFriendRequest
 
       try {
         const res = await api(request.id)
         if (res.code === 200) {
-          // 从列表中移除
           const index = this.requests.findIndex(r => r.id === request.id)
           if (index > -1) {
             this.requests.splice(index, 1)
@@ -140,7 +153,7 @@ export default {
   background-color: #ffffff;
   border-radius: 24rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .request-item:active {
@@ -224,11 +237,10 @@ export default {
 }
 
 .action-btn.accept {
-  background-color: #2997ff;
+  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
 }
 
 .action-btn.accept:active {
-  background-color: #0066cc;
   transform: scale(0.97);
 }
 
@@ -236,7 +248,6 @@ export default {
   color: #ffffff;
 }
 
-/* 空状态 */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -248,12 +259,28 @@ export default {
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 32rpx;
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 .empty-text {
   font-size: 28rpx;
   color: #6e6e73;
   letter-spacing: -0.2rpx;
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

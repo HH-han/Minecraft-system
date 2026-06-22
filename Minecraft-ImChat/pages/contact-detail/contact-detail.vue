@@ -1,6 +1,5 @@
 <template>
   <view class="contact-detail-page">
-    <!-- 基本信息 -->
     <view class="profile-section">
       <image
         class="profile-avatar"
@@ -11,23 +10,21 @@
       <text class="profile-phone">{{ formatPhone(contactInfo.phone) }}</text>
     </view>
 
-    <!-- 操作按钮 -->
     <view class="actions-section">
       <view class="action-item" @click="sendMessage">
-        <view class="action-icon">
+        <view class="action-icon chat-icon">
           <text>💬</text>
         </view>
         <text class="action-text">发消息</text>
       </view>
       <view v-if="contactType === 'single'" class="action-item" @click="makeCall">
-        <view class="action-icon">
+        <view class="action-icon call-icon">
           <text>📞</text>
         </view>
         <text class="action-text">音视频通话</text>
       </view>
     </view>
 
-    <!-- 详细信息 -->
     <view class="detail-section">
       <view v-if="contactType === 'single'" class="detail-item">
         <text class="detail-label">手机号</text>
@@ -52,7 +49,6 @@
       </view>
     </view>
 
-    <!-- 群成员列表 -->
     <view v-if="contactType === 'group'" class="members-section">
       <view class="section-header">
         <text class="section-title">群成员</text>
@@ -60,9 +56,10 @@
       </view>
       <scroll-view class="member-list" scroll-x>
         <view
-          v-for="member in members"
+          v-for="(member, index) in members"
           :key="member.userId"
-          class="member-item"
+          :style="{ animationDelay: `${index * 0.05}s` }"
+          class="member-item fade-in"
         >
           <image
             class="member-avatar"
@@ -74,7 +71,6 @@
       </scroll-view>
     </view>
 
-    <!-- 底部操作 -->
     <view class="footer-section">
       <view
         v-if="contactType === 'single'"
@@ -281,13 +277,12 @@ export default {
   padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
-/* 基本信息 */
 .profile-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 64rpx 32rpx 56rpx;
-  background-color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 100%);
   margin: 32rpx 32rpx 24rpx;
   border-radius: 24rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
@@ -299,6 +294,8 @@ export default {
   border-radius: 50%;
   background-color: #f5f5f7;
   margin-bottom: 32rpx;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
 }
 
 .profile-name {
@@ -315,7 +312,6 @@ export default {
   font-weight: 400;
 }
 
-/* 操作按钮 */
 .actions-section {
   display: flex;
   justify-content: center;
@@ -341,7 +337,6 @@ export default {
 .action-icon {
   width: 96rpx;
   height: 96rpx;
-  background-color: #f5f5f7;
   border-radius: 24rpx;
   display: flex;
   align-items: center;
@@ -350,8 +345,15 @@ export default {
   transition: all 0.2s ease;
 }
 
+.chat-icon {
+  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+}
+
+.call-icon {
+  background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+}
+
 .action-item:active .action-icon {
-  background-color: #e8e8ed;
   transform: scale(0.97);
 }
 
@@ -363,10 +365,9 @@ export default {
 .action-text {
   font-size: 24rpx;
   color: #6e6e73;
-  font-weight: 400;
+  font-weight: 500;
 }
 
-/* 详细信息 */
 .detail-section {
   background-color: #ffffff;
   margin: 0 32rpx 24rpx;
@@ -393,7 +394,7 @@ export default {
   font-size: 28rpx;
   color: #6e6e73;
   flex-shrink: 0;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .detail-value {
@@ -406,7 +407,6 @@ export default {
   letter-spacing: -0.2rpx;
 }
 
-/* 群成员 */
 .members-section {
   background-color: #ffffff;
   margin: 0 32rpx 24rpx;
@@ -470,7 +470,6 @@ export default {
   white-space: nowrap;
 }
 
-/* 底部操作 */
 .footer-section {
   margin-top: auto;
   padding: 24rpx 32rpx;
@@ -508,5 +507,21 @@ export default {
 .footer-btn.danger:active {
   background-color: rgba(255, 59, 48, 0.06);
   transform: scale(0.99);
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
