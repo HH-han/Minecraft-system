@@ -1,15 +1,16 @@
 <template>
   <view class="login-page">
-    <!-- Logo 区域 -->
-    <view class="logo-section">
-      <view class="logo-icon">✈</view>
+    <view class="login-bg"></view>
+    
+    <view class="logo-section fade-in">
+      <view class="logo-icon-container bounce-in">
+        <text class="logo-icon">✈</text>
+      </view>
       <text class="logo-title">博览通讯</text>
       <text class="logo-subtitle">连接每一段精彩旅程</text>
     </view>
 
-    <!-- 表单卡片 -->
-    <view class="form-card">
-      <!-- 切换登录方式 -->
+    <view class="form-card slide-up">
       <view class="tab-bar">
         <view
           :class="['tab-item', { active: loginType === 'account' }]"
@@ -25,9 +26,8 @@
         </view>
       </view>
 
-      <!-- 账号密码登录 -->
       <view v-if="loginType === 'account'" class="form-content">
-        <view v-if="loginForm.account" class="avatar-preview-wrapper">
+        <view v-if="loginForm.account" class="avatar-preview-wrapper slide-up">
           <image
             class="avatar-preview"
             :src="loginForm.avatar || defaultAvatar"
@@ -37,23 +37,25 @@
         </view>
 
         <view class="form-item">
-          <text class="form-label">账号</text>
-          <input
-            class="input-field"
-            v-model="loginForm.account"
-            placeholder="请输入账号"
-            placeholder-class="input-placeholder"
-            :maxlength="50"
-            @input="handleAccountInput"
-          />
-          <view v-if="errors.account" class="error-text">
+          <view class="input-wrapper">
+            <text class="input-icon">👤</text>
+            <input
+              class="input-field"
+              v-model="loginForm.account"
+              placeholder="请输入账号"
+              placeholder-class="input-placeholder"
+              :maxlength="50"
+              @input="handleAccountInput"
+            />
+          </view>
+          <view v-if="errors.account" class="error-text shake">
             <text>⚠ {{ errors.account }}</text>
           </view>
         </view>
 
         <view class="form-item">
-          <text class="form-label">密码</text>
-          <view class="password-wrapper">
+          <view class="input-wrapper">
+            <text class="input-icon">🔑</text>
             <input
               class="input-field"
               v-model="loginForm.password"
@@ -67,34 +69,35 @@
               <text>{{ showPassword ? '🙈' : '👁️' }}</text>
             </view>
           </view>
-          <view v-if="errors.password" class="error-text">
+          <view v-if="errors.password" class="error-text shake">
             <text>⚠ {{ errors.password }}</text>
           </view>
         </view>
       </view>
 
-      <!-- 手机号登录 -->
       <view v-else class="form-content">
         <view class="form-item">
-          <text class="form-label">手机号</text>
-          <input
-            class="input-field"
-            v-model="phoneForm.phone"
-            type="number"
-            placeholder="请输入手机号"
-            placeholder-class="input-placeholder"
-            :maxlength="11"
-          />
-          <view v-if="phoneErrors.phone" class="error-text">
+          <view class="input-wrapper">
+            <text class="input-icon">📱</text>
+            <input
+              class="input-field"
+              v-model="phoneForm.phone"
+              type="number"
+              placeholder="请输入手机号"
+              placeholder-class="input-placeholder"
+              :maxlength="11"
+            />
+          </view>
+          <view v-if="phoneErrors.phone" class="error-text shake">
             <text>⚠ {{ phoneErrors.phone }}</text>
           </view>
         </view>
 
         <view class="form-item">
-          <text class="form-label">验证码</text>
-          <view class="code-wrapper">
+          <view class="input-wrapper">
+            <text class="input-icon">📝</text>
             <input
-              class="input-field"
+              class="input-field code-input"
               v-model="phoneForm.code"
               type="number"
               placeholder="请输入验证码"
@@ -108,13 +111,12 @@
               <text>{{ phoneForm.countdown > 0 ? `${phoneForm.countdown}s` : '发送' }}</text>
             </view>
           </view>
-          <view v-if="phoneErrors.code" class="error-text">
+          <view v-if="phoneErrors.code" class="error-text shake">
             <text>⚠ {{ phoneErrors.code }}</text>
           </view>
         </view>
       </view>
 
-      <!-- 记住我 & 忘记密码 -->
       <view class="form-options">
         <view class="remember-me" @click="toggleRemember">
           <view :class="['checkbox', { checked: loginForm.rememberMe }]">
@@ -125,7 +127,6 @@
         <text class="forgot-link" @click="goToForgotPassword">忘记密码？</text>
       </view>
 
-      <!-- 登录按钮 -->
       <button
         :class="['submit-btn', { loading: isLoading }]"
         :disabled="isLoading"
@@ -138,13 +139,11 @@
         </view>
       </button>
 
-      <!-- 注册链接 -->
       <view class="register-row">
         <text class="register-text">还没有账号？</text>
         <text class="link" @click="goToRegister">立即注册</text>
       </view>
 
-      <!-- 协议 -->
       <view class="agreement-row">
         <view :class="['checkbox', { checked: agreed }]" @click="agreed = !agreed">
           <text v-if="agreed">✓</text>
@@ -158,7 +157,6 @@
       </view>
     </view>
 
-    <!-- 其他登录方式 -->
     <view class="other-login">
       <view class="divider">
         <view class="divider-line"></view>
@@ -181,9 +179,8 @@
       </view>
     </view>
 
-    <!-- 错误提示模态框 -->
     <view v-if="showErrorModal" class="modal-overlay" @click="showErrorModal = false">
-      <view class="modal-content" @click.stop>
+      <view class="modal-content scale-in" @click.stop>
         <view class="modal-icon">⚠️</view>
         <text class="modal-title">登录失败</text>
         <text class="modal-message">{{ errorMessage }}</text>
@@ -495,28 +492,50 @@ export default {
 </script>
 
 <style scoped>
-/* 仿 Apple 官网设计规范 */
-/* 配色: #1d1d1f / #6e6e73 / #f5f5f7 / #2997ff / #d2d2d6 */
-
 .login-page {
   min-height: 100vh;
   background-color: #f5f5f7;
   padding: 0 40rpx 60rpx;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Logo 区域 */
+.login-bg {
+  position: absolute;
+  top: 0;
+  left: -50%;
+  right: -50%;
+  height: 500rpx;
+  background: linear-gradient(180deg, #e8f0fe 0%, #f5f5f7 100%);
+  border-radius: 0 0 50% 50%;
+  z-index: 0;
+}
+
 .logo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 120rpx 0 60rpx;
+  padding: 100rpx 0 60rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-icon-container {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #2997ff 0%, #5856d6 100%);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+  box-shadow: 0 20rpx 40rpx rgba(41, 151, 255, 0.3);
 }
 
 .logo-icon {
-  font-size: 96rpx;
-  color: #1d1d1f;
-  margin-bottom: 24rpx;
+  font-size: 72rpx;
+  color: #ffffff;
   font-weight: 300;
 }
 
@@ -536,18 +555,18 @@ export default {
   line-height: 1.4;
 }
 
-/* 表单卡片 */
 .form-card {
   background-color: #ffffff;
   border-radius: 24rpx;
   padding: 48rpx 40rpx;
-  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 1;
 }
 
-/* 标签栏 */
 .tab-bar {
   display: flex;
-  border-bottom: 1rpx solid #d2d2d6;
+  border-bottom: 1rpx solid #e5e5e5;
   margin-bottom: 40rpx;
 }
 
@@ -556,7 +575,7 @@ export default {
   text-align: center;
   padding: 24rpx 0;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .tab-item text {
@@ -583,12 +602,10 @@ export default {
   border-radius: 2rpx;
 }
 
-/* 头像预览 */
 .avatar-preview-wrapper {
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
+  align-items: center;
   padding: 16rpx 0 32rpx;
 }
 
@@ -597,8 +614,8 @@ export default {
   height: 112rpx;
   border-radius: 50%;
   background-color: #f5f5f7;
-  border: 2rpx solid #d2d2d6;
-  transition: all 0.2s ease;
+  border: 4rpx solid #e5e5e5;
+  transition: all 0.25s ease;
 }
 
 .avatar-name {
@@ -607,61 +624,82 @@ export default {
   margin-top: 12rpx;
 }
 
-/* 表单内容 */
 .form-content {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 32rpx;
 }
 
 .form-item {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 8rpx;
 }
 
-.form-label {
-  font-size: 26rpx;
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f7;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  height: 88rpx;
+  transition: all 0.2s ease;
+  border: 2rpx solid transparent;
+}
+
+.input-wrapper:focus-within {
+  background-color: #ffffff;
+  border-color: #2997ff;
+  box-shadow: 0 0 0 4rpx rgba(41, 151, 255, 0.1);
+}
+
+.input-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+  opacity: 0.6;
+}
+
+.input-field {
+  flex: 1;
+  height: 100%;
+  font-size: 30rpx;
   color: #1d1d1f;
-  font-weight: 500;
-  letter-spacing: -0.2rpx;
+  background: transparent;
+  border: none;
+  outline: none;
 }
 
-.password-wrapper {
-  position: relative;
+.input-field.code-input {
+  flex: 1;
+}
+
+.input-placeholder {
+  color: #c7c7cc;
 }
 
 .toggle-password {
-  position: absolute;
-  right: 24rpx;
-  top: 50%;
-  transform: translateY(-50%);
   width: 60rpx;
   height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  border-radius: 30rpx;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-password:active {
+  background-color: #e8e8ed;
 }
 
 .toggle-password text {
-  font-size: 36rpx;
-}
-
-.code-wrapper {
-  display: flex;
-  gap: 16rpx;
-}
-
-.code-wrapper .input-field {
-  flex: 1;
+  font-size: 32rpx;
 }
 
 .send-code-btn {
-  height: 88rpx;
+  height: 64rpx;
   padding: 0 28rpx;
   background-color: #2997ff;
-  border-radius: 16rpx;
+  border-radius: 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -671,7 +709,7 @@ export default {
 
 .send-code-btn:active {
   background-color: #0066cc;
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .send-code-btn text {
@@ -681,7 +719,7 @@ export default {
 }
 
 .send-code-btn.disabled {
-  background-color: #d2d2d6;
+  background-color: #e8e8ed;
 }
 
 .send-code-btn.disabled text {
@@ -695,12 +733,11 @@ export default {
   line-height: 1.4;
 }
 
-/* 表单选项 */
 .form-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16rpx;
+  margin-top: 24rpx;
   margin-bottom: 32rpx;
 }
 
@@ -708,12 +745,11 @@ export default {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  cursor: pointer;
 }
 
 .checkbox {
-  width: 32rpx;
-  height: 32rpx;
+  width: 36rpx;
+  height: 36rpx;
   border: 2rpx solid #d2d2d6;
   border-radius: 50%;
   display: flex;
@@ -729,7 +765,7 @@ export default {
 }
 
 .checkbox text {
-  font-size: 20rpx;
+  font-size: 22rpx;
   color: #ffffff;
   font-weight: 700;
 }
@@ -743,10 +779,8 @@ export default {
   font-size: 26rpx;
   color: #2997ff;
   font-weight: 400;
-  cursor: pointer;
 }
 
-/* 登录按钮 - Apple 风格 */
 .submit-btn {
   width: 100%;
   height: 88rpx;
@@ -761,6 +795,7 @@ export default {
   font-weight: 500;
   letter-spacing: -0.2rpx;
   transition: all 0.2s ease;
+  margin-top: 8rpx;
 }
 
 .submit-btn::after {
@@ -789,7 +824,19 @@ export default {
   gap: 16rpx;
 }
 
-/* 注册链接 */
+.loading-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .register-row {
   display: flex;
   justify-content: center;
@@ -807,14 +854,12 @@ export default {
   font-size: 28rpx;
   color: #2997ff;
   font-weight: 500;
-  cursor: pointer;
 }
 
-/* 协议 */
 .agreement-row {
   display: flex;
   align-items: flex-start;
-  margin-top: 32rpx;
+  margin-top: 24rpx;
   gap: 12rpx;
   padding: 0 4rpx;
 }
@@ -828,12 +873,12 @@ export default {
 
 .agreement-text .link {
   color: #2997ff;
-  cursor: pointer;
 }
 
-/* 其他登录方式 */
 .other-login {
   margin-top: 60rpx;
+  position: relative;
+  z-index: 1;
 }
 
 .divider {
@@ -865,7 +910,11 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 12rpx;
-  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.method-item:active {
+  transform: scale(0.95);
 }
 
 .method-icon {
@@ -876,11 +925,7 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 44rpx;
-  transition: transform 0.2s ease;
-}
-
-.method-item:active .method-icon {
-  transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
 }
 
 .wechat-icon {
@@ -912,7 +957,6 @@ export default {
   color: #6e6e73;
 }
 
-/* 模态框 */
 .modal-content {
   width: 560rpx;
   background-color: #ffffff;
@@ -921,6 +965,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
 }
 
 .modal-icon {
@@ -951,7 +996,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   transition: all 0.2s ease;
 }
 

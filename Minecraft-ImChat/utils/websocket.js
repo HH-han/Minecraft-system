@@ -24,29 +24,22 @@ class WebSocketService {
    */
   connect(userId) {
     if (this.socket && this.isConnected) {
-      console.log('[WS] Already connected')
       return
     }
 
     this.userId = userId
     const token = uni.getStorageSync('token') || ''
 
-    console.log('[WS] Connecting to:', `${WS_BASE_URL}?userId=${userId}&token=${token}`)
-
     this.socket = uni.connectSocket({
       url: `${WS_BASE_URL}?userId=${userId}&token=${token}`,
-      success: () => {
-        console.log('[WS] Connection initiated')
-      },
+      success: () => {},
       fail: (err) => {
-        console.error('[WS] Connection failed:', err)
         this.handleReconnect()
       }
     })
 
     // 监听连接打开
     this.socket.onOpen(() => {
-      console.log('[WS] Connected successfully')
       this.isConnected = true
       this.reconnectAttempts = 0
       this.emit('connect', { userId: this.userId })
@@ -60,16 +53,12 @@ class WebSocketService {
     this.socket.onMessage((res) => {
       try {
         const data = JSON.parse(res.data)
-        console.log('[WS] Received message:', data)
         this.handleMessage(data)
-      } catch (e) {
-        console.error('[WS] Failed to parse message:', e)
-      }
+      } catch (e) {}
     })
 
     // 监听连接关闭
     this.socket.onClose(() => {
-      console.log('[WS] Connection closed')
       this.isConnected = false
       this.stopHeartbeat()
       this.emit('disconnect', { userId: this.userId })
@@ -78,7 +67,6 @@ class WebSocketService {
 
     // 监听错误
     this.socket.onError((err) => {
-      console.error('[WS] Error:', err)
       this.emit('error', err)
     })
   }
@@ -90,9 +78,7 @@ class WebSocketService {
     this.stopHeartbeat()
     if (this.socket) {
       this.socket.close({
-        success: () => {
-          console.log('[WS] Disconnected manually')
-        }
+        success: () => {}
       })
       this.socket = null
     }
@@ -106,7 +92,6 @@ class WebSocketService {
    */
   handleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('[WS] Max reconnect attempts reached')
       uni.showToast({
         title: '网络连接失败，请检查网络',
         icon: 'none'
@@ -115,7 +100,6 @@ class WebSocketService {
     }
 
     this.reconnectAttempts++
-    console.log(`[WS] Reconnecting... Attempt ${this.reconnectAttempts}`)
 
     setTimeout(() => {
       if (this.userId) {
@@ -129,7 +113,6 @@ class WebSocketService {
    */
   send(data) {
     if (!this.isConnected) {
-      console.log('[WS] Not connected, queuing message')
       this.messageQueue.push(data)
       return false
     }
@@ -138,7 +121,6 @@ class WebSocketService {
     this.socket.send({
       data: message,
       fail: (err) => {
-        console.error('[WS] Send failed:', err)
         this.messageQueue.push(data)
       }
     })
@@ -229,7 +211,7 @@ class WebSocketService {
         // 心跳响应，无需处理
         break
       default:
-        console.log('[WS] Unknown message type:', type)
+        break
     }
   }
 
@@ -265,9 +247,7 @@ class WebSocketService {
     this.listeners.get(event).forEach(callback => {
       try {
         callback(data)
-      } catch (e) {
-        console.error(`[WS] Event handler error (${event}):`, e)
-      }
+      } catch (e) {}
     })
   }
 

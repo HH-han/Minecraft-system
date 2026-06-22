@@ -1,6 +1,5 @@
 <template>
   <view class="chat-list-page">
-    <!-- 顶部搜索栏 -->
     <view class="search-bar">
       <view class="search-input-wrapper">
         <text class="search-icon">🔍</text>
@@ -11,39 +10,43 @@
           placeholder-class="search-placeholder"
           @input="onSearch"
         />
+        <view v-if="searchKeyword" class="clear-btn" @click="clearSearch">
+          <text>✕</text>
+        </view>
       </view>
     </view>
 
-    <!-- 标签切换 -->
     <view class="tab-bar">
       <view
         :class="['tab-item', { active: activeTab === 'friends' }]"
         @click="switchTab('friends')"
       >
         <text class="tab-text">好友</text>
+        <view v-if="friends.length > 0" class="tab-badge">{{ friends.length }}</view>
       </view>
       <view
         :class="['tab-item', { active: activeTab === 'groups' }]"
         @click="switchTab('groups')"
       >
         <text class="tab-text">群聊</text>
+        <view v-if="groups.length > 0" class="tab-badge">{{ groups.length }}</view>
       </view>
     </view>
 
-    <!-- 聊天列表 -->
     <scroll-view
       class="chat-list"
       scroll-y
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @refresherrefresh="onRefresh"
+      @scrolltolower="loadMore"
     >
-      <!-- 好友列表 -->
       <view v-if="activeTab === 'friends'">
         <view
-          v-for="friend in filteredFriends"
+          v-for="(friend, index) in filteredFriends"
           :key="friend.id"
-          class="chat-item"
+          :style="{ animationDelay: `${index * 0.05}s` }"
+          class="chat-item fade-in"
           @click="goToChat(friend)"
         >
           <view class="avatar-wrapper">
@@ -53,6 +56,7 @@
               mode="aspectFill"
             />
             <view v-if="friend.online" class="online-indicator"></view>
+            <view v-else class="offline-indicator"></view>
           </view>
           <view class="chat-info">
             <view class="chat-header-row">
@@ -63,11 +67,12 @@
               <text class="chat-preview" :class="{ unread: friend.unreadCount > 0 }">
                 {{ friend.lastMessage || '开始聊天吧' }}
               </text>
-              <view v-if="friend.unreadCount > 0" class="unread-badge">
+              <view v-if="friend.unreadCount > 0" class="unread-badge bounce-in">
                 <text class="unread-count">{{ friend.unreadCount > 99 ? '99+' : friend.unreadCount }}</text>
               </view>
             </view>
           </view>
+          <view class="chat-arrow">›</view>
         </view>
 
         <view v-if="filteredFriends.length === 0" class="empty-state">
@@ -79,12 +84,12 @@
         </view>
       </view>
 
-      <!-- 群聊列表 -->
       <view v-if="activeTab === 'groups'">
         <view
-          v-for="group in filteredGroups"
+          v-for="(group, index) in filteredGroups"
           :key="group.id"
-          class="chat-item"
+          :style="{ animationDelay: `${index * 0.05}s` }"
+          class="chat-item fade-in"
           @click="goToGroupChat(group)"
         >
           <view class="avatar-wrapper">
@@ -101,11 +106,12 @@
             </view>
             <view class="chat-preview-row">
               <text class="chat-preview">{{ group.lastMessage || '群聊消息' }}</text>
-              <view v-if="group.unreadCount > 0" class="unread-badge">
+              <view v-if="group.unreadCount > 0" class="unread-badge bounce-in">
                 <text class="unread-count">{{ group.unreadCount > 99 ? '99+' : group.unreadCount }}</text>
               </view>
             </view>
           </view>
+          <view class="chat-arrow">›</view>
         </view>
 
         <view v-if="filteredGroups.length === 0" class="empty-state">
@@ -118,7 +124,6 @@
       </view>
     </scroll-view>
 
-    <!-- 悬浮按钮 -->
     <view class="fab" @click="onFabClick">
       <text class="fab-icon">+</text>
     </view>
@@ -227,13 +232,19 @@ export default {
     },
 
     onSearch() {
-      // 搜索逻辑已在 computed 中处理
+    },
+
+    clearSearch() {
+      this.searchKeyword = ''
     },
 
     async onRefresh() {
       this.isRefreshing = true
       await Promise.all([this.loadFriends(), this.loadGroups()])
       this.isRefreshing = false
+    },
+
+    loadMore() {
     },
 
     goToChat(friend) {
@@ -274,7 +285,6 @@ export default {
 </script>
 
 <style scoped>
-/* 仿 Apple 官网设计规范 */
 .chat-list-page {
   display: flex;
   flex-direction: column;
@@ -282,7 +292,6 @@ export default {
   background-color: #f5f5f7;
 }
 
-/* 搜索栏 */
 .search-bar {
   padding: 20rpx 32rpx;
   background-color: #ffffff;
@@ -294,39 +303,69 @@ export default {
   background-color: #f5f5f7;
   border-radius: 36rpx;
   padding: 16rpx 24rpx;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+}
+
+.search-input-wrapper:focus-within {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3rpx rgba(41, 151, 255, 0.1);
 }
 
 .search-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .search-input {
   flex: 1;
   font-size: 28rpx;
   color: #1d1d1f;
+  background: transparent;
+  border: none;
+  outline: none;
 }
 
 .search-placeholder {
-  color: #6e6e73;
+  color: #a1a1a6;
 }
 
-/* 标签栏 */
+.clear-btn {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d2d2d6;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:active {
+  background-color: #a1a1a6;
+}
+
+.clear-btn text {
+  font-size: 24rpx;
+  color: #ffffff;
+  line-height: 1;
+}
+
 .tab-bar {
   display: flex;
   padding: 0 32rpx;
   background-color: #ffffff;
-  border-bottom: 1rpx solid #d2d2d6;
+  border-bottom: 1rpx solid #e5e5e5;
 }
 
 .tab-item {
+  display: flex;
+  align-items: center;
   padding: 28rpx 0;
   margin-right: 64rpx;
   position: relative;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .tab-text {
@@ -334,6 +373,7 @@ export default {
   color: #6e6e73;
   font-weight: 500;
   letter-spacing: -0.3rpx;
+  transition: all 0.25s ease;
 }
 
 .tab-item.active .tab-text {
@@ -352,7 +392,24 @@ export default {
   border-radius: 2rpx 2rpx 0 0;
 }
 
-/* 聊天列表 */
+.tab-badge {
+  min-width: 32rpx;
+  height: 32rpx;
+  background-color: #ff3b30;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8rpx;
+  padding: 0 8rpx;
+}
+
+.tab-badge text {
+  font-size: 20rpx;
+  color: #ffffff;
+  font-weight: 600;
+}
+
 .chat-list {
   flex: 1;
 }
@@ -362,13 +419,14 @@ export default {
   align-items: center;
   padding: 24rpx 32rpx;
   background-color: #ffffff;
-  border-bottom: 1rpx solid #f0f0f0;
-  transition: background-color 0.2s ease;
+  border-bottom: 1rpx solid #f0f0f2;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .chat-item:active {
   background-color: #f5f5f7;
+  transform: scale(0.995);
 }
 
 .avatar-wrapper {
@@ -381,6 +439,7 @@ export default {
   height: 96rpx;
   border-radius: 50%;
   background-color: #f5f5f7;
+  transition: transform 0.25s ease;
 }
 
 .group-avatar {
@@ -396,6 +455,24 @@ export default {
   background-color: #34c759;
   border: 3rpx solid #ffffff;
   border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.offline-indicator {
+  position: absolute;
+  bottom: 4rpx;
+  right: 4rpx;
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #a1a1a6;
+  border: 3rpx solid #ffffff;
+  border-radius: 50%;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
 }
 
 .chat-info {
@@ -419,7 +496,8 @@ export default {
 
 .chat-time {
   font-size: 24rpx;
-  color: #6e6e73;
+  color: #a1a1a6;
+  flex-shrink: 0;
 }
 
 .chat-preview-row {
@@ -461,7 +539,19 @@ export default {
   font-weight: 600;
 }
 
-/* 空状态 */
+.chat-arrow {
+  font-size: 36rpx;
+  color: #c7c7cc;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.chat-item:active .chat-arrow {
+  color: #2997ff;
+  transform: translateX(8rpx);
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -487,7 +577,6 @@ export default {
   background-color: #2997ff;
   border-radius: 40rpx;
   transition: all 0.2s ease;
-  cursor: pointer;
 }
 
 .empty-action:active {
@@ -501,26 +590,25 @@ export default {
   font-weight: 500;
 }
 
-/* 悬浮按钮 */
 .fab {
   position: fixed;
   right: 40rpx;
   bottom: 200rpx;
   width: 112rpx;
   height: 112rpx;
-  background-color: #2997ff;
+  background: linear-gradient(135deg, #2997ff 0%, #5856d6 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8rpx 24rpx rgba(41, 151, 255, 0.4);
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   cursor: pointer;
 }
 
 .fab:active {
-  background-color: #0066cc;
   transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(41, 151, 255, 0.4);
 }
 
 .fab-icon {
@@ -528,5 +616,21 @@ export default {
   color: #ffffff;
   font-weight: 300;
   line-height: 1;
+}
+
+.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
