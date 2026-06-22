@@ -1,0 +1,98 @@
+{
+	"pages": [
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "博览通讯"
+			}
+		},
+		{
+			"path": "pages/chat/chat",
+			"style": {
+				"navigationBarTitleText": "聊天",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/contacts/contacts",
+			"style": {
+				"navigationBarTitleText": "通讯录"
+			}
+		},
+		{
+			"path": "pages/add-friend/add-friend",
+			"style": {
+				"navigationBarTitleText": "添加好友"
+			}
+		},
+		{
+			"path": "pages/friend-requests/friend-requests",
+			"style": {
+				"navigationBarTitleText": "好友申请"
+			}
+		},
+		{
+			"path": "pages/create-group/create-group",
+			"style": {
+				"navigationBarTitleText": "创建群聊"
+			}
+		},
+		{
+			"path": "pages/contact-detail/contact-detail",
+			"style": {
+				"navigationBarTitleText": "联系人详情"
+			}
+		},
+		{
+			"path": "pages/forgot-password/forgot-password",
+			"style": {
+				"navigationBarTitleText": "忘记密码"
+			}
+		},
+		{
+			"path": "pages/register/register",
+			"style": {
+				"navigationBarTitleText": "注册账号"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "博览通讯",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#F5F5F5",
+		"app-plus": {
+			"titleNView": {
+				"buttons": []
+			}
+		}
+	},
+	"tabBar": {
+		"color": "#6E6E73",
+		"selectedColor": "#2997FF",
+		"borderStyle": "black",
+		"backgroundColor": "#FFFFFF",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/chat.png",
+				"selectedIconPath": "static/tabbar/chat-active.png",
+				"text": "聊天"
+			},
+			{
+				"pagePath": "pages/contacts/contacts",
+				"iconPath": "static/tabbar/contacts.png",
+				"selectedIconPath": "static/tabbar/contacts-active.png",
+				"text": "通讯录"
+			}
+		]
+	},
+	"uniIdRouter": {}
+}
