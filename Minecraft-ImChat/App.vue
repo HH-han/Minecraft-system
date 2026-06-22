@@ -1,10 +1,14 @@
 <script>
-	import { isLoggedIn } from './utils/storage.js'
+	import { auth } from './utils/auth.js'
 	import wsService from './utils/websocket.js'
+	import env from './config/index.js'
 
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			console.log('当前环境:', env.NODE_ENV)
+			console.log('API 地址:', env.API_BASE_URL)
+			console.log('WebSocket:', env.WS_URL)
 
 			// 检查登录状态
 			this.checkLoginStatus()
@@ -23,17 +27,14 @@
 			 * 检查登录状态
 			 */
 			checkLoginStatus() {
-				const loggedIn = isLoggedIn()
+				const loggedIn = auth.isLoggedIn()
 				console.log('登录状态:', loggedIn ? '已登录' : '未登录')
 
 				// 如果已登录，自动连接 WebSocket
 				if (loggedIn) {
-					const pages = getCurrentPages()
-					if (pages.length > 0) {
-						const userInfo = uni.getStorageSync('userInfo')
-						if (userInfo?.id) {
-							wsService.connect(userInfo.id)
-						}
+					const userInfo = auth.getUserInfo()
+					if (userInfo?.id) {
+						wsService.connect(userInfo.id)
 					}
 				}
 
@@ -61,9 +62,6 @@
 </script>
 
 <style>
-	/*每个页面公共css */
-	page {
-		background-color: #f5f5f5;
-		font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, sans-serif;
-	}
+	/* 引入公共样式 */
+	@import './static/css/common.css';
 </style>

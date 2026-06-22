@@ -56,5 +56,8 @@
   "uniStatistics": {
     "enable": false
   },
-  "vueVersion": "3"
+  "vueVersion": "3",
+  "env": {
+    "NODE_ENV": "development"
+  }
 }

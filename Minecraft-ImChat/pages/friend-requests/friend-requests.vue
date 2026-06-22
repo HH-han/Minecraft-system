@@ -124,31 +124,42 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .request-list {
   flex: 1;
+  padding: 16rpx 0;
 }
 
 .request-item {
   display: flex;
-  padding: 30rpx;
-  background-color: #fff;
-  border-bottom: 1rpx solid #f0f0f0;
+  align-items: flex-start;
+  padding: 32rpx;
+  margin: 16rpx 32rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.request-item:active {
+  transform: scale(0.99);
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.04);
 }
 
 .request-avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   margin-right: 24rpx;
   flex-shrink: 0;
 }
 
 .request-info {
   flex: 1;
+  min-width: 0;
 }
 
 .request-header {
@@ -156,41 +167,56 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8rpx;
+  gap: 16rpx;
 }
 
 .request-name {
   font-size: 32rpx;
   color: #1d1d1f;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
 }
 
 .request-time {
   font-size: 24rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
+  flex-shrink: 0;
 }
 
 .request-message {
   display: block;
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #6e6e73;
-  margin-bottom: 20rpx;
-  line-height: 1.4;
+  margin-bottom: 24rpx;
+  line-height: 1.5;
 }
 
 .request-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 20rpx;
+  gap: 16rpx;
 }
 
 .action-btn {
   padding: 12rpx 40rpx;
   border-radius: 36rpx;
   font-size: 26rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.action-btn text {
+  font-size: 26rpx;
+  line-height: 1;
 }
 
 .action-btn.decline {
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
+}
+
+.action-btn.decline:active {
+  background-color: #e8e8ed;
+  transform: scale(0.97);
 }
 
 .action-btn.decline text {
@@ -201,8 +227,13 @@ export default {
   background-color: #2997ff;
 }
 
+.action-btn.accept:active {
+  background-color: #0066cc;
+  transform: scale(0.97);
+}
+
 .action-btn.accept text {
-  color: #fff;
+  color: #ffffff;
 }
 
 /* 空状态 */
@@ -210,16 +241,19 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 200rpx 0;
+  justify-content: center;
+  padding: 240rpx 0;
 }
 
 .empty-icon {
   font-size: 120rpx;
-  margin-bottom: 30rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.6;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
+  letter-spacing: -0.2rpx;
 }
 </style>

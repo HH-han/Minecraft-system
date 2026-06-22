@@ -19,7 +19,7 @@
       scroll-y
       :scroll-top="scrollTop"
       :scroll-with-animation="true"
-      : refresher-enabled="true"
+      :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @refresherrefresh="loadMoreMessages"
       @scrolltoupper="loadMoreMessages"
@@ -490,25 +490,29 @@ export default {
 </script>
 
 <style scoped>
+/* 仿 Apple 官网设计规范 */
 .chat-page {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
-/* 导航栏 */
+/* 导航栏 - 毛玻璃效果 */
 .nav-bar {
   display: flex;
   align-items: center;
-  padding: 20rpx 30rpx;
-  background-color: #fff;
-  border-bottom: 1rpx solid #e5e5e5;
+  padding: 20rpx 32rpx;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20rpx);
+  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
+  border-bottom: 1rpx solid #d2d2d6;
+  padding-top: calc(20rpx + env(safe-area-inset-top));
 }
 
 .nav-back {
-  width: 60rpx;
-  height: 60rpx;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -517,7 +521,7 @@ export default {
 .back-icon {
   font-size: 48rpx;
   color: #2997ff;
-  font-weight: bold;
+  font-weight: 300;
 }
 
 .nav-title {
@@ -529,11 +533,12 @@ export default {
   font-size: 34rpx;
   font-weight: 600;
   color: #1d1d1f;
+  letter-spacing: -0.4rpx;
 }
 
 .nav-more {
-  width: 60rpx;
-  height: 60rpx;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -542,19 +547,19 @@ export default {
 .more-icon {
   font-size: 36rpx;
   color: #6e6e73;
+  font-weight: 600;
 }
 
 /* 消息列表 */
 .message-list {
   flex: 1;
-  padding: 20rpx 30rpx;
-  overflow: hidden;
+  padding: 24rpx 32rpx;
 }
 
 .loading-tip {
   text-align: center;
-  padding: 20rpx;
-  color: #a1a1a6;
+  padding: 24rpx;
+  color: #6e6e73;
   font-size: 24rpx;
 }
 
@@ -562,20 +567,21 @@ export default {
 .time-divider {
   display: flex;
   justify-content: center;
-  padding: 20rpx 0;
+  padding: 24rpx 0;
 }
 
 .time-text {
   font-size: 22rpx;
-  color: #a1a1a6;
-  background-color: #e5e5e5;
+  color: #6e6e73;
+  background-color: rgba(0, 0, 0, 0.05);
   padding: 8rpx 16rpx;
   border-radius: 8rpx;
+  line-height: 1.4;
 }
 
 /* 消息项 */
 .message-item {
-  margin-bottom: 30rpx;
+  margin-bottom: 32rpx;
 }
 
 .message-row {
@@ -588,41 +594,45 @@ export default {
 }
 
 .message-avatar {
-  width: 80rpx;
-  height: 80rpx;
+  width: 72rpx;
+  height: 72rpx;
   border-radius: 50%;
-  background-color: #e5e5e5;
+  background-color: #f5f5f7;
   flex-shrink: 0;
 }
 
-/* 消息气泡 */
+/* 消息气泡 - Apple 风格 */
 .message-bubble {
   max-width: 70%;
-  margin: 0 20rpx;
-  padding: 20rpx 28rpx;
-  background-color: #fff;
+  margin: 0 16rpx;
+  padding: 20rpx 24rpx;
+  background-color: #ffffff;
   border-radius: 20rpx;
   position: relative;
+  font-size: 30rpx;
+  line-height: 1.5;
+  word-break: break-word;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.04);
 }
 
 .message-bubble::before {
   content: '';
   position: absolute;
-  top: 24rpx;
-  left: -16rpx;
-  border: 10rpx solid transparent;
-  border-right-color: #fff;
+  top: 20rpx;
+  left: -12rpx;
+  border: 12rpx solid transparent;
+  border-right-color: #ffffff;
 }
 
 .message-item.mine .message-bubble {
   background-color: #2997ff;
   margin-left: 0;
-  margin-right: 20rpx;
+  margin-right: 16rpx;
 }
 
 .message-item.mine .message-bubble::before {
   left: auto;
-  right: -16rpx;
+  right: -12rpx;
   border-right-color: transparent;
   border-left-color: #2997ff;
 }
@@ -635,12 +645,13 @@ export default {
 }
 
 .message-item.mine .message-text {
-  color: #fff;
+  color: #ffffff;
 }
 
 .message-bubble.image {
   background-color: transparent !important;
   padding: 0 !important;
+  box-shadow: none !important;
 }
 
 .message-bubble.image::before {
@@ -650,40 +661,49 @@ export default {
 .message-image {
   max-width: 400rpx;
   border-radius: 16rpx;
+  display: block;
 }
 
 /* 空状态 */
 .empty-state {
   display: flex;
   justify-content: center;
-  padding: 100rpx 0;
+  padding: 120rpx 0;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
 }
 
 /* 输入区域 */
 .input-area {
-  background-color: #fff;
-  border-top: 1rpx solid #e5e5e5;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20rpx);
+  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
+  border-top: 1rpx solid #d2d2d6;
 }
 
 .tools-bar {
   display: flex;
-  padding: 16rpx 30rpx;
-  gap: 30rpx;
+  padding: 16rpx 32rpx;
+  gap: 24rpx;
 }
 
 .tool-btn {
-  width: 60rpx;
-  height: 60rpx;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f5f5;
-  border-radius: 12rpx;
+  background-color: #f5f5f7;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.tool-btn:active {
+  background-color: #d2d2d6;
+  transform: scale(0.95);
 }
 
 .tool-icon {
@@ -692,16 +712,17 @@ export default {
 
 /* 表情面板 */
 .emoji-panel {
-  height: 300rpx;
-  border-top: 1rpx solid #e5e5e5;
+  height: 320rpx;
+  border-top: 1rpx solid #d2d2d6;
   background-color: #fafafa;
 }
 
 .emoji-list {
   display: flex;
   flex-wrap: wrap;
-  padding: 20rpx;
+  padding: 24rpx;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .emoji-item {
@@ -710,6 +731,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emoji-item:active {
+  transform: scale(0.9);
 }
 
 .emoji-item text {
@@ -720,40 +747,50 @@ export default {
 .input-row {
   display: flex;
   align-items: center;
-  padding: 16rpx 30rpx;
+  padding: 16rpx 32rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  gap: 16rpx;
 }
 
 .message-input {
   flex: 1;
   height: 72rpx;
   padding: 0 24rpx;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   border-radius: 36rpx;
   font-size: 30rpx;
+  color: #1d1d1f;
+  border: none;
+  outline: none;
 }
 
 .send-btn {
-  margin-left: 20rpx;
-  padding: 0 36rpx;
+  padding: 0 32rpx;
   height: 72rpx;
-  background-color: #e5e5e5;
+  background-color: #d2d2d6;
   border-radius: 36rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .send-btn.active {
   background-color: #2997ff;
 }
 
+.send-btn.active:active {
+  background-color: #0066cc;
+  transform: scale(0.97);
+}
+
 .send-text {
   font-size: 28rpx;
   color: #6e6e73;
+  font-weight: 500;
 }
 
 .send-btn.active .send-text {
-  color: #fff;
+  color: #ffffff;
 }
 </style>

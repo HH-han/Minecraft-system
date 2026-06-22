@@ -274,30 +274,33 @@ export default {
 </script>
 
 <style scoped>
+/* 仿 Apple 官网设计规范 */
 .chat-list-page {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 /* 搜索栏 */
 .search-bar {
-  padding: 20rpx 30rpx;
-  background-color: #fff;
+  padding: 20rpx 32rpx;
+  background-color: #ffffff;
 }
 
 .search-input-wrapper {
   display: flex;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   border-radius: 36rpx;
   padding: 16rpx 24rpx;
+  transition: all 0.2s ease;
 }
 
 .search-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
+  opacity: 0.6;
 }
 
 .search-input {
@@ -307,31 +310,35 @@ export default {
 }
 
 .search-placeholder {
-  color: #a1a1a6;
+  color: #6e6e73;
 }
 
 /* 标签栏 */
 .tab-bar {
   display: flex;
-  padding: 0 30rpx;
-  background-color: #fff;
-  border-bottom: 1rpx solid #e5e5e5;
+  padding: 0 32rpx;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #d2d2d6;
 }
 
 .tab-item {
-  padding: 24rpx 0;
-  margin-right: 60rpx;
+  padding: 28rpx 0;
+  margin-right: 64rpx;
   position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .tab-text {
   font-size: 32rpx;
   color: #6e6e73;
+  font-weight: 500;
+  letter-spacing: -0.3rpx;
 }
 
 .tab-item.active .tab-text {
   color: #1d1d1f;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .tab-item.active::after {
@@ -342,7 +349,7 @@ export default {
   right: 0;
   height: 4rpx;
   background-color: #2997ff;
-  border-radius: 2rpx;
+  border-radius: 2rpx 2rpx 0 0;
 }
 
 /* 聊天列表 */
@@ -353,13 +360,15 @@ export default {
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 24rpx 30rpx;
-  background-color: #fff;
+  padding: 24rpx 32rpx;
+  background-color: #ffffff;
   border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .chat-item:active {
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .avatar-wrapper {
@@ -368,10 +377,10 @@ export default {
 }
 
 .avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .group-avatar {
@@ -385,7 +394,7 @@ export default {
   width: 20rpx;
   height: 20rpx;
   background-color: #34c759;
-  border: 3rpx solid #fff;
+  border: 3rpx solid #ffffff;
   border-radius: 50%;
 }
 
@@ -404,12 +413,13 @@ export default {
 .chat-name {
   font-size: 32rpx;
   color: #1d1d1f;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
 }
 
 .chat-time {
   font-size: 24rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
 }
 
 .chat-preview-row {
@@ -425,11 +435,12 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.4;
 }
 
 .chat-preview.unread {
   color: #1d1d1f;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .unread-badge {
@@ -441,12 +452,12 @@ export default {
   align-items: center;
   justify-content: center;
   margin-left: 16rpx;
-  padding: 0 10rpx;
+  padding: 0 12rpx;
 }
 
 .unread-count {
   font-size: 22rpx;
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -456,29 +467,38 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120rpx 0;
+  padding: 160rpx 0;
 }
 
 .empty-icon {
   font-size: 120rpx;
-  margin-bottom: 30rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
   margin-bottom: 40rpx;
 }
 
 .empty-action {
-  padding: 20rpx 60rpx;
+  padding: 20rpx 56rpx;
   background-color: #2997ff;
-  border-radius: 48rpx;
+  border-radius: 40rpx;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.empty-action:active {
+  background-color: #0066cc;
+  transform: scale(0.98);
 }
 
 .empty-action text {
-  color: #fff;
+  color: #ffffff;
   font-size: 28rpx;
+  font-weight: 500;
 }
 
 /* 悬浮按钮 */
@@ -486,23 +506,27 @@ export default {
   position: fixed;
   right: 40rpx;
   bottom: 200rpx;
-  width: 100rpx;
-  height: 100rpx;
+  width: 112rpx;
+  height: 112rpx;
   background-color: #2997ff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8rpx 24rpx rgba(41, 151, 255, 0.4);
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .fab:active {
+  background-color: #0066cc;
   transform: scale(0.95);
 }
 
 .fab-icon {
-  font-size: 60rpx;
-  color: #fff;
+  font-size: 56rpx;
+  color: #ffffff;
   font-weight: 300;
+  line-height: 1;
 }
 </style>

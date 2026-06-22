@@ -1,0 +1,326 @@
+/**
+ * 全局样式 - 仿 Apple 官网设计规范
+ *
+ * 色彩系统：
+ * - 主文本: #1d1d1f
+ * - 次要文本: #6e6e73
+ * - 背景主色: #ffffff
+ * - 背景辅色: #f5f5f7
+ * - 强调色: #2997ff (悬停 #0066cc)
+ * - 分割线: #d2d2d6
+ * - 辅助色: #a1a1a6
+ *
+ * 字体系统：
+ * - H1: 48-64px / 700 / 1.05
+ * - H2: 32-44px / 700 / 1.1
+ * - H3: 24-28px / 600 / 1.2
+ * - 正文: 16-18px / 400 / 1.4
+ * - 辅助: 12-14px / 400 / 1.4
+ */
+
+/* 颜色变量 */
+:root {
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #a1a1a6;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #fafafa;
+  --accent-color: #2997ff;
+  --accent-hover: #0066cc;
+  --border-color: #d2d2d6;
+  --border-light: #e5e5e5;
+  --black-bg: #000000;
+  --white-text: #ffffff;
+  --success-color: #34c759;
+  --warning-color: #ff9500;
+  --danger-color: #ff3b30;
+}
+
+/* 全局基础 */
+page {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 28rpx;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 文本层级 */
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+.text-accent {
+  color: var(--accent-color);
+}
+
+/* 字体大小 */
+.text-h1 {
+  font-size: 64rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.text-h2 {
+  font-size: 56rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.text-h3 {
+  font-size: 48rpx;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.text-h4 {
+  font-size: 36rpx;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.text-body {
+  font-size: 28rpx;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.text-small {
+  font-size: 24rpx;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--white-text);
+  border-radius: 40rpx;
+  padding: 24rpx 56rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:active {
+  background-color: var(--accent-hover);
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background-color: var(--bg-primary);
+  color: var(--accent-color);
+  border: 2rpx solid var(--accent-color);
+  border-radius: 40rpx;
+  padding: 22rpx 54rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.btn-text {
+  color: var(--accent-color);
+  font-size: 28rpx;
+  font-weight: 400;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-text::after {
+  border: none;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: var(--bg-primary);
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.card-secondary {
+  background-color: var(--bg-secondary);
+}
+
+/* 输入框 */
+.input-field {
+  width: 100%;
+  height: 88rpx;
+  padding: 0 32rpx;
+  background-color: var(--bg-secondary);
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  color: var(--text-primary);
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+}
+
+.input-placeholder {
+  color: var(--text-tertiary);
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background-color: var(--border-light);
+  margin: 32rpx 0;
+}
+
+/* 链接样式 */
+.link {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* 列表项 */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  background-color: var(--bg-primary);
+  border-bottom: 1rpx solid var(--border-light);
+  transition: background-color 0.2s ease;
+}
+
+.list-item:active {
+  background-color: var(--bg-secondary);
+}
+
+/* 头像 */
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.avatar-large {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.avatar-rounded {
+  border-radius: 16rpx;
+}
+
+/* 标签徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36rpx;
+  height: 36rpx;
+  padding: 0 12rpx;
+  background-color: var(--danger-color);
+  border-radius: 18rpx;
+  color: var(--white-text);
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+/* 加载动画 */
+.loading-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--white-text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 模态框遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* 通用动效 */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.scale-in {
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 工具类 */
+.flex {
+  display: flex;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-1 {
+  flex: 1;
+}
+.text-center {
+  text-align: center;
+}
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

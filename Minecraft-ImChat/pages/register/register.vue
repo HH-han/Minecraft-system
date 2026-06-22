@@ -348,7 +348,7 @@ export default {
 <style scoped>
 .register-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background-color: #f5f5f7;
   padding-bottom: 60rpx;
 }
 
@@ -357,9 +357,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 30rpx;
-  background: #fff;
+  padding: 20rpx 32rpx;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20rpx);
   padding-top: calc(20rpx + env(safe-area-inset-top));
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .back-btn {
@@ -368,18 +372,26 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 30rpx;
+  transition: background-color 0.2s ease;
+}
+
+.back-btn:active {
+  background-color: #f5f5f7;
 }
 
 .back-btn text {
   font-size: 48rpx;
   color: #2997ff;
-  font-weight: bold;
+  font-weight: 300;
+  line-height: 1;
 }
 
 .header-title {
-  font-size: 34rpx;
+  font-size: 32rpx;
   color: #1d1d1f;
   font-weight: 600;
+  letter-spacing: -0.2rpx;
 }
 
 .placeholder {
@@ -387,31 +399,34 @@ export default {
 }
 
 .form-section {
-  padding: 40rpx;
+  padding: 48rpx 32rpx;
 }
 
 .form-title {
-  margin-bottom: 40rpx;
+  margin-bottom: 48rpx;
 }
 
 .title-main {
   display: block;
-  font-size: 44rpx;
+  font-size: 56rpx;
   color: #1d1d1f;
   font-weight: 700;
   margin-bottom: 12rpx;
+  letter-spacing: -0.6rpx;
+  line-height: 1.1;
 }
 
 .title-sub {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #6e6e73;
+  font-weight: 400;
 }
 
 /* 头像上传 */
 .avatar-upload {
   display: flex;
   justify-content: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 48rpx;
 }
 
 .avatar-preview {
@@ -419,11 +434,11 @@ export default {
   width: 160rpx;
   height: 160rpx;
   border-radius: 50%;
-  background-color: #f0f2f5;
+  background-color: #f5f5f7;
   background-size: cover;
   background-position: center;
-  border: 4rpx solid #fff;
-  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
 .avatar-mask {
@@ -431,12 +446,13 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
   text-align: center;
   padding: 6rpx 0;
-  border-radius: 0 0 80rpx 80rpx;
   font-size: 22rpx;
+  font-weight: 500;
+  letter-spacing: -0.1rpx;
 }
 
 .file-input {
@@ -445,17 +461,19 @@ export default {
 
 /* 表单 */
 .form-list {
-  background: #fff;
+  background-color: #ffffff;
   border-radius: 24rpx;
-  padding: 0 30rpx;
-  margin-bottom: 30rpx;
+  padding: 8rpx 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .form-row {
   display: flex;
   align-items: center;
-  padding: 28rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f5f5f7;
+  gap: 24rpx;
 }
 
 .form-row:last-child {
@@ -463,10 +481,11 @@ export default {
 }
 
 .row-label {
-  width: 160rpx;
-  font-size: 30rpx;
+  width: 144rpx;
+  font-size: 28rpx;
   color: #1d1d1f;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .row-input {
@@ -474,6 +493,9 @@ export default {
   height: 60rpx;
   font-size: 30rpx;
   color: #1d1d1f;
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .input-placeholder {
@@ -497,78 +519,87 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 30rpx;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-pwd:active {
+  background-color: #f5f5f7;
 }
 
 .toggle-pwd text {
   font-size: 32rpx;
+  line-height: 1;
 }
 
 .error-text {
   font-size: 24rpx;
   color: #ff3b30;
   padding: 4rpx 0 12rpx 30rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #f0f0f0;
-  margin-top: -1rpx;
-}
-
-.form-list .error-text:last-child {
-  border-radius: 0 0 24rpx 24rpx;
-  border-bottom: none;
+  font-weight: 400;
+  display: block;
 }
 
 /* 协议 */
 .agreement-row {
   display: flex;
   align-items: center;
-  margin-bottom: 40rpx;
-  gap: 12rpx;
+  margin-bottom: 48rpx;
+  gap: 16rpx;
   padding: 0 10rpx;
 }
 
 .checkbox {
-  width: 32rpx;
-  height: 32rpx;
+  width: 36rpx;
+  height: 36rpx;
   border: 2rpx solid #d2d2d6;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background-color: #ffffff;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .checkbox.checked {
-  background: #2997ff;
+  background-color: #2997ff;
   border-color: #2997ff;
 }
 
 .checkbox text {
-  font-size: 20rpx;
-  color: #fff;
+  font-size: 22rpx;
+  color: #ffffff;
+  line-height: 1;
 }
 
 .agreement-text {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #6e6e73;
   line-height: 1.5;
+  flex: 1;
 }
 
 .agreement-link {
   color: #2997ff;
+  transition: opacity 0.2s ease;
+}
+
+.agreement-link:active {
+  opacity: 0.6;
 }
 
 /* 注册按钮 */
 .register-btn {
   width: 100%;
-  height: 96rpx;
-  background: linear-gradient(135deg, #2997ff 0%, #1e6bb8 100%);
-  border-radius: 48rpx;
+  height: 88rpx;
+  background-color: #2997ff;
+  border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  box-shadow: 0 8rpx 24rpx rgba(41, 151, 255, 0.3);
+  transition: all 0.2s ease;
 }
 
 .register-btn::after {
@@ -576,14 +607,19 @@ export default {
 }
 
 .register-btn[disabled] {
-  background: #a1c4ff;
-  box-shadow: none;
+  background-color: #a1c4ff;
+}
+
+.register-btn:not([disabled]):active {
+  background-color: #0066cc;
+  transform: scale(0.99);
 }
 
 .register-btn text {
-  font-size: 34rpx;
-  color: #fff;
-  font-weight: 600;
+  font-size: 32rpx;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 
 .loading-content {
@@ -596,7 +632,7 @@ export default {
   width: 32rpx;
   height: 32rpx;
   border: 4rpx solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -614,7 +650,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4rpx);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -623,17 +660,31 @@ export default {
 
 .error-content {
   width: 560rpx;
-  background: #fff;
+  background-color: #ffffff;
   border-radius: 24rpx;
-  padding: 60rpx 40rpx 40rpx;
+  padding: 64rpx 48rpx 40rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .error-icon {
   font-size: 80rpx;
   margin-bottom: 24rpx;
+  line-height: 1;
 }
 
 .error-title {
@@ -641,6 +692,7 @@ export default {
   color: #1d1d1f;
   font-weight: 600;
   margin-bottom: 16rpx;
+  letter-spacing: -0.2rpx;
 }
 
 .error-message {
@@ -654,17 +706,24 @@ export default {
 .error-btn {
   width: 100%;
   height: 80rpx;
-  background: #2997ff;
+  background-color: #2997ff;
   border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.error-btn:active {
+  background-color: #0066cc;
+  transform: scale(0.99);
 }
 
 .error-btn text {
   font-size: 30rpx;
-  color: #fff;
+  color: #ffffff;
   font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 
 /* 成功模态框 */
@@ -674,7 +733,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4rpx);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -683,17 +743,20 @@ export default {
 
 .success-content {
   width: 560rpx;
-  background: #fff;
+  background-color: #ffffff;
   border-radius: 24rpx;
-  padding: 60rpx 40rpx 40rpx;
+  padding: 64rpx 48rpx 40rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
+  animation: scaleIn 0.3s ease;
 }
 
 .success-icon {
   font-size: 80rpx;
   margin-bottom: 24rpx;
+  line-height: 1;
 }
 
 .success-title {
@@ -701,6 +764,7 @@ export default {
   color: #1d1d1f;
   font-weight: 600;
   margin-bottom: 16rpx;
+  letter-spacing: -0.2rpx;
 }
 
 .success-message {
@@ -709,22 +773,30 @@ export default {
   text-align: center;
   line-height: 1.5;
   margin-bottom: 16rpx;
+  word-break: break-all;
 }
 
 .success-btn {
   width: 100%;
   height: 80rpx;
-  background: #34c759;
+  background-color: #34c759;
   border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 24rpx;
+  transition: all 0.2s ease;
+}
+
+.success-btn:active {
+  background-color: #2aa84a;
+  transform: scale(0.99);
 }
 
 .success-btn text {
   font-size: 30rpx;
-  color: #fff;
+  color: #ffffff;
   font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 </style>

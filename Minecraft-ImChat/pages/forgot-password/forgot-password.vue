@@ -286,16 +286,20 @@ export default {
 <style scoped>
 .forgot-password-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 30rpx;
-  background: #fff;
+  padding: 20rpx 32rpx;
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20rpx);
   padding-top: calc(20rpx + env(safe-area-inset-top));
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .back-btn {
@@ -304,18 +308,26 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 30rpx;
+  transition: background-color 0.2s ease;
+}
+
+.back-btn:active {
+  background-color: #f5f5f7;
 }
 
 .back-btn text {
   font-size: 48rpx;
   color: #2997ff;
-  font-weight: bold;
+  font-weight: 300;
+  line-height: 1;
 }
 
 .header-title {
-  font-size: 34rpx;
+  font-size: 32rpx;
   color: #1d1d1f;
   font-weight: 600;
+  letter-spacing: -0.2rpx;
 }
 
 .placeholder {
@@ -323,38 +335,43 @@ export default {
 }
 
 .form-section {
-  padding: 40rpx;
+  padding: 48rpx 32rpx;
 }
 
 .form-title {
-  margin-bottom: 40rpx;
+  margin-bottom: 48rpx;
 }
 
 .title-main {
   display: block;
-  font-size: 44rpx;
+  font-size: 56rpx;
   color: #1d1d1f;
   font-weight: 700;
   margin-bottom: 12rpx;
+  letter-spacing: -0.6rpx;
+  line-height: 1.1;
 }
 
 .title-sub {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #6e6e73;
+  font-weight: 400;
 }
 
 .form-list {
-  background: #fff;
+  background-color: #ffffff;
   border-radius: 24rpx;
-  padding: 0 30rpx;
-  margin-bottom: 40rpx;
+  padding: 8rpx 32rpx;
+  margin-bottom: 48rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .form-row {
   display: flex;
   align-items: center;
-  padding: 28rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f5f5f7;
+  gap: 24rpx;
 }
 
 .form-row:last-child {
@@ -362,10 +379,11 @@ export default {
 }
 
 .row-label {
-  width: 160rpx;
-  font-size: 30rpx;
+  width: 144rpx;
+  font-size: 28rpx;
   color: #1d1d1f;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .row-input {
@@ -373,6 +391,9 @@ export default {
   height: 60rpx;
   font-size: 30rpx;
   color: #1d1d1f;
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .input-placeholder {
@@ -391,23 +412,31 @@ export default {
 }
 
 .send-code-btn {
-  height: 60rpx;
-  padding: 0 20rpx;
-  background: #2997ff;
-  border-radius: 30rpx;
+  height: 64rpx;
+  padding: 0 24rpx;
+  background-color: #2997ff;
+  border-radius: 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.send-code-btn:active:not(.disabled) {
+  background-color: #0066cc;
+  transform: scale(0.97);
 }
 
 .send-code-btn text {
-  color: #fff;
+  color: #ffffff;
   font-size: 24rpx;
+  font-weight: 500;
+  letter-spacing: -0.1rpx;
 }
 
 .send-code-btn.disabled {
-  background: #e5e5e5;
+  background-color: #e8e8ed;
 }
 
 .send-code-btn.disabled text {
@@ -430,31 +459,37 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 30rpx;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-pwd:active {
+  background-color: #f5f5f7;
 }
 
 .toggle-pwd text {
   font-size: 32rpx;
+  line-height: 1;
 }
 
 .error-text {
   font-size: 24rpx;
   color: #ff3b30;
   padding: 4rpx 0 12rpx 30rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #f0f0f0;
-  margin-top: -1rpx;
+  font-weight: 400;
+  display: block;
 }
 
 .submit-btn {
   width: 100%;
-  height: 96rpx;
-  background: linear-gradient(135deg, #2997ff 0%, #1e6bb8 100%);
-  border-radius: 48rpx;
+  height: 88rpx;
+  background-color: #2997ff;
+  border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  box-shadow: 0 8rpx 24rpx rgba(41, 151, 255, 0.3);
+  transition: all 0.2s ease;
 }
 
 .submit-btn::after {
@@ -462,14 +497,19 @@ export default {
 }
 
 .submit-btn[disabled] {
-  background: #a1c4ff;
-  box-shadow: none;
+  background-color: #a1c4ff;
+}
+
+.submit-btn:not([disabled]):active {
+  background-color: #0066cc;
+  transform: scale(0.99);
 }
 
 .submit-btn text {
-  font-size: 34rpx;
-  color: #fff;
-  font-weight: 600;
+  font-size: 32rpx;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 
 .loading-content {
@@ -482,7 +522,7 @@ export default {
   width: 32rpx;
   height: 32rpx;
   border: 4rpx solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border-top-color: #ffffff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -497,7 +537,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 30rpx;
+  margin-top: 32rpx;
   font-size: 26rpx;
   color: #6e6e73;
   gap: 8rpx;
@@ -506,6 +546,11 @@ export default {
 .login-link {
   color: #2997ff;
   font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.login-link:active {
+  opacity: 0.6;
 }
 
 .error-modal {
@@ -514,7 +559,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4rpx);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -523,17 +569,31 @@ export default {
 
 .error-content {
   width: 560rpx;
-  background: #fff;
+  background-color: #ffffff;
   border-radius: 24rpx;
-  padding: 60rpx 40rpx 40rpx;
+  padding: 64rpx 48rpx 40rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .error-icon {
   font-size: 80rpx;
   margin-bottom: 24rpx;
+  line-height: 1;
 }
 
 .error-title {
@@ -541,6 +601,7 @@ export default {
   color: #1d1d1f;
   font-weight: 600;
   margin-bottom: 16rpx;
+  letter-spacing: -0.2rpx;
 }
 
 .error-message {
@@ -554,16 +615,23 @@ export default {
 .error-btn {
   width: 100%;
   height: 80rpx;
-  background: #2997ff;
+  background-color: #2997ff;
   border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.error-btn:active {
+  background-color: #0066cc;
+  transform: scale(0.99);
 }
 
 .error-btn text {
   font-size: 30rpx;
-  color: #fff;
+  color: #ffffff;
   font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 </style>

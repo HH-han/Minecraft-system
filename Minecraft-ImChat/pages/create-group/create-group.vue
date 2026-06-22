@@ -221,35 +221,39 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
 /* 群信息区域 */
 .group-info-section {
-  padding: 30rpx;
-  background-color: #fff;
-  margin-bottom: 20rpx;
+  margin: 32rpx 32rpx 24rpx;
+  padding: 48rpx 32rpx 32rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
 }
 
 .section-title {
-  font-size: 30rpx;
+  font-size: 28rpx;
   color: #1d1d1f;
-  font-weight: 500;
-  margin-bottom: 30rpx;
+  font-weight: 600;
+  margin-bottom: 32rpx;
+  letter-spacing: -0.2rpx;
 }
 
 .group-avatar-wrapper {
   position: relative;
-  width: 160rpx;
-  height: 160rpx;
+  width: 144rpx;
+  height: 144rpx;
   margin: 0 auto 40rpx;
 }
 
 .group-avatar {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 24rpx;
-  background-color: #f5f5f5;
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 28rpx;
+  background-color: #f5f5f7;
 }
 
 .avatar-mask {
@@ -259,80 +263,124 @@ export default {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.avatar-mask:active {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .mask-icon {
-  font-size: 48rpx;
+  font-size: 40rpx;
 }
 
 .input-item {
-  margin-bottom: 30rpx;
+  margin-bottom: 32rpx;
+}
+
+.input-item:last-child {
+  margin-bottom: 0;
 }
 
 .input-label {
   display: block;
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #6e6e73;
   margin-bottom: 12rpx;
+  font-weight: 500;
 }
 
 .input-field {
   width: 100%;
-  height: 80rpx;
-  padding: 0 24rpx;
-  background-color: #f5f5f5;
+  height: 88rpx;
+  padding: 0 32rpx;
+  background-color: #f5f5f7;
   border-radius: 16rpx;
   font-size: 30rpx;
+  color: #1d1d1f;
   box-sizing: border-box;
+  border: none;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.input-field:focus {
+  background-color: #ffffff;
+  box-shadow: inset 0 0 0 2rpx #2997ff;
 }
 
 .input-textarea {
   width: 100%;
   height: 160rpx;
-  padding: 20rpx 24rpx;
-  background-color: #f5f5f5;
+  padding: 24rpx 32rpx;
+  background-color: #f5f5f7;
   border-radius: 16rpx;
   font-size: 30rpx;
+  color: #1d1d1f;
   box-sizing: border-box;
+  border: none;
+  outline: none;
+  line-height: 1.5;
+  transition: background-color 0.2s ease;
+}
+
+.input-textarea:focus {
+  background-color: #ffffff;
+  box-shadow: inset 0 0 0 2rpx #2997ff;
 }
 
 /* 成员区域 */
 .members-section {
   flex: 1;
-  background-color: #fff;
+  margin: 0 32rpx 32rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f5f5f7;
 }
 
 .member-count {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #6e6e73;
+  font-weight: 400;
 }
 
 .search-bar {
-  padding: 20rpx 30rpx;
+  padding: 16rpx 32rpx;
+  border-bottom: 1rpx solid #f5f5f7;
 }
 
 .search-input {
   width: 100%;
   height: 72rpx;
   padding: 0 24rpx;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   border-radius: 36rpx;
   font-size: 28rpx;
+  color: #1d1d1f;
   box-sizing: border-box;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  background-color: #ffffff;
+  box-shadow: inset 0 0 0 2rpx #2997ff;
 }
 
 .friend-list {
@@ -342,33 +390,42 @@ export default {
 .friend-item {
   display: flex;
   align-items: center;
-  padding: 24rpx 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f5f5f7;
+  transition: background-color 0.2s ease;
+}
+
+.friend-item:last-child {
+  border-bottom: none;
 }
 
 .friend-item:active {
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .friend-item.selected {
-  background-color: #e8f4ff;
+  background-color: rgba(41, 151, 255, 0.06);
 }
 
 .friend-avatar {
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  background-color: #f5f5f5;
-  margin-right: 20rpx;
+  background-color: #f5f5f7;
+  margin-right: 24rpx;
+  flex-shrink: 0;
 }
 
 .friend-info {
   flex: 1;
+  min-width: 0;
 }
 
 .friend-name {
   font-size: 30rpx;
   color: #1d1d1f;
+  font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 
 .checkbox {
@@ -379,6 +436,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #ffffff;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .checkbox.checked {
@@ -388,45 +448,57 @@ export default {
 
 .check-icon {
   font-size: 24rpx;
-  color: #fff;
+  color: #ffffff;
+  font-weight: 600;
+  line-height: 1;
 }
 
 /* 空状态 */
 .empty-state {
   display: flex;
   justify-content: center;
-  padding: 60rpx 0;
+  align-items: center;
+  padding: 80rpx 0;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
 }
 
 /* 底部按钮 */
 .create-footer {
-  padding: 20rpx 30rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  background-color: #fff;
-  border-top: 1rpx solid #e5e5e5;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(180%) blur(20rpx);
+  border-top: 1rpx solid #f5f5f7;
 }
 
 .create-btn {
   width: 100%;
   height: 88rpx;
-  background-color: #e5e5e5;
+  background-color: #e8e8ed;
   border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .create-btn text {
   font-size: 32rpx;
-  color: #fff;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 
 .create-btn.active {
   background-color: #2997ff;
+}
+
+.create-btn.active:active {
+  background-color: #0066cc;
+  transform: scale(0.99);
 }
 </style>

@@ -157,23 +157,24 @@ export default {
 </script>
 
 <style scoped>
+/* 仿 Apple 官网设计规范 */
 .contacts-page {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 /* 搜索栏 */
 .search-bar {
-  padding: 20rpx 30rpx;
-  background-color: #fff;
+  padding: 20rpx 32rpx;
+  background-color: #ffffff;
 }
 
 .search-input-wrapper {
   display: flex;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   border-radius: 36rpx;
   padding: 16rpx 24rpx;
 }
@@ -181,29 +182,34 @@ export default {
 .search-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
+  opacity: 0.6;
 }
 
 .search-input {
   flex: 1;
   font-size: 28rpx;
+  color: #1d1d1f;
 }
 
 /* 好友请求入口 */
 .request-entry {
   display: flex;
   align-items: center;
-  padding: 24rpx 30rpx;
-  background-color: #fff;
+  padding: 28rpx 32rpx;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .request-entry:active {
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .entry-icon {
-  width: 80rpx;
-  height: 80rpx;
-  background-color: #f5f5f5;
+  width: 72rpx;
+  height: 72rpx;
+  background-color: #f5f5f7;
   border-radius: 16rpx;
   display: flex;
   align-items: center;
@@ -212,7 +218,7 @@ export default {
 }
 
 .entry-icon text {
-  font-size: 40rpx;
+  font-size: 36rpx;
 }
 
 .entry-info {
@@ -224,6 +230,8 @@ export default {
 .entry-title {
   font-size: 32rpx;
   color: #1d1d1f;
+  font-weight: 500;
+  letter-spacing: -0.3rpx;
 }
 
 .request-badge {
@@ -240,38 +248,40 @@ export default {
 
 .badge-text {
   font-size: 24rpx;
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
 }
 
 /* 分隔线 */
 .section-divider {
-  height: 20rpx;
-  background-color: #f5f5f5;
+  height: 16rpx;
+  background-color: #f5f5f7;
 }
 
 /* 联系人列表 */
 .contact-list {
   flex: 1;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  padding: 24rpx 30rpx;
+  padding: 24rpx 32rpx;
   border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .contact-item:active {
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
 }
 
 .contact-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 16rpx;
-  background-color: #f5f5f5;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background-color: #f5f5f7;
   margin-right: 24rpx;
 }
 
@@ -282,6 +292,8 @@ export default {
 .contact-name {
   font-size: 32rpx;
   color: #1d1d1f;
+  font-weight: 500;
+  letter-spacing: -0.3rpx;
 }
 
 .contact-status {
@@ -300,28 +312,37 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 120rpx 0;
+  padding: 160rpx 0;
 }
 
 .empty-icon {
   font-size: 120rpx;
-  margin-bottom: 30rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #a1a1a6;
+  color: #6e6e73;
   margin-bottom: 40rpx;
 }
 
 .empty-action {
-  padding: 20rpx 60rpx;
+  padding: 20rpx 56rpx;
   background-color: #2997ff;
-  border-radius: 48rpx;
+  border-radius: 40rpx;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.empty-action:active {
+  background-color: #0066cc;
+  transform: scale(0.98);
 }
 
 .empty-action text {
-  color: #fff;
+  color: #ffffff;
   font-size: 28rpx;
+  font-weight: 500;
 }
 </style>

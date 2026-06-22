@@ -2,7 +2,9 @@
  * WebSocket 服务 - 用于实时消息推送
  */
 
-const WS_BASE_URL = 'wss://api.mc-system.com/ws'
+import { WS_CONFIG } from './config.js'
+
+const WS_BASE_URL = WS_CONFIG.URL
 
 class WebSocketService {
   constructor() {

@@ -223,81 +223,96 @@ export default {
 </script>
 
 <style scoped>
+/* 仿 Apple 官网设计规范 */
 .add-friend-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
+  padding: 0 32rpx;
+  box-sizing: border-box;
 }
 
 /* 搜索区域 */
 .search-section {
   display: flex;
   align-items: center;
-  padding: 30rpx;
-  background-color: #fff;
+  padding: 32rpx 0;
 }
 
 .search-input-wrapper {
   flex: 1;
   display: flex;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
   border-radius: 36rpx;
   padding: 16rpx 24rpx;
   margin-right: 20rpx;
+  border: 1rpx solid #d2d2d6;
 }
 
 .search-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
+  opacity: 0.6;
 }
 
 .search-input {
   flex: 1;
   font-size: 28rpx;
+  color: #1d1d1f;
 }
 
 .search-btn {
-  padding: 16rpx 40rpx;
+  padding: 16rpx 36rpx;
   background-color: #2997ff;
   border-radius: 36rpx;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.search-btn:active {
+  background-color: #0066cc;
+  transform: scale(0.97);
 }
 
 .search-btn text {
   font-size: 28rpx;
-  color: #fff;
+  color: #ffffff;
+  font-weight: 500;
 }
 
 /* 搜索结果 */
 .search-result {
-  margin: 30rpx;
-  background-color: #fff;
-  border-radius: 20rpx;
+  margin-top: 24rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
   overflow: hidden;
 }
 
 .result-header {
-  padding: 20rpx 30rpx;
+  padding: 24rpx 32rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
 .result-title {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #6e6e73;
+  font-weight: 500;
+  letter-spacing: -0.2rpx;
 }
 
 .user-card {
   display: flex;
   align-items: center;
-  padding: 30rpx;
+  padding: 32rpx;
 }
 
 .user-avatar {
-  width: 100rpx;
-  height: 100rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   margin-right: 24rpx;
 }
 
@@ -309,8 +324,9 @@ export default {
   display: block;
   font-size: 32rpx;
   color: #1d1d1f;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 8rpx;
+  letter-spacing: -0.3rpx;
 }
 
 .user-phone {
@@ -322,15 +338,23 @@ export default {
   padding: 16rpx 32rpx;
   background-color: #2997ff;
   border-radius: 36rpx;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.add-btn:active {
+  background-color: #0066cc;
+  transform: scale(0.97);
 }
 
 .add-btn text {
   font-size: 26rpx;
-  color: #fff;
+  color: #ffffff;
+  font-weight: 500;
 }
 
 .add-btn.added {
-  background-color: #e5e5e5;
+  background-color: #d2d2d6;
 }
 
 .add-btn.added text {
@@ -339,25 +363,26 @@ export default {
 
 /* 提示区域 */
 .tips-section {
-  margin: 30rpx;
-  background-color: #fff;
-  border-radius: 20rpx;
+  margin-top: 32rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
   overflow: hidden;
 }
 
 .tips-header {
-  padding: 24rpx 30rpx;
+  padding: 28rpx 32rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
 .tips-title {
   font-size: 30rpx;
   color: #1d1d1f;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
 }
 
 .tips-list {
-  padding: 20rpx 30rpx;
+  padding: 24rpx 32rpx;
 }
 
 .tip-item {
@@ -369,18 +394,20 @@ export default {
 .tip-icon {
   font-size: 28rpx;
   margin-right: 16rpx;
+  opacity: 0.6;
 }
 
 .tip-text {
   font-size: 26rpx;
   color: #6e6e73;
+  line-height: 1.5;
 }
 
 /* 搜索历史 */
 .history-section {
-  margin: 30rpx;
-  background-color: #fff;
-  border-radius: 20rpx;
+  margin-top: 32rpx;
+  background-color: #ffffff;
+  border-radius: 24rpx;
   overflow: hidden;
 }
 
@@ -388,32 +415,40 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24rpx 30rpx;
+  padding: 28rpx 32rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
 .history-title {
   font-size: 30rpx;
   color: #1d1d1f;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
 }
 
 .clear-btn {
   font-size: 26rpx;
   color: #2997ff;
+  cursor: pointer;
 }
 
 .history-list {
   display: flex;
   flex-wrap: wrap;
-  padding: 20rpx;
+  padding: 24rpx;
   gap: 20rpx;
 }
 
 .history-item {
   padding: 16rpx 32rpx;
-  background-color: #f5f5f5;
+  background-color: #f5f5f7;
   border-radius: 36rpx;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.history-item:active {
+  background-color: #d2d2d6;
 }
 
 .history-phone {
