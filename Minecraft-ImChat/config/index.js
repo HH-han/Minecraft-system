@@ -10,7 +10,7 @@ export default {
   ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
   UPLOAD_MAX_SIZE: parseInt(import.meta.env.VITE_UPLOAD_MAX_SIZE) || 10,
   UPLOAD_ALLOWED_TYPES: import.meta.env.VITE_UPLOAD_ALLOWED_TYPES || 'image/jpeg,image/png,image/gif',
-  WS_URL: import.meta.env.VITE_WS_URL || 'ws://localhost:3000/ws',
+  WS_URL: import.meta.env.VITE_WS_URL || 'ws://localhost:8080/ws',
   CDN_BASE_URL: import.meta.env.VITE_CDN_BASE_URL || '',
   WEIXIN_APP_ID: import.meta.env.VITE_WEIXIN_APP_ID || '',
   ALIPAY_APP_ID: import.meta.env.VITE_ALIPAY_APP_ID || '',
