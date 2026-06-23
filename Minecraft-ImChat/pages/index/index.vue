@@ -1,21 +1,10 @@
 <template>
   <view class="chat-list-page">
-    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
-    <view class="custom-nav">
-      <view class="nav-content">
-        <text class="nav-title">微信</text>
-        <view class="nav-actions">
-          <view class="nav-btn" @click="onSearch">
-            <text class="nav-icon">
-              🔍
-            </text>
-          </view>
-          <view class="nav-btn" @click="showAddMenu">
-            <text class="nav-icon add-icon"></text>
-          </view>
-        </view>
-      </view>
-    </view>
+    <CustomNavBar
+      title="博览通讯"
+      @search="onSearch"
+      @menuItemClick="handleMenuItemClick"
+    />
 
     <scroll-view
       class="chat-list"
@@ -23,6 +12,7 @@
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @refresherrefresh="onRefresh"
+      :style="{ paddingTop: (statusBarHeight + 44) + 'px' }"
     >
       <view v-if="topChats.length > 0" class="top-section">
         <view class="section-header">
@@ -97,54 +87,29 @@
         </view>
       </view>
     </scroll-view>
-
-    <view class="fab" @click="showAddMenu">
-      <text class="fab-icon">+</text>
-    </view>
-
-    <view v-if="showMenu" class="menu-overlay" @click="closeAddMenu">
-      <view class="popup-menu" @click.stop>
-        <view class="menu-arrow"></view>
-        <view
-          v-for="(item, index) in menuItems"
-          :key="index"
-          class="menu-item"
-          @click="handleMenuItemClick(item)"
-        >
-          <text class="menu-icon">{{ item.icon }}</text>
-          <text class="menu-text">{{ item.text }}</text>
-        </view>
-      </view>
-    </view>
   </view>
 </template>
 
 <script>
 import { getFriendInfoList, getGroupsByUserId } from '../../utils/chat-api.js'
 import { getUserInfo } from '../../utils/storage.js'
+import CustomNavBar from '../../components/CustomNavBar.vue'
 
 export default {
+  components: {
+    CustomNavBar
+  },
   data() {
     return {
-      statusBarHeight: 20,
       isRefreshing: false,
       topChats: [],
       normalChats: [],
       defaultAvatar: '/static/default-avatar.png',
       userInfo: null,
-      showMenu: false,
-      menuItems: [
-        { text: '发起群聊', icon: '💬', action: 'groupChat' },
-        { text: '添加朋友', icon: '👤', action: 'addFriend' },
-        { text: '扫一扫', icon: '📷', action: 'scan' },
-        { text: '收付款', icon: '💰', action: 'pay' }
-      ]
     }
   },
 
   onLoad() {
-    const sysInfo = uni.getSystemInfoSync()
-    this.statusBarHeight = sysInfo.statusBarHeight || 20
     this.loadUserData()
   },
 
@@ -229,16 +194,7 @@ export default {
       uni.navigateTo({ url: '/pages/add-friend/add-friend' })
     },
 
-    showAddMenu() {
-      this.showMenu = true
-    },
-
-    closeAddMenu() {
-      this.showMenu = false
-    },
-
     handleMenuItemClick(item) {
-      this.closeAddMenu()
       const actionMap = {
         groupChat: () => uni.navigateTo({ url: '/pages/create-group/create-group' }),
         addFriend: () => uni.navigateTo({ url: '/pages/add-friend/add-friend' }),
@@ -265,81 +221,9 @@ export default {
   background-color: #f7f7f7;
 }
 
-.status-bar {
-  background-color: #f7f7f7;
-  flex-shrink: 0;
-}
-
-.custom-nav {
-  background-color: #f7f7f7;
-  flex-shrink: 0;
-}
-
-.nav-content {
-  height: 88rpx;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0 20rpx;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #000000;
-}
-
-.nav-actions {
-  position: absolute;
-  right: 20rpx;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.nav-btn {
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-icon {
-  display: inline-block;
-  width: 36rpx;
-  height: 36rpx;
-  position: relative;
-}
-
-.add-icon::before {
-  content: '';
-  position: absolute;
-  width: 32rpx;
-  height: 4rpx;
-  background-color: #000000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.add-icon::after {
-  content: '';
-  position: absolute;
-  width: 4rpx;
-  height: 32rpx;
-  background-color: #000000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .chat-list {
   flex: 1;
+  padding-top: calc(var(--status-bar-height, 44px) + 128rpx);
 }
 
 .top-section {
@@ -527,72 +411,6 @@ export default {
   from {
     opacity: 0;
     transform: translateY(10rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding-top: calc(var(--status-bar-height, 44px) + 100rpx);
-  padding-right: 32rpx;
-}
-
-.popup-menu {
-  background-color: rgba(0, 0, 0, 0.85);
-  border-radius: 16rpx;
-  padding: 12rpx 0;
-  min-width: 280rpx;
-  animation: slideDown 0.2s ease;
-}
-
-.menu-arrow {
-  position: absolute;
-  top: -12rpx;
-  right: 40rpx;
-  width: 0;
-  height: 0;
-  border-left: 16rpx solid transparent;
-  border-right: 16rpx solid transparent;
-  border-bottom: 16rpx solid rgba(0, 0, 0, 0.85);
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 24rpx 32rpx;
-  transition: background-color 0.2s;
-}
-
-.menu-item:active {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.menu-icon {
-  font-size: 36rpx;
-  margin-right: 20rpx;
-}
-
-.menu-text {
-  font-size: 30rpx;
-  color: #ffffff;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20rpx);
   }
   to {
     opacity: 1;

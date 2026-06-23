@@ -10,7 +10,7 @@
         />
         <view class="profile-info">
           <text class="profile-name">{{ userInfo.username || '未设置昵称' }}</text>
-          <text class="profile-id">微信号：{{ userInfo.account || userInfo.id || '' }}</text>
+          <text class="profile-id">账号：{{ userInfo.account || userInfo.id || '' }}</text>
           <view class="profile-meta">
             <view class="status-btn">
               <text class="status-btn-text">+ 状态</text>

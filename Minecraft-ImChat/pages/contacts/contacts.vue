@@ -1,20 +1,6 @@
 <template>
   <view class="contacts-page">
-    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
-    <!-- 自定义导航栏 -->
-    <view class="custom-nav">
-      <view class="nav-content">
-        <text class="nav-title">通讯录</text>
-        <view class="nav-actions">
-          <view class="nav-btn" @click="onSearch">
-            <text class="nav-icon search-icon"></text>
-          </view>
-          <view class="nav-btn" @click="onAdd">
-            <text class="nav-icon add-icon"></text>
-          </view>
-        </view>
-      </view>
-    </view>
+    <CustomNavBar title="通讯录" :fixed="false" @search="onSearch" @add="onAdd" />
 
     <!-- 主内容区 -->
     <view class="content-wrapper">
@@ -25,13 +11,6 @@
         scroll-with-animation
         @scroll="onScroll"
       >
-        <!-- 搜索入口 -->
-        <view id="letter-TOP" class="search-entry" @click="onSearch">
-          <view class="search-box">
-            <text class="search-box-icon">&#x1F50D;</text>
-            <text class="search-placeholder">搜索</text>
-          </view>
-        </view>
 
         <!-- 功能入口 -->
         <view class="func-list">
@@ -146,11 +125,14 @@
 import { getFirstLetter } from '../../utils/pinyin.js'
 import { getFriendInfoList, getPendingFriendRequests } from '../../utils/chat-api.js'
 import { getUserInfo } from '../../utils/storage.js'
+import CustomNavBar from '../../components/CustomNavBar.vue'
 
 export default {
+  components: {
+    CustomNavBar
+  },
   data() {
     return {
-      statusBarHeight: 20,
       userInfo: null,
       searchKeyword: '',
       friends: [],
@@ -215,8 +197,6 @@ export default {
   },
 
   onLoad() {
-    const sysInfo = uni.getSystemInfoSync()
-    this.statusBarHeight = sysInfo.statusBarHeight || 20
     this.loadUserInfo()
     this.calcIndexLayout()
   },
@@ -386,101 +366,6 @@ export default {
   flex-direction: column;
   height: 100vh;
   background-color: #EDEDED;
-}
-
-.status-bar {
-  background-color: #EDEDED;
-  flex-shrink: 0;
-}
-
-/* 自定义导航栏 */
-.custom-nav {
-  background-color: #EDEDED;
-  flex-shrink: 0;
-}
-
-.nav-content {
-  height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0 20rpx;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #000000;
-}
-
-.nav-actions {
-  position: absolute;
-  right: 20rpx;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.nav-btn {
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-icon {
-  display: inline-block;
-  width: 36rpx;
-  height: 36rpx;
-  position: relative;
-}
-
-.search-icon::before {
-  content: '';
-  position: absolute;
-  width: 24rpx;
-  height: 24rpx;
-  border: 4rpx solid #000000;
-  border-radius: 50%;
-  top: 2rpx;
-  left: 2rpx;
-}
-
-.search-icon::after {
-  content: '';
-  position: absolute;
-  width: 4rpx;
-  height: 12rpx;
-  background-color: #000000;
-  transform: rotate(45deg);
-  bottom: 2rpx;
-  right: 4rpx;
-}
-
-.add-icon::before {
-  content: '';
-  position: absolute;
-  width: 32rpx;
-  height: 4rpx;
-  background-color: #000000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.add-icon::after {
-  content: '';
-  position: absolute;
-  width: 4rpx;
-  height: 32rpx;
-  background-color: #000000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 /* 内容区 */

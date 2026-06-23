@@ -1,19 +1,6 @@
 <template>
   <view class="discover-page">
-    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
-    <view class="custom-nav">
-      <view class="nav-content">
-        <text class="nav-title">发现</text>
-        <view class="nav-actions">
-          <view class="nav-btn" @click="onSearch">
-            <text class="nav-icon search-icon"></text>
-          </view>
-          <view class="nav-btn" @click="onAdd">
-            <text class="nav-icon add-icon"></text>
-          </view>
-        </view>
-      </view>
-    </view>
+    <CustomNavBar title="发现" @search="onSearch" @add="onAdd" />
 
     <!-- 功能宫格 -->
     <view class="function-grid">
@@ -108,11 +95,14 @@
 
 <script>
 import { getUserInfo } from '../../utils/storage.js'
+import CustomNavBar from '../../components/CustomNavBar.vue'
 
 export default {
+  components: {
+    CustomNavBar
+  },
   data() {
     return {
-      statusBarHeight: 20,
       // 功能列表
       functionList: [
         {
@@ -242,8 +232,6 @@ export default {
   },
 
   onLoad() {
-    const sysInfo = uni.getSystemInfoSync()
-    this.statusBarHeight = sysInfo.statusBarHeight || 20
     const userInfo = getUserInfo()
     if (userInfo) {
       this.userInfo = userInfo
@@ -334,100 +322,6 @@ export default {
   padding-bottom: 40rpx;
 }
 
-.status-bar {
-  background-color: #f5f5f7;
-  flex-shrink: 0;
-}
-
-.custom-nav {
-  background-color: #f5f5f7;
-  flex-shrink: 0;
-}
-
-.nav-content {
-  height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0 20rpx;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #000000;
-}
-
-.nav-actions {
-  position: absolute;
-  right: 20rpx;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.nav-btn {
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-icon {
-  display: inline-block;
-  width: 36rpx;
-  height: 36rpx;
-  position: relative;
-}
-
-.search-icon::before {
-  content: '';
-  position: absolute;
-  width: 24rpx;
-  height: 24rpx;
-  border: 4rpx solid #000000;
-  border-radius: 50%;
-  top: 2rpx;
-  left: 2rpx;
-}
-
-.search-icon::after {
-  content: '';
-  position: absolute;
-  width: 4rpx;
-  height: 12rpx;
-  background-color: #000000;
-  transform: rotate(45deg);
-  bottom: 2rpx;
-  right: 4rpx;
-}
-
-.add-icon::before {
-  content: '';
-  position: absolute;
-  width: 32rpx;
-  height: 4rpx;
-  background-color: #000000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.add-icon::after {
-  content: '';
-  position: absolute;
-  width: 4rpx;
-  height: 32rpx;
-  background-color: #000000;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 /* 功能宫格 */
 .function-grid {
   background-color: #ffffff;
@@ -435,6 +329,7 @@ export default {
   border-radius: 24rpx;
   overflow: hidden;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  margin-top: calc(var(--status-bar-height, 44px) + 120rpx);
 }
 
 .function-card {

@@ -2,7 +2,7 @@
   <view class="chat-page">
     <view class="nav-bar">
       <view class="nav-back" @click="goBack">
-        <text class="back-icon">‹</text>
+        <svg t="1782226242150" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="20935" width="200" height="200"><path d="M185.3952 511.232l398.2336 398.2336-72.3968 72.448L40.6016 511.232 511.232 40.6016 583.68 112.9984z" fill="#1afa29" p-id="20936"></path></svg>
       </view>
       <view class="nav-title">
         <text class="title-text">{{ chatName }}</text>
@@ -37,9 +37,8 @@
 
         <view class="message-row">
           <image
-            v-if="msg.senderId !== currentUserId"
             class="message-avatar"
-            :src="msg.senderAvatar || getSenderAvatar(msg)"
+            :src="msg.senderId === currentUserId ? (currentUserAvatar || defaultAvatar) : (msg.senderAvatar || getSenderAvatar(msg))"
             mode="aspectFill"
           />
 
@@ -73,13 +72,6 @@
               <text v-else-if="msg.senderId === currentUserId && msg.status === 'failed'" class="status-icon">✕</text>
             </view>
           </view>
-
-          <image
-            v-if="msg.senderId === currentUserId"
-            class="message-avatar"
-            :src="currentUserAvatar || defaultAvatar"
-            mode="aspectFill"
-          />
         </view>
       </view>
 
@@ -541,13 +533,17 @@ export default {
 
 <style scoped>
 .chat-page {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: 100vh;
   background-color: #f5f5f7;
 }
 
 .nav-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   padding: 20rpx 32rpx;
@@ -559,8 +555,8 @@ export default {
 }
 
 .nav-back {
-  width: 56rpx;
-  height: 56rpx;
+  width: 48rpx;
+  height: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -572,10 +568,9 @@ export default {
   background-color: rgba(7, 193, 96, 0.1);
 }
 
-.back-icon {
-  font-size: 48rpx;
-  color: #07C160;
-  font-weight: 300;
+.nav-back svg {
+  width: 100%;
+  height: 100%;
 }
 
 .nav-title {
@@ -611,7 +606,14 @@ export default {
 }
 
 .message-list {
-  flex: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: calc(96rpx + env(safe-area-inset-top));
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
 .loading-tip {
@@ -647,8 +649,10 @@ export default {
 }
 
 .message-item.mine .message-row {
-  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
+
+
 
 .message-avatar {
   width: 72rpx;
@@ -657,6 +661,10 @@ export default {
   background-color: #f5f5f7;
   flex-shrink: 0;
   transition: transform 0.2s ease;
+}
+
+.message-item.mine .message-avatar {
+  order: 2;
 }
 
 .message-bubble {
@@ -757,6 +765,11 @@ export default {
 }
 
 .input-area {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   background-color: rgba(255, 255, 255, 0.96);
   backdrop-filter: saturate(180%) blur(20rpx);
   -webkit-backdrop-filter: saturate(180%) blur(20rpx);
