@@ -65,7 +65,8 @@
 		{
 			"path": "pages/contact-detail/contact-detail",
 			"style": {
-				"navigationBarTitleText": "资料"
+				"navigationBarTitleText": "资料",
+				"navigationStyle": "custom"
 			}
 		},
 		{

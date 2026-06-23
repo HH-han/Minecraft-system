@@ -1,99 +1,121 @@
 <template>
   <view class="contact-detail-page">
-    <view class="profile-section">
-      <image
-        class="profile-avatar"
-        :src="contactInfo.avatar || defaultAvatar"
-        mode="aspectFill"
-      />
-      <text class="profile-name">{{ contactInfo.name }}</text>
-      <text class="profile-phone">{{ formatPhone(contactInfo.phone) }}</text>
+    <view class="nav-bar">
+      <view class="nav-back" @click="goBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <view class="nav-title">资料</view>
+      <view class="nav-more" @click="showMore">
+        <text class="more-icon">···</text>
+      </view>
     </view>
 
-    <view class="actions-section">
-      <view class="action-item" @click="sendMessage">
-        <view class="action-icon chat-icon">
-          <text>💬</text>
+    <scroll-view class="detail-scroll" scroll-y>
+      <view class="profile-card fade-in">
+        <image
+          class="profile-avatar"
+          :src="contactInfo.avatar || defaultAvatar"
+          mode="aspectFill"
+          @click="previewAvatar"
+        />
+        <view class="profile-info">
+          <view class="profile-name-row">
+            <text class="profile-name">{{ contactInfo.name || '未知用户' }}</text>
+            <text v-if="contactInfo.gender" class="gender-badge" :class="contactInfo.gender">
+              {{ contactInfo.gender === 'male' ? '♂' : contactInfo.gender === 'female' ? '♀' : '' }}
+            </text>
+          </view>
+          <text class="profile-line" v-if="contactInfo.username">
+            <text class="line-label">昵称：</text>
+            <text class="line-value">{{ contactInfo.username }}</text>
+          </text>
+          <text class="profile-line" v-if="contactInfo.account">
+            <text class="line-label">微信号：</text>
+            <text class="line-value">{{ contactInfo.account }}</text>
+          </text>
+          <text class="profile-line" v-if="contactInfo.region">
+            <text class="line-label">地区：</text>
+            <text class="line-value">{{ contactInfo.region }}</text>
+          </text>
         </view>
-        <text class="action-text">发消息</text>
-      </view>
-      <view v-if="contactType === 'single'" class="action-item" @click="makeCall">
-        <view class="action-icon call-icon">
-          <text>📞</text>
+        <view class="profile-actions">
+          <view class="star-btn" :class="{ active: isStarred }" @click="toggleStar">
+            <text class="star-icon">{{ isStarred ? '★' : '☆' }}</text>
+          </view>
         </view>
-        <text class="action-text">音视频通话</text>
-      </view>
-    </view>
-
-    <view class="detail-section">
-      <view v-if="contactType === 'single'" class="detail-item">
-        <text class="detail-label">手机号</text>
-        <text class="detail-value">{{ contactInfo.phone || '未填写' }}</text>
-      </view>
-      <view v-if="contactType === 'single'" class="detail-item">
-        <text class="detail-label">备注</text>
-        <text class="detail-value">{{ contactInfo.remark || '未设置' }}</text>
       </view>
 
-      <view v-if="contactType === 'group'" class="detail-item">
-        <text class="detail-label">群聊ID</text>
-        <text class="detail-value">{{ contactInfo.id }}</text>
+      <view class="section-card fade-in" style="animation-delay: 0.1s;">
+        <view class="section-header" @click="showMoreInfo">
+          <text class="section-title">朋友资料</text>
+          <text class="section-arrow">›</text>
+        </view>
+        <view class="section-body">
+          <view class="info-row" v-if="contactInfo.phone">
+            <text class="info-label">电话</text>
+            <text class="info-value">{{ contactInfo.phone }}</text>
+          </view>
+          <view class="info-row" v-if="tagsText">
+            <text class="info-label">标签</text>
+            <text class="info-value">{{ tagsText }}</text>
+          </view>
+          <view class="info-row" v-if="contactInfo.memo">
+            <text class="info-label">备忘</text>
+            <text class="info-value ellipsis">{{ contactInfo.memo }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">照片</text>
+            <text class="info-value">{{ photoCount }}张照片</text>
+          </view>
+        </view>
       </view>
-      <view v-if="contactType === 'group'" class="detail-item">
-        <text class="detail-label">群成员</text>
-        <text class="detail-value">{{ memberCount }} 人</text>
-      </view>
-      <view v-if="contactType === 'group'" class="detail-item">
-        <text class="detail-label">群描述</text>
-        <text class="detail-value">{{ contactInfo.description || '暂无描述' }}</text>
-      </view>
-    </view>
 
-    <view v-if="contactType === 'group'" class="members-section">
-      <view class="section-header">
-        <text class="section-title">群成员</text>
-        <text class="member-count">{{ memberCount }} 人</text>
+      <view class="section-card fade-in" style="animation-delay: 0.2s;" @click="openMoments">
+        <view class="section-row single">
+          <text class="section-row-text">朋友圈</text>
+          <text class="section-arrow">›</text>
+        </view>
       </view>
-      <scroll-view class="member-list" scroll-x>
+
+      <view class="action-bar fade-in" style="animation-delay: 0.3s;">
+        <view class="action-btn primary" @click="sendMessage">
+          <view class="action-icon-wrap">
+            <text class="action-icon-text">💬</text>
+          </view>
+          <text class="action-text">发消息</text>
+        </view>
+        <view class="action-btn secondary" @click="makeCall">
+          <view class="action-icon-wrap">
+            <text class="action-icon-text">📞</text>
+          </view>
+          <text class="action-text">音视频通话</text>
+        </view>
+      </view>
+
+      <view class="footer-section fade-in" style="animation-delay: 0.4s;">
         <view
-          v-for="(member, index) in members"
-          :key="member.userId"
-          :style="{ animationDelay: `${index * 0.05}s` }"
-          class="member-item fade-in"
+          v-if="contactType === 'single'"
+          class="footer-btn danger"
+          @click="deleteContact"
         >
-          <image
-            class="member-avatar"
-            :src="member.avatar || defaultAvatar"
-            mode="aspectFill"
-          />
-          <text class="member-name">{{ member.username }}</text>
+          <text>删除好友</text>
         </view>
-      </scroll-view>
-    </view>
-
-    <view class="footer-section">
-      <view
-        v-if="contactType === 'single'"
-        class="footer-btn danger"
-        @click="deleteContact"
-      >
-        <text>删除好友</text>
+        <view
+          v-if="contactType === 'group' && contactInfo.isCreator"
+          class="footer-btn danger"
+          @click="deleteGroup"
+        >
+          <text>解散群聊</text>
+        </view>
+        <view
+          v-if="contactType === 'group' && !contactInfo.isCreator"
+          class="footer-btn danger"
+          @click="leaveGroup"
+        >
+          <text>退出群聊</text>
+        </view>
       </view>
-      <view
-        v-if="contactType === 'group' && contactInfo.isCreator"
-        class="footer-btn danger"
-        @click="deleteGroup"
-      >
-        <text>解散群聊</text>
-      </view>
-      <view
-        v-if="contactType === 'group' && !contactInfo.isCreator"
-        class="footer-btn danger"
-        @click="leaveGroup"
-      >
-        <text>退出群聊</text>
-      </view>
-    </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -103,7 +125,8 @@ import {
   getGroupMembers,
   deleteFriend,
   deleteGroup,
-  removeGroupMember
+  removeGroupMember,
+  getUserByAccount
 } from '../../utils/chat-api.js'
 import { getUserInfo } from '../../utils/storage.js'
 
@@ -118,11 +141,33 @@ export default {
         avatar: '',
         phone: '',
         remark: '',
-        description: ''
+        description: '',
+        username: '',
+        account: '',
+        region: '',
+        gender: '',
+        memo: '',
+        tags: [],
+        isStarred: false,
+        isCreator: false
       },
       members: [],
       memberCount: 0,
+      photoCount: 0,
+      isStarred: false,
       defaultAvatar: '/static/default-avatar.png'
+    }
+  },
+
+  computed: {
+    tagsText() {
+      if (Array.isArray(this.contactInfo.tags) && this.contactInfo.tags.length) {
+        return this.contactInfo.tags.join('，')
+      }
+      if (typeof this.contactInfo.tags === 'string' && this.contactInfo.tags.trim()) {
+        return this.contactInfo.tags
+      }
+      return ''
     }
   },
 
@@ -133,21 +178,64 @@ export default {
       id: options.id,
       name: decodeURIComponent(options.name || ''),
       avatar: decodeURIComponent(options.avatar || ''),
+      username: decodeURIComponent(options.username || ''),
+      account: decodeURIComponent(options.account || ''),
+      region: decodeURIComponent(options.region || ''),
+      phone: decodeURIComponent(options.phone || ''),
+      gender: options.gender || '',
+      memo: decodeURIComponent(options.memo || ''),
+      remark: decodeURIComponent(options.remark || ''),
       isCreator: options.isCreator === 'true'
     }
+
+    if (options.tags) {
+      try {
+        this.contactInfo.tags = JSON.parse(decodeURIComponent(options.tags))
+      } catch (e) {
+        this.contactInfo.tags = []
+      }
+    }
+
+    this.isStarred = options.starred === 'true'
 
     if (this.contactType === 'group') {
       this.loadGroupInfo()
       this.loadGroupMembers()
+    } else {
+      this.loadFriendDetail()
     }
   },
 
   methods: {
+    async loadFriendDetail() {
+      if (!this.contactId) return
+      const account = this.contactInfo.account
+      if (!account) {
+        return
+      }
+      try {
+        uni.showLoading({ title: '加载中...', mask: true })
+        const res = await getUserByAccount(account)
+        uni.hideLoading()
+        if (res && res.code === 200 && res.data) {
+          this.contactInfo = {
+            ...this.contactInfo,
+            ...res.data,
+            id: this.contactInfo.id || res.data.id
+          }
+        }
+      } catch (e) {
+        uni.hideLoading()
+        console.error('加载好友详情失败:', e)
+      }
+    },
+
     async loadGroupInfo() {
       try {
         const res = await getGroupById(this.contactId)
         if (res.code === 200 && res.data) {
           this.contactInfo.description = res.data.description || ''
+          this.photoCount = res.data.photoCount || 0
         }
       } catch (e) {
         console.error('加载群信息失败:', e)
@@ -171,13 +259,56 @@ export default {
       return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
     },
 
-    sendMessage() {
+    goBack() {
       uni.navigateBack()
-      setTimeout(() => {
-        uni.navigateTo({
-          url: `/pages/chat/chat?type=${this.contactType}&id=${this.contactId}&name=${encodeURIComponent(this.contactInfo.name)}&avatar=${encodeURIComponent(this.contactInfo.avatar)}`
-        })
-      }, 100)
+    },
+
+    showMore() {
+      uni.showActionSheet({
+        itemList: ['投诉', '拉入黑名单', '添加到桌面'],
+        success: (res) => {
+          uni.showToast({ title: '功能开发中', icon: 'none' })
+        }
+      })
+    },
+
+    showMoreInfo() {
+      uni.showToast({ title: '更多资料开发中', icon: 'none' })
+    },
+
+    previewAvatar() {
+      if (!this.contactInfo.avatar) return
+      uni.previewImage({
+        urls: [this.contactInfo.avatar],
+        current: this.contactInfo.avatar
+      })
+    },
+
+    toggleStar() {
+      this.isStarred = !this.isStarred
+      uni.showToast({
+        title: this.isStarred ? '已设为星标朋友' : '已取消星标',
+        icon: 'none'
+      })
+    },
+
+    openMoments() {
+      uni.showToast({ title: '朋友圈功能开发中', icon: 'none' })
+    },
+
+    sendMessage() {
+      const targetId = this.contactId
+      const targetName = this.contactInfo.name || ''
+      const targetAvatar = this.contactInfo.avatar || ''
+      const pages = getCurrentPages()
+      const chatPage = pages.find(p => p.route && p.route.includes('pages/chat/chat'))
+      if (chatPage) {
+        uni.navigateBack({ delta: pages.length - pages.indexOf(chatPage) - 1 })
+        return
+      }
+      uni.navigateTo({
+        url: `/pages/chat/chat?type=${this.contactType}&id=${targetId}&name=${encodeURIComponent(targetName)}&avatar=${encodeURIComponent(targetAvatar)}`
+      })
     },
 
     makeCall() {
@@ -273,154 +404,219 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f7;
+  background-color: #ededed;
   padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
-.profile-section {
+/* 顶部导航栏 */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 64rpx 32rpx 56rpx;
-  background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 100%);
-  margin: 32rpx 32rpx 24rpx;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  padding-top: calc(20rpx + env(safe-area-inset-top));
+  background: linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%);
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
 
-.profile-avatar {
-  width: 160rpx;
-  height: 160rpx;
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  background-color: #f5f5f7;
-  margin-bottom: 32rpx;
-  border: 4rpx solid #ffffff;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
 }
 
-.profile-name {
-  font-size: 40rpx;
+.nav-back:active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.back-icon {
+  font-size: 56rpx;
   color: #1d1d1f;
-  font-weight: 700;
-  margin-bottom: 8rpx;
-  letter-spacing: -0.4rpx;
-}
-
-.profile-phone {
-  font-size: 26rpx;
-  color: #6e6e73;
-  font-weight: 400;
-}
-
-.actions-section {
-  display: flex;
-  justify-content: center;
-  gap: 96rpx;
-  padding: 40rpx 32rpx;
-  background-color: #ffffff;
-  margin: 0 32rpx 24rpx;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-}
-
-.action-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: opacity 0.2s ease;
-}
-
-.action-item:active {
-  opacity: 0.6;
-}
-
-.action-icon {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16rpx;
-  transition: all 0.2s ease;
-}
-
-.chat-icon {
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-}
-
-.call-icon {
-  background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
-}
-
-.action-item:active .action-icon {
-  transform: scale(0.97);
-}
-
-.action-icon text {
-  font-size: 44rpx;
+  font-weight: 300;
   line-height: 1;
 }
 
-.action-text {
-  font-size: 24rpx;
-  color: #6e6e73;
-  font-weight: 500;
-}
-
-.detail-section {
-  background-color: #ffffff;
-  margin: 0 32rpx 24rpx;
-  border-radius: 24rpx;
-  padding: 0 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-}
-
-.detail-item {
+.nav-more {
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 32rpx 0;
-  border-bottom: 1rpx solid #f5f5f7;
-  gap: 24rpx;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
 }
 
-.detail-item:last-child {
-  border-bottom: none;
+.nav-more:active {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-.detail-label {
-  font-size: 28rpx;
-  color: #6e6e73;
-  flex-shrink: 0;
-  font-weight: 500;
-}
-
-.detail-value {
-  font-size: 28rpx;
+.more-icon {
+  font-size: 40rpx;
   color: #1d1d1f;
-  font-weight: 500;
-  text-align: right;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  color: #1d1d1f;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
+}
+
+/* 滚动容器 */
+.detail-scroll {
+  flex: 1;
+  height: 0;
+}
+
+/* 用户信息卡片 */
+.profile-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 32rpx 28rpx;
+  background-color: #ffffff;
+  margin: 0 0 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.profile-avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 16rpx;
+  background-color: #f5f5f7;
+  flex-shrink: 0;
+  margin-right: 28rpx;
+  transition: all 0.3s ease;
+  border: 4rpx solid #f0f0f0;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar:active {
+  opacity: 0.8;
+  transform: scale(0.96);
+}
+
+.profile-info {
   flex: 1;
   min-width: 0;
-  letter-spacing: -0.2rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4rpx;
 }
 
-.members-section {
-  background-color: #ffffff;
-  margin: 0 32rpx 24rpx;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6rpx;
+  gap: 8rpx;
+}
+
+.profile-name {
+  font-size: 36rpx;
+  color: #1d1d1f;
+  font-weight: 700;
+  letter-spacing: -0.4rpx;
+  line-height: 1.2;
+  max-width: 360rpx;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gender-badge {
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.gender-badge.male {
+  color: #4a90e2;
+}
+
+.gender-badge.female {
+  color: #f55a8a;
+}
+
+.profile-line {
+  font-size: 24rpx;
+  color: #888888;
+  line-height: 1.5;
+  letter-spacing: -0.1rpx;
+  display: block;
+}
+
+.line-label {
+  color: #888888;
+}
+
+.line-value {
+  color: #888888;
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  padding-left: 16rpx;
+}
+
+.star-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.star-btn:active {
+  transform: scale(0.9);
+  opacity: 0.6;
+}
+
+.star-icon {
+  font-size: 48rpx;
+  color: #cccccc;
+  line-height: 1;
+}
+
+.star-btn.active .star-icon {
+  color: #f5b800;
+}
+
+/* 分组卡片 */
+.section-card {
+  background-color: #ffffff;
+  margin: 0 0 20rpx;
+  overflow: hidden;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 32rpx;
-  border-bottom: 1rpx solid #f5f5f7;
+  padding: 24rpx 24rpx;
+  border-bottom: 1rpx solid #ededed;
+  transition: background-color 0.2s ease;
+}
+
+.section-header:active {
+  background-color: #f7f7f7;
 }
 
 .section-title {
@@ -430,83 +626,216 @@ export default {
   letter-spacing: -0.2rpx;
 }
 
-.member-count {
-  font-size: 24rpx;
-  color: #6e6e73;
-  font-weight: 400;
+.section-arrow {
+  font-size: 36rpx;
+  color: #c8c8c8;
+  font-weight: 300;
+  line-height: 1;
 }
 
-.member-list {
-  padding: 32rpx;
-  white-space: nowrap;
-}
-
-.member-item {
-  display: inline-flex;
+.section-body {
+  display: flex;
   flex-direction: column;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-right: 40rpx;
-  transition: opacity 0.2s ease;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #ededed;
+  gap: 24rpx;
+  min-height: 88rpx;
+  transition: background-color 0.2s ease;
 }
 
-.member-item:active {
-  opacity: 0.6;
+.info-row:last-child {
+  border-bottom: none;
 }
 
-.member-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 50%;
-  background-color: #f5f5f7;
-  margin-bottom: 12rpx;
+.info-row:active {
+  background-color: #f7f7f7;
 }
 
-.member-name {
-  font-size: 24rpx;
-  color: #6e6e73;
-  max-width: 120rpx;
+.info-label {
+  font-size: 28rpx;
+  color: #888888;
+  flex-shrink: 0;
+  font-weight: 400;
+  min-width: 100rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+  min-width: 0;
+  letter-spacing: -0.2rpx;
+}
+
+.info-value.ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.section-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 24rpx;
+  transition: background-color 0.2s ease;
+}
+
+.section-card:active {
+  background-color: #f7f7f7;
+}
+
+.section-row-text {
+  font-size: 30rpx;
+  color: #1d1d1f;
+  font-weight: 500;
+  letter-spacing: -0.2rpx;
+}
+
+/* 操作按钮区 */
+.action-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 12rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  gap: 12rpx;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 32rpx 16rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  box-shadow: 0 6rpx 20rpx rgba(7, 193, 96, 0.4);
+}
+
+.action-btn.primary:active {
+  background: linear-gradient(135deg, #06ad56 0%, #05994a 100%);
+  box-shadow: 0 3rpx 10rpx rgba(7, 193, 96, 0.3);
+}
+
+.action-btn.primary .action-text {
+  color: #ffffff;
+}
+
+.action-btn.primary .action-icon-wrap {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.action-btn.secondary {
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f2 100%);
+  border: 1rpx solid #e8e8e8;
+}
+
+.action-btn.secondary:active {
+  background: linear-gradient(135deg, #f0f1f2 0%, #e8e9ea 100%);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-icon-wrap {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+  background: rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.action-btn:active .action-icon-wrap {
+  transform: scale(0.9);
+}
+
+.action-icon-text {
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.action-text {
+  font-size: 26rpx;
+  color: #1d1d1f;
+  font-weight: 600;
+  letter-spacing: -0.2rpx;
+}
+
+/* 底部危险按钮 */
 .footer-section {
-  margin-top: auto;
-  padding: 24rpx 32rpx;
+  margin-top: 40rpx;
+  padding: 0 24rpx;
   padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
-  background-color: rgba(255, 255, 255, 0.96);
-  backdrop-filter: saturate(180%) blur(20rpx);
-  border-top: 1rpx solid #f5f5f7;
+  background-color: transparent;
 }
 
 .footer-btn {
   width: 100%;
   height: 88rpx;
-  border-radius: 44rpx;
+  border-radius: 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
 }
 
 .footer-btn text {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 500;
   letter-spacing: -0.2rpx;
 }
 
 .footer-btn.danger {
-  background-color: #ffffff;
-  border: 2rpx solid #ff3b30;
+  border: none;
+  background: linear-gradient(135deg, #ff4d4f 0%, #ff3b30 100%);
+  box-shadow: 0 4rpx 16rpx rgba(255, 59, 48, 0.3);
 }
 
 .footer-btn.danger text {
-  color: #ff3b30;
+  color: #ffffff;
 }
 
 .footer-btn.danger:active {
-  background-color: rgba(255, 59, 48, 0.06);
-  transform: scale(0.99);
+  background: linear-gradient(135deg, #ff3b30 0%, #ff2d20 100%);
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(255, 59, 48, 0.2);
 }
 
 .fade-in {

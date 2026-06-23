@@ -2,7 +2,7 @@
   <view class="chat-page">
     <view class="nav-bar">
       <view class="nav-back" @click="goBack">
-        <svg t="1782226242150" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="20935" width="200" height="200"><path d="M185.3952 511.232l398.2336 398.2336-72.3968 72.448L40.6016 511.232 511.232 40.6016 583.68 112.9984z" fill="#1afa29" p-id="20936"></path></svg>
+        <svg t="1782226242150" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="20935" width="200" height="200"><path d="M185.3952 511.232l398.2336 398.2336-72.3968 72.448L40.6016 511.232 511.232 40.6016 583.68 112.9984z" fill="#bfbfbf" p-id="20936"></path></svg>
       </view>
       <view class="nav-title">
         <text class="title-text">{{ chatName }}</text>
@@ -38,8 +38,11 @@
         <view class="message-row">
           <image
             class="message-avatar"
+            :class="{ clickable: !isSelfMessage(msg) }"
             :src="msg.senderId === currentUserId ? (currentUserAvatar || defaultAvatar) : (msg.senderAvatar || getSenderAvatar(msg))"
             mode="aspectFill"
+            :data-msg="JSON.stringify(msg)"
+            @click="onAvatarClick"
           />
 
           <view
@@ -161,6 +164,7 @@ export default {
       defaultAvatar: '/static/default-avatar.png',
 
       showEmojiPanel: false,
+      isNavigating: false,
       emojiList: [
         '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣',
         '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰',
@@ -480,6 +484,83 @@ export default {
       uni.navigateBack()
     },
 
+    isSelfMessage(msg) {
+      if (!msg) return false
+      if (msg.senderId == null || this.currentUserId == null) return false
+      return String(msg.senderId) === String(this.currentUserId)
+    },
+
+    async onAvatarClick(event) {
+      if (this.isNavigating) return
+
+      const dataset = (event && event.currentTarget && event.currentTarget.dataset) || {}
+      const raw = dataset.msg
+
+      if (!raw) {
+        console.warn('头像点击事件缺少消息数据')
+        return
+      }
+
+      let msg
+      try {
+        msg = typeof raw === 'string' ? JSON.parse(raw) : raw
+      } catch (e) {
+        console.error('解析头像消息数据失败:', e)
+        return
+      }
+
+      if (!msg) return
+
+      if (this.isSelfMessage(msg)) {
+        uni.showToast({ title: '这是你自己的头像', icon: 'none' })
+        return
+      }
+
+      if (!msg.senderId) {
+        uni.showToast({ title: '无法获取用户信息', icon: 'none' })
+        return
+      }
+
+      this.isNavigating = true
+      uni.showLoading({ title: '加载中...', mask: true })
+
+      try {
+        const targetId = String(msg.senderId)
+        const targetName = msg.senderName || msg.senderNickname || this.chatName || '好友'
+        const targetAvatar = msg.senderAvatar || this.getSenderAvatar(msg) || ''
+
+        await this.navigateToUserProfile(targetId, targetName, targetAvatar)
+      } catch (e) {
+        console.error('跳转好友信息页面失败:', e)
+        uni.showToast({ title: '页面打开失败', icon: 'none' })
+      } finally {
+        uni.hideLoading()
+        this.$nextTick(() => {
+          this.isNavigating = false
+        })
+      }
+    },
+
+    navigateToUserProfile(userId, userName, userAvatar) {
+      return new Promise((resolve, reject) => {
+        const url =
+          `/pages/contact-detail/contact-detail` +
+          `?type=single` +
+          `&id=${encodeURIComponent(userId)}` +
+          `&name=${encodeURIComponent(userName || '')}` +
+          `&avatar=${encodeURIComponent(userAvatar || '')}`
+
+        uni.navigateTo({
+          url,
+          success: () => resolve(),
+          fail: (err) => {
+            console.error('uni.navigateTo 失败:', err)
+            reject(err)
+          }
+        })
+      })
+    },
+
     showMore() {
       const actionList = [
         { text: '清空聊天记录', action: () => this.clearChatHistory() },
@@ -660,7 +741,16 @@ export default {
   border-radius: 50%;
   background-color: #f5f5f7;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.message-avatar.clickable {
+  cursor: pointer;
+}
+
+.message-avatar.clickable:active {
+  transform: scale(0.92);
+  opacity: 0.75;
 }
 
 .message-item.mine .message-avatar {
