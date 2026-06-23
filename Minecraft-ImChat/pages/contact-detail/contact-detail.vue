@@ -346,7 +346,7 @@ export default {
 }
 
 .chat-icon {
-  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
 }
 
 .call-icon {

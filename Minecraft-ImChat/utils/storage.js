@@ -59,6 +59,13 @@ export const removeUserInfo = () => {
 }
 
 /**
+ * 清除用户信息（removeUserInfo 的别名）
+ */
+export const clearUserInfo = () => {
+  removeUserInfo()
+}
+
+/**
  * 检查是否已登录
  */
 export const isLoggedIn = () => {
@@ -183,6 +190,7 @@ export default {
   setUserInfo,
   getUserInfo,
   removeUserInfo,
+  clearUserInfo,
   isLoggedIn,
   setRememberedAccount,
   getRememberedAccount,

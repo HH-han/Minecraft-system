@@ -1,166 +1,98 @@
 <template>
   <view class="register-page">
-    <view class="header-bar">
-      <view class="back-btn" @click="goBack">
+    <view class="nav-bar">
+      <view class="nav-back" @click="goBack">
         <text>‹</text>
       </view>
-      <text class="header-title">注册账号</text>
-      <view class="placeholder"></view>
+      <text class="nav-title">注册</text>
+      <view class="nav-right"></view>
     </view>
 
     <view class="form-section">
-      <view class="form-title">
-        <text class="title-main">创建新账号</text>
-        <text class="title-sub">加入博览通讯，开始精彩旅程</text>
+      <view class="form-item">
+        <text class="form-label">昵称</text>
+        <input
+          class="form-input"
+          v-model="registerForm.username"
+          placeholder="请输入昵称"
+          placeholder-class="input-placeholder"
+          maxlength="20"
+        />
       </view>
 
-      <!-- 头像上传 -->
-      <view class="avatar-upload">
+      <view class="form-item">
+        <text class="form-label">手机号</text>
+        <input
+          class="form-input"
+          v-model="registerForm.phone"
+          type="number"
+          placeholder="请输入手机号"
+          placeholder-class="input-placeholder"
+          maxlength="11"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">验证码</text>
+        <input
+          class="form-input code-input"
+          v-model="registerForm.code"
+          type="number"
+          placeholder="请输入验证码"
+          placeholder-class="input-placeholder"
+          maxlength="6"
+        />
         <view
-          class="avatar-preview"
-          :style="{ backgroundImage: registerForm.avatar ? `url(${registerForm.avatar})` : `url(${defaultAvatar})` }"
+          :class="['send-code-btn', { disabled: registerForm.countdown > 0 }]"
+          @click="sendCode"
         >
-          <view class="avatar-mask" @click="chooseAvatar">
-            <text>{{ registerForm.avatar ? '更换' : '上传' }}</text>
-          </view>
-          <input
-            type="file"
-            accept="image/*"
-            @change="handleAvatarUpload"
-            class="file-input"
-          />
+          <text>{{ registerForm.countdown > 0 ? `${registerForm.countdown}s` : '获取验证码' }}</text>
         </view>
       </view>
 
-      <!-- 表单 -->
-      <view class="form-list">
-        <view class="form-row">
-          <text class="row-label">姓名</text>
-          <input
-            class="row-input"
-            v-model="registerForm.username"
-            placeholder="请输入真实姓名"
-            placeholder-class="input-placeholder"
-            :maxlength="20"
-          />
-        </view>
-        <view v-if="errors.username" class="error-text">
-          <text>⚠ {{ errors.username }}</text>
-        </view>
-
-        <view class="form-row">
-          <text class="row-label">邮箱</text>
-          <input
-            class="row-input"
-            v-model="registerForm.email"
-            type="text"
-            placeholder="请输入邮箱"
-            placeholder-class="input-placeholder"
-            :maxlength="50"
-          />
-        </view>
-        <view v-if="errors.email" class="error-text">
-          <text>⚠ {{ errors.email }}</text>
-        </view>
-
-        <view class="form-row">
-          <text class="row-label">手机号</text>
-          <input
-            class="row-input"
-            v-model="registerForm.phone"
-            type="number"
-            placeholder="请输入手机号"
-            placeholder-class="input-placeholder"
-            :maxlength="11"
-          />
-        </view>
-        <view v-if="errors.phone" class="error-text">
-          <text>⚠ {{ errors.phone }}</text>
-        </view>
-
-        <view class="form-row">
-          <text class="row-label">密码</text>
-          <view class="password-wrapper">
-            <input
-              class="row-input"
-              v-model="registerForm.password"
-              :type="showPassword ? 'text' : 'password'"
-              placeholder="6-20位密码"
-              placeholder-class="input-placeholder"
-              :maxlength="20"
-            />
-            <view class="toggle-pwd" @click="showPassword = !showPassword">
-              <text>{{ showPassword ? '🙈' : '👁️' }}</text>
-            </view>
-          </view>
-        </view>
-        <view v-if="errors.password" class="error-text">
-          <text>⚠ {{ errors.password }}</text>
-        </view>
-
-        <view class="form-row">
-          <text class="row-label">确认密码</text>
-          <input
-            class="row-input"
-            v-model="registerForm.confirmPassword"
-            :type="showPassword ? 'text' : 'password'"
-            placeholder="请再次输入密码"
-            placeholder-class="input-placeholder"
-            :maxlength="20"
-          />
-        </view>
-        <view v-if="errors.confirmPassword" class="error-text">
-          <text>⚠ {{ errors.confirmPassword }}</text>
-        </view>
-      </view>
-
-      <!-- 协议 -->
-      <view class="agreement-row">
-        <view :class="['checkbox', { checked: agreed }]" @click="agreed = !agreed">
-          <text v-if="agreed">✓</text>
-        </view>
-        <text class="agreement-text">
-          我已阅读并同意
-          <text class="agreement-link" @click="showAgreement">《用户协议》</text>
-        </text>
-      </view>
-
-      <!-- 注册按钮 -->
-      <button
-        :class="['register-btn', { loading: isLoading }]"
-        :disabled="isLoading"
-        @click="handleRegister"
-      >
-        <text v-if="!isLoading">注册</text>
-        <view v-else class="loading-content">
-          <view class="loading-spinner"></view>
-          <text>注册中...</text>
-        </view>
-      </button>
-    </view>
-
-    <!-- 错误模态框 -->
-    <view v-if="showErrorModal" class="error-modal" @click="showErrorModal = false">
-      <view class="error-content" @click.stop>
-        <view class="error-icon">⚠️</view>
-        <text class="error-title">注册失败</text>
-        <text class="error-message">{{ errorMessage }}</text>
-        <view class="error-btn" @click="showErrorModal = false">
-          <text>确定</text>
+      <view class="form-item">
+        <text class="form-label">密码</text>
+        <input
+          class="form-input"
+          v-model="registerForm.password"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="请设置密码（6-20位）"
+          placeholder-class="input-placeholder"
+          maxlength="20"
+        />
+        <view class="toggle-pwd" @click="showPassword = !showPassword">
+          <text>{{ showPassword ? '🙈' : '👁️' }}</text>
         </view>
       </view>
     </view>
 
-    <!-- 成功提示模态框 -->
-    <view v-if="showSuccessModal" class="success-modal">
-      <view class="success-content">
-        <view class="success-icon">✅</view>
-        <text class="success-title">注册成功</text>
-        <text class="success-message">您的账号是：{{ generatedAccount }}</text>
-        <view class="success-btn" @click="goToLogin">
-          <text>去登录</text>
-        </view>
+    <view class="agreement-row">
+      <view :class="['checkbox', { checked: agreed }]" @click="agreed = !agreed">
+        <text v-if="agreed">✓</text>
       </view>
+      <text class="agreement-text">
+        我已阅读并同意
+        <text class="agreement-link">《用户协议》</text>
+        和
+        <text class="agreement-link">《隐私政策》</text>
+      </text>
+    </view>
+
+    <button
+      :class="['register-btn', { loading: isLoading }]"
+      :disabled="isLoading || !canSubmit"
+      @click="handleRegister"
+    >
+      <text v-if="!isLoading">注册</text>
+      <view v-else class="loading-content">
+        <view class="loading-spinner"></view>
+        <text>注册中...</text>
+      </view>
+    </button>
+
+    <view class="login-link-row">
+      <text class="login-text">已有账号？</text>
+      <text class="login-link" @click="goToLogin">登录</text>
     </view>
   </view>
 </template>
@@ -174,172 +106,103 @@ export default {
       showPassword: false,
       isLoading: false,
       agreed: false,
-      showErrorModal: false,
-      errorMessage: '',
-      showSuccessModal: false,
-      generatedAccount: '',
+      countdownTimer: null,
 
       registerForm: {
         username: '',
-        email: '',
         phone: '',
+        code: '',
         password: '',
-        confirmPassword: '',
-        avatar: ''
-      },
+        countdown: 0
+      }
+    }
+  },
 
-      errors: {
-        username: '',
-        email: '',
-        phone: '',
-        password: '',
-        confirmPassword: ''
-      },
+  computed: {
+    canSubmit() {
+      return this.registerForm.username.trim().length > 0 &&
+        this.registerForm.phone.length === 11 &&
+        this.registerForm.code.length >= 4 &&
+        this.registerForm.password.length >= 6 &&
+        this.agreed
+    }
+  },
 
-      defaultAvatar: '/static/default-avatar.png'
+  onUnload() {
+    if (this.countdownTimer) {
+      clearInterval(this.countdownTimer)
     }
   },
 
   methods: {
-    /**
-     * 返回
-     */
     goBack() {
       uni.navigateBack()
     },
 
-    /**
-     * 跳转到登录
-     */
     goToLogin() {
       uni.redirectTo({ url: '/pages/login/login' })
     },
 
-    /**
-     * 选择头像
-     */
-    chooseAvatar() {
-      uni.chooseImage({
-        count: 1,
-        success: (res) => {
-          const tempFilePath = res.tempFilePaths[0]
-          this.registerForm.avatar = tempFilePath
-        }
-      })
-    },
-
-    /**
-     * 头像上传
-     */
-    handleAvatarUpload(e) {
-      const file = e.target.files[0]
-      if (file) {
-        const reader = new FileReader()
-        reader.onload = (ev) => {
-          this.registerForm.avatar = ev.target.result
-        }
-        reader.readAsDataURL(file)
-      }
-    },
-
-    /**
-     * 显示协议
-     */
-    showAgreement() {
-      uni.showModal({
-        title: '用户协议',
-        content: '欢迎使用博览通讯，请遵守相关法律法规。',
-        showCancel: false
-      })
-    },
-
-    /**
-     * 验证表单
-     */
-    validateForm() {
-      let isValid = true
-      this.errors = {
-        username: '',
-        email: '',
-        phone: '',
-        password: '',
-        confirmPassword: ''
-      }
-
-      if (!this.registerForm.username.trim()) {
-        this.errors.username = '请输入真实姓名'
-        isValid = false
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(this.registerForm.email)) {
-        this.errors.email = '请输入有效的邮箱地址'
-        isValid = false
-      }
-
+    async sendCode() {
       const phoneRegex = /^1\d{10}$/
       if (!phoneRegex.test(this.registerForm.phone)) {
-        this.errors.phone = '请输入有效的11位手机号'
-        isValid = false
+        uni.showToast({ title: '请输入有效的手机号', icon: 'none' })
+        return
       }
 
-      if (this.registerForm.password.length < 6 || this.registerForm.password.length > 20) {
-        this.errors.password = '密码长度必须在6-20位之间'
-        isValid = false
-      }
+      if (this.registerForm.countdown > 0) return
 
-      if (this.registerForm.password !== this.registerForm.confirmPassword) {
-        this.errors.confirmPassword = '两次输入的密码不一致'
-        isValid = false
+      try {
+        const res = await register.sendCode(this.registerForm.phone)
+        if (res.code === 200) {
+          uni.showToast({ title: '验证码已发送', icon: 'success' })
+          this.startCountdown()
+        } else {
+          uni.showToast({ title: res.message || '发送失败', icon: 'none' })
+        }
+      } catch (e) {
+        uni.showToast({ title: '发送失败，请重试', icon: 'none' })
       }
-
-      if (!this.agreed) {
-        this.showError('请先同意用户协议')
-        isValid = false
-      }
-
-      return isValid
     },
 
-    /**
-     * 处理注册
-     */
-    async handleRegister() {
-      if (this.isLoading) return
+    startCountdown() {
+      this.registerForm.countdown = 60
+      this.countdownTimer = setInterval(() => {
+        this.registerForm.countdown--
+        if (this.registerForm.countdown <= 0) {
+          clearInterval(this.countdownTimer)
+        }
+      }, 1000)
+    },
 
-      if (!this.validateForm()) return
+    async handleRegister() {
+      if (this.isLoading || !this.canSubmit) return
 
       this.isLoading = true
 
       try {
         const response = await register({
-          username: this.registerForm.username,
+          username: this.registerForm.username.trim(),
           password: this.registerForm.password,
-          email: this.registerForm.email,
           phone: this.registerForm.phone,
-          avatar: this.registerForm.avatar
+          code: this.registerForm.code
         })
 
         if (response.code === 200) {
-          this.generatedAccount = response.data || ''
-          this.showSuccessModal = true
+          uni.showToast({ title: '注册成功', icon: 'success' })
+
+          setTimeout(() => {
+            uni.redirectTo({ url: '/pages/login/login' })
+          }, 1500)
         } else {
-          this.showError(response.message || '注册失败')
+          uni.showToast({ title: response.message || '注册失败', icon: 'none' })
         }
       } catch (error) {
         console.error('注册失败:', error)
-        this.showError(error.message || '注册失败，请稍后重试')
+        uni.showToast({ title: error.message || '注册失败', icon: 'none' })
       } finally {
         this.isLoading = false
       }
-    },
-
-    /**
-     * 显示错误
-     */
-    showError(message) {
-      this.errorMessage = message
-      this.showErrorModal = true
     }
   }
 }
@@ -348,169 +211,103 @@ export default {
 <style scoped>
 .register-page {
   min-height: 100vh;
-  background-color: #f5f5f7;
-  padding-bottom: 60rpx;
+  background-color: #f7f7f7;
+  padding-bottom: 40rpx;
 }
 
-/* 顶部导航 */
-.header-bar {
+.nav-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20rpx 32rpx;
-  background-color: rgba(255, 255, 255, 0.96);
-  backdrop-filter: saturate(180%) blur(20rpx);
   padding-top: calc(20rpx + env(safe-area-inset-top));
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background-color: #ffffff;
 }
 
-.back-btn {
+.nav-back,
+.nav-right {
   width: 60rpx;
   height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 30rpx;
-  transition: background-color 0.2s ease;
 }
 
-.back-btn:active {
-  background-color: #f5f5f7;
-}
-
-.back-btn text {
+.nav-back text {
   font-size: 48rpx;
-  color: #2997ff;
+  color: #07C160;
   font-weight: 300;
-  line-height: 1;
 }
 
-.header-title {
+.nav-title {
   font-size: 32rpx;
-  color: #1d1d1f;
+  color: #000000;
   font-weight: 600;
-  letter-spacing: -0.2rpx;
-}
-
-.placeholder {
-  width: 60rpx;
 }
 
 .form-section {
-  padding: 48rpx 32rpx;
-}
-
-.form-title {
-  margin-bottom: 48rpx;
-}
-
-.title-main {
-  display: block;
-  font-size: 56rpx;
-  color: #1d1d1f;
-  font-weight: 700;
-  margin-bottom: 12rpx;
-  letter-spacing: -0.6rpx;
-  line-height: 1.1;
-}
-
-.title-sub {
-  font-size: 28rpx;
-  color: #6e6e73;
-  font-weight: 400;
-}
-
-/* 头像上传 */
-.avatar-upload {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 48rpx;
-}
-
-.avatar-preview {
-  position: relative;
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 50%;
-  background-color: #f5f5f7;
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  margin: 24rpx 32rpx;
+  border-radius: 8rpx;
   overflow: hidden;
 }
 
-.avatar-mask {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #ffffff;
-  text-align: center;
-  padding: 6rpx 0;
-  font-size: 22rpx;
-  font-weight: 500;
-  letter-spacing: -0.1rpx;
-}
-
-.file-input {
-  display: none;
-}
-
-/* 表单 */
-.form-list {
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  padding: 8rpx 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-}
-
-.form-row {
+.form-item {
   display: flex;
   align-items: center;
-  padding: 32rpx 0;
-  border-bottom: 1rpx solid #f5f5f7;
-  gap: 24rpx;
+  padding: 0 24rpx;
+  height: 96rpx;
+  border-bottom: 1rpx solid #ededed;
+  position: relative;
 }
 
-.form-row:last-child {
+.form-item:last-child {
   border-bottom: none;
 }
 
-.row-label {
-  width: 144rpx;
+.form-label {
+  width: 140rpx;
   font-size: 28rpx;
-  color: #1d1d1f;
+  color: #000000;
   font-weight: 500;
   flex-shrink: 0;
 }
 
-.row-input {
+.form-input {
   flex: 1;
-  height: 60rpx;
   font-size: 30rpx;
-  color: #1d1d1f;
+  color: #000000;
   background-color: transparent;
   border: none;
   outline: none;
 }
 
 .input-placeholder {
-  color: #a1a1a6;
+  color: #cccccc;
 }
 
-.password-wrapper {
+.code-input {
   flex: 1;
-  display: flex;
-  align-items: center;
-  position: relative;
 }
 
-.password-wrapper .row-input {
-  flex: 1;
+.send-code-btn {
+  padding: 12rpx 24rpx;
+  background-color: #07C160;
+  border-radius: 24rpx;
+  flex-shrink: 0;
+}
+
+.send-code-btn text {
+  font-size: 24rpx;
+  color: #ffffff;
+}
+
+.send-code-btn.disabled {
+  background-color: #dcdcdc;
+}
+
+.send-code-btn.disabled text {
+  color: #999999;
 }
 
 .toggle-pwd {
@@ -519,87 +316,65 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 30rpx;
-  transition: background-color 0.2s ease;
-}
-
-.toggle-pwd:active {
-  background-color: #f5f5f7;
 }
 
 .toggle-pwd text {
   font-size: 32rpx;
-  line-height: 1;
 }
 
-.error-text {
-  font-size: 24rpx;
-  color: #ff3b30;
-  padding: 4rpx 0 12rpx 30rpx;
-  font-weight: 400;
-  display: block;
-}
-
-/* 协议 */
 .agreement-row {
   display: flex;
-  align-items: center;
-  margin-bottom: 48rpx;
-  gap: 16rpx;
-  padding: 0 10rpx;
+  align-items: flex-start;
+  padding: 0 32rpx;
+  margin-bottom: 32rpx;
+  gap: 12rpx;
 }
 
 .checkbox {
   width: 36rpx;
   height: 36rpx;
-  border: 2rpx solid #d2d2d6;
-  border-radius: 50%;
+  border: 2rpx solid #dcdcdc;
+  border-radius: 6rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  margin-top: 4rpx;
 }
 
 .checkbox.checked {
-  background-color: #2997ff;
-  border-color: #2997ff;
+  background-color: #07C160;
+  border-color: #07C160;
 }
 
 .checkbox text {
   font-size: 22rpx;
   color: #ffffff;
-  line-height: 1;
+  font-weight: 600;
 }
 
 .agreement-text {
-  font-size: 26rpx;
-  color: #6e6e73;
+  font-size: 24rpx;
+  color: #999999;
   line-height: 1.5;
   flex: 1;
 }
 
 .agreement-link {
-  color: #2997ff;
-  transition: opacity 0.2s ease;
+  color: #07C160;
 }
 
-.agreement-link:active {
-  opacity: 0.6;
-}
-
-/* 注册按钮 */
 .register-btn {
-  width: 100%;
+  width: calc(100% - 64rpx);
   height: 88rpx;
-  background-color: #2997ff;
+  background-color: #07C160;
   border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  transition: all 0.2s ease;
+  margin: 0 32rpx;
 }
 
 .register-btn::after {
@@ -607,25 +382,19 @@ export default {
 }
 
 .register-btn[disabled] {
-  background-color: #a1c4ff;
-}
-
-.register-btn:not([disabled]):active {
-  background-color: #0066cc;
-  transform: scale(0.99);
+  background-color: #cccccc;
 }
 
 .register-btn text {
   font-size: 32rpx;
   color: #ffffff;
   font-weight: 500;
-  letter-spacing: -0.2rpx;
 }
 
 .loading-content {
   display: flex;
   align-items: center;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .loading-spinner {
@@ -638,165 +407,25 @@ export default {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-/* 错误模态框 */
-.error-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4rpx);
+.login-link-row {
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 999;
-}
-
-.error-content {
-  width: 560rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  padding: 64rpx 48rpx 40rpx;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
-  animation: scaleIn 0.3s ease;
+  margin-top: 32rpx;
+  gap: 8rpx;
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.error-icon {
-  font-size: 80rpx;
-  margin-bottom: 24rpx;
-  line-height: 1;
-}
-
-.error-title {
-  font-size: 32rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  margin-bottom: 16rpx;
-  letter-spacing: -0.2rpx;
-}
-
-.error-message {
+.login-text {
   font-size: 28rpx;
-  color: #6e6e73;
-  text-align: center;
-  line-height: 1.5;
-  margin-bottom: 40rpx;
+  color: #999999;
 }
 
-.error-btn {
-  width: 100%;
-  height: 80rpx;
-  background-color: #2997ff;
-  border-radius: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.error-btn:active {
-  background-color: #0066cc;
-  transform: scale(0.99);
-}
-
-.error-btn text {
-  font-size: 30rpx;
-  color: #ffffff;
-  font-weight: 500;
-  letter-spacing: -0.2rpx;
-}
-
-/* 成功模态框 */
-.success-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4rpx);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-.success-content {
-  width: 560rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  padding: 64rpx 48rpx 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.1);
-  animation: scaleIn 0.3s ease;
-}
-
-.success-icon {
-  font-size: 80rpx;
-  margin-bottom: 24rpx;
-  line-height: 1;
-}
-
-.success-title {
-  font-size: 32rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  margin-bottom: 16rpx;
-  letter-spacing: -0.2rpx;
-}
-
-.success-message {
+.login-link {
   font-size: 28rpx;
-  color: #6e6e73;
-  text-align: center;
-  line-height: 1.5;
-  margin-bottom: 16rpx;
-  word-break: break-all;
-}
-
-.success-btn {
-  width: 100%;
-  height: 80rpx;
-  background-color: #34c759;
-  border-radius: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 24rpx;
-  transition: all 0.2s ease;
-}
-
-.success-btn:active {
-  background-color: #2aa84a;
-  transform: scale(0.99);
-}
-
-.success-btn text {
-  font-size: 30rpx;
-  color: #ffffff;
+  color: #07C160;
   font-weight: 500;
-  letter-spacing: -0.2rpx;
 }
 </style>

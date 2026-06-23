@@ -8,7 +8,7 @@
  * - 背景主色: #ffffff
  * - 背景辅色: #f5f5f7
  * - 背景深色: #f0f0f2
- * - 强调色: #2997ff (悬停 #0066cc)
+ * - 强调色: #07C160 (悬停 #06AD56)
  * - 成功色: #34c759
  * - 警告色: #ff9500
  * - 危险色: #ff3b30
@@ -17,35 +17,35 @@
  */
 
 :root {
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #a1a1a6;
-  --text-placeholder: #c7c7cc;
-  --text-disabled: #d2d2d6;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-placeholder: #cccccc;
+  --text-disabled: #d2d2d2;
   
   --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f7;
-  --bg-tertiary: #f0f0f2;
-  --bg-hover: #f1f1f3;
-  --bg-active: #e8e8ed;
+  --bg-secondary: #f7f7f7;
+  --bg-tertiary: #eeeeee;
+  --bg-hover: #f0f0f0;
+  --bg-active: #e5e5e5;
   
-  --accent-color: #2997ff;
-  --accent-hover: #0066cc;
-  --accent-light: rgba(41, 151, 255, 0.1);
-  --accent-dark: #0052cc;
+  --accent-color: #07C160;
+  --accent-hover: #06AD56;
+  --accent-light: rgba(7, 193, 96, 0.1);
+  --accent-dark: #059849;
   
-  --success-color: #34c759;
-  --success-light: rgba(52, 199, 89, 0.1);
+  --success-color: #07C160;
+  --success-light: rgba(7, 193, 96, 0.1);
   
-  --warning-color: #ff9500;
+  --warning-color: #FF9500;
   --warning-light: rgba(255, 149, 0, 0.1);
   
-  --danger-color: #ff3b30;
+  --danger-color: #FF3B30;
   --danger-light: rgba(255, 59, 48, 0.1);
   
-  --border-color: #d2d2d6;
-  --border-light: #e5e5e5;
-  --border-lightest: #f0f0f2;
+  --border-color: #dcdcdc;
+  --border-light: #ededed;
+  --border-lightest: #f5f5f5;
   
   --shadow-sm: 0 1rpx 3rpx rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
@@ -656,7 +656,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(41, 151, 255, 0.4);
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.4);
   transition: all var(--transition-normal);
 }
 
@@ -817,7 +817,7 @@ page {
 }
 
 .highlight-text {
-  background: linear-gradient(135deg, var(--accent-color), #5856d6);
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

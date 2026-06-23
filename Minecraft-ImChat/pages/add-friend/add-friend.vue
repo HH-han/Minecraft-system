@@ -254,8 +254,8 @@ export default {
 }
 
 .search-input-wrapper:focus-within {
-  border-color: #2997ff;
-  box-shadow: 0 0 0 3rpx rgba(41, 151, 255, 0.1);
+  border-color: #07C160;
+  box-shadow: 0 0 0 3rpx rgba(7, 193, 96, 0.1);
 }
 
 .search-icon {
@@ -300,7 +300,7 @@ export default {
 
 .search-btn {
   padding: 16rpx 36rpx;
-  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
   border-radius: 36rpx;
   transition: all 0.2s ease;
 }
@@ -369,7 +369,7 @@ export default {
 
 .add-btn {
   padding: 16rpx 32rpx;
-  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
   border-radius: 36rpx;
   transition: all 0.2s ease;
 }

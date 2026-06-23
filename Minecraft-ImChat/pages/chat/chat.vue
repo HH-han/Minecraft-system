@@ -569,12 +569,12 @@ export default {
 }
 
 .nav-back:active {
-  background-color: rgba(41, 151, 255, 0.1);
+  background-color: rgba(7, 193, 96, 0.1);
 }
 
 .back-icon {
   font-size: 48rpx;
-  color: #2997ff;
+  color: #07C160;
   font-weight: 300;
 }
 
@@ -683,7 +683,7 @@ export default {
 }
 
 .message-item.mine .message-bubble {
-  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
   margin-left: 0;
   margin-right: 16rpx;
 }
@@ -692,7 +692,7 @@ export default {
   left: auto;
   right: -12rpx;
   border-right-color: transparent;
-  border-left-color: #2997ff;
+  border-left-color: #07C160;
 }
 
 .message-text {
@@ -846,7 +846,7 @@ export default {
 
 .message-input:focus {
   background-color: #ffffff;
-  box-shadow: 0 0 0 3rpx rgba(41, 151, 255, 0.1);
+  box-shadow: 0 0 0 3rpx rgba(7, 193, 96, 0.1);
 }
 
 .send-btn {
@@ -861,7 +861,7 @@ export default {
 }
 
 .send-btn.active {
-  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
 }
 
 .send-btn.active:active {

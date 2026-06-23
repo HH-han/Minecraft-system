@@ -25,6 +25,7 @@ const responseInterceptor = (response) => {
     return data;
   } else if (statusCode === 401) {
     // token过期，跳转到登录页
+    uni.hideLoading();
     uni.removeStorageSync('token');
     uni.showToast({
       title: '登录已过期，请重新登录',
@@ -42,6 +43,7 @@ const responseInterceptor = (response) => {
 // 错误拦截器
 const errorInterceptor = (error) => {
   console.error('请求错误:', error);
+  uni.hideLoading();
   uni.showToast({
     title: '网络请求失败',
     icon: 'none'

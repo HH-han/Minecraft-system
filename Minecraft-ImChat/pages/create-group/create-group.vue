@@ -319,7 +319,7 @@ export default {
 
 .input-field:focus {
   background-color: #ffffff;
-  box-shadow: inset 0 0 0 2rpx #2997ff;
+  box-shadow: inset 0 0 0 2rpx #07C160;
 }
 
 .input-placeholder {
@@ -343,7 +343,7 @@ export default {
 
 .input-textarea:focus {
   background-color: #ffffff;
-  box-shadow: inset 0 0 0 2rpx #2997ff;
+  box-shadow: inset 0 0 0 2rpx #07C160;
 }
 
 .members-section {
@@ -387,7 +387,7 @@ export default {
 
 .search-input-wrapper:focus-within {
   background-color: #ffffff;
-  box-shadow: 0 0 0 3rpx rgba(41, 151, 255, 0.1);
+  box-shadow: 0 0 0 3rpx rgba(7, 193, 96, 0.1);
 }
 
 .search-icon {
@@ -451,7 +451,7 @@ export default {
 }
 
 .friend-item.selected {
-  background-color: rgba(41, 151, 255, 0.06);
+  background-color: rgba(7, 193, 96, 0.06);
 }
 
 .friend-avatar {
@@ -489,8 +489,8 @@ export default {
 }
 
 .checkbox.checked {
-  background-color: #2997ff;
-  border-color: #2997ff;
+  background-color: #07C160;
+  border-color: #07C160;
 }
 
 .check-icon {
@@ -546,7 +546,7 @@ export default {
 }
 
 .create-btn.active {
-  background: linear-gradient(135deg, #2997ff 0%, #0066cc 100%);
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
 }
 
 .create-btn.active:active {

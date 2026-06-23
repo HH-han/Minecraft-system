@@ -1,35 +1,19 @@
 <template>
   <view class="chat-list-page">
-    <view class="search-bar">
-      <view class="search-input-wrapper">
-        <text class="search-icon">🔍</text>
-        <input
-          class="search-input"
-          v-model="searchKeyword"
-          placeholder="搜索聊天记录"
-          placeholder-class="search-placeholder"
-          @input="onSearch"
-        />
-        <view v-if="searchKeyword" class="clear-btn" @click="clearSearch">
-          <text>✕</text>
+    <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
+    <view class="custom-nav">
+      <view class="nav-content">
+        <text class="nav-title">微信</text>
+        <view class="nav-actions">
+          <view class="nav-btn" @click="onSearch">
+            <text class="nav-icon">
+              🔍
+            </text>
+          </view>
+          <view class="nav-btn" @click="showAddMenu">
+            <text class="nav-icon add-icon"></text>
+          </view>
         </view>
-      </view>
-    </view>
-
-    <view class="tab-bar">
-      <view
-        :class="['tab-item', { active: activeTab === 'friends' }]"
-        @click="switchTab('friends')"
-      >
-        <text class="tab-text">好友</text>
-        <view v-if="friends.length > 0" class="tab-badge">{{ friends.length }}</view>
-      </view>
-      <view
-        :class="['tab-item', { active: activeTab === 'groups' }]"
-        @click="switchTab('groups')"
-      >
-        <text class="tab-text">群聊</text>
-        <view v-if="groups.length > 0" class="tab-badge">{{ groups.length }}</view>
       </view>
     </view>
 
@@ -39,93 +23,98 @@
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @refresherrefresh="onRefresh"
-      @scrolltolower="loadMore"
     >
-      <view v-if="activeTab === 'friends'">
+      <view v-if="topChats.length > 0" class="top-section">
+        <view class="section-header">
+          <text class="section-title">置顶聊天</text>
+          <view class="section-action" @click="editTop">
+            <text>编辑</text>
+          </view>
+        </view>
         <view
-          v-for="(friend, index) in filteredFriends"
-          :key="friend.id"
-          :style="{ animationDelay: `${index * 0.05}s` }"
+          v-for="(chat, index) in topChats"
+          :key="chat.id"
+          :style="{ animationDelay: `${index * 0.03}s` }"
           class="chat-item fade-in"
-          @click="goToChat(friend)"
+          @click="goToChat(chat)"
         >
           <view class="avatar-wrapper">
             <image
-              class="avatar"
-              :src="friend.avatar || defaultAvatar"
+              class="chat-avatar"
+              :src="chat.avatar || defaultAvatar"
               mode="aspectFill"
             />
-            <view v-if="friend.online" class="online-indicator"></view>
-            <view v-else class="offline-indicator"></view>
+            <view v-if="chat.type === 'single' && chat.online" class="online-dot"></view>
           </view>
           <view class="chat-info">
-            <view class="chat-header-row">
-              <text class="chat-name">{{ friend.name }}</text>
-              <text class="chat-time">{{ friend.time }}</text>
-            </view>
-            <view class="chat-preview-row">
-              <text class="chat-preview" :class="{ unread: friend.unreadCount > 0 }">
-                {{ friend.lastMessage || '开始聊天吧' }}
-              </text>
-              <view v-if="friend.unreadCount > 0" class="unread-badge bounce-in">
-                <text class="unread-count">{{ friend.unreadCount > 99 ? '99+' : friend.unreadCount }}</text>
-              </view>
-            </view>
+            <text class="chat-name">{{ chat.name }}</text>
+            <text class="chat-preview">{{ chat.lastMessage || '开始聊天吧' }}</text>
           </view>
-          <view class="chat-arrow">›</view>
-        </view>
-
-        <view v-if="filteredFriends.length === 0" class="empty-state">
-          <text class="empty-icon">💬</text>
-          <text class="empty-text">暂无{{ searchKeyword ? '搜索结果' : '好友' }}</text>
-          <view v-if="!searchKeyword" class="empty-action" @click="goToAddFriend">
-            <text>添加好友</text>
+          <view class="chat-right">
+            <text class="chat-time">{{ chat.time }}</text>
+            <view v-if="chat.unreadCount > 0" class="unread-badge">
+              <text>{{ chat.unreadCount > 99 ? '99+' : chat.unreadCount }}</text>
+            </view>
           </view>
         </view>
       </view>
 
-      <view v-if="activeTab === 'groups'">
-        <view
-          v-for="(group, index) in filteredGroups"
-          :key="group.id"
-          :style="{ animationDelay: `${index * 0.05}s` }"
-          class="chat-item fade-in"
-          @click="goToGroupChat(group)"
-        >
-          <view class="avatar-wrapper">
-            <image
-              class="avatar group-avatar"
-              :src="group.avatar || defaultGroupAvatar"
-              mode="aspectFill"
-            />
-          </view>
-          <view class="chat-info">
-            <view class="chat-header-row">
-              <text class="chat-name">{{ group.name }}</text>
-              <text class="chat-time">{{ group.time }}</text>
-            </view>
-            <view class="chat-preview-row">
-              <text class="chat-preview">{{ group.lastMessage || '群聊消息' }}</text>
-              <view v-if="group.unreadCount > 0" class="unread-badge bounce-in">
-                <text class="unread-count">{{ group.unreadCount > 99 ? '99+' : group.unreadCount }}</text>
-              </view>
-            </view>
-          </view>
-          <view class="chat-arrow">›</view>
-        </view>
+      <view v-if="topChats.length > 0 && normalChats.length > 0" class="divider-line"></view>
 
-        <view v-if="filteredGroups.length === 0" class="empty-state">
-          <text class="empty-icon">👥</text>
-          <text class="empty-text">暂无{{ searchKeyword ? '搜索结果' : '群聊' }}</text>
-          <view v-if="!searchKeyword" class="empty-action" @click="goToCreateGroup">
-            <text>创建群聊</text>
+      <view
+        v-for="(chat, index) in normalChats"
+        :key="chat.id"
+        :style="{ animationDelay: `${index * 0.03}s` }"
+        class="chat-item fade-in"
+        @click="goToChat(chat)"
+      >
+        <view class="avatar-wrapper">
+          <image
+            class="chat-avatar"
+            :src="chat.avatar || defaultAvatar"
+            mode="aspectFill"
+          />
+          <view v-if="chat.type === 'single' && chat.online" class="online-dot"></view>
+          <image v-else-if="chat.type === 'group'" class="group-badge" src="/static/group-icon.png" mode="aspectFill" />
+        </view>
+        <view class="chat-info">
+          <text class="chat-name">{{ chat.name }}</text>
+          <text class="chat-preview">{{ chat.lastMessage || '开始聊天吧' }}</text>
+        </view>
+        <view class="chat-right">
+          <text class="chat-time">{{ chat.time }}</text>
+          <view v-if="chat.unreadCount > 0" class="unread-badge">
+            <text>{{ chat.unreadCount > 99 ? '99+' : chat.unreadCount }}</text>
           </view>
+        </view>
+      </view>
+
+      <view v-if="normalChats.length === 0 && topChats.length === 0" class="empty-state">
+        <text class="empty-icon">💬</text>
+        <text class="empty-text">还没有聊天记录</text>
+        <view class="empty-action" @click="goToAddFriend">
+          <text>添加好友</text>
         </view>
       </view>
     </scroll-view>
 
-    <view class="fab" @click="onFabClick">
+    <view class="fab" @click="showAddMenu">
       <text class="fab-icon">+</text>
+    </view>
+
+    <view v-if="showMenu" class="menu-overlay" @click="closeAddMenu">
+      <view class="popup-menu" @click.stop>
+        <view class="menu-arrow"></view>
+        <view
+          v-for="(item, index) in menuItems"
+          :key="index"
+          class="menu-item"
+          @click="handleMenuItemClick(item)"
+        >
+          <text class="menu-icon">{{ item.icon }}</text>
+          <text class="menu-text">{{ item.text }}</text>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -137,41 +126,30 @@ import { getUserInfo } from '../../utils/storage.js'
 export default {
   data() {
     return {
-      searchKeyword: '',
-      activeTab: 'friends',
+      statusBarHeight: 20,
       isRefreshing: false,
-      friends: [],
-      groups: [],
+      topChats: [],
+      normalChats: [],
       defaultAvatar: '/static/default-avatar.png',
-      defaultGroupAvatar: '/static/default-group.png'
-    }
-  },
-
-  computed: {
-    filteredFriends() {
-      if (!this.searchKeyword) return this.friends
-      const keyword = this.searchKeyword.toLowerCase()
-      return this.friends.filter(f =>
-        f.name.toLowerCase().includes(keyword)
-      )
-    },
-
-    filteredGroups() {
-      if (!this.searchKeyword) return this.groups
-      const keyword = this.searchKeyword.toLowerCase()
-      return this.groups.filter(g =>
-        g.name.toLowerCase().includes(keyword)
-      )
+      userInfo: null,
+      showMenu: false,
+      menuItems: [
+        { text: '发起群聊', icon: '💬', action: 'groupChat' },
+        { text: '添加朋友', icon: '👤', action: 'addFriend' },
+        { text: '扫一扫', icon: '📷', action: 'scan' },
+        { text: '收付款', icon: '💰', action: 'pay' }
+      ]
     }
   },
 
   onLoad() {
+    const sysInfo = uni.getSystemInfoSync()
+    this.statusBarHeight = sysInfo.statusBarHeight || 20
     this.loadUserData()
   },
 
   onShow() {
-    this.loadFriends()
-    this.loadGroups()
+    this.loadChats()
   },
 
   methods: {
@@ -184,78 +162,66 @@ export default {
       this.userInfo = userInfo
     },
 
-    async loadFriends() {
+    async loadChats() {
       if (!this.userInfo?.id) return
 
       try {
-        const res = await getFriendInfoList(this.userInfo.id)
-        if (res.code === 200 && res.data) {
-          this.friends = res.data.map(f => ({
-            id: f.friendId,
-            name: f.remark || f.username || '未知用户',
-            avatar: f.avatar || '',
-            lastMessage: '',
-            time: '',
-            unreadCount: f.unreadCount || 0,
-            online: f.online || false
-          }))
-        }
+        const [friendsRes, groupsRes] = await Promise.all([
+          getFriendInfoList(this.userInfo.id),
+          getGroupsByUserId(this.userInfo.id)
+        ])
+
+        const friends = friendsRes.code === 200 && friendsRes.data
+          ? friendsRes.data.map(f => ({
+              id: f.friendId,
+              name: f.remark || f.username || '未知用户',
+              avatar: f.avatar || '',
+              type: 'single',
+              lastMessage: '',
+              time: '',
+              unreadCount: f.unreadCount || 0,
+              online: f.online || false,
+              isTop: false
+            }))
+          : []
+
+        const groups = groupsRes.code === 200 && groupsRes.data
+          ? groupsRes.data.map(g => ({
+              id: g.id,
+              name: g.name,
+              avatar: g.avatar || '',
+              type: 'group',
+              lastMessage: '',
+              time: '',
+              unreadCount: 0,
+              isTop: false
+            }))
+          : []
+
+        this.topChats = [...friends, ...groups].filter(c => c.isTop)
+        this.normalChats = [...friends, ...groups].filter(c => !c.isTop)
       } catch (e) {
-        console.error('加载好友列表失败:', e)
+        console.error('加载聊天列表失败:', e)
       }
-    },
-
-    async loadGroups() {
-      if (!this.userInfo?.id) return
-
-      try {
-        const res = await getGroupsByUserId(this.userInfo.id)
-        if (res.code === 200 && res.data) {
-          this.groups = res.data.map(g => ({
-            id: g.id,
-            name: g.name,
-            avatar: g.avatar || '',
-            lastMessage: '',
-            time: '',
-            unreadCount: 0,
-            memberCount: g.memberCount || 0,
-            isCreator: g.creatorId === this.userInfo.id
-          }))
-        }
-      } catch (e) {
-        console.error('加载群聊列表失败:', e)
-      }
-    },
-
-    switchTab(tab) {
-      this.activeTab = tab
-    },
-
-    onSearch() {
-    },
-
-    clearSearch() {
-      this.searchKeyword = ''
     },
 
     async onRefresh() {
       this.isRefreshing = true
-      await Promise.all([this.loadFriends(), this.loadGroups()])
+      await this.loadChats()
       this.isRefreshing = false
     },
 
-    loadMore() {
+    showSearch() {
+      uni.navigateTo({ url: '/pages/add-friend/add-friend' })
     },
 
-    goToChat(friend) {
-      uni.navigateTo({
-        url: `/pages/chat/chat?type=single&id=${friend.id}&name=${encodeURIComponent(friend.name)}&avatar=${encodeURIComponent(friend.avatar)}`
-      })
+    editTop() {
+      uni.showToast({ title: '编辑模式开发中', icon: 'none' })
     },
 
-    goToGroupChat(group) {
+    goToChat(chat) {
       uni.navigateTo({
-        url: `/pages/chat/chat?type=group&id=${group.id}&name=${encodeURIComponent(group.name)}&avatar=${encodeURIComponent(group.avatar)}`
+        url: `/pages/chat/chat?type=${chat.type}&id=${chat.id}&name=${encodeURIComponent(chat.name)}&avatar=${encodeURIComponent(chat.avatar)}`
       })
     },
 
@@ -263,22 +229,29 @@ export default {
       uni.navigateTo({ url: '/pages/add-friend/add-friend' })
     },
 
-    goToCreateGroup() {
-      uni.navigateTo({ url: '/pages/create-group/create-group' })
+    showAddMenu() {
+      this.showMenu = true
     },
 
-    onFabClick() {
-      const actionList = [
-        { text: '添加好友', icon: '👤', action: () => this.goToAddFriend() },
-        { text: '创建群聊', icon: '👥', action: () => this.goToCreateGroup() }
-      ]
+    closeAddMenu() {
+      this.showMenu = false
+    },
 
-      uni.showActionSheet({
-        itemList: actionList.map(a => a.text),
-        success: (res) => {
-          actionList[res.tapIndex].action()
-        }
-      })
+    handleMenuItemClick(item) {
+      this.closeAddMenu()
+      const actionMap = {
+        groupChat: () => uni.navigateTo({ url: '/pages/create-group/create-group' }),
+        addFriend: () => uni.navigateTo({ url: '/pages/add-friend/add-friend' }),
+        scan: () => uni.showToast({ title: '扫一扫开发中', icon: 'none' }),
+        pay: () => uni.showToast({ title: '收付款开发中', icon: 'none' })
+      }
+      if (actionMap[item.action]) {
+        actionMap[item.action]()
+      }
+    },
+
+    onSearch() {
+      uni.showToast({ title: '搜索功能开发中', icon: 'none' })
     }
   }
 }
@@ -289,129 +262,105 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f7;
+  background-color: #f7f7f7;
 }
 
-.search-bar {
-  padding: 20rpx 32rpx;
-  background-color: #ffffff;
+.status-bar {
+  background-color: #f7f7f7;
+  flex-shrink: 0;
 }
 
-.search-input-wrapper {
-  display: flex;
-  align-items: center;
-  background-color: #f5f5f7;
-  border-radius: 36rpx;
-  padding: 16rpx 24rpx;
-  transition: all 0.25s ease;
+.custom-nav {
+  background-color: #f7f7f7;
+  flex-shrink: 0;
 }
 
-.search-input-wrapper:focus-within {
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3rpx rgba(41, 151, 255, 0.1);
-}
-
-.search-icon {
-  font-size: 28rpx;
-  margin-right: 16rpx;
-  opacity: 0.5;
-}
-
-.search-input {
-  flex: 1;
-  font-size: 28rpx;
-  color: #1d1d1f;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-.search-placeholder {
-  color: #a1a1a6;
-}
-
-.clear-btn {
-  width: 40rpx;
-  height: 40rpx;
+.nav-content {
+  height: 88rpx;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #d2d2d6;
-  border-radius: 50%;
-  transition: all 0.2s ease;
+  position: relative;
+  padding: 0 20rpx;
 }
 
-.clear-btn:active {
-  background-color: #a1a1a6;
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #000000;
 }
 
-.clear-btn text {
-  font-size: 24rpx;
-  color: #ffffff;
-  line-height: 1;
-}
-
-.tab-bar {
-  display: flex;
-  padding: 0 32rpx;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #e5e5e5;
-}
-
-.tab-item {
+.nav-actions {
+  position: absolute;
+  right: 20rpx;
+  top: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
-  padding: 28rpx 0;
-  margin-right: 64rpx;
+  gap: 16rpx;
+}
+
+.nav-btn {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon {
+  display: inline-block;
+  width: 36rpx;
+  height: 36rpx;
   position: relative;
-  cursor: pointer;
-  transition: all 0.25s ease;
 }
 
-.tab-text {
-  font-size: 32rpx;
-  color: #6e6e73;
-  font-weight: 500;
-  letter-spacing: -0.3rpx;
-  transition: all 0.25s ease;
-}
-
-.tab-item.active .tab-text {
-  color: #1d1d1f;
-  font-weight: 700;
-}
-
-.tab-item.active::after {
+.add-icon::before {
   content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 32rpx;
   height: 4rpx;
-  background-color: #2997ff;
-  border-radius: 2rpx 2rpx 0 0;
+  background-color: #000000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.tab-badge {
-  min-width: 32rpx;
+.add-icon::after {
+  content: '';
+  position: absolute;
+  width: 4rpx;
   height: 32rpx;
-  background-color: #ff3b30;
-  border-radius: 16rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 8rpx;
-  padding: 0 8rpx;
-}
-
-.tab-badge text {
-  font-size: 20rpx;
-  color: #ffffff;
-  font-weight: 600;
+  background-color: #000000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .chat-list {
   flex: 1;
+}
+
+.top-section {
+  background-color: #ffffff;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 32rpx;
+}
+
+.section-title {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.section-action text {
+  font-size: 24rpx;
+  color: #07C160;
 }
 
 .chat-item {
@@ -419,14 +368,11 @@ export default {
   align-items: center;
   padding: 24rpx 32rpx;
   background-color: #ffffff;
-  border-bottom: 1rpx solid #f0f0f2;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 
 .chat-item:active {
-  background-color: #f5f5f7;
-  transform: scale(0.995);
+  background-color: #f5f5f5;
 }
 
 .avatar-wrapper {
@@ -434,45 +380,30 @@ export default {
   margin-right: 24rpx;
 }
 
-.avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 50%;
-  background-color: #f5f5f7;
-  transition: transform 0.25s ease;
+.chat-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 8rpx;
+  background-color: #f0f0f0;
 }
 
-.group-avatar {
-  border-radius: 24rpx;
-}
-
-.online-indicator {
+.online-dot {
   position: absolute;
   bottom: 4rpx;
   right: 4rpx;
-  width: 20rpx;
-  height: 20rpx;
-  background-color: #34c759;
-  border: 3rpx solid #ffffff;
+  width: 16rpx;
+  height: 16rpx;
+  background-color: #07C160;
   border-radius: 50%;
-  animation: pulse 2s infinite;
+  border: 2rpx solid #ffffff;
 }
 
-.offline-indicator {
+.group-badge {
   position: absolute;
-  bottom: 4rpx;
-  right: 4rpx;
-  width: 20rpx;
-  height: 20rpx;
-  background-color: #a1a1a6;
-  border: 3rpx solid #ffffff;
-  border-radius: 50%;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  bottom: -4rpx;
+  right: -4rpx;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .chat-info {
@@ -480,76 +411,55 @@ export default {
   overflow: hidden;
 }
 
-.chat-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8rpx;
-}
-
 .chat-name {
-  font-size: 32rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  letter-spacing: -0.3rpx;
-}
-
-.chat-time {
-  font-size: 24rpx;
-  color: #a1a1a6;
-  flex-shrink: 0;
-}
-
-.chat-preview-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: block;
+  font-size: 30rpx;
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 6rpx;
 }
 
 .chat-preview {
-  font-size: 28rpx;
-  color: #6e6e73;
-  flex: 1;
+  font-size: 26rpx;
+  color: #999999;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 1.4;
 }
 
-.chat-preview.unread {
-  color: #1d1d1f;
-  font-weight: 600;
+.chat-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: 16rpx;
+}
+
+.chat-time {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
 }
 
 .unread-badge {
-  min-width: 36rpx;
-  height: 36rpx;
-  background-color: #ff3b30;
-  border-radius: 18rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  background-color: #FF3B30;
+  border-radius: 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 16rpx;
-  padding: 0 12rpx;
+  padding: 0 8rpx;
 }
 
-.unread-count {
-  font-size: 22rpx;
+.unread-badge text {
+  font-size: 20rpx;
   color: #ffffff;
   font-weight: 600;
 }
 
-.chat-arrow {
-  font-size: 36rpx;
-  color: #c7c7cc;
-  margin-left: 16rpx;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.chat-item:active .chat-arrow {
-  color: #2997ff;
-  transform: translateX(8rpx);
+.divider-line {
+  height: 16rpx;
+  background-color: #f7f7f7;
 }
 
 .empty-state {
@@ -563,25 +473,19 @@ export default {
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 32rpx;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #6e6e73;
+  color: #999999;
   margin-bottom: 40rpx;
 }
 
 .empty-action {
   padding: 20rpx 56rpx;
-  background-color: #2997ff;
+  background-color: #07C160;
   border-radius: 40rpx;
-  transition: all 0.2s ease;
-}
-
-.empty-action:active {
-  background-color: #0066cc;
-  transform: scale(0.98);
 }
 
 .empty-action text {
@@ -594,39 +498,101 @@ export default {
   position: fixed;
   right: 40rpx;
   bottom: 200rpx;
-  width: 112rpx;
-  height: 112rpx;
-  background: linear-gradient(135deg, #2997ff 0%, #5856d6 100%);
+  width: 100rpx;
+  height: 100rpx;
+  background-color: #07C160;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(41, 151, 255, 0.4);
-  transition: all 0.25s ease;
-  cursor: pointer;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
 }
 
 .fab:active {
   transform: scale(0.95);
-  box-shadow: 0 4rpx 12rpx rgba(41, 151, 255, 0.4);
 }
 
 .fab-icon {
-  font-size: 56rpx;
+  font-size: 48rpx;
   color: #ffffff;
   font-weight: 300;
-  line-height: 1;
 }
 
 .fade-in {
-  animation: fadeInUp 0.4s ease forwards;
+  animation: fadeInUp 0.3s ease forwards;
   opacity: 0;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20rpx);
+    transform: translateY(10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-top: calc(var(--status-bar-height, 44px) + 100rpx);
+  padding-right: 32rpx;
+}
+
+.popup-menu {
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 16rpx;
+  padding: 12rpx 0;
+  min-width: 280rpx;
+  animation: slideDown 0.2s ease;
+}
+
+.menu-arrow {
+  position: absolute;
+  top: -12rpx;
+  right: 40rpx;
+  width: 0;
+  height: 0;
+  border-left: 16rpx solid transparent;
+  border-right: 16rpx solid transparent;
+  border-bottom: 16rpx solid rgba(0, 0, 0, 0.85);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  transition: background-color 0.2s;
+}
+
+.menu-item:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.menu-text {
+  font-size: 30rpx;
+  color: #ffffff;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20rpx);
   }
   to {
     opacity: 1;
