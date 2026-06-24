@@ -724,7 +724,6 @@ page {
 
 .tab-item {
   padding: var(--spacing-lg) 0;
-  margin-right: 64rpx;
   position: relative;
   cursor: pointer;
   transition: all var(--transition-fast);

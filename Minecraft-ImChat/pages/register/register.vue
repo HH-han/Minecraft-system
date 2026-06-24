@@ -1,99 +1,114 @@
 <template>
   <view class="register-page">
-    <view class="nav-bar">
+    <view class="nav-bar glass-effect">
       <view class="nav-back" @click="goBack">
-        <text>‹</text>
+        <text class="nav-icon">‹</text>
       </view>
-      <text class="nav-title">注册</text>
+      <text class="nav-title">创建账号</text>
       <view class="nav-right"></view>
     </view>
 
-    <view class="form-section">
-      <view class="form-item">
-        <text class="form-label">昵称</text>
-        <input
-          class="form-input"
-          v-model="registerForm.username"
-          placeholder="请输入昵称"
-          placeholder-class="input-placeholder"
-          maxlength="20"
-        />
-      </view>
+    <scroll-view class="content-scroll" scroll-y>
+      <view class="content-wrapper">
+        <view class="hero-section">
+          <text class="hero-title">创建您的账号</text>
+          <text class="hero-subtitle">开启 Minecraft Chat 之旅</text>
+        </view>
 
-      <view class="form-item">
-        <text class="form-label">手机号</text>
-        <input
-          class="form-input"
-          v-model="registerForm.phone"
-          type="number"
-          placeholder="请输入手机号"
-          placeholder-class="input-placeholder"
-          maxlength="11"
-        />
-      </view>
+        <view class="form-card">
+          <view class="register-form">
+            <view class="form-group">
+              <text class="form-label">昵称</text>
+              <input
+                class="form-input"
+                v-model="registerForm.username"
+                placeholder="请输入昵称"
+                placeholder-class="input-placeholder"
+                maxlength="20"
+              />
+            </view>
 
-      <view class="form-item">
-        <text class="form-label">验证码</text>
-        <input
-          class="form-input code-input"
-          v-model="registerForm.code"
-          type="number"
-          placeholder="请输入验证码"
-          placeholder-class="input-placeholder"
-          maxlength="6"
-        />
-        <view
-          :class="['send-code-btn', { disabled: registerForm.countdown > 0 }]"
-          @click="sendCode"
-        >
-          <text>{{ registerForm.countdown > 0 ? `${registerForm.countdown}s` : '获取验证码' }}</text>
+            <view class="form-group">
+              <text class="form-label">手机号</text>
+              <input
+                class="form-input"
+                v-model="registerForm.phone"
+                type="number"
+                placeholder="请输入手机号"
+                placeholder-class="input-placeholder"
+                maxlength="11"
+              />
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">验证码</text>
+              <view class="code-input-wrapper">
+                <input
+                  class="form-input code-input"
+                  v-model="registerForm.code"
+                  type="number"
+                  placeholder="请输入验证码"
+                  placeholder-class="input-placeholder"
+                  maxlength="6"
+                />
+                <view
+                  :class="['send-code-btn', { disabled: registerForm.countdown > 0 }]"
+                  @click="sendCode"
+                >
+                  <text class="send-code-text">{{ registerForm.countdown > 0 ? `${registerForm.countdown}s` : '获取验证码' }}</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">密码</text>
+              <view class="password-input-wrapper">
+                <input
+                  class="form-input"
+                  v-model="registerForm.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  placeholder="请设置密码（6-20位）"
+                  placeholder-class="input-placeholder"
+                  maxlength="20"
+                />
+                <view class="toggle-pwd" @click="showPassword = !showPassword">
+                  <text class="toggle-icon">{{ showPassword ? '🙈' : '👁️' }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <view class="agreement-row">
+            <view :class="['checkbox', { checked: agreed }]" @click="agreed = !agreed">
+              <text v-if="agreed" class="check-icon">✓</text>
+            </view>
+            <text class="agreement-text">
+              我已阅读并同意
+              <text class="agreement-link">《用户协议》</text>
+              和
+              <text class="agreement-link">《隐私政策》</text>
+            </text>
+          </view>
+
+          <button
+            :class="['register-btn', { loading: isLoading, disabled: !canSubmit }]"
+            :disabled="isLoading || !canSubmit"
+            @click="handleRegister"
+          >
+            <text v-if="!isLoading" class="btn-text">注册</text>
+            <view v-else class="loading-content">
+              <view class="loading-spinner"></view>
+              <text class="btn-text">注册中...</text>
+            </view>
+          </button>
+        </view>
+
+        <view class="login-link-row">
+          <text class="login-text">已有账号？</text>
+          <text class="login-link" @click="goToLogin">立即登录</text>
         </view>
       </view>
-
-      <view class="form-item">
-        <text class="form-label">密码</text>
-        <input
-          class="form-input"
-          v-model="registerForm.password"
-          :type="showPassword ? 'text' : 'password'"
-          placeholder="请设置密码（6-20位）"
-          placeholder-class="input-placeholder"
-          maxlength="20"
-        />
-        <view class="toggle-pwd" @click="showPassword = !showPassword">
-          <text>{{ showPassword ? '🙈' : '👁️' }}</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="agreement-row">
-      <view :class="['checkbox', { checked: agreed }]" @click="agreed = !agreed">
-        <text v-if="agreed">✓</text>
-      </view>
-      <text class="agreement-text">
-        我已阅读并同意
-        <text class="agreement-link">《用户协议》</text>
-        和
-        <text class="agreement-link">《隐私政策》</text>
-      </text>
-    </view>
-
-    <button
-      :class="['register-btn', { loading: isLoading }]"
-      :disabled="isLoading || !canSubmit"
-      @click="handleRegister"
-    >
-      <text v-if="!isLoading">注册</text>
-      <view v-else class="loading-content">
-        <view class="loading-spinner"></view>
-        <text>注册中...</text>
-      </view>
-    </button>
-
-    <view class="login-link-row">
-      <text class="login-text">已有账号？</text>
-      <text class="login-link" @click="goToLogin">登录</text>
-    </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -211,79 +226,133 @@ export default {
 <style scoped>
 .register-page {
   min-height: 100vh;
-  background-color: #f7f7f7;
-  padding-bottom: 40rpx;
+  background-color: #f5f5f7;
+  display: flex;
+  flex-direction: column;
 }
 
 .nav-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20rpx 32rpx;
+  padding: 0 32rpx;
   padding-top: calc(20rpx + env(safe-area-inset-top));
-  background-color: #ffffff;
+  padding-bottom: 20rpx;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .nav-back,
 .nav-right {
-  width: 60rpx;
-  height: 60rpx;
+  width: 80rpx;
+  height: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.nav-back text {
+.nav-icon {
   font-size: 48rpx;
-  color: #07C160;
+  color: #2997ff;
   font-weight: 300;
+  line-height: 1;
 }
 
 .nav-title {
-  font-size: 32rpx;
-  color: #000000;
+  font-size: 34rpx;
+  color: #1d1d1f;
   font-weight: 600;
+  letter-spacing: -0.5rpx;
 }
 
-.form-section {
-  background-color: #ffffff;
-  margin: 24rpx 32rpx;
-  border-radius: 8rpx;
-  overflow: hidden;
+.content-scroll {
+  flex: 1;
+  padding-top: calc(88rpx + env(safe-area-inset-top));
 }
 
-.form-item {
+.content-wrapper {
+  padding: 48rpx 32rpx 64rpx;
+}
+
+.hero-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 0 24rpx;
-  height: 96rpx;
-  border-bottom: 1rpx solid #ededed;
-  position: relative;
+  padding: 32rpx 0 48rpx;
 }
 
-.form-item:last-child {
-  border-bottom: none;
+.hero-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1d1d1f;
+  letter-spacing: -1rpx;
+  margin-bottom: 12rpx;
+  text-align: center;
+}
+
+.hero-subtitle {
+  font-size: 28rpx;
+  color: #6e6e73;
+  font-weight: 400;
+  text-align: center;
+}
+
+.form-card {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
 }
 
 .form-label {
-  width: 140rpx;
-  font-size: 28rpx;
-  color: #000000;
+  font-size: 26rpx;
+  color: #6e6e73;
   font-weight: 500;
-  flex-shrink: 0;
+  letter-spacing: -0.2rpx;
 }
 
 .form-input {
-  flex: 1;
+  width: 100%;
+  height: 88rpx;
+  padding: 0 24rpx;
+  background-color: #f5f5f7;
+  border-radius: 16rpx;
   font-size: 30rpx;
-  color: #000000;
-  background-color: transparent;
+  color: #1d1d1f;
+  box-sizing: border-box;
   border: none;
   outline: none;
+  transition: all 0.15s ease;
+}
+
+.form-input:focus {
+  background-color: #ffffff;
+  box-shadow: inset 0 0 0 3rpx #2997ff;
 }
 
 .input-placeholder {
-  color: #cccccc;
+  color: #a1a1a6;
+}
+
+.code-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
 }
 
 .code-input {
@@ -291,26 +360,46 @@ export default {
 }
 
 .send-code-btn {
-  padding: 12rpx 24rpx;
-  background-color: #07C160;
-  border-radius: 24rpx;
+  padding: 0 28rpx;
+  height: 88rpx;
+  background-color: #2997ff;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-.send-code-btn text {
-  font-size: 24rpx;
-  color: #ffffff;
+.send-code-btn:active {
+  background-color: #0066cc;
+  transform: scale(0.98);
 }
 
 .send-code-btn.disabled {
-  background-color: #dcdcdc;
+  background-color: #d2d2d6;
 }
 
-.send-code-btn.disabled text {
-  color: #999999;
+.send-code-btn.disabled:active {
+  transform: none;
+}
+
+.send-code-text {
+  font-size: 26rpx;
+  color: #ffffff;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.password-input-wrapper {
+  position: relative;
 }
 
 .toggle-pwd {
+  position: absolute;
+  right: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
   width: 60rpx;
   height: 60rpx;
   display: flex;
@@ -318,77 +407,92 @@ export default {
   justify-content: center;
 }
 
-.toggle-pwd text {
+.toggle-icon {
   font-size: 32rpx;
 }
 
 .agreement-row {
   display: flex;
   align-items: flex-start;
-  padding: 0 32rpx;
-  margin-bottom: 32rpx;
+  margin-top: 32rpx;
   gap: 12rpx;
 }
 
 .checkbox {
   width: 36rpx;
   height: 36rpx;
-  border: 2rpx solid #dcdcdc;
-  border-radius: 6rpx;
+  border: 2rpx solid #d2d2d6;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
   flex-shrink: 0;
   margin-top: 4rpx;
+  transition: all 0.2s ease;
 }
 
 .checkbox.checked {
-  background-color: #07C160;
-  border-color: #07C160;
+  background-color: #2997ff;
+  border-color: #2997ff;
 }
 
-.checkbox text {
+.check-icon {
   font-size: 22rpx;
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .agreement-text {
   font-size: 24rpx;
-  color: #999999;
+  color: #6e6e73;
   line-height: 1.5;
   flex: 1;
 }
 
 .agreement-link {
-  color: #07C160;
+  color: #2997ff;
 }
 
 .register-btn {
-  width: calc(100% - 64rpx);
-  height: 88rpx;
-  background-color: #07C160;
-  border-radius: 44rpx;
+  width: 100%;
+  height: 96rpx;
+  background-color: #2997ff;
+  border-radius: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  margin: 0 32rpx;
+  margin-top: 40rpx;
+  transition: all 0.2s ease;
 }
 
 .register-btn::after {
   border: none;
 }
 
-.register-btn[disabled] {
-  background-color: #cccccc;
+.register-btn:active {
+  background-color: #0066cc;
+  transform: scale(0.98);
 }
 
-.register-btn text {
+.register-btn.disabled {
+  background-color: #d2d2d6;
+}
+
+.register-btn.disabled:active {
+  transform: none;
+}
+
+.register-btn[disabled] {
+  background-color: #d2d2d6;
+}
+
+.btn-text {
   font-size: 32rpx;
   color: #ffffff;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.3rpx;
 }
 
 .loading-content {
@@ -414,18 +518,24 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 32rpx;
+  margin-top: 40rpx;
   gap: 8rpx;
 }
 
 .login-text {
   font-size: 28rpx;
-  color: #999999;
+  color: #6e6e73;
 }
 
 .login-link {
   font-size: 28rpx;
-  color: #07C160;
+  color: #2997ff;
   font-weight: 500;
+}
+
+.glass-effect {
+  background-color: rgba(245, 245, 247, 0.72);
+  backdrop-filter: saturate(180%) blur(20rpx);
+  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
 }
 </style>
