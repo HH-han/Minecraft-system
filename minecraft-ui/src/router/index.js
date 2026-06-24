@@ -382,6 +382,16 @@ const routes = [
       requiresAuth: true,
     },
   },
+  // 地图
+  {
+    path:"/maps",
+    name:"Maps",
+    component:()=>import("@/views/Maps/index.vue"),
+    meta:{
+      title:"地图",
+      requiresAuth:true
+    }
+  }
 ];
 
 const router = createRouter({
