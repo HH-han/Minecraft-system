@@ -49,6 +49,7 @@ const {
   initWebGPU,
   initRenderPipeline,
   renderFrame,
+  setRegionLevel,
   resize,
   destroy
 } = useWebGPU(canvasRef)
@@ -95,6 +96,7 @@ function startRenderLoop() {
     const adjustedLight = props.isDark
       ? { x: lightDirection.x * 0.6, y: lightDirection.y * 0.6, z: lightDirection.z * 0.6 }
       : lightDirection
+    const showCountries = interaction.zoomLevel.value > 2.5
     renderFrame({
       mvpMatrix,
       normalMatrix,
@@ -103,7 +105,8 @@ function startRenderLoop() {
       time,
       atmosphereStrength,
       clearColor,
-      starsVPMatrix: vpMatrix
+      starsVPMatrix: vpMatrix,
+      showCountries
     })
     animationFrameId = requestAnimationFrame(render)
   }
