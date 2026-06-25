@@ -2,6 +2,7 @@ import { ref, onUnmounted, shallowRef } from 'vue'
 import { generateContinentGlobeData, generateCountryGlobeData, generateBoundaryLinesData } from '../utils/regionData.js'
 import { generateDotQuadData, findContinentAt, generateGlowMarkerData } from '../utils/dotGlobe.js'
 import { glowMarkers } from '../data/markers.js'
+import { loadGeoBoundaries } from '../utils/geoBoundaries.js'
 
 const regionVertexShader = /* wgsl */ `
 struct Uniforms {
@@ -227,16 +228,6 @@ fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
 }
 `
 
-const continentShapes = [
-  { id: 'asia', centerLat: 40, centerLng: 95, latExtent: 35, lngExtent: 60, irregularity: 0.35 },
-  { id: 'europe', centerLat: 52, centerLng: 15, latExtent: 20, lngExtent: 25, irregularity: 0.4 },
-  { id: 'africa', centerLat: 5, centerLng: 20, latExtent: 35, lngExtent: 22, irregularity: 0.3 },
-  { id: 'north-america', centerLat: 45, centerLng: -100, latExtent: 30, lngExtent: 45, irregularity: 0.35 },
-  { id: 'south-america', centerLat: -15, centerLng: -60, latExtent: 30, lngExtent: 18, irregularity: 0.35 },
-  { id: 'oceania', centerLat: -22, centerLng: 135, latExtent: 18, lngExtent: 22, irregularity: 0.4 },
-  { id: 'antarctica', centerLat: -82, centerLng: 0, latExtent: 12, lngExtent: 180, irregularity: 0.2 }
-]
-
 export function useWebGPU(canvasRef) {
   const device = shallowRef(null)
   const context = shallowRef(null)
@@ -418,6 +409,16 @@ export function useWebGPU(canvasRef) {
   async function initRenderPipeline(textureUrl) {
     if (!_device) return false
     try {
+      console.log('[WebGPU] Loading geographic boundary data...')
+      
+      // Load real geographic boundaries before generating geometry
+      const geoLoaded = await loadGeoBoundaries()
+      if (!geoLoaded) {
+        console.warn('[WebGPU] GeoBoundaries load failed, using fallback geometry')
+      } else {
+        console.log('[WebGPU] Geographic boundaries loaded successfully')
+      }
+      
       console.log('[WebGPU] Creating region globe geometry...')
       
       // Generate dot globe quad data
@@ -435,13 +436,13 @@ export function useWebGPU(canvasRef) {
       _glowMarkerMeta = glowMarkerData.markerMeta
       console.log('[WebGPU] Glow markers:', glowMarkers.length, 'items,', _glowMarkerIndexCount, 'indices')
       
-      const continentData = generateContinentGlobeData(1, continentShapes)
+      const continentData = generateContinentGlobeData(1)
       _continentBuffer = createBuffer(continentData.vertexData, GPUBufferUsage.VERTEX)
       _continentIndexBuffer = createBuffer(continentData.indexData, GPUBufferUsage.INDEX)
       _continentIndexCount = continentData.count
       console.log('[WebGPU] Continent index count:', _continentIndexCount)
       
-      const continentLineData = generateBoundaryLinesData(1, continentShapes)
+      const continentLineData = generateBoundaryLinesData(1)
       _continentLineBuffer = createBuffer(continentLineData.vertexData, GPUBufferUsage.VERTEX)
       _continentLineCount = continentLineData.count
       console.log('[WebGPU] Continent line count:', _continentLineCount)
@@ -452,28 +453,7 @@ export function useWebGPU(canvasRef) {
       _countryIndexCount = countryData.count
       console.log('[WebGPU] Country index count:', _countryIndexCount)
       
-      const countries = [
-        { continent: 'asia', centerLat: 35, lng: 105, latExtent: 15, lngExtent: 18, irregularity: 0.4 },
-        { continent: 'north-america', centerLat: 38, lng: -97, latExtent: 12, lngExtent: 25, irregularity: 0.35 },
-        { continent: 'europe', centerLat: 55, lng: 80, latExtent: 20, lngExtent: 60, irregularity: 0.4 },
-        { continent: 'south-america', centerLat: -10, lng: -55, latExtent: 20, lngExtent: 18, irregularity: 0.35 },
-        { continent: 'oceania', centerLat: -25, lng: 135, latExtent: 12, lngExtent: 18, irregularity: 0.4 },
-        { continent: 'asia', centerLat: 20, lng: 78, latExtent: 12, lngExtent: 12, irregularity: 0.3 },
-        { continent: 'asia', centerLat: 36, lng: 138, latExtent: 6, lngExtent: 6, irregularity: 0.35 },
-        { continent: 'europe', centerLat: 51, lng: 10, latExtent: 4, lngExtent: 6, irregularity: 0.3 },
-        { continent: 'europe', centerLat: 46, lng: 2, latExtent: 6, lngExtent: 6, irregularity: 0.3 },
-        { continent: 'africa', centerLat: -28, lng: 25, latExtent: 8, lngExtent: 8, irregularity: 0.35 },
-        { continent: 'africa', centerLat: 26, lng: 30, latExtent: 6, lngExtent: 6, irregularity: 0.3 },
-        { continent: 'north-america', centerLat: 24, lng: -102, latExtent: 10, lngExtent: 15, irregularity: 0.35 },
-        { continent: 'north-america', centerLat: 56, lng: -106, latExtent: 15, lngExtent: 30, irregularity: 0.4 },
-        { continent: 'south-america', centerLat: -34, lng: -65, latExtent: 12, lngExtent: 12, irregularity: 0.35 },
-        { continent: 'asia', centerLat: 48, lng: 67, latExtent: 10, lngExtent: 25, irregularity: 0.35 },
-        { continent: 'asia', centerLat: 24, lng: 45, latExtent: 8, lngExtent: 15, irregularity: 0.3 },
-        { continent: 'asia', centerLat: -5, lng: 120, latExtent: 12, lngExtent: 20, irregularity: 0.4 },
-        { continent: 'asia', centerLat: 36, lng: 128, latExtent: 5, lngExtent: 5, irregularity: 0.3 },
-        { continent: 'asia', centerLat: 39, lng: 35, latExtent: 8, lngExtent: 15, irregularity: 0.35 }
-      ]
-      const countryLineData = generateBoundaryLinesData(1, countries)
+      const countryLineData = generateBoundaryLinesData(1)
       _countryLineBuffer = createBuffer(countryLineData.vertexData, GPUBufferUsage.VERTEX)
       _countryLineCount = countryLineData.count
       console.log('[WebGPU] Country line count:', _countryLineCount)
@@ -889,19 +869,19 @@ export function useWebGPU(canvasRef) {
     const showCountries = renderData.showCountries !== undefined ? renderData.showCountries : (_currentLevel.value === 'country')
     
     if (showCountries) {
-      updateUniforms(_regionUniformBuffer, {
-        mvpMatrix: renderData.mvpMatrix,
-        normalMatrix: renderData.normalMatrix,
-        lightDirection: renderData.lightDirection,
-        cameraPosition: renderData.cameraPosition,
-        time: renderData.time,
-        atmosphereStrength: renderData.atmosphereStrength || 0.5
-      })
-      renderPass.setPipeline(_regionPipeline)
-      renderPass.setBindGroup(0, _regionBindGroup)
-      renderPass.setVertexBuffer(0, _countryBuffer)
-      renderPass.setIndexBuffer(_countryIndexBuffer, 'uint32')
-      renderPass.drawIndexed(_countryIndexCount)
+      // updateUniforms(_regionUniformBuffer, {
+      //   mvpMatrix: renderData.mvpMatrix,
+      //   normalMatrix: renderData.normalMatrix,
+      //   lightDirection: renderData.lightDirection,
+      //   cameraPosition: renderData.cameraPosition,
+      //   time: renderData.time,
+      //   atmosphereStrength: renderData.atmosphereStrength || 0.5
+      // })
+      // renderPass.setPipeline(_regionPipeline)
+      // renderPass.setBindGroup(0, _regionBindGroup)
+      // renderPass.setVertexBuffer(0, _countryBuffer)
+      // renderPass.setIndexBuffer(_countryIndexBuffer, 'uint32')
+      // renderPass.drawIndexed(_countryIndexCount)
       
       updateUniforms(_lineUniformBuffer, {
         mvpMatrix: renderData.mvpMatrix,

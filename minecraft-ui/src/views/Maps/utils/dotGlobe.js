@@ -1,141 +1,4 @@
-const continentShapes = [
-  {
-    name: 'north-america',
-    centerLat: 45,
-    centerLng: -100,
-    latExtent: 35,
-    lngExtent: 50,
-    rotation: -10,
-    irregularity: 0.3
-  },
-  {
-    name: 'south-america',
-    centerLat: -15,
-    centerLng: -60,
-    latExtent: 35,
-    lngExtent: 20,
-    rotation: 15,
-    irregularity: 0.35
-  },
-  {
-    name: 'europe',
-    centerLat: 52,
-    centerLng: 15,
-    latExtent: 15,
-    lngExtent: 25,
-    rotation: 0,
-    irregularity: 0.4
-  },
-  {
-    name: 'africa',
-    centerLat: 5,
-    centerLng: 20,
-    latExtent: 35,
-    lngExtent: 20,
-    rotation: 5,
-    irregularity: 0.3
-  },
-  {
-    name: 'asia',
-    centerLat: 40,
-    centerLng: 95,
-    latExtent: 30,
-    lngExtent: 60,
-    rotation: -5,
-    irregularity: 0.35
-  },
-  {
-    name: 'australia',
-    centerLat: -25,
-    centerLng: 135,
-    latExtent: 15,
-    lngExtent: 20,
-    rotation: 10,
-    irregularity: 0.3
-  },
-  {
-    name: 'greenland',
-    centerLat: 72,
-    centerLng: -40,
-    latExtent: 10,
-    lngExtent: 15,
-    rotation: -20,
-    irregularity: 0.4
-  },
-  {
-    name: 'antarctica',
-    centerLat: -80,
-    centerLng: 0,
-    latExtent: 10,
-    lngExtent: 180,
-    rotation: 0,
-    irregularity: 0.2,
-    isPolar: true
-  },
-  {
-    name: 'southeast-asia',
-    centerLat: 5,
-    centerLng: 110,
-    latExtent: 15,
-    lngExtent: 25,
-    rotation: 0,
-    irregularity: 0.5
-  },
-  {
-    name: 'india',
-    centerLat: 22,
-    centerLng: 78,
-    latExtent: 12,
-    lngExtent: 12,
-    rotation: -5,
-    irregularity: 0.3
-  },
-  {
-    name: 'middle-east',
-    centerLat: 25,
-    centerLng: 45,
-    latExtent: 12,
-    lngExtent: 15,
-    rotation: 15,
-    irregularity: 0.4
-  },
-  {
-    name: 'central-america',
-    centerLat: 15,
-    centerLng: -85,
-    latExtent: 10,
-    lngExtent: 12,
-    rotation: 30,
-    irregularity: 0.4
-  },
-  {
-    name: 'madagascar',
-    centerLat: -20,
-    centerLng: 47,
-    latExtent: 8,
-    lngExtent: 4,
-    rotation: 10,
-    irregularity: 0.3
-  },
-  {
-    name: 'japan',
-    centerLat: 37,
-    centerLng: 138,
-    latExtent: 8,
-    lngExtent: 6,
-    rotation: 20,
-    irregularity: 0.4
-  },
-  {
-    name: 'british-isles',
-    centerLat: 54,
-    centerLng: -4,
-    latExtent: 6,
-    lngExtent: 6,
-    rotation: -10,
-    irregularity: 0.4
-  }
-]
+import { isPointOnLand, getCountryFeatures } from './geoBoundaries.js'
 
 function hash2D(x, y) {
   const dot = x * 374761393 + y * 668265263
@@ -144,60 +7,8 @@ function hash2D(x, y) {
 }
 
 function isLand(lat, lng) {
-  if (lat < -75) return lat > -85
-  if (lat > 80) return lat < 85
-  
-  const normalizedLng = ((lng + 180) % 360) - 180
-  
-  let landValue = 0
-  
-  for (const shape of continentShapes) {
-    if (shape.isPolar) continue
-    
-    const rad = Math.PI / 180
-    const rotRad = -shape.rotation * rad
-    
-    const cosRot = Math.cos(rotRad)
-    const sinRot = Math.sin(rotRad)
-    
-    const latMid = shape.centerLat
-    const lngMid = shape.centerLng
-    
-    let dLng = normalizedLng - lngMid
-    if (dLng > 180) dLng -= 360
-    if (dLng < -180) dLng += 360
-    
-    const latScale = Math.cos(lat * rad)
-    const dx = (dLng * latScale) / shape.lngExtent
-    const dy = (lat - latMid) / shape.latExtent
-    
-    const rx = dx * cosRot - dy * sinRot
-    const ry = dx * sinRot + dy * cosRot
-    
-    const dist = Math.sqrt(rx * rx + ry * ry)
-    
-    const noiseVal = hash2D(
-      Math.floor(lat * 5 + shape.centerLat),
-      Math.floor(normalizedLng * 5 + shape.centerLng)
-    )
-    const threshold = 1.0 - shape.irregularity * (noiseVal - 0.5) * 2
-    
-    if (dist < threshold) {
-      const edgeSoftness = 0.15
-      const edgeFactor = Math.min(1, (threshold - dist) / edgeSoftness)
-      landValue = Math.max(landValue, edgeFactor)
-    }
-  }
-  
-  const detailNoise = hash2D(Math.floor(lat * 20), Math.floor(normalizedLng * 20))
-  const detailThreshold = 0.4
-  if (landValue > 0.3 && landValue < 0.7) {
-    if (detailNoise < detailThreshold && landValue < 0.5) {
-      landValue *= 0.5
-    }
-  }
-  
-  return landValue > 0.45
+  // Use real geographic boundary data for accurate land/water detection
+  return isPointOnLand(lat, lng)
 }
 
 export function generateDotGlobeData(radius = 1, latSegments = 120, lngSegments = 240) {
@@ -256,89 +67,97 @@ export function generateDotGlobeData(radius = 1, latSegments = 120, lngSegments 
 }
 
 /**
- * Map continent shape names to continent data IDs
+ * Map continent names from world-atlas data to our internal IDs
  */
-const shapeToContinentId = {
-  'north-america': 'north-america',
-  'south-america': 'south-america',
-  'europe': 'europe',
-  'africa': 'africa',
-  'asia': 'asia',
-  'australia': 'oceania',
-  'southeast-asia': 'asia',
-  'india': 'asia',
-  'middle-east': 'asia',
-  'central-america': 'north-america',
-  'madagascar': 'africa',
-  'japan': 'asia',
-  'british-isles': 'europe',
-  'greenland': 'north-america',
-  'antarctica': 'antarctica'
+const worldAtlasContinentMap = {
+  'Asia': 'asia',
+  'Europe': 'europe',
+  'Africa': 'africa',
+  'North America': 'north-america',
+  'South America': 'south-america',
+  'Oceania': 'oceania',
+  'Antarctica': 'antarctica'
 }
 
 /**
- * Find which continent a lat/lng coordinate belongs to
+ * Find which continent a lat/lng coordinate belongs to using real geographic boundary data
  * @param {number} lat
  * @param {number} lng
  * @returns {string|null} continent ID or null (ocean)
  */
 export function findContinentAt(lat, lng) {
-  if (lat < -75) return 'antarctica'
-  if (lat > 80) return null
+  const countries = getCountryFeatures()
+  if (!countries || countries.length === 0) return null
 
-  const normalizedLng = ((lng + 180) % 360) - 180
-  const rad = Math.PI / 180
-
-  let bestContinent = null
-  let bestLandValue = 0
-
-  for (const shape of continentShapes) {
-    if (shape.isPolar) continue
-
-    const rotRad = -shape.rotation * rad
-    const cosRot = Math.cos(rotRad)
-    const sinRot = Math.sin(rotRad)
-
-    const latMid = shape.centerLat
-    const lngMid = shape.centerLng
-
-    let dLng = normalizedLng - lngMid
-    if (dLng > 180) dLng -= 360
-    if (dLng < -180) dLng += 360
-
-    const latScale = Math.cos(lat * rad)
-    const dx = (dLng * latScale) / shape.lngExtent
-    const dy = (lat - latMid) / shape.latExtent
-
-    const rx = dx * cosRot - dy * sinRot
-    const ry = dx * sinRot + dy * cosRot
-
-    const dist = Math.sqrt(rx * rx + ry * ry)
-
-    const noiseVal = hash2D(
-      Math.floor(lat * 5 + shape.centerLat),
-      Math.floor(normalizedLng * 5 + shape.centerLng)
-    )
-    const threshold = 1.0 - shape.irregularity * (noiseVal - 0.5) * 2
-
-    if (dist < threshold) {
-      const edgeSoftness = 0.15
-      const edgeFactor = Math.min(1, (threshold - dist) / edgeSoftness)
-      if (edgeFactor > bestLandValue) {
-        bestLandValue = edgeFactor
-        bestContinent = shapeToContinentId[shape.name] || shape.name
-      }
+  for (const feat of countries) {
+    if (isPointInFeature(lat, lng, feat)) {
+      const continent = feat.properties.continent
+      return worldAtlasContinentMap[continent] || continent?.toLowerCase().replace(/\s+/g, '-') || null
     }
   }
-
-  if (bestLandValue > 0.45) {
-    return bestContinent
-  }
-
-  // Check polar regions
-  if (lat < -75 && lat > -85) return 'antarctica'
-
   return null
+}
+
+/**
+ * Check if a point is inside a GeoJSON feature (supports Polygon and MultiPolygon)
+ * Uses standard ray casting: testLat = y-axis, testLng = x-axis
+ * GeoJSON: coord[0] = longitude, coord[1] = latitude
+ */
+function isPointInFeature(testLat, testLng, feature) {
+  if (!feature || !feature.geometry) return false
+  
+  const coords = feature.geometry.type === 'Polygon'
+    ? [feature.geometry.coordinates]
+    : feature.geometry.coordinates
+
+  for (const polygon of coords) {
+    const outerRing = polygon[0]
+    if (!outerRing || outerRing.length < 3) continue
+
+    // Quick bounding box check [lng, lat] convention
+    let minLon = Infinity, maxLon = -Infinity
+    let minLat = Infinity, maxLat = -Infinity
+    for (const c of outerRing) {
+      if (c[0] < minLon) minLon = c[0]
+      if (c[0] > maxLon) maxLon = c[0]
+      if (c[1] < minLat) minLat = c[1]
+      if (c[1] > maxLat) maxLat = c[1]
+    }
+    if (testLng < minLon || testLng > maxLon || testLat < minLat || testLat > maxLat) continue
+
+    // Point-in-polygon ray casting
+    let inside = false
+    for (let i = 0, j = outerRing.length - 1; i < outerRing.length; j = i++) {
+      const xi = outerRing[i][0], yi = outerRing[i][1]
+      const xj = outerRing[j][0], yj = outerRing[j][1]
+      if ((yi > testLat) !== (yj > testLat)) {
+        const intersectX = xi + (xj - xi) * (testLat - yi) / (yj - yi)
+        if (testLng < intersectX) {
+          inside = !inside
+        }
+      }
+    }
+    if (!inside) continue
+
+    // Check holes
+    for (let k = 1; k < polygon.length; k++) {
+      const hole = polygon[k]
+      let insideHole = false
+      for (let i = 0, j = hole.length - 1; i < hole.length; j = i++) {
+        const xi = hole[i][0], yi = hole[i][1]
+        const xj = hole[j][0], yj = hole[j][1]
+        if ((yi > testLat) !== (yj > testLat)) {
+          const intersectX = xi + (xj - xi) * (testLat - yi) / (yj - yi)
+          if (testLng < intersectX) {
+            insideHole = !insideHole
+          }
+        }
+      }
+      if (insideHole) return false
+    }
+    return true
+  }
+  return false
 }
 
 /**
@@ -346,7 +165,8 @@ export function findContinentAt(lat, lng) {
  * Each dot is a quad with UV coordinates for fragment-shader-based circle clipping.
  * Uses terrain-aware coloring for better geographic detail representation.
  */
-export function generateDotQuadData(radius = 1, dotSize = 0.0018, latSegments = 220, lngSegments = 400) {
+// 生成每个陆地点的四边形几何数据
+export function generateDotQuadData(radius = 1, dotSize = 0.0010, latSegments = 420, lngSegments = 600) {
   const positions = []
   const uvs = []
   const colors = []
@@ -376,24 +196,19 @@ export function generateDotQuadData(radius = 1, dotSize = 0.0018, latSegments = 
         const ny = cy / radius
         const nz = cz / radius
 
-        // Compute tangent and bitangent
-        let tx, ty, tz
-        if (Math.abs(ny) < 0.999) {
-          tx = nz
-          ty = 0
-          tz = -nx
-        } else {
-          tx = 1
-          ty = 0
-          tz = 0
-        }
-        const lenT = Math.sqrt(tx * tx + ty * ty + tz * tz)
-        tx /= lenT; ty /= lenT; tz /= lenT
+        // Compute tangent and bitangent using spherical coordinate basis
+        // This provides a smooth, consistent frame field across the entire sphere,
+        // eliminating unnatural dot deformation during rotation.
+        // T = eastward (longitude) tangent: (-sin(lng), 0, cos(lng))
+        // B = northward (latitude) tangent: (-sin(lat)*cos(lng), cos(lat), -sin(lat)*sin(lng))
+        // Both are unit vectors and mutually perpendicular.
+        const tx = -Math.sin(lngRadP)
+        const ty = 0
+        const tz = Math.cos(lngRadP)
 
-        // Bitangent = cross(normal, tangent)
-        const bx = ny * tz - nz * ty
-        const by = nz * tx - nx * tz
-        const bz = nx * ty - ny * tx
+        const bx = -Math.sin(latRadP) * Math.cos(lngRadP)
+        const by = Math.cos(latRadP)
+        const bz = -Math.sin(latRadP) * Math.sin(lngRadP)
 
         // Terrain-aware parameters
         const noise = hash2D(latIdx * 3, lngIdx * 7)
@@ -487,20 +302,14 @@ export function generateGlowMarkerData(markers, radius = 1.03, baseSize = 0.035)
     const ny = cy / radius
     const nz = cz / radius
 
-    // Tangent basis
-    let tx, ty, tz
-    if (Math.abs(ny) < 0.999) {
-      tx = nz; ty = 0; tz = -nx
-    } else {
-      tx = 1; ty = 0; tz = 0
-    }
-    const lenT = Math.sqrt(tx * tx + ty * ty + tz * tz)
-    tx /= lenT; ty /= lenT; tz /= lenT
+    // Tangent basis using spherical coordinate frame
+    const tx = -Math.sin(lngRad)
+    const ty = 0
+    const tz = Math.cos(lngRad)
 
-    // Bitangent
-    const bx = ny * tz - nz * ty
-    const by = nz * tx - nx * tz
-    const bz = nx * ty - ny * tx
+    const bx = -Math.sin(latRad) * Math.cos(lngRad)
+    const by = Math.cos(latRad)
+    const bz = -Math.sin(latRad) * Math.sin(lngRad)
 
     const size = baseSize * (marker.size || 1.0)
     const hSize = size / 2
