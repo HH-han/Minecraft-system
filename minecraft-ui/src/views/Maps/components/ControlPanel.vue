@@ -120,68 +120,95 @@ const zoomLevelPercent = computed(() => {
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   z-index: 10;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .control-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 2px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .is-dark .control-group {
-  background: rgba(20, 20, 40, 0.6);
-  border-color: rgba(100, 120, 200, 0.2);
+  background: rgba(29, 29, 31, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
 .control-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent;
   border: none;
   border-radius: 8px;
-  color: #e0e8f0;
+  color: #1d1d1f;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.is-dark .control-btn {
+  color: #f5f5f7;
 }
 
 .control-btn:hover {
-  background: rgba(100, 150, 255, 0.3);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.is-dark .control-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .control-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.94);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.is-dark .control-btn:active {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .control-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .control-btn.is-active {
-  background: rgba(100, 150, 255, 0.4);
-  color: #8ab4ff;
+  background: rgba(0, 122, 255, 0.12);
+  color: #007aff;
+}
+
+.is-dark .control-btn.is-active {
+  background: rgba(10, 132, 255, 0.2);
+  color: #0a84ff;
 }
 
 .control-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.06);
   margin: 4px 0;
 }
 
+.is-dark .control-divider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .theme-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 .zoom-info {
@@ -189,31 +216,47 @@ const zoomLevelPercent = computed(() => {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 10px 8px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 6px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .is-dark .zoom-info {
-  background: rgba(20, 20, 40, 0.6);
-  border-color: rgba(100, 120, 200, 0.2);
+  background: rgba(29, 29, 31, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
 .zoom-label {
   font-size: 10px;
-  color: rgba(200, 210, 230, 0.7);
-  letter-spacing: 1px;
+  font-weight: 500;
+  color: #6e6e73;
+  letter-spacing: 0.3px;
+  line-height: 1;
+  transition: color 0.5s ease;
+}
+
+.is-dark .zoom-label {
+  color: #86868b;
 }
 
 .zoom-bar {
-  width: 6px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  width: 4px;
+  height: 72px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
   overflow: hidden;
   position: relative;
+  transition: background 0.5s ease;
+}
+
+.is-dark .zoom-bar {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .zoom-fill {
@@ -221,8 +264,8 @@ const zoomLevelPercent = computed(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, #4a9eff, #8ab4ff);
-  border-radius: 3px;
-  transition: height 0.3s ease;
+  background: linear-gradient(to top, #007aff, #5ac8fa);
+  border-radius: 2px;
+  transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>

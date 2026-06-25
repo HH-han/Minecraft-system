@@ -187,41 +187,50 @@ function handleMaskClick() {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   z-index: 1000;
   padding: 20px;
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .info-panel {
   width: 380px;
   max-height: 85vh;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(30px);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  border-radius: 18px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .info-panel.is-dark {
-  background: rgba(25, 28, 45, 0.95);
+  background: rgba(28, 28, 30, 0.92);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .info-panel.is-hover {
-  border: 1px solid rgba(100, 180, 255, 0.3);
-  box-shadow: 0 8px 30px rgba(74, 158, 255, 0.15), 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 122, 255, 0.2);
+  box-shadow:
+    0 8px 30px rgba(0, 122, 255, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .info-panel.is-dark.is-hover {
-  border-color: rgba(100, 180, 255, 0.2);
-  box-shadow: 0 8px 30px rgba(74, 158, 255, 0.1), 0 20px 60px rgba(0, 0, 0, 0.5);
+  border-color: rgba(10, 132, 255, 0.25);
+  box-shadow:
+    0 8px 30px rgba(10, 132, 255, 0.12),
+    0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .hover-badge {
@@ -229,18 +238,24 @@ function handleMaskClick() {
   top: 16px;
   right: 16px;
   padding: 4px 12px;
-  background: linear-gradient(135deg, #4a9eff, #6ab4ff);
-  border-radius: 12px;
+  background: rgba(0, 122, 255, 0.12);
+  border-radius: 980px;
   font-size: 11px;
   font-weight: 600;
-  color: #fff;
-  letter-spacing: 1px;
+  color: #007aff;
+  letter-spacing: 0.3px;
   z-index: 10;
+}
+
+.is-dark .hover-badge {
+  background: rgba(10, 132, 255, 0.2);
+  color: #0a84ff;
 }
 
 .info-panel-mask.hover-mode {
   background: transparent;
   backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   pointer-events: none;
 }
 
@@ -252,42 +267,42 @@ function handleMaskClick() {
   position: absolute;
   top: 16px;
   right: 16px;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border: none;
-  background: rgba(100, 120, 150, 0.15);
+  background: rgba(120, 120, 128, 0.12);
   border-radius: 50%;
-  color: #607080;
+  color: #86868b;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
 }
 
 .is-dark .close-btn {
   background: rgba(255, 255, 255, 0.1);
-  color: #a0b0c0;
+  color: #98989d;
 }
 
 .close-btn:hover {
-  background: rgba(255, 100, 100, 0.2);
-  color: #ff6b6b;
+  background: rgba(255, 59, 48, 0.15);
+  color: #ff3b30;
   transform: rotate(90deg);
 }
 
 .close-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
 }
 
 .panel-header {
-  padding: 30px 24px 20px;
+  padding: 32px 24px 20px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  border-bottom: 1px solid rgba(100, 120, 150, 0.1);
+  gap: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .is-dark .panel-header {
@@ -295,41 +310,43 @@ function handleMaskClick() {
 }
 
 .continent-header {
-  padding-top: 32px;
+  padding-top: 34px;
 }
 
 .flag-emoji {
-  font-size: 48px;
+  font-size: 44px;
   line-height: 1;
 }
 
 .continent-color-dot {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .panel-title {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  color: #2a3040;
+  color: #1d1d1f;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
 }
 
 .is-dark .panel-title {
-  color: #e8ecf4;
+  color: #f5f5f7;
 }
 
 .panel-subtitle {
   margin: 4px 0 0;
   font-size: 13px;
-  color: #8090a8;
-  letter-spacing: 1px;
+  color: #6e6e73;
+  letter-spacing: 0.2px;
 }
 
 .is-dark .panel-subtitle {
-  color: #70809a;
+  color: #86868b;
 }
 
 .panel-content {
@@ -341,7 +358,7 @@ function handleMaskClick() {
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 24px;
 }
 
@@ -350,16 +367,17 @@ function handleMaskClick() {
   align-items: flex-start;
   gap: 10px;
   padding: 12px;
-  background: rgba(100, 150, 255, 0.08);
+  background: #f5f5f7;
   border-radius: 12px;
+  transition: background 0.2s ease;
 }
 
 .is-dark .info-item {
-  background: rgba(100, 150, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .info-icon {
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
   flex-shrink: 0;
 }
@@ -367,40 +385,42 @@ function handleMaskClick() {
 .info-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
 .info-label {
   font-size: 11px;
-  color: #8090a8;
-  letter-spacing: 0.5px;
+  color: #6e6e73;
+  letter-spacing: 0.2px;
 }
 
 .is-dark .info-label {
-  color: #70809a;
+  color: #86868b;
 }
 
 .info-value {
   font-size: 13px;
   font-weight: 600;
-  color: #2a3040;
+  color: #1d1d1f;
   word-break: break-word;
+  line-height: 1.3;
 }
 
 .is-dark .info-value {
-  color: #d8dce8;
+  color: #f5f5f7;
 }
 
 .section-title {
   margin: 0 0 12px;
   font-size: 15px;
   font-weight: 600;
-  color: #2a3040;
+  color: #1d1d1f;
+  letter-spacing: -0.1px;
 }
 
 .is-dark .section-title {
-  color: #d8dce8;
+  color: #f5f5f7;
 }
 
 .culture-section {
@@ -411,11 +431,11 @@ function handleMaskClick() {
   margin: 0;
   font-size: 13px;
   line-height: 1.7;
-  color: #506078;
+  color: #1d1d1f;
 }
 
 .is-dark .culture-text {
-  color: #90a0b8;
+  color: #f5f5f7;
 }
 
 .highlights-section {
@@ -430,22 +450,23 @@ function handleMaskClick() {
 
 .highlight-tag {
   padding: 6px 14px;
-  background: linear-gradient(135deg, rgba(100, 150, 255, 0.15), rgba(150, 200, 255, 0.1));
-  border-radius: 20px;
+  background: #f5f5f7;
+  border-radius: 980px;
   font-size: 12px;
   font-weight: 500;
-  color: #4a78c8;
+  color: #1d1d1f;
+  transition: background 0.2s ease;
 }
 
 .is-dark .highlight-tag {
-  background: linear-gradient(135deg, rgba(100, 150, 255, 0.2), rgba(150, 200, 255, 0.15));
-  color: #8ab4ff;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
 }
 
 .country-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
 }
 
 .country-item {
@@ -453,64 +474,73 @@ function handleMaskClick() {
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: rgba(100, 150, 255, 0.06);
   border-radius: 8px;
   transition: background 0.2s ease;
 }
 
-.is-dark .country-item {
-  background: rgba(100, 150, 255, 0.1);
+.country-item:hover {
+  background: #f5f5f7;
+}
+
+.is-dark .country-item:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .country-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #4a9eff;
+  background: #007aff;
   flex-shrink: 0;
 }
 
 .country-name {
   font-size: 13px;
   font-weight: 500;
-  color: #3a4050;
+  color: #1d1d1f;
 }
 
 .is-dark .country-name {
-  color: #c0c8d8;
+  color: #f5f5f7;
 }
 
 .explore-btn {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   border: none;
-  background: linear-gradient(135deg, #4a9eff, #6ab4ff);
+  background: #007aff;
   color: #fff;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
+  letter-spacing: -0.1px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   margin-top: 8px;
+  font-family: inherit;
 }
 
 .explore-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(74, 158, 255, 0.4);
+  background: #0071e3;
+}
+
+.explore-btn:active {
+  transform: scale(0.98);
+  background: #006edc;
 }
 
 .explore-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   transition: transform 0.2s ease;
 }
 
 .explore-btn:hover svg {
-  transform: translateX(4px);
+  transform: translateX(3px);
 }
 
 .panel-fade-enter-active,

@@ -265,104 +265,192 @@ onUnmounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%);
+  background-color: rgba(255, 255, 255, 0.98);
   overflow: hidden;
-  transition: background 0.5s ease;
+  transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .maps-page.is-dark {
-  background: linear-gradient(180deg, #050a14 0%, #081024 50%, #050a14 100%);
+  background: #000000;
 }
 
 .page-header {
   position: relative;
-  z-index: 5;
-  padding: 24px 40px 16px;
+  z-index: 10;
+  padding: 22px 0 0;
   text-align: center;
+  pointer-events: none;
 }
 
 .page-title {
   margin: 0;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
-  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.08;
+  color: #1d1d1f;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 20px rgba(100, 150, 255, 0.3);
+  gap: 10px;
+  transition: color 0.5s ease;
+}
+
+.maps-page.is-dark .page-title {
+  color: #f5f5f7;
 }
 
 .title-icon {
-  font-size: 32px;
-  animation: float 3s ease-in-out infinite;
+  font-size: 30px;
+  line-height: 1;
+  animation: float 4s ease-in-out infinite;
+  display: inline-block;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-4px); }
 }
 
 .page-subtitle {
   margin: 8px 0 0;
-  font-size: 13px;
-  color: rgba(180, 200, 230, 0.7);
-  letter-spacing: 1px;
+  font-size: 17px;
+  font-weight: 400;
+  color: #6e6e73;
+  letter-spacing: -0.2px;
+  line-height: 1.38;
+  transition: color 0.5s ease;
+}
+
+.maps-page.is-dark .page-subtitle {
+  color: #86868b;
 }
 
 .globe-wrapper {
   flex: 1;
   position: relative;
   overflow: hidden;
+  margin-top: 8px;
 }
 
 .bottom-hint {
   position: absolute;
-  bottom: 30px;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 30px;
+  gap: 8px;
   z-index: 5;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-radius: 980px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.maps-page.is-dark .bottom-hint {
+  background: rgba(29, 29, 31, 0.72);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .hint-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 8px 16px;
+  border-radius: 980px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1d1d1f;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.5s ease;
+}
+
+.maps-page.is-dark .hint-item {
+  color: #f5f5f7;
+}
+
+.hint-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.maps-page.is-dark .hint-item:hover {
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 12px;
-  color: rgba(200, 220, 240, 0.8);
 }
 
 .hint-icon {
   font-size: 14px;
+  line-height: 1;
 }
 
-@media (max-width: 768px) {
-  .page-header {
-    padding: 16px 20px 12px;
-  }
+@media (max-width: 1199px) {
   .page-title {
-    font-size: 20px;
-    letter-spacing: 1px;
+    font-size: 28px;
   }
   .page-subtitle {
+    font-size: 15px;
+  }
+  .hint-item {
+    padding: 8px 14px;
     font-size: 12px;
   }
+}
+
+@media (max-width: 767px) {
+  .page-header {
+    padding: 16px 20px 0;
+  }
+  .page-title {
+    font-size: 24px;
+    gap: 8px;
+  }
+  .title-icon {
+    font-size: 24px;
+  }
+  .page-subtitle {
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .globe-wrapper {
+    margin-top: 4px;
+  }
   .bottom-hint {
-    gap: 10px;
     bottom: 20px;
+    gap: 4px;
+    padding: 4px;
   }
   .hint-item {
     padding: 6px 12px;
     font-size: 11px;
-    gap: 6px;
+    gap: 4px;
+  }
+  .hint-icon {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 22px;
+  }
+  .page-subtitle {
+    font-size: 13px;
+  }
+  .hint-item span:last-child {
+    display: none;
+  }
+  .hint-item {
+    padding: 8px 10px;
+  }
+  .hint-icon {
+    font-size: 14px;
   }
 }
 </style>

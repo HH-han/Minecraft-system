@@ -70,28 +70,31 @@ const dotStyle = computed(() => {
   align-items: center;
   gap: 10px;
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-radius: 10px;
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.12),
-    0 1px 3px rgba(0, 0, 0, 0.06);
+    0 4px 20px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.04);
   pointer-events: none;
-  transition: all 0.15s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .tooltip-overlay.is-dark {
-  background: rgba(25, 28, 45, 0.92);
-  border-color: rgba(100, 180, 255, 0.15);
+  background: rgba(28, 28, 30, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 4px 20px rgba(0, 0, 0, 0.35),
     0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .tooltip-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -99,41 +102,43 @@ const dotStyle = computed(() => {
 .tooltip-content {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .tooltip-type {
   font-size: 10px;
   font-weight: 500;
-  color: #8a9bb5;
+  color: #6e6e73;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  line-height: 1;
 }
 
 .tooltip-overlay.is-dark .tooltip-type {
-  color: #6a7b95;
+  color: #86868b;
 }
 
 .tooltip-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #1a2332;
+  color: #1d1d1f;
   line-height: 1.3;
+  letter-spacing: -0.1px;
 }
 
 .tooltip-overlay.is-dark .tooltip-name {
-  color: #e0e6f0;
+  color: #f5f5f7;
 }
 
 .tooltip-name-en {
   font-size: 11px;
   font-weight: 400;
-  color: #6a7b95;
+  color: #6e6e73;
   line-height: 1.2;
 }
 
 .tooltip-overlay.is-dark .tooltip-name-en {
-  color: #5a6b85;
+  color: #86868b;
 }
 
 .tooltip-fade-enter-active,
