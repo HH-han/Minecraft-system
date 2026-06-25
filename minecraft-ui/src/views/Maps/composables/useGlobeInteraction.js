@@ -20,6 +20,8 @@ import {
 } from '../utils/math.js'
 import { findNearestContinent } from '../data/continents.js'
 import { findNearestCountry } from '../data/countries.js'
+import { findContinentAt } from '../utils/dotGlobe.js'
+import { glowMarkers } from '../data/markers.js'
 
 export function useGlobeInteraction(canvasRef) {
   const rotation = reactive({ x: 0.3, y: 0 })
@@ -42,7 +44,10 @@ export function useGlobeInteraction(canvasRef) {
   const state = reactive({
     selectedContinent: null,
     selectedCountry: null,
+    hoveredContinent: null,
     hoveredCountry: null,
+    hoveredMarker: null,
+    selectedMarker: null,
     isAnimating: false
   })
 
@@ -64,6 +69,67 @@ export function useGlobeInteraction(canvasRef) {
     }
   }
 
+  let _lastHoverLat = null
+  let _lastHoverLng = null
+  let _hoverCooldown = 0
+  let _lastHoveredMarkerId = null
+  
+  // Precompute marker world positions
+  const _markerWorldPositions = glowMarkers.map(m => {
+    const v = latLngToVector3(m.lat, m.lng, 1.03)
+    return { id: m.id, worldX: v.x, worldY: v.y, worldZ: v.z }
+  })
+  
+  function worldToScreen(worldX, worldY, worldZ, width, height) {
+    const aspect = width / height
+    const fov = Math.PI / 4
+    const projectionMatrix = createPerspectiveMatrix(fov, aspect, 0.1, 100)
+    const cameraPos = { x: panOffset.x, y: panOffset.y, z: zoom.value }
+    const viewMatrix = createLookAtMatrix(
+      cameraPos,
+      { x: panOffset.x, y: panOffset.y, z: 0 },
+      { x: 0, y: 1, z: 0 }
+    )
+    const modelMatrix = getModelMatrix()
+    const mvp = multiplyMatrices(multiplyMatrices(projectionMatrix, viewMatrix), modelMatrix)
+    
+    const clipX = mvp[0] * worldX + mvp[4] * worldY + mvp[8] * worldZ + mvp[12]
+    const clipY = mvp[1] * worldX + mvp[5] * worldY + mvp[9] * worldZ + mvp[13]
+    const clipW = mvp[3] * worldX + mvp[7] * worldY + mvp[11] * worldZ + mvp[15]
+    
+    if (clipW <= 0) return null
+    const ndcX = clipX / clipW
+    const ndcY = clipY / clipW
+    if (Math.abs(ndcX) > 1 || Math.abs(ndcY) > 1) return null
+    
+    return {
+      x: (ndcX + 1) / 2 * width,
+      y: (1 - ndcY) / 2 * height,
+      z: clipW
+    }
+  }
+  
+  function findMarkerAt(screenX, screenY, width, height) {
+    let nearest = null
+    let nearestDist = 30 // hit radius in pixels
+    
+    for (let i = 0; i < glowMarkers.length; i++) {
+      const mwp = _markerWorldPositions[i]
+      const screen = worldToScreen(mwp.worldX, mwp.worldY, mwp.worldZ, width, height)
+      if (!screen) continue
+      
+      const dx = screenX - screen.x
+      const dy = screenY - screen.y
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      
+      if (dist < nearestDist) {
+        nearestDist = dist
+        nearest = { ...glowMarkers[i], screenX: screen.x, screenY: screen.y }
+      }
+    }
+    return nearest
+  }
+
   function handleMouseMove(e) {
     if (isDragging.value) {
       const dx = e.clientX - _lastPos.x
@@ -80,7 +146,83 @@ export function useGlobeInteraction(canvasRef) {
       targetPanOffset.x += dx * 0.01
       targetPanOffset.y += dy * 0.01
       _lastPos = { x: e.clientX, y: e.clientY }
+    } else {
+      // Hover detection
+      const canvas = canvasRef.value
+      if (!canvas) return
+      const rect = canvas.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      if (x < 0 || x > canvas.clientWidth || y < 0 || y > canvas.clientHeight) {
+        clearHover()
+        return
+      }
+      // Throttle hover checks to every 50ms
+      const now = performance.now()
+      if (now - _hoverCooldown < 50) return
+      _hoverCooldown = now
+      
+      // First check marker hover (highest priority)
+      const marker = findMarkerAt(x, y, canvas.clientWidth, canvas.clientHeight)
+      if (marker) {
+        if (_lastHoveredMarkerId !== marker.id) {
+          _lastHoveredMarkerId = marker.id
+          state.hoveredMarker = marker
+          state.hoveredContinent = null
+          state.hoveredCountry = null
+        }
+        return
+      }
+      _lastHoveredMarkerId = null
+      
+      if (state.hoveredMarker) {
+        state.hoveredMarker = null
+      }
+      
+      const result = raycast(x, y, canvas.clientWidth, canvas.clientHeight)
+      if (result && result.distance < 10) {
+        const { lat, lng } = vector3ToLatLng(result.point.x, result.point.y, result.point.z)
+        // Avoid redundant updates
+        if (lat === _lastHoverLat && lng === _lastHoverLng) return
+        _lastHoverLat = lat
+        _lastHoverLng = lng
+        
+        // First try to find a country if zoomed in enough
+        if (zoomLevel.value > 2.5) {
+          const country = findNearestCountry(lat, lng, 2000)
+          if (country) {
+            state.hoveredCountry = country
+            state.hoveredContinent = null
+            return
+          }
+        }
+        // Find continent using accurate shape detection
+        const continentId = findContinentAt(lat, lng)
+        if (continentId) {
+          const continent = findNearestContinent(lat, lng)
+          if (continent) {
+            state.hoveredContinent = continent
+            state.hoveredCountry = null
+            return
+          }
+        }
+        // No hit - clear hover
+        clearHover()
+      } else {
+        clearHover()
+      }
     }
+  }
+
+  function clearHover() {
+    if (state.hoveredContinent || state.hoveredCountry || state.hoveredMarker) {
+      state.hoveredContinent = null
+      state.hoveredCountry = null
+      state.hoveredMarker = null
+    }
+    _lastHoverLat = null
+    _lastHoverLng = null
+    _lastHoveredMarkerId = null
   }
 
   function handleMouseUp(e) {
@@ -108,6 +250,27 @@ export function useGlobeInteraction(canvasRef) {
     const rect = canvas.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
+    
+    // Check marker click first
+    const marker = findMarkerAt(x, y, canvas.clientWidth, canvas.clientHeight)
+    if (marker) {
+      state.selectedMarker = marker
+      state.selectedContinent = null
+      state.selectedCountry = null
+      if (marker.type === 'country') {
+        const countryData = findNearestCountry(marker.lat, marker.lng, 100)
+        if (countryData) {
+          focusOnCountry(countryData)
+        } else {
+          focusOnContinent({ centerLat: marker.lat, centerLng: marker.lng })
+        }
+      } else {
+        const continentData = findNearestContinent(marker.lat, marker.lng)
+        if (continentData) focusOnContinent(continentData)
+      }
+      return
+    }
+    
     const result = raycast(x, y, canvas.clientWidth, canvas.clientHeight)
     if (result) {
       const { lat, lng } = vector3ToLatLng(result.point.x, result.point.y, result.point.z)
@@ -320,6 +483,7 @@ export function useGlobeInteraction(canvasRef) {
   function closeInfoPanel() {
     state.selectedContinent = null
     state.selectedCountry = null
+    state.selectedMarker = null
   }
 
   function setupEventListeners() {
@@ -379,6 +543,7 @@ export function useGlobeInteraction(canvasRef) {
     setAutoRotate,
     closeInfoPanel,
     raycast,
+    clearHover,
     cleanup
   }
 }

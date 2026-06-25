@@ -3,6 +3,7 @@
     <canvas
       ref="canvasRef"
       class="globe-canvas"
+      :class="{ 'hovering-land': interaction?.state?.hoveredContinent || interaction?.state?.hoveredCountry }"
       @contextmenu.prevent
     ></canvas>
     <div v-if="loading" class="loading-overlay">
@@ -199,6 +200,10 @@ defineExpose({
 
 .globe-canvas:active {
   cursor: grabbing;
+}
+
+.globe-canvas.hovering-land {
+  cursor: pointer;
 }
 
 .loading-overlay {

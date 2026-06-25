@@ -1,5 +1,7 @@
 import { ref, onUnmounted, shallowRef } from 'vue'
 import { generateContinentGlobeData, generateCountryGlobeData, generateBoundaryLinesData } from '../utils/regionData.js'
+import { generateDotQuadData, findContinentAt, generateGlowMarkerData } from '../utils/dotGlobe.js'
+import { glowMarkers } from '../data/markers.js'
 
 const regionVertexShader = /* wgsl */ `
 struct Uniforms {
@@ -140,6 +142,91 @@ fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
 }
 `
 
+const circleDotVertexShader = /* wgsl */ `
+struct Uniforms {
+  modelViewProjectionMatrix: mat4x4<f32>,
+  normalMatrix: mat4x4<f32>,
+  lightDirection: vec3<f32>,
+  cameraPosition: vec3<f32>,
+  time: f32,
+  atmosphereStrength: f32,
+}
+
+@group(0) @binding(0) var<uniform> uniforms: Uniforms;
+
+struct VertexOutput {
+  @builtin(position) position: vec4<f32>,
+  @location(0) uv: vec2<f32>,
+  @location(1) color: vec3<f32>,
+  @location(2) worldPos: vec3<f32>,
+}
+
+@vertex
+fn vs_main(@location(0) position: vec3<f32>, @location(1) uv: vec2<f32>, @location(2) color: vec3<f32>) -> VertexOutput {
+  var output: VertexOutput;
+  output.position = uniforms.modelViewProjectionMatrix * vec4<f32>(position, 1.0);
+  output.uv = uv;
+  output.color = color;
+  output.worldPos = position;
+  return output;
+}
+
+@fragment
+fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
+  let d = dot(input.uv, input.uv);
+  // Discard fragments outside the circle radius
+  if (d > 1.0) {
+    discard;
+  }
+  // Smooth edge for anti-aliased circle
+  let alpha = 1.0 - smoothstep(0.85, 1.0, d);
+  let normal = normalize(input.worldPos);
+  let lightDir = normalize(uniforms.lightDirection);
+  let ambient = 0.35;
+  let diffuse = max(dot(normal, lightDir), 0.0);
+  let lighting = ambient + diffuse * 0.65;
+  let finalColor = input.color * lighting;
+  return vec4<f32>(finalColor, alpha);
+}
+`
+
+const glowMarkerVertexShader = /* wgsl */ `
+struct Uniforms {
+  modelViewProjectionMatrix: mat4x4<f32>,
+  normalMatrix: mat4x4<f32>,
+  lightDirection: vec3<f32>,
+  cameraPosition: vec3<f32>,
+  time: f32,
+  atmosphereStrength: f32,
+}
+
+@group(0) @binding(0) var<uniform> uniforms: Uniforms;
+
+struct VertexOutput {
+  @builtin(position) position: vec4<f32>,
+  @location(0) color: vec3<f32>,
+  @location(1) worldPos: vec3<f32>,
+}
+
+@vertex
+fn vs_main(@location(0) position: vec3<f32>, @location(1) color: vec3<f32>) -> VertexOutput {
+  var output: VertexOutput;
+  output.position = uniforms.modelViewProjectionMatrix * vec4<f32>(position, 1.0);
+  output.color = color;
+  output.worldPos = position;
+  return output;
+}
+
+@fragment
+fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
+  let viewDir = normalize(uniforms.cameraPosition - input.worldPos);
+  let fresnel = 1.0 - max(0.0, dot(normalize(input.worldPos), viewDir));
+  let glow = pow(fresnel, 1.5) * 0.6 + 0.4;
+  let alpha = glow * 0.5; // 50% transparency base
+  return vec4<f32>(input.color * 1.3, alpha);
+}
+`
+
 const continentShapes = [
   { id: 'asia', centerLat: 40, centerLng: 95, latExtent: 35, lngExtent: 60, irregularity: 0.35 },
   { id: 'europe', centerLat: 52, centerLng: 15, latExtent: 20, lngExtent: 25, irregularity: 0.4 },
@@ -165,14 +252,17 @@ export function useWebGPU(canvasRef) {
   let _linePipeline = null
   let _atmospherePipeline = null
   let _starsPipeline = null
+  let _glowMarkerPipeline = null
   let _regionUniformBuffer = null
   let _lineUniformBuffer = null
   let _atmosphereUniformBuffer = null
   let _starsUniformBuffer = null
+  let _glowMarkerUniformBuffer = null
   let _regionBindGroup = null
   let _lineBindGroup = null
   let _atmosphereBindGroup = null
   let _starsBindGroup = null
+  let _glowMarkerBindGroup = null
   
   let _continentBuffer = null
   let _continentIndexBuffer = null
@@ -185,6 +275,20 @@ export function useWebGPU(canvasRef) {
   let _countryIndexCount = 0
   let _countryLineBuffer = null
   let _countryLineCount = 0
+  
+  // Dot globe
+  let _dotGlobeBuffer = null
+  let _dotGlobeIndexBuffer = null
+  let _dotGlobeIndexCount = 0
+  let _dotGlobePipeline = null
+  let _dotGlobeBindGroup = null
+  let _dotGlobeUniformBuffer = null
+  
+  // Glow markers
+  let _glowMarkerBuffer = null
+  let _glowMarkerIndexBuffer = null
+  let _glowMarkerIndexCount = 0
+  let _glowMarkerMeta = []
   
   let _atmosphereVertexBuffer = null
   let _atmosphereIndexBuffer = null
@@ -316,6 +420,21 @@ export function useWebGPU(canvasRef) {
     try {
       console.log('[WebGPU] Creating region globe geometry...')
       
+      // Generate dot globe quad data
+      const dotGlobeData = generateDotQuadData(1, 0.012, 320, 500)
+      _dotGlobeBuffer = createBuffer(dotGlobeData.vertexData, GPUBufferUsage.VERTEX)
+      _dotGlobeIndexBuffer = createBuffer(dotGlobeData.indexData, GPUBufferUsage.INDEX)
+      _dotGlobeIndexCount = dotGlobeData.indexCount
+      console.log('[WebGPU] Dot globe quads:', _dotGlobeIndexCount / 6, 'dots,', _dotGlobeIndexCount, 'indices')
+      
+      // Generate glow marker geometry
+      const glowMarkerData = generateGlowMarkerData(glowMarkers, 1.03, 0.035)
+      _glowMarkerBuffer = createBuffer(glowMarkerData.vertexData, GPUBufferUsage.VERTEX)
+      _glowMarkerIndexBuffer = createBuffer(glowMarkerData.indexData, GPUBufferUsage.INDEX)
+      _glowMarkerIndexCount = glowMarkerData.indexCount
+      _glowMarkerMeta = glowMarkerData.markerMeta
+      console.log('[WebGPU] Glow markers:', glowMarkers.length, 'items,', _glowMarkerIndexCount, 'indices')
+      
       const continentData = generateContinentGlobeData(1, continentShapes)
       _continentBuffer = createBuffer(continentData.vertexData, GPUBufferUsage.VERTEX)
       _continentIndexBuffer = createBuffer(continentData.indexData, GPUBufferUsage.INDEX)
@@ -377,6 +496,14 @@ export function useWebGPU(canvasRef) {
         size: uniformBufferSize,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       })
+      _dotGlobeUniformBuffer = _device.createBuffer({
+        size: uniformBufferSize,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+      })
+      _glowMarkerUniformBuffer = _device.createBuffer({
+        size: uniformBufferSize,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+      })
       _atmosphereUniformBuffer = _device.createBuffer({
         size: uniformBufferSize,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
@@ -388,6 +515,8 @@ export function useWebGPU(canvasRef) {
       
       const regionShaderModule = _device.createShaderModule({ code: regionVertexShader })
       const lineShaderModule = _device.createShaderModule({ code: lineVertexShader })
+      const dotGlobeShaderModule = _device.createShaderModule({ code: circleDotVertexShader })
+      const glowMarkerShaderModule = _device.createShaderModule({ code: glowMarkerVertexShader })
       const atmosphereShaderModule = _device.createShaderModule({ code: atmosphereVertexShader })
       const starsShaderModule = _device.createShaderModule({ code: starsVertexShader })
       
@@ -459,6 +588,81 @@ export function useWebGPU(canvasRef) {
         primitive: { topology: 'line-list' },
         depthStencil: {
           depthWriteEnabled: true,
+          depthCompare: 'less',
+          format: 'depth24plus'
+        }
+      })
+      
+      _dotGlobePipeline = _device.createRenderPipeline({
+        layout: simpleLayout,
+        vertex: {
+          module: dotGlobeShaderModule,
+          entryPoint: 'vs_main',
+          buffers: [
+            {
+              arrayStride: 32,
+              attributes: [
+                { shaderLocation: 0, offset: 0, format: 'float32x3' },
+                { shaderLocation: 1, offset: 12, format: 'float32x2' },
+                { shaderLocation: 2, offset: 20, format: 'float32x3' }
+              ]
+            }
+          ]
+        },
+        fragment: {
+          module: dotGlobeShaderModule,
+          entryPoint: 'fs_main',
+          targets: [{
+            format: _format,
+            blend: {
+              color: { srcFactor: 'src-alpha', dstFactor: 'one-minus-src-alpha', operation: 'add' },
+              alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' }
+            }
+          }]
+        },
+        primitive: {
+          topology: 'triangle-list',
+          cullMode: 'back'
+        },
+        depthStencil: {
+          depthWriteEnabled: true,
+          depthCompare: 'less',
+          format: 'depth24plus'
+        }
+      })
+      
+      _glowMarkerPipeline = _device.createRenderPipeline({
+        layout: simpleLayout,
+        vertex: {
+          module: glowMarkerShaderModule,
+          entryPoint: 'vs_main',
+          buffers: [
+            {
+              arrayStride: 24,
+              attributes: [
+                { shaderLocation: 0, offset: 0, format: 'float32x3' },
+                { shaderLocation: 1, offset: 12, format: 'float32x3' }
+              ]
+            }
+          ]
+        },
+        fragment: {
+          module: glowMarkerShaderModule,
+          entryPoint: 'fs_main',
+          targets: [{
+            format: _format,
+            blend: {
+              color: { srcFactor: 'src-alpha', dstFactor: 'one', operation: 'add' },
+              alpha: { srcFactor: 'one-minus-src-alpha', dstFactor: 'one', operation: 'add' }
+            }
+          }]
+        },
+        primitive: {
+          topology: 'triangle-list',
+          cullMode: 'none'
+        },
+        depthStencil: {
+          depthWriteEnabled: false,
           depthCompare: 'less',
           format: 'depth24plus'
         }
@@ -538,6 +742,14 @@ export function useWebGPU(canvasRef) {
       _lineBindGroup = _device.createBindGroup({
         layout: uniformBindGroupLayout,
         entries: [{ binding: 0, resource: { buffer: _lineUniformBuffer } }]
+      })
+      _dotGlobeBindGroup = _device.createBindGroup({
+        layout: uniformBindGroupLayout,
+        entries: [{ binding: 0, resource: { buffer: _dotGlobeUniformBuffer } }]
+      })
+      _glowMarkerBindGroup = _device.createBindGroup({
+        layout: uniformBindGroupLayout,
+        entries: [{ binding: 0, resource: { buffer: _glowMarkerUniformBuffer } }]
       })
       _atmosphereBindGroup = _device.createBindGroup({
         layout: uniformBindGroupLayout,
@@ -642,6 +854,38 @@ export function useWebGPU(canvasRef) {
     renderPass.setIndexBuffer(_atmosphereIndexBuffer, 'uint32')
     renderPass.drawIndexed(_atmosphereIndexCount)
     
+    // Render dot globe as base land layer
+    updateUniforms(_dotGlobeUniformBuffer, {
+      mvpMatrix: renderData.mvpMatrix,
+      normalMatrix: renderData.normalMatrix,
+      lightDirection: renderData.lightDirection,
+      cameraPosition: renderData.cameraPosition,
+      time: renderData.time,
+      atmosphereStrength: renderData.atmosphereStrength || 0.5
+    })
+    renderPass.setPipeline(_dotGlobePipeline)
+    renderPass.setBindGroup(0, _dotGlobeBindGroup)
+    renderPass.setVertexBuffer(0, _dotGlobeBuffer)
+    renderPass.setIndexBuffer(_dotGlobeIndexBuffer, 'uint32')
+    renderPass.drawIndexed(_dotGlobeIndexCount)
+    
+    // Render glow markers on top
+    if (_glowMarkerIndexCount > 0) {
+      updateUniforms(_glowMarkerUniformBuffer, {
+        mvpMatrix: renderData.mvpMatrix,
+        normalMatrix: renderData.normalMatrix,
+        lightDirection: renderData.lightDirection,
+        cameraPosition: renderData.cameraPosition,
+        time: renderData.time,
+        atmosphereStrength: renderData.atmosphereStrength || 0.5
+      })
+      renderPass.setPipeline(_glowMarkerPipeline)
+      renderPass.setBindGroup(0, _glowMarkerBindGroup)
+      renderPass.setVertexBuffer(0, _glowMarkerBuffer)
+      renderPass.setIndexBuffer(_glowMarkerIndexBuffer, 'uint32')
+      renderPass.drawIndexed(_glowMarkerIndexCount)
+    }
+    
     const showCountries = renderData.showCountries !== undefined ? renderData.showCountries : (_currentLevel.value === 'country')
     
     if (showCountries) {
@@ -667,29 +911,6 @@ export function useWebGPU(canvasRef) {
       renderPass.setBindGroup(0, _lineBindGroup)
       renderPass.setVertexBuffer(0, _countryLineBuffer)
       renderPass.draw(_countryLineCount)
-    } else {
-      updateUniforms(_regionUniformBuffer, {
-        mvpMatrix: renderData.mvpMatrix,
-        normalMatrix: renderData.normalMatrix,
-        lightDirection: renderData.lightDirection,
-        cameraPosition: renderData.cameraPosition,
-        time: renderData.time,
-        atmosphereStrength: renderData.atmosphereStrength || 0.5
-      })
-      renderPass.setPipeline(_regionPipeline)
-      renderPass.setBindGroup(0, _regionBindGroup)
-      renderPass.setVertexBuffer(0, _continentBuffer)
-      renderPass.setIndexBuffer(_continentIndexBuffer, 'uint32')
-      renderPass.drawIndexed(_continentIndexCount)
-      
-      updateUniforms(_lineUniformBuffer, {
-        mvpMatrix: renderData.mvpMatrix,
-        time: renderData.time
-      })
-      renderPass.setPipeline(_linePipeline)
-      renderPass.setBindGroup(0, _lineBindGroup)
-      renderPass.setVertexBuffer(0, _continentLineBuffer)
-      renderPass.draw(_continentLineCount)
     }
     
     renderPass.end()
@@ -712,6 +933,7 @@ export function useWebGPU(canvasRef) {
   function destroy() {
     if (_regionUniformBuffer) _regionUniformBuffer.destroy()
     if (_lineUniformBuffer) _lineUniformBuffer.destroy()
+    if (_dotGlobeUniformBuffer) _dotGlobeUniformBuffer.destroy()
     if (_atmosphereUniformBuffer) _atmosphereUniformBuffer.destroy()
     if (_starsUniformBuffer) _starsUniformBuffer.destroy()
     if (_continentBuffer) _continentBuffer.destroy()
@@ -720,6 +942,11 @@ export function useWebGPU(canvasRef) {
     if (_countryBuffer) _countryBuffer.destroy()
     if (_countryIndexBuffer) _countryIndexBuffer.destroy()
     if (_countryLineBuffer) _countryLineBuffer.destroy()
+    if (_dotGlobeBuffer) _dotGlobeBuffer.destroy()
+    if (_dotGlobeIndexBuffer) _dotGlobeIndexBuffer.destroy()
+    if (_glowMarkerUniformBuffer) _glowMarkerUniformBuffer.destroy()
+    if (_glowMarkerBuffer) _glowMarkerBuffer.destroy()
+    if (_glowMarkerIndexBuffer) _glowMarkerIndexBuffer.destroy()
     if (_atmosphereVertexBuffer) _atmosphereVertexBuffer.destroy()
     if (_atmosphereIndexBuffer) _atmosphereIndexBuffer.destroy()
     if (_starsVertexBuffer) _starsVertexBuffer.destroy()
@@ -749,6 +976,7 @@ export function useWebGPU(canvasRef) {
     renderFrame,
     setRegionLevel,
     resize,
-    destroy
+    destroy,
+    getGlowMarkerMeta: () => _glowMarkerMeta
   }
 }

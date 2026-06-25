@@ -1,20 +1,21 @@
 <template>
   <Teleport to="body">
     <Transition name="panel-fade">
-      <div v-if="visible" class="info-panel-mask" @click="handleMaskClick">
+      <div v-if="visible" class="info-panel-mask" :class="{ 'hover-mode': isHover }" @click="handleMaskClick">
         <Transition name="panel-slide">
           <div
             v-if="visible"
             class="info-panel"
-            :class="{ 'is-dark': isDark, 'is-country': isCountry }"
+            :class="{ 'is-dark': isDark, 'is-country': isCountry, 'is-hover': isHover }"
             @click.stop
           >
-            <button class="close-btn" @click="$emit('close')">
+            <button v-if="!isHover" class="close-btn" @click="$emit('close')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"/>
                 <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
+            <div v-if="isHover" class="hover-badge">预览</div>
             <template v-if="isCountry && country">
               <div class="panel-header">
                 <span class="flag-emoji">{{ country.flag }}</span>
@@ -122,7 +123,7 @@
                     </div>
                   </div>
                 </div>
-                <button class="explore-btn" @click="$emit('explore', continent)">
+                <button v-if="!isHover" class="explore-btn" @click="$emit('explore', continent)">
                   <span>探索更多国家</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -147,6 +148,10 @@ const props = defineProps({
     default: false
   },
   isDark: {
+    type: Boolean,
+    default: false
+  },
+  isHover: {
     type: Boolean,
     default: false
   },
@@ -207,6 +212,40 @@ function handleMaskClick() {
 .info-panel.is-dark {
   background: rgba(25, 28, 45, 0.95);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.info-panel.is-hover {
+  border: 1px solid rgba(100, 180, 255, 0.3);
+  box-shadow: 0 8px 30px rgba(74, 158, 255, 0.15), 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.info-panel.is-dark.is-hover {
+  border-color: rgba(100, 180, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(74, 158, 255, 0.1), 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.hover-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #4a9eff, #6ab4ff);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1px;
+  z-index: 10;
+}
+
+.info-panel-mask.hover-mode {
+  background: transparent;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+.info-panel-mask.hover-mode .info-panel {
+  pointer-events: auto;
 }
 
 .close-btn {

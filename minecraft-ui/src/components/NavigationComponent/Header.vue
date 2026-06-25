@@ -204,6 +204,7 @@ const moreMenuItems = [
   { path: '/ticket', label: '购票服务' },
   { path: '/travel', label: '出行计划' },
   { path: '/SettingsFocus', label: '设置中心' },
+  { path: '/maps', label: '地图' },
   { path: '/test', label: '测试页面' },
 ];
 

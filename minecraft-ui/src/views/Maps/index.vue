@@ -44,10 +44,18 @@
     <InfoPanel
       :visible="infoPanelVisible"
       :is-dark="isDark"
-      :continent="selectedContinent"
-      :country="selectedCountry"
+      :continent="displayContinent"
+      :country="displayCountry"
+      :is-hover="isHoverMode"
       @close="closeInfoPanel"
       @explore="handleExploreContinent"
+    />
+    <TooltipOverlay
+      :visible="!!hoveredMarker"
+      :is-dark="isDark"
+      :marker="hoveredMarker"
+      :mouse-x="mouseX"
+      :mouse-y="mouseY"
     />
   </div>
 </template>
@@ -57,8 +65,11 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import GlobeCanvas from './components/GlobeCanvas.vue'
 import ControlPanel from './components/ControlPanel.vue'
 import InfoPanel from './components/InfoPanel.vue'
+import TooltipOverlay from './components/TooltipOverlay.vue'
 import { continents } from './data/continents.js'
 import { getCountriesByContinent } from './data/countries.js'
+import { getContinentById } from './data/continents.js'
+import { getCountriesByContinent as getCountryByContinentId } from './data/countries.js'
 
 const globeRef = ref(null)
 const isDark = ref(false)
@@ -66,13 +77,28 @@ const autoRotate = ref(true)
 const isGlobeReady = ref(false)
 const selectedContinent = ref(null)
 const selectedCountry = ref(null)
+const hoveredContinent = ref(null)
+const hoveredCountry = ref(null)
+const hoveredMarker = ref(null)
+const selectedMarker = ref(null)
+const mouseX = ref(0)
+const mouseY = ref(0)
 const zoomLevel = ref(1)
+const isHoverMode = ref(false)
 
 const textureUrl = ref('')
 let pollIntervalId = null
 
 const infoPanelVisible = computed(() => {
-  return !!selectedContinent.value || !!selectedCountry.value
+  return !!selectedContinent.value || !!selectedCountry.value || !!hoveredContinent.value || !!hoveredCountry.value
+})
+
+const displayContinent = computed(() => {
+  return selectedContinent.value || hoveredContinent.value
+})
+
+const displayCountry = computed(() => {
+  return selectedCountry.value || hoveredCountry.value
 })
 
 function toggleTheme() {
@@ -104,6 +130,7 @@ function handleReset() {
   }
   selectedContinent.value = null
   selectedCountry.value = null
+  selectedMarker.value = null
 }
 
 function onGlobeReady() {
@@ -117,15 +144,76 @@ function setupInteractionListeners() {
   if (!interaction) return
   pollIntervalId = setInterval(() => {
     if (interaction.state) {
+      // Handle marker selection (click on marker)
+      if (interaction.state.selectedMarker &&
+          interaction.state.selectedMarker !== selectedMarker.value) {
+        const marker = interaction.state.selectedMarker
+        selectedMarker.value = marker
+        // Map marker to continent/country data for InfoPanel
+        if (marker.type === 'continent') {
+          const continent = getContinentById(marker.id)
+          selectedContinent.value = continent || marker
+          selectedCountry.value = null
+        } else {
+          const countries = getCountryByContinentId(marker.continentId)
+          const country = countries?.find(c => c.id === marker.id)
+          selectedCountry.value = country || marker
+          selectedContinent.value = null
+        }
+        hoveredContinent.value = null
+        hoveredCountry.value = null
+        hoveredMarker.value = null
+        isHoverMode.value = false
+      }
+      // Handle selection (persistent on click)
       if (interaction.state.selectedContinent &&
-          interaction.state.selectedContinent !== selectedContinent.value) {
+          interaction.state.selectedContinent !== selectedContinent.value && !interaction.state.selectedMarker) {
         selectedContinent.value = interaction.state.selectedContinent
         selectedCountry.value = null
+        selectedMarker.value = null
+        hoveredContinent.value = null
+        hoveredCountry.value = null
+        hoveredMarker.value = null
+        isHoverMode.value = false
       }
       if (interaction.state.selectedCountry &&
-          interaction.state.selectedCountry !== selectedCountry.value) {
+          interaction.state.selectedCountry !== selectedCountry.value && !interaction.state.selectedMarker) {
         selectedCountry.value = interaction.state.selectedCountry
         selectedContinent.value = null
+        selectedMarker.value = null
+        hoveredContinent.value = null
+        hoveredCountry.value = null
+        hoveredMarker.value = null
+        isHoverMode.value = false
+      }
+      // Handle hover (temporary) - markers take priority
+      if (!selectedContinent.value && !selectedCountry.value && !selectedMarker.value) {
+        if (interaction.state.hoveredMarker &&
+            interaction.state.hoveredMarker !== hoveredMarker.value) {
+          hoveredMarker.value = interaction.state.hoveredMarker
+          hoveredContinent.value = null
+          hoveredCountry.value = null
+          isHoverMode.value = true
+        } else if (interaction.state.hoveredCountry &&
+                   interaction.state.hoveredCountry !== hoveredCountry.value) {
+          hoveredCountry.value = interaction.state.hoveredCountry
+          hoveredContinent.value = null
+          hoveredMarker.value = null
+          isHoverMode.value = true
+        } else if (interaction.state.hoveredContinent &&
+                   interaction.state.hoveredContinent !== hoveredContinent.value) {
+          hoveredContinent.value = interaction.state.hoveredContinent
+          hoveredCountry.value = null
+          hoveredMarker.value = null
+          isHoverMode.value = true
+        } else if (!interaction.state.hoveredCountry && !interaction.state.hoveredContinent && !interaction.state.hoveredMarker) {
+          if (hoveredContinent.value || hoveredCountry.value || hoveredMarker.value) {
+            hoveredContinent.value = null
+            hoveredCountry.value = null
+            hoveredMarker.value = null
+            isHoverMode.value = false
+          }
+        }
       }
       zoomLevel.value = interaction.zoomLevel?.value || 1
     }
@@ -135,8 +223,14 @@ function setupInteractionListeners() {
 function closeInfoPanel() {
   selectedContinent.value = null
   selectedCountry.value = null
+  hoveredContinent.value = null
+  hoveredCountry.value = null
+  hoveredMarker.value = null
+  selectedMarker.value = null
+  isHoverMode.value = false
   if (globeRef.value?.interaction) {
     globeRef.value.interaction.closeInfoPanel()
+    globeRef.value.interaction.clearHover()
   }
 }
 
