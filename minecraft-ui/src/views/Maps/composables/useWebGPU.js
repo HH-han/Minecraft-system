@@ -823,17 +823,6 @@ export function useWebGPU(canvasRef) {
     renderPass.setVertexBuffer(0, _starsVertexBuffer)
     renderPass.draw(_starsCount)
     
-    updateUniforms(_atmosphereUniformBuffer, {
-      mvpMatrix: renderData.mvpMatrix,
-      cameraPosition: renderData.cameraPosition,
-      time: renderData.time
-    })
-    renderPass.setPipeline(_atmospherePipeline)
-    renderPass.setBindGroup(0, _atmosphereBindGroup)
-    renderPass.setVertexBuffer(0, _atmosphereVertexBuffer)
-    renderPass.setIndexBuffer(_atmosphereIndexBuffer, 'uint32')
-    renderPass.drawIndexed(_atmosphereIndexCount)
-    
     // Render dot globe as base land layer
     updateUniforms(_dotGlobeUniformBuffer, {
       mvpMatrix: renderData.mvpMatrix,
@@ -892,6 +881,18 @@ export function useWebGPU(canvasRef) {
       renderPass.setVertexBuffer(0, _countryLineBuffer)
       renderPass.draw(_countryLineCount)
     }
+    
+    // Render atmosphere last - after all opaque objects so depth test properly clips it
+    updateUniforms(_atmosphereUniformBuffer, {
+      mvpMatrix: renderData.mvpMatrix,
+      cameraPosition: renderData.cameraPosition,
+      time: renderData.time
+    })
+    renderPass.setPipeline(_atmospherePipeline)
+    renderPass.setBindGroup(0, _atmosphereBindGroup)
+    renderPass.setVertexBuffer(0, _atmosphereVertexBuffer)
+    renderPass.setIndexBuffer(_atmosphereIndexBuffer, 'uint32')
+    renderPass.drawIndexed(_atmosphereIndexCount)
     
     renderPass.end()
     _device.queue.submit([commandEncoder.finish()])
