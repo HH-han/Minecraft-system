@@ -46,7 +46,7 @@
             </div>
 
             <div class="souvenir-grid">
-                <div class="souvenir-card" v-for="item in filteredSouvenirs" :key="item.id">
+                <div class="souvenir-card" v-for="item in paginatedSouvenirs" :key="item.id">
                     <div class="souvenir-image">
                         <img :src="item.image" :alt="item.name">
                         <span class="tag" v-if="item.tag">{{ item.tag }}</span>
@@ -77,6 +77,13 @@
                     </div>
                 </div>
             </div>
+
+            <Paging 
+                v-if="totalPages > 0"
+                :total-pages="totalPages" 
+                :current-page="currentPage" 
+                @update:current-page="handlePageChange" 
+            />
         </main>
 
         <!-- 底部推荐 -->
@@ -95,12 +102,17 @@
 </template>
 <script setup>
 import { ref, computed } from 'vue'
+import Paging from '@/components/paging/index.vue'
 
 // 搜索相关
 const searchQuery = ref('')
 const activeRegion = ref('all')
 const activeCategory = ref('all')
 const sortOption = ref('popular')
+
+// 分页数据
+const currentPage = ref(1)
+const pageSize = ref(10)
 
 // 地区筛选
 const regions = [
@@ -246,30 +258,51 @@ const filteredSouvenirs = computed(() => {
         case 'price-desc':
             return result.sort((a, b) => b.price - a.price)
         case 'newest':
-            return result.sort((a, b) => b.id - a.id) // 假设ID越大越新
-        default: // popular
+            return result.sort((a, b) => b.id - a.id)
+        default:
             return result.sort((a, b) => (b.rating * 10 + b.sales) - (a.rating * 10 + a.sales))
     }
 })
 
+// 分页后的纪念品
+const paginatedSouvenirs = computed(() => {
+    const start = (currentPage.value - 1) * pageSize.value
+    const end = start + pageSize.value
+    return filteredSouvenirs.value.slice(start, end)
+})
+
+// 总页数
+const totalPages = computed(() => {
+    return Math.ceil(filteredSouvenirs.value.length / pageSize.value)
+})
+
+// 分页切换
+const handlePageChange = (page) => {
+    currentPage.value = page
+}
+
 // 搜索纪念品
 function searchSouvenirs() {
     console.log('搜索:', searchQuery.value)
+    currentPage.value = 1
 }
 
 // 按地区筛选
 function filterByRegion(regionId) {
     activeRegion.value = regionId
+    currentPage.value = 1
 }
 
 // 按分类筛选
 function filterByCategory(categoryId) {
     activeCategory.value = categoryId
+    currentPage.value = 1
 }
 
 // 排序
 function sortSouvenirs() {
     console.log('排序方式:', sortOption.value)
+    currentPage.value = 1
 }
 
 // 收藏/取消收藏

@@ -52,6 +52,13 @@
             </div>
         </div>
 
+        <Paging 
+            v-if="totalPages > 0"
+            :total-pages="totalPages" 
+            :current-page="currentPage" 
+            @update:current-page="handlePageChange" 
+        />
+
         <div v-if="showModal" class="modal-overlay" @click="closeModal">
             <div class="modal-content" @click.stop>
                 <button class="close-btn" @click="closeModal">&times;</button>
@@ -182,6 +189,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTravelPlanList, createTravelPlan, updateTravelPlan, deleteTravelPlan } from '@/api/travel.js'
+import Paging from '@/components/paging/index.vue'
 
 const travelPlans = ref([])
 const loading = ref(false)
@@ -192,6 +200,12 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const creating = ref(false)
 const updating = ref(false)
+
+// 分页数据
+const currentPage = ref(1)
+const totalPages = ref(0)
+const pageSize = ref(10)
+
 const createForm = ref({
     title: '',
     city: '',
@@ -210,18 +224,25 @@ const editForm = ref({
     content: ''
 })
 
-const fetchTravelPlans = async () => {
+const fetchTravelPlans = async (page = 1) => {
     loading.value = true
     error.value = ''
     try {
-        const response = await getTravelPlanList()
+        const response = await getTravelPlanList({ pageNum: page, pageSize: pageSize.value })
         travelPlans.value = response.data?.records || []
+        totalPages.value = response.data?.pages || 0
     } catch (err) {
         error.value = err.message || '获取数据失败'
         console.error('获取旅行计划数据失败:', err)
     } finally {
         loading.value = false
     }
+}
+
+// 分页切换
+const handlePageChange = (page) => {
+    currentPage.value = page
+    fetchTravelPlans(page)
 }
 
 const formatDate = (date) => {

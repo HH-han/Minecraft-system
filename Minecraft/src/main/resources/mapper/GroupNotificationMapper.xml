@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.GroupNotificationMapper">
+    
+    <select id="selectByReceiverId" resultType="com.minecraft.entity.GroupNotification">
+        SELECT * FROM group_notification WHERE receiver_id = #{receiverId} ORDER BY created_at DESC
+    </select>
+    
+    <select id="countUnread" resultType="int">
+        SELECT COUNT(*) FROM group_notification WHERE receiver_id = #{receiverId} AND is_read = 0
+    </select>
+    
+    <update id="markAllRead">
+        UPDATE group_notification SET is_read = 1 WHERE receiver_id = #{receiverId}
+    </update>
+    
+</mapper>

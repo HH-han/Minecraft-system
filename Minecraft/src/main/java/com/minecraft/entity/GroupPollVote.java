@@ -6,23 +6,19 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("group_member")
-public class GroupMember {
+@TableName("group_poll_vote")
+public class GroupPollVote {
     @TableId(type = IdType.AUTO)
     private Long id;
     
-    private Long groupId;
+    private Long pollId;
     
     private Long userId;
     
-    private Integer role;
+    private Integer optionId;
     
-    private Integer status;
+    private Integer score;
     
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime joinTime;
-    
-    private LocalDateTime exitTime;
-    
-    private String nickname;
+    private LocalDateTime votedAt;
 }

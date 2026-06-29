@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.GroupBillSplitMapper">
+    
+    <select id="selectByBillId" resultType="com.minecraft.entity.GroupBillSplit">
+        SELECT * FROM group_bill_split WHERE bill_id = #{billId}
+    </select>
+    
+    <select id="selectByGroupId" resultType="com.minecraft.entity.GroupBillSplit">
+        SELECT gbs.* FROM group_bill_split gbs 
+        INNER JOIN group_bill gb ON gbs.bill_id = gb.id 
+        WHERE gb.group_id = #{groupId}
+    </select>
+    
+    <select id="selectUnpaidByUserId" resultType="com.minecraft.entity.GroupBillSplit">
+        SELECT * FROM group_bill_split WHERE user_id = #{userId} AND is_paid = 0
+    </select>
+    
+</mapper>

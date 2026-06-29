@@ -178,26 +178,12 @@
           </div>
         </div>
       </div>
-      <div v-if="totalPages > 1" class="pagination">
-        <button @click="prevPage" :disabled="currentPage === 1" class="pagination-button">
-          <svg t="1742108758930" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-            p-id="2657" width="32" height="32" style="vertical-align: middle;">
-            <path
-              d="M755.498667 225.834667a42.666667 42.666667 0 0 1 0 60.330666L529.664 512l225.834667 225.834667a42.666667 42.666667 0 1 1-60.330667 60.330666l-256-256a42.666667 42.666667 0 0 1 0-60.330666l256-256a42.666667 42.666667 0 0 1 60.330667 0z m-256 0a42.666667 42.666667 0 0 1 0 60.330666L273.664 512l225.834667 225.834667a42.666667 42.666667 0 1 1-60.330667 60.330666l-256-256a42.666667 42.666667 0 0 1 0-60.330666l256-256a42.666667 42.666667 0 0 1 60.330667 0z"
-              fill="#ffffff" p-id="2658"></path>
-          </svg>
-
-        </button>
-        <span class="page-indicator">第 {{ currentPage }} 页 / 共 {{ totalPages }} 页</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-button">
-          <svg t="1742108660346" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-            p-id="2335" width="32" height="32" style="vertical-align: middle;">
-            <path
-              d="M524.501333 225.834667a42.666667 42.666667 0 0 1 60.330667 0l256 256a42.666667 42.666667 0 0 1 0 60.330666l-256 256a42.666667 42.666667 0 1 1-60.330667-60.330666L750.336 512 524.501333 286.165333a42.666667 42.666667 0 0 1 0-60.330666z m-256 0a42.666667 42.666667 0 0 1 60.330667 0l256 256a42.666667 42.666667 0 0 1 0 60.330666l-256 256a42.666667 42.666667 0 1 1-60.330667-60.330666L494.336 512 268.501333 286.165333a42.666667 42.666667 0 0 1 0-60.330666z"
-              fill="#ffffff" p-id="2336"></path>
-          </svg>
-        </button>
-      </div>
+      <Paging 
+        v-if="totalPages > 0"
+        :total-pages="totalPages" 
+        :current-page="currentPage" 
+        @update:current-page="handlePageChange" 
+      />
     </main>
   </div>
 </template>
@@ -207,6 +193,7 @@ import { ref, onMounted } from 'vue'
 import Characteristics from './characteristics.vue';
 import Destination from './destination.vue';
 import Seasonal from './season.vue';
+import Paging from '@/components/paging/index.vue'
 import countriesApi from '@/api/countries.js'
 
 // 响应式数据
@@ -224,6 +211,7 @@ const selectedDestination = ref(null)
 const defaultImage = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
+const pageSize = ref(10)
 const destinationList = ref([])
 const countries = ref([])
 const loading = ref(false)
@@ -252,17 +240,10 @@ const closeDetail = () => {
   selectedDestination.value = null
 }
 
-// 上一页
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-  }
-}
-
-// 下一页
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
+const handlePageChange = (page) => {
+  if (page !== currentPage.value) {
+    currentPage.value = page
+    fetchCountries()
   }
 }
 
@@ -285,8 +266,8 @@ const fetchCountries = async () => {
   error.value = ''
   
   try {
-    // 使用真实API获取数据
-    const backendResponse = await countriesApi.getCountriesList()
+    // 使用真实API获取数据，传递分页参数
+    const backendResponse = await countriesApi.getCountriesList(currentPage.value, pageSize.value)
     
     // 安全检查：确保backendResponse存在
     if (!backendResponse) {

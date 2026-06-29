@@ -57,9 +57,11 @@
     </div>
     <!-- 分页 -->
     <div class="block-world">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-        :current-page="currentPage" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper" :total="total" />
+        <Paging 
+            :total-pages="totalPages" 
+            :current-page="currentPage" 
+            @update:current-page="handleCurrentChange" 
+        />
     </div>
 
 </template>
@@ -71,6 +73,7 @@ import {
   getWorldCharacteristicsPage,
   getWorldCharacteristicsByCategory
 } from '@/api/worldcharacteristics';
+import Paging from '@/components/paging/index.vue';
 
 // 数据状态
 const locations = ref([]);
@@ -79,6 +82,7 @@ const activeCategory = ref('全部');
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
+const totalPages = ref(0);
 const loading = ref(false);
 
 // 计算过滤后的地点
@@ -94,6 +98,7 @@ const loadData = async () => {
     if (response.code === 200) {
       locations.value = response.data.records;
       total.value = response.data.total;
+      totalPages.value = response.data.pages || Math.ceil(response.data.total / pageSize.value);
     }
   } catch (error) {
     console.error('加载数据失败:', error);
@@ -105,19 +110,22 @@ const loadData = async () => {
 // 按分类过滤
 const filterByCategory = async (category) => {
   activeCategory.value = category;
+  currentPage.value = 1;
   loading.value = true;
   try {
     if (category === '全部') {
-      const response = await getWorldCharacteristicsList();
+      const response = await getWorldCharacteristicsPage(1, pageSize.value);
       if (response.code === 200) {
-        locations.value = response.data;
-        total.value = response.data.length;
+        locations.value = response.data.records;
+        total.value = response.data.total;
+        totalPages.value = response.data.pages || Math.ceil(response.data.total / pageSize.value);
       }
     } else {
       const response = await getWorldCharacteristicsByCategory(category);
       if (response.code === 200) {
         locations.value = response.data;
         total.value = response.data.length;
+        totalPages.value = Math.ceil(response.data.length / pageSize.value);
       }
     }
   } catch (error) {
@@ -125,12 +133,6 @@ const filterByCategory = async (category) => {
   } finally {
     loading.value = false;
   }
-};
-
-// 分页处理
-const handleSizeChange = (size) => {
-  pageSize.value = size;
-  loadData();
 };
 
 const handleCurrentChange = (current) => {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.GroupTripPlanMapper">
+    
+    <select id="selectByGroupId" resultType="com.minecraft.entity.GroupTripPlan">
+        SELECT * FROM group_trip_plan WHERE group_id = #{groupId}
+    </select>
+    
+    <select id="selectByGroupIdOrdered" resultType="com.minecraft.entity.GroupTripPlan">
+        SELECT * FROM group_trip_plan WHERE group_id = #{groupId} ORDER BY day_index ASC, date ASC
+    </select>
+    
+</mapper>

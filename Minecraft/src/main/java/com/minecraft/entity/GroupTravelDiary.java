@@ -6,23 +6,24 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("group_member")
-public class GroupMember {
+@TableName("group_travel_diary")
+public class GroupTravelDiary {
     @TableId(type = IdType.AUTO)
     private Long id;
     
     private Long groupId;
     
-    private Long userId;
+    private String title;
     
-    private Integer role;
+    private String coverUrl;
+    
+    private String contentJson;
     
     private Integer status;
     
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime joinTime;
+    private LocalDateTime createdAt;
     
-    private LocalDateTime exitTime;
-    
-    private String nickname;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedAt;
 }
