@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,6 +21,15 @@ public class GlobalExceptionHandler {
     public ApiResponse<?> handleValidationException(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
         String message = fieldError != null ? fieldError.getDefaultMessage() : "参数校验失败";
+        return ApiResponse.error(400, message);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ApiResponse<?> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        String paramName = e.getName();
+        String requiredType = e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "未知类型";
+        String value = e.getValue() != null ? e.getValue().toString() : "null";
+        String message = String.format("参数 '%s' 类型错误：期望 %s 类型，但接收到值 '%s'", paramName, requiredType, value);
         return ApiResponse.error(400, message);
     }
 
