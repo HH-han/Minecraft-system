@@ -2124,6 +2124,338 @@ UNLOCK TABLES;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
+-- =====================================================
+-- 旅行群组功能新增表（根据group.md设计方案）
+-- =====================================================
+
+--
+-- Table structure for table `travel_group`
+--
+
+DROP TABLE IF EXISTS `travel_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `travel_group` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '群组ID',
+  `name` varchar(100) NOT NULL COMMENT '群组名称',
+  `cover_url` varchar(500) DEFAULT NULL COMMENT '封面图片',
+  `destination` varchar(200) DEFAULT NULL COMMENT '目的地',
+  `start_date` date DEFAULT NULL COMMENT '出发日期',
+  `end_date` date DEFAULT NULL COMMENT '结束日期',
+  `description` text COMMENT '群组简介',
+  `max_members` int DEFAULT 20 COMMENT '人数上限',
+  `is_public` tinyint(1) DEFAULT 0 COMMENT '是否公开',
+  `status` tinyint DEFAULT 1 COMMENT '1-进行中 2-已结束 3-已解散',
+  `created_by` bigint DEFAULT NULL COMMENT '创建者ID',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted` tinyint(1) DEFAULT 0 COMMENT '逻辑删除标记',
+  PRIMARY KEY (`id`),
+  KEY `idx_created_by` (`created_by`),
+  KEY `idx_destination` (`destination`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='旅行群组主表';
+
+--
+-- 修改 group_member 表结构以适配新功能
+-- 注意：此ALTER语句需要手动执行，可能与现有数据冲突
+-- role字段在现有数据库中为varchar类型，值如'admin'/'member'/'owner'
+--
+
+-- ALTER TABLE `group_member` 
+--   ADD COLUMN `status` tinyint DEFAULT 1 COMMENT '1-正常 2-禁言 3-已退出' AFTER `role`,
+--   ADD COLUMN `exit_time` datetime DEFAULT NULL COMMENT '退出时间' AFTER `join_time`,
+--   ADD COLUMN `nickname` varchar(50) DEFAULT NULL COMMENT '群内昵称' AFTER `exit_time`;
+
+--
+-- Table structure for table `group_post`
+--
+
+DROP TABLE IF EXISTS `group_post`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_post` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '动态ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `user_id` bigint NOT NULL COMMENT '发布者ID',
+  `content` text COMMENT '动态内容',
+  `images` json COMMENT '图片URL数组',
+  `location` varchar(200) DEFAULT NULL COMMENT '位置信息',
+  `like_count` int DEFAULT 0 COMMENT '点赞数',
+  `comment_count` int DEFAULT 0 COMMENT '评论数',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted` tinyint(1) DEFAULT 0 COMMENT '逻辑删除标记',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='群组动态表';
+
+--
+-- Table structure for table `group_comment`
+--
+
+DROP TABLE IF EXISTS `group_comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_comment` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '评论ID',
+  `post_id` bigint NOT NULL COMMENT '动态ID',
+  `user_id` bigint NOT NULL COMMENT '评论者ID',
+  `parent_id` bigint DEFAULT 0 COMMENT '回复的评论ID，0表示一级评论',
+  `reply_to_user_id` bigint DEFAULT NULL COMMENT '@回复的用户ID',
+  `content` varchar(500) NOT NULL COMMENT '评论内容',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `deleted` tinyint(1) DEFAULT 0 COMMENT '逻辑删除标记',
+  PRIMARY KEY (`id`),
+  KEY `idx_post_id` (`post_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_parent_id` (`parent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='动态评论表';
+
+--
+-- Table structure for table `group_trip_plan`
+--
+
+DROP TABLE IF EXISTS `group_trip_plan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_trip_plan` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '行程ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `day_index` int NOT NULL COMMENT '第几天',
+  `date` date DEFAULT NULL COMMENT '具体日期',
+  `time_slot` varchar(50) DEFAULT NULL COMMENT '时间段：上午/下午/晚上',
+  `activity` varchar(200) NOT NULL COMMENT '活动名称',
+  `location` varchar(200) DEFAULT NULL COMMENT '地点',
+  `transport` varchar(50) DEFAULT NULL COMMENT '交通方式',
+  `notes` text COMMENT '备注',
+  `created_by` bigint DEFAULT NULL COMMENT '创建者ID',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_day_index` (`day_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='行程计划表';
+
+--
+-- Table structure for table `group_bill`
+--
+
+DROP TABLE IF EXISTS `group_bill`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_bill` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '账单ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `payer_id` bigint NOT NULL COMMENT '付款人ID',
+  `amount` decimal(10,2) NOT NULL COMMENT '金额',
+  `category` varchar(50) DEFAULT NULL COMMENT '分类：餐饮/住宿/交通/门票/其他',
+  `description` varchar(200) DEFAULT NULL COMMENT '描述',
+  `bill_date` date DEFAULT NULL COMMENT '账单日期',
+  `is_settled` tinyint(1) DEFAULT 0 COMMENT '是否已结算',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_payer_id` (`payer_id`),
+  KEY `idx_bill_date` (`bill_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='AA账单表';
+
+--
+-- Table structure for table `group_bill_split`
+--
+
+DROP TABLE IF EXISTS `group_bill_split`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_bill_split` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '分摊ID',
+  `bill_id` bigint NOT NULL COMMENT '账单ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `share_amount` decimal(10,2) NOT NULL COMMENT '分摊金额',
+  `is_paid` tinyint(1) DEFAULT 0 COMMENT '是否已还',
+  PRIMARY KEY (`id`),
+  KEY `idx_bill_id` (`bill_id`),
+  KEY `idx_user_id` (`user_id`),
+  UNIQUE KEY `uk_bill_user` (`bill_id`, `user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='账单分摊明细表';
+
+--
+-- Table structure for table `group_invite`
+--
+
+DROP TABLE IF EXISTS `group_invite`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_invite` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '邀请ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `inviter_id` bigint DEFAULT NULL COMMENT '邀请人ID',
+  `invitee_id` bigint NOT NULL COMMENT '被邀请人/申请人ID',
+  `type` tinyint DEFAULT 1 COMMENT '1-邀请 2-申请加入',
+  `status` tinyint DEFAULT 0 COMMENT '0-待处理 1-同意 2-拒绝',
+  `expire_at` datetime DEFAULT NULL COMMENT '过期时间',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `handled_at` datetime DEFAULT NULL COMMENT '处理时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_invitee_id` (`invitee_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='邀请/申请记录表';
+
+--
+-- Table structure for table `group_notification`
+--
+
+DROP TABLE IF EXISTS `group_notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_notification` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '通知ID',
+  `receiver_id` bigint NOT NULL COMMENT '接收者ID',
+  `group_id` bigint DEFAULT NULL COMMENT '群组ID',
+  `type` varchar(30) DEFAULT NULL COMMENT '通知类型：JOIN_APPLY/NEW_POST/COMMENT/MENTION/BILL_UPDATE',
+  `title` varchar(100) DEFAULT NULL COMMENT '通知标题',
+  `content` varchar(500) DEFAULT NULL COMMENT '通知内容',
+  `target_id` bigint DEFAULT NULL COMMENT '关联业务ID',
+  `is_read` tinyint(1) DEFAULT 0 COMMENT '是否已读',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_receiver_id` (`receiver_id`),
+  KEY `idx_is_read` (`is_read`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='消息通知表';
+
+--
+-- Table structure for table `group_album`
+--
+
+DROP TABLE IF EXISTS `group_album`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_album` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '照片ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `user_id` bigint NOT NULL COMMENT '上传者ID',
+  `image_url` varchar(500) NOT NULL COMMENT '图片URL',
+  `thumbnail_url` varchar(500) DEFAULT NULL COMMENT '缩略图URL',
+  `description` varchar(200) DEFAULT NULL COMMENT '照片描述',
+  `location` varchar(200) DEFAULT NULL COMMENT '拍摄地点',
+  `taken_at` datetime DEFAULT NULL COMMENT '拍摄时间',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
+  `deleted` tinyint(1) DEFAULT 0 COMMENT '逻辑删除标记',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='群组相册表';
+
+--
+-- Table structure for table `ai_trip_recommendation`
+--
+
+DROP TABLE IF EXISTS `ai_trip_recommendation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ai_trip_recommendation` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '推荐ID',
+  `group_id` bigint DEFAULT NULL COMMENT '关联群组ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `destination` varchar(200) NOT NULL COMMENT '目的地',
+  `days` int NOT NULL COMMENT '天数',
+  `preferences` json DEFAULT NULL COMMENT '偏好：美食/文化/自然/购物等',
+  `recommendation_json` json NOT NULL COMMENT '完整行程方案JSON',
+  `status` tinyint DEFAULT 1 COMMENT '1-草稿 2-已发布 3-已采用',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='AI行程推荐记录表';
+
+--
+-- Table structure for table `group_location_history`
+--
+
+DROP TABLE IF EXISTS `group_location_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_location_history` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '位置记录ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `latitude` decimal(10,7) NOT NULL COMMENT '纬度',
+  `longitude` decimal(10,7) NOT NULL COMMENT '经度',
+  `accuracy` int DEFAULT NULL COMMENT '精度(米)',
+  `recorded_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_user_time` (`group_id`, `user_id`, `recorded_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='位置历史表';
+
+--
+-- Table structure for table `group_poll`
+--
+
+DROP TABLE IF EXISTS `group_poll`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_poll` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '投票ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `creator_id` bigint NOT NULL COMMENT '创建者ID',
+  `title` varchar(200) NOT NULL COMMENT '投票标题',
+  `description` text DEFAULT NULL COMMENT '投票描述',
+  `type` tinyint DEFAULT 1 COMMENT '1-单选 2-多选 3-评分',
+  `options` json NOT NULL COMMENT '选项JSON：[{"id":1,"text":"选项A","image":"url"}]',
+  `end_time` datetime DEFAULT NULL COMMENT '截止时间',
+  `is_anonymous` tinyint(1) DEFAULT 0 COMMENT '是否匿名',
+  `status` tinyint DEFAULT 1 COMMENT '1-进行中 2-已结束',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_creator_id` (`creator_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='投票表';
+
+--
+-- Table structure for table `group_poll_vote`
+--
+
+DROP TABLE IF EXISTS `group_poll_vote`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_poll_vote` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '投票记录ID',
+  `poll_id` bigint NOT NULL COMMENT '投票ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `option_id` int NOT NULL COMMENT '选项ID',
+  `score` int DEFAULT NULL COMMENT '评分制时的分数',
+  `voted_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '投票时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_poll_id` (`poll_id`),
+  UNIQUE KEY `uk_poll_user` (`poll_id`, `user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='投票记录表';
+
+--
+-- Table structure for table `group_travel_diary`
+--
+
+DROP TABLE IF EXISTS `group_travel_diary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `group_travel_diary` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '日记ID',
+  `group_id` bigint NOT NULL COMMENT '群组ID',
+  `title` varchar(200) DEFAULT NULL COMMENT '日记标题（自动生成：{destination}之旅）',
+  `cover_url` varchar(500) DEFAULT NULL COMMENT '封面图URL',
+  `content_json` json NOT NULL COMMENT '完整的日记内容JSON',
+  `status` tinyint DEFAULT 1 COMMENT '1-草稿 2-已发布 3-已导出',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='旅行日记表';
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2135,3 +2467,4 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-05-15 21:13:15
+-- New tables added for travel group feature on 2026-06-29
