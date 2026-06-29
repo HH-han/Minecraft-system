@@ -173,13 +173,13 @@ public class TravelGroupServiceImpl extends ServiceImpl<TravelGroupMapper, Trave
         group.setCreatedBy(newOwnerId);
         updateById(group);
 
-        newOwner.setRole(1);
+        newOwner.setRole("owner");
         groupMemberMapper.updateById(newOwner);
 
         GroupMember oldOwner = new GroupMember();
         oldOwner.setGroupId(groupId);
         oldOwner.setUserId(currentUserId);
-        oldOwner.setRole(2);
+        oldOwner.setRole("admin");
         groupMemberMapper.update(oldOwner, wrapper);
     }
 }
