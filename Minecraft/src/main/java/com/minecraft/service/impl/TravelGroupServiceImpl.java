@@ -134,8 +134,8 @@ public class TravelGroupServiceImpl extends ServiceImpl<TravelGroupMapper, Trave
             LambdaQueryWrapper<GroupMember> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(GroupMember::getGroupId, group.getId());
             wrapper.eq(GroupMember::getStatus, 1);
-            int memberCount = groupMemberMapper.selectCount(wrapper);
-            vo.setCurrentMembers(memberCount);
+            Long memberCount = groupMemberMapper.selectCount(wrapper);
+            vo.setCurrentMembers(memberCount.intValue());
 
             User creator = userMapper.selectById(group.getCreatedBy());
             if (creator != null) {

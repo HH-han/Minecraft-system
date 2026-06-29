@@ -30,6 +30,9 @@ public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, Group
     @Autowired
     private GroupNotificationService notificationService;
 
+    @Autowired
+    private GroupMemberMapper groupMemberMapper;
+
     @Override
     @Transactional
     public void inviteMembers(Long groupId, List<Long> inviteeIds, Long inviterId) {

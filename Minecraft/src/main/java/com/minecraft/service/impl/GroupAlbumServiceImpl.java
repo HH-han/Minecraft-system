@@ -34,8 +34,13 @@ public class GroupAlbumServiceImpl extends ServiceImpl<GroupAlbumMapper, GroupAl
 
         List<GroupAlbum> albums = new ArrayList<>();
         for (MultipartFile file : files) {
-            String imageUrl = imageUtils.processImage(file);
-            String thumbnailUrl = imageUtils.processImage(file);
+            String imageUrl;
+            try {
+                imageUrl = imageUtils.processMultipartFile(file);
+            } catch (Exception e) {
+                throw new BusinessException(500, "图片上传失败: " + e.getMessage());
+            }
+            String thumbnailUrl = imageUrl;
 
             GroupAlbum album = new GroupAlbum();
             album.setGroupId(groupId);
