@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.GroupPollVoteMapper">
+    
+    <select id="selectByPollId" resultType="com.minecraft.entity.GroupPollVote">
+        SELECT * FROM group_poll_vote WHERE poll_id = #{pollId}
+    </select>
+    
+    <select id="selectByPollIdAndOptionId" resultType="com.minecraft.entity.GroupPollVote">
+        SELECT * FROM group_poll_vote WHERE poll_id = #{pollId} AND option_id = #{optionId}
+    </select>
+    
+    <select id="selectByPollAndUser" resultType="com.minecraft.entity.GroupPollVote">
+        SELECT * FROM group_poll_vote WHERE poll_id = #{pollId} AND user_id = #{userId}
+    </select>
+    
+</mapper>
