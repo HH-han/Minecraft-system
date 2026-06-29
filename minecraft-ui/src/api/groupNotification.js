@@ -6,20 +6,20 @@ import request from '@/utils/request'
 
 // 获取通知列表
 export const getNotifications = () => {
-  return request.get('/api/notification/list')
+  return request.get('/notification/list')
 }
 
 // 标记已读
 export const markAsRead = (id) => {
-  return request.put(`/api/notification/${id}/read`)
+  return request.put(`/notification/${id}/read`)
 }
 
 // 全部已读
 export const markAllRead = () => {
-  return request.put('/api/notification/read-all')
+  return request.put('/notification/read-all')
 }
 
 // 获取未读数量
 export const getUnreadCount = () => {
-  return request.get('/api/notification/unread-count')
+  return request.get('/notification/unread-count')
 }

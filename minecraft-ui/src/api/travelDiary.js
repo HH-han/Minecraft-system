@@ -6,15 +6,15 @@ import request from '@/utils/request'
 
 // 生成旅行日记
 export const generateDiary = (groupId) => {
-  return request.get(`/api/diary/${groupId}/generate`)
+  return request.get(`/diary/${groupId}/generate`)
 }
 
 // 获取日记
 export const getDiary = (groupId) => {
-  return request.get(`/api/diary/${groupId}`)
+  return request.get(`/diary/${groupId}`)
 }
 
 // 导出日记
 export const exportDiary = (diaryId, format = 'json') => {
-  return request.post(`/api/diary/${diaryId}/export`, null, { params: { format } })
+  return request.post(`/diary/${diaryId}/export`, null, { params: { format } })
 }
