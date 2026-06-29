@@ -15,7 +15,10 @@
                 :attractions="attractions" 
                 :loading="loading" 
                 :error="error"
+                :total-pages="totalPages"
+                :current-page="currentPage"
                 @retry="fetchAttractions"
+                @update:current-page="handlePageChange"
             />
         </main>
         <footer>
@@ -41,6 +44,11 @@ const attractions = ref([]);
 const loading = ref(false);
 const error = ref('');
 
+// 分页数据
+const currentPage = ref(1);
+const totalPages = ref(0);
+const pageSize = ref(10);
+
 // 获取轮播图数据
 const fetchcarousel = async () => {
   try {
@@ -59,19 +67,26 @@ const fetchcarousel = async () => {
 };
 
 // 获取景点数据
-const fetchAttractions = async () => {
+const fetchAttractions = async (page = 1) => {
   loading.value = true;
   error.value = '';
   
   try {
-    const response = await getAttractionList();
+    const response = await getAttractionList({ pageNum: page, pageSize: pageSize.value });
     attractions.value = response.data?.records || [];
+    totalPages.value = response.data?.pages || 0;
   } catch (err) {
     error.value = err.message || '获取数据失败';
     console.error('获取景点数据失败:', err);
   } finally {
     loading.value = false;
   }
+};
+
+// 分页切换
+const handlePageChange = (page) => {
+  currentPage.value = page;
+  fetchAttractions(page);
 };
 
 // 初始化

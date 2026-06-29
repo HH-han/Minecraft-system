@@ -41,13 +41,21 @@
     </div>
   </div>
 
+  <Paging 
+    v-if="totalPages > 0"
+    :total-pages="totalPages" 
+    :current-page="currentPage" 
+    @update:current-page="handlePageChange" 
+  />
+
   <!-- 商品详情模态框 -->
   <Select :visible="showSelectModal" :productId="selectedFoodId" :commodity="'0'" @close="closeSelectModal" />
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { getFoodList } from '@/api/food.js'
 import Select from '@/components/Payment/Select.vue'
+import Paging from '@/components/paging/index.vue'
 
 // 响应式数据
 const foods = ref([])
@@ -56,20 +64,32 @@ const error = ref('')
 const showSelectModal = ref(false)
 const selectedFoodId = ref('')
 
+// 分页数据
+const currentPage = ref(1)
+const totalPages = ref(0)
+const pageSize = ref(10)
+
 // 获取美食数据
-const fetchFoods = async () => {
+const fetchFoods = async (page = 1) => {
   loading.value = true
   error.value = ''
 
   try {
-    const response = await getFoodList()
+    const response = await getFoodList({ pageNum: page, pageSize: pageSize.value })
     foods.value = response.data?.records || []
+    totalPages.value = response.data?.pages || 0
   } catch (err) {
     error.value = err.message || '获取数据失败'
     console.error('获取美食数据失败:', err)
   } finally {
     loading.value = false
   }
+}
+
+// 分页切换
+const handlePageChange = (page) => {
+  currentPage.value = page
+  fetchFoods(page)
 }
 
 // 组件挂载时获取数据
@@ -92,33 +112,6 @@ const closeSelectModal = () => {
 </script>
 <style scoped>
 @import '@/css/cart/card.css';
-
-/* 分页 */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin: 30px 0;
-}
-
-.page-btn {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.page-btn:hover {
-  background: #f5f5f5;
-}
-
-.page-btn.active {
-  background: #e74c3c;
-  color: white;
-  border-color: #e74c3c;
-}
 
 /* 美食详情弹窗 */
 .detail-modal {

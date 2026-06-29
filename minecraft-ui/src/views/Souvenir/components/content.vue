@@ -28,6 +28,13 @@
             <p>暂无商品数据</p>
         </div>
     </div>
+
+    <Paging 
+        v-if="totalPages > 0"
+        :total-pages="totalPages" 
+        :current-page="currentPage" 
+        @update:current-page="handlePageChange" 
+    />
     
     <!-- 商品详情模态框 -->
     <Select 
@@ -41,6 +48,7 @@
 import { ref, onMounted } from 'vue'
 import { getProductList } from '@/api/product.js'
 import Select from '@/components/Payment/Select.vue'
+import Paging from '@/components/paging/index.vue'
 
 // 响应式数据
 const products = ref([])
@@ -49,20 +57,32 @@ const error = ref('')
 const showSelectModal = ref(false)
 const selectedProductId = ref('')
 
+// 分页数据
+const currentPage = ref(1)
+const totalPages = ref(0)
+const pageSize = ref(10)
+
 // 获取商品数据
-const fetchProducts = async () => {
+const fetchProducts = async (page = 1) => {
     loading.value = true
     error.value = ''
     
     try {
-        const response = await getProductList()
+        const response = await getProductList({ pageNum: page, pageSize: pageSize.value })
         products.value = response.data?.records || []
+        totalPages.value = response.data?.pages || 0
     } catch (err) {
         error.value = err.message || '获取数据失败'
         console.error('获取商品数据失败:', err)
     } finally {
         loading.value = false
     }
+}
+
+// 分页切换
+const handlePageChange = (page) => {
+    currentPage.value = page
+    fetchProducts(page)
 }
 
 // 组件挂载时获取数据

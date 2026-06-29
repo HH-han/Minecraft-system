@@ -41,6 +41,13 @@
     </div>
   </div>
 
+  <Paging 
+    v-if="totalPages > 0"
+    :total-pages="totalPages" 
+    :current-page="currentPage" 
+    @update:current-page="$emit('update:currentPage', $event)" 
+  />
+
   <!-- 酒店详情模态框 -->
   <div v-if="showModal" class="glass-modal" @click="closeModal">
     <div class="glass-modal-content" @click.stop>
@@ -121,6 +128,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBookingStore } from '@/stores/bookingStore.js'
+import Paging from '@/components/paging/index.vue'
 
 const props = defineProps({
   hotels: {
@@ -134,10 +142,18 @@ const props = defineProps({
   error: {
     type: String,
     default: ''
+  },
+  totalPages: {
+    type: Number,
+    default: 0
+  },
+  currentPage: {
+    type: Number,
+    default: 1
   }
 })
 
-const emit = defineEmits(['retry'])
+const emit = defineEmits(['retry', 'update:currentPage'])
 
 const router = useRouter()
 const showModal = ref(false)
@@ -163,31 +179,6 @@ const OrderDetails = (hotel) => {
 </script>
 <style scoped>
 @import '@/css/cart/card.css';
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin: 30px 0;
-}
-
-.page-btn {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.page-btn:hover {
-  background: #f5f5f5;
-}
-
-.page-btn.active {
-  background: #e74c3c;
-  color: white;
-  border-color: #e74c3c;
-}
 
 .glass-modal {
   position: fixed;
