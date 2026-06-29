@@ -23,7 +23,7 @@ public class TravelGroupVO {
     private Long createdBy;
     private String creatorName;
     private String creatorAvatar;
-    private Integer userRole;
+    private String userRole;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<GroupMember> members;

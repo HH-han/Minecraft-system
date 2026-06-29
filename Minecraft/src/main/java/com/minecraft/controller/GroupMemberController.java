@@ -71,7 +71,7 @@ public class GroupMemberController {
 
     @Operation(summary = "修改成员角色")
     @PutMapping("/{userId}/role")
-    public ApiResponse<Void> changeRole(@PathVariable Long groupId, @PathVariable Long userId, @RequestParam Integer role) {
+    public ApiResponse<Void> changeRole(@PathVariable Long groupId, @PathVariable Long userId, @RequestParam String role) {
         Long operatorId = SecurityUtils.getCurrentUserId();
         groupMemberService.changeRole(groupId, userId, role, operatorId);
         return ApiResponse.success("角色修改成功", null);

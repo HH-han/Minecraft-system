@@ -50,7 +50,7 @@ public class TravelGroupServiceImpl extends ServiceImpl<TravelGroupMapper, Trave
         GroupMember member = new GroupMember();
         member.setGroupId(group.getId());
         member.setUserId(userId);
-        member.setRole(1);
+        member.setRole("owner");
         member.setStatus(1);
         groupMemberMapper.insert(member);
 

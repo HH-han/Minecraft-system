@@ -114,7 +114,7 @@ public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, Group
         GroupMember member = new GroupMember();
         member.setGroupId(groupId);
         member.setUserId(userId);
-        member.setRole(3);
+        member.setRole("member");
         member.setStatus(1);
         groupMemberMapper.insert(member);
 
@@ -191,7 +191,7 @@ public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, Group
     }
 
     @Override
-    public void changeRole(Long groupId, Long userId, Integer role, Long operatorId) {
+    public void changeRole(Long groupId, Long userId, String role, Long operatorId) {
         if (!isOwner(groupId, operatorId)) {
             throw new BusinessException(403, "只有群主可以修改角色");
         }
@@ -222,7 +222,7 @@ public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, Group
     }
 
     @Override
-    public Integer getMemberRole(Long groupId, Long userId) {
+    public String getMemberRole(Long groupId, Long userId) {
         GroupMember member = getMember(groupId, userId);
         return member != null ? member.getRole() : null;
     }
@@ -235,13 +235,13 @@ public class GroupMemberServiceImpl extends ServiceImpl<GroupMemberMapper, Group
 
     @Override
     public boolean isAdmin(Long groupId, Long userId) {
-        Integer role = getMemberRole(groupId, userId);
-        return role != null && role <= 2;
+        String role = getMemberRole(groupId, userId);
+        return role != null && ("owner".equals(role) || "admin".equals(role));
     }
 
     @Override
     public boolean isOwner(Long groupId, Long userId) {
-        Integer role = getMemberRole(groupId, userId);
-        return role != null && role == 1;
+        String role = getMemberRole(groupId, userId);
+        return role != null && "owner".equals(role);
     }
 }
