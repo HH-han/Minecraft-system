@@ -71,6 +71,45 @@ defineEmits(['create', 'join'])
   align-items: center;
 }
 
+.hero-actions button {
+  border: none;
+  padding: var(--spacing-12) var(--spacing-28);
+  border-radius: var(--radius-full);
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.hero-actions .btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.hero-actions .btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.hero-actions .btn-primary:active {
+  transform: scale(0.98);
+}
+
+.hero-actions .btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.hero-actions .btn-secondary:hover {
+  background: rgba(41, 151, 255, 0.1);
+}
+
+.hero-actions .btn-secondary:active {
+  transform: scale(0.98);
+}
+
 .hero-actions .btn-primary::after,
 .hero-actions .btn-secondary::after {
   content: '›';
@@ -110,8 +149,7 @@ defineEmits(['create', 'join'])
     align-items: center;
     gap: var(--spacing-16);
   }
-  .hero-actions .btn-primary,
-  .hero-actions .btn-secondary {
+  .hero-actions button {
     width: 100%;
     justify-content: center;
     padding: var(--spacing-12) var(--spacing-24);
