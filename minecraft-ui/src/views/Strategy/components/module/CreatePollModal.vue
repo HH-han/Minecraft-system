@@ -153,6 +153,45 @@ function handleSubmit() {
   border-top: 1px solid var(--color-border);
 }
 
+.modal-footer button {
+  border: none;
+  padding: var(--spacing-12) var(--spacing-28);
+  border-radius: var(--radius-full);
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.modal-footer .btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.modal-footer .btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.modal-footer .btn-primary:active {
+  transform: scale(0.98);
+}
+
+.modal-footer .btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.modal-footer .btn-secondary:hover {
+  background: rgba(41, 151, 255, 0.1);
+}
+
+.modal-footer .btn-secondary:active {
+  transform: scale(0.98);
+}
+
 .form-group {
   margin-bottom: var(--spacing-20);
 }
