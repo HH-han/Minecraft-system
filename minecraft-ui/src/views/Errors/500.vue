@@ -2,16 +2,16 @@
 <div class="scale-wrapper">
   <div class="wrapper">
     <div class="left">
-      <h1>500 — Internal Server Error</h1>
+      <h1>500 — 服务器内部错误</h1>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:nowrap">
         <div class="error-num" id="err">500</div>
         <div>
-          <p class="lead" id="msg">Our server took a coffee break ☕ — please try again soon.</p>
+          <p class="lead" id="msg">服务器正在休息 ☕ — 请稍后重试。</p>
           <div class="actions">
-            <button class="primary" id="retry">Try Again</button>
-            <button class="ghost" id="home">Go Home</button>
+            <button class="primary" id="retry">重试</button>
+            <button class="ghost" id="home">返回首页</button>
           </div>
-          <div class="hint" id="hint">Hint: It’s probably not your fault. Error code <code>500</code></div>
+          <div class="hint" id="hint">提示：这很可能不是你的问题。错误代码 <code>500</code></div>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
           <div class="panel">DB</div>
           <div class="light"></div>
         </div>
-        <div class="robot" id="robot">🤖<div style="font-size:11px;margin-top:4px">Server Bot</div>
+        <div class="robot" id="robot">🤖<div style="font-size:11px;margin-top:4px">服务器机器人</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
           <div class="panel" style="width:44px;height:44px;">API</div>
@@ -31,14 +31,14 @@
       </div>
     </div>
 
-    <div class="foot">Debug status: <span id="debug">idle</span></div>
+    <div class="foot">调试状态: <span id="debug">空闲</span></div>
   </div>
 </div>
 
 <!-- Popup -->
 <div class="popup" id="popup">
-  <div>💡 Try the “Try Again” button a few times — you might get lucky!</div>
-  <button id="closePopup" aria-label="Close popup">✕</button>
+  <div>💡 多点击几次“重试”按钮 — 也许会有好运！</div>
+  <button id="closePopup" aria-label="关闭弹窗">✕</button>
 </div>
 </template>
 
@@ -134,25 +134,25 @@ onMounted(() => {
 
   retry.addEventListener("click", async (e) => {
     retry.disabled = true;
-    retry.textContent = "Checking...";
-    debug.textContent = "retrying";
+    retry.textContent = "检查中...";
+    debug.textContent = "重试中";
     await new Promise((r) => setTimeout(r, 900));
     if (successChance()) {
       err.textContent = "200";
       err.style.color = "#9be7a9";
-      msg.textContent = "All fixed! The server is back online.";
-      hint.textContent = "Redirecting you shortly...";
+      msg.textContent = "问题已修复！服务器已恢复正常。";
+      hint.textContent = "正在为您重定向...";
       popConfetti(e.clientX, e.clientY);
-      debug.textContent = "success";
-      retry.textContent = "Nice!";
+      debug.textContent = "成功";
+      retry.textContent = "成功！";
     } else {
-      msg.textContent = "Still broken... maybe the server spilled its coffee.";
-      hint.textContent = "Try again in a moment.";
-      drive.querySelector(".panel").textContent = ["DB", "¯\\_(ツ)_/¯", "ERR"][
+      msg.textContent = "还是不行... 也许服务器打翻了咖啡。";
+      hint.textContent = "稍后再试。";
+      drive.querySelector(".panel").textContent = ["数据库", "¯\\_(ツ)_/¯", "错误"][
         Math.floor(Math.random() * 3)
       ];
-      debug.textContent = "error persists";
-      retry.textContent = "Try Again";
+      debug.textContent = "错误持续";
+      retry.textContent = "重试";
     }
     retry.disabled = false;
   });
@@ -178,17 +178,26 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-:root {
-  --bg: #0f1724;
-  --accent: #ff6b6b;
-  --muted: #9aa6b2;
-}
-/* Wrapper schaal en centreren */
 .scale-wrapper {
-  position: absolute;
+  width: 100%;
+  height: 100%;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform-origin: center center;
+  z-index: 1;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scale-wrapper::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: #0f1724;
+  z-index: -1;
 }
 
 /* Hoofdcontainer */
@@ -208,6 +217,7 @@ onUnmounted(() => {
   gap: 24px;
   align-items: center;
   overflow: hidden;
+  border-radius: 24px;
 }
 
 /* Left content */
@@ -222,7 +232,7 @@ onUnmounted(() => {
   display: inline-block;
   font-weight: 800;
   font-size: 120px;
-  color: var(--accent);
+  color: #ff6b6b;
   line-height: 1;
   animation: bounce 2s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
 }
@@ -243,7 +253,7 @@ onUnmounted(() => {
 }
 
 p.lead {
-  color: var(--muted);
+  color: #9aa6b2;
   margin: 8px 0 18px;
   font-size: 16px;
 }
@@ -270,7 +280,7 @@ button {
 
 .ghost {
   background: transparent;
-  color: var(--muted);
+  color: #9aa6b2;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -285,7 +295,7 @@ button {
 
 .hint {
   margin-top: 12px;
-  color: var(--muted);
+  color: #9aa6b2;
   font-size: 13px;
 }
 
@@ -371,7 +381,7 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--muted);
+  color: #9aa6b2;
   box-shadow: 0 18px 40px rgba(2, 6, 15, 0.6);
   animation: tilt 3.4s infinite ease-in-out;
 }
@@ -399,7 +409,7 @@ button {
   position: absolute;
   left: 18px;
   bottom: 14px;
-  color: var(--muted);
+  color: #9aa6b2;
   font-size: 12px;
 }
 
@@ -430,7 +440,7 @@ button {
 .popup button {
   background: none;
   border: 0;
-  color: var(--muted);
+  color: #9aa6b2;
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
