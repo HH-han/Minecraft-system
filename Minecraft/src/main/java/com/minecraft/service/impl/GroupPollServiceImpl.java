@@ -12,6 +12,7 @@ import com.minecraft.mapper.GroupPollVoteMapper;
 import com.minecraft.service.GroupMemberService;
 import com.minecraft.service.GroupPollService;
 import com.minecraft.vo.GroupPollResultVO;
+import com.minecraft.vo.GroupPollVO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +48,11 @@ public class GroupPollServiceImpl extends ServiceImpl<GroupPollMapper, GroupPoll
         poll.setStatus(1);
         if (dto.getIsAnonymous() == null) {
             poll.setIsAnonymous(false);
+        }
+        try {
+            poll.setOptions(objectMapper.writeValueAsString(dto.getOptions()));
+        } catch (Exception e) {
+            throw new BusinessException(400, "选项格式错误");
         }
         save(poll);
 
@@ -130,5 +136,54 @@ public class GroupPollServiceImpl extends ServiceImpl<GroupPollMapper, GroupPoll
     @Override
     public List<GroupPoll> getPollList(Long groupId) {
         return baseMapper.selectByGroupId(groupId);
+    }
+
+    @Override
+    public List<GroupPollVO> getPollVOList(Long groupId, Long userId) {
+        List<GroupPoll> polls = baseMapper.selectByGroupId(groupId);
+        List<GroupPollVO> result = new ArrayList<>();
+
+        for (GroupPoll poll : polls) {
+            GroupPollVO vo = new GroupPollVO();
+            vo.setId(poll.getId());
+            vo.setGroupId(poll.getGroupId());
+            vo.setTitle(poll.getTitle());
+            vo.setStatus(poll.getStatus());
+            vo.setCreatedAt(poll.getCreatedAt());
+
+            try {
+                vo.setOptions(objectMapper.readValue(poll.getOptions(), new TypeReference<List<String>>() {}));
+            } catch (Exception e) {
+                vo.setOptions(new ArrayList<>());
+            }
+
+            Map<Integer, Integer> optionVotes = new HashMap<>();
+            List<GroupPollVote> votes = pollVoteMapper.selectByPollId(poll.getId());
+            for (GroupPollVote vote : votes) {
+                optionVotes.merge(vote.getOptionId(), 1, Integer::sum);
+            }
+            vo.setVotes(optionVotes);
+
+            GroupPollVote userVote = pollVoteMapper.selectByPollAndUser(poll.getId(), userId);
+            if (userVote != null) {
+                vo.setVotedOption(userVote.getOptionId());
+            }
+
+            int maxVotes = 0;
+            int winningOption = -1;
+            for (Map.Entry<Integer, Integer> entry : optionVotes.entrySet()) {
+                if (entry.getValue() > maxVotes) {
+                    maxVotes = entry.getValue();
+                    winningOption = entry.getKey();
+                }
+            }
+            if (maxVotes > 0) {
+                vo.setWinningOption(winningOption);
+            }
+
+            result.add(vo);
+        }
+
+        return result;
     }
 }

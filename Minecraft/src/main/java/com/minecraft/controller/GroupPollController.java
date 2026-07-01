@@ -7,6 +7,7 @@ import com.minecraft.entity.GroupPoll;
 import com.minecraft.service.GroupPollService;
 import com.minecraft.utils.SecurityUtils;
 import com.minecraft.vo.GroupPollResultVO;
+import com.minecraft.vo.GroupPollVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,9 @@ public class GroupPollController {
 
     @Operation(summary = "获取群组投票列表")
     @GetMapping("/group/{groupId}")
-    public ApiResponse<List<GroupPoll>> getPollList(@PathVariable Long groupId) {
-        List<GroupPoll> polls = groupPollService.getPollList(groupId);
+    public ApiResponse<List<GroupPollVO>> getPollList(@PathVariable Long groupId) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        List<GroupPollVO> polls = groupPollService.getPollVOList(groupId, userId);
         return ApiResponse.success(polls);
     }
 }

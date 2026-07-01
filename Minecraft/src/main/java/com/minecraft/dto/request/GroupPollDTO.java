@@ -3,6 +3,7 @@ package com.minecraft.dto.request;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class GroupPollDTO {
@@ -10,7 +11,7 @@ public class GroupPollDTO {
     private String title;
     private String description;
     private Integer type;
-    private String options;
+    private List<String> options;
     private LocalDateTime endTime;
     private Boolean isAnonymous;
 }

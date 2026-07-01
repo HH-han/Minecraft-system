@@ -1034,7 +1034,7 @@ async function createPoll() {
 
 async function vote(pollId, optionIndex) {
   try {
-    const res = await pollApi.vote(pollId, { optionIndex })
+    const res = await pollApi.vote(pollId, { optionId: optionIndex })
     if (res.code === 200) {
       fetchPolls(currentGroup.value.id)
     }
@@ -1144,7 +1144,7 @@ function getNotificationIcon(type) {
 
 <style scoped>
 /* Apple Design System Variables - Strictly aligned with official spec */
-:root {
+.group-container {
   --color-text: #1d1d1f;
   --color-text-secondary: #6e6e73;
   --color-text-dark-bg: #ffffff;
@@ -1163,7 +1163,9 @@ function getNotificationIcon(type) {
   
   --spacing-2: 2px;
   --spacing-4: 4px;
+  --spacing-6: 6px;
   --spacing-8: 8px;
+  --spacing-10: 10px;
   --spacing-12: 12px;
   --spacing-16: 16px;
   --spacing-20: 20px;
@@ -1188,9 +1190,7 @@ function getNotificationIcon(type) {
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
   --transition-slow: 0.3s ease;
-}
-
-.group-container {
+  
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 22px;
