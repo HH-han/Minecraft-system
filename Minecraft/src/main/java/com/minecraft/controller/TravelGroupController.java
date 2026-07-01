@@ -16,7 +16,7 @@ import java.util.List;
 
 @Tag(name = "旅行群组管理")
 @RestController
-@RequestMapping("/api/travelgroup")
+@RequestMapping("/api/group")
 public class TravelGroupController {
 
     @Autowired

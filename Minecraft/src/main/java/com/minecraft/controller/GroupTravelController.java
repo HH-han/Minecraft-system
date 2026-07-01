@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "跟团游管理")
 @RestController
-@RequestMapping("/api/group")
+@RequestMapping("/api/grouptravel")
 public class GroupTravelController {
 
     @Autowired
