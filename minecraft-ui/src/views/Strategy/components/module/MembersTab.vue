@@ -67,9 +67,27 @@ function getRoleName(role) {
   margin-bottom: var(--spacing-20);
 }
 
-.tab-actions .btn-secondary {
-  background: var(--color-bg-secondary);
-  color: var(--color-text);
+.tab-actions button {
+  border: none;
+  padding: var(--spacing-8) var(--spacing-16);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.tab-actions button:hover {
+  background: var(--color-primary-hover);
+}
+
+.tab-actions button:active {
+  transform: scale(0.98);
 }
 
 .member-list {
