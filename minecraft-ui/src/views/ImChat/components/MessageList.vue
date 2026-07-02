@@ -257,7 +257,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
 }
 
 .message-item.mine {
-  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
 
 .message-avatar {
@@ -279,7 +279,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
 }
 
 .message-bubble {
-  background: #f5f5f7;
+  background: #4ab81b;
   padding: 10px 14px;
   border-radius: 18px;
   margin: 0 10px;
@@ -309,7 +309,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
-  color: #1d1d1f;
+  color: #ffffff;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
