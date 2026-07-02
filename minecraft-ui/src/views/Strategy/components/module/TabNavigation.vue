@@ -6,7 +6,7 @@
       :class="['tab-item', { active: activeTab === tab.id }]"
       @click="$emit('update:activeTab', tab.id)"
     >
-      <span class="tab-icon">{{ tab.icon }}</span>
+      <img class="tab-icon" :src="tab.icon" :alt="tab.name" />
       <span class="tab-text">{{ tab.name }}</span>
     </button>
   </div>
@@ -74,7 +74,8 @@ defineEmits(['update:activeTab'])
 }
 
 .tab-icon {
-  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 @media (max-width: 767px) {

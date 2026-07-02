@@ -134,9 +134,9 @@ const defaultCover = 'https://images.unsplash.com/photo-1507525428034-b723cf961d
 const defaultAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100'
 
 const tabs = [
-  { id: 'my-groups', name: '我的群组', icon: '👥' },
-  { id: 'explore', name: '发现群组', icon: '🔍' },
-  { id: 'notifications', name: '通知', icon: '🔔' }
+  { id: 'my-groups', name: '我的群组', icon: new URL('@/assets/icons/groups.svg', import.meta.url).href },
+  { id: 'explore', name: '发现群组', icon: new URL('@/assets/icons/search.svg', import.meta.url).href },
+  { id: 'notifications', name: '通知', icon: new URL('@/assets/icons/notifications.svg', import.meta.url).href }
 ]
 
 const activeTab = ref('my-groups')
@@ -629,8 +629,6 @@ function handleNotification(item) {
   --transition-normal: 0.2s ease;
   --transition-slow: 0.3s ease;
 
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 0 22px;
   font-family: var(--font-family);
   color: var(--color-text);

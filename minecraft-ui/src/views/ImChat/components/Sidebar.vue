@@ -91,23 +91,6 @@
         />
       </div>
       
-      <div v-if="currentTab === 'chat'" class="tabs">
-        <button 
-          :class="['tab-btn', { active: activeTab === 'friends' }]"
-          @click="onTabChange('friends')"
-        >
-          <Icon name="user" :size="'14px'" />
-          <span>好友</span>
-        </button>
-        <button 
-          :class="['tab-btn', { active: activeTab === 'groups' }]"
-          @click="onTabChange('groups')"
-        >
-          <Icon name="users" :size="'14px'" />
-          <span>群组</span>
-        </button>
-      </div>
-      
       <div v-if="currentTab === 'contacts'" class="contacts-actions">
         <div class="contact-item" @click="onNewFriends">
           <div class="avatar-wrapper">
@@ -169,12 +152,21 @@
                   :alt="contact.name"
                   class="contact-avatar"
                 />
+                <span v-if="contact.isGroup" class="group-badge">
+                  <Icon name="users" :size="'10px'" />
+                </span>
                 <span v-if="contact.unreadCount > 0" class="unread-badge">{{ contact.unreadCount }}</span>
-                <span :class="['online-status', { online: contact.online }]"></span>
+                <span v-if="!contact.isGroup" :class="['online-status', { online: contact.online }]"></span>
               </div>
               <div class="contact-info">
-                <h4 class="contact-name">{{ contact.name }}</h4>
-                <p class="contact-last-message">{{ contact.lastMessage }}</p>
+                <h4 class="contact-name">
+                  {{ contact.name }}
+                  <span v-if="contact.isGroup" class="contact-tag">群聊</span>
+                </h4>
+                <p class="contact-last-message">
+                  <span v-if="contact.isGroup && contact.memberCount" class="member-count">{{ contact.memberCount }}人</span>
+                  {{ contact.lastMessage }}
+                </p>
               </div>
               <span class="contact-time">{{ contact.time }}</span>
             </div>
@@ -189,7 +181,7 @@
           
           <div v-if="filteredContacts.length === 0" class="empty-state">
             <Icon name="message" :size="'48px'" />
-            <p>暂无{{ activeTab === 'friends' ? '好友' : '群组' }}</p>
+            <p>暂无联系人</p>
           </div>
         </template>
         
@@ -366,7 +358,6 @@ const emit = defineEmits([
   'add-friend', 
   'create-group', 
   'search', 
-  'tab-change', 
   'select-contact', 
   'open-friend-requests',
   'nav-change',
@@ -416,10 +407,19 @@ const unreadTotal = computed(() => {
          props.friendRequestCount
 })
 
+const unifiedContacts = computed(() => {
+  const friendsWithType = props.friends.map(f => ({ ...f, isGroup: false }))
+  const groupsWithType = props.groups.map(g => ({ ...g, isGroup: true }))
+  return [...friendsWithType, ...groupsWithType].sort((a, b) => {
+    const nameA = (a.name || '').toLowerCase()
+    const nameB = (b.name || '').toLowerCase()
+    return nameA.localeCompare(nameB, 'zh-CN')
+  })
+})
+
 const filteredContacts = computed(() => {
-  const contacts = props.activeTab === 'friends' ? props.friends : props.groups
-  if (!searchKeyword.value) return contacts
-  return contacts.filter(c => c.name.includes(searchKeyword.value))
+  if (!searchKeyword.value) return unifiedContacts.value
+  return unifiedContacts.value.filter(c => c.name.includes(searchKeyword.value))
 })
 
 const filteredFriends = computed(() => {
@@ -446,10 +446,6 @@ const onOpenFriendRequests = () => {
 
 const onSearch = () => {
   emit('search', searchKeyword.value)
-}
-
-const onTabChange = (tab) => {
-  emit('tab-change', tab)
 }
 
 const onSelectContact = (contact) => {
@@ -724,41 +720,6 @@ const onSettings = () => {
   box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.15);
 }
 
-.tabs {
-  display: flex;
-  padding: 8px 12px;
-  background: #ffffff;
-  gap: 8px;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 12px;
-  background: transparent;
-  color: #6e6e73;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  transition: all 0.2s ease;
-  font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-.tab-btn:hover {
-  background: #f5f5f7;
-  transform: scale(1.01);
-}
-
-.tab-btn.active {
-  background: #f5f5f7;
-  color: #1d1d1f;
-  font-weight: 600;
-}
-
 .contacts-actions {
   background: #ffffff;
   padding: 8px 0;
@@ -767,13 +728,25 @@ const onSettings = () => {
 .contact-list {
   flex: 1;
   overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
   background: #ffffff;
+  scroll-behavior: smooth;
 }
 
 .contact-list::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+}
+
+.contact-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.contact-list::-webkit-scrollbar-thumb {
+  background: #d2d2d6;
+  border-radius: 3px;
+}
+
+.contact-list::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a6;
 }
 
 .contact-item {
@@ -870,6 +843,21 @@ const onSettings = () => {
   justify-content: center;
 }
 
+.group-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  background: #2997ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
 .online-status {
   position: absolute;
   bottom: 0;
@@ -898,6 +886,25 @@ const onSettings = () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-tag {
+  font-size: 10px;
+  color: #6e6e73;
+  background: #f5f5f7;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.member-count {
+  font-size: 12px;
+  color: #6e6e73;
+  margin-right: 8px;
 }
 
 .contact-last-message {
