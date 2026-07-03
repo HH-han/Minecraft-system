@@ -391,6 +391,16 @@ const routes = [
       title:"地图",
       requiresAuth:true
     }
+  },
+  // 官网首页
+  {
+    path:"/officialwebsite",
+    name:"OfficialWebsite",
+    component:()=>import("@/views/OfficialWebsite/index.vue"),
+    meta:{
+      title:"官网首页",
+      requiresAuth:true
+    }
   }
 ];
 
