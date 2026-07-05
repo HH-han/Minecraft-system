@@ -1,13 +1,11 @@
 <template>
     <!-- ===== 导航栏 ===== -->
     <nav class="navbar" :class="{ scrolled: isScrolled }" role="navigation">
-        <a href="#" class="logo"><i class="fas fa-compass"></i> 博览旅行</a>
+        <a href="#" class="logo"><i class="fas fa-compass"></i> {{ settings.siteName || '博览旅行' }}</a>
         <ul class="nav-links" :class="{ open: isMenuOpen }">
-            <li><a href="#destinations" @click="closeMenu">目的地</a></li>
-            <li><a href="#experiences" @click="closeMenu">体验</a></li>
-            <li><a href="#stories" @click="closeMenu">故事</a></li>
-            <li><a href="#narrative" @click="closeMenu">叙事</a></li>
-            <li><a href="#cta" @click="closeMenu">启程</a></li>
+            <li v-for="item in navigation" :key="item.id">
+                <a :href="item.url" @click="closeMenu">{{ item.title }}</a>
+            </li>
         </ul>
         <div class="nav-actions">
             <button class="btn-nav">开始探索</button>
@@ -22,10 +20,13 @@
         <div class="hero-bg" :style="heroBgStyle"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content" :style="heroContentStyle">
-            <div class="badge">2026 · 叙事之旅</div>
-            <h1>故事始于<br /><span class="highlight">足尖之下</span></h1>
-            <p>每一段旅程都是一部未完成的小说，我们在风景中寻找自己的章节。</p>
-            <button class="btn-hero">开启叙事 <i class="fas fa-arrow-right"></i></button>
+            <div class="badge" v-if="hero && hero.badgeText">{{ hero.badgeText }}</div>
+            <h1 v-if="hero">
+                {{ hero.title }}
+                <span v-if="hero.subtitle" class="highlight"><br />{{ hero.subtitle }}</span>
+            </h1>
+            <p v-if="hero && hero.description">{{ hero.description }}</p>
+            <button v-if="hero && hero.btnText" class="btn-hero">{{ hero.btnText }} <i class="fas fa-arrow-right"></i></button>
         </div>
         <div class="scroll-indicator">
             <span>滚动阅读</span>
@@ -42,58 +43,23 @@
                 <p class="section-subtitle">每一处风景都在低语，等待你倾听它们的故事。</p>
             </div>
             <div class="destinations-grid">
-                <div class="dest-card reveal reveal-delay-1">
+                <div v-for="dest in destinations" :key="dest.id" class="dest-card reveal" :class="'reveal-delay-' + (dest.sortOrder % 4 + 1)">
                     <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" alt="巴黎"
-                            loading="lazy" />
+                        <img :src="dest.imageUrl" :alt="dest.name" loading="lazy" />
                     </div>
                     <div class="card-content">
-                        <div class="card-tag">欧洲 · 浪漫</div>
-                        <h3>巴黎</h3>
-                        <p>光之城，艺术与时尚的永恒之都。</p>
-                        <div class="card-meta"><span>6 天 5 晚</span><span class="price">¥ 12,800 起</span></div>
-                    </div>
-                </div>
-                <div class="dest-card reveal reveal-delay-2">
-                    <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" alt="东京"
-                            loading="lazy" />
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">亚洲 · 都市</div>
-                        <h3>东京</h3>
-                        <p>传统与未来交织的霓虹之城。</p>
-                        <div class="card-meta"><span>5 天 4 晚</span><span class="price">¥ 9,600 起</span></div>
-                    </div>
-                </div>
-                <div class="dest-card reveal reveal-delay-3">
-                    <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=600&q=80" alt="冰岛"
-                            loading="lazy" />
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">北欧 · 极光</div>
-                        <h3>冰岛</h3>
-                        <p>冰与火的国度，极光下的梦幻之地。</p>
-                        <div class="card-meta"><span>8 天 7 晚</span><span class="price">¥ 18,200 起</span></div>
-                    </div>
-                </div>
-                <div class="dest-card reveal reveal-delay-4">
-                    <div class="card-image">
-                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&q=80" alt="纽约"
-                            loading="lazy" />
-                    </div>
-                    <div class="card-content">
-                        <div class="card-tag">美洲 · 活力</div>
-                        <h3>纽约</h3>
-                        <p>不夜城，梦想与机遇的交汇点。</p>
-                        <div class="card-meta"><span>6 天 5 晚</span><span class="price">¥ 14,500 起</span></div>
+                        <div class="card-tag">{{ dest.category }}</div>
+                        <h3>{{ dest.name }}</h3>
+                        <p>{{ dest.description }}</p>
+                        <div class="card-meta">
+                            <span>{{ dest.duration }}</span>
+                            <span class="price" v-if="dest.price">¥ {{ formatPrice(dest.price) }} 起</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="parallax-layer layer-1" :style="paraLayer1Style"
-            style="top:10%; right:-2%; font-size:180px; opacity:0.035;">✦</div>
+        <div class="parallax-layer layer-1" :style="paraLayer1Style" style="top:10%; right:-2%; font-size:180px; opacity:0.035;">✦</div>
     </section>
 
     <!-- ===== 体验 ===== -->
@@ -105,46 +71,27 @@
                 <p class="section-subtitle">每一个细节都精心打磨，让您的旅程成为一生的珍藏。</p>
             </div>
             <div class="exp-grid">
-                <div class="exp-item reveal reveal-delay-1">
-                    <div class="exp-icon"><i class="fas fa-user-tie"></i></div>
-                    <h4>私人定制</h4>
-                    <p>专属旅行顾问，根据您的喜好量身打造独一无二的行程。</p>
-                </div>
-                <div class="exp-item reveal reveal-delay-2">
-                    <div class="exp-icon"><i class="fas fa-utensils"></i></div>
-                    <h4>味蕾之旅</h4>
-                    <p>甄选米其林餐厅与在地风味，用舌尖品味目的地。</p>
-                </div>
-                <div class="exp-item reveal reveal-delay-3">
-                    <div class="exp-icon"><i class="fas fa-camera"></i></div>
-                    <h4>影像记录</h4>
-                    <p>随行摄影师捕捉每一个动人瞬间，让回忆永不褪色。</p>
-                </div>
-                <div class="exp-item reveal reveal-delay-4">
-                    <div class="exp-icon"><i class="fas fa-spa"></i></div>
-                    <h4>身心休憩</h4>
-                    <p>精选奢华水疗与静修之所，在旅途中找回内心的平衡。</p>
+                <div v-for="exp in experiences" :key="exp.id" class="exp-item reveal" :class="'reveal-delay-' + (exp.sortOrder % 4 + 1)">
+                    <div class="exp-icon"><i :class="exp.iconClass"></i></div>
+                    <h4>{{ exp.title }}</h4>
+                    <p>{{ exp.description }}</p>
                 </div>
             </div>
         </div>
-        <div class="parallax-layer layer-2" :style="paraLayer2Style"
-            style="bottom:15%; left:-4%; font-size:160px; opacity:0.03;">∞</div>
+        <div class="parallax-layer layer-2" :style="paraLayer2Style" style="bottom:15%; left:-4%; font-size:160px; opacity:0.03;">∞</div>
     </section>
 
-    <!-- ===== 新增：叙事章节 ===== -->
+    <!-- ===== 叙事章节 ===== -->
     <section class="narrative" id="narrative">
         <div class="container">
-            <div class="narrative-text reveal">
+            <div v-for="item in narrative" :key="item.id" class="narrative-text reveal">
                 <span class="section-label">— 叙事 · 沉浸</span>
-                <h2 class="section-title">旅行的意义，在于故事</h2>
-                <p class="section-subtitle">我们相信，每一次出发都是为了带回一个值得讲述的故事。博览旅行致力于将风景、文化与情感编织成你独有的叙事。</p>
-                <div class="narrative-detail">
-                    “从冰岛的极光下许愿，到巴黎左岸的咖啡馆写诗，我们为你设计的不只是路线，而是一段可以反复回味的人生片段。”
-                </div>
+                <h2 class="section-title">{{ item.title }}</h2>
+                <p class="section-subtitle" v-if="item.subtitle">{{ item.subtitle }}</p>
+                <div class="narrative-detail" v-if="item.quoteText">"{{ item.quoteText }}"</div>
             </div>
-            <div class="narrative-media reveal reveal-delay-2">
-                <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80" alt="叙事影像"
-                    loading="lazy" />
+            <div v-if="narrative.length > 0 && narrative[0].imageUrl" class="narrative-media reveal reveal-delay-2">
+                <img :src="narrative[0].imageUrl" alt="叙事影像" loading="lazy" />
             </div>
         </div>
     </section>
@@ -152,9 +99,9 @@
     <!-- ===== 沉浸式引用 ===== -->
     <section class="immersion" id="immersion">
         <div class="container">
-            <div class="immersion-quote reveal">
-                真正的旅行，不是抵达一个地方，而是用新的视角重新认识世界。
-                <span class="author">—— 博览旅行 · 旅行哲学</span>
+            <div v-for="item in immersion" :key="item.id" class="immersion-quote reveal">
+                {{ item.quoteText }}
+                <span class="author" v-if="item.author">—— {{ item.author }}</span>
             </div>
         </div>
     </section>
@@ -168,45 +115,18 @@
                 <p class="section-subtitle">真实的声音，来自那些已经在路上的灵魂。</p>
             </div>
             <div class="stories-grid">
-                <div class="story-card reveal reveal-delay-1">
-                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“冰岛的极光是我见过最震撼的景象。博览旅行的行程安排恰到好处，既深度又舒适，完全超出了我的期待。”</blockquote>
-                    <div class="story-author">
-                        <div class="avatar"><img
-                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="林溪"
-                                loading="lazy" /></div>
-                        <div class="author-info">
-                            <div class="name">林溪</div>
-                            <div class="role">自由撰稿人 · 冰岛之旅</div>
-                        </div>
+                <div v-for="story in stories" :key="story.id" class="story-card reveal" :class="'reveal-delay-' + (story.sortOrder % 3 + 1)">
+                    <div class="stars">
+                        <i v-for="i in 5" :key="i" class="fas fa-star" :class="{ 'star-active': i <= story.rating }"></i>
                     </div>
-                </div>
-                <div class="story-card reveal reveal-delay-2">
-                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“巴黎的浪漫在博览旅行的诠释下更加动人。从卢浮宫到左岸咖啡馆，每一刻都像电影画面。”</blockquote>
+                    <blockquote>“{{ story.content }}”</blockquote>
                     <div class="story-author">
-                        <div class="avatar"><img
-                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="陈远"
-                                loading="lazy" /></div>
-                        <div class="author-info">
-                            <div class="name">陈远</div>
-                            <div class="role">建筑师 · 巴黎之旅</div>
+                        <div class="avatar">
+                            <img v-if="story.authorAvatar" :src="story.authorAvatar" :alt="story.authorName" loading="lazy" />
                         </div>
-                    </div>
-                </div>
-                <div class="story-card reveal reveal-delay-3">
-                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                    <blockquote>“东京的繁华与静谧在博览旅行的行程中完美平衡。感谢团队的精心安排，让我重新发现了旅行的意义。”</blockquote>
-                    <div class="story-author">
-                        <div class="avatar"><img
-                                src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="苏雅"
-                                loading="lazy" /></div>
                         <div class="author-info">
-                            <div class="name">苏雅</div>
-                            <div class="role">品牌总监 · 东京之旅</div>
+                            <div class="name">{{ story.authorName }}</div>
+                            <div class="role">{{ story.authorRole }} · {{ story.destination }}</div>
                         </div>
                     </div>
                 </div>
@@ -221,9 +141,9 @@
         <div class="container">
             <div class="reveal">
                 <span class="section-label" style="color: rgba(255,255,255,0.4);">— 启程</span>
-                <h2>开始您的叙事</h2>
-                <p>与博览旅行一起，探索世界的另一种可能。让我们为您打造一段独一无二的记忆。</p>
-                <button class="btn-cta">联系旅行顾问 <i class="fas fa-arrow-right"></i></button>
+                <h2 v-if="cta">{{ cta.title }}</h2>
+                <p v-if="cta && cta.description">{{ cta.description }}</p>
+                <button v-if="cta && cta.btnText" class="btn-cta">{{ cta.btnText }} <i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </section>
@@ -233,39 +153,20 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="logo"><i class="fas fa-compass"></i> 博览旅行</div>
-                    <p>高端旅行定制服务，以匠心打造每一次出发与抵达。</p>
+                    <div class="logo"><i class="fas fa-compass"></i> {{ footer?.brandName || '博览旅行' }}</div>
+                    <p>{{ footer?.brandDescription || '高端旅行定制服务，以匠心打造每一次出发与抵达。' }}</p>
                 </div>
-                <div class="footer-col">
-                    <h5>探索</h5>
+                <div v-for="category in footerLinkCategories" :key="category" class="footer-col">
+                    <h5>{{ category }}</h5>
                     <ul>
-                        <li><a href="#">目的地</a></li>
-                        <li><a href="#">体验</a></li>
-                        <li><a href="#">行程</a></li>
-                        <li><a href="#">灵感</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h5>关于</h5>
-                    <ul>
-                        <li><a href="#">品牌故事</a></li>
-                        <li><a href="#">团队</a></li>
-                        <li><a href="#">合作</a></li>
-                        <li><a href="#">联系</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h5>支持</h5>
-                    <ul>
-                        <li><a href="#">常见问题</a></li>
-                        <li><a href="#">条款</a></li>
-                        <li><a href="#">隐私</a></li>
-                        <li><a href="#">客服</a></li>
+                        <li v-for="link in getFooterLinksByCategory(category)" :key="link.id">
+                            <a :href="link.url">{{ link.title }}</a>
+                        </li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>© 2026 博览旅行旅行. 保留所有权利。</span>
+                <span>{{ footer?.copyrightText || '© 2026 博览旅行. 保留所有权利。' }}</span>
                 <div class="socials">
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-weixin"></i></a>
@@ -278,14 +179,31 @@
 </template>
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import officialwebsiteApi from '@/api/officialwebsite';
 
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
 const scrollY = ref(0);
 
-const heroBgStyle = computed(() => ({
-    transform: `scale(1.05) translateY(${scrollY.value * 0.4}px)`
-}));
+const hero = ref(null);
+const destinations = ref([]);
+const experiences = ref([]);
+const narrative = ref([]);
+const stories = ref([]);
+const immersion = ref([]);
+const cta = ref(null);
+const footer = ref(null);
+const footerLinks = ref([]);
+const navigation = ref([]);
+const settings = ref({});
+
+const heroBgStyle = computed(() => {
+    const bgUrl = hero.value?.bgImage || 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80';
+    return {
+        transform: `scale(1.05) translateY(${scrollY.value * 0.4}px)`,
+        backgroundImage: `url('${bgUrl}')`
+    };
+});
 
 const heroContentStyle = computed(() => ({
     transform: `translateY(${scrollY.value * 0.15}px)`
@@ -302,6 +220,19 @@ const paraLayer2Style = computed(() => ({
 const paraLayer3Style = computed(() => ({
     transform: `translateY(${scrollY.value * 0.06}px)`
 }));
+
+const footerLinkCategories = computed(() => {
+    const categories = new Set(footerLinks.value.map(link => link.category));
+    return Array.from(categories);
+});
+
+const getFooterLinksByCategory = (category) => {
+    return footerLinks.value.filter(link => link.category === category);
+};
+
+const formatPrice = (price) => {
+    return price.toLocaleString();
+};
 
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
@@ -359,12 +290,47 @@ const handleAnchorClick = (e) => {
     }
 };
 
+const fetchHomeData = async () => {
+    try {
+        const response = await officialwebsiteApi.getHomeData();
+        if (response.code === 200 && response.data) {
+            const data = response.data;
+            hero.value = data.hero;
+            destinations.value = data.destinations || [];
+            experiences.value = data.experiences || [];
+            narrative.value = data.narrative || [];
+            stories.value = data.stories || [];
+            immersion.value = data.immersion || [];
+            cta.value = data.cta;
+            footer.value = data.footer;
+            footerLinks.value = data.footerLinks || [];
+            settings.value = data.settings || {};
+        }
+    } catch (error) {
+        console.error('获取首页数据失败:', error);
+    }
+};
+
+const fetchNavigation = async () => {
+    try {
+        const response = await officialwebsiteApi.getNavigation();
+        if (response.code === 200 && response.data) {
+            navigation.value = response.data;
+        }
+    } catch (error) {
+        console.error('获取导航数据失败:', error);
+    }
+};
+
 onMounted(() => {
     window.addEventListener('scroll', updateScroll, { passive: true });
     document.addEventListener('click', handleAnchorClick);
 
     updateScroll();
     setupIntersectionObserver();
+    
+    fetchHomeData();
+    fetchNavigation();
 });
 
 onUnmounted(() => {
@@ -554,8 +520,7 @@ a {
 .hero .hero-bg {
     position: absolute;
     inset: 0;
-    background: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80') center center / cover no-repeat;
-    transform: scale(1.05);
+    background: center center / cover no-repeat;
     will-change: transform;
 }
 
@@ -918,10 +883,14 @@ section {
 }
 
 .story-card .stars {
-    color: #f5b342;
+    color: #d2d2d7;
     font-size: 14px;
     letter-spacing: 2px;
     margin-bottom: 14px;
+}
+
+.story-card .stars .star-active {
+    color: #f5b342;
 }
 
 .story-card blockquote {
@@ -1093,51 +1062,48 @@ section {
     color: rgba(255, 255, 255, 0.6);
     max-width: 480px;
     margin: 0 auto 36px;
-    line-height: 1.7;
 }
 
 .cta-section .btn-cta {
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 48px;
+    padding: 16px 40px;
     font-size: 17px;
     font-weight: 500;
     border-radius: 980px;
-    background: #fff;
-    color: var(--color-text);
+    background: var(--color-accent);
+    color: #fff;
     border: none;
     cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.3s;
 }
 
 .cta-section .btn-cta:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
-}
-
-.cta-section .btn-cta i {
-    transition: transform 0.3s;
-}
-
-.cta-section .btn-cta:hover i {
-    transform: translateX(4px);
+    background: var(--color-accent-hover);
+    transform: translateY(-2px);
 }
 
 /* ========== 页脚 ========== */
 .footer {
-    background: #fff;
-    padding: 60px 0 32px;
-    border-top: 1px solid var(--color-border);
+    background: #1d1d1f;
+    color: #fff;
+    padding: 80px 0 40px;
+}
+
+.footer .container {
+    padding: 0 24px;
 }
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-brand {
+    padding-right: 20px;
 }
 
 .footer-brand .logo {
@@ -1147,7 +1113,7 @@ section {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .footer-brand .logo i {
@@ -1155,73 +1121,78 @@ section {
 }
 
 .footer-brand p {
-    font-size: 15px;
-    color: var(--color-text-light);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
     font-weight: 300;
-    max-width: 280px;
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
 .footer-col h5 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    margin-bottom: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 20px;
 }
 
 .footer-col ul {
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
-.footer-col ul a {
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
     font-size: 14px;
-    color: var(--color-text-light);
     font-weight: 300;
+    color: rgba(255, 255, 255, 0.6);
     transition: color 0.3s;
 }
 
-.footer-col ul a:hover {
-    color: var(--color-text);
+.footer-col ul li a:hover {
+    color: #fff;
 }
 
 .footer-bottom {
-    border-top: 1px solid var(--color-border);
-    padding-top: 24px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 13px;
-    color: var(--color-text-light);
-    font-weight: 300;
-    flex-wrap: wrap;
-    gap: 12px;
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .footer-bottom .socials {
     display: flex;
-    gap: 20px;
+    gap: 16px;
 }
 
 .footer-bottom .socials a {
-    color: var(--color-text-light);
-    transition: color 0.3s;
-    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 14px;
+    transition: background 0.3s, transform 0.3s;
 }
 
 .footer-bottom .socials a:hover {
-    color: var(--color-text);
+    background: var(--color-accent);
+    transform: translateY(-2px);
 }
 
-/* ========== 渐入 ========== */
+/* ========== 动画类 ========== */
 .reveal {
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: opacity, transform;
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .reveal.visible {
@@ -1246,68 +1217,78 @@ section {
 }
 
 /* ========== 响应式 ========== */
-@media (max-width: 1024px) {
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .narrative .container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-
-    .narrative .narrative-media {
-        order: -1;
-    }
-}
-
-@media (max-width: 768px) {
-    :root {
-        --section-spacing: 80px;
-        --nav-height: 56px;
-    }
-
-    .navbar {
-        padding: 0 20px;
-    }
-
+@media (max-width: 900px) {
     .navbar .nav-links {
-        display: none;
-        position: absolute;
+        position: fixed;
         top: var(--nav-height);
         left: 0;
         right: 0;
-        background: rgba(245, 245, 247, 0.96);
+        background: rgba(245, 245, 247, 0.98);
         backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
         flex-direction: column;
-        padding: 20px 24px;
-        gap: 16px;
-        border-bottom: 1px solid var(--color-border);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        padding: 20px 0;
+        gap: 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transform: translateY(-120%);
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .navbar .nav-links.open {
-        display: flex;
+        transform: translateY(0);
+    }
+
+    .navbar .nav-links li {
+        padding: 12px 32px;
     }
 
     .navbar .hamburger {
         display: flex;
     }
 
-    .hero .hero-content h1 {
-        font-size: 44px;
+    .navbar.scrolled .nav-links {
+        background: rgba(245, 245, 247, 0.98);
     }
 
-    .hero .hero-content p {
-        font-size: 18px;
+    .narrative .container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .narrative .narrative-text .narrative-detail {
+        border-left: none;
+        border-top: 3px solid var(--color-accent);
+        padding-left: 0;
+        padding-top: 24px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+
+    .footer-brand {
+        grid-column: span 2;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 0 16px;
+    }
+
+    .hero .hero-content h1 {
+        font-size: clamp(36px, 8vw, 64px);
     }
 
     .destinations-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .exp-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .stories-grid {
@@ -1316,52 +1297,16 @@ section {
 
     .footer-grid {
         grid-template-columns: 1fr;
-        gap: 32px;
+    }
+
+    .footer-brand {
+        grid-column: span 1;
     }
 
     .footer-bottom {
         flex-direction: column;
+        gap: 16px;
         text-align: center;
-    }
-
-    .section-title {
-        font-size: 32px;
-    }
-
-    .cta-section {
-        padding: 72px 0;
-    }
-
-    .parallax-layer {
-        display: none;
-    }
-
-    .immersion .immersion-quote {
-        font-size: 24px;
-    }
-}
-
-@media (max-width: 480px) {
-    .destinations-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .exp-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero .hero-content h1 {
-        font-size: 32px;
-    }
-
-    .hero .hero-content .btn-hero {
-        padding: 14px 32px;
-        font-size: 15px;
-    }
-
-    .navbar .nav-actions .btn-nav {
-        padding: 6px 16px;
-        font-size: 13px;
     }
 }
 </style>
