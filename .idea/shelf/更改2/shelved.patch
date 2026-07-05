@@ -1,0 +1,457 @@
+Index: minecraft-ui/src/constants/game.js
+===================================================================
+diff --git a/minecraft-ui/src/constants/game.js b/minecraft-ui/src/constants/game.js
+deleted file mode 100644
+--- a/minecraft-ui/src/constants/game.js	(revision d3aa51f900cb3eca1e5242668cc720e82ccbf162)
++++ /dev/null	(revision d3aa51f900cb3eca1e5242668cc720e82ccbf162)
+@@ -1,449 +0,0 @@
+-export const GAME_SETTINGS = {
+-  MAX_PLAYERS: 8,
+-  MAX_WORLD_SIZE: 60000000,
+-  TICK_RATE: 20,
+-  RENDER_DISTANCE: {
+-    MIN: 2,
+-    MAX: 32,
+-    DEFAULT: 8
+-  },
+-  SIMULATION_DISTANCE: {
+-    MIN: 2,
+-    MAX: 16,
+-    DEFAULT: 8
+-  },
+-  VIEW_BOBBING: true,
+-  ANAGLYPH_3D: false,
+-  AUTO_JUMP: false,
+-  TOUCH_SCREEN: false,
+-  FULLSCREEN: false,
+-  FOV: {
+-    MIN: 30,
+-    MAX: 110,
+-    DEFAULT: 70
+-  },
+-  SENSITIVITY: {
+-    MIN: 0,
+-    MAX: 200,
+-    DEFAULT: 100
+-  }
+-}
+-
+-export const BIOMES = {
+-  FOREST: {
+-    id: 'forest',
+-    name: '森林',
+-    color: '#4a7c59',
+-    temperature: 0.6,
+-    rainfall: 0.6,
+-    height: 0.1,
+-    features: ['橡树', '桦树', '草丛', '蘑菇']
+-  },
+-  PLAINS: {
+-    id: 'plains',
+-    name: '平原',
+-    color: '#8ab05a',
+-    temperature: 0.8,
+-    rainfall: 0.4,
+-    height: 0.05,
+-    features: ['草丛', '向日葵', '花朵']
+-  },
+-  DESERT: {
+-    id: 'desert',
+-    name: '沙漠',
+-    color: '#c7b56c',
+-    temperature: 2.0,
+-    rainfall: 0.0,
+-    height: 0.1,
+-    features: ['仙人掌', '沙漠水井']
+-  },
+-  MOUNTAINS: {
+-    id: 'mountains',
+-    name: '山地',
+-    color: '#7a8795',
+-    temperature: 0.2,
+-    rainfall: 0.5,
+-    height: 0.4,
+-    features: ['云杉', '岩石', '雪']
+-  },
+-  SWAMP: {
+-    id: 'swamp',
+-    name: '沼泽',
+-    color: '#6b7e49',
+-    temperature: 0.8,
+-    rainfall: 1.0,
+-    height: -0.2,
+-    features: ['橡树', '睡莲', '粘土']
+-  },
+-  JUNGLE: {
+-    id: 'jungle',
+-    name: '丛林',
+-    color: '#2d5016',
+-    temperature: 1.2,
+-    rainfall: 1.0,
+-    height: 0.2,
+-    features: ['丛林木', '藤蔓', '可可豆']
+-  },
+-  TAIGA: {
+-    id: 'taiga',
+-    name: '针叶林',
+-    color: '#3a5f3a',
+-    temperature: -0.5,
+-    rainfall: 0.8,
+-    height: 0.2,
+-    features: ['云杉', '蕨类', '雪']
+-  },
+-  SAVANNA: {
+-    id: 'savanna',
+-    name: '热带草原',
+-    color: '#9b8b5c',
+-    temperature: 1.0,
+-    rainfall: 0.2,
+-    height: 0.15,
+-    features: ['金合欢树', '草丛']
+-  },
+-  BADLANDS: {
+-    id: 'badlands',
+-    name: '恶地',
+-    color: '#cc9944',
+-    temperature: 1.0,
+-    rainfall: 0.0,
+-    height: 0.3,
+-    features: ['红沙', '陶瓦', '石化橡木']
+-  },
+-  NETHER_WASTES: {
+-    id: 'nether_wastes',
+-    name: '下界荒地',
+-    color: '#702e2e',
+-    temperature: 2.0,
+-    rainfall: 0.0,
+-    height: 0.1,
+-    features: ['地狱岩', '下界石英', '灵魂沙']
+-  },
+-  THE_END: {
+-    id: 'the_end',
+-    name: '末地',
+-    color: '#1e1e2e',
+-    temperature: 0.5,
+-    rainfall: 0.0,
+-    height: 0.0,
+-    features: ['末地石', '紫颂果', '末影人']
+-  },
+-  DEEP_DARK: {
+-    id: 'deep_dark',
+-    name: '深邃黑暗',
+-    color: '#0a0a0f',
+-    temperature: 0.5,
+-    rainfall: 0.0,
+-    height: -0.5,
+-    features: ['深板岩', '潜声传感器', '监守者']
+-  }
+-}
+-
+-export const BLOCK_TYPES = {
+-  SOLID: ['stone', 'dirt', 'wood', 'brick', 'concrete', 'glass'],
+-  TRANSPARENT: ['glass', 'leaves', 'fence', 'gate', 'ladder'],
+-  LIQUID: ['water', 'lava'],
+-  FLAMMABLE: ['wood', 'leaves', 'wool', 'paper'],
+-  OPAQUE: ['stone', 'dirt', 'brick', 'concrete'],
+-  INTERACTIVE: ['chest', 'door', 'trapdoor', 'button', 'lever', 'pressure_plate']
+-}
+-
+-export const ITEM_CATEGORIES = {
+-  BUILDING_BLOCKS: {
+-    id: 'building_blocks',
+-    name: '建筑方块',
+-    icon: 'block',
+-    items: ['stone', 'cobblestone', 'wood_planks', 'brick', 'glass', 'concrete']
+-  },
+-  DECORATION: {
+-    id: 'decoration',
+-    name: '装饰',
+-    icon: 'flower',
+-    items: ['flower', 'plant', 'carpet', 'painting', 'banner']
+-  },
+-  REDSTONE: {
+-    id: 'redstone',
+-    name: '红石',
+-    icon: 'redstone',
+-    items: ['redstone', 'repeater', 'comparator', 'torch', 'lamp']
+-  },
+-  TRANSPORTATION: {
+-    id: 'transportation',
+-    name: '运输',
+-    icon: 'minecart',
+-    items: ['minecart', 'rail', 'boat', 'ladder']
+-  },
+-  MISCELLANEOUS: {
+-    id: 'miscellaneous',
+-    name: '杂项',
+-    icon: 'misc',
+-    items: ['string', 'feather', 'bone', 'slime_ball']
+-  },
+-  FOOD: {
+-    id: 'food',
+-    name: '食物',
+-    icon: 'apple',
+-    items: ['apple', 'bread', 'meat', 'vegetable', 'cake']
+-  },
+-  TOOLS: {
+-    id: 'tools',
+-    name: '工具',
+-    icon: 'pickaxe',
+-    items: ['pickaxe', 'axe', 'shovel', 'hoe', 'sword']
+-  },
+-  WEAPONS: {
+-    id: 'weapons',
+-    name: '武器',
+-    icon: 'sword',
+-    items: ['sword', 'bow', 'arrow', 'trident']
+-  },
+-  ARMOR: {
+-    id: 'armor',
+-    name: '盔甲',
+-    icon: 'helmet',
+-    items: ['helmet', 'chestplate', 'leggings', 'boots', 'shield']
+-  },
+-  POTIONS: {
+-    id: 'potions',
+-    name: '药水',
+-    icon: 'potion',
+-    items: ['potion', 'splash_potion', 'lingering_potion']
+-  },
+-  MATERIALS: {
+-    id: 'materials',
+-    name: '材料',
+-    icon: 'ingot',
+-    items: ['ingot', 'gem', 'dust', 'nugget']
+-  }
+-}
+-
+-export const GAME_MODES = {
+-  SURVIVAL: {
+-    id: 'survival',
+-    name: '生存模式',
+-    description: '收集资源，制作物品，保持生命',
+-    features: ['health', 'hunger', 'crafting', 'mob_spawning']
+-  },
+-  CREATIVE: {
+-    id: 'creative',
+-    name: '创造模式',
+-    description: '无限资源，飞行能力，无敌',
+-    features: ['fly', 'invincible', 'infinite_items', 'no_hunger']
+-  },
+-  ADVENTURE: {
+-    id: 'adventure',
+-    name: '冒险模式',
+-    description: '只能破坏特定方块，适合地图游玩',
+-    features: ['restricted_breaking', 'no_crafting']
+-  },
+-  SPECTATOR: {
+-    id: 'spectator',
+-    name: '旁观模式',
+-    description: '隐身飞行，穿过方块，观察世界',
+-    features: ['fly', 'invincible', 'noclip', 'invisible']
+-  }
+-}
+-
+-export const MOBS = {
+-  PASSIVE: [
+-    { id: 'chicken', name: '鸡', health: 4, drops: ['feather', 'raw_chicken'] },
+-    { id: 'cow', name: '牛', health: 10, drops: ['leather', 'raw_beef'] },
+-    { id: 'pig', name: '猪', health: 10, drops: ['raw_porkchop'] },
+-    { id: 'sheep', name: '羊', health: 8, drops: ['wool', 'raw_mutton'] },
+-    { id: 'rabbit', name: '兔子', health: 3, drops: ['rabbit_hide', 'raw_rabbit'] },
+-    { id: 'fox', name: '狐狸', health: 8, drops: ['rabbit_hide'] },
+-    { id: 'panda', name: '熊猫', health: 20, drops: ['bamboo'] },
+-    { id: 'ocelot', name: '豹猫', health: 10, drops: [] },
+-    { id: 'parrot', name: '鹦鹉', health: 6, drops: ['feather'] },
+-    { id: 'turtle', name: '海龟', health: 30, drops: ['scute'] },
+-    { id: 'dolphin', name: '海豚', health: 10, drops: [] },
+-    { id: 'goldfish', name: '金鱼', health: 3, drops: [] },
+-    { id: 'frog', name: '青蛙', health: 10, drops: ['frogspawn'] },
+-    { id: 'sniffer', name: '嗅探兽', health: 40, drops: ['ancient_debris'] }
+-  ],
+-  NEUTRAL: [
+-    { id: 'wolf', name: '狼', health: 20, drops: ['bone'] },
+-    { id: 'bee', name: '蜜蜂', health: 10, drops: ['honeycomb'] },
+-    { id: 'spider', name: '蜘蛛', health: 16, drops: ['string', 'eye_of_ender'] },
+-    { id: 'cave_spider', name: '洞穴蜘蛛', health: 12, drops: ['string', 'poison'] },
+-    { id: 'enderman', name: '末影人', health: 40, drops: ['ender_pearl'] },
+-    { id: 'iron_golem', name: '铁傀儡', health: 100, drops: ['iron_ingot', 'poppy'] },
+-    { id: 'snow_golem', name: '雪傀儡', health: 4, drops: ['snowball'] },
+-    { id: 'llama', name: '羊驼', health: 15, drops: ['leather', 'carpet'] },
+-    { id: 'goat', name: '山羊', health: 10, drops: ['milk_bucket', 'horn'] },
+-    { id: 'warden', name: '监守者', health: 500, drops: ['echo_shard'] }
+-  ],
+-  HOSTILE: [
+-    { id: 'zombie', name: '僵尸', health: 20, drops: ['rotten_flesh', 'iron_ingot'] },
+-    { id: 'skeleton', name: '骷髅', health: 20, drops: ['bone', 'arrow'] },
+-    { id: 'creeper', name: '爬行者', health: 20, drops: ['gunpowder'] },
+-    { id: 'slime', name: '史莱姆', health: 4, drops: ['slime_ball'] },
+-    { id: 'ghast', name: '恶魂', health: 10, drops: ['ghast_tear', 'gunpowder'] },
+-    { id: 'blaze', name: '烈焰人', health: 20, drops: ['blaze_rod'] },
+-    { id: 'magma_cube', name: '岩浆怪', health: 4, drops: ['magma_cream'] },
+-    { id: 'wither_skeleton', name: '凋灵骷髅', health: 20, drops: ['coal', 'wither_skull'] },
+-    { id: 'piglin', name: '猪灵', health: 20, drops: ['gold_ingot'] },
+-    { id: 'piglin_brute', name: '猪灵蛮兵', health: 50, drops: ['gold_ingot'] },
+-    { id: 'strider', name: '炽足兽', health: 20, drops: ['string'] },
+-    { id: 'zombified_piglin', name: '僵尸猪灵', health: 20, drops: ['rotten_flesh', 'gold_ingot'] },
+-    { id: 'vex', name: '恼鬼', health: 14, drops: [] },
+-    { id: 'vindicator', name: '卫道士', health: 24, drops: ['emerald'] },
+-    { id: 'pillager', name: '掠夺者', health: 24, drops: ['emerald', 'crossbow'] },
+-    { id: 'ravager', name: '劫掠兽', health: 100, drops: ['saddle', 'ravager_meat'] },
+-    { id: 'phantom', name: '幻翼', health: 20, drops: ['phantom_membrane'] },
+-    { id: 'drowned', name: '溺尸', health: 20, drops: ['rotten_flesh', 'trident'] },
+-    { id: 'husk', name: '尸壳', health: 20, drops: ['rotten_flesh', 'gold_ingot'] },
+-    { id: 'elder_guardian', name: '远古守卫者', health: 80, drops: ['prismarine_shard', 'wet_sponge'] },
+-    { id: 'guardian', name: '守卫者', health: 30, drops: ['prismarine_shard', 'eye_of_ender'] },
+-    { id: 'shulker', name: '潜影贝', health: 30, drops: ['shulker_shell'] },
+-    { id: 'ender_dragon', name: '末影龙', health: 200, drops: ['dragon_egg', 'experience'] },
+-    { id: 'wither', name: '凋灵', health: 300, drops: ['nether_star'] },
+-    { id: 'warden', name: '监守者', health: 500, drops: ['echo_shard'] }
+-  ]
+-}
+-
+-export const DIMENSIONS = {
+-  OVERWORLD: {
+-    id: 'overworld',
+-    name: '主世界',
+-    minY: -64,
+-    maxY: 320,
+-    spawnY: 64,
+-    skyColor: '#87ceeb',
+-    fogColor: '#c0c0c0',
+-    gravity: 0.08,
+-    hasDayCycle: true,
+-    timeSpeed: 1
+-  },
+-  NETHER: {
+-    id: 'nether',
+-    name: '下界',
+-    minY: 0,
+-    maxY: 128,
+-    spawnY: 64,
+-    skyColor: '#333333',
+-    fogColor: '#ff3333',
+-    gravity: 0.08,
+-    hasDayCycle: false,
+-    timeSpeed: 0
+-  },
+-  END: {
+-    id: 'end',
+-    name: '末地',
+-    minY: 0,
+-    maxY: 256,
+-    spawnY: 64,
+-    skyColor: '#1a1a2e',
+-    fogColor: '#16213e',
+-    gravity: 0.08,
+-    hasDayCycle: false,
+-    timeSpeed: 0
+-  }
+-}
+-
+-export const ENCHANTMENTS = {
+-  PROTECTION: { id: 'protection', name: '保护', maxLevel: 4, description: '减少所有伤害' },
+-  FIRE_PROTECTION: { id: 'fire_protection', name: '火焰保护', maxLevel: 4, description: '减少火焰伤害' },
+-  FEATHER_FALLING: { id: 'feather_falling', name: '摔落保护', maxLevel: 4, description: '减少摔落伤害' },
+-  BLAST_PROTECTION: { id: 'blast_protection', name: '爆炸保护', maxLevel: 4, description: '减少爆炸伤害' },
+-  PROJECTILE_PROTECTION: { id: 'projectile_protection', name: '弹射物保护', maxLevel: 4, description: '减少弹射物伤害' },
+-  THORNS: { id: 'thorns', name: '荆棘', maxLevel: 3, description: '反弹伤害给攻击者' },
+-  RESPIRATION: { id: 'respiration', name: '水下呼吸', maxLevel: 3, description: '延长水下呼吸时间' },
+-  AQUA_AFFINITY: { id: 'aqua_affinity', name: '深海探索者', maxLevel: 1, description: '水下挖掘速度正常' },
+-  SHARPNESS: { id: 'sharpness', name: '锋利', maxLevel: 5, description: '增加近战伤害' },
+-  SMITE: { id: 'smite', name: '亡灵杀手', maxLevel: 5, description: '对亡灵生物造成额外伤害' },
+-  BANE_OF_ARTHROPODS: { id: 'bane_of_arthropods', name: '节肢杀手', maxLevel: 5, description: '对节肢生物造成额外伤害' },
+-  KNOCKBACK: { id: 'knockback', name: '击退', maxLevel: 2, description: '将敌人击退' },
+-  FIRE_ASPECT: { id: 'fire_aspect', name: '火焰附加', maxLevel: 2, description: '点燃目标' },
+-  LOOTING: { id: 'looting', name: '抢夺', maxLevel: 3, description: '增加掉落物' },
+-  EFFICIENCY: { id: 'efficiency', name: '效率', maxLevel: 5, description: '加快挖掘速度' },
+-  SILK_TOUCH: { id: 'silk_touch', name: '精准采集', maxLevel: 1, description: '采集方块本身' },
+-  UNBREAKING: { id: 'unbreaking', name: '耐久', maxLevel: 3, description: '减少物品损耗' },
+-  FORTUNE: { id: 'fortune', name: '时运', maxLevel: 3, description: '增加稀有掉落' },
+-  POWER: { id: 'power', name: '力量', maxLevel: 5, description: '增加弓箭伤害' },
+-  PUNCH: { id: 'punch', name: '冲击', maxLevel: 2, description: '击退目标' },
+-  FLAME: { id: 'flame', name: '火矢', maxLevel: 1, description: '点燃目标' },
+-  INFINITY: { id: 'infinity', name: '无限', maxLevel: 1, description: '无限箭矢' },
+-  LUCK_OF_THE_SEA: { id: 'luck_of_the_sea', name: '海之眷顾', maxLevel: 3, description: '增加钓鱼宝藏' },
+-  LURE: { id: 'lure', name: '诱饵', maxLevel: 3, description: '加快钓鱼速度' },
+-  LOYALTY: { id: 'loyalty', name: '忠诚', maxLevel: 3, description: '三叉戟返回' },
+-  IMPALING: { id: 'impaling', name: '穿刺', maxLevel: 5, description: '对水中生物造成额外伤害' },
+-  RIPTIDE: { id: 'riptide', name: '激流', maxLevel: 3, description: '发射玩家' },
+-  CHANNELING: { id: 'channeling', name: '引雷', maxLevel: 1, description: '召唤闪电' },
+-  MULTISHOT: { id: 'multishot', name: '多重射击', maxLevel: 1, description: '同时发射三发箭矢' },
+-  PIERCING: { id: 'piercing', name: '穿透', maxLevel: 4, description: '穿透多个实体' },
+-  QUICK_CHARGE: { id: 'quick_charge', name: '快速装填', maxLevel: 3, description: '加快装填速度' },
+-  SOUL_SPEED: { id: 'soul_speed', name: '灵魂疾行', maxLevel: 3, description: '在灵魂沙/土上加速' },
+-  SWEEPING_EDGE: { id: 'sweeping_edge', name: '横扫之刃', maxLevel: 3, description: '增加横扫伤害' },
+-  RIPTIDE: { id: 'riptide', name: '激流', maxLevel: 3, description: '发射玩家' },
+-  CHANNELING: { id: 'channeling', name: '引雷', maxLevel: 1, description: '召唤闪电' }
+-}
+-
+-export const ACHIEVEMENTS = {
+-  GET_WOOD: { id: 'get_wood', name: '获得木头', description: '砍倒一棵树', icon: 'wood' },
+-  BUILD_WORKBENCH: { id: 'build_workbench', name: '建造工作台', description: '制作一个工作台', icon: 'workbench' },
+-  BUILD_PICKAXE: { id: 'build_pickaxe', name: '建造镐', description: '制作一把镐', icon: 'pickaxe' },
+-  BUILD_FURNACE: { id: 'build_furnace', name: '建造熔炉', description: '制作一个熔炉', icon: 'furnace' },
+-  ACQUIRE_IRON: { id: 'acquire_iron', name: '获得铁', description: '冶炼出一块铁锭', icon: 'iron_ingot' },
+-  BUILD_BETTER_PICKAXE: { id: 'build_better_pickaxe', name: '建造更好的镐', description: '制作一把铁镐', icon: 'iron_pickaxe' },
+-  COOK_FISH: { id: 'cook_fish', name: '烤鱼', description: '在熔炉中烤一条鱼', icon: 'cooked_fish' },
+-  ON_A_RAIL: { id: 'on_a_rail', name: '在轨道上', description: '乘坐矿车行驶至少1公里', icon: 'minecart' },
+-  GET_STONE: { id: 'get_stone', name: '获得石头', description: '用镐开采石头', icon: 'cobblestone' },
+-  MAKE_BREAD: { id: 'make_bread', name: '制作面包', description: '制作一个面包', icon: 'bread' },
+-  BAKE_CAKE: { id: 'bake_cake', name: '烤蛋糕', description: '制作一个蛋糕', icon: 'cake' },
+-  DIAMONDS: { id: 'diamonds', name: '钻石', description: '获得一块钻石', icon: 'diamond' },
+-  NETHER_PORTAL: { id: 'nether_portal', name: '下界传送门', description: '建造一个下界传送门', icon: 'nether_portal' },
+-  RETURN_TO_SENDER: { id: 'return_to_sender', name: '返还给发送者', description: '用箭反弹恶魂火球', icon: 'arrow' },
+-  BLAZE_ROD: { id: 'blaze_rod', name: '烈焰棒', description: '从烈焰人获得烈焰棒', icon: 'blaze_rod' },
+-  BREWING: { id: 'brewing', name: '酿造', description: '酿造一瓶药水', icon: 'potion' },
+-  END_PORTAL: { id: 'end_portal', name: '末地传送门', description: '激活末地传送门', icon: 'end_portal' },
+-  THE_END: { id: 'the_end', name: '末地', description: '进入末地', icon: 'ender_eye' },
+-  DRAGON_EGG: { id: 'dragon_egg', name: '龙蛋', description: '拾取龙蛋', icon: 'dragon_egg' },
+-  OVERKILL: { id: 'overkill', name: '过度击杀', description: '用一把剑造成超过9颗心的伤害', icon: 'sword' },
+-  BOOKSHELF: { id: 'bookshelf', name: '书架', description: '制作一个书架', icon: 'bookshelf' },
+-  ENCHANTMENT: { id: 'enchantment', name: '附魔', description: '给物品附魔', icon: 'enchanting_table' },
+-  FULL_BEACON: { id: 'full_beacon', name: '完整信标', description: '激活最高级别的信标', icon: 'beacon' },
+-  WITHER: { id: 'wither', name: '凋灵', description: '召唤凋灵', icon: 'wither_skull' },
+-  WITHER_SKULL: { id: 'wither_skull', name: '凋灵骷髅', description: '获得凋灵骷髅头颅', icon: 'wither_skull' },
+-  NETHER_STAR: { id: 'nether_star', name: '下界之星', description: '击败凋灵获得下界之星', icon: 'nether_star' },
+-  ADVENTURING_TIME: { id: 'adventuring_time', name: '冒险时间', description: '访问所有生物群系', icon: 'compass' },
+-  EXPLORER: { id: 'explorer', name: '探索者', description: '发现所有生物群系', icon: 'map' },
+-  MONSTER_HUNTER: { id: 'monster_hunter', name: '怪物猎人', description: '杀死每一种怪物', icon: 'sword' },
+-  BREEDING: { id: 'breeding', name: '繁殖', description: '繁殖两只动物', icon: 'wheat' },
+-  TWO_BY_TWO: { id: 'two_by_two', name: '二乘二', description: '繁殖所有动物', icon: 'heart' },
+-  CURE_ZOMBIE_VILLAGER: { id: 'cure_zombie_villager', name: '治愈僵尸村民', description: '治愈一只僵尸村民', icon: 'golden_apple' },
+-  VILLAGE_HERO: { id: 'village_hero', name: '村庄英雄', description: '在袭击中保护村庄', icon: 'emerald' },
+-  TOTAL_CONVERSION: { id: 'total_conversion', name: '完全转化', description: '治愈僵尸村民直到村庄中所有村民都是治愈的', icon: 'villager' },
+-  SUMMON_IRON_GOLEM: { id: 'summon_iron_golem', name: '召唤铁傀儡', description: '建造一个铁傀儡', icon: 'iron_golem' },
+-  SNOW_GOLEM: { id: 'snow_golem', name: '雪傀儡', description: '建造一个雪傀儡', icon: 'snow_golem' },
+-  BALANCE: { id: 'balance', name: '平衡', description: '将金锭投入下界传送门', icon: 'gold_ingot' },
+-  FLYING_WITH_THE_PIGS: { id: 'flying_with_the_pigs', name: '与猪同飞', description: '骑猪从悬崖上跳下', icon: 'pig' },
+-  RIDING_THE_RAPTOR: { id: 'riding_the_raptor', name: '骑乘猛禽', description: '骑乘鹦鹉', icon: 'parrot' },
+-  KILL_A_MOB: { id: 'kill_a_mob', name: '击杀怪物', description: '击杀一只生物', icon: 'sword' },
+-  DEATH_BY_CACTUS: { id: 'death_by_cactus', name: '死于仙人掌', description: '被仙人掌杀死', icon: 'cactus' },
+-  DEATH_BY_FALLING: { id: 'death_by_falling', name: '摔死', description: '摔落致死', icon: 'feather' },
+-  DEATH_BY_FIRE: { id: 'death_by_fire', name: '烧死', description: '被火或熔岩烧死', icon: 'flame' },
+-  DEATH_BY_LAVA: { id: 'death_by_lava', name: '死于熔岩', description: '掉入熔岩致死', icon: 'lava' },
+-  DEATH_BY_WITHER: { id: 'death_by_wither', name: '死于凋灵', description: '被凋灵效果杀死', icon: 'wither' },
+-  DEATH_BY_STARVATION: { id: 'death_by_starvation', name: '饿死', description: '因饥饿而死', icon: 'bone' },
+-  DEATH_BY_SUFFOCATION: { id: 'death_by_suffocation', name: '窒息而死', description: '因窒息而死', icon: 'bedrock' },
+-  DEATH_BY_DROWNING: { id: 'death_by_drowning', name: '淹死', description: '溺水而死', icon: 'water' },
+-  DEATH_BY_EXPLOSION: { id: 'death_by_explosion', name: '炸死', description: '被爆炸杀死', icon: 'tnt' },
+-  DEATH_BY_PROJECTILE: { id: 'death_by_projectile', name: '死于弹射物', description: '被箭或火球杀死', icon: 'arrow' },
+-  DEATH_BY_MAGIC: { id: 'death_by_magic', name: '死于魔法', description: '被药水或恶魂火球杀死', icon: 'potion' },
+-  DEATH_BY_WITHER_SKULL: { id: 'death_by_wither_skull', name: '死于凋灵骷髅头', description: '被凋灵骷髅头杀死', icon: 'wither_skull' },
+-  DEATH_BY_DRAGON_BREATH: { id: 'death_by_dragon_breath', name: '死于龙息', description: '被末影龙的龙息杀死', icon: 'dragon_breath' },
+-  DEATH_BY_FALLING_BLOCK: { id: 'death_by_falling_block', name: '死于掉落物', description: '被掉落的方块杀死', icon: 'anvil' },
+-  DEATH_BY_CRUSHING: { id: 'death_by_crushing', name: '压死', description: '被活塞或门挤压致死', icon: 'piston' },
+-  DEATH_BY_FIREWORK: { id: 'death_by_firework', name: '死于烟花', description: '被烟花火箭杀死', icon: 'firework' },
+-  DEATH_BY_THORNS: { id: 'death_by_thorns', name: '死于荆棘', description: '被荆棘反弹伤害杀死', icon: 'thorns' },
+-  DEATH_BY_PLAYER: { id: 'death_by_player', name: '被玩家杀死', description: '被其他玩家杀死', icon: 'player' },
+-  DEATH_BY_MOB: { id: 'death_by_mob', name: '被怪物杀死', description: '被生物杀死', icon: 'zombie' },
+-  DEATH_BY_ENTITY_ATTACK: { id: 'death_by_entity_attack', name: '死于实体攻击', description: '被实体攻击杀死', icon: 'sword' },
+-  DEATH_BY_VOID: { id: 'death_by_void', name: '死于虚空', description: '掉入虚空', icon: 'void' },
+-  DEATH_BY_SUICIDE: { id: 'death_by_suicide', name: '自杀', description: '自己造成的伤害致死', icon: 'sword' },
+-  DEATH_BY_UNKNOWN: { id: 'death_by_unknown', name: '未知死亡', description: '不明原因死亡', icon: 'question' },
+-  EVERYTHING_TOMATO: { id: 'everything_tomato', name: '番茄一切', description: '用番茄投掷器击中目标', icon: 'tomato' },
+-  PLAY_TIME: { id: 'play_time', name: '游戏时间', description: '累计游戏时间达到一定时长', icon: 'clock' }
+-}
+\ No newline at end of file
