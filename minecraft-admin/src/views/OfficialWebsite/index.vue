@@ -1,13 +1,17 @@
 <template>
   <div class="official-website-container">
     <aside class="sidebar">
-      <div class="sidebar-headdr">
+      <div class="sidebar-header">
         <h2>官方网站管理</h2>
       </div>
       <nav class="sidebar-nav">
         <ul>
-          <li v-for="item in menuItems" :key="item.key" :class="{ active: currentView === item.key }"
-            @click="switchView(item.key)">
+          <li 
+            v-for="item in menuItems" 
+            :key="item.key"
+            :class="{ active: currentView === item.key }"
+            @click="switchView(item.key)"
+          >
             <span class="menu-icon">{{ item.icon }}</span>
             <span class="menu-text">{{ item.label }}</span>
           </li>
@@ -16,6 +20,10 @@
     </aside>
 
     <main class="main-content">
+      <div class="content-header">
+        <h1>{{ currentViewTitle }}</h1>
+      </div>
+
       <transition name="fade" mode="out-in">
         <NavigationManagement v-if="currentView === 'navigation'" />
         <HeroManagement v-else-if="currentView === 'hero'" />
@@ -65,20 +73,17 @@ const switchView = (view) => {
 </script>
 
 <style scoped>
-/* 主容器 — 干净、留白 */
 .official-website-container {
   display: flex;
-  min-height: 100vh;
-  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+  margin: 20px;
   background: #ffffff;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
   border-radius: 28px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  overflow: hidden;
   backdrop-filter: blur(2px);
 }
 
-/* ===== SIDEBAR — 精致毛玻璃效果 ===== */
 .sidebar {
   width: 260px;
   background: rgba(255, 255, 255, 0.75);
@@ -120,7 +125,6 @@ const switchView = (view) => {
   opacity: 0.7;
 }
 
-/* 导航列表 */
 .sidebar-nav {
   flex: 1;
   padding: 16px 12px 0 12px;
@@ -163,7 +167,6 @@ const switchView = (view) => {
   flex: 1;
 }
 
-/* hover 效果 */
 .sidebar-nav li:hover {
   background: rgba(0, 0, 0, 0.035);
 }
@@ -172,7 +175,6 @@ const switchView = (view) => {
   color: #1d1d1f;
 }
 
-/* active 状态 — 类似 Apple 侧边栏高亮 */
 .sidebar-nav li.active {
   background: rgba(0, 0, 0, 0.06);
   font-weight: 550;
@@ -196,17 +198,35 @@ const switchView = (view) => {
   opacity: 0.7;
 }
 
-/* ===== MAIN CONTENT — 柔和、留白 ===== */
 .main-content {
   flex: 1;
   background: #ffffff;
-  padding: 8px;
+  padding: 40px 44px 48px 44px;
   display: flex;
   flex-direction: column;
-  overflow-x: auto;
+  overflow-y: auto;
 }
 
-/* 过渡动画 — 平滑 */
+.content-header {
+  margin-bottom: 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding-bottom: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.content-header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #1d1d1f;
+  margin: 0;
+  background: linear-gradient(145deg, #1d1d1f 20%, #3a3a3c 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.25s ease, transform 0.2s ease;
@@ -218,113 +238,6 @@ const switchView = (view) => {
   transform: translateY(6px);
 }
 
-/* 子管理组件占位 — 精致卡片风格 */
-.management-placeholder {
-  background: #f9f9fb;
-  border-radius: 24px;
-  padding: 32px 28px;
-  border: 1px solid rgba(0, 0, 0, 0.03);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
-  flex: 1;
-  transition: all 0.2s;
-}
-
-.management-placeholder h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #1d1d1f;
-  margin-bottom: 10px;
-}
-
-.management-placeholder p {
-  color: #86868b;
-  font-size: 15px;
-  margin-bottom: 20px;
-}
-
-.mock-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 12px;
-}
-
-.mock-btn {
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
-  padding: 10px 20px;
-  border-radius: 40px;
-  font-size: 14px;
-  font-weight: 450;
-  color: #1d1d1f;
-  cursor: default;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-  transition: all 0.1s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-.mock-btn i {
-  color: #0071e3;
-  font-size: 14px;
-}
-
-.mock-btn:hover {
-  background: #ffffff;
-  border-color: #0071e3;
-  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.08);
-  transform: scale(1.01);
-}
-
-.mock-input {
-  background: #ffffff;
-  border: 1px solid #d2d2d7;
-  border-radius: 40px;
-  padding: 10px 18px;
-  font-size: 14px;
-  width: 220px;
-  outline: none;
-  transition: border 0.15s;
-  font-family: inherit;
-}
-
-.mock-input:focus {
-  border-color: #0071e3;
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
-}
-
-.mock-tag {
-  background: #e8e8ed;
-  padding: 6px 14px;
-  border-radius: 40px;
-  font-size: 13px;
-  color: #1d1d1f;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mock-tag i {
-  color: #86868b;
-  font-size: 12px;
-}
-
-/* 特定组件内布局 */
-.flex-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: center;
-}
-
-.mt-4 {
-  margin-top: 16px;
-}
-
-/* 响应式 */
 @media (max-width: 820px) {
   .official-website-container {
     flex-direction: column;
@@ -401,18 +314,8 @@ const switchView = (view) => {
     font-size: 16px;
     width: 22px;
   }
-
-  .mock-input {
-    width: 100%;
-  }
-
-  .flex-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
 }
 
-/* 滚动条美化 (macOS风格) */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
