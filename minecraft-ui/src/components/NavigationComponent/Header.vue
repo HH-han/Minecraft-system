@@ -154,7 +154,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref, onMounted, shallowRef, computed } from 'vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 // 页面组件
 import ThemeSwitching from '@/components/ThemeComponents/ThemeSwitching.vue';
 import home from '@/views/index/index.vue';
