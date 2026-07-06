@@ -25,7 +25,7 @@
                 <td>
                   <div class="color-preview" :style="{ backgroundColor: ctaData.bgColor }"></div>
                 </td>
-                <td>{{ ctaData.isActive ? '启用' : '禁用' }}</td>
+                <td>{{ ctaData.isActive === 1 ? '启用' : '禁用' }}</td>
                 <td>{{ formatDate(ctaData.createdAt) }}</td>
                 <td class="table-btn-display">
                   <button class="btn details-btn" @click="showDetailsDialog(ctaData)">详情</button>
@@ -78,7 +78,7 @@
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -185,7 +185,13 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    btnText: item.btnText,
+    btnUrl: item.btnUrl,
+    bgColor: item.bgColor,
+    isActive: item.isActive,
   };
   showDialog.value = true;
 };
@@ -217,12 +223,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新行动号召成功');
-  } else {
-    showToastMessage('新增行动号召成功');
+  try {
+    const submitData = {
+      ...data,
+      isActive: data.isActive ? 1 : 0
+    };
+    await officialwebsiteApi.saveCta(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新行动号召成功');
+    } else {
+      showToastMessage('新增行动号召成功');
+    }
+    showDialog.value = false;
+    await fetchCta();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchCta();
 };
 
 const handleError = (error) => {

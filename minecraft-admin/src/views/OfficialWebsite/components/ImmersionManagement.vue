@@ -31,7 +31,7 @@
                 <td>{{ item.author }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.isActive" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isActive === 1" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
@@ -79,7 +79,7 @@
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -213,11 +213,13 @@ const fetchImmersions = async () => {
 };
 
 const toggleEnabled = async (item) => {
+  const oldValue = item.isActive;
   try {
-    item.isActive = !item.isActive;
-    showToastMessage(item.isActive ? '已启用' : '已禁用', 'success');
+    item.isActive = item.isActive === 1 ? 0 : 1;
+    await officialwebsiteApi.saveImmersion(item);
+    showToastMessage(item.isActive === 1 ? '已启用' : '已禁用', 'success');
   } catch (error) {
-    item.isActive = !item.isActive;
+    item.isActive = oldValue;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -236,7 +238,10 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    quoteText: item.quoteText,
+    author: item.author,
+    isActive: item.isActive,
   };
   showDialog.value = true;
 };
@@ -268,12 +273,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新名人名言成功');
-  } else {
-    showToastMessage('新增名人名言成功');
+  try {
+    const submitData = {
+      ...data,
+      isActive: data.isActive ? 1 : 0
+    };
+    await officialwebsiteApi.saveImmersion(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新名人名言成功');
+    } else {
+      showToastMessage('新增名人名言成功');
+    }
+    showDialog.value = false;
+    await fetchImmersions();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchImmersions();
 };
 
 const handleError = (error) => {
@@ -296,6 +311,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
+      await officialwebsiteApi.deleteImmersion(deleteId.value);
       immersions.value = immersions.value.filter(item => item.id !== deleteId.value);
       total.value = immersions.value.length;
       showToastMessage('删除名人名言成功');

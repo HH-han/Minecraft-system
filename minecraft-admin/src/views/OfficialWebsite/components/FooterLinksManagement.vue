@@ -263,12 +263,18 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新页脚链接成功');
-  } else {
-    showToastMessage('新增页脚链接成功');
+  try {
+    await officialwebsiteApi.saveFooterLinks([data]);
+    if (isEditing.value) {
+      showToastMessage('更新页脚链接成功');
+    } else {
+      showToastMessage('新增页脚链接成功');
+    }
+    showDialog.value = false;
+    await fetchFooterLinks();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchFooterLinks();
 };
 
 const handleError = (error) => {
@@ -291,6 +297,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
+      await officialwebsiteApi.deleteFooterLink(deleteId.value);
       footerLinks.value = footerLinks.value.filter(item => item.id !== deleteId.value);
       total.value = footerLinks.value.length;
       showToastMessage('删除页脚链接成功');

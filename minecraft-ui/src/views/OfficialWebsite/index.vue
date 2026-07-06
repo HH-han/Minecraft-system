@@ -84,14 +84,16 @@
     <!-- ===== 叙事章节 ===== -->
     <section class="narrative" id="narrative">
         <div class="container">
-            <div v-for="item in narrative" :key="item.id" class="narrative-text reveal">
-                <span class="section-label">— 叙事 · 沉浸</span>
-                <h2 class="section-title">{{ item.title }}</h2>
-                <p class="section-subtitle" v-if="item.subtitle">{{ item.subtitle }}</p>
-                <div class="narrative-detail" v-if="item.quoteText">"{{ item.quoteText }}"</div>
-            </div>
-            <div v-if="narrative.length > 0 && narrative[0].imageUrl" class="narrative-media reveal reveal-delay-2">
-                <img :src="cleanImageUrl(narrative[0].imageUrl)" alt="叙事影像" loading="lazy" />
+            <div v-for="item in narrative" :key="item.id" class="narrative-item">
+                <div class="narrative-text reveal">
+                    <span class="section-label">— 叙事 · 沉浸</span>
+                    <h2 class="section-title">{{ item.title }}</h2>
+                    <p class="section-subtitle" v-if="item.subtitle">{{ item.subtitle }}</p>
+                    <div class="narrative-detail" v-if="item.quoteText">"{{ item.quoteText }}"</div>
+                </div>
+                <div v-if="item.imageUrl" class="narrative-media reveal reveal-delay-2">
+                    <img :src="cleanImageUrl(item.imageUrl)" :alt="item.title" loading="lazy" />
+                </div>
             </div>
         </div>
     </section>
@@ -978,6 +980,12 @@ section {
 }
 
 .narrative .container {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+
+.narrative .narrative-item {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
@@ -1028,38 +1036,97 @@ section {
 
 /* ========== 新增: 沉浸式引用 ========== */
 .immersion {
-    background: #fff;
-    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.immersion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0.3;
+}
+
+.immersion::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0.3;
+}
+
+.immersion .container {
+    position: relative;
+    z-index: 1;
 }
 
 .immersion .immersion-quote {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
-    font-size: clamp(24px, 3vw, 40px);
+    font-size: clamp(28px, 4vw, 48px);
     font-weight: 300;
-    line-height: 1.4;
-    letter-spacing: -0.01em;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
     color: var(--color-text);
     position: relative;
+    padding: 60px 40px;
 }
 
 .immersion .immersion-quote::before {
     content: '“';
-    font-size: 80px;
-    line-height: 0.6;
+    font-size: 100px;
+    line-height: 0.4;
     color: var(--color-accent);
-    opacity: 0.2;
+    opacity: 0.15;
     display: block;
-    margin-bottom: -10px;
+    margin-bottom: -20px;
+    font-family: Georgia, serif;
+}
+
+.immersion .immersion-quote::after {
+    content: '”';
+    font-size: 100px;
+    line-height: 0;
+    color: var(--color-accent);
+    opacity: 0.15;
+    display: inline-block;
+    vertical-align: middle;
+    font-family: Georgia, serif;
+    margin-left: 8px;
 }
 
 .immersion .immersion-quote .author {
     display: block;
-    margin-top: 20px;
-    font-size: 16px;
-    font-weight: 400;
+    margin-top: 32px;
+    font-size: 18px;
+    font-weight: 500;
     color: var(--color-text-light);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    position: relative;
+    padding-top: 20px;
+}
+
+.immersion .immersion-quote .author::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 1px;
+    background: var(--color-accent);
+    opacity: 0.5;
 }
 
 /* ========== CTA ========== */
@@ -1288,6 +1355,10 @@ section {
     }
 
     .narrative .container {
+        gap: 60px;
+    }
+
+    .narrative .narrative-item {
         grid-template-columns: 1fr;
         gap: 40px;
         text-align: center;

@@ -36,7 +36,7 @@
                 <td>{{ item.sortOrder }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.isFeatured" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isFeatured === 1" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
@@ -105,7 +105,7 @@
             </div>
             <div class="detail-item">
               <label>是否推荐:</label>
-              <span>{{ selectedItem?.isFeatured ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isFeatured === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -164,7 +164,7 @@ const formData = ref({
   rating: 5,
   content: '',
   sortOrder: 0,
-  isFeatured: false,
+  isFeatured: 0,
 });
 
 const formFields = [
@@ -258,11 +258,13 @@ const fetchStories = async () => {
 };
 
 const toggleEnabled = async (item) => {
+  const oldValue = item.isFeatured;
   try {
-    item.isFeatured = !item.isFeatured;
-    showToastMessage(item.isFeatured ? '已推荐' : '已取消推荐', 'success');
+    item.isFeatured = item.isFeatured === 1 ? 0 : 1;
+    await officialwebsiteApi.saveStory(item);
+    showToastMessage(item.isFeatured === 1 ? '已推荐' : '已取消推荐', 'success');
   } catch (error) {
-    item.isFeatured = !item.isFeatured;
+    item.isFeatured = oldValue;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -278,7 +280,7 @@ const showAddDialog = () => {
     rating: 5,
     content: '',
     sortOrder: 0,
-    isFeatured: false,
+    isFeatured: 0,
   };
   showDialog.value = true;
 };
@@ -286,7 +288,15 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    title: item.title,
+    authorName: item.authorName,
+    authorRole: item.authorRole,
+    destination: item.destination,
+    rating: item.rating,
+    content: item.content,
+    sortOrder: item.sortOrder,
+    isFeatured: item.isFeatured,
   };
   showDialog.value = true;
 };
@@ -318,12 +328,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新故事成功');
-  } else {
-    showToastMessage('新增故事成功');
+  try {
+    const submitData = {
+      ...data,
+      isFeatured: data.isFeatured ? 1 : 0
+    };
+    await officialwebsiteApi.saveStory(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新故事成功');
+    } else {
+      showToastMessage('新增故事成功');
+    }
+    showDialog.value = false;
+    await fetchStories();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchStories();
 };
 
 const handleError = (error) => {
@@ -346,6 +366,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
+      await officialwebsiteApi.deleteStory(deleteId.value);
       stories.value = stories.value.filter(item => item.id !== deleteId.value);
       total.value = stories.value.length;
       showToastMessage('删除故事成功');

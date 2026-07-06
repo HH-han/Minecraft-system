@@ -27,7 +27,7 @@
                 </td>
                 <td>{{ heroData.description ? heroData.description.substring(0, 20) : '未设置' }}</td>
                 <td>{{ heroData.btnText || '-' }}</td>
-                <td>{{ heroData.isActive ? '启用' : '禁用' }}</td>
+                <td>{{ heroData.isActive === 1 ? '启用' : '禁用' }}</td>
                 <td>{{ formatDate(heroData.createdAt) }}</td>
                 <td class="table-btn-display">
                   <button class="btn details-btn" @click="showDetailsDialog(heroData)">详情</button>
@@ -83,7 +83,7 @@
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -199,7 +199,15 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    badgeText: item.badgeText,
+    title: item.title,
+    subtitle: item.subtitle,
+    bgImage: item.bgImage,
+    bgVideo: item.bgVideo,
+    description: item.description,
+    btnText: item.btnText,
+    isActive: item.isActive,
   };
   showDialog.value = true;
 };
@@ -237,12 +245,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新Banner成功');
-  } else {
-    showToastMessage('新增Banner成功');
+  try {
+    const submitData = {
+      ...data,
+      isActive: data.isActive ? 1 : 0
+    };
+    await officialwebsiteApi.saveHero(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新Banner成功');
+    } else {
+      showToastMessage('新增Banner成功');
+    }
+    showDialog.value = false;
+    await fetchHero();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchHero();
 };
 
 const handleError = (error) => {

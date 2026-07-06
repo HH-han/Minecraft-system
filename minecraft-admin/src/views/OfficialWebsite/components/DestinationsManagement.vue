@@ -35,16 +35,10 @@
                   <img :src="item.imageUrl?.replace(/[`\s]/g, '')" alt="图片" style="width: 35px; height: 35px;"
                     @click="triggerFileInput(item)" />
                 </td>
-                <td>{{ item.isFeatured ? '是' : '否' }}</td>
+                <td>{{ item.isFeatured === 1 ? '是' : '否' }}</td>
                 <td>{{ item.price }}</td>
                 <td>{{ item.priceCurrency }}</td>
                 <td>{{ item.sortOrder }}</td>
-                <td>
-                  <label class="switch">
-                    <input type="checkbox" :checked="item.enabled" @change="toggleEnabled(item)" />
-                    <span class="slider"></span>
-                  </label>
-                </td>
                 <td>{{ formatDate(item.createdAt) }}</td>
                 <td class="table-btn-display">
                   <button class="btn details-btn" @click="showDetailsDialog(item)">详情</button>
@@ -105,15 +99,11 @@
             </div>
             <div class="detail-item">
               <label>是否推荐:</label>
-              <span>{{ selectedItem?.isFeatured ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isFeatured === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>排序:</label>
               <span>{{ selectedItem?.sortOrder }}</span>
-            </div>
-            <div class="detail-item">
-              <label>是否启用:</label>
-              <span>{{ selectedItem?.enabled ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -155,7 +145,6 @@ const columns = [
   { key: 'price', title: '价格' },
   { key: 'priceCurrency', title: '货币' },
   { key: 'sortOrder', title: '排序' },
-  { key: 'enabled', title: '状态' },
   { key: 'createdAt', title: '创建时间' },
 ];
 
@@ -178,9 +167,8 @@ const formData = ref({
   imageUrl: '',
   price: 0,
   priceCurrency: 'CNY',
-  isFeatured: false,
+  isFeatured: 0,
   sortOrder: 0,
-  enabled: true,
 });
 
 const formFields = [
@@ -196,7 +184,6 @@ const formFields = [
   ],
   [
     { name: 'isFeatured', label: '推荐', type: 'switch' },
-    { name: 'enabled', label: '启用', type: 'switch' },
   ],
 ];
 
@@ -271,16 +258,6 @@ const fetchDestinations = async () => {
   }
 };
 
-const toggleEnabled = async (item) => {
-  try {
-    item.enabled = !item.enabled;
-    showToastMessage(item.enabled ? '已启用' : '已禁用', 'success');
-  } catch (error) {
-    item.enabled = !item.enabled;
-    showToastMessage('操作失败', 'error');
-  }
-};
-
 const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
@@ -292,9 +269,8 @@ const showAddDialog = () => {
     imageUrl: '',
     price: 0,
     priceCurrency: 'CNY',
-    isFeatured: false,
+    isFeatured: 0,
     sortOrder: 0,
-    enabled: true,
   };
   showDialog.value = true;
 };
@@ -302,7 +278,16 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    name: item.name,
+    category: item.category,
+    duration: item.duration,
+    description: item.description,
+    imageUrl: item.imageUrl,
+    price: item.price,
+    priceCurrency: item.priceCurrency,
+    isFeatured: item.isFeatured,
+    sortOrder: item.sortOrder,
   };
   showDialog.value = true;
 };
@@ -340,12 +325,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新目的地成功');
-  } else {
-    showToastMessage('新增目的地成功');
+  try {
+    const submitData = {
+      ...data,
+      isFeatured: data.isFeatured ? 1 : 0
+    };
+    await officialwebsiteApi.saveDestination(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新目的地成功');
+    } else {
+      showToastMessage('新增目的地成功');
+    }
+    showDialog.value = false;
+    await fetchDestinations();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchDestinations();
 };
 
 const handleError = (error) => {
@@ -368,6 +363,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
+      await officialwebsiteApi.deleteDestination(deleteId.value);
       destinations.value = destinations.value.filter(item => item.id !== deleteId.value);
       total.value = destinations.value.length;
       showToastMessage('删除目的地成功');

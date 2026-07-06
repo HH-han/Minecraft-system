@@ -204,12 +204,18 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新页脚信息成功');
-  } else {
-    showToastMessage('新增页脚信息成功');
+  try {
+    await officialwebsiteApi.saveFooter(data);
+    if (isEditing.value) {
+      showToastMessage('更新页脚信息成功');
+    } else {
+      showToastMessage('新增页脚信息成功');
+    }
+    showDialog.value = false;
+    await fetchFooter();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchFooter();
 };
 
 const handleError = (error) => {

@@ -145,8 +145,14 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  showToastMessage('更新设置成功');
-  await fetchSettings();
+  try {
+    await officialwebsiteApi.saveSettings(data);
+    showToastMessage('更新设置成功');
+    showDialog.value = false;
+    await fetchSettings();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
+  }
 };
 
 const handleError = (error) => {

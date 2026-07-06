@@ -29,11 +29,10 @@
                 <td>{{ item.id }}</td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.url }}</td>
-                <td>{{ item.icon }}</td>
                 <td>{{ item.sortOrder }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.enabled" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isActive === 1" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
@@ -81,16 +80,12 @@
               <span>{{ selectedItem?.url }}</span>
             </div>
             <div class="detail-item">
-              <label>图标:</label>
-              <span>{{ selectedItem?.icon }}</span>
-            </div>
-            <div class="detail-item">
               <label>排序:</label>
               <span>{{ selectedItem?.sortOrder }}</span>
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.enabled ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -121,9 +116,8 @@ const columns = [
   { key: 'id', title: 'ID' },
   { key: 'title', title: '导航名称' },
   { key: 'url', title: '链接地址' },
-  { key: 'icon', title: '图标' },
   { key: 'sortOrder', title: '排序' },
-  { key: 'enabled', title: '状态' },
+  { key: 'isActive', title: '状态' },
   { key: 'createdAt', title: '创建时间' },
 ];
 
@@ -141,20 +135,18 @@ const formData = ref({
   id: null,
   title: '',
   url: '',
-  icon: '',
   sortOrder: 0,
-  enabled: true,
+  isActive: 1,
 });
 
 const formFields = [
   [
-    { title: 'title', label: '导航名称', type: 'text', required: true, placeholder: '请输入导航名称' },
-    { title: 'url', label: '链接地址', type: 'text', required: true, placeholder: '请输入链接地址' },
-    { title: 'icon', label: '图标', type: 'text', placeholder: '请输入图标名称' },
-    { title: 'sortOrder', label: '排序', type: 'number', min: 0, placeholder: '排序序号' },
+    { name: 'title', label: '导航名称', type: 'text', required: true, placeholder: '请输入导航名称' },
+    { name: 'url', label: '链接地址', type: 'text', required: true, placeholder: '请输入链接地址' },
+    { name: 'sortOrder', label: '排序', type: 'number', min: 0, placeholder: '排序序号' },
   ],
   [
-    { title: 'enabled', label: '启用', type: 'switch' },
+    { name: 'isActive', label: '启用', type: 'switch' },
   ],
 ];
 
@@ -229,11 +221,13 @@ const fetchNavigations = async () => {
 };
 
 const toggleEnabled = async (item) => {
+  const oldValue = item.isActive;
   try {
-    item.enabled = !item.enabled;
-    showToastMessage(item.enabled ? '已启用' : '已禁用', 'success');
+    item.isActive = item.isActive === 1 ? 0 : 1;
+    await officialwebsiteApi.saveNavigation(item);
+    showToastMessage(item.isActive === 1 ? '已启用' : '已禁用', 'success');
   } catch (error) {
-    item.enabled = !item.enabled;
+    item.isActive = oldValue;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -244,9 +238,8 @@ const showAddDialog = () => {
     id: null,
     title: '',
     url: '',
-    icon: '',
     sortOrder: 0,
-    enabled: true,
+    isActive: 1,
   };
   showDialog.value = true;
 };
@@ -254,7 +247,11 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    title: item.title,
+    url: item.url,
+    sortOrder: item.sortOrder,
+    isActive: item.isActive,
   };
   showDialog.value = true;
 };
@@ -286,12 +283,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新导航成功');
-  } else {
-    showToastMessage('新增导航成功');
+  try {
+    const submitData = {
+      ...data,
+      isActive: data.isActive ? 1 : 0
+    };
+    await officialwebsiteApi.saveNavigation(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新导航成功');
+    } else {
+      showToastMessage('新增导航成功');
+    }
+    showDialog.value = false;
+    await fetchNavigations();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchNavigations();
 };
 
 const handleError = (error) => {
@@ -314,6 +321,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
+      await officialwebsiteApi.deleteNavigation(deleteId.value);
       navigations.value = navigations.value.filter(item => item.id !== deleteId.value);
       total.value = navigations.value.length;
       showToastMessage('删除导航成功');

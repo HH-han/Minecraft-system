@@ -371,9 +371,9 @@ const handleFileUpload = (event) => {
   }
 
   // 验证文件大小
-  const maxSize = 5 * 1024 * 1024;
+  const maxSize = 10 * 1024 * 1024;
   if (file.size > maxSize) {
-    showError('图片大小不能超过 5MB');
+    showError('图片大小不能超过 10MB');
     return;
   }
 

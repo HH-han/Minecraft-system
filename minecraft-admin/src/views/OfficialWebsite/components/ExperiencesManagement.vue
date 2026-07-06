@@ -33,7 +33,7 @@
                 <td>{{ item.sortOrder }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.isActive" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isActive === 1" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
@@ -90,7 +90,7 @@
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive === 1 ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
@@ -143,7 +143,7 @@ const formData = ref({
   description: '',
   iconClass: '',
   sortOrder: 0,
-  isActive: true,
+  isActive: 1,
 });
 
 const formFields = [
@@ -231,11 +231,13 @@ const fetchExperiences = async () => {
 };
 
 const toggleEnabled = async (item) => {
+  const oldValue = item.isActive;
   try {
-    item.isActive = !item.isActive;
-    showToastMessage(item.isActive ? '已启用' : '已禁用', 'success');
+    item.isActive = item.isActive === 1 ? 0 : 1;
+    await officialwebsiteApi.saveExperience(item);
+    showToastMessage(item.isActive === 1 ? '已启用' : '已禁用', 'success');
   } catch (error) {
-    item.isActive = !item.isActive;
+    item.isActive = oldValue;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -248,7 +250,7 @@ const showAddDialog = () => {
     description: '',
     iconClass: '',
     sortOrder: 0,
-    isActive: true,
+    isActive: 1,
   };
   showDialog.value = true;
 };
@@ -256,7 +258,12 @@ const showAddDialog = () => {
 const showEditDialog = (item) => {
   isEditing.value = true;
   formData.value = {
-    ...item,
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    iconClass: item.iconClass,
+    sortOrder: item.sortOrder,
+    isActive: item.isActive,
   };
   showDialog.value = true;
 };
@@ -288,12 +295,22 @@ const validateForm = (data) => {
 };
 
 const handleSubmit = async (data) => {
-  if (isEditing.value) {
-    showToastMessage('更新体验成功');
-  } else {
-    showToastMessage('新增体验成功');
+  try {
+    const submitData = {
+      ...data,
+      isActive: data.isActive ? 1 : 0
+    };
+    await officialwebsiteApi.saveExperience(submitData);
+    if (isEditing.value) {
+      showToastMessage('更新体验成功');
+    } else {
+      showToastMessage('新增体验成功');
+    }
+    showDialog.value = false;
+    await fetchExperiences();
+  } catch (error) {
+    showToastMessage('保存失败', 'error');
   }
-  await fetchExperiences();
 };
 
 const handleError = (error) => {
@@ -316,6 +333,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
+      await officialwebsiteApi.deleteExperience(deleteId.value);
       experiences.value = experiences.value.filter(item => item.id !== deleteId.value);
       total.value = experiences.value.length;
       showToastMessage('删除体验成功');

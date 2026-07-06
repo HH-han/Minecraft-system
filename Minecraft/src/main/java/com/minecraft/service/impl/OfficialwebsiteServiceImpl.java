@@ -56,8 +56,7 @@ public class OfficialwebsiteServiceImpl extends ServiceImpl<OfficialwebsiteHeroM
     @Override
     public List<OfficialwebsiteNavigation> getNavigationList() {
         LambdaQueryWrapper<OfficialwebsiteNavigation> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OfficialwebsiteNavigation::getIsActive, 1)
-                .orderByAsc(OfficialwebsiteNavigation::getSortOrder);
+        wrapper.orderByAsc(OfficialwebsiteNavigation::getSortOrder);
         return navigationMapper.selectList(wrapper);
     }
 
