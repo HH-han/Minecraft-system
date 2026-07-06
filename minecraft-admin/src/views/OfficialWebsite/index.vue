@@ -30,8 +30,11 @@
         <DestinationsManagement v-else-if="currentView === 'destinations'" />
         <ExperiencesManagement v-else-if="currentView === 'experiences'" />
         <StoriesManagement v-else-if="currentView === 'stories'" />
+        <NarrativeManagement v-else-if="currentView === 'narrative'" />
+        <ImmersionManagement v-else-if="currentView === 'immersion'" />
         <CtaManagement v-else-if="currentView === 'cta'" />
         <FooterManagement v-else-if="currentView === 'footer'" />
+        <FooterLinksManagement v-else-if="currentView === 'footerLinks'" />
         <SettingsManagement v-else-if="currentView === 'settings'" />
       </transition>
     </main>
@@ -47,6 +50,9 @@ import ExperiencesManagement from './components/ExperiencesManagement.vue';
 import StoriesManagement from './components/StoriesManagement.vue';
 import CtaManagement from './components/CtaManagement.vue';
 import FooterManagement from './components/FooterManagement.vue';
+import FooterLinksManagement from './components/FooterLinksManagement.vue';
+import ImmersionManagement from './components/ImmersionManagement.vue';
+import NarrativeManagement from './components/NarrativeManagement.vue';
 import SettingsManagement from './components/SettingsManagement.vue';
 
 const menuItems = [
@@ -55,8 +61,11 @@ const menuItems = [
   { key: 'destinations', label: '目的地', icon: '🌍' },
   { key: 'experiences', label: '体验活动', icon: '🎪' },
   { key: 'stories', label: '故事分享', icon: '📖' },
+  { key: 'narrative', label: '叙事内容', icon: '✍️' },
+  { key: 'immersion', label: '名人名言', icon: '💬' },
   { key: 'cta', label: '行动号召', icon: '🚀' },
   { key: 'footer', label: '页脚信息', icon: '📝' },
+  { key: 'footerLinks', label: '页脚链接', icon: '🔗' },
   { key: 'settings', label: '网站设置', icon: '⚙️' },
 ];
 

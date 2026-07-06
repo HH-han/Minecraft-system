@@ -29,20 +29,15 @@
                 <td>{{ item.id }}</td>
                 <td>{{ item.title }}</td>
                 <td>{{ item.description ? item.description.substring(0, 20) : '未设置' }}</td>
-                <td>{{ item.category }}</td>
-                <td>
-                  <img :src="item.image?.replace(/[`\s]/g, '')" alt="图片" style="width: 35px; height: 35px;"
-                    @click="triggerFileInput(item)" />
-                </td>
-                <td>{{ item.price }}</td>
+                <td><i :class="item.iconClass" style="font-size: 20px;"></i></td>
                 <td>{{ item.sortOrder }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.enabled" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isActive" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
-                <td>{{ formatDate(item.createTime) }}</td>
+                <td>{{ formatDate(item.createdAt) }}</td>
                 <td class="table-btn-display">
                   <button class="btn details-btn" @click="showDetailsDialog(item)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(item)">编辑</button>
@@ -67,10 +62,7 @@
         :isEdit="isEditing"
         :fields="formFields"
         :initialData="formData"
-        :showImageUpload="true"
-        imageUploadLabel="上传体验图片"
-        recommendedSize="推荐尺寸：800×600px"
-        imageField="image"
+        :showImageUpload="false"
         :validateFn="validateForm"
         :submitFn="handleSubmit"
         @error="handleError"
@@ -89,12 +81,8 @@
               <span>{{ selectedItem?.description }}</span>
             </div>
             <div class="detail-item">
-              <label>分类:</label>
-              <span>{{ selectedItem?.category }}</span>
-            </div>
-            <div class="detail-item">
-              <label>价格:</label>
-              <span>{{ selectedItem?.price }}</span>
+              <label>图标:</label>
+              <span><i :class="selectedItem?.iconClass"></i> {{ selectedItem?.iconClass }}</span>
             </div>
             <div class="detail-item">
               <label>排序:</label>
@@ -102,15 +90,11 @@
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.enabled ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
-              <span>{{ formatDate(selectedItem?.createTime) }}</span>
-            </div>
-            <div class="detail-item" v-if="selectedItem?.image">
-              <label>图片:</label>
-              <img :src="selectedItem.image.replace(/[`\s]/g, '')" alt="体验图片" style="max-width: 100%; max-height: 300px;" />
+              <span>{{ formatDate(selectedItem?.createdAt) }}</span>
             </div>
           </div>
           <div class="dialog-buttons">
@@ -137,12 +121,10 @@ const columns = [
   { key: 'id', title: 'ID' },
   { key: 'title', title: '标题' },
   { key: 'description', title: '描述' },
-  { key: 'category', title: '分类' },
-  { key: 'image', title: '图片' },
-  { key: 'price', title: '价格' },
+  { key: 'iconClass', title: '图标' },
   { key: 'sortOrder', title: '排序' },
-  { key: 'enabled', title: '状态' },
-  { key: 'createTime', title: '创建时间' },
+  { key: 'isActive', title: '状态' },
+  { key: 'createdAt', title: '创建时间' },
 ];
 
 const showToast = ref(false);
@@ -159,25 +141,22 @@ const formData = ref({
   id: null,
   title: '',
   description: '',
-  category: '',
-  image: '',
-  price: '',
+  iconClass: '',
   sortOrder: 0,
-  enabled: true,
+  isActive: true,
 });
 
 const formFields = [
   [
     { name: 'title', label: '标题', type: 'text', required: true, placeholder: '请输入体验标题' },
-    { name: 'category', label: '分类', type: 'text', placeholder: '请输入分类' },
-    { name: 'price', label: '价格', type: 'number', min: 0, step: '0.01', placeholder: '请输入价格' },
+    { name: 'iconClass', label: '图标类', type: 'text', placeholder: '如：fa-solid fa-user-check' },
   ],
   [
     { name: 'description', label: '描述', type: 'textarea', rows: 3, placeholder: '请输入体验描述' },
     { name: 'sortOrder', label: '排序', type: 'number', min: 0, placeholder: '排序序号' },
   ],
   [
-    { name: 'enabled', label: '启用', type: 'switch' },
+    { name: 'isActive', label: '启用', type: 'switch' },
   ],
 ];
 
@@ -253,10 +232,10 @@ const fetchExperiences = async () => {
 
 const toggleEnabled = async (item) => {
   try {
-    item.enabled = !item.enabled;
-    showToastMessage(item.enabled ? '已启用' : '已禁用', 'success');
+    item.isActive = !item.isActive;
+    showToastMessage(item.isActive ? '已启用' : '已禁用', 'success');
   } catch (error) {
-    item.enabled = !item.enabled;
+    item.isActive = !item.isActive;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -267,11 +246,9 @@ const showAddDialog = () => {
     id: null,
     title: '',
     description: '',
-    category: '',
-    image: '',
-    price: '',
+    iconClass: '',
     sortOrder: 0,
-    enabled: true,
+    isActive: true,
   };
   showDialog.value = true;
 };
@@ -292,12 +269,6 @@ const showDetailsDialog = (item) => {
 const closeDetailsDialog = () => {
   showDetails.value = false;
   selectedItem.value = null;
-};
-
-const triggerFileInput = (item) => {
-  if (item.image) {
-    window.open(item.image, '_blank');
-  }
 };
 
 const showToastMessage = (message, type = 'success') => {

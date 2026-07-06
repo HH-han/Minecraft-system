@@ -4,12 +4,12 @@
       <div class="action-bar">
         <div class="search-bar">
           <div class="search-box-management">
-            <input type="text" v-model="searchKeyword" placeholder="输入目的地名称搜索" class="search-input-management" />
+            <input type="text" v-model="searchKeyword" placeholder="输入名言内容搜索" class="search-input-management" />
           </div>
           <button class="btn search-btn" @click="handleSearch">搜索</button>
           <button class="btn delete-btn" @click="handleBatchDelete">批量删除</button>
         </div>
-        <button class="btn add-btn" @click="showAddDialog">新增目的地</button>
+        <button class="btn add-btn" @click="showAddDialog">新增名言</button>
       </div>
 
       <div class="data-table-container">
@@ -22,26 +22,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in filteredDestinations" :key="item.id">
+              <tr v-for="item in filteredImmersions" :key="item.id">
                 <td>
                   <input type="checkbox" :checked="item.checked" @change="handleCheck(item)" class="ui-checkbox" />
                 </td>
                 <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.duration }}</td>
-                <td>{{ item.description ? item.description.substring(0, 20) : '未设置' }}</td>
-                <td>
-                  <img :src="item.imageUrl?.replace(/[`\s]/g, '')" alt="图片" style="width: 35px; height: 35px;"
-                    @click="triggerFileInput(item)" />
-                </td>
-                <td>{{ item.isFeatured ? '是' : '否' }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.priceCurrency }}</td>
-                <td>{{ item.sortOrder }}</td>
+                <td>{{ item.quoteText ? item.quoteText.substring(0, 30) : '未设置' }}</td>
+                <td>{{ item.author }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.enabled" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isActive" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
@@ -66,14 +56,10 @@
 
       <FormDialog
         v-model:visible="showDialog"
-        title="目的地"
+        title="名人名言"
         :isEdit="isEditing"
         :fields="formFields"
         :initialData="formData"
-        :showImageUpload="true"
-        imageUploadLabel="上传目的地图片"
-        recommendedSize="推荐尺寸：800×600px"
-        imageField="imageUrl"
         :validateFn="validateForm"
         :submitFn="handleSubmit"
         @error="handleError"
@@ -81,47 +67,23 @@
 
       <div v-if="showDetails" class="dialog-overlay" @click.self="closeDetailsDialog">
         <div class="dialog" @click.stop>
-          <h2>目的地详情</h2>
+          <h2>名人名言详情</h2>
           <div class="details-container">
             <div class="detail-item">
-              <label>名称:</label>
-              <span>{{ selectedItem?.name }}</span>
+              <label>名言内容:</label>
+              <span>{{ selectedItem?.quoteText }}</span>
             </div>
             <div class="detail-item">
-              <label>分类:</label>
-              <span>{{ selectedItem?.category }}</span>
-            </div>
-            <div class="detail-item">
-              <label>时长:</label>
-              <span>{{ selectedItem?.duration }}</span>
-            </div>
-            <div class="detail-item">
-              <label>描述:</label>
-              <span>{{ selectedItem?.description }}</span>
-            </div>
-            <div class="detail-item">
-              <label>价格:</label>
-              <span>{{ selectedItem?.priceCurrency }} {{ selectedItem?.price }}</span>
-            </div>
-            <div class="detail-item">
-              <label>是否推荐:</label>
-              <span>{{ selectedItem?.isFeatured ? '是' : '否' }}</span>
-            </div>
-            <div class="detail-item">
-              <label>排序:</label>
-              <span>{{ selectedItem?.sortOrder }}</span>
+              <label>作者:</label>
+              <span>{{ selectedItem?.author }}</span>
             </div>
             <div class="detail-item">
               <label>是否启用:</label>
-              <span>{{ selectedItem?.enabled ? '是' : '否' }}</span>
+              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
               <span>{{ formatDate(selectedItem?.createdAt) }}</span>
-            </div>
-            <div class="detail-item" v-if="selectedItem?.imageUrl">
-              <label>图片:</label>
-              <img :src="selectedItem.imageUrl.replace(/[`\s]/g, '')" alt="目的地图片" style="max-width: 100%; max-height: 300px;" />
             </div>
           </div>
           <div class="dialog-buttons">
@@ -146,23 +108,16 @@ import ToastType from '@/components/PromptComponent/ToastType.vue';
 const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
-  { key: 'name', title: '名称' },
-  { key: 'category', title: '分类' },
-  { key: 'duration', title: '时长' },
-  { key: 'description', title: '描述' },
-  { key: 'imageUrl', title: '图片' },
-  { key: 'isFeatured', title: '推荐' },
-  { key: 'price', title: '价格' },
-  { key: 'priceCurrency', title: '货币' },
-  { key: 'sortOrder', title: '排序' },
-  { key: 'enabled', title: '状态' },
+  { key: 'quoteText', title: '名言内容' },
+  { key: 'author', title: '作者' },
+  { key: 'isActive', title: '状态' },
   { key: 'createdAt', title: '创建时间' },
 ];
 
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
-const destinations = ref([]);
+const immersions = ref([]);
 const searchKeyword = ref('');
 const showDialog = ref(false);
 const showDetails = ref(false);
@@ -171,32 +126,18 @@ const selectedItem = ref(null);
 
 const formData = ref({
   id: null,
-  name: '',
-  category: '',
-  duration: '',
-  description: '',
-  imageUrl: '',
-  price: 0,
-  priceCurrency: 'CNY',
-  isFeatured: false,
-  sortOrder: 0,
-  enabled: true,
+  quoteText: '',
+  author: '',
+  isActive: 1,
 });
 
 const formFields = [
   [
-    { name: 'name', label: '名称', type: 'text', required: true, placeholder: '请输入目的地名称' },
-    { name: 'category', label: '分类', type: 'text', required: true, placeholder: '如：欧洲 · 浪漫' },
-    { name: 'duration', label: '时长', type: 'text', required: true, placeholder: '如：6 天 5 晚' },
+    { name: 'quoteText', label: '名言内容', type: 'textarea', rows: 3, required: true, placeholder: '请输入名言内容' },
   ],
   [
-    { name: 'description', label: '描述', type: 'textarea', rows: 3, placeholder: '请输入目的地描述' },
-    { name: 'price', label: '价格', type: 'number', min: 0, placeholder: '价格' },
-    { name: 'priceCurrency', label: '货币', type: 'text', placeholder: '如：CNY' },
-  ],
-  [
-    { name: 'isFeatured', label: '推荐', type: 'switch' },
-    { name: 'enabled', label: '启用', type: 'switch' },
+    { name: 'author', label: '作者', type: 'text', placeholder: '请输入作者名称' },
+    { name: 'isActive', label: '启用', type: 'switch' },
   ],
 ];
 
@@ -206,13 +147,13 @@ const formatDate = (date) => {
   return new Intl.DateTimeFormat('zh-CN', options).format(new Date(date));
 };
 
-const filteredDestinations = computed(() => {
+const filteredImmersions = computed(() => {
   const keyword = searchKeyword.value.toLowerCase();
-  return (destinations.value || []).filter(
+  return (immersions.value || []).filter(
     (item) =>
       String(item.id).includes(keyword) ||
-      (item.name && item.name.toLowerCase().includes(keyword)) ||
-      (item.category && item.category.toLowerCase().includes(keyword))
+      (item.quoteText && item.quoteText.toLowerCase().includes(keyword)) ||
+      (item.author && item.author.toLowerCase().includes(keyword))
   );
 });
 
@@ -223,17 +164,17 @@ const total = ref(0);
 const handleSizeChange = (newSize) => {
   pageSize.value = newSize;
   currentPage.value = 1;
-  fetchDestinations();
+  fetchImmersions();
 };
 
 const handleCurrentChange = (newPage) => {
   currentPage.value = newPage;
-  fetchDestinations();
+  fetchImmersions();
 };
 
 const handleSearch = () => {
   currentPage.value = 1;
-  fetchDestinations();
+  fetchImmersions();
 };
 
 const handleCheck = (item) => {
@@ -241,42 +182,42 @@ const handleCheck = (item) => {
 };
 
 const handleBatchDelete = () => {
-  const selectedItems = destinations.value.filter(item => item.checked);
+  const selectedItems = immersions.value.filter(item => item.checked);
   if (selectedItems.length === 0) {
-    showToastMessage('请选择要删除的目的地', 'warning');
+    showToastMessage('请选择要删除的名言', 'warning');
     return;
   }
-  showToastMessage(`已选择 ${selectedItems.length} 个目的地，请逐个删除`, 'info');
+  showToastMessage(`已选择 ${selectedItems.length} 个名言，请逐个删除`, 'info');
 };
 
-const fetchDestinations = async () => {
+const fetchImmersions = async () => {
   try {
-    const response = await officialwebsiteApi.getDestinations();
+    const response = await officialwebsiteApi.getImmersion();
     if (response.code === 200) {
       const data = response.data || [];
-      destinations.value = data.map(item => ({
+      immersions.value = data.map(item => ({
         ...item,
         checked: false
       }));
       total.value = data.length;
     } else {
-      console.error('获取目的地数据失败:', response.msg || response.message || '未知错误');
-      destinations.value = [];
+      console.error('获取名人名言数据失败:', response.msg || response.message || '未知错误');
+      immersions.value = [];
       total.value = 0;
     }
   } catch (error) {
-    console.error('获取目的地数据失败:', error);
-    destinations.value = [];
+    console.error('获取名人名言数据失败:', error);
+    immersions.value = [];
     total.value = 0;
   }
 };
 
 const toggleEnabled = async (item) => {
   try {
-    item.enabled = !item.enabled;
-    showToastMessage(item.enabled ? '已启用' : '已禁用', 'success');
+    item.isActive = !item.isActive;
+    showToastMessage(item.isActive ? '已启用' : '已禁用', 'success');
   } catch (error) {
-    item.enabled = !item.enabled;
+    item.isActive = !item.isActive;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -285,16 +226,9 @@ const showAddDialog = () => {
   isEditing.value = false;
   formData.value = {
     id: null,
-    name: '',
-    category: '',
-    duration: '',
-    description: '',
-    imageUrl: '',
-    price: 0,
-    priceCurrency: 'CNY',
-    isFeatured: false,
-    sortOrder: 0,
-    enabled: true,
+    quoteText: '',
+    author: '',
+    isActive: 1,
   };
   showDialog.value = true;
 };
@@ -317,12 +251,6 @@ const closeDetailsDialog = () => {
   selectedItem.value = null;
 };
 
-const triggerFileInput = (item) => {
-  if (item.imageUrl) {
-    window.open(item.imageUrl, '_blank');
-  }
-};
-
 const showToastMessage = (message, type = 'success') => {
   toastMessage.value = message;
   toastType.value = type;
@@ -333,19 +261,19 @@ const showToastMessage = (message, type = 'success') => {
 };
 
 const validateForm = (data) => {
-  if (!data.name || !data.category || !data.duration) {
-    return '请填写所有必填字段';
+  if (!data.quoteText) {
+    return '请填写名言内容';
   }
   return null;
 };
 
 const handleSubmit = async (data) => {
   if (isEditing.value) {
-    showToastMessage('更新目的地成功');
+    showToastMessage('更新名人名言成功');
   } else {
-    showToastMessage('新增目的地成功');
+    showToastMessage('新增名人名言成功');
   }
-  await fetchDestinations();
+  await fetchImmersions();
 };
 
 const handleError = (error) => {
@@ -368,19 +296,19 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteId.value) {
     try {
-      destinations.value = destinations.value.filter(item => item.id !== deleteId.value);
-      total.value = destinations.value.length;
-      showToastMessage('删除目的地成功');
+      immersions.value = immersions.value.filter(item => item.id !== deleteId.value);
+      total.value = immersions.value.length;
+      showToastMessage('删除名人名言成功');
     } catch (error) {
       console.error('删除失败:', error);
-      showToastMessage('删除目的地失败', 'error');
+      showToastMessage('删除名人名言失败', 'error');
     } finally {
       closeDeletePrompt();
     }
   }
 };
 
-onMounted(fetchDestinations);
+onMounted(fetchImmersions);
 </script>
 
 <style scoped>

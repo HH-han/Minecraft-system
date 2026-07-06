@@ -28,20 +28,19 @@
                 </td>
                 <td>{{ item.id }}</td>
                 <td>{{ item.title }}</td>
-                <td>{{ item.author }}</td>
+                <td>{{ item.authorName }}</td>
+                <td>{{ item.authorRole }}</td>
                 <td>{{ item.content ? item.content.substring(0, 20) : '未设置' }}</td>
-                <td>
-                  <img :src="item.image?.replace(/[`\s]/g, '')" alt="图片" style="width: 35px; height: 35px;"
-                    @click="triggerFileInput(item)" />
-                </td>
+                <td>{{ item.destination }}</td>
+                <td>{{ item.rating }} 星</td>
                 <td>{{ item.sortOrder }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" :checked="item.enabled" @change="toggleEnabled(item)" />
+                    <input type="checkbox" :checked="item.isFeatured" @change="toggleEnabled(item)" />
                     <span class="slider"></span>
                   </label>
                 </td>
-                <td>{{ formatDate(item.createTime) }}</td>
+                <td>{{ formatDate(item.createdAt) }}</td>
                 <td class="table-btn-display">
                   <button class="btn details-btn" @click="showDetailsDialog(item)">详情</button>
                   <button class="btn edit-btn" @click="showEditDialog(item)">编辑</button>
@@ -66,10 +65,7 @@
         :isEdit="isEditing"
         :fields="formFields"
         :initialData="formData"
-        :showImageUpload="true"
-        imageUploadLabel="上传故事图片"
-        recommendedSize="推荐尺寸：800×600px"
-        imageField="image"
+        :showImageUpload="false"
         :validateFn="validateForm"
         :submitFn="handleSubmit"
         @error="handleError"
@@ -84,8 +80,20 @@
               <span>{{ selectedItem?.title }}</span>
             </div>
             <div class="detail-item">
-              <label>作者:</label>
-              <span>{{ selectedItem?.author }}</span>
+              <label>作者名称:</label>
+              <span>{{ selectedItem?.authorName }}</span>
+            </div>
+            <div class="detail-item">
+              <label>作者角色:</label>
+              <span>{{ selectedItem?.authorRole }}</span>
+            </div>
+            <div class="detail-item">
+              <label>目的地:</label>
+              <span>{{ selectedItem?.destination }}</span>
+            </div>
+            <div class="detail-item">
+              <label>评分:</label>
+              <span>{{ selectedItem?.rating }} 星</span>
             </div>
             <div class="detail-item">
               <label>内容:</label>
@@ -96,16 +104,12 @@
               <span>{{ selectedItem?.sortOrder }}</span>
             </div>
             <div class="detail-item">
-              <label>是否启用:</label>
-              <span>{{ selectedItem?.enabled ? '是' : '否' }}</span>
+              <label>是否推荐:</label>
+              <span>{{ selectedItem?.isFeatured ? '是' : '否' }}</span>
             </div>
             <div class="detail-item">
               <label>创建时间:</label>
-              <span>{{ formatDate(selectedItem?.createTime) }}</span>
-            </div>
-            <div class="detail-item" v-if="selectedItem?.image">
-              <label>图片:</label>
-              <img :src="selectedItem.image.replace(/[`\s]/g, '')" alt="故事图片" style="max-width: 100%; max-height: 300px;" />
+              <span>{{ formatDate(selectedItem?.createdAt) }}</span>
             </div>
           </div>
           <div class="dialog-buttons">
@@ -131,12 +135,14 @@ const columns = [
   { key: 'checked', title: '多选' },
   { key: 'id', title: 'ID' },
   { key: 'title', title: '标题' },
-  { key: 'author', title: '作者' },
+  { key: 'authorName', title: '作者名称' },
+  { key: 'authorRole', title: '作者角色' },
   { key: 'content', title: '内容' },
-  { key: 'image', title: '图片' },
+  { key: 'destination', title: '目的地' },
+  { key: 'rating', title: '评分' },
   { key: 'sortOrder', title: '排序' },
-  { key: 'enabled', title: '状态' },
-  { key: 'createTime', title: '创建时间' },
+  { key: 'isFeatured', title: '推荐' },
+  { key: 'createdAt', title: '创建时间' },
 ];
 
 const showToast = ref(false);
@@ -152,24 +158,31 @@ const selectedItem = ref(null);
 const formData = ref({
   id: null,
   title: '',
-  author: '',
+  authorName: '',
+  authorRole: '',
+  destination: '',
+  rating: 5,
   content: '',
-  image: '',
   sortOrder: 0,
-  enabled: true,
+  isFeatured: false,
 });
 
 const formFields = [
   [
     { name: 'title', label: '标题', type: 'text', required: true, placeholder: '请输入故事标题' },
-    { name: 'author', label: '作者', type: 'text', placeholder: '请输入作者名称' },
+    { name: 'authorName', label: '作者名称', type: 'text', placeholder: '请输入作者名称' },
+    { name: 'authorRole', label: '作者角色', type: 'text', placeholder: '如：自由撰稿人' },
+  ],
+  [
+    { name: 'destination', label: '目的地', type: 'text', placeholder: '如：巴黎' },
+    { name: 'rating', label: '评分', type: 'number', min: 1, max: 5, placeholder: '1-5星' },
+    { name: 'sortOrder', label: '排序', type: 'number', min: 0, placeholder: '排序序号' },
   ],
   [
     { name: 'content', label: '内容', type: 'textarea', rows: 4, placeholder: '请输入故事内容' },
   ],
   [
-    { name: 'sortOrder', label: '排序', type: 'number', min: 0, placeholder: '排序序号' },
-    { name: 'enabled', label: '启用', type: 'switch' },
+    { name: 'isFeatured', label: '推荐', type: 'switch' },
   ],
 ];
 
@@ -185,7 +198,7 @@ const filteredStories = computed(() => {
     (item) =>
       String(item.id).includes(keyword) ||
       (item.title && item.title.toLowerCase().includes(keyword)) ||
-      (item.author && item.author.toLowerCase().includes(keyword))
+      (item.authorName && item.authorName.toLowerCase().includes(keyword))
   );
 });
 
@@ -246,10 +259,10 @@ const fetchStories = async () => {
 
 const toggleEnabled = async (item) => {
   try {
-    item.enabled = !item.enabled;
-    showToastMessage(item.enabled ? '已启用' : '已禁用', 'success');
+    item.isFeatured = !item.isFeatured;
+    showToastMessage(item.isFeatured ? '已推荐' : '已取消推荐', 'success');
   } catch (error) {
-    item.enabled = !item.enabled;
+    item.isFeatured = !item.isFeatured;
     showToastMessage('操作失败', 'error');
   }
 };
@@ -259,11 +272,13 @@ const showAddDialog = () => {
   formData.value = {
     id: null,
     title: '',
-    author: '',
+    authorName: '',
+    authorRole: '',
+    destination: '',
+    rating: 5,
     content: '',
-    image: '',
     sortOrder: 0,
-    enabled: true,
+    isFeatured: false,
   };
   showDialog.value = true;
 };
@@ -284,12 +299,6 @@ const showDetailsDialog = (item) => {
 const closeDetailsDialog = () => {
   showDetails.value = false;
   selectedItem.value = null;
-};
-
-const triggerFileInput = (item) => {
-  if (item.image) {
-    window.open(item.image, '_blank');
-  }
 };
 
 const showToastMessage = (message, type = 'success') => {

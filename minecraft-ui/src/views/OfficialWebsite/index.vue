@@ -1,10 +1,10 @@
 <template>
     <!-- ===== 导航栏 ===== -->
     <nav class="navbar" :class="{ scrolled: isScrolled }" role="navigation">
-        <a href="#" class="logo"><i class="fas fa-compass"></i> {{ settings.siteName || '博览旅行' }}</a>
+        <a href="#" class="logo"><i class="fas fa-compass"></i> {{ settings.site_name || settings.siteName || '博览旅行' }}</a>
         <ul class="nav-links" :class="{ open: isMenuOpen }">
             <li v-for="item in navigation" :key="item.id">
-                <a :href="item.url" @click="closeMenu">{{ item.title }}</a>
+                <a :href="item.href || item.url" @click="closeMenu">{{ item.name || item.title }}</a>
             </li>
         </ul>
         <div class="nav-actions">
@@ -45,7 +45,7 @@
             <div class="destinations-grid">
                 <div v-for="dest in destinations" :key="dest.id" class="dest-card reveal" :class="'reveal-delay-' + (dest.sortOrder % 4 + 1)">
                     <div class="card-image">
-                        <img :src="dest.imageUrl" :alt="dest.name" loading="lazy" />
+                        <img :src="cleanImageUrl(dest.imageUrl)" :alt="dest.name" loading="lazy" />
                     </div>
                     <div class="card-content">
                         <div class="card-tag">{{ dest.category }}</div>
@@ -91,7 +91,7 @@
                 <div class="narrative-detail" v-if="item.quoteText">"{{ item.quoteText }}"</div>
             </div>
             <div v-if="narrative.length > 0 && narrative[0].imageUrl" class="narrative-media reveal reveal-delay-2">
-                <img :src="narrative[0].imageUrl" alt="叙事影像" loading="lazy" />
+                <img :src="cleanImageUrl(narrative[0].imageUrl)" alt="叙事影像" loading="lazy" />
             </div>
         </div>
     </section>
@@ -168,10 +168,9 @@
             <div class="footer-bottom">
                 <span>{{ footer?.copyrightText || '© 2026 博览旅行. 保留所有权利。' }}</span>
                 <div class="socials">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-weixin"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a v-for="(value, key) in parsedSocialLinks" :key="key" :href="getSocialUrl(key, value)" :title="key">
+                        <i :class="getSocialIcon(key)"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -230,8 +229,47 @@ const getFooterLinksByCategory = (category) => {
     return footerLinks.value.filter(link => link.category === category);
 };
 
+const parsedSocialLinks = computed(() => {
+    if (!footer.value?.socialLinks) return {};
+    try {
+        return typeof footer.value.socialLinks === 'string' 
+            ? JSON.parse(footer.value.socialLinks) 
+            : footer.value.socialLinks;
+    } catch (e) {
+        console.error('解析社交链接失败:', e);
+        return {};
+    }
+});
+
+const getSocialUrl = (platform, value) => {
+    const urls = {
+        weibo: `https://weibo.com/${value.replace('@', '')}`,
+        wechat: '#',
+        instagram: `https://instagram.com/${value.replace('@', '')}`,
+        twitter: `https://twitter.com/${value.replace('@', '')}`,
+        youtube: `https://youtube.com/${value}`
+    };
+    return urls[platform] || '#';
+};
+
+const getSocialIcon = (platform) => {
+    const icons = {
+        weibo: 'fab fa-weibo',
+        wechat: 'fab fa-weixin',
+        instagram: 'fab fa-instagram',
+        twitter: 'fab fa-twitter',
+        youtube: 'fab fa-youtube'
+    };
+    return icons[platform] || 'fab fa-globe';
+};
+
 const formatPrice = (price) => {
     return price.toLocaleString();
+};
+
+const cleanImageUrl = (url) => {
+    if (!url) return '';
+    return url.replace(/[`\s]/g, '');
 };
 
 const toggleMenu = () => {
@@ -1189,8 +1227,7 @@ section {
 
 /* ========== 动画类 ========== */
 .reveal {
-    opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(10px);
     transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
