@@ -150,4 +150,96 @@ const formFields = [
 const formatDate = (date) => {
   if (!date) return '未知日期';
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Intl.DateTimeFormat('zh-CN', options).format
+  return new Intl.DateTimeFormat('zh-CN', options).format(new Date(date));
+};
+
+const fetchCta = async () => {
+  try {
+    const response = await officialwebsiteApi.getCta();
+    if (response.code === 200) {
+      ctaData.value = response.data || null;
+    } else {
+      console.error('获取行动号召数据失败:', response.msg || response.message || '未知错误');
+      ctaData.value = null;
+    }
+  } catch (error) {
+    console.error('获取行动号召数据失败:', error);
+    ctaData.value = null;
+  }
+};
+
+const showAddDialog = () => {
+  isEditing.value = false;
+  formData.value = {
+    id: null,
+    title: '',
+    description: '',
+    btnText: '',
+    btnUrl: '',
+    bgColor: '',
+    isActive: 1,
+  };
+  showDialog.value = true;
+};
+
+const showEditDialog = (item) => {
+  isEditing.value = true;
+  formData.value = {
+    ...item,
+  };
+  showDialog.value = true;
+};
+
+const showDetailsDialog = (item) => {
+  selectedItem.value = item;
+  showDetails.value = true;
+};
+
+const closeDetailsDialog = () => {
+  showDetails.value = false;
+  selectedItem.value = null;
+};
+
+const showToastMessage = (message, type = 'success') => {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 3000);
+};
+
+const validateForm = (data) => {
+  if (!data.title) {
+    return '请填写标题';
+  }
+  return null;
+};
+
+const handleSubmit = async (data) => {
+  if (isEditing.value) {
+    showToastMessage('更新行动号召成功');
+  } else {
+    showToastMessage('新增行动号召成功');
+  }
+  await fetchCta();
+};
+
+const handleError = (error) => {
+  showToastMessage(error.message || '操作失败', 'error');
+};
+
+onMounted(fetchCta);
+</script>
+
+<style scoped>
+@import '@/css/Management/BackgroundManagement.css';
+
+.color-preview {
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  display: inline-block;
+  border: 1px solid #ddd;
+}
+</style>
