@@ -76,4 +76,78 @@
               <div class="color-preview" :style="{ backgroundColor: selectedItem?.bgColor }"></div>
               <span>{{ selectedItem?.bgColor }}</span>
             </div>
-            <div class
+            <div class="detail-item">
+              <label>是否启用:</label>
+              <span>{{ selectedItem?.isActive ? '是' : '否' }}</span>
+            </div>
+            <div class="detail-item">
+              <label>创建时间:</label>
+              <span>{{ formatDate(selectedItem?.createdAt) }}</span>
+            </div>
+          </div>
+          <div class="dialog-buttons">
+            <button type="button" class="btn cancel-btn" @click="closeDetailsDialog">关闭</button>
+          </div>
+        </div>
+      </div>
+
+      <ToastType v-if="showToast" :toastMessage="toastMessage" :toastType="toastType" />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import officialwebsiteApi from '@/api/officialwebsite';
+import FormDialog from '@/components/FormDialog.vue';
+import ToastType from '@/components/PromptComponent/ToastType.vue';
+
+const columns = [
+  { key: 'id', title: 'ID' },
+  { key: 'title', title: '标题' },
+  { key: 'description', title: '描述' },
+  { key: 'btnText', title: '按钮文本' },
+  { key: 'btnUrl', title: '按钮链接' },
+  { key: 'bgColor', title: '背景颜色' },
+  { key: 'isActive', title: '状态' },
+  { key: 'createdAt', title: '创建时间' },
+];
+
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success');
+const ctaData = ref(null);
+const showDialog = ref(false);
+const showDetails = ref(false);
+const isEditing = ref(false);
+const selectedItem = ref(null);
+
+const formData = ref({
+  id: null,
+  title: '',
+  description: '',
+  btnText: '',
+  btnUrl: '',
+  bgColor: '',
+  isActive: 1,
+});
+
+const formFields = [
+  [
+    { name: 'title', label: '标题', type: 'text', required: true, placeholder: '请输入标题' },
+    { name: 'btnText', label: '按钮文本', type: 'text', placeholder: '请输入按钮文本' },
+  ],
+  [
+    { name: 'description', label: '描述', type: 'textarea', rows: 2, placeholder: '请输入描述' },
+    { name: 'btnUrl', label: '按钮链接', type: 'text', placeholder: '请输入按钮链接' },
+  ],
+  [
+    { name: 'bgColor', label: '背景颜色', type: 'text', placeholder: '例如：#2c3e50' },
+    { name: 'isActive', label: '启用', type: 'switch' },
+  ],
+];
+
+const formatDate = (date) => {
+  if (!date) return '未知日期';
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Intl.DateTimeFormat('zh-CN', options).format
