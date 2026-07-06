@@ -310,6 +310,7 @@ import index from '@/views/DestinationManagement/index.vue';
 import ProductManagement from '@/views/ManagementViews/ProductManagement.vue';
 import CommunityManagement from '@/views/ManagementViews/CommunityManagement.vue';
 import MonthlyManagement from '@/views/ManagementViews/MonthlyManagement.vue';
+import OfficialWebsite from '@/views/OfficialWebsite/index.vue';
 // 个人/设置组件
 import CenterManagement from '@/views/ManagementViews/CenterManagement.vue';
 import AdminSetting from './AdminSetting.vue';
@@ -467,7 +468,8 @@ const menuItems = reactive([
   { id: 33, title: '旅行计划管理', icon: tpIcon, component: TravelManagement },
   { id: 34, title: '票务管理', icon: tkIcon, component: TicketManagement },
   { id: 35, title: '社区管理', icon: cmmIcon, component: CommunityManagement },
-  { id: 36, title: '月度管理', icon: mmIcon, component: MonthlyManagement }
+  { id: 36, title: '月度管理', icon: mmIcon, component: MonthlyManagement },
+  { id: 37, title: '官方网站', icon: owIcon, component: OfficialWebsite }
 ]);
 // 计算属性分类
 const systemMenus = computed(() =>
@@ -479,7 +481,7 @@ const contentMenus = computed(() =>
 )
 
 const travelMenus = computed(() =>
-  menuItems.filter(item => [5, 6, 8, 9, 11, 7, 17, 22, 23, 24, 26, 28, 29, 35, 36].includes(item.id))
+  menuItems.filter(item => [5, 6, 8, 9, 11, 7, 17, 22, 23, 24, 26, 28, 29, 35, 36, 37].includes(item.id))
 )
 const userMenus = computed(() =>
   menuItems.filter(item => [3, 12, 25, 27].includes(item.id))
@@ -780,7 +782,7 @@ const currentCategories = computed(() => {
   // 添加主分类
   if ([1, 2, 18, 19, 30, 31].includes(menuId)) categories.push('系统管理');
   if ([4, 10, 12, 13, 15 ,32, 33, 34].includes(menuId)) categories.push('内容管理');
-  if ([5, 6, 7, 8, 9, 11, 22, 23, 24, 26, 28, 29, 35, 36].includes(menuId)) categories.push('旅行管理');
+  if ([5, 6, 7, 8, 9, 11, 22, 23, 24, 26, 28, 29, 35, 36, 37].includes(menuId)) categories.push('旅行管理');
   if ([3, 12, 25, 27].includes(menuId)) categories.push('用户管理');
   if ([14].includes(menuId)) categories.push('个人中心');
   if ([16, 20, 21].includes(menuId)) categories.push('服务监测');
@@ -936,6 +938,7 @@ const cmmIcon =`<svg t="1780412462062" class="icon" viewBox="0 0 1024 1024" vers
 `;
 const mmIcon =`<svg t="1780761293759" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9877" width="200" height="200"><path d="M927.8 837.7V271c2.4-39.5-23.6-75.1-62-84.9-24.3-2.9-48.7-4.1-73.1-3.7v52c-1 22.5-12.9 43.2-31.8 55.5-18.9 12.3-42.6 14.7-63.6 6.5-27.1-11.4-44.5-38.1-44-67.5v-47.1H373.1v34.1c0.6 8.2 0.6 16.5 0 24.8-4.2 38.2-38.6 65.9-76.9 61.9-36.4-4.8-63.3-36.4-62-73.1V183h-62a42 42 0 0 0-11.2 0c-37.3 10.5-62.9 44.9-62 83.6v570.5c-1.9 23 5.7 45.7 21.1 62.9 15.3 17.2 37.1 27.4 60.1 28.1h660.1c24 0.8 47.1-8.6 63.7-25.9 16.8-17.1 25.4-40.6 23.8-64.5z m-54.5-30.3c0 8.2-1.9 16.2-5.6 23.5-5 8.4-14.4 13.3-24.2 12.4H182.8c-9.1 1.1-18.1-2.1-24.4-8.7-6.3-6.6-9.2-15.7-7.8-24.7V412.8h722.1l0.6 51.4v343.2zM303.6 269.1c11.3-0.3 22-5.2 29.7-13.4 7.7-8.3 11.7-19.3 11.2-30.6v-83c1.1-10.8-1.7-21.6-8.1-30.4-11.2-12.9-29.5-17.1-45.3-10.5-17.6 5.5-29.4 21.9-29.1 40.3v84.2c-0.2 23.4 18.3 42.7 41.6 43.4z m375-44c-0.3 11.3 3.9 22.3 11.6 30.6 7.8 8.2 18.5 13.1 29.9 13.4 11.3-0.3 22-5.2 29.7-13.4 7.7-8.3 11.7-19.3 11.2-30.6v-83c0.3-11.2-3.7-22-11.2-30.4-11.2-12.9-29.5-17.1-45.3-10.5-16.1 6.5-26.5 22.3-26 39.6v84.3zM340.9 509.6h157.4v86.7H340.9v43.3h157.4v86.7H340.9v43.3h202.4V466.3H340.9v43.3z m303.5 260h48V466.3h-48v303.3z" fill="#d81e06" p-id="9878"></path></svg>
 `;
+const owIcon =`<svg t="1783321798244" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9335" width="200" height="200"><path d="M0.083354 0m204.8 0l614.4 0q204.8 0 204.8 204.8l0 614.4q0 204.8-204.8 204.8l-614.4 0q-204.8 0-204.8-204.8l0-614.4q0-204.8 204.8-204.8Z" fill="#30BF78" fill-opacity=".1" p-id="9336"></path><path d="M541.635994 728.8832l-42.45504-45.89568c-44.46208-18.88256-72.6016-63.26272-76.1856-118.33344 55.23456-0.512 115.56864-0.512 176.41472 0l46.01856-83.64032H422.995354c7.168-140.288 220.8768-159.1296 247.97184-21.93408l58.28608 106.0864a6964.6336 6964.6336 0 0 0 107.37664-2.048c9.70752-70.38976-6.656-133.12-29.67552-178.50368 28.13952-57.1392 36.31104-144.85504-9.19552-180.55168-52.65408-41.32864-156.4672-7.65952-203.48928 11.20256-11.264 5.12-24.02304 12.24704-33.75104 14.29504-11.75552 2.048-26.07104 1.51552-36.29056 2.048-148.7872 12.73856-229.5808 103.0144-266.89536 229.49888 45.50656-42.33216 84.86912-90.78784 142.1312-120.36096 0 2.048-2.048 2.53952-2.048 4.58752-73.1136 61.70624-148.2752 170.35264-187.63776 280.00256-19.41504 54.0672-42.43456 137.216-6.63552 183.0912 46.51008 60.2112 164.10624 17.36704 217.2928-11.20256 31.70304 12.24704 60.33408 22.9376 97.64864 25.4976 4.096 0.512 8.192 0.512 12.288 0.512l11.24352-94.35136zM814.142874 289.21856c0.512 28.5696-10.24 49.47968-17.89952 73.97376-36.29056-48.96768-80.2816-89.27232-140.0832-113.74592 53.67808-31.62112 155.93472-39.28064 157.98272 39.77216zM237.426074 763.55584c-8.192-46.8992 17.87904-99.9424 31.68256-134.63552 29.65504 63.24224 67.50208 119.84896 126.79168 153.00608-45.48608 32.13312-145.7152 53.0432-158.49472-18.37056z" fill="#30BF78" p-id="9337"></path><path d="M676.414874 512l53.61664 103.26016L839.763354 637.37856l-76.45184 85.87264 13.88544 116.4288L675.923354 789.62688 575.141274 839.68l13.90592-116.4288L512.083354 637.37856l109.73184-22.1184L676.414874 512" fill="#30BF78" p-id="9338"></path></svg>`;
 </script>
 
 <style scoped>
