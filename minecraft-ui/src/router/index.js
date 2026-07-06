@@ -181,26 +181,6 @@ const routes = [
       title: "首页",
       requiresAuth: false,
     },
-    children: [
-      {
-        path: "/header",
-        name: "HomeHeader",
-        component: () => import("@/views/index/components/Header.vue"),
-        meta: {
-          title: "导航栏",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/footer",
-        name: "HomeFooter",
-        component: () => import("@/views/index/components/Footer.vue"),
-        meta: {
-          title: "页脚",
-          requiresAuth: false,
-        },
-      },
-    ],
   },
   // 登录
   {

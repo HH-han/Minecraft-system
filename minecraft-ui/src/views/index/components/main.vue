@@ -1,8 +1,5 @@
 <template>
   <div class="home-main">
-    <header>
-      <Header />
-    </header>
     <main>
       <!-- 主视觉 Hero -->
       <section class="hero-section">
@@ -10,7 +7,6 @@
           <Carousel :items="mediaList.images" />
         </transition>
       </section>
-
       <!-- 双卡片区 -->
       <section class="two-column-section">
         <div class="two-column-flex">
@@ -21,21 +17,9 @@
           <!-- 三列配件区 -->
           <section class="three-column-section fade-in-up delay-200">
             <h2 class="section-title">热门推荐</h2>
-            <Recommendations />
+            <Recommendations @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
           </section>
 
-        </div>
-      </section>
-
-      <!-- 全宽特色条 -->
-      <section class="feature-section fade-in-up">
-        <div class="feature-content breath">
-          <h2 class="pulse">探索 Minecraft 的无限可能</h2>
-          <p class="fade-in-up delay-200">创造、探索、生存，在方块的世界中开启你的冒险</p>
-          <div class="cta-links fade-in-up delay-300">
-            <a href="#">进一步了解 ›</a>
-            <a href="#">开始游戏 ›</a>
-          </div>
         </div>
       </section>
       <!-- 新闻和内容区 -->
@@ -43,35 +27,32 @@
         <div class="two-column-grid">
           <!-- 首页内容 -->
           <div class="product-card fade-in-up delay-100">
-            <Content />
-          </div>
-          <!-- 安全提示 -->
-          <div class="product-card fade-in-up delay-200">
-            <SafetyTips />
+            <Content @open-detail="(type, id) => $emit('open-detail', type, id)" />
           </div>
           <!-- 新闻 -->
           <div class="product-card fade-in-up delay-300">
-            <News />
+            <News @open-news-detail="(id) => $emit('open-news-detail', id)" />
+          </div>
+          <!-- 安全提示 -->
+          <div class="product-card fade-in-up delay-200">
+            <SafetyTips @open-safety-detail="(tip) => $emit('open-safety-detail', tip)" />
           </div>
         </div>
       </section>
     </main>
-    <footer>
-      <HomeFooter />
-    </footer>
   </div>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
-import Header from './Header.vue';
 import Carousel from '@/views/Carousel/index.vue';
-import HomeFooter from './Footer.vue';
 import Recommend from '/src/views/Recommend/index.vue';
 import SafetyTips from './safetytips.vue';
 import News from './news.vue';
 import Content from './content.vue';
 import carouselApi from '@/api/carousel.js';
 import Recommendations from './recommendations.vue';
+
+defineEmits(['open-detail', 'open-news-detail', 'open-safety-detail', 'open-recommendation-detail']);
 
 // 轮播图数据
 const mediaList = ref({ images: [] });

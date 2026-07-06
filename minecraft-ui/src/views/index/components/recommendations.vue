@@ -1,143 +1,103 @@
 <template>
   <div class="recommendations-container">
-    <!-- 分类 -->
+    <div class="section-header">
+      <h2 class="section-title">精选推荐</h2>
+      <span class="section-subtitle">探索值得去的目的地</span>
+    </div>
+
     <div class="category-filter">
-      <div class="category-list">
-        <button 
-          v-for="category in categories" 
-          :key="category.id" 
-          :class="['category-btn', { active: selectedCategory === category.id }]"
-          @click="filterByCategory(category.id)"
-        >
-          {{ category.name }}
-        </button>
+      <div class="category-row">
+        <span class="filter-label">分类</span>
+        <div class="category-list">
+          <button 
+            v-for="category in categories" 
+            :key="category.id" 
+            :class="['category-btn', { active: selectedCategory === category.id }]"
+            @click="filterByCategory(category.id)"
+          >
+            {{ category.name }}
+          </button>
+        </div>
       </div>
-      <div class="category-list price-category-list">
-        <button 
-          v-for="priceCategory in priceCategories" 
-          :key="priceCategory.id" 
-          :class="['category-btn', { active: selectedPriceCategory === priceCategory.id }]"
-          @click="filterByPriceCategory(priceCategory.id)"
-        >
-          {{ priceCategory.name }}
-        </button>
+      <div class="category-row">
+        <span class="filter-label">收费</span>
+        <div class="category-list">
+          <button 
+            v-for="priceCategory in priceCategories" 
+            :key="priceCategory.id" 
+            :class="['category-btn', { active: selectedPriceCategory === priceCategory.id }]"
+            @click="filterByPriceCategory(priceCategory.id)"
+          >
+            {{ priceCategory.name }}
+          </button>
+        </div>
       </div>
     </div>
+
     <div class="recommendations-grid">
       <div 
-        v-for="item in recommendations" 
+        v-for="(item, index) in recommendations" 
         :key="item.id" 
-        class="recommendations"
+        class="card"
+        :style="{ animationDelay: `${index * 0.05}s` }"
+        @click="openRecommendationDetail(item)"
       >
-        <div class="recommendations-image">
-          <img :src="item.coverImageUrl" :alt="item.name" />
+        <div class="card-image-wrapper">
+          <img :src="item.coverImageUrl" :alt="item.name" class="card-image" />
+          <div class="card-overlay"></div>
+          <span class="category-tag">{{ item.categoryName }}</span>
+          <span v-if="item.isFree" class="free-badge">免费</span>
         </div>
-        <div class="container">
-          <div class="text-wrap">
-            <h3 class="recommendations-title">{{ item.name }}</h3>
-            <div class="recommendations-category">
-              <span class="category-tag">{{ item.categoryName }}</span>
-            </div>
-            <p class="recommendations-description">{{ (item.summary || item.recommendationReason).substring(0, 100) }}...</p>
-            <div class="recommendations-meta">
-              <span class="recommendations-location">{{ item.city }} {{ item.address }}</span>
-              <span class="recommendations-price">{{ item.isFree ? '免费' : `¥${item.minPrice || 0}` }}</span>
-            </div>
-            <div class="button-wrap">
-              <button class="primary-cta" @click="openDetailModal(item)">查看详情</button>
-              <button class="secondary-cta">收藏</button>
-            </div>
+        
+        <div class="card-content">
+          <h3 class="card-title">{{ item.name }}</h3>
+          <p class="card-description">{{ (item.summary || item.recommendationReason).substring(0, 100) }}...</p>
+          
+          <div class="card-meta">
+            <span class="card-location">{{ item.city }} · {{ item.address }}</span>
+            <span class="card-price">{{ item.isFree ? '免费' : `¥${item.minPrice || 0}` }}</span>
+          </div>
+          
+          <div class="card-actions">
+            <button class="primary-cta">
+              查看详情
+              <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+            <button class="secondary-cta" @click.stop="toggleFavorite(item.id)">
+              <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 详情模态框 -->
-    <div v-if="showDetailModal" class="modal-overlay" @click="closeDetailModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>{{ selectedItem?.name }}</h2>
-          <button class="close-btn" @click="closeDetailModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        
-        <div class="modal-body">
-          <div class="modal-image">
-            <img :src="selectedItem?.coverImageUrl" :alt="selectedItem?.name" />
-          </div>
-          
-          <div class="modal-info">
-            <div class="info-section">
-              <h3>推荐理由</h3>
-              <p>{{ selectedItem?.recommendationReason }}</p>
-            </div>
-            
-            <div class="info-section">
-              <h3>亮点特色</h3>
-              <p>{{ selectedItem?.highlights }}</p>
-            </div>
-            
-            <div class="info-section">
-              <h3>基本信息</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="label">分类</span>
-                  <span class="value">{{ selectedItem?.categoryName }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">地点</span>
-                  <span class="value">{{ selectedItem?.address }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">最佳时间</span>
-                  <span class="value">{{ selectedItem?.bestTravelTime }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">游玩时长</span>
-                  <span class="value">{{ selectedItem?.visitDuration }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">门票</span>
-                  <span class="value">{{ selectedItem?.ticketPriceDescription }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="label">开放时间</span>
-                  <span class="value">{{ selectedItem?.openingHoursWeekday }}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="info-section">
-              <h3>交通方式</h3>
-              <p>{{ selectedItem?.transportation }}</p>
-            </div>
-            
-            <div class="info-section">
-              <h3>注意事项</h3>
-              <p>{{ selectedItem?.tips }}</p>
-            </div>
-          </div>
-        </div>
+    <div v-if="recommendations.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
       </div>
+      <p class="empty-text">暂无推荐内容</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { getHotRecommendations } from '@/api/homeRecommendations'
+
+const emit = defineEmits(['open-recommendation-detail'])
 
 const recommendations = ref([])
 const allRecommendations = ref([])
-const showDetailModal = ref(false)
-const selectedItem = ref(null)
 const selectedCategory = ref(null)
+const selectedPriceCategory = ref(null)
 
-// 分类数据
 const categories = ref([
   { id: null, name: '全部' },
   { id: 1, name: '自然风光' },
@@ -147,15 +107,11 @@ const categories = ref([
   { id: 5, name: '休闲度假' }
 ])
 
-// 收费分类数据
 const priceCategories = ref([
   { id: null, name: '全部' },
   { id: true, name: '免费' },
   { id: false, name: '收费' }
 ])
-
-// 选中的收费分类
-const selectedPriceCategory = ref(null)
 
 onMounted(() => {
   loadHotRecommendations()
@@ -173,19 +129,16 @@ const loadHotRecommendations = async () => {
   }
 }
 
-// 根据分类筛选
 const filterByCategory = (categoryId) => {
   selectedCategory.value = categoryId
   applyFilters()
 }
 
-// 根据收费分类筛选
 const filterByPriceCategory = (priceCategoryId) => {
   selectedPriceCategory.value = priceCategoryId
   applyFilters()
 }
 
-// 应用筛选条件
 const applyFilters = () => {
   recommendations.value = allRecommendations.value.filter(item => {
     const categoryMatch = selectedCategory.value === null || item.categoryId === selectedCategory.value
@@ -194,441 +147,454 @@ const applyFilters = () => {
   })
 }
 
-const openDetailModal = (item) => {
-  selectedItem.value = item
-  showDetailModal.value = true
+const openRecommendationDetail = (item) => {
+  emit('open-recommendation-detail', item)
 }
 
-const closeDetailModal = () => {
-  showDetailModal.value = false
-  selectedItem.value = null
+const toggleFavorite = (id) => {
+  console.log('Toggle favorite:', id)
 }
 </script>
 
 <style scoped>
 .recommendations-container {
-  padding: 0;
+  width: 100%;
 }
 
-/* 分类筛选 */
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  letter-spacing: -0.02em;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
+}
+
+.section-subtitle {
+  display: block;
+  font-size: 18px;
+  color: #6e6e73;
+  margin-top: 8px;
+  font-weight: 400;
+}
+
 .category-filter {
-  padding: 24px 0;
-  margin-bottom: 32px;
+  padding: 32px;
+  background: #f5f5f7;
+  border-radius: 28px;
+  margin-bottom: 48px;
+}
+
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.category-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #86868b;
+  min-width: 48px;
 }
 
 .category-list {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.price-category-list {
-  margin-top: 8px;
 }
 
 .category-btn {
-  background: #f5f5f7;
-  border: 1px solid #d2d2d6;
-  border-radius: 20px;
-  padding: 10px 20px;
+  padding: 12px 24px;
+  background: #ffffff;
+  border: none;
+  border-radius: 24px;
   font-size: 14px;
   font-weight: 500;
   color: #1d1d1f;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .category-btn:hover {
   background: #e8e8ed;
-  border-color: #c7c7cc;
+  transform: translateY(-1px);
 }
 
 .category-btn.active {
-  background: #1d1d1f;
+  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
   color: #ffffff;
-  border-color: #1d1d1f;
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
 }
 
-/* 推荐网格 */
 .recommendations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 40px;
 }
 
-/* 推荐卡片 */
-.recommendations {
+.card {
   background: #ffffff;
-  border: 1px solid #d2d2d6;
-  border-radius: 24px;
+  border-radius: 32px;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
   cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.recommendations:hover {
-  transform: scale(1.01);
-  box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+.card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
 }
 
-.recommendations-image {
-  height: 200px;
-  width: 100%;
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-image-wrapper {
+  position: relative;
+  height: 280px;
   overflow: hidden;
 }
 
-.recommendations-image img {
+.card-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.recommendations:hover .recommendations-image img {
-  transform: scale(1.05);
+.card:hover .card-image {
+  transform: scale(1.08);
 }
 
-.container {
-  padding: 24px;
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.3) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.text-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.recommendations-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
-  color: #1d1d1f;
-  line-height: 1.2;
+.card:hover .card-overlay {
+  opacity: 1;
 }
 
 .category-tag {
-  display: inline-block;
-  background: #2997ff;
-  color: white;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  padding: 4px 12px;
-  border-radius: 12px;
+  color: #1d1d1f;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.recommendations-description {
-  font-size: 14px;
+.free-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-content {
+  padding: 28px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 12px;
+  line-height: 1.25;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
+}
+
+.card-description {
+  font-size: 16px;
   color: #6e6e73;
-  margin: 0;
-  line-height: 1.4;
+  margin: 0 0 20px;
+  line-height: 1.6;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.recommendations-meta {
+.card-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #6e6e73;
-  margin-top: 4px;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.button-wrap {
+.card-location {
+  font-size: 14px;
+  color: #86868b;
+}
+
+.card-price {
+  font-size: 20px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 16px;
 }
 
 .primary-cta {
-  background: #2997ff;
-  color: white;
+  flex: 1;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
+  border-radius: 16px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s ease;
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
 }
 
 .primary-cta:hover {
-  background: #0066cc;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+}
+
+.cta-arrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.primary-cta:hover .cta-arrow {
+  transform: translateX(4px);
 }
 
 .secondary-cta {
+  width: 48px;
+  height: 48px;
+  padding: 0;
   background: #f5f5f7;
-  color: #1d1d1f;
-  border: 1px solid #d2d2d6;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
+  color: #86868b;
+  border: none;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .secondary-cta:hover {
   background: #e8e8ed;
-  border-color: #c7c7cc;
+  color: #ff3b30;
+  transform: scale(1.05);
 }
 
-/* 模态框样式 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
+.heart-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
 }
 
-.modal-content {
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  width: 100%;
-  /* 隐藏滚动条 */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.secondary-cta:hover .heart-icon {
+  transform: scale(1.1);
 }
 
-/* 隐藏WebKit浏览器的滚动条 */
-.modal-content::-webkit-scrollbar {
-  display: none;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 24px 0;
-}
-
-.modal-header h2 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1d1d1f;
-  margin: 0;
-}
-
-.close-btn {
-  background: #f5f5f7;
-  border: 1px solid #d2d2d6;
-  cursor: pointer;
-  color: #1d1d1f;
-  padding: 8px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-}
-
-.close-btn:hover {
-  background: #e8e8ed;
-  border-color: #c7c7cc;
-}
-
-.modal-body {
-  padding: 24px;
-}
-
-.modal-image {
-  width: 100%;
-  height: 300px;
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-
-.modal-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.info-section {
-  margin-bottom: 24px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #d2d2d6;
-}
-
-.info-section:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.info-section h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0 0 12px 0;
-  position: relative;
-  padding-left: 12px;
-}
-
-.info-section h3::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 16px;
-  background: #2997ff;
-  border-radius: 2px;
-}
-
-.info-section p {
-  font-size: 14px;
-  color: #6e6e73;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
-}
-
-.info-item {
+.empty-state {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
   background: #f5f5f7;
-  padding: 12px;
-  border-radius: 8px;
+  border-radius: 32px;
+  margin-top: 40px;
 }
 
-.info-item .label {
-  font-size: 12px;
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  color: #c7c7cc;
+  margin-bottom: 20px;
+}
+
+.empty-text {
+  font-size: 16px;
   color: #6e6e73;
 }
 
-.info-item .value {
-  font-size: 14px;
-  color: #1d1d1f;
-  font-weight: 500;
-}
-
-/* 响应式设计 */
 @media (max-width: 768px) {
-  .category-list {
+  .recommendations-container {
+    padding: 0 40px;
+  }
+  
+  .section-title {
+    font-size: 32px;
+  }
+  
+  .section-subtitle {
+    font-size: 16px;
+  }
+  
+  .category-filter {
+    padding: 24px;
+    border-radius: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .category-row {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
   }
   
+  .filter-label {
+    min-width: auto;
+  }
+  
   .category-btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 13px;
   }
   
   .recommendations-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 28px;
   }
   
-  .recommendations {
-    border-radius: 20px;
+  .card-image-wrapper {
+    height: 240px;
   }
   
-  .recommendations-image {
-    height: 180px;
+  .card-content {
+    padding: 24px;
   }
   
-  .container {
-    padding: 20px;
-  }
-  
-  .recommendations-title {
-    font-size: 18px;
-  }
-  
-  .button-wrap {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .primary-cta,
-  .secondary-cta {
-    width: 100%;
-  }
-  
-  .modal-content {
-    margin: 20px;
-    max-height: calc(100vh - 40px);
-    border-radius: 20px;
-  }
-  
-  .modal-header {
-    padding: 20px 20px 0;
-  }
-  
-  .modal-header h2 {
+  .card-title {
     font-size: 20px;
   }
   
-  .modal-body {
-    padding: 20px;
+  .card-description {
+    font-size: 15px;
   }
   
-  .modal-image {
-    height: 200px;
-  }
-  
-  .info-grid {
-    grid-template-columns: 1fr;
+  .card-actions {
     gap: 12px;
   }
   
-  .info-section {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
+  .primary-cta {
+    padding: 12px 20px;
+    font-size: 14px;
   }
   
-  .info-section h3 {
-    font-size: 16px;
+  .secondary-cta {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .empty-state {
+    padding: 60px 0;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 375px) {
+  .recommendations-container {
+    padding: 0 24px;
+  }
+  
+  .section-title {
+    font-size: 28px;
+  }
+  
   .category-filter {
-    padding: 16px 0;
+    padding: 20px;
   }
   
-  .recommendations-grid {
-    gap: 16px;
+  .card-image-wrapper {
+    height: 200px;
   }
   
-  .recommendations {
-    border-radius: 16px;
+  .card-content {
+    padding: 20px;
   }
   
-  .recommendations-image {
-    height: 160px;
+  .card-title {
+    font-size: 18px;
+    margin-bottom: 10px;
   }
   
-  .container {
-    padding: 16px;
+  .card-description {
+    font-size: 14px;
+    margin-bottom: 16px;
   }
   
-  .recommendations-title {
-    font-size: 16px;
+  .card-meta {
+    margin-bottom: 20px;
+  }
+  
+  .card-price {
+    font-size: 18px;
+  }
+  
+  .primary-cta {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .secondary-cta {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .heart-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .empty-state {
+    padding: 48px 0;
+  }
+  
+  .empty-icon {
+    width: 48px;
+    height: 48px;
   }
 }
 </style>

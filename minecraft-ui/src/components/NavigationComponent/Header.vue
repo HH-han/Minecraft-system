@@ -153,7 +153,7 @@
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref, onMounted, shallowRef, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 // 页面组件
 import ThemeSwitching from '@/components/ThemeComponents/ThemeSwitching.vue';
@@ -183,7 +183,7 @@ const props = defineProps({
 
 const defaultAvatar = new URL('@/assets/defaultimage/mrtx.png', import.meta.url).href
 const defaultLogo = new URL('@/assets/logo/logo.png', import.meta.url).href
-const currentComponent = shallowRef(null);
+const currentComponent = ref(null);
 const authStore = useAuthStore();
 
 // 导航项数据

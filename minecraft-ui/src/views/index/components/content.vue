@@ -1,145 +1,189 @@
 <template>
     <div class="content-container">
-        <!-- 酒店卡片 -->
-        <section class="content-section">
-            <h2 class="section-title">推荐酒店</h2>
-            <div v-if="loading.hotel" class="loading">加载中...</div>
-            <div v-else-if="error.hotel" class="error">{{ error.hotel }}</div>
-            <div v-else class="card-grid">
-                <div v-for="hotel in hotelList" :key="hotel.id" class="card">
-                    <div class="card-image">
-                        <img :src="hotel.coverImage" alt="酒店图片">
-                    </div>
-                    <div class="container">
-                        <div class="text-wrap">
-                            <h3 class="card-title">{{ hotel.name }}</h3>
-                            <p class="card-description">{{ hotel.description.substring(0, 100) }}...</p>
-                            <div class="card-meta">
-                                <span class="card-location">{{ hotel.city }} {{ hotel.address }}</span>
-                                <span class="card-price">¥{{ hotel.price }}/晚</span>
-                            </div>
-                            <div class="button-wrap">
-                                <button class="primary-cta" @click="viewHotelDetail(hotel.id)">查看详情</button>
-                                <button class="secondary-cta">收藏</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 美食卡片 -->
-        <section class="content-section">
-            <h2 class="section-title">特色美食</h2>
-            <div v-if="loading.food" class="loading">加载中...</div>
-            <div v-else-if="error.food" class="error">{{ error.food }}</div>
-            <div v-else class="card-grid">
-                <div v-for="food in foodList" :key="food.id" class="card">
-                    <div class="card-image">
-                        <img :src="food.coverImage" alt="美食图片">
-                    </div>
-                    <div class="container">
-                        <div class="text-wrap">
-                            <h3 class="card-title">{{ food.name }}</h3>
-                            <p class="card-description">{{ food.description.substring(0, 100) }}...</p>
-                            <div class="card-meta">
-                                <span class="card-location">{{ food.city }} {{ food.restaurant }}</span>
-                                <span class="card-price">¥{{ food.price }}</span>
-                            </div>
-                            <div class="button-wrap">
-                                <button class="primary-cta" @click="viewFoodDetail(food.id)">查看详情</button>
-                                <button class="secondary-cta">收藏</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 景点卡片 -->
-        <section class="content-section">
-            <h2 class="section-title">热门景点</h2>
-            <div v-if="loading.attraction" class="loading">加载中...</div>
-            <div v-else-if="error.attraction" class="error">{{ error.attraction }}</div>
-            <div v-else class="card-grid">
-                <div v-for="attraction in attractionList" :key="attraction.id" class="card">
-                    <div class="card-image">
-                        <img :src="attraction.coverImage" alt="景点图片">
-                    </div>
-                    <div class="container">
-                        <div class="text-wrap">
-                            <h3 class="card-title">{{ attraction.name }}</h3>
-                            <p class="card-description">{{ attraction.description.substring(0, 100) }}...</p>
-                            <div class="card-meta">
-                                <span class="card-location">{{ attraction.city }} {{ attraction.address }}</span>
-                                <span class="card-price">¥{{ attraction.ticketPrice || 0 }}</span>
-                            </div>
-                            <div class="button-wrap">
-                                <button class="primary-cta" @click="viewAttractionDetail(attraction.id)">查看详情</button>
-                                <button class="secondary-cta">收藏</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div class="tab-container">
+            <button 
+                v-for="section in sections" 
+                :key="section.type"
+                class="tab-btn"
+                :class="{ active: activeSection === section.type }"
+                @click="switchSection(section.type)"
+            >
+                {{ section.title }}
+            </button>
+        </div>
         
-        <!-- 详情模态框 -->
-        <DetailsModal
-            :visible="modalVisible"
-            :type="modalType"
-            :data="modalData"
-            :loading="modalLoading"
-            :error="modalError"
-            @close="closeModal"
-        />
+        <section v-if="currentSection" class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">{{ currentSection.title }}</h2>
+                <span class="section-subtitle">{{ currentSection.subtitle }}</span>
+            </div>
+            
+            <div v-if="loading[currentSection.type]" class="loading-state">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">探索中...</span>
+            </div>
+            
+            <div v-else-if="error[currentSection.type]" class="error-state">
+                <span class="error-text">{{ error[currentSection.type] }}</span>
+                <button class="retry-btn" @click="retryFetch(currentSection.type)">重新加载</button>
+            </div>
+            
+            <div v-else class="card-grid">
+                <div 
+                    v-for="item in getItemList(currentSection.type)" 
+                    :key="item.id" 
+                    class="card"
+                    @mouseenter="onCardHover(item.id, true)"
+                    @mouseleave="onCardHover(item.id, false)"
+                >
+                    <div class="card-image-wrapper">
+                        <img :src="item.coverImage" :alt="getImageAlt(currentSection.type)" class="card-image">
+                        <div class="card-overlay"></div>
+                        <div class="card-category">{{ getCategory(item, currentSection.type) }}</div>
+                    </div>
+                    
+                    <div class="card-content">
+                        <h3 class="card-title">{{ item.name }}</h3>
+                        <p class="card-description">{{ item.description.substring(0, 100) }}...</p>
+                        
+                        <div class="card-meta">
+                            <span class="card-location">{{ item.city }} · {{ getLocation(item, currentSection.type) }}</span>
+                            <span class="card-price">{{ getPrice(item, currentSection.type) }}</span>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <button class="primary-cta" @click="handleViewDetail(currentSection.type, item.id)">
+                                查看详情
+                                <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                            <button class="secondary-cta" @click="toggleFavorite(item.id)">
+                                <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getNewsDetail } from '@/api/news.js';
-import { getRecommendHotels, getHotelDetail } from '@/api/hotel.js';
-import { getRecommendFoods, getFoodDetail } from '@/api/food.js';
-import { getHotAttractions, getAttractionDetail } from '@/api/attraction.js';
-import DetailsModal from './details.vue';
+import { ref, reactive, onMounted, computed } from 'vue';
+import { getRecommendHotels } from '@/api/hotel.js';
+import { getRecommendFoods } from '@/api/food.js';
+import { getHotAttractions } from '@/api/attraction.js';
 
-// 响应式数据
-const newsList = ref([]);
+const emit = defineEmits(['open-detail']);
+
+const sectionsData = [
+    { type: 'hotel', title: '推荐酒店', subtitle: '精选住宿体验' },
+    { type: 'food', title: '特色美食', subtitle: '味蕾的环球之旅' },
+    { type: 'attraction', title: '热门景点', subtitle: '探索世界奇观' }
+];
+
+const activeSection = ref('hotel');
+const loadedSections = reactive(new Set());
+
+const sections = computed(() => {
+    return sectionsData.filter(item => item && item.type);
+});
+
+const currentSection = computed(() => {
+    return sections.value.find(item => item && item.type === activeSection.value);
+});
+
 const hotelList = ref([]);
 const foodList = ref([]);
 const attractionList = ref([]);
 
-// 加载状态
 const loading = ref({
-    news: false,
     hotel: false,
     food: false,
     attraction: false
 });
 
-// 错误信息
 const error = ref({
-    news: '',
     hotel: '',
     food: '',
     attraction: ''
 });
 
-// 模态框状态
-const modalVisible = ref(false);
-const modalType = ref('');
-const modalData = ref({});
-const modalLoading = ref(false);
-const modalError = ref('');
+const hoveredCards = ref(new Set());
 
-// 格式化日期
-const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('zh-CN');
+const getItemList = (type) => {
+    const lists = {
+        hotel: hotelList.value,
+        food: foodList.value,
+        attraction: attractionList.value
+    };
+    return lists[type] || [];
 };
-// 获取酒店数据
+
+const getImageAlt = (type) => {
+    const alts = {
+        hotel: '酒店图片',
+        food: '美食图片',
+        attraction: '景点图片'
+    };
+    return alts[type] || '';
+};
+
+const getCategory = (item, type) => {
+    if (type === 'hotel') return item.starRating ? `${item.starRating}星级` : '精选';
+    if (type === 'food') return item.category || '特色';
+    if (type === 'attraction') return item.category || '热门';
+    return '精选';
+};
+
+const getLocation = (item, type) => {
+    if (type === 'hotel') return item.address || '';
+    if (type === 'food') return item.restaurant || '';
+    if (type === 'attraction') return item.address || '';
+    return '';
+};
+
+const getPrice = (item, type) => {
+    if (type === 'hotel') return `¥${item.price}/晚`;
+    if (type === 'food') return `¥${item.price}`;
+    if (type === 'attraction') return `¥${item.ticketPrice || 0}`;
+    return '';
+};
+
+const onCardHover = (id, isHovered) => {
+    if (isHovered) {
+        hoveredCards.value.add(id);
+    } else {
+        hoveredCards.value.delete(id);
+    }
+};
+
+const toggleFavorite = (id) => {
+    console.log('Toggle favorite:', id);
+};
+
+const retryFetch = (type) => {
+    const fetchers = {
+        hotel: fetchHotels,
+        food: fetchFoods,
+        attraction: fetchAttractions
+    };
+    if (fetchers[type]) {
+        fetchers[type]();
+    }
+};
+
+const switchSection = (type) => {
+    activeSection.value = type;
+    if (!loadedSections.has(type)) {
+        retryFetch(type);
+        loadedSections.add(type);
+    }
+};
+
 const fetchHotels = async () => {
     loading.value.hotel = true;
     error.value.hotel = '';
@@ -158,7 +202,6 @@ const fetchHotels = async () => {
     }
 };
 
-// 获取美食数据
 const fetchFoods = async () => {
     loading.value.food = true;
     error.value.food = '';
@@ -177,7 +220,6 @@ const fetchFoods = async () => {
     }
 };
 
-// 获取景点数据
 const fetchAttractions = async () => {
     loading.value.attraction = true;
     error.value.attraction = '';
@@ -196,215 +238,183 @@ const fetchAttractions = async () => {
     }
 };
 
-// 关闭模态框
-const closeModal = () => {
-    modalVisible.value = false;
-    modalType.value = '';
-    modalData.value = {};
-    modalLoading.value = false;
-    modalError.value = '';
+const handleViewDetail = (type, id) => {
+    emit('open-detail', type, id);
 };
 
-// 查看新闻详情
-const viewNewsDetail = async (newsId) => {
-    try {
-        modalType.value = 'news';
-        modalLoading.value = true;
-        modalError.value = '';
-        
-        const response = await getNewsDetail(newsId);
-        if (response.code === 200) {
-            modalData.value = response.data;
-            modalVisible.value = true;
-        } else {
-            modalError.value = '获取新闻详情失败';
-            modalVisible.value = true;
-        }
-    } catch (error) {
-        modalError.value = '网络错误，请稍后重试';
-        modalVisible.value = true;
-        console.error('获取新闻详情失败:', error);
-    } finally {
-        modalLoading.value = false;
-    }
-};
-
-// 查看酒店详情
-const viewHotelDetail = async (hotelId) => {
-    try {
-        modalType.value = 'hotel';
-        modalLoading.value = true;
-        modalError.value = '';
-        
-        const response = await getHotelDetail(hotelId);
-        if (response.code === 200) {
-            modalData.value = response.data;
-            modalVisible.value = true;
-        } else {
-            modalError.value = '获取酒店详情失败';
-            modalVisible.value = true;
-        }
-    } catch (error) {
-        modalError.value = '网络错误，请稍后重试';
-        modalVisible.value = true;
-        console.error('获取酒店详情失败:', error);
-    } finally {
-        modalLoading.value = false;
-    }
-};
-
-// 查看美食详情
-const viewFoodDetail = async (foodId) => {
-    try {
-        modalType.value = 'food';
-        modalLoading.value = true;
-        modalError.value = '';
-        
-        const response = await getFoodDetail(foodId);
-        if (response.code === 200) {
-            modalData.value = response.data;
-            modalVisible.value = true;
-        } else {
-            modalError.value = '获取美食详情失败';
-            modalVisible.value = true;
-        }
-    } catch (error) {
-        modalError.value = '网络错误，请稍后重试';
-        modalVisible.value = true;
-        console.error('获取美食详情失败:', error);
-    } finally {
-        modalLoading.value = false;
-    }
-};
-
-// 查看景点详情
-const viewAttractionDetail = async (attractionId) => {
-    try {
-        modalType.value = 'attraction';
-        modalLoading.value = true;
-        modalError.value = '';
-        
-        const response = await getAttractionDetail(attractionId);
-        if (response.code === 200) {
-            modalData.value = response.data;
-            modalVisible.value = true;
-        } else {
-            modalError.value = '获取景点详情失败';
-            modalVisible.value = true;
-        }
-    } catch (error) {
-        modalError.value = '网络错误，请稍后重试';
-        modalVisible.value = true;
-        console.error('获取景点详情失败:', error);
-    } finally {
-        modalLoading.value = false;
-    }
-};
-
-// 组件挂载时获取数据
 onMounted(() => {
-    fetchHotels();
-    fetchFoods();
-    fetchAttractions();
+    switchSection('hotel');
 });
 </script>
 
 <style scoped>
 .content-container {
-    padding: 0;
+    width: 100%;
+}
+
+.tab-container {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 48px;
+    background: #f5f5f7;
+    padding: 8px;
+    border-radius: 24px;
+}
+
+.tab-btn {
+    padding: 14px 32px;
+    background: transparent;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6e6e73;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
+}
+
+.tab-btn:hover {
+    color: #1d1d1f;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
 }
 
 .content-section {
-    margin-bottom: 60px;
+    margin-bottom: 100px;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-header {
+    margin-bottom: 40px;
 }
 
 .section-title {
-    font-size: 26px;
+    font-size: 48px;
     font-weight: 700;
-    margin-bottom: 25px;
-    color: #1d1d1f;
-    border-left: 4px solid #2997ff;
-    padding-left: 16px;
-    position: relative;
+    color: #000000;
+    margin: 0;
+    letter-spacing: -0.02em;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
 }
 
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 16px;
-    width: 80px;
-    height: 2px;
-    background: #2997ff;
-    border-radius: 1px;
+.section-subtitle {
+    display: block;
+    font-size: 18px;
+    color: #6e6e73;
+    margin-top: 8px;
+    font-weight: 400;
 }
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 40px;
 }
 
 .card {
     background: #ffffff;
-    border: 1px solid #d2d2d6;
-    border-radius: 24px;
+    border-radius: 32px;
     overflow: hidden;
-    display: flex;
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
     cursor: pointer;
-    padding: 16px;
 }
 
 .card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+}
+
+.card-image-wrapper {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
 }
 
 .card-image {
-    height: 200px;
-    flex-shrink: 0;
-}
-
-.card-image img {
-    max-width: 200px;
+    width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.card:hover .card-image img {
-    transform: scale(1.05);
+.card:hover .card-image {
+    transform: scale(1.08);
 }
 
-.container {
-    margin-left: 20px;
-    flex: 1;
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.3) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.text-wrap {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 12px;
-    height: 100%;
+.card:hover .card-overlay {
+    opacity: 1;
+}
+
+.card-category {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1d1d1f;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.card:hover .card-category {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-content {
+    padding: 28px;
 }
 
 .card-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
-    margin: 0;
-    color: #1d1d1f;
-    line-height: 1.3;
+    color: #000000;
+    margin: 0 0 12px;
+    line-height: 1.25;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
 }
 
 .card-description {
-    font-size: 14px;
+    font-size: 16px;
     color: #6e6e73;
-    margin: 0;
-    line-height: 1.4;
+    margin: 0 0 20px;
+    line-height: 1.6;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -412,131 +422,269 @@ onMounted(() => {
 .card-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
-    color: #6e6e73;
-    margin-top: 4px;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
-.button-wrap {
+.card-location {
+    font-size: 14px;
+    color: #86868b;
     display: flex;
-    gap: 12px;
-    margin-top: 8px;
+    align-items: center;
+    gap: 4px;
+}
+
+.card-price {
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.card-actions {
+    display: flex;
+    gap: 16px;
 }
 
 .primary-cta {
-    background: #2997ff;
-    color: white;
+    flex: 1;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    color: #ffffff;
     border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
+    border-radius: 16px;
+    font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s ease;
-    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
 }
 
 .primary-cta:hover {
-    background: #0066cc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+}
+
+.primary-cta:active {
+    transform: translateY(0);
+}
+
+.cta-arrow {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+.primary-cta:hover .cta-arrow {
+    transform: translateX(4px);
 }
 
 .secondary-cta {
+    width: 48px;
+    height: 48px;
+    padding: 0;
     background: #f5f5f7;
-    color: #1d1d1f;
-    border: 1px solid #d2d2d6;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
+    color: #86868b;
+    border: none;
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .secondary-cta:hover {
     background: #e8e8ed;
-    border-color: #c7c7cc;
+    color: #ff3b30;
+    transform: scale(1.05);
 }
 
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: #6e6e73;
+.heart-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.secondary-cta:hover .heart-icon {
+    transform: scale(1.1);
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
     background: #f5f5f7;
-    border-radius: 12px;
+    border-radius: 32px;
 }
 
-.error {
-    text-align: center;
-    padding: 40px;
-    color: #ff4757;
-    background: #ffebee;
-    border-radius: 12px;
-    border: 1px solid #ffcdd2;
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid #e8e8ed;
+    border-top-color: #007aff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #6e6e73;
+}
+
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    background: #fef2f2;
+    border-radius: 32px;
+}
+
+.error-text {
+    font-size: 16px;
+    color: #ff3b30;
+    margin-bottom: 16px;
+}
+
+.retry-btn {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
 }
 
 @media (max-width: 768px) {
+    .content-container {
+        padding: 0 40px;
+    }
+    
     .content-section {
-        margin-bottom: 40px;
+        margin-bottom: 60px;
     }
     
     .section-title {
-        font-size: 20px;
+        font-size: 32px;
+    }
+    
+    .section-subtitle {
+        font-size: 16px;
     }
     
     .card-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 28px;
     }
     
-    .card {
-        flex-direction: column;
-        border-radius: 20px;
+    .card-image-wrapper {
+        height: 240px;
     }
     
-    .card-image {
-        height: 180px;
-        width: 100%;
-    }
-    
-    .card-image img {
-        max-width: 100%;
-    }
-    
-    .container {
-        margin-left: 0;
-        padding: 16px;
+    .card-content {
+        padding: 24px;
     }
     
     .card-title {
-        font-size: 16px;
+        font-size: 20px;
     }
     
-    .button-wrap {
-        flex-direction: column;
-        gap: 8px;
+    .card-description {
+        font-size: 15px;
     }
     
-    .primary-cta,
+    .card-actions {
+        gap: 12px;
+    }
+    
+    .primary-cta {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
     .secondary-cta {
-        width: 100%;
+        width: 44px;
+        height: 44px;
     }
 }
 
-@media (max-width: 480px) {
-    .card {
-        border-radius: 16px;
+@media (max-width: 375px) {
+    .content-container {
+        padding: 0 24px;
     }
     
-    .card-image {
-        height: 160px;
+    .content-section {
+        margin-bottom: 48px;
     }
     
-    .container {
-        padding: 14px;
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .card-image-wrapper {
+        height: 200px;
+    }
+    
+    .card-content {
+        padding: 20px;
     }
     
     .card-title {
-        font-size: 16px;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .card-description {
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+    
+    .card-meta {
+        margin-bottom: 20px;
+    }
+    
+    .card-price {
+        font-size: 18px;
+    }
+    
+    .primary-cta {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .secondary-cta {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .heart-icon {
+        width: 18px;
+        height: 18px;
     }
 }
 </style>
