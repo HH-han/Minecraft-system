@@ -44,7 +44,6 @@
                 <div class="social-icons">
                     <a href="#" aria-label="微信"><i class="fab fa-weixin"></i></a>
                     <a href="#" aria-label="微博"><i class="fab fa-weibo"></i></a>
-                    <a href="#" aria-label="小红书"><i class="fab fa-xiaohongshu"></i></a>
                     <a href="#" aria-label="抖音"><i class="fab fa-tiktok"></i></a>
                     <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>

@@ -332,6 +332,13 @@
       <PrivacyPolicy @close="closePrivacyPolicy" />
     </div>
   </div>
+  <!-- 图形验证码模态框 -->
+  <GraphicVerification 
+    :visible="showVerification" 
+    @close="handleVerificationClose"
+    @success="handleVerificationSuccess"
+    @fail="handleVerificationFail"
+  />
 </template>
 
 <script setup>
@@ -346,6 +353,7 @@ import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
 import Account from '@/views/login/components/Account.vue'
 import UserAgreement from '@/views/login/components/UserAgreement.vue'
 import PrivacyPolicy from '@/views/login/components/PrivacyPolicy.vue'
+import GraphicVerification from '@/views/login/components/GraphicVerification.vue'
 import { useAuthStore } from '@/stores/auth.js'
 
 // 登录-注册切换
@@ -362,6 +370,10 @@ const showUserAgreementModal = ref(false);
 
 // 隐私政策模态框状态
 const showPrivacyPolicyModal = ref(false);
+
+// 图形验证码模态框状态
+const showVerification = ref(false);
+const verificationPassed = ref(false);
 
 // 关闭模糊背景模态框
 const closeModal = () => {
@@ -467,6 +479,20 @@ const handleUsernameInput = async () => {
   }
 };
 
+const handleVerificationSuccess = () => {
+  verificationPassed.value = true;
+  showVerification.value = false;
+  performLogin();
+};
+
+const handleVerificationFail = () => {
+  verificationPassed.value = false;
+};
+
+const handleVerificationClose = () => {
+  showVerification.value = false;
+};
+
 /**
  * 处理登录逻辑
  */
@@ -480,6 +506,10 @@ const handleLogin = async () => {
     return;
   }
 
+  showVerification.value = true;
+};
+
+const performLogin = async () => {
   try {
     const response = await login({
       account: loginForm.value.username,

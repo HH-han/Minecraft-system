@@ -62,3 +62,11 @@ spring:
 logging:
   level:
     com.minecraft: debug
+
+captcha:
+  pool:
+    min-size: 10
+    max-size: 100
+  image:
+    width: 320
+    height: 180
