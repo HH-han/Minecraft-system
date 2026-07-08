@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.CaptchaImageMapper">
+
+    <select id="findByMd5Hash" resultType="com.minecraft.entity.CaptchaImage">
+        SELECT * FROM captcha_image WHERE md5_hash = #{md5Hash} AND status = 1 LIMIT 1
+    </select>
+
+    <delete id="deleteOldRecords">
+        DELETE FROM captcha_image WHERE id IN (SELECT id FROM (SELECT id FROM captcha_image ORDER BY create_time ASC LIMIT #{limit}) AS temp)
+    </delete>
+
+</mapper>

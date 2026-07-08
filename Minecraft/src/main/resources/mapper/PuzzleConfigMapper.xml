@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.PuzzleConfigMapper">
+
+    <select id="findByImageIdAndVersion" resultType="com.minecraft.entity.PuzzleConfig">
+        SELECT * FROM captcha_puzzle_config WHERE image_id = #{imageId} AND version = #{version} LIMIT 1
+    </select>
+
+    <delete id="deleteOldRecords">
+        DELETE FROM captcha_puzzle_config WHERE id IN (SELECT id FROM (SELECT id FROM captcha_puzzle_config ORDER BY create_time ASC LIMIT #{limit}) AS temp)
+    </delete>
+
+</mapper>
