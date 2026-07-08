@@ -8,3 +8,4 @@ export { trim, trimStart, trimEnd, toLowerCase, toUpperCase, capitalize, camelCa
 export { sleep } from './sleep'
 export { flatten, unique, uniqueBy, chunk, shuffle, groupBy, sumBy, maxBy, minBy, sortBy } from './array'
 export { downloadFile, downloadBlob, downloadJson, downloadText } from './download'
+export { loadImage, generateCaptchaSVG, svgToBase64, drawPuzzleShape, drawMainCanvas, drawPieceCanvas, calculateMaxPosition, calculateScaledPosition, generateTraceId, calculateCaptchaParams, calculateCaptchaParamsFromData, comparePositionData, POSITION_FIELD_MAP, COMPARISON_STATUS } from './image'

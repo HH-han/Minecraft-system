@@ -1,4 +1,143 @@
 /**
+ * 前端与后端数据结构映射关系
+ * 定义前端参数名与后端API返回字段名的对应关系
+ * 
+ * @constant
+ * @type {Object}
+ */
+export const POSITION_FIELD_MAP = {
+  puzzleOffset: 'puzzleX',
+  puzzleY: 'puzzleY',
+  puzzleSize: 'pieceWidth',
+  targetX: 'targetX'
+}
+
+/**
+ * 位置数据比较结果状态枚举
+ * 
+ * @constant
+ * @type {Object}
+ */
+export const COMPARISON_STATUS = {
+  MATCHED: 'matched',
+  MISMATCHED: 'mismatched',
+  INCOMPLETE: 'incomplete',
+  ERROR: 'error'
+}
+
+/**
+ * 比较前端与后端的位置数据
+ * 进行字段级别的数据对比，检测数据一致性，不进行验证判断
+ * 
+ * @param {Object} frontendParams - 前端计算的验证码参数
+ * @param {number} frontendParams.puzzleOffset - 拼图块X偏移（已缩放）
+ * @param {number} frontendParams.puzzleY - 拼图块Y坐标（已缩放）
+ * @param {number} frontendParams.puzzleSize - 拼图块尺寸（已缩放）
+ * @param {number} frontendParams.targetX - 目标位置X坐标（已缩放）
+ * @param {Object} backendData - 后端返回的验证码数据
+ * @param {number} [backendData.puzzleX] - 后端拼图块X偏移（原始坐标）
+ * @param {number} [backendData.puzzleY] - 后端拼图块Y坐标（原始坐标）
+ * @param {number} [backendData.pieceWidth] - 后端拼图块尺寸（原始坐标）
+ * @param {number} [backendData.targetX] - 后端目标位置X坐标（原始坐标）
+ * @param {number} containerWidth - 容器宽度（用于坐标转换）
+ * @param {number} [tolerance=2] - 容差范围（像素），用于判断是否匹配
+ * @returns {Object} 比较结果对象
+ * @returns {string} returns.status - 比较状态：matched/mismatched/incomplete/error
+ * @returns {Object[]} returns.mismatches - 不匹配字段详情数组
+ * @returns {string} returns.mismatches[].field - 字段名
+ * @returns {number} returns.mismatches[].frontendValue - 前端值
+ * @returns {number} returns.mismatches[].backendValue - 后端值
+ * @returns {number} returns.mismatches[].deviation - 偏差值
+ * @returns {string} returns.message - 比较结果描述信息
+ */
+export const comparePositionData = (frontendParams, backendData, containerWidth, tolerance = 2) => {
+  if (!frontendParams || typeof frontendParams !== 'object') {
+    return {
+      status: COMPARISON_STATUS.ERROR,
+      mismatches: [],
+      message: '前端参数无效'
+    }
+  }
+
+  if (!backendData || typeof backendData !== 'object') {
+    return {
+      status: COMPARISON_STATUS.INCOMPLETE,
+      mismatches: [],
+      message: '后端数据为空，使用本地生成模式'
+    }
+  }
+
+  const scale = containerWidth / 320
+  const mismatches = []
+  const missingFields = []
+
+  const compareField = (frontendKey, backendKey, isScaled = true) => {
+    const frontendValue = frontendParams[frontendKey]
+    const backendValueRaw = backendData[backendKey]
+
+    if (backendValueRaw === undefined || backendValueRaw === null) {
+      missingFields.push({ field: backendKey, frontendValue })
+      return
+    }
+
+    const backendValue = isScaled ? backendValueRaw * scale : backendValueRaw
+
+    if (typeof frontendValue !== 'number' || typeof backendValue !== 'number') {
+      mismatches.push({
+        field: backendKey,
+        frontendValue,
+        backendValue,
+        deviation: NaN,
+        reason: '数据类型不匹配'
+      })
+      return
+    }
+
+    const deviation = Math.abs(frontendValue - backendValue)
+    if (deviation > tolerance) {
+      mismatches.push({
+        field: backendKey,
+        frontendValue: Math.round(frontendValue),
+        backendValue: Math.round(backendValue),
+        deviation: Math.round(deviation),
+        reason: `偏差超出容差范围（容差: ${tolerance}px）`
+      })
+    }
+  }
+
+  compareField('puzzleOffset', 'puzzleX')
+  compareField('puzzleY', 'puzzleY')
+  compareField('puzzleSize', 'pieceWidth')
+  compareField('targetX', 'targetX')
+
+  if (missingFields.length > 0) {
+    return {
+      status: COMPARISON_STATUS.INCOMPLETE,
+      mismatches: [],
+      missingFields,
+      message: `后端数据缺少${missingFields.length}个字段，使用本地生成模式`,
+      scale
+    }
+  }
+
+  if (mismatches.length > 0) {
+    return {
+      status: COMPARISON_STATUS.MISMATCHED,
+      mismatches,
+      message: `检测到${mismatches.length}个字段数据不匹配`,
+      scale
+    }
+  }
+
+  return {
+    status: COMPARISON_STATUS.MATCHED,
+    mismatches: [],
+    message: '前端与后端位置数据完全匹配',
+    scale
+  }
+}
+
+/**
  * 图片加载工具函数
  * 使用 Promise 封装图片加载过程，支持超时控制和跨域设置
  * 
@@ -209,20 +348,6 @@ export const drawPieceCanvas = (canvas, backgroundImage, puzzleOffset, puzzleY, 
 }
 
 /**
- * 验证滑块位置是否正确
- * 判断滑块拖动的位置与目标位置的偏差是否在容差范围内
- * 
- * @param {number} sliderPosition - 当前滑块位置
- * @param {number} targetOffset - 目标偏移量
- * @param {number} [tolerance=8] - 容差范围（像素）
- * @returns {boolean} 验证通过返回 true，否则返回 false
- */
-export const verifySliderPosition = (sliderPosition, targetOffset, tolerance = 8) => {
-  const diff = Math.abs(sliderPosition - targetOffset)
-  return diff <= tolerance
-}
-
-/**
  * 计算滑块最大可拖动位置
  * 即目标位置与拼图块初始位置的差值
  * 
@@ -292,27 +417,86 @@ export const calculateCaptchaParams = (containerWidth, containerHeight, puzzleSi
 /**
  * 计算验证码参数（基于后端数据）
  * 根据后端返回的验证码数据和容器尺寸计算实际显示参数
+ * 包含与前端计算参数的比较，当后端数据缺失或不匹配时返回详细错误信息
  * 
  * @param {Object} captchaData - 后端返回的验证码数据
+ * @param {number} captchaData.puzzleX - 拼图块X偏移（原始坐标）
+ * @param {number} captchaData.puzzleY - 拼图块Y坐标（原始坐标）
+ * @param {number} captchaData.pieceWidth - 拼图块尺寸（原始坐标）
+ * @param {number} captchaData.targetX - 目标位置X坐标（原始坐标）
  * @param {number} containerWidth - 容器宽度
  * @param {number} containerHeight - 容器高度
- * @returns {Object} 包含 puzzleSize, puzzleOffset, puzzleY, maxPosition 的参数对象
+ * @param {Object} [frontendParams] - 前端计算的参数（用于对比）
+ * @returns {Object} 计算结果对象
+ * @returns {number} returns.puzzleSize - 拼图块尺寸（已缩放）
+ * @returns {number} returns.puzzleOffset - 拼图块X偏移（已缩放）
+ * @returns {number} returns.puzzleY - 拼图块Y坐标（已缩放）
+ * @returns {number} returns.maxPosition - 滑块最大可拖动距离
+ * @returns {number} returns.targetX - 目标位置X坐标（已缩放）
+ * @returns {string} returns.status - 状态：valid/incomplete/warning
+ * @returns {string[]} returns.warnings - 警告信息数组
+ * @returns {Object} [returns.comparison] - 数据对比结果
  */
-export const calculateCaptchaParamsFromData = (captchaData, containerWidth, containerHeight) => {
+export const calculateCaptchaParamsFromData = (captchaData, containerWidth, containerHeight, frontendParams = null) => {
   const scale = containerWidth / 320
+  const warnings = []
+  const missingFields = []
   
-  const puzzleSize = (captchaData.pieceWidth || 44) * scale
-  const puzzleOffset = (captchaData.puzzleX || Math.floor(Math.random() * (320 - 44 - 60)) + 30) * scale
-  const puzzleY = (captchaData.puzzleY || Math.floor(Math.random() * (180 - 44 - 20)) + 10) * scale
+  const getRequiredField = (key, defaultValue, fallbackDescription) => {
+    const value = captchaData[key]
+    if (value === undefined || value === null) {
+      missingFields.push({ field: key, fallback: fallbackDescription })
+      return defaultValue
+    }
+    return value
+  }
   
-  const targetX = captchaData.targetX || (320 - 44 - 20)
+  const pieceWidth = getRequiredField('pieceWidth', 44, '默认值44')
+  const puzzleX = getRequiredField('puzzleX', Math.floor(Math.random() * (320 - 44 - 60)) + 30, '随机值')
+  const puzzleY = getRequiredField('puzzleY', Math.floor(Math.random() * (180 - 44 - 20)) + 10, '随机值')
+  const targetX = getRequiredField('targetX', 320 - 44 - 20, '默认值256')
+  
+  const puzzleSize = pieceWidth * scale
+  const puzzleOffset = puzzleX * scale
+  const puzzleYScaled = puzzleY * scale
   const targetXScaled = targetX * scale
   const maxPosition = targetXScaled - puzzleOffset
+  
+  if (missingFields.length > 0) {
+    warnings.push(`后端数据缺少${missingFields.length}个字段: ${missingFields.map(m => m.field).join(', ')}，已使用${missingFields.map(m => m.fallback).join(', ')}`)
+    console.warn('验证码数据不完整:', missingFields)
+  }
+  
+  let comparison = null
+  if (frontendParams) {
+    comparison = comparePositionData(
+      { ...frontendParams, targetX: targetXScaled },
+      captchaData,
+      containerWidth
+    )
+    
+    if (comparison.status === COMPARISON_STATUS.MISMATCHED) {
+      warnings.push('检测到前端与后端位置数据不匹配')
+      console.warn('位置数据对比异常:', comparison)
+    }
+  }
+  
+  let status = 'valid'
+  if (missingFields.length > 0) {
+    status = 'incomplete'
+  } else if (comparison && comparison.status === COMPARISON_STATUS.MISMATCHED) {
+    status = 'warning'
+  }
   
   return {
     puzzleSize,
     puzzleOffset,
-    puzzleY,
-    maxPosition
+    puzzleY: puzzleYScaled,
+    maxPosition,
+    targetX: targetXScaled,
+    status,
+    warnings,
+    comparison,
+    scale
   }
 }

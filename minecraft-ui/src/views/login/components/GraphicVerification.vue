@@ -1,8 +1,8 @@
 <template>
-  <div v-if="visible" class="verification-modal" @click="handleClose">
-    <div class="verification-container" @click.stop>
-      <div class="verification-header">
-        <span class="verification-title">二次验证</span>
+  <div v-if="visible" class="captcha-modal" @click="handleClose">
+    <div class="captcha-container" @click.stop>
+      <div class="captcha-header">
+        <span class="captcha-title">二次验证</span>
         <button class="close-btn" @click="handleClose">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 6L6 18M6 6l12 12"/>
@@ -10,21 +10,33 @@
         </button>
       </div>
 
-      <div class="verification-body">
+      <div class="captcha-body">
         <div class="puzzle-container" ref="puzzleContainer">
           <img 
             ref="backgroundImage" 
             class="background-image"
             :src="backgroundImageSrc"
             @load="onImageLoaded"
+            @error="onImageError"
           />
-          <canvas ref="mainCanvas" class="main-canvas"></canvas>
+          <canvas 
+            ref="mainCanvas" 
+            class="main-canvas"
+            :class="{ 'blur-mask': isDragging }"
+          ></canvas>
           <canvas 
             ref="pieceCanvas" 
             class="piece-canvas" 
             :style="pieceStyle"
             :class="{ dragging: isDragging }"
           ></canvas>
+          
+          <div v-if="isLoading" class="loading-overlay">
+            <svg class="loading-spinner" viewBox="0 0 24 24">
+              <circle class="spinner-path" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>图片加载中...</span>
+          </div>
         </div>
 
         <div class="slider-container">
@@ -37,31 +49,59 @@
           <div 
             class="slider-thumb" 
             :style="thumbStyle"
-            :class="{ dragging: isDragging, success: isSuccess, fail: isFail }"
+            :class="{ dragging: isDragging, success: isSuccess, fail: isFail, verifying: isVerifying }"
             @mousedown="handleMouseDown"
             @touchstart="handleTouchStart"
+            @keydown="handleKeyDown"
+            role="slider"
+            :aria-label="sliderTip"
+            :aria-valuenow="sliderPercent"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            tabindex="0"
           >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <svg v-if="isSuccess" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <svg v-else-if="isFail" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            <svg v-else-if="isVerifying" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" class="verify-spinner">
+              <circle cx="12" cy="12" r="10" fill="none" stroke-linecap="round"/>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </div>
           <span class="slider-tip">{{ sliderTip }}</span>
         </div>
 
-        <div class="refresh-btn" @click="refreshPuzzle" v-if="!isDragging">
+        <button class="refresh-btn" @click="refreshPuzzle" :disabled="isDragging || isVerifying" :title="'刷新验证码'">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
             <path d="M21 3v5h-5"/>
           </svg>
-        </div>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import { getCaptcha, verifyCaptcha } from '@/api/captcha'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { getCaptcha, verifyCaptcha } from '@/api/captcha';
+import { 
+  generateCaptchaSVG, 
+  svgToBase64, 
+  drawMainCanvas, 
+  drawPieceCanvas, 
+  calculateScaledPosition,
+  generateTraceId,
+  calculateCaptchaParams,
+  calculateCaptchaParamsFromData,
+  comparePositionData,
+  COMPARISON_STATUS
+} from '@/utils/image';
 
 const props = defineProps({
   visible: {
@@ -72,412 +112,382 @@ const props = defineProps({
     type: String,
     default: 'image'
   }
-})
+});
 
-const emit = defineEmits(['close', 'success', 'fail'])
+const emit = defineEmits(['close', 'success', 'fail']);
 
-const puzzleContainer = ref(null)
-const backgroundImage = ref(null)
-const mainCanvas = ref(null)
-const pieceCanvas = ref(null)
+const puzzleContainer = ref(null);
+const backgroundImage = ref(null);
+const mainCanvas = ref(null);
+const pieceCanvas = ref(null);
 
-const puzzleSize = ref(44)
-const puzzleOffset = ref(0)
-const sliderPosition = ref(0)
-const maxPosition = ref(200)
-const containerWidth = ref(320)
-const containerHeight = ref(180)
-const puzzleY = ref(65)
+const puzzleSize = ref(44);
+const puzzleOffset = ref(0);
+const sliderPosition = ref(0);
+const maxPosition = ref(200);
+const containerWidth = ref(320);
+const containerHeight = ref(180);
+const puzzleY = ref(65);
 
-const isDragging = ref(false)
-const isSuccess = ref(false)
-const isFail = ref(false)
-const isImageLoaded = ref(false)
-const isLoading = ref(false)
+const isDragging = ref(false);
+const isSuccess = ref(false);
+const isFail = ref(false);
+const isVerifying = ref(false);
+const isImageLoaded = ref(false);
+const isLoading = ref(false);
 
-const startX = ref(0)
-const startPosition = ref(0)
-const traceId = ref('')
-const captchaData = ref(null)
-const backgroundImageSrc = ref('')
+const startX = ref(0);
+const startPosition = ref(0);
+const traceId = ref('');
+const captchaData = ref(null);
+const backgroundImageSrc = ref('');
 
 const sliderTip = computed(() => {
-  if (isSuccess.value) return '验证成功'
-  if (isFail.value) return '验证失败，请重试'
-  return '向右拖动滑块填充拼图'
-})
+  if (isSuccess.value) return '验证成功';
+  if (isFail.value) return '验证失败，请重试';
+  if (isVerifying.value) return '验证中...';
+  return '拖动滑块完成拼图';
+});
+
+const trackMaxPosition = computed(() => {
+  return containerWidth.value - 44;
+});
+
+const puzzlePosition = computed(() => {
+  if (trackMaxPosition.value <= 0) return 0;
+  return Math.round((sliderPosition.value / trackMaxPosition.value) * maxPosition.value);
+});
+
+const sliderPercent = computed(() => {
+  if (trackMaxPosition.value <= 0) return 0;
+  return Math.round((sliderPosition.value / trackMaxPosition.value) * 100);
+});
 
 const pieceStyle = computed(() => ({
-  left: `${sliderPosition.value}px`,
+  left: `${puzzlePosition.value}px`,
   top: `${puzzleY.value}px`,
   width: `${puzzleSize.value}px`,
-  height: `${puzzleSize.value}px`
-}))
+  height: `${puzzleSize.value}px`,
+  transform: isSuccess.value ? 'scale(1)' : 'scale(1)',
+  transition: isSuccess.value || isFail.value ? 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none'
+}));
 
 const fillStyle = computed(() => ({
-  width: `${sliderPosition.value}px`
-}))
+  width: `${sliderPosition.value}px`,
+  transition: isDragging.value ? 'width 0.08s linear' : 'width 0.2s ease-out'
+}));
 
 const thumbStyle = computed(() => ({
-  left: `${sliderPosition.value}px`
-}))
-
-const drawPuzzleShape = (ctx, x, y, width, height, isMask = false) => {
-  const radius = 5
-  const notchSize = 7
-  
-  ctx.beginPath()
-  
-  ctx.moveTo(x + radius, y)
-  ctx.lineTo(x + width - radius, y)
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius)
-  ctx.lineTo(x + width, y + height / 2 - notchSize)
-  
-  if (isMask) {
-    ctx.quadraticCurveTo(x + width + notchSize / 2, y + height / 2, x + width, y + height / 2 + notchSize)
-  } else {
-    ctx.quadraticCurveTo(x + width - notchSize / 2, y + height / 2, x + width, y + height / 2 + notchSize)
-  }
-  
-  ctx.lineTo(x + width, y + height - radius)
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height)
-  ctx.lineTo(x + radius, y + height)
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius)
-  ctx.lineTo(x, y + height / 2 + notchSize)
-  
-  if (isMask) {
-    ctx.quadraticCurveTo(x - notchSize / 2, y + height / 2, x, y + height / 2 - notchSize)
-  } else {
-    ctx.quadraticCurveTo(x + notchSize / 2, y + height / 2, x, y + height / 2 - notchSize)
-  }
-  
-  ctx.lineTo(x, y + radius)
-  ctx.quadraticCurveTo(x, y, x + radius, y)
-  ctx.closePath()
-}
-
-const drawMainCanvas = () => {
-  if (!mainCanvas.value || !puzzleContainer.value) return
-  
-  const ctx = mainCanvas.value.getContext('2d')
-  const rect = puzzleContainer.value.getBoundingClientRect()
-  
-  containerWidth.value = rect.width
-  containerHeight.value = rect.height
-  
-  mainCanvas.value.width = containerWidth.value
-  mainCanvas.value.height = containerHeight.value
-  
-  ctx.clearRect(0, 0, containerWidth.value, containerHeight.value)
-  
-  drawPuzzleShape(ctx, puzzleOffset.value, puzzleY.value, puzzleSize.value, puzzleSize.value, true)
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
-  ctx.fill()
-  
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
-  ctx.lineWidth = 1
-  ctx.stroke()
-  
-  let targetPosX = containerWidth.value - puzzleSize.value - 20
-  if (captchaData.value && captchaData.value.targetX) {
-    const scale = containerWidth.value / 320
-    targetPosX = captchaData.value.targetX * scale
-  }
-  
-  drawPuzzleShape(ctx, targetPosX, puzzleY.value, puzzleSize.value, puzzleSize.value, false)
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
-  ctx.fill()
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
-  ctx.lineWidth = 1
-  ctx.stroke()
-}
-
-const drawPieceCanvas = () => {
-  if (!pieceCanvas.value) return
-  
-  const ctx = pieceCanvas.value.getContext('2d')
-  
-  pieceCanvas.value.width = puzzleSize.value
-  pieceCanvas.value.height = puzzleSize.value
-  
-  ctx.clearRect(0, 0, puzzleSize.value, puzzleSize.value)
-  
-  if (backgroundImage.value) {
-    const scale = containerWidth.value / 320
-    const scaledOffsetX = puzzleOffset.value / scale
-    const scaledOffsetY = puzzleY.value / scale
-    ctx.drawImage(backgroundImage.value, -scaledOffsetX, -scaledOffsetY)
-  }
-  
-  drawPuzzleShape(ctx, 0, 0, puzzleSize.value, puzzleSize.value, false)
-  ctx.clip()
-  
-  if (backgroundImage.value) {
-    const scale = containerWidth.value / 320
-    const scaledOffsetX = puzzleOffset.value / scale
-    const scaledOffsetY = puzzleY.value / scale
-    ctx.drawImage(backgroundImage.value, -scaledOffsetX, -scaledOffsetY)
-  }
-  
-  drawPuzzleShape(ctx, 0, 0, puzzleSize.value, puzzleSize.value, false)
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'
-  ctx.lineWidth = 1
-  ctx.stroke()
-}
+  left: `${sliderPosition.value}px`,
+  transition: isSuccess.value || isFail.value ? 'left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none'
+}));
 
 const onImageLoaded = () => {
   if (!isImageLoaded.value) {
-    isImageLoaded.value = true
-    drawMainCanvas()
-    drawPieceCanvas()
+    isImageLoaded.value = true;
+    isLoading.value = false;
+    renderCanvas();
   }
-}
+};
 
-const generateTraceId = () => {
-  return 'captcha_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-}
+const onImageError = () => {
+  console.error('图片加载失败，切换到本地生成模式');
+  handleFetchError();
+};
+
+const renderCanvas = () => {
+  const targetX = containerWidth.value - puzzleSize.value - 20;
+  drawMainCanvas(
+    mainCanvas.value, 
+    puzzleOffset.value, 
+    puzzleY.value, 
+    puzzleSize.value, 
+    targetX,
+    captchaData.value,
+    containerWidth.value,
+    containerHeight.value
+  );
+  drawPieceCanvas(
+    pieceCanvas.value, 
+    backgroundImage.value, 
+    puzzleOffset.value, 
+    puzzleY.value, 
+    puzzleSize.value, 
+    containerWidth.value
+  );
+};
 
 const fetchCaptcha = async () => {
-  if (isLoading.value) return
+  if (isLoading.value) return;
   
-  isLoading.value = true
+  isLoading.value = true;
+  isImageLoaded.value = false;
+  
   try {
-    traceId.value = generateTraceId()
-    const response = await getCaptcha(traceId.value)
+    traceId.value = generateTraceId();
+    const response = await getCaptcha(traceId.value);
     
     if (response.code === 200 && response.data) {
-      captchaData.value = response.data
-      backgroundImageSrc.value = 'data:image/svg+xml;base64,' + btoa(encodeURIComponent(captchaData.value.imageData).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
+      captchaData.value = response.data;
+      backgroundImageSrc.value = svgToBase64(captchaData.value.imageData);
       
       nextTick(() => {
         setTimeout(() => {
           if (puzzleContainer.value) {
-            const rect = puzzleContainer.value.getBoundingClientRect()
-            containerWidth.value = rect.width
-            containerHeight.value = rect.height
+            const rect = puzzleContainer.value.getBoundingClientRect();
+            containerWidth.value = rect.width;
+            containerHeight.value = rect.height;
             
-            const scale = containerWidth.value / 320
+            const params = calculateCaptchaParamsFromData(captchaData.value, containerWidth.value, containerHeight.value);
+            puzzleSize.value = params.puzzleSize;
+            puzzleOffset.value = params.puzzleOffset;
+            puzzleY.value = params.puzzleY;
+            maxPosition.value = params.maxPosition;
             
-            puzzleSize.value = (captchaData.value.pieceWidth || 44) * scale
-            puzzleOffset.value = (captchaData.value.puzzleX || Math.floor(Math.random() * (320 - 44 - 60)) + 30) * scale
-            puzzleY.value = (captchaData.value.puzzleY || Math.floor(Math.random() * (180 - 44 - 20)) + 10) * scale
+            if (params.warnings && params.warnings.length > 0) {
+              console.warn('验证码数据警告:', params.warnings);
+            }
             
-            const targetX = captchaData.value.targetX || (320 - 44 - 20)
-            maxPosition.value = targetX * scale - puzzleOffset.value
+            if (params.comparison) {
+              console.log('位置数据对比:', params.comparison);
+            }
             
-            isImageLoaded.value = false
+            isImageLoaded.value = false;
           }
-        }, 50)
-      })
+        }, 50);
+      });
     } else {
-      handleFetchError()
+      handleFetchError();
     }
   } catch (error) {
-    console.error('获取验证码失败:', error)
-    handleFetchError()
-  } finally {
-    isLoading.value = false
+    console.error('获取验证码失败:', error);
+    handleFetchError();
   }
-}
+};
 
 const handleFetchError = () => {
-  const colors = ['#b0c4de', '#f7dc6f', '#a3d8a3', '#f5b7b1', '#d7bde2', '#aed6f1']
-  const bgColor = colors[Math.floor(Math.random() * colors.length)]
-  const accentColor = colors[Math.floor(Math.random() * colors.length)]
-  
-  const cx = 80 + Math.floor(Math.random() * 160)
-  const cy = 40 + Math.floor(Math.random() * 100)
-  const r = 30 + Math.floor(Math.random() * 50)
-  
-  const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180">
-    <rect width="320" height="180" fill="${bgColor}"/>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${accentColor}" opacity="0.6"/>
-    <rect x="60" y="30" width="200" height="120" fill="none" stroke="#2c3e50" stroke-width="2" opacity="0.2"/>
-    <circle cx="${160 + Math.floor(Math.random() * 40)}" cy="${80 + Math.floor(Math.random() * 40)}" r="${10 + Math.floor(Math.random() * 20)}" fill="#4a6cf7" opacity="0.15"/>
-  </svg>`
-  
-  backgroundImageSrc.value = 'data:image/svg+xml;base64,' + btoa(encodeURIComponent(svgContent).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
+  isLoading.value = false;
+  const svgContent = generateCaptchaSVG();
+  backgroundImageSrc.value = svgToBase64(svgContent);
   
   nextTick(() => {
     setTimeout(() => {
       if (puzzleContainer.value) {
-        const rect = puzzleContainer.value.getBoundingClientRect()
-        containerWidth.value = rect.width
-        containerHeight.value = rect.height
-        maxPosition.value = containerWidth.value - puzzleSize.value - 20
-        puzzleOffset.value = Math.floor(Math.random() * (maxPosition.value - 30)) + 30
-        puzzleY.value = Math.floor(Math.random() * (containerHeight.value - puzzleSize.value - 20)) + 10
+        const rect = puzzleContainer.value.getBoundingClientRect();
+        containerWidth.value = rect.width;
+        containerHeight.value = rect.height;
         
-        isImageLoaded.value = false
+        const params = calculateCaptchaParams(containerWidth.value, containerHeight.value);
+        puzzleSize.value = params.puzzleSize;
+        puzzleOffset.value = params.puzzleOffset;
+        puzzleY.value = params.puzzleY;
+        maxPosition.value = params.maxPosition;
+        
+        isImageLoaded.value = false;
       }
-    }, 50)
-  })
-}
-
+    }, 50);
+  });
+};
 const refreshPuzzle = () => {
-  isSuccess.value = false
-  isFail.value = false
-  sliderPosition.value = 0
-  isImageLoaded.value = false
-  captchaData.value = null
-  backgroundImageSrc.value = ''
-  fetchCaptcha()
-}
-
+ isSuccess.value = false;
+ isFail.value = false;
+ isVerifying.value = false;
+ sliderPosition.value = 0;
+ isImageLoaded.value = false;
+ captchaData.value = null;
+ backgroundImageSrc.value = '';
+ fetchCaptcha();
+};
 const checkResult = async () => {
-  if (!captchaData.value) {
-    const tolerance = 8
-    const diff = Math.abs(sliderPosition.value - (containerWidth.value - puzzleSize.value - 20 - puzzleOffset.value))
-    if (diff <= tolerance) {
-      isSuccess.value = true
-      emit('success')
-    } else {
-      isFail.value = true
-      emit('fail')
-      setTimeout(() => {
-        sliderPosition.value = 0
-        isFail.value = false
-      }, 1000)
-    }
-    return
-  }
+  isDragging.value = false;
+  isVerifying.value = true;
   
   try {
-    const scale = 320 / containerWidth.value
-    const scaledPosition = Math.round(sliderPosition.value * scale)
+    const scaledPosition = calculateScaledPosition(puzzlePosition.value, containerWidth.value);
     
-    const response = await verifyCaptcha({
+    const requestData = {
       traceId: traceId.value,
       sliderPosition: scaledPosition,
-      userAgent: navigator.userAgent
-    })
+      userAgent: navigator.userAgent,
+      isLocalFallback: !captchaData.value,
+      frontendParams: captchaData.value ? {
+        puzzleOffset: puzzleOffset.value,
+        puzzleY: puzzleY.value,
+        puzzleSize: puzzleSize.value,
+        targetX: containerWidth.value - puzzleSize.value - 20
+      } : null
+    };
+    
+    const response = await verifyCaptcha(requestData);
+    
+    isVerifying.value = false;
     
     if (response.code === 200 && response.data) {
       if (response.data.passed) {
-        isSuccess.value = true
-        emit('success')
+        isSuccess.value = true;
+        emit('success');
+        
+        if (response.data.positionComparison) {
+          console.log('位置数据对比结果:', response.data.positionComparison);
+        }
       } else {
-        isFail.value = true
-        emit('fail')
+        isFail.value = true;
+        emit('fail', response.data);
         setTimeout(() => {
-          sliderPosition.value = 0
-          isFail.value = false
-        }, 1000)
+          animateSliderBack();
+        }, 500);
       }
     } else {
-      isFail.value = true
-      emit('fail')
+      isFail.value = true;
+      emit('fail', response);
       setTimeout(() => {
-        sliderPosition.value = 0
-        isFail.value = false
-      }, 1000)
+        animateSliderBack();
+      }, 500);
     }
   } catch (error) {
-    console.error('验证失败:', error)
-    const tolerance = 8
-    const diff = Math.abs(sliderPosition.value - (containerWidth.value - puzzleSize.value - 20 - puzzleOffset.value))
-    if (diff <= tolerance) {
-      isSuccess.value = true
-      emit('success')
-    } else {
-      isFail.value = true
-      emit('fail')
-      setTimeout(() => {
-        sliderPosition.value = 0
-        isFail.value = false
-      }, 1000)
-    }
+    console.error('验证失败:', error);
+    isVerifying.value = false;
+    isFail.value = true;
+    emit('fail', { error: error.message });
+    setTimeout(() => {
+      animateSliderBack();
+    }, 500);
   }
-}
-
+};
+const animateSliderBack = () => {
+ const startPos = sliderPosition.value;
+ const duration = 400;
+ const startTime = performance.now();
+ const animate = (currentTime) => {
+ const elapsed = currentTime - startTime;
+ const progress = Math.min(elapsed / duration, 1);
+ const easeProgress = 1 - Math.pow(1 - progress, 3);
+ sliderPosition.value = startPos * (1 - easeProgress);
+ if (progress < 1) {
+ requestAnimationFrame(animate);
+ }
+ else {
+ sliderPosition.value = 0;
+ isFail.value = false;
+ refreshPuzzle();
+ }
+ };
+ requestAnimationFrame(animate);
+};
 const handleMouseDown = (e) => {
-  if (isSuccess.value || isFail.value) return
-  isDragging.value = true
-  startX.value = e.clientX
-  startPosition.value = sliderPosition.value
-  
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
-}
-
+ if (isSuccess.value || isFail.value || isVerifying.value)
+ return;
+ e.preventDefault();
+ isDragging.value = true;
+ startX.value = e.clientX;
+ startPosition.value = sliderPosition.value;
+ document.addEventListener('mousemove', handleMouseMove);
+ document.addEventListener('mouseup', handleMouseUp);
+};
 const handleTouchStart = (e) => {
-  if (isSuccess.value || isFail.value) return
-  isDragging.value = true
-  startX.value = e.touches[0].clientX
-  startPosition.value = sliderPosition.value
-  
-  document.addEventListener('touchmove', handleTouchMove)
-  document.addEventListener('touchend', handleTouchUp)
-}
-
+ if (isSuccess.value || isFail.value || isVerifying.value)
+ return;
+ e.preventDefault();
+ isDragging.value = true;
+ startX.value = e.touches[0].clientX;
+ startPosition.value = sliderPosition.value;
+ document.addEventListener('touchmove', handleTouchMove, { passive: false });
+ document.addEventListener('touchend', handleTouchUp);
+};
 const handleMouseMove = (e) => {
-  if (!isDragging.value) return
-  const deltaX = e.clientX - startX.value
-  let newPosition = startPosition.value + deltaX
-  newPosition = Math.max(0, Math.min(newPosition, maxPosition.value))
-  sliderPosition.value = newPosition
-}
-
+ if (!isDragging.value)
+ return;
+ const deltaX = e.clientX - startX.value;
+ let newPosition = startPosition.value + deltaX;
+ newPosition = Math.max(0, Math.min(newPosition, trackMaxPosition.value));
+ sliderPosition.value = newPosition;
+};
 const handleTouchMove = (e) => {
-  if (!isDragging.value) return
-  const deltaX = e.touches[0].clientX - startX.value
-  let newPosition = startPosition.value + deltaX
-  newPosition = Math.max(0, Math.min(newPosition, maxPosition.value))
-  sliderPosition.value = newPosition
-}
-
+ if (!isDragging.value)
+ return;
+ e.preventDefault();
+ const deltaX = e.touches[0].clientX - startX.value;
+ let newPosition = startPosition.value + deltaX;
+ newPosition = Math.max(0, Math.min(newPosition, trackMaxPosition.value));
+ sliderPosition.value = newPosition;
+};
 const handleMouseUp = () => {
-  if (!isDragging.value) return
-  isDragging.value = false
-  
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
-  
-  checkResult()
-}
-
+ if (!isDragging.value)
+ return;
+ document.removeEventListener('mousemove', handleMouseMove);
+ document.removeEventListener('mouseup', handleMouseUp);
+ checkResult();
+};
 const handleTouchUp = () => {
-  if (!isDragging.value) return
-  isDragging.value = false
-  
-  document.removeEventListener('touchmove', handleTouchMove)
-  document.removeEventListener('touchend', handleTouchUp)
-  
-  checkResult()
-}
-
+ if (!isDragging.value)
+ return;
+ document.removeEventListener('touchmove', handleTouchMove);
+ document.removeEventListener('touchend', handleTouchUp);
+ checkResult();
+};
+const handleKeyDown = (e) => {
+ if (isSuccess.value || isFail.value || isVerifying.value)
+ return;
+ switch (e.key) {
+ case 'ArrowLeft':
+ e.preventDefault();
+ sliderPosition.value = Math.max(0, sliderPosition.value - 4);
+ break;
+ case 'ArrowRight':
+ e.preventDefault();
+ sliderPosition.value = Math.min(trackMaxPosition.value, sliderPosition.value + 4);
+ break;
+ case 'Home':
+ e.preventDefault();
+ sliderPosition.value = 0;
+ break;
+ case 'End':
+ e.preventDefault();
+ sliderPosition.value = trackMaxPosition.value;
+ break;
+ case 'Enter':
+ case ' ':
+ e.preventDefault();
+ checkResult();
+ break;
+ }
+};
 const handleClose = () => {
-  emit('close')
-}
-
+ emit('close');
+};
 watch(() => props.visible, (newVal) => {
-  if (newVal) {
-    refreshPuzzle()
-  }
-})
-
+ if (newVal) {
+ refreshPuzzle();
+ }
+});
 watch([sliderPosition], () => {
   if (isImageLoaded.value) {
-    drawPieceCanvas()
+    const targetX = containerWidth.value - puzzleSize.value - 20;
+    drawPieceCanvas(
+      pieceCanvas.value, 
+      backgroundImage.value, 
+      puzzleOffset.value, 
+      puzzleY.value, 
+      puzzleSize.value, 
+      containerWidth.value
+    );
   }
-})
-
+});
 onMounted(() => {
-  if (props.visible) {
-    refreshPuzzle()
-  }
-})
-
+ if (props.visible) {
+ refreshPuzzle();
+ }
+});
 onUnmounted(() => {
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
-  document.removeEventListener('touchmove', handleTouchMove)
-  document.removeEventListener('touchend', handleTouchUp)
-})
+ document.removeEventListener('mousemove', handleMouseMove);
+ document.removeEventListener('mouseup', handleMouseUp);
+ document.removeEventListener('touchmove', handleTouchMove);
+ document.removeEventListener('touchend', handleTouchUp);
+});
 </script>
 
 <style scoped>
-.verification-modal {
+.captcha-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -492,25 +502,25 @@ onUnmounted(() => {
   animation: fadeIn 0.3s ease;
 }
 
-.verification-container {
+.captcha-container {
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   width: 90%;
-  max-width: 340px;
+  max-width: 360px;
   overflow: hidden;
   animation: slideUp 0.3s ease;
 }
 
-.verification-header {
+.captcha-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
+  padding: 20px 24px;
   border-bottom: 1px solid #f0f0f0;
 }
 
-.verification-title {
+.captcha-title {
   font-size: 15px;
   font-weight: 600;
   color: #333;
@@ -535,19 +545,20 @@ onUnmounted(() => {
   color: #666;
 }
 
-.verification-body {
-  padding: 18px 20px 22px;
+.captcha-body {
+  padding: 20px 24px;
   position: relative;
 }
 
 .puzzle-container {
   position: relative;
   width: 100%;
-  height: 180px;
-  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  min-height: 140px;
+  border-radius: 8px;
   overflow: hidden;
   background: #f5f5f7;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .background-image {
@@ -567,6 +578,11 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   z-index: 1;
+  transition: filter 0.2s ease;
+}
+
+.main-canvas.blur-mask {
+  filter: blur(2px);
 }
 
 .piece-canvas {
@@ -579,11 +595,48 @@ onUnmounted(() => {
 
 .piece-canvas.dragging {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transform: scale(1.02);
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  gap: 8px;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  color: #3490de;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-path {
+  stroke-dasharray: 62.8;
+  stroke-dashoffset: 15.7;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-overlay span {
+  font-size: 14px;
+  color: #999;
 }
 
 .slider-container {
   position: relative;
-  height: 36px;
+  height: 40px;
 }
 
 .slider-track {
@@ -591,9 +644,9 @@ onUnmounted(() => {
   top: 50%;
   left: 0;
   right: 0;
-  height: 36px;
-  background: #f0f0f0;
-  border-radius: 18px;
+  height: 40px;
+  background: #f0f2f5;
+  border-radius: 20px;
   transform: translateY(-50%);
   transition: background-color 0.3s ease;
 }
@@ -612,26 +665,25 @@ onUnmounted(() => {
   left: 0;
   height: 100%;
   background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
-  border-radius: 18px;
-  transition: width 0.08s ease;
+  border-radius: 20px;
 }
 
 .slider-track.success .slider-fill {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #52C41A 0%, #389e0d 100%);
 }
 
 .slider-track.fail .slider-fill {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, #FF4D4F 0%, #cf1322 100%);
 }
 
 .slider-thumb {
   position: absolute;
   top: 50%;
-  width: 40px;
-  height: 36px;
-  margin-left: -20px;
+  width: 44px;
+  height: 40px;
+  margin-left: -22px;
   background: #ffffff;
-  border-radius: 18px;
+  border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
@@ -642,10 +694,15 @@ onUnmounted(() => {
   transition: transform 0.1s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   z-index: 20;
   border: 1px solid rgba(52, 144, 222, 0.1);
+  touch-action: none;
 }
 
 .slider-thumb:active {
   cursor: grabbing;
+}
+
+.slider-thumb:hover {
+  border-color: #B3D8FF;
 }
 
 .slider-thumb.dragging {
@@ -653,16 +710,31 @@ onUnmounted(() => {
   transform: translateY(-50%) scale(1.05);
 }
 
+.slider-thumb.verifying {
+  pointer-events: none;
+}
+
 .slider-thumb.success {
-  background: #10b981;
+  background: #52C41A;
   color: #ffffff;
-  border-color: #10b981;
+  border-color: #52C41A;
 }
 
 .slider-thumb.fail {
-  background: #ef4444;
+  background: #FF4D4F;
   color: #ffffff;
-  border-color: #ef4444;
+  border-color: #FF4D4F;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  25% { transform: translateY(-50%) translateX(-5px); }
+  75% { transform: translateY(-50%) translateX(5px); }
+}
+
+.verify-spinner {
+  animation: spin 0.8s linear infinite;
 }
 
 .slider-tip {
@@ -671,25 +743,25 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   text-align: center;
-  font-size: 13px;
-  color: #999;
+  font-size: 14px;
+  color: #8C8C8C;
   transform: translateY(-50%);
   pointer-events: none;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .slider-track.success .slider-tip {
-  color: #10b981;
+  color: #52C41A;
 }
 
 .slider-track.fail .slider-tip {
-  color: #ef4444;
+  color: #FF4D4F;
 }
 
 .refresh-btn {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 24px;
   width: 32px;
   height: 32px;
   border: none;
@@ -705,20 +777,21 @@ onUnmounted(() => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.refresh-btn:hover {
+.refresh-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 1);
   color: #3490de;
   transform: rotate(180deg);
   box-shadow: 0 4px 12px rgba(52, 144, 222, 0.2);
 }
 
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -733,17 +806,47 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
-  .verification-container {
+  .captcha-container {
     width: 92%;
-    max-width: 320px;
+    max-width: 340px;
   }
   
-  .verification-body {
-    padding: 16px 16px 20px;
+  .captcha-body {
+    padding: 16px 20px;
   }
   
   .puzzle-container {
-    height: 140px;
+    min-height: 140px;
+  }
+  
+  .slider-container {
+    height: 44px;
+  }
+  
+  .slider-track {
+    height: 44px;
+    border-radius: 22px;
+  }
+  
+  .slider-fill {
+    border-radius: 22px;
+  }
+  
+  .slider-thumb {
+    width: 44px;
+    height: 44px;
+    margin-left: -22px;
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 320px) {
+  .puzzle-container {
+    min-height: 120px;
+  }
+  
+  .slider-tip {
+    font-size: 12px;
   }
 }
 </style>

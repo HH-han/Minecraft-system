@@ -20,8 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.minecraft.exception.BusinessException;
+
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(CaptchaServiceImpl.class);
     
     @Autowired
     private CaptchaImageMapper imageMapper;
@@ -57,8 +64,15 @@ public class CaptchaServiceImpl implements CaptchaService {
         CaptchaImage image = SliderCaptchaUtil.generateCaptchaImage(width, height);
         PuzzleConfig puzzle = SliderCaptchaUtil.generatePuzzleConfig(image, width);
         
+        String fileContent = image.getFileContent();
+        image.setFileContent(null);
+        image.setFileSize(0);
+        
         imageMapper.insert(image);
         puzzleConfigMapper.insert(puzzle);
+        
+        image.setFileContent(fileContent);
+        image.setFileSize(fileContent.getBytes(java.nio.charset.StandardCharsets.UTF_8).length);
         
         cacheImage(image);
         cachePuzzleConfig(puzzle);
@@ -89,6 +103,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         
         CaptchaImage image = imageMapper.selectById(imageId);
         if (image != null) {
+            image.setFileContent(null);
             redisUtil.set(redisKey, image, 10, TimeUnit.MINUTES);
         }
         
@@ -144,10 +159,20 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Override
     public CaptchaResponse getCaptcha(String traceId) {
         try {
+            logger.info("Generating captcha for traceId: {}", traceId);
+            
             String imageId = generateNewCaptcha();
+            logger.debug("Generated captcha imageId: {}", imageId);
             
             CaptchaImage image = getImage(imageId);
+            if (image == null) {
+                throw new RuntimeException("Failed to retrieve captcha image with id: " + imageId);
+            }
+            
             PuzzleConfig puzzle = getPuzzleConfig(imageId, 1);
+            if (puzzle == null) {
+                throw new RuntimeException("Failed to retrieve puzzle config for image: " + imageId);
+            }
             
             CaptchaResponse response = CaptchaResponse.builder()
                     .traceId(traceId)
@@ -175,10 +200,12 @@ public class CaptchaServiceImpl implements CaptchaService {
             
             cleanupOldRecords();
             
+            logger.info("Successfully generated captcha for traceId: {}", traceId);
             return response;
             
         } catch (Exception e) {
-            return CaptchaResponse.error("获取验证码失败");
+            logger.error("Failed to generate captcha for traceId: {}", traceId, e);
+            throw new BusinessException("获取验证码失败", e);
         }
     }
     
