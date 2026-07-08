@@ -13,6 +13,8 @@ public class CaptchaResponse {
     private String imageData;
     private Integer puzzleX;
     private Integer puzzleY;
+    private Integer targetX;
+    private Integer targetY;
     private Integer pieceWidth;
     private Integer pieceHeight;
     private BigDecimal sliderPercent;

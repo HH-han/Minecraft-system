@@ -138,22 +138,27 @@ public class CaptchaServiceImpl implements CaptchaService {
         config.setImageId(image.getId());
         config.setVersion(1);
         
-        int gap = 6;
-        int pieceWidth = (width - 2 * gap) / 3;
-        int pieceHeight = height - 2 * gap;
+        int pieceWidth = 44;
+        int pieceHeight = 44;
         
-        int pieceX = gap + ThreadLocalRandom.current().nextInt(0, 20);
-        int pieceY = gap;
+        int minPieceX = 60;
+        int maxPieceX = 105;
+        int pieceX = minPieceX + ThreadLocalRandom.current().nextInt(maxPieceX - minPieceX + 1);
+        
+        int minPieceY = 50;
+        int maxPieceY = 95;
+        int pieceY = minPieceY + ThreadLocalRandom.current().nextInt(maxPieceY - minPieceY + 1);
         
         config.setPieceX(pieceX);
         config.setPieceY(pieceY);
         config.setPieceWidth(pieceWidth);
         config.setPieceHeight(pieceHeight);
         
-        config.setTargetX(width - pieceWidth - gap);
+        int targetX = width - pieceWidth - 20;
+        config.setTargetX(targetX);
         config.setTargetY(pieceY);
         
-        double sliderPercent = (double)(config.getTargetX() - pieceX) / (width - pieceWidth - gap - pieceX);
+        double sliderPercent = (double) (targetX - pieceX) / (width - pieceWidth - pieceX);
         config.setSliderPercent(java.math.BigDecimal.valueOf(Math.min(Math.max(sliderPercent, 0.3), 0.9)));
         
         return config;
@@ -235,6 +240,8 @@ public class CaptchaServiceImpl implements CaptchaService {
                     .imageData(image.getFileContent())
                     .puzzleX(puzzle.getPieceX())
                     .puzzleY(puzzle.getPieceY())
+                    .targetX(puzzle.getTargetX())
+                    .targetY(puzzle.getTargetY())
                     .pieceWidth(puzzle.getPieceWidth())
                     .pieceHeight(puzzle.getPieceHeight())
                     .sliderPercent(puzzle.getSliderPercent())
@@ -242,6 +249,8 @@ public class CaptchaServiceImpl implements CaptchaService {
             
             CaptchaSession session = new CaptchaSession();
             session.setImageId(imageId);
+            session.setPieceX(puzzle.getPieceX());
+            session.setPieceY(puzzle.getPieceY());
             session.setTargetX(puzzle.getTargetX());
             session.setTargetY(puzzle.getTargetY());
             session.setPieceWidth(puzzle.getPieceWidth());
@@ -266,8 +275,11 @@ public class CaptchaServiceImpl implements CaptchaService {
                 return VerifyResult.fail("会话已过期或无效");
             }
             
+            int pieceX = session.getPieceX();
+            int targetX = session.getTargetX();
+            
             int actualOffset = sliderPosition;
-            int targetOffset = session.getTargetX() - session.getPieceWidth() / 2;
+            int targetOffset = targetX - pieceX;
             
             boolean passed = Math.abs(actualOffset - targetOffset) <= TOLERANCE;
             

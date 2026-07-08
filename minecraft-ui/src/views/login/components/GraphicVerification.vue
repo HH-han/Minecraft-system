@@ -12,6 +12,12 @@
 
       <div class="verification-body">
         <div class="puzzle-container" ref="puzzleContainer">
+          <img 
+            ref="backgroundImage" 
+            class="background-image"
+            :src="backgroundImageSrc"
+            @load="onImageLoaded"
+          />
           <canvas ref="mainCanvas" class="main-canvas"></canvas>
           <canvas 
             ref="pieceCanvas" 
@@ -71,15 +77,17 @@ const props = defineProps({
 const emit = defineEmits(['close', 'success', 'fail'])
 
 const puzzleContainer = ref(null)
+const backgroundImage = ref(null)
 const mainCanvas = ref(null)
 const pieceCanvas = ref(null)
 
-const puzzleSize = ref(56)
+const puzzleSize = ref(44)
 const puzzleOffset = ref(0)
 const sliderPosition = ref(0)
 const maxPosition = ref(200)
-const containerWidth = ref(300)
-const containerHeight = ref(120)
+const containerWidth = ref(320)
+const containerHeight = ref(180)
+const puzzleY = ref(65)
 
 const isDragging = ref(false)
 const isSuccess = ref(false)
@@ -91,6 +99,7 @@ const startX = ref(0)
 const startPosition = ref(0)
 const traceId = ref('')
 const captchaData = ref(null)
+const backgroundImageSrc = ref('')
 
 const sliderTip = computed(() => {
   if (isSuccess.value) return '验证成功'
@@ -100,7 +109,7 @@ const sliderTip = computed(() => {
 
 const pieceStyle = computed(() => ({
   left: `${sliderPosition.value}px`,
-  top: `${(containerHeight.value - puzzleSize.value) / 2}px`,
+  top: `${puzzleY.value}px`,
   width: `${puzzleSize.value}px`,
   height: `${puzzleSize.value}px`
 }))
@@ -148,7 +157,7 @@ const drawPuzzleShape = (ctx, x, y, width, height, isMask = false) => {
 }
 
 const drawMainCanvas = () => {
-  if (!mainCanvas.value || !puzzleContainer.value || !captchaData.value) return
+  if (!mainCanvas.value || !puzzleContainer.value) return
   
   const ctx = mainCanvas.value.getContext('2d')
   const rect = puzzleContainer.value.getBoundingClientRect()
@@ -161,19 +170,30 @@ const drawMainCanvas = () => {
   
   ctx.clearRect(0, 0, containerWidth.value, containerHeight.value)
   
-  const pieceY = (containerHeight.value - puzzleSize.value) / 2
-  
-  drawPuzzleShape(ctx, puzzleOffset.value, pieceY, puzzleSize.value, puzzleSize.value, true)
+  drawPuzzleShape(ctx, puzzleOffset.value, puzzleY.value, puzzleSize.value, puzzleSize.value, true)
   ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
   ctx.fill()
   
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
   ctx.lineWidth = 1
   ctx.stroke()
+  
+  let targetPosX = containerWidth.value - puzzleSize.value - 20
+  if (captchaData.value && captchaData.value.targetX) {
+    const scale = containerWidth.value / 320
+    targetPosX = captchaData.value.targetX * scale
+  }
+  
+  drawPuzzleShape(ctx, targetPosX, puzzleY.value, puzzleSize.value, puzzleSize.value, false)
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
+  ctx.fill()
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'
+  ctx.lineWidth = 1
+  ctx.stroke()
 }
 
 const drawPieceCanvas = () => {
-  if (!pieceCanvas.value || !captchaData.value) return
+  if (!pieceCanvas.value) return
   
   const ctx = pieceCanvas.value.getContext('2d')
   
@@ -182,27 +202,35 @@ const drawPieceCanvas = () => {
   
   ctx.clearRect(0, 0, puzzleSize.value, puzzleSize.value)
   
-  const colors = ['#b0c4de', '#f7dc6f', '#a3d8a3', '#f5b7b1', '#d7bde2', '#aed6f1']
-  const bgColor = colors[Math.floor(Math.random() * colors.length)]
-  
-  ctx.fillStyle = bgColor
-  ctx.fillRect(0, 0, puzzleSize.value, puzzleSize.value)
+  if (backgroundImage.value) {
+    const scale = containerWidth.value / 320
+    const scaledOffsetX = puzzleOffset.value / scale
+    const scaledOffsetY = puzzleY.value / scale
+    ctx.drawImage(backgroundImage.value, -scaledOffsetX, -scaledOffsetY)
+  }
   
   drawPuzzleShape(ctx, 0, 0, puzzleSize.value, puzzleSize.value, false)
   ctx.clip()
   
-  ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)]
-  ctx.globalAlpha = 0.6
-  ctx.beginPath()
-  ctx.arc(puzzleSize.value / 2, puzzleSize.value / 2, puzzleSize.value / 3, 0, Math.PI * 2)
-  ctx.fill()
-  
-  ctx.restore()
+  if (backgroundImage.value) {
+    const scale = containerWidth.value / 320
+    const scaledOffsetX = puzzleOffset.value / scale
+    const scaledOffsetY = puzzleY.value / scale
+    ctx.drawImage(backgroundImage.value, -scaledOffsetX, -scaledOffsetY)
+  }
   
   drawPuzzleShape(ctx, 0, 0, puzzleSize.value, puzzleSize.value, false)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'
   ctx.lineWidth = 1
   ctx.stroke()
+}
+
+const onImageLoaded = () => {
+  if (!isImageLoaded.value) {
+    isImageLoaded.value = true
+    drawMainCanvas()
+    drawPieceCanvas()
+  }
 }
 
 const generateTraceId = () => {
@@ -219,7 +247,7 @@ const fetchCaptcha = async () => {
     
     if (response.code === 200 && response.data) {
       captchaData.value = response.data
-      isImageLoaded.value = true
+      backgroundImageSrc.value = 'data:image/svg+xml;base64,' + btoa(encodeURIComponent(captchaData.value.imageData).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
       
       nextTick(() => {
         setTimeout(() => {
@@ -227,11 +255,17 @@ const fetchCaptcha = async () => {
             const rect = puzzleContainer.value.getBoundingClientRect()
             containerWidth.value = rect.width
             containerHeight.value = rect.height
-            maxPosition.value = containerWidth.value - puzzleSize.value - 10
-            puzzleOffset.value = captchaData.value.puzzleX || Math.floor(Math.random() * (maxPosition.value - 30)) + 30
             
-            drawMainCanvas()
-            drawPieceCanvas()
+            const scale = containerWidth.value / 320
+            
+            puzzleSize.value = (captchaData.value.pieceWidth || 44) * scale
+            puzzleOffset.value = (captchaData.value.puzzleX || Math.floor(Math.random() * (320 - 44 - 60)) + 30) * scale
+            puzzleY.value = (captchaData.value.puzzleY || Math.floor(Math.random() * (180 - 44 - 20)) + 10) * scale
+            
+            const targetX = captchaData.value.targetX || (320 - 44 - 20)
+            maxPosition.value = targetX * scale - puzzleOffset.value
+            
+            isImageLoaded.value = false
           }
         }, 50)
       })
@@ -247,18 +281,34 @@ const fetchCaptcha = async () => {
 }
 
 const handleFetchError = () => {
+  const colors = ['#b0c4de', '#f7dc6f', '#a3d8a3', '#f5b7b1', '#d7bde2', '#aed6f1']
+  const bgColor = colors[Math.floor(Math.random() * colors.length)]
+  const accentColor = colors[Math.floor(Math.random() * colors.length)]
+  
+  const cx = 80 + Math.floor(Math.random() * 160)
+  const cy = 40 + Math.floor(Math.random() * 100)
+  const r = 30 + Math.floor(Math.random() * 50)
+  
+  const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180">
+    <rect width="320" height="180" fill="${bgColor}"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="${accentColor}" opacity="0.6"/>
+    <rect x="60" y="30" width="200" height="120" fill="none" stroke="#2c3e50" stroke-width="2" opacity="0.2"/>
+    <circle cx="${160 + Math.floor(Math.random() * 40)}" cy="${80 + Math.floor(Math.random() * 40)}" r="${10 + Math.floor(Math.random() * 20)}" fill="#4a6cf7" opacity="0.15"/>
+  </svg>`
+  
+  backgroundImageSrc.value = 'data:image/svg+xml;base64,' + btoa(encodeURIComponent(svgContent).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode(parseInt(p1, 16))))
+  
   nextTick(() => {
     setTimeout(() => {
       if (puzzleContainer.value) {
         const rect = puzzleContainer.value.getBoundingClientRect()
         containerWidth.value = rect.width
         containerHeight.value = rect.height
-        maxPosition.value = containerWidth.value - puzzleSize.value - 10
+        maxPosition.value = containerWidth.value - puzzleSize.value - 20
         puzzleOffset.value = Math.floor(Math.random() * (maxPosition.value - 30)) + 30
+        puzzleY.value = Math.floor(Math.random() * (containerHeight.value - puzzleSize.value - 20)) + 10
         
-        drawMainCanvas()
-        drawPieceCanvas()
-        isImageLoaded.value = true
+        isImageLoaded.value = false
       }
     }, 50)
   })
@@ -270,13 +320,14 @@ const refreshPuzzle = () => {
   sliderPosition.value = 0
   isImageLoaded.value = false
   captchaData.value = null
+  backgroundImageSrc.value = ''
   fetchCaptcha()
 }
 
 const checkResult = async () => {
   if (!captchaData.value) {
-    const tolerance = 5
-    const diff = Math.abs(sliderPosition.value - puzzleOffset.value)
+    const tolerance = 8
+    const diff = Math.abs(sliderPosition.value - (containerWidth.value - puzzleSize.value - 20 - puzzleOffset.value))
     if (diff <= tolerance) {
       isSuccess.value = true
       emit('success')
@@ -292,9 +343,12 @@ const checkResult = async () => {
   }
   
   try {
+    const scale = 320 / containerWidth.value
+    const scaledPosition = Math.round(sliderPosition.value * scale)
+    
     const response = await verifyCaptcha({
       traceId: traceId.value,
-      sliderPosition: sliderPosition.value,
+      sliderPosition: scaledPosition,
       userAgent: navigator.userAgent
     })
     
@@ -320,8 +374,8 @@ const checkResult = async () => {
     }
   } catch (error) {
     console.error('验证失败:', error)
-    const tolerance = 5
-    const diff = Math.abs(sliderPosition.value - puzzleOffset.value)
+    const tolerance = 8
+    const diff = Math.abs(sliderPosition.value - (containerWidth.value - puzzleSize.value - 20 - puzzleOffset.value))
     if (diff <= tolerance) {
       isSuccess.value = true
       emit('success')
@@ -489,11 +543,21 @@ onUnmounted(() => {
 .puzzle-container {
   position: relative;
   width: 100%;
-  height: 120px;
+  height: 180px;
   border-radius: 10px;
   overflow: hidden;
   background: #f5f5f7;
   margin-bottom: 18px;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .main-canvas {
@@ -679,7 +743,7 @@ onUnmounted(() => {
   }
   
   .puzzle-container {
-    height: 100px;
+    height: 140px;
   }
 }
 </style>
