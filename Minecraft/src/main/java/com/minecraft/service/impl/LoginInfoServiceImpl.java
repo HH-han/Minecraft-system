@@ -38,7 +38,7 @@ public class LoginInfoServiceImpl extends ServiceImpl<LoginInfoMapper, LoginInfo
         try {
             Object cachedData = redisUtil.get(cacheKey);
             if (cachedData != null) {
-                return objectMapper.readValue(cachedData.toString(), Page.class);
+                return objectMapper.readValue(cachedData.toString(), new com.fasterxml.jackson.core.type.TypeReference<Page<LoginInfo>>() {});
             }
         } catch (Exception e) {
             // 缓存读取失败，继续从数据库获取

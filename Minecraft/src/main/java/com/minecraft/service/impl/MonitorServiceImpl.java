@@ -86,17 +86,15 @@ public class MonitorServiceImpl implements MonitorService {
         cpuInfo.setModel(System.getProperty("os.arch"));
         
         // 获取CPU使用率
-        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
-        if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
-            com.sun.management.OperatingSystemMXBean sunOsBean = (com.sun.management.OperatingSystemMXBean) osBean;
-            double cpuLoad = sunOsBean.getSystemCpuLoad();
-            // 处理getSystemCpuLoad()返回-1.0的情况（数据不可用）
-            double cpuUsage = cpuLoad >= 0 ? cpuLoad * 100 : Math.random() * 30; // 模拟30%以内的CPU使用率
-            cpuInfo.setUsage(cpuUsage);
-        } else {
-            // 模拟CPU使用率
-            cpuInfo.setUsage(Math.random() * 30);
-        }
+            OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+            if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
+                com.sun.management.OperatingSystemMXBean sunOsBean = (com.sun.management.OperatingSystemMXBean) osBean;
+                double cpuLoad = sunOsBean.getCpuLoad();
+                double cpuUsage = cpuLoad >= 0 ? cpuLoad * 100 : Math.random() * 30;
+                cpuInfo.setUsage(cpuUsage);
+            } else {
+                cpuInfo.setUsage(Math.random() * 30);
+            }
         
         return cpuInfo;
     }
@@ -110,8 +108,8 @@ public class MonitorServiceImpl implements MonitorService {
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
         if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
             com.sun.management.OperatingSystemMXBean sunOsBean = (com.sun.management.OperatingSystemMXBean) osBean;
-            memoryInfo.setTotal(sunOsBean.getTotalPhysicalMemorySize());
-            memoryInfo.setUsed(sunOsBean.getTotalPhysicalMemorySize() - sunOsBean.getFreePhysicalMemorySize());
+            memoryInfo.setTotal(sunOsBean.getTotalMemorySize());
+            memoryInfo.setUsed(sunOsBean.getTotalMemorySize() - sunOsBean.getFreeMemorySize());
         } else {
             memoryInfo.setTotal(0);
             memoryInfo.setUsed(0);
