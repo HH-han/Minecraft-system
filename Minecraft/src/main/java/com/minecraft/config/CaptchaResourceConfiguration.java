@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Configuration
 public class CaptchaResourceConfiguration {
 
-    private static final String IMAGE_DIR = "D:/Image";
+    private static final String IMAGE_DIR = "G:/slidingverification";
 
     @Bean
     public ResourceStore resourceStore() {
