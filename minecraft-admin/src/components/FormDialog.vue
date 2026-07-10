@@ -584,6 +584,13 @@ defineExpose({
   padding: 32px;
   overflow-y: auto;
   max-height: calc(90vh - 160px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dialog-body::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 /* 表单 */
