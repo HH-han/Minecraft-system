@@ -395,17 +395,31 @@ watch(activeFilter, () => {
   font-weight: 400;
 }
 
+.orders-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
 .order-item {
-  background: #f5f5f7;
-  border-radius: 24px;
+  background: #ffffff;
+  border-radius: 16px;
   padding: 24px;
-  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 
+              0 1px 2px rgba(0, 0, 0, 0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .order-item:hover {
-  transform: scale(1.01);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10), 
+              0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .order-header {
@@ -577,10 +591,12 @@ watch(activeFilter, () => {
 
 .order-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   padding-top: 20px;
   border-top: 1px solid #d2d2d6;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .order-total {
@@ -651,8 +667,8 @@ watch(activeFilter, () => {
 }
 
 .btn-link {
-  background: none;
-  color: #2997ff;
+  background: #0887ff;
+  color: #ffffff;
   padding: 10px 16px;
 }
 

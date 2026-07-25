@@ -239,7 +239,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
 
 <style scoped>
 .message-list {
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 240px);
   overflow-y: auto;
   padding: 20px;
   -ms-overflow-style: none;

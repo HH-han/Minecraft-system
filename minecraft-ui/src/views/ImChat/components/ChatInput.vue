@@ -1,5 +1,22 @@
 <template>
   <div class="chat-input-area">
+    <div class="input-container">
+      <input 
+        v-model="inputMessage" 
+        type="text" 
+        placeholder="输入消息..."
+        class="message-input"
+        @keyup.enter="handleSend"
+      />
+      <button 
+        :disabled="!canSend"
+        class="send-btn"
+        @click="handleSend"
+      >
+        <Icon name="send" :size="'16px'" />
+      </button>
+    </div>
+
     <div class="input-tools">
       <button class="tool-btn" @click="toggleEmojiPanel">
         <Icon name="smile" :size="'18px'" />
@@ -11,21 +28,6 @@
         <Icon name="paperclip" :size="'18px'" />
       </button>
     </div>
-    <input 
-      v-model="inputMessage" 
-      type="text" 
-      placeholder="输入消息..."
-      class="message-input"
-      @keyup.enter="handleSend"
-    />
-    <button 
-      :disabled="!canSend"
-      class="send-btn"
-      @click="handleSend"
-    >
-      <Icon name="send" :size="'16px'" />
-    </button>
-    
     <input 
       ref="imageInputRef"
       type="file" 
@@ -140,15 +142,21 @@ const handleSend = () => {
 <style scoped>
 .chat-input-area {
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   padding: 12px 20px;
   background: #ffffff;
   border-top: 1px solid #d2d2d6;
   gap: 12px;
   position: relative;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  flex-direction: column;
 }
 
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .input-tools {
   display: flex;
   gap: 8px;

@@ -589,6 +589,7 @@ defineExpose({
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: rgba(255, 255, 255, 0.12);
   border: none;

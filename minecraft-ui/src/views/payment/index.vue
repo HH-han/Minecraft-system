@@ -18,7 +18,6 @@
 
       <!-- 主内容区 -->
       <main class="payment-content">
-
         <!-- 商品类型选择 -->
         <div v-if="activeTab === 'product'" class="section apple-card">
           <ProductTypeSelector @optionChange="handleOptionChange" />
