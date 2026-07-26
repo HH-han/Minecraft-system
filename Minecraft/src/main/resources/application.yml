@@ -76,14 +76,22 @@ spring:
 
   mail:
     host: smtp.qq.com
+    port: 465
     username: 2560177364@qq.com
     password: emxnkcjubwyzebjd
+    protocol: smtps
     properties:
       mail:
+        mime:
+          charset: UTF-8
+          content-type: text/plain; charset=UTF-8
+          encoding: base64
         smtp:
           auth: true
-          starttls:
+          ssl:
             enable: true
+          starttls:
+            enable: false
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

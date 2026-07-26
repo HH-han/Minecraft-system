@@ -1,5 +1,6 @@
 package com.minecraft.utils;
 
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,17 +48,14 @@ public class EmailUtil {
      */
     public void sendVerificationCode(String toEmail, String code) {
         try {
-            // 使用MimeMessage支持HTML格式
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            InternetAddress from = new InternetAddress(fromEmail, "博览科技", "UTF-8");
+            mimeMessage.setFrom(from);
+            mimeMessage.setRecipients(MimeMessage.RecipientType.TO, toEmail);
+            mimeMessage.setSubject("【博览科技】注册验证码", "UTF-8");
 
-            helper.setFrom(fromEmail, "即时通讯团队");
-            helper.setTo(toEmail);
-            helper.setSubject("【即时通讯】注册验证码");
-
-            // HTML邮件内容
             String htmlContent = buildVerificationCodeEmail(code);
-            helper.setText(htmlContent, true);
+            mimeMessage.setContent(htmlContent, "text/html; charset=UTF-8");
 
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
@@ -450,6 +448,7 @@ public class EmailUtil {
                     </div>
                 </body>
                 </html>
-                """.formatted(code);
+                """
+        .replace("%s", code);
     }
 }
