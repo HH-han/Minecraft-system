@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/apiDocument.html").permitAll()
                 .requestMatchers("/im-api-documentation.html").permitAll()
+                .requestMatchers("/logs/**").permitAll()
                 .requestMatchers("/api/user/info").authenticated()
                 .requestMatchers("/upload/**").permitAll()
                 .requestMatchers("/image/**").permitAll()

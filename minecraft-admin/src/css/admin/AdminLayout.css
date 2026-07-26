@@ -98,6 +98,7 @@
 
 .data-management__top {
   width: calc(100% - var(--main-width));
+  height: 100px;
   position: fixed;
   top: 0;
   right: 0;
@@ -105,8 +106,8 @@
   align-items: flex-start;
   justify-content: space-between;
   flex-direction: column;
-  padding: 0 30px;
-  background-color: white;
+  padding: 0;
+  background-color: #f1f3f4;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   z-index: 5;
 }
@@ -118,6 +119,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 5px 0px 0px 0px;
+  padding: 0 30px;
 }
 
 /* 面包屑顶部导航栏 */
@@ -176,16 +178,19 @@
   }
 }
 
-/* 面包屑导航 */
+/* 面包屑导航（Chrome标签栏） */
 .breadcrumb-navigation {
   width: 100%;
   display: flex;
-  height: 45px;
+  height: 40px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   scrollbar-width: thin;
   -ms-overflow-style: none;
+  background-color: #f1f3f4;
+  border-top: 1px solid #e8eaed;
+  position: relative;
 }
 
 .breadcrumb-navigation::-webkit-scrollbar {
@@ -207,113 +212,182 @@
 .breadcrumb-navigation::-webkit-scrollbar-thumb:hover {
   background-color: #757575;
 }
-/* 仿谷歌导航条 */
+
+/* 标签容器 */
 .breadcrumb-main {
   display: flex;
-  padding: 0 15px;
-  font-size: 14px;
-  gap: 10px;
-  align-items: center;
+  padding: 0 6px;
+  font-size: 13px;
   min-width: max-content;
   flex-shrink: 0;
+  height: 100%;
 }
 
+/* 单个标签 */
 .breadcrumb-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  position: relative;
-  padding: 5px 20px;
+  min-width: 100px;
+  max-width: 180px;
+  width: 150px;
+  height: 32px;
+  flex: 0 0 auto;
   cursor: pointer;
-  margin: 0 -15px;
-  color: transparent;
-  background-image: 
-    radial-gradient(circle at 27px 10px,var(--color, rgba(33, 150, 243, 0.59)) 12px,transparent 0),
-    linear-gradient(var(--color, #4caf50), var(--color, #4caf50)),
-    linear-gradient(var(--color, #f44336), var(--color, #f44336)),
-    radial-gradient(circle at 15px 0,transparent 15px,var(--color, #9c27b0) 0);
-  background-size: 
-    calc(100% - 54px), 
-    calc(100% - 30px) 
-    calc(100% - 12px),
-    calc(100% - 54px) 100%, 100% 12px;
-  background-position: 
-    left top,
-    center bottom, 
-    center bottom,
-    -15px bottom;
-  background-repeat: 
-    repeat-x, 
-    no-repeat, 
-    no-repeat, 
-    repeat-x;
-  transition: all 0.2s ease;
+  background: none;
+  border-radius: 16px 16px 0 0;
+  z-index: 1;
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 普通状态的悬停效果 */
-.breadcrumb-wrapper:hover {
-  opacity: 0.9;
+.breadcrumb-item-wrapper-hover {
+  width: 140px;
+  padding: 2px;
 }
 
-/* 点击时的效果 */
+.breadcrumb-item-wrapper-hover:hover {
+  z-index: 3;
+  background: #ecf6ff;
+  border-radius: 16px;
+}
+
+.breadcrumb-wrapper.active .breadcrumb-item-wrapper-hover:hover {
+  background: transparent;
+}
+
+.breadcrumb-item-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
 .breadcrumb-wrapper.active {
-  opacity: 0.8;
+  background: #ffffff;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 2;
 }
 
-.breadcrumb-main.fixed-element .breadcrumb-wrapper {
-  --color: transparent;
-  color: #000;
+.breadcrumb-wrapper.active::before {
+  background: radial-gradient(
+    circle at 0 0,
+    transparent 16px,
+    #ffffff 16px
+  );
 }
 
-.breadcrumb-main.fixed-element .breadcrumb-wrapper.active {
-  --color: #d0d0d0;
+.breadcrumb-wrapper.active::after {
+  background: radial-gradient(
+    circle at 100% 0,
+    transparent 16px,
+    #ffffff 16px
+  );
 }
 
+/* 底部外凸圆角*/
+.breadcrumb-wrapper::before,
+.breadcrumb-wrapper::after{
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #f1f3f4;
+  bottom: 0;
+}
+
+.breadcrumb-wrapper::before{
+  left: -16px;
+  background: radial-gradient(
+    circle at 0 0, 
+    transparent 16px,
+    #f1f3f4 16px);
+}
+
+.breadcrumb-wrapper::after{
+  right: -16px;
+  background: radial-gradient(
+    circle at 100% 0, 
+    transparent 16px,
+    #f1f3f4 16px);
+}
+
+.breadcrumb-wrapper-footer {
+  width: 100%;
+  height: 8px;
+  background: #ffffff;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+}
+/* 标签文本 */
 .breadcrumb-item {
   cursor: pointer;
-  color: #606266;
-  font-size: 14px;
-  transition: color 0.2s;
+  font-size: 13px;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }
 
 .breadcrumb-item:hover {
-  color: #409eff;
+  color: #1a73e8;
 }
 
 .breadcrumb-item.active {
-  color: #409eff;
+  color: #1a73e8;
   font-weight: 500;
 }
 
+/* 分隔符（未使用，保留兼容） */
 .breadcrumb-separator {
   margin: 0 4px;
   color: #c0c4cc;
 }
 
+/* 关闭按钮 */
 .breadcrumb-close {
   cursor: pointer;
-  background: none;
+  background: transparent;
   border: none;
-  color: #999;
-  padding: 0;
-  height: 20px;
+  color: #80868b;
+  padding: 2px;
+  width: 18px;
+  height: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: all 0.2s;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: scale(0.7);
+  flex-shrink: 0;
+}
+
+.breadcrumb-wrapper:hover .breadcrumb-close,
+.breadcrumb-wrapper.active .breadcrumb-close {
+  opacity: 0.6;
+  transform: scale(1);
+}
+
+.breadcrumb-wrapper:hover .breadcrumb-close:hover {
+  opacity: 1;
+  background: #ea4335;
+  color: #ffffff;
 }
 
 .breadcrumb-close svg {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  transition: all ease 0.4s;
-}
-
-.breadcrumb-close svg:hover {
-  color: #ff0000;
-  background-color: rgb(255, 0, 0);
+  width: 12px;
+  height: 12px;
+  display: block;
+  fill: currentColor;
 }
 
 /* 模态框 */
@@ -600,7 +674,7 @@
   justify-content: center;
   gap: 10px;
   width: var(--main-width);
-  height: 80px;
+  height: 100px;
   padding: 10px 20px;
   background: linear-gradient(135deg, #1a2a6c, #1f92b2, #1a2a6c);
   background-size: 400% 400%;

@@ -88,6 +88,13 @@ public class WebConfig implements WebMvcConfigurer {
         // 允许访问 .well-known 目录下的文件
         registry.addResourceHandler("/.well-known/**")
                 .addResourceLocations("classpath:static/.well-known/");
+
+        // 允许访问 logs 目录下的文件
+        Path logsPath = Paths.get(System.getProperty("user.dir"), "logs");
+        createDirectoryIfNotExists(logsPath);
+        String logsLocation = "file:" + logsPath.toString().replace("\\", "/") + "/";
+        registry.addResourceHandler("/logs/**")
+                .addResourceLocations(logsLocation);
     }
 
     @Override

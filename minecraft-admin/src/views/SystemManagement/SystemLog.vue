@@ -1,24 +1,24 @@
 <template>
-    <div class="swagger-ui-container">
+    <div class="SystemLog-container">
         <div class="header">
-          <span>Swagger UI</span>
+          <span>System Log</span>
         </div>
         <iframe 
-            :src="swaggerUrl" 
-            class="swagger-iframe"
+            :src="SystemLog" 
+            class="SystemLog-iframe"
             frameborder="0"
-            title="Swagger UI"
+            title="System Log"
         ></iframe>
     </div>
 </template>
 
 <script setup>
-// Swagger UI 地址
-const swaggerUrl = 'http://localhost:8080/swagger-ui/index.html'
+// System Log 地址
+const SystemLog = 'http://localhost:8080/logs/tourism-backend.html'
 </script>
 
 <style scoped>
-.swagger-ui-container {
+.SystemLog-container {
   width: 100%;
   height: 80vh;
   overflow: hidden;
@@ -42,7 +42,7 @@ const swaggerUrl = 'http://localhost:8080/swagger-ui/index.html'
   background: linear-gradient(to right, #4a90d9, transparent);
 }
 
-.swagger-iframe {
+.SystemLog-iframe {
   width: 100%;
   height: 100%;
   border: none;
