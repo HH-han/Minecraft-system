@@ -46,11 +46,7 @@
         </div>
         <!-- 验证码弹窗 -->
         <div>
-            <Captcha v-if="showCaptcha" @verify="receivedCode => {
-                code.value = receivedCode
-                showCaptcha.value = false
-                handleSubmit()
-            }" />
+            <Captcha v-if="showCaptcha" @verify="handleVerify" />
         </div>
     </div>
 </template>
@@ -173,6 +169,13 @@ const handleSubmit = async () => {
         ElMessage.error('登录失败: ' + (error.response?.data?.message || error.message));
     }
 
+};
+
+// 处理验证码验证
+const handleVerify = (receivedCode) => {
+    code.value = receivedCode;
+    showCaptcha.value = false;
+    handleSubmit();
 };
 
 // 组件销毁时清除定时器
