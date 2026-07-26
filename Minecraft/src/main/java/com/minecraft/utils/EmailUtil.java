@@ -400,13 +400,13 @@ public class EmailUtil {
                             <div class="logo-area">
                                 <div class="logo-icon">✦</div>
                                 <h1 class="title">
-                                    <span class="gradient-text">即时通讯</span>
+                                    <span class="gradient-text">博览科技</span>
                                 </h1>
                             </div>
 
                             <!-- 正文 -->
                             <p class="subtitle">
-                                感谢您注册 <strong>即时通讯</strong> 服务<br>
+                                感谢您注册 <strong>博览科技</strong> 服务<br>
                                 请输入以下验证码完成账号激活
                             </p>
 
@@ -432,7 +432,7 @@ public class EmailUtil {
                                     <span class="warning">⚠</span> 请勿将验证码告知他人，保障账户安全
                                 </p>
                                 <p class="copyright">
-                                    © 2026 即时通讯 · 系统自动发送，请勿回复
+                                    © 2026 博览科技 · 系统自动发送，请勿回复
                                 </p>
                             </div>
 
