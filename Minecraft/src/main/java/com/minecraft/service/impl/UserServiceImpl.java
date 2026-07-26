@@ -13,14 +13,8 @@ import com.minecraft.mapper.PointsRecordMapper;
 import com.minecraft.mapper.UserMapper;
 import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
+import com.minecraft.utils.*;
 import com.minecraft.vo.OnlineUserVO;
-import com.minecraft.utils.AccountGenerator;
-import com.minecraft.utils.DeviceInfoUtils;
-import com.minecraft.utils.ImageUtils;
-import com.minecraft.utils.IpLocationUtils;
-import com.minecraft.utils.JwtUtil;
-import com.minecraft.utils.RedisUtil;
-import com.minecraft.utils.OnlineUserUtil;
 import com.minecraft.mapper.OnlineUserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +52,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private PointsRecordMapper pointsRecordMapper;
+    
+    @Autowired
+    private EmailUtil emailUtil;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -505,5 +502,90 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void sendEmailCaptcha(String email) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getEmail, email);
+        User user = getOne(wrapper);
+        if (user == null) {
+            throw new BusinessException("该邮箱未注册");
+        }
+        
+        String captcha = emailUtil.generateVerificationCode();
+        String cacheKey = "email:captcha:" + email;
+        
+        redisUtil.set(cacheKey, captcha, 5, TimeUnit.MINUTES);
+        
+        emailUtil.sendVerificationCode(email, captcha);
+    }
+
+    @Override
+    public LoginResponse loginByEmail(String email, String captcha, HttpServletRequest httpRequest) {
+        String cacheKey = "email:captcha:" + email;
+        Object cachedCaptcha = redisUtil.get(cacheKey);
+        
+        if (cachedCaptcha == null) {
+            throw new BusinessException("验证码已过期，请重新获取");
+        }
+        
+        if (!cachedCaptcha.equals(captcha)) {
+            throw new BusinessException("验证码错误");
+        }
+        
+        redisUtil.delete(cacheKey);
+        
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getEmail, email);
+        User user = getOne(wrapper);
+        
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        
+        if (user.getStatus() != 1) {
+            throw new BusinessException("账号已被禁用");
+        }
+        
+        String username = user.getUsername();
+        if (username == null || username.trim().isEmpty()) {
+            username = user.getAccount();
+        }
+        
+        String token = jwtUtil.generateToken(user.getId(), username);
+        
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setUserId(user.getId());
+        response.setUsername(username);
+        response.setEmail(user.getEmail());
+        response.setAvatar(user.getAvatar());
+        response.setAccount(user.getAccount());
+        response.setPhone(user.getPhone());
+        response.setSignature(user.getSignature());
+        response.setNickname(user.getNickname());
+        response.setExperience(user.getExperience());
+        
+        String loginCacheKey = "login:user:" + user.getAccount();
+        redisUtil.set(loginCacheKey, response, 30, TimeUnit.MINUTES);
+        
+        recordLoginLog(httpRequest, user.getAccount(), "1", "邮箱验证码登录成功");
+        
+        try {
+            OnlineUserVO onlineUser = OnlineUserUtil.createOnlineUserVO(user, httpRequest);
+            onlineUserMapper.addOnlineUser(onlineUser);
+        } catch (Exception e) {
+            System.out.println("添加在线用户记录失败: " + e.getMessage());
+        }
+        
+        return response;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getEmail, email);
+        return getOne(wrapper);
     }
 }

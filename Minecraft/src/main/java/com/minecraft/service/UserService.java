@@ -26,4 +26,7 @@ public interface UserService extends IService<User> {
     void forceLogout(Long userId);
     boolean addPoints(Long userId, Integer points, String remark);
     boolean deductPoints(Long userId, Integer points, String remark);
+    void sendEmailCaptcha(String email);
+    LoginResponse loginByEmail(String email, String captcha, HttpServletRequest httpRequest);
+    User getUserByEmail(String email);
 }

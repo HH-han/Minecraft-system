@@ -26,7 +26,7 @@ export const updatePassword = (oldPassword, newPassword) => {
 
 // 发送邮箱验证码
 export const EmailCaptcha = (data) => {
-  return request.post('/api/auth/email-captcha', data)
+  return request.post('/auth/email-captcha', data)
 }
 
 // 上传头像

@@ -12,7 +12,7 @@
             :class="{ active: currentView === item.key }"
             @click="switchView(item.key)"
           >
-            <span class="menu-icon">{{ item.icon }}</span>
+            <span class="menu-icon"><Icons :name="item.icon" /></span>
             <span class="menu-text">{{ item.label }}</span>
           </li>
         </ul>
@@ -54,19 +54,20 @@ import FooterLinksManagement from './components/FooterLinksManagement.vue';
 import ImmersionManagement from './components/ImmersionManagement.vue';
 import NarrativeManagement from './components/NarrativeManagement.vue';
 import SettingsManagement from './components/SettingsManagement.vue';
+import Icons from './components/icons.vue';
 
 const menuItems = [
-  { key: 'navigation', label: '导航管理', icon: '📋' },
-  { key: 'hero', label: '首页横幅', icon: '🎯' },
-  { key: 'destinations', label: '目的地', icon: '🌍' },
-  { key: 'experiences', label: '体验活动', icon: '🎪' },
-  { key: 'stories', label: '故事分享', icon: '📖' },
-  { key: 'narrative', label: '叙事内容', icon: '✍️' },
-  { key: 'immersion', label: '名人名言', icon: '💬' },
-  { key: 'cta', label: '行动号召', icon: '🚀' },
-  { key: 'footer', label: '页脚信息', icon: '📝' },
-  { key: 'footerLinks', label: '页脚链接', icon: '🔗' },
-  { key: 'settings', label: '网站设置', icon: '⚙️' },
+  { key: 'navigation', label: '导航管理', icon: 'navigation' },
+  { key: 'hero', label: '首页横幅', icon: 'hero' },
+  { key: 'destinations', label: '目的地', icon: 'destinations' },
+  { key: 'experiences', label: '体验活动', icon: 'experiences' },
+  { key: 'stories', label: '故事分享', icon: 'stories' },
+  { key: 'narrative', label: '叙事内容', icon: 'narrative' },
+  { key: 'immersion', label: '名人名言', icon: 'immersion' },
+  { key: 'cta', label: '行动号召', icon: 'cta' },
+  { key: 'footer', label: '页脚信息', icon: 'footer' },
+  { key: 'footerLinks', label: '页脚链接', icon: 'footerLinks' },
+  { key: 'settings', label: '网站设置', icon: 'settings' },
 ];
 
 const currentView = ref('navigation');
@@ -165,11 +166,20 @@ const switchView = (view) => {
 
 .sidebar-nav li .menu-icon {
   width: 28px;
+  height: 28px;
   font-size: 18px;
   color: #86868b;
   transition: color 0.15s;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 14px;
+  flex-shrink: 0;
+}
+
+.menu-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .sidebar-nav li .menu-text {

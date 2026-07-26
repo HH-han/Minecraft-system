@@ -1,5 +1,6 @@
 package com.minecraft.controller;
 
+import com.minecraft.dto.request.EmailCaptchaRequest;
 import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.request.RegisterRequest;
 import com.minecraft.dto.response.ApiResponse;
@@ -34,6 +35,28 @@ public class AuthController {
         try {
             String account = userService.register(request);
             return ApiResponse.success("注册成功", account);
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "发送邮箱验证码")
+    @PostMapping("/email-captcha")
+    public ApiResponse<String> sendEmailCaptcha(@Valid @RequestBody EmailCaptchaRequest request) {
+        try {
+            userService.sendEmailCaptcha(request.getEmail());
+            return ApiResponse.success("验证码发送成功", null);
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "邮箱验证码登录")
+    @PostMapping("/email-login")
+    public ApiResponse<LoginResponse> loginByEmail(@Valid @RequestBody EmailCaptchaRequest request, HttpServletRequest httpRequest) {
+        try {
+            LoginResponse response = userService.loginByEmail(request.getEmail(), request.getCaptcha(), httpRequest);
+            return ApiResponse.success("登录成功", response);
         } catch (Exception e) {
             return ApiResponse.error(e.getMessage());
         }
