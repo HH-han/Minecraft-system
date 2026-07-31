@@ -7,35 +7,22 @@
           <Carousel :items="mediaList.images" />
         </transition>
       </section>
-      <!-- 双卡片区 -->
-      <section class="two-column-section">
-        <div class="two-column-flex">
-          <!-- 推荐 -->
-          <div class="product-card fade-in-up delay-100">
-            <Recommend />
-          </div>
-          <!-- 三列配件区 -->
-          <section class="three-column-section fade-in-up delay-200">
-            <h2 class="section-title">热门推荐</h2>
-            <Recommendations @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
-          </section>
-
-        </div>
+      <!-- 网站介绍 -->
+      <section>
+        <WebsiteIntroduction />
       </section>
-      <!-- 新闻和内容区 -->
+      <!-- 新闻内容区 -->
       <section class="two-column-section">
         <div class="two-column-grid">
-          <!-- 首页内容 -->
-          <div class="product-card fade-in-up delay-100">
-            <Content @open-detail="(type, id) => $emit('open-detail', type, id)" />
-          </div>
-          <!-- 新闻 -->
-          <div class="product-card fade-in-up delay-300">
-            <News @open-news-detail="(id) => $emit('open-news-detail', id)" />
-          </div>
-          <!-- 安全提示 -->
-          <div class="product-card fade-in-up delay-200">
-            <SafetyTips @open-safety-detail="(tip) => $emit('open-safety-detail', tip)" />
+          <div class="two-column-ns-grid">
+            <!-- 新闻 -->
+            <section class="product-card fade-in-up delay-300">
+              <News @open-news-detail="(id) => $emit('open-news-detail', id)" />
+            </section>
+            <!-- 安全提示 -->
+            <section class="product-card fade-in-up delay-200">
+              <SafetyTips @open-safety-detail="(tip) => $emit('open-safety-detail', tip)" />
+            </section>
           </div>
         </div>
       </section>
@@ -45,12 +32,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Carousel from '@/views/Carousel/index.vue';
-import Recommend from '/src/views/Recommend/index.vue';
 import SafetyTips from './safetytips.vue';
 import News from './news.vue';
-import Content from './content.vue';
 import carouselApi from '@/api/carousel.js';
-import Recommendations from './recommendations.vue';
+import WebsiteIntroduction from './WebsiteIntroduction.vue';
 
 defineEmits(['open-detail', 'open-news-detail', 'open-safety-detail', 'open-recommendation-detail']);
 
@@ -199,6 +184,21 @@ onMounted(() => {
   gap: 24px;
 }
 
+.two-column-rc-grid{
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.two-column-ns-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 /* 产品卡片 */
 .product-card {
   background: #f5f5f7;
@@ -206,6 +206,7 @@ onMounted(() => {
   padding: 40px 24px 30px;
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
+  flex: 1;
 }
 
 .product-card:hover {
@@ -285,29 +286,12 @@ onMounted(() => {
 
 /* 三列配件区 */
 .three-column-section {
-  padding: 40px 22px;
-}
-
-.section-title {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 40px;
-  color: #1d1d1f;
-  position: relative;
-  padding-bottom: 15px;
-}
-
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 3px;
-  background: #2997ff;
-  border-radius: 2px;
+  background: #f5f5f7;
+  border-radius: 28px;
+  padding: 40px 24px 30px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  flex: 1;
 }
 
 /* 响应式设计 */
@@ -345,11 +329,6 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     gap: 16px;
-  }
-
-  .section-title {
-    font-size: 28px;
-    margin-bottom: 32px;
   }
 }
 

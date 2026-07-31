@@ -184,7 +184,6 @@ const toggleFavorite = (id) => {
 
 .category-filter {
   padding: 32px;
-  background: #f5f5f7;
   border-radius: 28px;
   margin-bottom: 48px;
 }

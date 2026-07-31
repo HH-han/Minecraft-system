@@ -1,66 +1,58 @@
 <template>
     <div class="content-container">
+        <div class="section-header">
+            <h2 class="section-title">{{ currentSection.title }}</h2>
+            <span class="section-subtitle">{{ currentSection.subtitle }}</span>
+        </div>
         <div class="tab-container">
-            <button 
-                v-for="section in sections" 
-                :key="section.type"
-                class="tab-btn"
-                :class="{ active: activeSection === section.type }"
-                @click="switchSection(section.type)"
-            >
+            <button v-for="section in sections" :key="section.type" class="tab-btn"
+                :class="{ active: activeSection === section.type }" @click="switchSection(section.type)">
                 {{ section.title }}
             </button>
         </div>
-        
+
         <section v-if="currentSection" class="content-section">
-            <div class="section-header">
-                <h2 class="section-title">{{ currentSection.title }}</h2>
-                <span class="section-subtitle">{{ currentSection.subtitle }}</span>
-            </div>
-            
             <div v-if="loading[currentSection.type]" class="loading-state">
                 <div class="loading-spinner"></div>
                 <span class="loading-text">探索中...</span>
             </div>
-            
+
             <div v-else-if="error[currentSection.type]" class="error-state">
                 <span class="error-text">{{ error[currentSection.type] }}</span>
                 <button class="retry-btn" @click="retryFetch(currentSection.type)">重新加载</button>
             </div>
-            
+
             <div v-else class="card-grid">
-                <div 
-                    v-for="item in getItemList(currentSection.type)" 
-                    :key="item.id" 
-                    class="card"
-                    @mouseenter="onCardHover(item.id, true)"
-                    @mouseleave="onCardHover(item.id, false)"
-                >
+                <div v-for="item in getItemList(currentSection.type)" :key="item.id" class="card"
+                    @mouseenter="onCardHover(item.id, true)" @mouseleave="onCardHover(item.id, false)">
                     <div class="card-image-wrapper">
                         <img :src="item.coverImage" :alt="getImageAlt(currentSection.type)" class="card-image">
                         <div class="card-overlay"></div>
                         <div class="card-category">{{ getCategory(item, currentSection.type) }}</div>
                     </div>
-                    
+
                     <div class="card-content">
                         <h3 class="card-title">{{ item.name }}</h3>
                         <p class="card-description">{{ item.description.substring(0, 100) }}...</p>
-                        
+
                         <div class="card-meta">
-                            <span class="card-location">{{ item.city }} · {{ getLocation(item, currentSection.type) }}</span>
+                            <span class="card-location">{{ item.city }} · {{ getLocation(item, currentSection.type)
+                                }}</span>
                             <span class="card-price">{{ getPrice(item, currentSection.type) }}</span>
                         </div>
-                        
+
                         <div class="card-actions">
                             <button class="primary-cta" @click="handleViewDetail(currentSection.type, item.id)">
                                 查看详情
-                                <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
                             </button>
                             <button class="secondary-cta" @click="toggleFavorite(item.id)">
                                 <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    <path
+                                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                                 </svg>
                             </button>
                         </div>
@@ -265,12 +257,11 @@ onMounted(() => {
 
 .tab-btn {
     padding: 14px 32px;
-    background: transparent;
+    background: #ffffff;
     border: none;
-    border-radius: 20px;
-    font-size: 16px;
+    border-radius: 24px;
     font-weight: 500;
-    color: #6e6e73;
+    color: #0c0c0c;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
@@ -296,6 +287,7 @@ onMounted(() => {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -325,7 +317,7 @@ onMounted(() => {
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 40px;
 }
 
@@ -584,49 +576,49 @@ onMounted(() => {
     .content-container {
         padding: 0 40px;
     }
-    
+
     .content-section {
         margin-bottom: 60px;
     }
-    
+
     .section-title {
         font-size: 32px;
     }
-    
+
     .section-subtitle {
         font-size: 16px;
     }
-    
+
     .card-grid {
         grid-template-columns: 1fr;
         gap: 28px;
     }
-    
+
     .card-image-wrapper {
         height: 240px;
     }
-    
+
     .card-content {
         padding: 24px;
     }
-    
+
     .card-title {
         font-size: 20px;
     }
-    
+
     .card-description {
         font-size: 15px;
     }
-    
+
     .card-actions {
         gap: 12px;
     }
-    
+
     .primary-cta {
         padding: 12px 20px;
         font-size: 14px;
     }
-    
+
     .secondary-cta {
         width: 44px;
         height: 44px;
@@ -637,51 +629,51 @@ onMounted(() => {
     .content-container {
         padding: 0 24px;
     }
-    
+
     .content-section {
         margin-bottom: 48px;
     }
-    
+
     .section-title {
         font-size: 28px;
     }
-    
+
     .card-image-wrapper {
         height: 200px;
     }
-    
+
     .card-content {
         padding: 20px;
     }
-    
+
     .card-title {
         font-size: 18px;
         margin-bottom: 10px;
     }
-    
+
     .card-description {
         font-size: 14px;
         margin-bottom: 16px;
     }
-    
+
     .card-meta {
         margin-bottom: 20px;
     }
-    
+
     .card-price {
         font-size: 18px;
     }
-    
+
     .primary-cta {
         padding: 12px;
         font-size: 14px;
     }
-    
+
     .secondary-cta {
         width: 40px;
         height: 40px;
     }
-    
+
     .heart-icon {
         width: 18px;
         height: 18px;
