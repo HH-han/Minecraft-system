@@ -9,7 +9,10 @@
       </section>
       <!-- 网站介绍 -->
       <section>
-        <WebsiteIntroduction />
+        <WebsiteIntroduction
+          @open-detail="(type, id) => $emit('open-detail', type, id)"
+          @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)"
+        />
       </section>
       <!-- 新闻内容区 -->
       <section class="two-column-section">
@@ -31,9 +34,9 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
-import Carousel from '@/views/Carousel/index.vue';
 import SafetyTips from './safetytips.vue';
 import News from './news.vue';
+import Carousel from '@/views/Carousel/index.vue';
 import carouselApi from '@/api/carousel.js';
 import WebsiteIntroduction from './WebsiteIntroduction.vue';
 

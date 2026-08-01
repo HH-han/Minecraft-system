@@ -1,45 +1,47 @@
 <template>
   <div class="recommendations-container">
-    <div class="section-header">
-      <h2 class="section-title">精选推荐</h2>
-      <span class="section-subtitle">探索值得去的目的地</span>
-    </div>
+    <section class="section-container">
+      <div class="section-header">
+        <h2 class="section-title">精选推荐</h2>
+        <span class="section-subtitle">探索值得去的目的地</span>
+      </div>
 
-    <div class="category-filter">
-      <div class="category-row">
-        <span class="filter-label">分类</span>
-        <div class="category-list">
-          <button 
-            v-for="category in categories" 
-            :key="category.id" 
-            :class="['category-btn', { active: selectedCategory === category.id }]"
-            @click="filterByCategory(category.id)"
-          >
-            {{ category.name }}
-          </button>
+      <div class="category-filter">
+        <div class="category-row">
+          <span class="filter-label">分类</span>
+          <div class="category-list">
+            <button 
+              v-for="category in categories" 
+              :key="category.id" 
+              :class="['category-btn', { active: selectedCategory === category.id }]"
+              @click="filterByCategory(category.id)"
+            >
+              {{ category.name }}
+            </button>
+          </div>
+        </div>
+        <div class="category-row">
+          <span class="filter-label">收费</span>
+          <div class="category-list">
+            <button 
+              v-for="priceCategory in priceCategories" 
+              :key="priceCategory.id" 
+              :class="['category-btn', { active: selectedPriceCategory === priceCategory.id }]"
+              @click="filterByPriceCategory(priceCategory.id)"
+            >
+              {{ priceCategory.name }}
+            </button>
+          </div>
         </div>
       </div>
-      <div class="category-row">
-        <span class="filter-label">收费</span>
-        <div class="category-list">
-          <button 
-            v-for="priceCategory in priceCategories" 
-            :key="priceCategory.id" 
-            :class="['category-btn', { active: selectedPriceCategory === priceCategory.id }]"
-            @click="filterByPriceCategory(priceCategory.id)"
-          >
-            {{ priceCategory.name }}
-          </button>
-        </div>
-      </div>
-    </div>
-
+  </section>
     <div class="recommendations-grid">
-      <div 
-        v-for="(item, index) in recommendations" 
-        :key="item.id" 
+      <div
+        v-for="(item, index) in displayedRecommendations"
+        :key="item.id"
         class="card"
-        :style="{ animationDelay: `${index * 0.05}s` }"
+        :class="{ 'card--expanded': isExpanded && index >= DEFAULT_DISPLAY_COUNT }"
+        :style="{ animationDelay: `${Math.min(index, DEFAULT_DISPLAY_COUNT) * 0.05}s` }"
         @click="openRecommendationDetail(item)"
       >
         <div class="card-image-wrapper">
@@ -75,6 +77,22 @@
       </div>
     </div>
 
+    <div v-if="hasMoreData" class="expand-actions">
+      <button class="expand-btn" @click="toggleExpand">
+        <span>{{ isExpanded ? '收起' : '展开全部' }}</span>
+        <svg
+          class="expand-arrow"
+          :class="{ 'expand-arrow--up': isExpanded }"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+    </div>
+
     <div v-if="recommendations.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -88,15 +106,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { getHotRecommendations } from '@/api/homeRecommendations'
 
 const emit = defineEmits(['open-recommendation-detail'])
+
+// 默认展示的数据条数
+const DEFAULT_DISPLAY_COUNT = 4;
 
 const recommendations = ref([])
 const allRecommendations = ref([])
 const selectedCategory = ref(null)
 const selectedPriceCategory = ref(null)
+const isExpanded = ref(false)
+
+// 默认仅展示前 8 条，展开后显示全部
+const displayedRecommendations = computed(() => {
+  if (isExpanded.value || recommendations.value.length <= DEFAULT_DISPLAY_COUNT) {
+    return recommendations.value
+  }
+  return recommendations.value.slice(0, DEFAULT_DISPLAY_COUNT)
+})
+
+// 是否存在折叠数据（用于控制按钮显示）
+const hasMoreData = computed(() => recommendations.value.length > DEFAULT_DISPLAY_COUNT)
 
 const categories = ref([
   { id: null, name: '全部' },
@@ -145,6 +178,12 @@ const applyFilters = () => {
     const priceMatch = selectedPriceCategory.value === null || item.isFree === selectedPriceCategory.value
     return categoryMatch && priceMatch
   })
+  // 切换筛选条件时重置为折叠状态
+  isExpanded.value = false
+}
+
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value
 }
 
 const openRecommendationDetail = (item) => {
@@ -159,6 +198,12 @@ const toggleFavorite = (id) => {
 <style scoped>
 .recommendations-container {
   width: 100%;
+}
+
+.section-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .section-header {
@@ -183,20 +228,21 @@ const toggleFavorite = (id) => {
 }
 
 .category-filter {
-  padding: 32px;
-  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  min-height: 128px;
+  padding: 14px 20px;
+  background: #f5f5f7;
+  border-radius: 24px;
   margin-bottom: 48px;
 }
 
 .category-row {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.category-row:last-child {
-  margin-bottom: 0;
+  gap: 16px;
 }
 
 .filter-label {
@@ -238,8 +284,53 @@ const toggleFavorite = (id) => {
 
 .recommendations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 40px;
+  transition: opacity 0.4s ease;
+}
+
+.expand-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+.expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 40px;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  border-radius: 980px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1d1d1f;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.expand-btn:hover {
+  background: #f5f5f7;
+  border-color: #007aff;
+  color: #007aff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.12);
+}
+
+.expand-btn:active {
+  transform: translateY(0);
+}
+
+.expand-arrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.expand-arrow--up {
+  transform: rotate(180deg);
 }
 
 .card {
@@ -250,6 +341,8 @@ const toggleFavorite = (id) => {
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
   cursor: pointer;
   opacity: 0;
+  display: flex;
+  flex-direction: column;
   transform: translateY(30px);
   animation: fadeInUp 0.6s ease-out forwards;
 }
@@ -257,6 +350,22 @@ const toggleFavorite = (id) => {
 .card:hover {
   transform: translateY(-8px) scale(1.01);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* 展开时新增卡片使用更轻量的淡入动画 */
+.card--expanded {
+  animation: fadeInExpand 0.5s ease-out forwards;
+}
+
+@keyframes fadeInExpand {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes fadeInUp {
@@ -323,6 +432,9 @@ const toggleFavorite = (id) => {
 }
 
 .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 28px;
 }
 
@@ -332,6 +444,11 @@ const toggleFavorite = (id) => {
   color: #000000;
   margin: 0 0 12px;
   line-height: 1.25;
+  min-height: 60px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
 }
 
@@ -340,6 +457,7 @@ const toggleFavorite = (id) => {
   color: #6e6e73;
   margin: 0 0 20px;
   line-height: 1.6;
+  min-height: 52px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -370,10 +488,11 @@ const toggleFavorite = (id) => {
 .card-actions {
   display: flex;
   gap: 16px;
+  justify-content: space-between;
+  margin-top: auto;
 }
 
 .primary-cta {
-  flex: 1;
   padding: 14px 24px;
   background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
   color: #ffffff;
@@ -473,7 +592,8 @@ const toggleFavorite = (id) => {
   }
   
   .category-filter {
-    padding: 24px;
+    min-height: 80px;
+    padding: 16px 20px;
     border-radius: 24px;
     margin-bottom: 32px;
   }
@@ -497,7 +617,16 @@ const toggleFavorite = (id) => {
     grid-template-columns: 1fr;
     gap: 28px;
   }
-  
+
+  .expand-actions {
+    margin-top: 32px;
+  }
+
+  .expand-btn {
+    padding: 12px 32px;
+    font-size: 14px;
+  }
+
   .card-image-wrapper {
     height: 240px;
   }
@@ -508,10 +637,12 @@ const toggleFavorite = (id) => {
   
   .card-title {
     font-size: 20px;
+    min-height: 50px;
   }
   
   .card-description {
     font-size: 15px;
+    min-height: 48px;
   }
   
   .card-actions {
@@ -543,7 +674,8 @@ const toggleFavorite = (id) => {
   }
   
   .category-filter {
-    padding: 20px;
+    min-height: 64px;
+    padding: 14px 16px;
   }
   
   .card-image-wrapper {
@@ -557,6 +689,7 @@ const toggleFavorite = (id) => {
   .card-title {
     font-size: 18px;
     margin-bottom: 10px;
+    min-height: 45px;
   }
   
   .card-description {
@@ -586,7 +719,16 @@ const toggleFavorite = (id) => {
     width: 18px;
     height: 18px;
   }
-  
+
+  .expand-actions {
+    margin-top: 24px;
+  }
+
+  .expand-btn {
+    padding: 10px 24px;
+    font-size: 13px;
+  }
+
   .empty-state {
     padding: 48px 0;
   }

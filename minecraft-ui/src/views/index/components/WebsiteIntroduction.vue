@@ -43,7 +43,7 @@
 
         <!-- 关于本站 -->
         <section id="about" class="intro-section about-section">
-            <div class="section-header">
+            <div class="section-header section-header--center">
                 <span class="section-eyebrow">关于我们</span>
                 <h2 class="section-title">用心打造每一程旅程</h2>
             </div>
@@ -143,8 +143,7 @@
                     <div class="two-column-rc-grid">
                         <!-- 三列配件区 -->
                         <section class="three-column-section fade-in-up delay-200">
-                            <Recommendations
-                                @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
+                            <Recommendations @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
                         </section>
                         <!-- 首页内容 -->
                         <section class="product-card fade-in-up delay-200">
@@ -213,8 +212,9 @@ import { ref, onMounted } from 'vue';
 import Recommendations from './recommendations.vue';
 import Content from './content.vue';
 import Recommend from '@/views/Recommend/index.vue';
-const contactEmail = ref('https://wx.mail.qq.com/login/loginpage?auth_type=3&login_exception=true');
-const currentYear = new Date().getFullYear();
+
+// 声明向上转发的详情事件，避免监听器穿透到根 DOM 元素
+defineEmits(['open-detail', 'open-recommendation-detail']);
 
 // Hero 区数据统计动画
 const animatedStats = ref({
@@ -640,11 +640,6 @@ onMounted(() => {
     flex: 1;
 }
 
-.product-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
-}
-
 /* ============ 关于本站 ============ */
 .about-grid {
     display: grid;
@@ -1025,7 +1020,7 @@ onMounted(() => {
     content: '';
     position: absolute;
     right: -7px;
-    top: 8px;
+    top: 48px;
     width: 14px;
     height: 14px;
     background: #2997ff;
