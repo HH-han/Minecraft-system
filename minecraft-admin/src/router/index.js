@@ -23,7 +23,7 @@ const routes = [
     },
     // 管理
     {
-      path: '/',
+      path: '/admin',
       name: 'Admin',
       component: () => import('@/views/admin/index.vue'),
       meta: {
@@ -31,6 +31,16 @@ const routes = [
         requireAuth: true
       }
     },
+    // 后台首页
+    {
+      path: '/',
+      name: 'AdminHome',
+      component: () => import('@/views/Webhome/index.vue'),
+      meta: {
+        title: '后台首页',
+        requireAuth: true
+      }
+    }
 ]
 
 const router = createRouter({

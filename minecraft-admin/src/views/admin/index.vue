@@ -281,7 +281,7 @@
 
 <script setup>
 // 引入依赖
-import { ref, reactive, shallowRef, onMounted, computed, watchEffect, nextTick } from 'vue';
+import { ref, reactive, shallowRef, onMounted, computed, watchEffect, nextTick, provide } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { useAuthStore } from '@/stores/auth';
@@ -300,6 +300,7 @@ import TravelNoteManagement from '@/views/ManagementViews/TravelNoteManagement.v
 import TravelPostManagement from '@/views/ManagementViews/TravelPostManagement.vue';
 import PointsManagement from '@/views/ManagementViews/PointsManagement.vue';
 import WebsiteIntroduction from '@/views/WebsiteIntroduction/index.vue';
+import Webhome from '@/views/Webhome/index.vue';
 // 旅游管理组件
 import ScenicManagement from '@/views/ManagementViews/ScenicManagement.vue';
 import HotelManagement from '@/views/ManagementViews/HotelManagement.vue';
@@ -479,10 +480,11 @@ const menuItems = reactive([
   { id: 37, title: '官方网站', icon: owIcon, component: OfficialWebsite },
   { id: 38, title: '系统日志', icon: slIcon, component: SystemLog },
   { id: 39, title: '网站介绍', icon: wiIcon, component: WebsiteIntroduction },
+  { id: 40, title: '管理首页', icon: homeIcon, component: Webhome },
 ]);
 // 计算属性分类
 const systemMenus = computed(() =>
-  menuItems.filter(item => [1, 2, 18, 19, 30, 31].includes(item.id))
+  menuItems.filter(item => [40, 1, 2, 18, 19, 30, 31].includes(item.id))
 )
 
 const contentMenus = computed(() =>
@@ -740,6 +742,12 @@ const changeMenu = (item) => {
 
   activeComponent.value = item.component;
 };
+// 暴露给子组件的菜单跳转方法（按菜单 id 跳转），供首页等快捷入口使用
+const navigateToMenu = (id) => {
+  const menuItem = menuItems.find(m => m.id === id);
+  if (menuItem) changeMenu(menuItem);
+};
+provide('navigateToMenu', navigateToMenu);
 // 面包屑导航点击
 const navigateTo = (item) => {
   const menuItem = menuItems.find(m => m.id === item.id);
@@ -767,7 +775,7 @@ const currentCategories = computed(() => {
   const categories = [];
 
   // 添加主分类
-  if ([1, 2, 18, 19, 30, 31].includes(menuId)) categories.push('系统管理');
+  if ([40, 1, 2, 18, 19, 30, 31].includes(menuId)) categories.push('系统管理');
   if ([4, 10, 12, 13, 15 ,32, 33, 34, 39].includes(menuId)) categories.push('内容管理');
   if ([5, 6, 7, 8, 9, 11, 22, 23, 24, 26, 28, 29, 35, 36, 37].includes(menuId)) categories.push('旅行管理');
   if ([3, 12, 25, 27].includes(menuId)) categories.push('用户管理');
