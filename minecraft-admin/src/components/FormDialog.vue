@@ -473,6 +473,8 @@ const handleSubmit = async () => {
   try {
     await props.submitFn(formData.value, props.isEdit);
     emit('submit', formData.value, props.isEdit);
+    // 先重置 loading，否则 handleClose 中的 if (loading.value) return 会阻止弹窗关闭
+    loading.value = false;
     handleClose();
   } catch (error) {
     showError(error.message || '操作失败，请重试');
