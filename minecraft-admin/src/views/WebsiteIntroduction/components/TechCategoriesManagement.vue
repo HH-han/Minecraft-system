@@ -474,7 +474,6 @@ onMounted(fetchCategories);
 }
 
 .items-dialog {
-  max-width: 680px;
   width: 90%;
 }
 

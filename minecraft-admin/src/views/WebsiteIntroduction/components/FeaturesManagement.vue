@@ -491,7 +491,6 @@ onMounted(fetchFeatures);
 }
 
 .items-dialog {
-  max-width: 640px;
   width: 90%;
 }
 
