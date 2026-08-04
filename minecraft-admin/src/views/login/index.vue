@@ -117,7 +117,7 @@ const handleLogin = async () => {
         localStorage.removeItem('rememberedUsername');
       }
       // 如果是admin账号，跳转到指定页面
-      router.push('/admin');
+      router.push('/');
       ElMessage.success('登录成功');
     } else {
       errorMessage.value = response.message || '登录失败';

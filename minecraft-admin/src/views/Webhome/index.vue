@@ -171,6 +171,10 @@ import * as echarts from 'echarts'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router';
+import {
+  User, ShoppingCart, Goods, Money, View, Picture, Document, House,
+  DataAnalysis, ArrowUp, ArrowDown, Refresh, Setting
+} from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
