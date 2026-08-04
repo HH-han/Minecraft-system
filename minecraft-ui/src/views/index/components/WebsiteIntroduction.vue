@@ -101,7 +101,7 @@
             <div class="features-grid">
                 <div class="feature-card" v-for="feature in features" :key="feature.id">
                     <div class="feature-icon-wrapper" :style="{ background: feature.bgColor }">
-                        <span class="feature-emoji">{{ feature.icon }}</span>
+                        <Icon :name="feature.icon" size="32px" />
                     </div>
                     <h3 class="feature-title">{{ feature.title }}</h3>
                     <p class="feature-desc">{{ feature.desc }}</p>
@@ -212,6 +212,7 @@ import { ref, onMounted } from 'vue';
 import Recommendations from './recommendations.vue';
 import Content from './content.vue';
 import Recommend from '@/views/Recommend/index.vue';
+import Icon from './Icon.vue';
 
 // 声明向上转发的详情事件，避免监听器穿透到根 DOM 元素
 defineEmits(['open-detail', 'open-recommendation-detail']);
@@ -233,7 +234,7 @@ const targetStats = {
 const features = ref([
     {
         id: 1,
-        icon: '🗺️',
+        icon: 'compass',
         title: '资讯中心',
         desc: '提供实时、全面的旅游资讯与攻略',
         items: ['热门景点推荐', '季节性旅行指南', '安全出行提示', '签证办理攻略'],
@@ -241,7 +242,7 @@ const features = ref([
     },
     {
         id: 2,
-        icon: '🏨',
+        icon: 'building',
         title: '预订服务',
         desc: '一站式预订酒店、机票与门票',
         items: ['酒店比价预订', '特价机票查询', '景点门票购买', '行程套餐定制'],
@@ -249,15 +250,15 @@ const features = ref([
     },
     {
         id: 3,
-        icon: '🍜',
+        icon: 'star',
         title: '美食探索',
         desc: '发现地道美食，品味地方特色',
         items: ['本地美食推荐', '餐厅评价排行', '特色菜谱收藏', '美食路线规划'],
-        bgColor: 'linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)'
+        bgColor: 'linear-gradient(135deg, rgb(191 230 237) 0%, rgb(193 226 255) 100%)'
     },
     {
         id: 4,
-        icon: '💬',
+        icon: 'chat-round',
         title: '社区互动',
         desc: '与旅友交流分享，记录旅途点滴',
         items: ['旅行笔记发布', '论坛话题讨论', '私信即时沟通', '游记点赞收藏'],
@@ -265,7 +266,7 @@ const features = ref([
     },
     {
         id: 5,
-        icon: '📦',
+        icon: 'tag',
         title: '商品商城',
         desc: '精选旅行好物，让出行更轻松',
         items: ['旅行装备选购', '纪念品特卖', '土特产直购', '限时优惠活动'],
@@ -273,7 +274,7 @@ const features = ref([
     },
     {
         id: 6,
-        icon: '📊',
+        icon: 'scan',
         title: '数据洞察',
         desc: '智能分析旅行趋势与用户偏好',
         items: ['热门目的地排行', '价格趋势预测', '个性化推荐', '旅行数据分析'],
@@ -718,11 +719,6 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
-}
-
-.feature-emoji {
-    font-size: 32px;
-    line-height: 1;
 }
 
 .feature-title {
