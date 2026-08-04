@@ -8,7 +8,7 @@ import com.minecraft.entity.OperationLog;
 import java.util.List;
 
 /**
- * 操作日志服务，对应 db_minecraft.sql 中的 operation_logs 表。
+ * 操作日志服务，对应 db_minecraft.sql.sql 中的 operation_logs 表。
  */
 public interface OperationLogService extends IService<OperationLog> {
 

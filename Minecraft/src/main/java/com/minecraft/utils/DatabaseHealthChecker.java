@@ -37,7 +37,7 @@ public class DatabaseHealthChecker implements CommandLineRunner {
             logger.error("❌ MySQL 数据库连接失败: {}", e.getMessage());
             logger.warn("⚠️  请确保 MySQL 服务已启动，并检查以下配置：");
             logger.warn("   - MySQL 地址: localhost:3306");
-            logger.warn("   - 数据库名称: db_minecraft");
+            logger.warn("   - 数据库名称: db_minecraft.sql");
             logger.warn("   - 用户名: root");
             logger.warn("   - 密码: 123456");
             logger.warn("   - 启动 MySQL: net start mysql");

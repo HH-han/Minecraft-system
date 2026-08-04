@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 网站介绍页聚合服务，覆盖 db_minecraft.sql 中的以下表：
+ * 网站介绍页聚合服务，覆盖 db_minecraft.sql.sql 中的以下表：
  * features、feature_items、tech_categories、tech_items、milestones、platform_stats。
  * 参照 OfficialwebsiteService 的分组聚合风格。
  */
