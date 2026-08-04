@@ -101,7 +101,8 @@
             <div class="features-grid">
                 <div class="feature-card" v-for="feature in features" :key="feature.id">
                     <div class="feature-icon-wrapper" :style="{ background: feature.bgColor }">
-                        <Icon :name="feature.icon" size="32px" />
+                        <img v-if="isImageUrl(feature.icon)" :src="feature.icon" class="feature-icon-img" alt="" />
+                        <Icon v-else :name="feature.icon" size="32px" />
                     </div>
                     <h3 class="feature-title">{{ feature.title }}</h3>
                     <p class="feature-desc">{{ feature.desc }}</p>
@@ -213,11 +214,12 @@ import Recommendations from './recommendations.vue';
 import Content from './content.vue';
 import Recommend from '@/views/Recommend/index.vue';
 import Icon from './Icon.vue';
+import websiteIntroductionApi from '@/api/websiteIntroduction';
 
 // 声明向上转发的详情事件，避免监听器穿透到根 DOM 元素
 defineEmits(['open-detail', 'open-recommendation-detail']);
 
-// Hero 区数据统计动画
+// Hero 区数据统计动画（装饰性数字，独立于平台统计数据）
 const animatedStats = ref({
     destinations: 0,
     experiences: 0,
@@ -231,110 +233,68 @@ const targetStats = {
 };
 
 // 核心功能
-const features = ref([
-    {
-        id: 1,
-        icon: 'compass',
-        title: '资讯中心',
-        desc: '提供实时、全面的旅游资讯与攻略',
-        items: ['热门景点推荐', '季节性旅行指南', '安全出行提示', '签证办理攻略'],
-        bgColor: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)'
-    },
-    {
-        id: 2,
-        icon: 'building',
-        title: '预订服务',
-        desc: '一站式预订酒店、机票与门票',
-        items: ['酒店比价预订', '特价机票查询', '景点门票购买', '行程套餐定制'],
-        bgColor: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)'
-    },
-    {
-        id: 3,
-        icon: 'star',
-        title: '美食探索',
-        desc: '发现地道美食，品味地方特色',
-        items: ['本地美食推荐', '餐厅评价排行', '特色菜谱收藏', '美食路线规划'],
-        bgColor: 'linear-gradient(135deg, rgb(191 230 237) 0%, rgb(193 226 255) 100%)'
-    },
-    {
-        id: 4,
-        icon: 'chat-round',
-        title: '社区互动',
-        desc: '与旅友交流分享，记录旅途点滴',
-        items: ['旅行笔记发布', '论坛话题讨论', '私信即时沟通', '游记点赞收藏'],
-        bgColor: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)'
-    },
-    {
-        id: 5,
-        icon: 'tag',
-        title: '商品商城',
-        desc: '精选旅行好物，让出行更轻松',
-        items: ['旅行装备选购', '纪念品特卖', '土特产直购', '限时优惠活动'],
-        bgColor: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)'
-    },
-    {
-        id: 6,
-        icon: 'scan',
-        title: '数据洞察',
-        desc: '智能分析旅行趋势与用户偏好',
-        items: ['热门目的地排行', '价格趋势预测', '个性化推荐', '旅行数据分析'],
-        bgColor: 'linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%)'
-    }
-]);
+const features = ref([]);
 
 // 技术栈
-const techStack = ref([
-    {
-        category: '后端',
-        theme: 'backend',
-        items: [
-            { name: 'Spring Boot', desc: '应用框架' },
-            { name: 'Spring Security', desc: '安全认证' },
-            { name: 'MyBatis', desc: 'ORM 框架' },
-            { name: 'JWT', desc: '令牌认证' },
-            { name: 'Redis', desc: '缓存中间件' }
-        ]
-    },
-    {
-        category: '前端',
-        theme: 'frontend',
-        items: [
-            { name: 'Vue 3', desc: '视图框架' },
-            { name: 'Element Plus', desc: 'UI 组件库' },
-            { name: 'Vite', desc: '构建工具' },
-            { name: 'Pinia', desc: '状态管理' },
-            { name: 'Vue Router', desc: '路由管理' }
-        ]
-    },
-    {
-        category: '数据',
-        theme: 'database',
-        items: [
-            { name: 'MySQL', desc: '关系型数据库' },
-            { name: 'Druid', desc: '连接池' },
-            { name: 'Redis', desc: '缓存数据库' },
-            { name: 'MyBatis', desc: '数据访问层' }
-        ]
-    }
-]);
+const techStack = ref([]);
 
 // 发展历程
-const milestones = ref([
-    { date: '2024.01', title: '项目启动', desc: 'Minecraft 旅游平台正式立项，开始需求分析与架构设计。' },
-    { date: '2024.06', title: '核心功能上线', desc: '完成景点推荐、酒店预订、美食探索等核心模块开发。' },
-    { date: '2024.12', title: '社区功能完善', desc: '上线论坛、评论、私信等社交功能，构建旅行者社区。' },
-    { date: '2025.06', title: '性能优化迭代', desc: '引入 Redis 缓存与 CDN 加速，平台响应速度提升 60%。' },
-    { date: '2026.01', title: '沉浸式体验', desc: '新增全景影像与叙事内容，打造沉浸式旅行预览体验。' },
-    { date: '2026.07', title: '持续进化中', desc: '不断打磨细节，致力于为用户提供更优质的旅行服务。' }
-]);
+const milestones = ref([]);
 
 // 平台数据
-const platformStats = ref([
-    { label: '注册用户', value: '52万+' },
-    { label: '目的地覆盖', value: '120+' },
-    { label: '旅行笔记', value: '8.6万+' },
-    { label: '好评率', value: '98%' }
-]);
+const platformStats = ref([]);
+
+// 判断 icon 是否为图片地址（后端存储 SVG 路径或上传图片 URL），否则按图标名渲染
+const isImageUrl = (icon) => {
+    if (!icon) return false;
+    return icon.startsWith('/') || icon.startsWith('http') || icon.startsWith('data:');
+};
+
+// 加载网站介绍页数据（聚合接口，一次拉取功能、技术栈、历程、统计）
+const loadData = async () => {
+    try {
+        const response = await websiteIntroductionApi.getIntroductionData();
+        if (response.code === 200 && response.data) {
+            const data = response.data;
+
+            // 核心功能：FeatureVO → 前端展示结构
+            features.value = (data.features || []).map(feature => ({
+                id: feature.id,
+                icon: feature.icon,
+                title: feature.title,
+                desc: feature.description,
+                bgColor: feature.bgColor,
+                items: (feature.items || []).map(item => item.itemName)
+            }));
+
+            // 技术栈：TechCategoryVO → 前端展示结构
+            techStack.value = (data.techStack || []).map(category => ({
+                category: category.categoryName,
+                theme: category.themeClass,
+                items: (category.items || []).map(item => ({
+                    name: item.techName,
+                    desc: item.description
+                }))
+            }));
+
+            // 发展历程：MilestoneVO → 前端展示结构
+            milestones.value = (data.milestones || []).map(milestone => ({
+                date: milestone.dateFormatted,
+                title: milestone.title,
+                desc: milestone.description
+            }));
+
+            // 平台数据统计：PlatformStat → 前端展示结构
+            platformStats.value = (data.stats || []).map(stat => ({
+                label: stat.statLabel,
+                value: stat.statValue
+            }));
+        }
+    } catch (e) {
+        // 静默失败（接口已设置 silent），保留空数组占位避免渲染异常
+        console.warn('加载网站介绍页数据失败:', e);
+    }
+};
 
 // 滚动到指定区块
 const scrollToSection = (id) => {
@@ -342,11 +302,6 @@ const scrollToSection = (id) => {
     if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-};
-
-// 查看故事详情
-const viewStory = (story) => {
-    console.log('查看故事:', story.title);
 };
 
 // 数字滚动动画
@@ -374,7 +329,8 @@ const animateNumbers = () => {
     }, interval);
 };
 
-onMounted(() => {
+onMounted(async () => {
+    await loadData();
     setTimeout(animateNumbers, 300);
 });
 </script>
@@ -719,6 +675,12 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.feature-icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
 }
 
 .feature-title {

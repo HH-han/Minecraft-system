@@ -299,6 +299,7 @@ import SafetyTipsManagement from '@/views/ManagementViews/SafetyTipsManagement.v
 import TravelNoteManagement from '@/views/ManagementViews/TravelNoteManagement.vue';
 import TravelPostManagement from '@/views/ManagementViews/TravelPostManagement.vue';
 import PointsManagement from '@/views/ManagementViews/PointsManagement.vue';
+import WebsiteIntroduction from '@/views/WebsiteIntroduction/index.vue';
 // 旅游管理组件
 import ScenicManagement from '@/views/ManagementViews/ScenicManagement.vue';
 import HotelManagement from '@/views/ManagementViews/HotelManagement.vue';
@@ -476,7 +477,8 @@ const menuItems = reactive([
   { id: 35, title: '社区管理', icon: cmmIcon, component: CommunityManagement },
   { id: 36, title: '月度管理', icon: mmIcon, component: MonthlyManagement },
   { id: 37, title: '官方网站', icon: owIcon, component: OfficialWebsite },
-  { id: 38, title: '系统日志', icon: slIcon, component: SystemLog }
+  { id: 38, title: '系统日志', icon: slIcon, component: SystemLog },
+  { id: 39, title: '网站介绍', icon: wiIcon, component: WebsiteIntroduction },
 ]);
 // 计算属性分类
 const systemMenus = computed(() =>
@@ -484,7 +486,7 @@ const systemMenus = computed(() =>
 )
 
 const contentMenus = computed(() =>
-  menuItems.filter(item => [4, 10, 13, 15 ,32, 33, 34].includes(item.id))
+  menuItems.filter(item => [4, 10, 13, 15 ,32, 33, 34, 39].includes(item.id))
 )
 
 const travelMenus = computed(() =>
@@ -766,7 +768,7 @@ const currentCategories = computed(() => {
 
   // 添加主分类
   if ([1, 2, 18, 19, 30, 31].includes(menuId)) categories.push('系统管理');
-  if ([4, 10, 12, 13, 15 ,32, 33, 34].includes(menuId)) categories.push('内容管理');
+  if ([4, 10, 12, 13, 15 ,32, 33, 34, 39].includes(menuId)) categories.push('内容管理');
   if ([5, 6, 7, 8, 9, 11, 22, 23, 24, 26, 28, 29, 35, 36, 37].includes(menuId)) categories.push('旅行管理');
   if ([3, 12, 25, 27].includes(menuId)) categories.push('用户管理');
   if ([14].includes(menuId)) categories.push('个人中心');
@@ -927,7 +929,8 @@ const owIcon =`<svg t="1783321798244" class="icon" viewBox="0 0 1024 1024" versi
 `;
 const slIcon =`<svg t="1785075856296" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12767" width="200" height="200"><path d="M85.691733 85.333333m170.666667 0l515.549867 0q170.666667 0 170.666666 170.666667l0 512q0 170.666667-170.666666 170.666667l-515.549867 0q-170.666667 0-170.666667-170.666667l0-512q0-170.666667 170.666667-170.666667Z" fill="#17c723" p-id="12768" data-spm-anchor-id="a313x.search_index.0.i0.18063a81aBGIGu" class="selected"></path><path d="M388.949333 445.525333c0-9.898667 7.799467-17.92 17.4592-17.92h184.029867c9.659733 0 17.476267 8.021333 17.476267 17.92 0 9.898667-7.8336 17.92-17.476267 17.92H406.408533c-9.659733 0-17.476267-8.021333-17.476266-17.92zM388.949333 529.237333c0-9.898667 7.918933-17.92 17.698134-17.92h88.337066c9.796267 0 17.7152 8.021333 17.7152 17.92 0 9.898667-7.918933 17.92-17.7152 17.92h-88.337066c-9.7792 0-17.7152-8.021333-17.7152-17.92zM388.949333 612.932267c0-9.898667 7.594667-17.92 16.981334-17.92h61.218133c9.386667 0 16.9984 8.021333 16.9984 17.92 0 9.898667-7.611733 17.92-16.9984 17.92h-61.218133c-9.386667 0-16.9984-8.021333-16.9984-17.92z" fill="#FFFFFF" p-id="12769"></path><path d="M299.895467 310.084267c0-19.387733 15.581867-35.1232 34.781866-35.1232h244.104534c4.573867 0 8.977067 1.826133 12.2368 5.085866l103.594666 103.5776c3.310933 3.293867 5.1712 7.7824 5.1712 12.458667v110.984533c0 9.693867-7.7824 17.5616-17.408 17.5616-9.591467 0-17.373867-7.850667-17.373866-17.5616v-103.645866l-93.371734-93.354667H334.677333v403.848533h165.154134c9.608533 0 17.408 7.867733 17.408 17.578667 0 9.693867-7.799467 17.544533-17.408 17.544533H334.677333a34.952533 34.952533 0 0 1-34.781866-35.1232V310.101333z" fill="#FFFFFF" p-id="12770"></path><path d="M727.04 645.12a98.986667 98.986667 0 1 1-197.973333 0 98.986667 98.986667 0 0 1 197.973333 0z m-98.986667 68.266667a68.266667 68.266667 0 1 0 0-136.533334 68.266667 68.266667 0 0 0 0 136.533334z" fill="#FFFFFF" p-id="12771"></path><path d="M625.5616 597.333333c6.144 0 11.144533 5.0176 11.144533 11.195734v33.672533l22.5792 16.3328c5.000533 3.618133 6.144 10.615467 2.525867 15.633067a11.127467 11.127467 0 0 1-15.5648 2.542933l-27.221333-19.694933a11.2128 11.2128 0 0 1-4.625067-9.096534v-39.389866c0-6.178133 5.000533-11.195733 11.1616-11.195734z" fill="#FFFFFF" p-id="12772"></path></svg>
 `;
-
+const wiIcon =`<svg t="1785855683956" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="41909" width="200" height="200"><path d="M903.9 229.5H800.8V121.7c0-30.9-25-55.9-55.9-55.9H151.2c-30.9 0-55.9 25-55.9 55.9v753.7c0 46.3 37.5 83.9 83.9 83.9H848c46.3 0 83.9-37.5 83.9-83.9v-618c0-15.4-12.6-27.9-28-27.9z m-739.2 72.1h262.7v262.7H164.7V301.6z m566.8 421.8H164.7v-55.9h566.8v55.9z m0-159.1H507.9v-55.9h223.6v55.9z m0-206.8H507.9v-55.9h223.6v55.9z m144.4 517.9c0 15.4-12.5 28-28 28h-47.2v-618h75.2v590z" fill="#16C16B" p-id="41910"></path></svg>
+`;
 </script>
 
 <style scoped>
