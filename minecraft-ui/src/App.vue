@@ -20,6 +20,8 @@
     <!-- <div>
       <FluidSimulation />
     </div> -->
+    <!-- 自定义光标 -->
+    <MouseStyle />
   </div>
 </template>
 <script setup>
@@ -28,6 +30,7 @@ import RefreshLoad from '@/components/TransitionalComponents/RefreshLoad.vue';
 import FloatingButton from '@/components/ComponentButton/FloatingButton.vue';
 import FluidSimulation from '@/components/DisplayBox/FluidSimulation.vue';
 import DeviceDetects from '@/components/ResponseComponents/DeviceDetects.vue';
+import MouseStyle from '@/views/MouseStyle/index.vue'
 
 const isLoading = ref(true)
 const deviceDetectsRef = ref()

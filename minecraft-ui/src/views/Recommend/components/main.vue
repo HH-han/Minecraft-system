@@ -86,33 +86,12 @@ const loadRecommendList = async () => {
 }
 
 .recommend-title h1 {
-    /* 基础样式 */
-    font-size: 40px;
+    font-size: 64px;
     font-weight: 700;
-    color: #2088c9;
-    margin: 0 0 0.5em 0;
-    line-height: 1.3;
-    
-    /* 渐变文字（更高级的视觉效果） */
-    background: linear-gradient(135deg, #2088c9, #0dcaf0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    
-    /* 进入动画（页面加载时触发） */
-    animation: slideUpFade 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    opacity: 0;
-    transform: translateY(30px);
-    
-    /* 悬停动画过渡 */
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-                letter-spacing 0.4s ease;
-}
-
-/* 悬停效果：放大 + 字间距展开 */
-.recommend-title h1:hover {
-    transform: scale(1.05);
-    letter-spacing: 0.08em;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #1d1d1f;
+    margin: 0 0 20px;
 }
 
 /* 入场关键帧动画 */
