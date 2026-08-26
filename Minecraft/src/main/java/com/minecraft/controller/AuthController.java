@@ -5,7 +5,9 @@ import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.request.RegisterRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.LoginResponse;
+import com.minecraft.entity.User;
 import com.minecraft.service.UserService;
+import com.minecraft.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,13 @@ public class AuthController {
         } catch (Exception e) {
             return ApiResponse.error(e.getMessage());
         }
+    }
+
+    @Operation(summary = "获取当前用户信息")
+    @GetMapping("/codes")
+    public ApiResponse<User> getUserInfo() {
+        Long userId = SecurityUtils.getCurrentUserId();
+        return ApiResponse.success(userService.getUserInfo(userId));
     }
 
     @Operation(summary = "邮箱验证码登录")
