@@ -47,4 +47,55 @@ public class PointsProductsController {
         Page<PointsProducts> result = pointsProductsService.page(productPage, wrapper);
         return Result.success(result);
     }
+    
+    // 新增商品
+    @PostMapping
+    public Result addProduct(@RequestBody PointsProducts product) {
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            return Result.error("商品名称不能为空");
+        }
+        if (product.getPointsPrice() == null || product.getPointsPrice() < 0) {
+            return Result.error("兑换积分不能为空且不能为负数");
+        }
+        if (product.getStock() == null || product.getStock() < 0) {
+            return Result.error("库存不能为空且不能为负数");
+        }
+        if (product.getStatus() == null) {
+            product.setStatus(0); // 默认下架状态
+        }
+        boolean saved = pointsProductsService.save(product);
+        if (!saved) {
+            return Result.error("新增商品失败");
+        }
+        return Result.success(product);
+    }
+    
+    // 修改商品
+    @PutMapping("/{id}")
+    public Result updateProduct(@PathVariable Long id, @RequestBody PointsProducts product) {
+        PointsProducts existing = pointsProductsService.getById(id);
+        if (existing == null) {
+            return Result.error("商品不存在");
+        }
+        product.setId(id);
+        boolean updated = pointsProductsService.updateById(product);
+        if (!updated) {
+            return Result.error("修改商品失败");
+        }
+        return Result.success();
+    }
+    
+    // 删除商品
+    @DeleteMapping("/{id}")
+    public Result deleteProduct(@PathVariable Long id) {
+        PointsProducts existing = pointsProductsService.getById(id);
+        if (existing == null) {
+            return Result.error("商品不存在");
+        }
+        boolean removed = pointsProductsService.removeById(id);
+        if (!removed) {
+            return Result.error("删除商品失败");
+        }
+        return Result.success();
+    }
 }
