@@ -1,54 +1,29 @@
-package com.minecraft.entity;
+package com.minecraft.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
- * 操作日志实体，对应 operation_logs 表（已按系统日志文档增强字段）。
+ * 操作日志视图对象，对应系统日志文档中的返回结构。
  */
 @Data
-@TableName("operation_logs")
-public class OperationLog {
-    @TableId(type = IdType.AUTO)
+public class OperationLogVO {
     private Long id;
-
     private Integer userId;
-
     private String username;
-
+    private String userIp;
     private String operationType;
-
     private String operationDesc;
-
-    private String ipAddress;
-
-    private String userAgent;
-
     private String requestUri;
-
     private String requestMethod;
-
     private String requestParams;
-
     private String responseResult;
-
     private Long executionTime;
-
     private Integer status;
-
     private String errorMsg;
-
     private String module;
-
     private String browser;
-
     private String os;
-
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updatedAt;
 }

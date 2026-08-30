@@ -2,6 +2,9 @@ package com.minecraft.exception;
 
 import com.minecraft.common.exception.RateLimitException;
 import com.minecraft.dto.response.ApiResponse;
+import com.minecraft.service.SystemLogService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,8 +12,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @Autowired
+    private SystemLogService systemLogService;
 
     @ExceptionHandler(BusinessException.class)
     public ApiResponse<?> handleBusinessException(BusinessException e) {
@@ -47,12 +54,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RateLimitException.class)
     public ApiResponse<?> handleRateLimitException(RateLimitException e) {
+        systemLogService.recordError("安全", "接口限流", "触发接口限流：" + e.getMessage(), e);
         return ApiResponse.error(429, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ApiResponse<?> handleException(Exception e) {
-        e.printStackTrace();
+        log.error("系统异常", e);
+        // 记录系统报错日志（异步落库 system_log 表，含错误堆栈）
+        systemLogService.recordError("全局", "系统异常", "系统异常：" + e.getMessage(), e);
         return ApiResponse.error(500, "系统异常：" + e.getMessage());
     }
 }
