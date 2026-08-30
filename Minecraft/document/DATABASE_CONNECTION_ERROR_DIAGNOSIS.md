@@ -54,7 +54,7 @@ MySQL 8.0+ 默认使用 `caching_sha2_password` 认证插件，这个插件需�
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db_minecraft?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/db_minecraft.sql.sql?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
     username: root
     password: 123456
 ```
@@ -151,7 +151,7 @@ FLUSH PRIVILEGES;
 
 #### 执行 SQL 脚本
 ```bash
-mysql -uroot -p123456 < src/main/resources/sql/db_minecraft.sql
+mysql -uroot -p123456 < src/main/resources/sql/db_minecraft.sql.sql.sql
 ```
 
 #### 或者在 MySQL 命令行中执行
@@ -204,14 +204,14 @@ net start mysql
 ```yaml
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/db_minecraft?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/db_minecraft.sql.sql?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&useSSL=false
 ```
 
 #### 或者使用 SSL
 ```yaml
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/db_minecraft?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/db_minecraft.sql.sql?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
 ```
 
 ## 诊断步骤
@@ -241,7 +241,7 @@ mysql -uroot -p123456 -e "SHOW DATABASES;"
 
 ### 步骤 4: 创建数据库（如果不存在）
 ```bash
-mysql -uroot -p123456 < src/main/resources/sql/db_minecraft.sql
+mysql -uroot -p123456 < src/main/resources/sql/db_minecraft.sql.sql.sql
 ```
 
 ### 步骤 5: 重启应用
