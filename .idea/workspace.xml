@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="Minecraft-system">
-      <change afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/系统日志.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/sql/db_minecraft" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/document/DATABASE_CONNECTION_ERROR_DIAGNOSIS.md" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/document/DATABASE_CONNECTION_ERROR_DIAGNOSIS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/bug.md" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/bug.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.2026-06-21.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-06-21.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.2026-06-21.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/sql/db_minecraft" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,23 +174,7 @@
       <workItem from="1787665450591" duration="5539000" />
       <workItem from="1787745404803" duration="4426000" />
       <workItem from="1787832550109" duration="636000" />
-      <workItem from="1788061934709" duration="14029000" />
-    </task>
-    <task id="LOCAL-00082" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783322570272</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1783322570272</updated>
-    </task>
-    <task id="LOCAL-00083" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783323017040</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1783323017040</updated>
+      <workItem from="1788061934709" duration="14780000" />
     </task>
     <task id="LOCAL-00084" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -580,7 +552,23 @@
       <option name="project" value="LOCAL" />
       <updated>1788091527994</updated>
     </task>
-    <option name="localTasksCounter" value="131" />
+    <task id="LOCAL-00131" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788093782480</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1788093782480</updated>
+    </task>
+    <task id="LOCAL-00132" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788093858318</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1788093858318</updated>
+    </task>
+    <option name="localTasksCounter" value="133" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
