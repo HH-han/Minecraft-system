@@ -22,15 +22,15 @@ const routes: RouteRecordRaw[] = [
         path: 'user_list',
         component: () => import('#/views/user_management/userList.vue'),
       },
-      {
-        meta: {
-          icon: 'lucide:user',
-          title: $t('user.user_info'),
-        },
-        name: 'user_info',
-        path: 'ant-design-next',
-        component: () => import('#/views/user_management/user.vue'),
-      },
+      // {
+      //   meta: {
+      //     icon: 'lucide:user',
+      //     title: $t('user.user_info'),
+      //   },
+      //   name: 'user_info',
+      //   path: 'ant-design-next',
+      //   component: () => import('#/views/user_management/user.vue'),
+      // },
       {
         meta: {
           icon: 'lucide:receipt',

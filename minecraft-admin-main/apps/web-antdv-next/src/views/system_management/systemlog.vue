@@ -321,6 +321,15 @@ async function handleCleanup() {
         :styles="{ body: { padding: '0' } }"
       >
         <template #extra>
+          <Button @click="handleFilterChange">
+            {{ $t('system.syslog_page.refresh') }}
+          </Button>
+        </template>
+
+        <!-- 筛选工具栏：左侧筛选/搜索，右侧清理 -->
+        <div
+          class="flex flex-wrap items-center justify-between gap-y-2 border-b border-border px-4 py-3"
+        >
           <div class="flex flex-wrap items-center gap-2">
             <Select
               v-model:value="levelFilter"
@@ -354,9 +363,13 @@ async function handleCleanup() {
                 <Search class="size-4 text-muted-foreground" />
               </template>
             </Input>
-            <Button @click="handleFilterChange">
-              {{ $t('system.syslog_page.refresh') }}
-            </Button>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <Input
+              v-model:value="cleanupTime"
+              :placeholder="$t('system.syslog_page.cleanup_time_placeholder')"
+              class="w-64"
+            ></Input>
             <Popconfirm
               :title="$t('system.syslog_page.cleanup_confirm_title')"
               :description="$t('system.syslog_page.cleanup_confirm')"
@@ -367,20 +380,13 @@ async function handleCleanup() {
             >
               <Button danger :loading="cleaning">
                 <template #icon>
-                  <Eraser class="mr-1 size-4 align-middle" />
+                  <Eraser class="size-4" />
                 </template>
                 {{ $t('system.syslog_page.cleanup_btn') }}
               </Button>
             </Popconfirm>
           </div>
-          <div class="mt-2">
-            <Input
-              v-model:value="cleanupTime"
-              :placeholder="$t('system.syslog_page.cleanup_time_placeholder')"
-              class="w-full"
-            ></Input>
-          </div>
-        </template>
+        </div>
 
         <Table
           :columns="columns"
