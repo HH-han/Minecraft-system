@@ -6,6 +6,7 @@ import type { UserDetail } from '#/api/management/user/user';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page, VCropper } from '@vben/common-ui';
+import { Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
 
@@ -730,7 +731,7 @@ async function confirmCropperAvatar() {
             />
             <Button type="primary" @click="openCreate">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('user.action.add') }}
             </Button>

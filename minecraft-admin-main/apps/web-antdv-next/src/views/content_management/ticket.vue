@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { ArrowRight, Plus, RefreshCw, Search } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -373,18 +374,18 @@ const TIME_HINT = computed(() => $t('content.ticket_page.time_hint'));
               class="w-52"
             >
               <template #prefix>
-                <span class="i-lucide-search size-4 text-muted-foreground"></span>
+                <Search class="size-4 text-muted-foreground" />
               </template>
             </Input>
             <Button :loading="loading" @click="fetchData">
               <template #icon>
-                <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+                <RefreshCw class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.ticket_page.refresh') }}
             </Button>
             <Button type="primary" @click="openCreate">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.ticket_page.add') }}
             </Button>
@@ -541,7 +542,7 @@ const TIME_HINT = computed(() => $t('content.ticket_page.time_hint'));
                 {{ displayValue(detailRecord.departureTime) }}
               </div>
             </div>
-            <span class="i-lucide-arrow-right size-5 text-muted-foreground"></span>
+            <ArrowRight class="size-5 text-muted-foreground" />
             <div>
               <div class="text-xl font-semibold">
                 {{ displayValue(detailRecord.arrivalCity) }}

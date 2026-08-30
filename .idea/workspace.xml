@@ -4,7 +4,44 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="Minecraft-system" />
+    <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="Minecraft-system">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/test/java/com/minecraft/service/OperationLogServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/en-US/service.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/en-US/service.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/zh-CN/service.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/zh-CN/service.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/points.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/points.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/safetytips.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/safetytips.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/ticket.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/ticket.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/travel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/travel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/websiteIntroduction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/websiteIntroduction.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/cache.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/cache.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/monitoring.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/monitoring.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/onlineUsers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/onlineUsers.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/operationLog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/service_management/operationLog.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/system_management/openapijson.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/system_management/openapijson.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/system_management/swaggerui.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/system_management/swaggerui.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/system_management/systemlog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/system_management/systemlog.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/attraction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/attraction.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/carousel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/carousel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/community.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/community.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/countries.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/countries.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/food.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/food.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/group.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/group.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/homeRecommendations.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/homeRecommendations.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/hotel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/hotel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/monthlyRecommendations.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/monthlyRecommendations.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/news.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/news.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/officialwebsite.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/officialwebsite.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/product.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/product.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/recommend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/recommend.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/worldcharacteristics.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/worldcharacteristics.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/user_management/userList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/user_management/userList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/packages/@core/base/icons/src/lucide.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/packages/@core/base/icons/src/lucide.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/pnpm-lock.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -171,15 +208,7 @@
       <workItem from="1787665450591" duration="5539000" />
       <workItem from="1787745404803" duration="4426000" />
       <workItem from="1787832550109" duration="636000" />
-      <workItem from="1788061934709" duration="15092000" />
-    </task>
-    <task id="LOCAL-00085" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783340528720</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1783340528720</updated>
+      <workItem from="1788061934709" duration="17532000" />
     </task>
     <task id="LOCAL-00086" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -565,7 +594,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788094715875</updated>
     </task>
-    <option name="localTasksCounter" value="134" />
+    <task id="LOCAL-00134" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788094833505</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1788094833505</updated>
+    </task>
+    <option name="localTasksCounter" value="135" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

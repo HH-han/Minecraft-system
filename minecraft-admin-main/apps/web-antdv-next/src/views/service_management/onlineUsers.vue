@@ -1,9 +1,20 @@
 <script lang="ts" setup>
 import type { TableColumnsType } from 'antdv-next';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, markRaw, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  Crown,
+  Globe,
+  LogOut,
+  Monitor,
+  RefreshCw,
+  Search,
+  Shield,
+  Users,
+  Wifi,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -93,28 +104,28 @@ const statCards = computed(() => [
     key: 'online',
     label: $t('service.online_page.stat_online'),
     value: userList.value.length,
-    icon: 'i-lucide-wifi',
+    icon: markRaw(Wifi),
     color: '#52c41a',
   },
   {
     key: 'admin',
     label: $t('service.online_page.stat_admin'),
     value: adminCount.value,
-    icon: 'i-lucide-shield',
+    icon: markRaw(Shield),
     color: '#f5222d',
   },
   {
     key: 'vip',
     label: $t('service.online_page.stat_vip'),
     value: vipCount.value,
-    icon: 'i-lucide-crown',
+    icon: markRaw(Crown),
     color: '#fa8c16',
   },
   {
     key: 'other',
     label: $t('service.online_page.stat_other'),
     value: otherCount.value,
-    icon: 'i-lucide-users',
+    icon: markRaw(Users),
     color: '#1677ff',
   },
 ]);
@@ -268,11 +279,11 @@ async function handleForceLogout(record: any) {
                 class="flex size-11 shrink-0 items-center justify-center rounded-full"
                 :style="{ backgroundColor: `${card.color}1a` }"
               >
-                <span
-                  :class="card.icon"
+                <component
+                  :is="card.icon"
                   class="size-5"
                   :style="{ color: card.color }"
-                ></span>
+                />
               </div>
               <div class="min-w-0">
                 <div class="truncate text-xs text-muted-foreground">
@@ -303,12 +314,12 @@ async function handleForceLogout(record: any) {
                 class="w-56"
               >
                 <template #prefix>
-                  <span class="i-lucide-search size-4 text-muted-foreground"></span>
+                  <Search class="size-4 text-muted-foreground" />
                 </template>
               </Input>
               <Button :loading="loading" @click="fetchData">
                 <template #icon>
-                  <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+                  <RefreshCw class="mr-1 size-4 align-middle" />
                 </template>
                 {{ $t('service.online_page.refresh') }}
               </Button>
@@ -380,13 +391,13 @@ async function handleForceLogout(record: any) {
               <!-- 操作系统 / 浏览器 -->
               <template v-else-if="column.key === 'os'">
                 <span class="inline-flex items-center gap-1 text-xs">
-                  <span class="i-lucide-monitor size-3.5 text-muted-foreground"></span>
+                  <Monitor class="size-3.5 text-muted-foreground" />
                   {{ displayValue(record.os) }}
                 </span>
               </template>
               <template v-else-if="column.key === 'browser'">
                 <span class="inline-flex items-center gap-1 text-xs">
-                  <span class="i-lucide-globe size-3.5 text-muted-foreground"></span>
+                  <Globe class="size-3.5 text-muted-foreground" />
                   {{ displayValue(record.browser) }}
                 </span>
               </template>
@@ -408,7 +419,7 @@ async function handleForceLogout(record: any) {
                     :loading="loggingOutId === record.id"
                   >
                     <template #icon>
-                      <span class="i-lucide-log-out mr-1 size-3.5 align-middle"></span>
+                      <LogOut class="mr-1 size-3.5 align-middle" />
                     </template>
                     {{ $t('service.online_page.logout') }}
                   </Button>

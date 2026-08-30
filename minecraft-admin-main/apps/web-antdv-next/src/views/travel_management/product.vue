@@ -4,6 +4,15 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  Bookmark,
+  Heart,
+  ImageIcon,
+  ImageOff,
+  MapPin,
+  MessageCircle,
+  Plus,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -553,7 +562,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.product_list.action.add') }}
           </Button>
@@ -591,9 +600,9 @@ async function handleDelete(record: any) {
             <!-- 所在地 -->
             <template v-else-if="column.key === 'location'">
               <span class="inline-flex items-center gap-1 text-sm">
-                <span
-                  class="i-lucide-map-pin size-3.5 text-muted-foreground"
-                ></span>
+                <MapPin
+                  class="size-3.5 text-muted-foreground"
+                />
                 {{ record.province || record.city || '-' }}
                 <span
                   v-if="record.address"
@@ -731,7 +740,7 @@ async function handleDelete(record: any) {
             class="border border-border overflow-hidden object-cover flex-shrink-0"
           />
           <div v-else class="cover-placeholder-circle">
-            <span class="i-lucide-image-off size-8 text-muted-foreground"></span>
+            <ImageOff class="size-8 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-xl font-semibold truncate">
@@ -777,15 +786,15 @@ async function handleDelete(record: any) {
               class="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
             >
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-heart size-4"></span>
+                <Heart class="size-4" />
                 {{ currentRecord.likeCount ?? 0 }}
               </span>
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-bookmark size-4"></span>
+                <Bookmark class="size-4" />
                 {{ currentRecord.collectCount ?? 0 }}
               </span>
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-message-circle size-4"></span>
+                <MessageCircle class="size-4" />
                 {{ currentRecord.commentCount ?? 0 }}
               </span>
             </div>
@@ -1057,10 +1066,10 @@ async function handleDelete(record: any) {
                       class="size-12 rounded-full border border-border flex-shrink-0 object-cover"
                       @error="hideBrokenImage"
                     />
-                    <span
+                    <ImageIcon
                       v-else
-                      class="i-lucide-image size-12 flex-shrink-0 text-muted-foreground"
-                    ></span>
+                      class="size-12 flex-shrink-0 text-muted-foreground"
+                    />
                     <div class="flex flex-col text-left">
                       <span class="text-sm font-medium">
                         {{

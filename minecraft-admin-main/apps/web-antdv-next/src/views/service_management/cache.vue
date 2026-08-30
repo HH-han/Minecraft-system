@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { RefreshCw, Search } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -289,7 +290,7 @@ async function handleClearAll() {
               </Popconfirm>
               <Button :loading="loading" @click="fetchData">
                 <template #icon>
-                  <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+                  <RefreshCw class="mr-1 size-4 align-middle" />
                 </template>
                 {{ $t('service.cache_page.refresh') }}
               </Button>
@@ -379,7 +380,7 @@ async function handleClearAll() {
               class="w-56"
             >
               <template #prefix>
-                <span class="i-lucide-search size-4 text-muted-foreground"></span>
+                <Search class="size-4 text-muted-foreground" />
               </template>
             </Input>
           </template>

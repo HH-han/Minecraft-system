@@ -1,5 +1,5 @@
 {
-  "title": "Service Management",
+  "title": "System Monitoring",
   "monitor": "Service Monitor",
   "cache": "Cache Monitor",
   "online": "Online Users",

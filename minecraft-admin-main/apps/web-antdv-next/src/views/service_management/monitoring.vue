@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { RefreshCw } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -220,7 +221,7 @@ onBeforeUnmount(() => {
           <template #extra>
             <Button :loading="loading" @click="fetchData">
               <template #icon>
-                <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+                <RefreshCw class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('service.monitor_page.refresh') }}
             </Button>

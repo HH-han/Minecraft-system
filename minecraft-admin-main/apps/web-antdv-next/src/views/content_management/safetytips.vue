@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { ImageOff, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -315,7 +316,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('content.safety_page.add') }}
           </Button>
@@ -348,7 +349,7 @@ async function handleDelete(record: any) {
                 v-else
                 class="flex size-13.5 items-center justify-center rounded-full border border-border bg-accent"
               >
-                <span class="i-lucide-image-off size-5 text-muted-foreground"></span>
+                <ImageOff class="size-5 text-muted-foreground" />
               </div>
             </template>
 

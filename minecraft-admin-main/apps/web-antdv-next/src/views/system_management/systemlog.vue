@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { Eraser, Search } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -350,7 +351,7 @@ async function handleCleanup() {
               @pressEnter="handleFilterChange"
             >
               <template #prefix>
-                <span class="i-lucide-search size-4 text-muted-foreground"></span>
+                <Search class="size-4 text-muted-foreground" />
               </template>
             </Input>
             <Button @click="handleFilterChange">
@@ -366,7 +367,7 @@ async function handleCleanup() {
             >
               <Button danger :loading="cleaning">
                 <template #icon>
-                  <span class="i-lucide-eraser mr-1 size-4 align-middle"></span>
+                  <Eraser class="mr-1 size-4 align-middle" />
                 </template>
                 {{ $t('system.syslog_page.cleanup_btn') }}
               </Button>

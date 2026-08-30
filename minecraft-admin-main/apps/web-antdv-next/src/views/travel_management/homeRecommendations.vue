@@ -4,6 +4,21 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  ExternalLink,
+  Eye,
+  Globe,
+  Heart,
+  ImageIcon,
+  ImageOff,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Plus,
+  Share2,
+  Star,
+  Video,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -725,7 +740,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.recommend_list.action.add') }}
           </Button>
@@ -763,9 +778,9 @@ async function handleDelete(record: any) {
             <!-- 所在地 -->
             <template v-else-if="column.key === 'location'">
               <span class="inline-flex items-start gap-1">
-                <span
-                  class="i-lucide-map-pin size-4 flex-shrink-0 text-muted-foreground"
-                ></span>
+                <MapPin
+                  class="size-4 flex-shrink-0 text-muted-foreground"
+                />
                 <span class="text-sm">{{ locationText(record) || '-' }}</span>
               </span>
             </template>
@@ -828,7 +843,7 @@ async function handleDelete(record: any) {
             <!-- 浏览量 -->
             <template v-else-if="column.dataIndex === 'viewCount'">
               <span class="inline-flex items-center gap-1 text-sm">
-                <span class="i-lucide-eye size-3.5 text-muted-foreground"></span>
+                <Eye class="size-3.5 text-muted-foreground" />
                 {{ formatCount(record.viewCount) }}
               </span>
             </template>
@@ -906,7 +921,7 @@ async function handleDelete(record: any) {
             class="border border-border overflow-hidden object-cover flex-shrink-0"
           />
           <div v-else class="cover-placeholder-circle">
-            <span class="i-lucide-image-off size-8 text-muted-foreground"></span>
+            <ImageOff class="size-8 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-xl font-semibold truncate">
@@ -948,19 +963,19 @@ async function handleDelete(record: any) {
               class="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground"
             >
               <span>
-                <span class="i-lucide-eye mr-1 align-middle"></span>
+                <Eye class="mr-1 align-middle" />
                 {{ formatCount(currentRecord.viewCount) }}
               </span>
               <span>
-                <span class="i-lucide-heart mr-1 align-middle"></span>
+                <Heart class="mr-1 align-middle" />
                 {{ formatCount(currentRecord.likeCount) }}
               </span>
               <span>
-                <span class="i-lucide-message-circle mr-1 align-middle"></span>
+                <MessageCircle class="mr-1 align-middle" />
                 {{ formatCount(currentRecord.commentCount) }}
               </span>
               <span>
-                <span class="i-lucide-share-2 mr-1 align-middle"></span>
+                <Share2 class="mr-1 align-middle" />
                 {{ formatCount(currentRecord.shareCount) }}
               </span>
             </div>
@@ -1034,7 +1049,7 @@ async function handleDelete(record: any) {
         </Divider>
         <Descriptions :column="2" bordered size="small">
           <Descriptions.Item :label="$t('travel.recommend_list.fields.rating')">
-            <span class="i-lucide-star mr-1 inline-block align-middle text-yellow-500"></span>
+            <Star class="mr-1 inline-block align-middle text-yellow-500" />
             {{ currentRecord.averageRating ?? '-' }}
             <span class="ml-1 text-xs text-muted-foreground">
               ({{ formatCount(currentRecord.ratingCount) }})
@@ -1166,7 +1181,7 @@ async function handleDelete(record: any) {
             :label="$t('travel.recommend_list.form.phone_label')"
           >
             <span class="inline-flex items-center gap-1">
-              <span class="i-lucide-phone size-3.5"></span>
+              <Phone class="size-3.5" />
               {{ formData.contactPhone || '-' }}
             </span>
           </Descriptions.Item>
@@ -1180,7 +1195,7 @@ async function handleDelete(record: any) {
               rel="noopener"
               class="inline-flex items-center gap-1"
             >
-              <span class="i-lucide-external-link size-3.5"></span>
+              <ExternalLink class="size-3.5" />
               {{ formData.officialWebsite }}
             </a>
             <span v-else>-</span>
@@ -1214,7 +1229,7 @@ async function handleDelete(record: any) {
           rel="noopener"
           class="inline-flex items-center gap-1 text-sm"
         >
-          <span class="i-lucide-video size-4"></span>
+          <Video class="size-4" />
           {{ currentRecord.videoUrl }}
         </a>
 
@@ -1229,7 +1244,7 @@ async function handleDelete(record: any) {
               :label="s.key"
             >
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-globe size-3.5"></span>
+                <Globe class="size-3.5" />
                 {{ s.value }}
               </span>
             </Descriptions.Item>
@@ -1744,10 +1759,10 @@ async function handleDelete(record: any) {
                       class="size-12 rounded-full border border-border flex-shrink-0 object-cover"
                       @error="hideBrokenImage"
                     />
-                    <span
+                    <ImageIcon
                       v-else
-                      class="i-lucide-image size-12 flex-shrink-0 text-muted-foreground"
-                    ></span>
+                      class="size-12 flex-shrink-0 text-muted-foreground"
+                    />
                     <div class="flex flex-col text-left">
                       <span class="text-sm font-medium">
                         {{

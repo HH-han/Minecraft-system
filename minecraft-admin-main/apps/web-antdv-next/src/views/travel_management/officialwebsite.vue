@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { ImageOff, Pencil, Plus, Star } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -546,13 +547,13 @@ async function handleDelete(record: any) {
             @click="openEditSingle"
           >
             <template #icon>
-              <span class="i-lucide-pencil mr-1 size-4 align-middle"></span>
+              <Pencil class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.official_site.edit') }}
           </Button>
           <Button v-else type="primary" @click="openCreateItem">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.official_site.add') }}
           </Button>
@@ -643,7 +644,7 @@ async function handleDelete(record: any) {
                 v-else-if="currentConfig.imageKey"
                 class="section-card-image section-card-image-fallback"
               >
-                <span class="i-lucide-image-off size-6 text-muted-foreground"></span>
+                <ImageOff class="size-6 text-muted-foreground" />
               </div>
 
               <!-- 卡片内容 -->
@@ -690,7 +691,7 @@ async function handleDelete(record: any) {
                     </span>
                   </span>
                   <span v-if="item.rating !== undefined && item.rating !== null" class="inline-flex items-center gap-1">
-                    <span class="i-lucide-star size-3.5"></span>
+                    <Star class="size-3.5" />
                     {{ item.rating }}
                   </span>
                   <span v-if="item.sortOrder !== undefined && item.sortOrder !== null">

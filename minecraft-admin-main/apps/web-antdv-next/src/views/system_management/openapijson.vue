@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { Copy, ExternalLink, Link, LoaderCircle, RefreshCw } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { Button, Card, Input, message, Result, Tag } from 'antdv-next';
@@ -121,7 +122,7 @@ function openWindow() {
       :styles="{ body: { padding: '24px' } }"
     >
       <div class="flex flex-col items-center gap-3 py-16">
-        <span class="i-lucide-loader-circle size-8 animate-spin text-primary"></span>
+        <LoaderCircle class="size-8 animate-spin text-primary" />
         <span class="text-sm text-muted-foreground">
           {{ $t('system.openapi_page.loading') }}
         </span>
@@ -157,19 +158,19 @@ function openWindow() {
         <div class="flex items-center gap-2">
           <Button @click="copyJson">
             <template #icon>
-              <span class="i-lucide-copy mr-1 size-4 align-middle"></span>
+              <Copy class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('system.openapi_page.copy') }}
           </Button>
           <Button @click="fetchData">
             <template #icon>
-              <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+              <RefreshCw class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('system.openapi_page.refresh') }}
           </Button>
           <Button type="primary" @click="openWindow">
             <template #icon>
-              <span class="i-lucide-external-link mr-1 size-4 align-middle"></span>
+              <ExternalLink class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('system.openapi_page.new_window') }}
           </Button>
@@ -198,7 +199,7 @@ function openWindow() {
         </span>
         <Input :value="OPENAPI_URL" readonly class="flex-1 font-mono text-xs">
           <template #prefix>
-            <span class="i-lucide-link size-4 text-muted-foreground"></span>
+            <Link class="size-4 text-muted-foreground" />
           </template>
         </Input>
       </div>

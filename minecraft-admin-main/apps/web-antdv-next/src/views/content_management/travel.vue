@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { MapPin, Plus, RefreshCw, Search } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -325,18 +326,18 @@ async function handleDelete(record: any) {
               class="w-56"
             >
               <template #prefix>
-                <span class="i-lucide-search size-4 text-muted-foreground"></span>
+                <Search class="size-4 text-muted-foreground" />
               </template>
             </Input>
             <Button :loading="loading" @click="fetchData">
               <template #icon>
-                <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+                <RefreshCw class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.travel_page.refresh') }}
             </Button>
             <Button type="primary" @click="openCreate">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.travel_page.add') }}
             </Button>
@@ -375,7 +376,7 @@ async function handleDelete(record: any) {
             <!-- 目的地 -->
             <template v-else-if="column.key === 'city'">
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-map-pin size-3.5 text-muted-foreground"></span>
+                <MapPin class="size-3.5 text-muted-foreground" />
                 {{ displayValue(record.city) }}
               </span>
             </template>

@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { ExternalLink, LoaderCircle, RefreshCw } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import { Button, Card } from 'antdv-next';
@@ -41,13 +42,13 @@ onMounted(() => {
         <div class="flex items-center gap-2">
           <Button @click="reload">
             <template #icon>
-              <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+              <RefreshCw class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('system.swagger_page.refresh') }}
           </Button>
           <Button type="primary" @click="openWindow">
             <template #icon>
-              <span class="i-lucide-external-link mr-1 size-4 align-middle"></span>
+              <ExternalLink class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('system.swagger_page.new_window') }}
           </Button>
@@ -61,9 +62,9 @@ onMounted(() => {
           class="absolute inset-0 z-10 flex items-center justify-center bg-background/60"
         >
           <div class="flex flex-col items-center gap-3">
-            <span
-              class="i-lucide-loader-circle size-8 animate-spin text-primary"
-            ></span>
+            <LoaderCircle
+              class="size-8 animate-spin text-primary"
+            />
             <span class="text-sm text-muted-foreground">
               {{ $t('system.swagger_page.loading') }}
             </span>

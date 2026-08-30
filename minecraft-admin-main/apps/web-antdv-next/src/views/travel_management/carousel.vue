@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { Eye, ImageIcon, ImageOff, MousePointerClick, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -647,7 +648,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.carousel_list.action.add') }}
           </Button>
@@ -736,7 +737,7 @@ async function handleDelete(record: any) {
             <!-- 曝光量 -->
             <template v-else-if="column.dataIndex === 'impressionCount'">
               <span class="inline-flex items-center gap-1 text-sm">
-                <span class="i-lucide-eye size-3.5 text-muted-foreground"></span>
+                <Eye class="size-3.5 text-muted-foreground" />
                 {{ record.impressionCount ?? 0 }}
               </span>
             </template>
@@ -744,9 +745,9 @@ async function handleDelete(record: any) {
             <!-- 点击量 -->
             <template v-else-if="column.dataIndex === 'clickCount'">
               <span class="inline-flex items-center gap-1 text-sm">
-                <span
-                  class="i-lucide-mouse-pointer-click size-3.5 text-muted-foreground"
-                ></span>
+                <MousePointerClick
+                  class="size-3.5 text-muted-foreground"
+                />
                 {{ record.clickCount ?? 0 }}
               </span>
             </template>
@@ -824,7 +825,7 @@ async function handleDelete(record: any) {
             class="border border-border overflow-hidden object-cover flex-shrink-0"
           />
           <div v-else class="image-placeholder-circle">
-            <span class="i-lucide-image-off size-8 text-muted-foreground"></span>
+            <ImageOff class="size-8 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-xl font-semibold truncate">
@@ -1266,10 +1267,10 @@ async function handleDelete(record: any) {
                       class="size-12 rounded-full border border-border flex-shrink-0 object-cover"
                       @error="hideBrokenImage"
                     />
-                    <span
+                    <ImageIcon
                       v-else
-                      class="i-lucide-image size-12 flex-shrink-0 text-muted-foreground"
-                    ></span>
+                      class="size-12 flex-shrink-0 text-muted-foreground"
+                    />
                     <div class="flex flex-col text-left">
                       <span class="text-sm font-medium">
                         {{

@@ -4,6 +4,15 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  Bookmark,
+  Eye,
+  Heart,
+  ImageIcon,
+  ImageOff,
+  MessageCircle,
+  Plus,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -489,7 +498,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.news_list.action.add') }}
           </Button>
@@ -546,29 +555,29 @@ async function handleDelete(record: any) {
             <!-- 统计：浏览 / 点赞 / 评论 / 收藏 -->
             <template v-else-if="column.dataIndex === 'viewCount'">
               <span class="stat-cell">
-                <span class="i-lucide-eye size-3.5 text-muted-foreground"></span>
+                <Eye class="size-3.5 text-muted-foreground" />
                 {{ formatNumber(record.viewCount) }}
               </span>
             </template>
             <template v-else-if="column.dataIndex === 'likeCount'">
               <span class="stat-cell">
-                <span class="i-lucide-heart size-3.5 text-muted-foreground"></span>
+                <Heart class="size-3.5 text-muted-foreground" />
                 {{ formatNumber(record.likeCount) }}
               </span>
             </template>
             <template v-else-if="column.dataIndex === 'commentCount'">
               <span class="stat-cell">
-                <span
-                  class="i-lucide-message-circle size-3.5 text-muted-foreground"
-                ></span>
+                <MessageCircle
+                  class="size-3.5 text-muted-foreground"
+                />
                 {{ formatNumber(record.commentCount) }}
               </span>
             </template>
             <template v-else-if="column.dataIndex === 'collectCount'">
               <span class="stat-cell">
-                <span
-                  class="i-lucide-bookmark size-3.5 text-muted-foreground"
-                ></span>
+                <Bookmark
+                  class="size-3.5 text-muted-foreground"
+                />
                 {{ formatNumber(record.collectCount) }}
               </span>
             </template>
@@ -646,7 +655,7 @@ async function handleDelete(record: any) {
             class="border border-border overflow-hidden object-cover flex-shrink-0"
           />
           <div v-else class="cover-placeholder-circle">
-            <span class="i-lucide-image-off size-8 text-muted-foreground"></span>
+            <ImageOff class="size-8 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-xl font-semibold leading-7 line-clamp-2">
@@ -667,19 +676,19 @@ async function handleDelete(record: any) {
             <!-- 互动统计 -->
             <div class="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-eye size-4"></span>
+                <Eye class="size-4" />
                 {{ formatNumber(currentRecord.viewCount) }}
               </span>
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-heart size-4"></span>
+                <Heart class="size-4" />
                 {{ formatNumber(currentRecord.likeCount) }}
               </span>
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-message-circle size-4"></span>
+                <MessageCircle class="size-4" />
                 {{ formatNumber(currentRecord.commentCount) }}
               </span>
               <span class="inline-flex items-center gap-1">
-                <span class="i-lucide-bookmark size-4"></span>
+                <Bookmark class="size-4" />
                 {{ formatNumber(currentRecord.collectCount) }}
               </span>
             </div>
@@ -808,10 +817,10 @@ async function handleDelete(record: any) {
                       class="size-12 rounded-full border border-border flex-shrink-0 object-cover"
                       @error="hideBrokenImage"
                     />
-                    <span
+                    <ImageIcon
                       v-else
-                      class="i-lucide-image size-12 flex-shrink-0 text-muted-foreground"
-                    ></span>
+                      class="size-12 flex-shrink-0 text-muted-foreground"
+                    />
                     <div class="flex flex-col text-left">
                       <span class="text-sm font-medium">
                         {{

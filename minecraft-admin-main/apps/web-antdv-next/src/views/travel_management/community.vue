@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { Bookmark, Heart, ImagePlus, MessageCircle, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -491,7 +492,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.community_list.action.add') }}
           </Button>
@@ -580,23 +581,23 @@ async function handleDelete(record: any) {
             <!-- 统计：点赞 / 评论 / 收藏 -->
             <template v-else-if="column.dataIndex === 'likeCount'">
               <span class="stat-cell">
-                <span class="i-lucide-heart size-3.5 text-muted-foreground"></span>
+                <Heart class="size-3.5 text-muted-foreground" />
                 {{ record.likeCount ?? 0 }}
               </span>
             </template>
             <template v-else-if="column.dataIndex === 'commentCount'">
               <span class="stat-cell">
-                <span
-                  class="i-lucide-message-circle size-3.5 text-muted-foreground"
-                ></span>
+                <MessageCircle
+                  class="size-3.5 text-muted-foreground"
+                />
                 {{ record.commentCount ?? 0 }}
               </span>
             </template>
             <template v-else-if="column.dataIndex === 'collectCount'">
               <span class="stat-cell">
-                <span
-                  class="i-lucide-bookmark size-3.5 text-muted-foreground"
-                ></span>
+                <Bookmark
+                  class="size-3.5 text-muted-foreground"
+                />
                 {{ record.collectCount ?? 0 }}
               </span>
             </template>
@@ -700,15 +701,15 @@ async function handleDelete(record: any) {
           class="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
         >
           <span class="inline-flex items-center gap-1">
-            <span class="i-lucide-heart size-4"></span>
+            <Heart class="size-4" />
             {{ currentRecord.likeCount ?? 0 }}
           </span>
           <span class="inline-flex items-center gap-1">
-            <span class="i-lucide-message-circle size-4"></span>
+            <MessageCircle class="size-4" />
             {{ currentRecord.commentCount ?? 0 }}
           </span>
           <span class="inline-flex items-center gap-1">
-            <span class="i-lucide-bookmark size-4"></span>
+            <Bookmark class="size-4" />
             {{ currentRecord.collectCount ?? 0 }}
           </span>
           <Tag color="blue">
@@ -849,9 +850,9 @@ async function handleDelete(record: any) {
                     :loading="imagesUploading"
                   >
                     <template #icon>
-                      <span
-                        class="i-lucide-image-plus mr-1 size-4 align-middle"
-                      ></span>
+                      <ImagePlus
+                        class="mr-1 size-4 align-middle"
+                      />
                     </template>
                     {{ $t('travel.community_list.form.images_upload') }}
                   </Button>

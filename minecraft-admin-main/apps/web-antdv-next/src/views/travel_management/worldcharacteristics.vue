@@ -4,6 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { ImageIcon, ImageOff, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -503,7 +504,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.world_list.action.add') }}
           </Button>
@@ -636,7 +637,7 @@ async function handleDelete(record: any) {
             class="border border-border overflow-hidden object-cover flex-shrink-0"
           />
           <div v-else class="image-placeholder-circle">
-            <span class="i-lucide-image-off size-8 text-muted-foreground"></span>
+            <ImageOff class="size-8 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-xl font-semibold truncate">
@@ -873,10 +874,10 @@ async function handleDelete(record: any) {
                       class="size-12 rounded-full border border-border flex-shrink-0 object-cover"
                       @error="hideBrokenImage"
                     />
-                    <span
+                    <ImageIcon
                       v-else
-                      class="i-lucide-image size-12 flex-shrink-0 text-muted-foreground"
-                    ></span>
+                      class="size-12 flex-shrink-0 text-muted-foreground"
+                    />
                     <div class="flex flex-col text-left">
                       <span class="text-sm font-medium">
                         {{

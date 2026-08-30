@@ -4,6 +4,17 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  Bookmark,
+  CircleCheck,
+  Heart,
+  ImageIcon,
+  ImageOff,
+  MapPin,
+  MessageCircle,
+  Plus,
+  Ticket,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -599,7 +610,7 @@ async function handleDelete(record: any) {
         <template #extra>
           <Button type="primary" :loading="loading" @click="openCreate">
             <template #icon>
-              <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+              <Plus class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('travel.attraction_list.action.add') }}
           </Button>
@@ -637,9 +648,9 @@ async function handleDelete(record: any) {
             <!-- 所在地 -->
             <template v-else-if="column.key === 'location'">
               <span class="inline-flex items-start gap-1">
-                <span
-                  class="i-lucide-map-pin size-4 flex-shrink-0 text-muted-foreground"
-                ></span>
+                <MapPin
+                  class="size-4 flex-shrink-0 text-muted-foreground"
+                />
                 <span class="text-sm">{{ locationText(record) || '-' }}</span>
               </span>
             </template>
@@ -773,7 +784,7 @@ async function handleDelete(record: any) {
             class="border border-border overflow-hidden object-cover flex-shrink-0"
           />
           <div v-else class="cover-placeholder-circle">
-            <span class="i-lucide-image-off size-8 text-muted-foreground"></span>
+            <ImageOff class="size-8 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-xl font-semibold truncate">{{ formData.name }}</div>
@@ -798,15 +809,15 @@ async function handleDelete(record: any) {
               class="mt-2 flex items-center gap-3 text-xs text-muted-foreground"
             >
               <span>
-                <span class="i-lucide-heart mr-1 align-middle"></span>
+                <Heart class="mr-1 align-middle" />
                 {{ formData.likeCount }}
               </span>
               <span>
-                <span class="i-lucide-bookmark mr-1 align-middle"></span>
+                <Bookmark class="mr-1 align-middle" />
                 {{ formData.collectCount }}
               </span>
               <span>
-                <span class="i-lucide-message-circle mr-1 align-middle"></span>
+                <MessageCircle class="mr-1 align-middle" />
                 {{ formData.commentCount }}
               </span>
             </div>
@@ -885,7 +896,7 @@ async function handleDelete(record: any) {
           >
             <div class="flex items-center justify-between gap-3">
               <div class="flex items-center gap-2 font-medium">
-                <span class="i-lucide-ticket size-4"></span>
+                <Ticket class="size-4" />
                 <span>{{ ticket.name }}</span>
               </div>
               <span class="font-semibold text-red-500">
@@ -907,7 +918,7 @@ async function handleDelete(record: any) {
                 :key="rule"
                 class="flex items-center gap-1 text-xs text-muted-foreground"
               >
-                <span class="i-lucide-circle-check size-3.5 text-green-500"></span>
+                <CircleCheck class="size-3.5 text-green-500" />
                 <span>{{ rule }}</span>
               </div>
             </div>
@@ -1112,10 +1123,10 @@ async function handleDelete(record: any) {
                       class="size-12 rounded-full border border-border flex-shrink-0 object-cover"
                       @error="hideBrokenImage"
                     />
-                    <span
+                    <ImageIcon
                       v-else
-                      class="i-lucide-image size-12 flex-shrink-0 text-muted-foreground"
-                    ></span>
+                      class="size-12 flex-shrink-0 text-muted-foreground"
+                    />
                     <div class="flex flex-col text-left">
                       <span class="text-sm font-medium">
                         {{

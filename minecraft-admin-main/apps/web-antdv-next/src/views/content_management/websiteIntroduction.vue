@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import { Plus, RefreshCw, Sparkles } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -487,7 +488,7 @@ async function handleDeleteItem(item: any) {
         <template #extra>
           <Button :loading="loading" @click="fetchData">
             <template #icon>
-              <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+              <RefreshCw class="mr-1 size-4 align-middle" />
             </template>
             {{ $t('content.intro_page.refresh') }}
           </Button>
@@ -504,7 +505,7 @@ async function handleDeleteItem(item: any) {
             </div>
             <Button size="small" type="primary" @click="openCreate('stat')">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.intro_page.add') }}
             </Button>
@@ -573,7 +574,7 @@ async function handleDeleteItem(item: any) {
             </div>
             <Button size="small" type="primary" @click="openCreate('feature')">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.intro_page.add') }}
             </Button>
@@ -608,9 +609,9 @@ async function handleDeleteItem(item: any) {
                     v-else
                     class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent"
                   >
-                    <span
-                      class="i-lucide-sparkles size-5 text-muted-foreground"
-                    ></span>
+                    <Sparkles
+                      class="size-5 text-muted-foreground"
+                    />
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="font-medium">
@@ -703,7 +704,7 @@ async function handleDeleteItem(item: any) {
             </div>
             <Button size="small" type="primary" @click="openCreate('tech')">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.intro_page.add') }}
             </Button>
@@ -803,7 +804,7 @@ async function handleDeleteItem(item: any) {
             </div>
             <Button size="small" type="primary" @click="openCreate('milestone')">
               <template #icon>
-                <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                <Plus class="mr-1 size-4 align-middle" />
               </template>
               {{ $t('content.intro_page.add') }}
             </Button>

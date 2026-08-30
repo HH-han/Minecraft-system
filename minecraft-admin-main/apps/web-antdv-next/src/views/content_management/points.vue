@@ -1,9 +1,18 @@
 <script lang="ts" setup>
 import type { TableColumnsType } from 'antdv-next';
 
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, markRaw, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
+import {
+  CircleCheck,
+  ImageOff,
+  Package,
+  PackageX,
+  Plus,
+  RefreshCw,
+  Search,
+} from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -103,21 +112,21 @@ const statCards = computed(() => [
     key: 'total',
     label: $t('content.points_page.stat_total'),
     value: productList.value.length,
-    icon: 'i-lucide-package',
+    icon: markRaw(Package),
     color: '#1677ff',
   },
   {
     key: 'active',
     label: $t('content.points_page.stat_active'),
     value: activeCount.value,
-    icon: 'i-lucide-circle-check',
+    icon: markRaw(CircleCheck),
     color: '#52c41a',
   },
   {
     key: 'low',
     label: $t('content.points_page.stat_low_stock'),
     value: lowStockCount.value,
-    icon: 'i-lucide-package-x',
+    icon: markRaw(PackageX),
     color: '#f5222d',
   },
 ]);
@@ -371,11 +380,11 @@ function hideBrokenImage(e: Event) {
                 class="flex size-11 shrink-0 items-center justify-center rounded-full"
                 :style="{ backgroundColor: `${card.color}1a` }"
               >
-                <span
-                  :class="card.icon"
+                <component
+                  :is="card.icon"
                   class="size-5"
                   :style="{ color: card.color }"
-                ></span>
+                />
               </div>
               <div class="min-w-0">
                 <div class="truncate text-xs text-muted-foreground">
@@ -406,18 +415,18 @@ function hideBrokenImage(e: Event) {
                 class="w-56"
               >
                 <template #prefix>
-                  <span class="i-lucide-search size-4 text-muted-foreground"></span>
+                  <Search class="size-4 text-muted-foreground" />
                 </template>
               </Input>
               <Button :loading="loading" @click="fetchData">
                 <template #icon>
-                  <span class="i-lucide-refresh-cw mr-1 size-4 align-middle"></span>
+                  <RefreshCw class="mr-1 size-4 align-middle" />
                 </template>
                 {{ $t('content.points_page.refresh') }}
               </Button>
               <Button type="primary" @click="openCreate">
                 <template #icon>
-                  <span class="i-lucide-plus mr-1 size-4 align-middle"></span>
+                  <Plus class="mr-1 size-4 align-middle" />
                 </template>
                 {{ $t('content.points_page.add') }}
               </Button>
@@ -451,7 +460,7 @@ function hideBrokenImage(e: Event) {
                   v-else
                   class="flex size-13.5 items-center justify-center rounded-full border border-border bg-accent"
                 >
-                  <span class="i-lucide-image-off size-5 text-muted-foreground"></span>
+                  <ImageOff class="size-5 text-muted-foreground" />
                 </div>
               </template>
 
@@ -561,7 +570,7 @@ function hideBrokenImage(e: Event) {
             v-else
             class="flex size-20 items-center justify-center rounded-full border border-border bg-accent"
           >
-            <span class="i-lucide-image-off size-7 text-muted-foreground"></span>
+            <ImageOff class="size-7 text-muted-foreground" />
           </div>
           <div class="min-w-0">
             <div class="text-base font-semibold">
