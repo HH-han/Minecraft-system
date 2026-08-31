@@ -1,23 +1,34 @@
 <template>
   <div class="tourist-info-form">
-    <h5>{{ ticketName }} ({{ quantity }}人)</h5>
-    <div class="tourist-form" v-for="i in quantity" :key="i">
+    <h5 class="form-title">
+      {{ ticketName }}
+      <span class="ticket-count">({{ quantity }}人)</span>
+    </h5>
+
+    <div class="tourist-form" v-for="i in quantity" :key="'tf-' + i">
+      <div class="tourist-head">
+        <span class="tourist-index">游客 {{ i }}</span>
+      </div>
       <div class="form-row">
         <div class="form-group half">
-          <label>游客{{ i }}姓名</label>
-          <input 
-            type="text" 
-            v-model="tourists[i-1].name" 
+          <label :for="'name-' + ticketName + '-' + i">姓名</label>
+          <input
+            :id="'name-' + ticketName + '-' + i"
+            type="text"
+            v-model="tourists[i-1].name"
             placeholder="请输入游客姓名"
+            autocomplete="name"
             @input="updateTouristInfo"
           >
         </div>
         <div class="form-group half">
-          <label>游客{{ i }}身份证号</label>
-          <input 
-            type="text" 
-            v-model="tourists[i-1].idCard" 
+          <label :for="'idcard-' + ticketName + '-' + i">身份证号</label>
+          <input
+            :id="'idcard-' + ticketName + '-' + i"
+            type="text"
+            v-model="tourists[i-1].idCard"
             placeholder="请输入身份证号"
+            autocomplete="off"
             @input="updateTouristInfo"
           >
         </div>
@@ -69,8 +80,8 @@ watch(() => props.quantity, (newQuantity) => {
 }, { immediate: true })
 
 watch(() => props.initialTourists, (newTourists) => {
-  if (newTourists.length > 0) {
-    tourists.value = [...newTourists]
+  if (newTourists && newTourists.length > 0) {
+    tourists.value = newTourists.map(t => ({ name: t.name || '', idCard: t.idCard || '' }))
   }
 }, { immediate: true })
 </script>
@@ -80,83 +91,129 @@ watch(() => props.initialTourists, (newTourists) => {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  margin-top: 25px;
-  padding-top: 25px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  margin-top: 28px;
+  padding-top: 0;
+  border-top: none;
 }
 
-.tourist-info-form h5 {
-  margin-bottom: 20px;
+.form-title {
+  margin: 0 0 16px;
   font-size: 16px;
-  font-weight: bold;
-  color: #1a1a1a;
+  font-weight: 600;
+  color: #1d1d1f;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ticket-count {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6e6e73;
 }
 
 .tourist-form {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  padding: 20px 24px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  border: 1px solid #d2d2d6;
+  box-shadow: none;
+}
+
+.tourist-head {
+  margin-bottom: 14px;
+}
+
+.tourist-index {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .form-row {
   box-sizing: border-box;
   display: flex;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 24px;
+  margin-bottom: 0;
 }
 
 .form-group {
   box-sizing: border-box;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .form-group.half {
-  box-sizing: border-box;
   flex: 1;
-  min-width: 0;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #3d3d3d;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .form-group input {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  padding: 12px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  font-size: 14px;
-  background: rgba(255, 255, 255, 0.8);
-  color: #333333;
-  transition: all 0.3s ease;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid #d2d2d6;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #a1a1a6;
+}
+
+.form-group input:hover {
+  border-color: #c7c7cc;
+  background: #ffffff;
 }
 
 .form-group input:focus {
-  outline: none;
-  border-color: #ff6a00;
-  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.1);
+  outline: 2px solid #2997ff;
+  outline-offset: 2px;
+  border-color: #2997ff;
+  background: #ffffff;
 }
 
-@media (max-width: 768px) {
+/* 响应式：手机 - 表单字段堆叠单列 */
+@media (max-width: 767px) {
+  .tourist-form {
+    padding: 16px 18px;
+    border-radius: 18px;
+  }
+
   .form-row {
     flex-direction: column;
+    gap: 16px;
   }
-  
+
   .form-group.half {
     width: 100%;
     max-width: 100%;
+  }
+
+  .form-title {
+    font-size: 15px;
   }
 }
 </style>

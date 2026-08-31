@@ -1,17 +1,17 @@
 <template>
   <div class="hotel-booking-module">
-    <div v-if="loading" class="loading-overlay">
+    <div v-if="loading" class="loading-inner" role="status" aria-live="polite">
       <div class="loading-spinner"></div>
-      <span class="loading-text">加载中...</span>
+      <span class="loading-text">加载酒店信息中...</span>
     </div>
-    
-    <HotelBooking 
+
+    <HotelBooking
       v-else
-      :dateFields="dateFields" 
+      :dateFields="dateFields"
       :facilities="facilities"
-      :rooms="rooms" 
-      :hotelData="hotelData" 
-      :hotelId="currentHotelId" 
+      :rooms="rooms"
+      :hotelData="hotelData"
+      :hotelId="currentHotelId"
     />
   </div>
 </template>
@@ -108,30 +108,30 @@ watch(currentHotelId, () => {
 <style scoped>
 .hotel-booking-module {
   position: relative;
-  min-height: 600px;
+  min-height: 500px;
+  box-sizing: border-box;
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.loading-inner {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.8);
-  z-index: 100;
+  gap: 16px;
+  min-height: 500px;
+  padding: 48px 0;
+  box-sizing: border-box;
 }
 
 .loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #ff6a00;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #d2d2d6;
+  border-top-color: #2997ff;
+  border-right-color: #2997ff;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
+  box-sizing: border-box;
 }
 
 @keyframes spin {
@@ -140,8 +140,17 @@ watch(currentHotelId, () => {
 }
 
 .loading-text {
-  margin-top: 15px;
-  color: #666;
-  font-size: 16px;
+  font-size: 14px;
+  color: #6e6e73;
+}
+
+@media (max-width: 767px) {
+  .hotel-booking-module,
+  .loading-inner {
+    min-height: 420px;
+  }
+  .loading-inner {
+    padding: 32px 0;
+  }
 }
 </style>
