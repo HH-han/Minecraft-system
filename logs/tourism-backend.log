@@ -1,149 +1,46 @@
-2026-08-30 11:52:49.068 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
-2026-08-30 11:52:49.130 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 27012 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)
-2026-08-30 11:52:49.130 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
-2026-08-30 11:52:49.131 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
-2026-08-30 11:52:59.072 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-08-30 11:52:59.074 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-08-30 11:52:59.166 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 76 ms. Found 0 JPA repository interfaces.
-2026-08-30 11:52:59.188 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-08-30 11:52:59.190 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-08-30 11:52:59.218 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
-2026-08-30 11:52:59.877 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
-2026-08-30 11:52:59.878 [main] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.aspect.LogAspect
-2026-08-30 11:53:00.966 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
-2026-08-30 11:53:00.985 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2026-08-30 11:53:00.985 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-08-30 11:53:00.985 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
-2026-08-30 11:53:01.272 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-08-30 11:53:01.272 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 12075 ms
-2026-08-30 11:53:01.797 [main] INFO  o.s.b.web.servlet.RegistrationBean - Filter corsFilter was not registered (disabled)
-2026-08-30 11:53:01.861 [main] DEBUG c.m.handler.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-08-30 11:53:02.740 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-08-30 11:53:03.685 [main] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-08-30 11:53:03.936 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-08-30 11:53:04.065 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.1.6.Final
-2026-08-30 11:53:04.388 [main] WARN  org.hibernate.orm.deprecation - HHH90000021: Encountered deprecated setting [javax.persistence.sharedCache.mode], use [jakarta.persistence.sharedCache.mode] instead
-2026-08-30 11:53:04.667 [main] INFO  SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
-2026-08-30 11:53:05.102 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2026-08-30 11:53:05.127 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-08-30 11:53:12.947 [main] INFO  c.t.c.g.AbstractImageCaptchaGenerator - 图片验证码[SpringMultiImageCaptchaGenerator]初始化...
-2026-08-30 11:53:13.896 [main] INFO  com.minecraft.utils.FileUtils - 使用目录: D:\Image
-2026-08-30 11:53:13.896 [main] INFO  com.minecraft.utils.FileUtils - 文件上传路径初始化: D:\Image
-2026-08-30 11:53:13.896 [main] INFO  com.minecraft.utils.FileUtils - 文件访问URL初始化: http://localhost:8080/upload/
-2026-08-30 11:53:15.644 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
-2026-08-30 11:53:15.835 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-08-30 11:53:15.894 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+2026-08-31 21:19:14.945 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
+2026-08-31 21:19:14.999 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 28488 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)
+2026-08-31 21:19:14.999 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
+2026-08-31 21:19:14.999 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
+2026-08-31 21:19:22.178 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-08-31 21:19:22.180 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-31 21:19:22.230 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 42 ms. Found 0 JPA repository interfaces.
+2026-08-31 21:19:22.245 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-08-31 21:19:22.245 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-08-31 21:19:22.263 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 9 ms. Found 0 Redis repository interfaces.
+2026-08-31 21:19:23.151 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-08-31 21:19:23.161 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-08-31 21:19:23.163 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-08-31 21:19:23.163 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
+2026-08-31 21:19:23.301 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-08-31 21:19:23.301 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 8251 ms
+2026-08-31 21:19:23.471 [main] INFO  o.s.b.web.servlet.RegistrationBean - Filter corsFilter was not registered (disabled)
+2026-08-31 21:19:23.499 [main] DEBUG c.m.handler.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-08-31 21:19:23.724 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
+2026-08-31 21:19:24.140 [main] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2026-08-31 21:19:24.256 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-31 21:19:24.310 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.1.6.Final
+2026-08-31 21:19:24.476 [main] WARN  org.hibernate.orm.deprecation - HHH90000021: Encountered deprecated setting [javax.persistence.sharedCache.mode], use [jakarta.persistence.sharedCache.mode] instead
+2026-08-31 21:19:24.613 [main] INFO  SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2026-08-31 21:19:24.868 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-08-31 21:19:24.884 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-31 21:19:31.054 [main] INFO  c.t.c.g.AbstractImageCaptchaGenerator - 图片验证码[SpringMultiImageCaptchaGenerator]初始化...
+2026-08-31 21:19:31.887 [main] INFO  com.minecraft.utils.FileUtils - 使用目录: D:\Image
+2026-08-31 21:19:31.887 [main] INFO  com.minecraft.utils.FileUtils - 文件上传路径初始化: D:\Image
+2026-08-31 21:19:31.887 [main] INFO  com.minecraft.utils.FileUtils - 文件访问URL初始化: http://localhost:8080/upload/
+2026-08-31 21:19:32.943 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
+2026-08-31 21:19:33.071 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-31 21:19:33.099 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
 
-Using generated security password: cb14971d-a039-4c76-abd3-5af23dc4c28b
+Using generated security password: 9354e6b3-cef7-4f1f-906e-da62986e2293
 
 This generated password is for development use only. Your security configuration must be updated before running your application in production.
 
-2026-08-30 11:53:16.112 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-08-30 11:53:16.286 [main] INFO  com.minecraft.config.WebConfig - 使用目录: D:\Image
-2026-08-30 11:53:17.259 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-08-30 11:53:17.326 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3c175d82, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@133acad0, org.springframework.security.web.context.SecurityContextHolderFilter@4b76a0f4, org.springframework.security.web.header.HeaderWriterFilter@6a225642, org.springframework.web.filter.CorsFilter@7e1b96a7, org.springframework.security.web.authentication.logout.LogoutFilter@66a5f996, com.minecraft.handler.JwtAuthenticationFilter@2168def, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@65314e4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1e31e7e0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@65b51977, org.springframework.security.web.session.SessionManagementFilter@467924d8, org.springframework.security.web.access.ExceptionTranslationFilter@1bab3926, org.springframework.security.web.access.intercept.AuthorizationFilter@9dc9212]
-2026-08-30 11:53:18.144 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2026-08-30 11:53:18.163 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
-2026-08-30 11:53:18.177 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 29.994 seconds (process running for 36.024)
-2026-08-30 11:53:18.497 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
-2026-08-30 11:53:36.161 [http-nio-8080-exec-3] INFO  o.a.tomcat.util.http.parser.Cookie - A cookie header was received [Hm_lvt_0febd9e3cacb3f627ddac64d52caac39=1782624469,1783523905] that contained an invalid cookie. That cookie will be ignored.
- Note: further occurrences of this error will be logged at DEBUG level.
-2026-08-30 11:53:36.174 [http-nio-8080-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-08-30 11:53:36.174 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-08-30 11:53:36.177 [http-nio-8080-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
-2026-08-30 12:04:10.680 [http-nio-8080-exec-9] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HomeRecommendationsController
-2026-08-30 12:04:10.680 [http-nio-8080-exec-2] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HotelController
-2026-08-30 12:04:10.682 [http-nio-8080-exec-4] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.NewsController
-2026-08-30 12:04:29.704 [http-nio-8080-exec-8] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.UserController
-2026-08-30 12:04:34.199 [http-nio-8080-exec-4] INFO  c.t.c.g.AbstractImageCaptchaGenerator - 图片验证码[StandardSliderImageCaptchaGenerator]初始化...
-2026-08-30 12:04:59.654 [http-nio-8080-exec-8] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.WorldCharacteristicsController
-2026-08-30 12:04:59.654 [http-nio-8080-exec-5] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CitiesController
-2026-08-30 12:04:59.754 [http-nio-8080-exec-2] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CountriesController
-2026-08-30 12:04:59.922 [http-nio-8080-exec-9] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.MonthlyRecommendationController
-2026-08-30 12:27:54.683 [http-nio-8080-exec-6] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 7227 ms
-2026-08-30 13:15:40.408 [http-nio-8080-exec-7] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CarouselController
-2026-08-30 13:15:45.904 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.TravelGroupController
-2026-08-30 14:00:55.096 [http-nio-8080-exec-8] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.OfficialwebsiteController
-2026-08-30 14:14:30.260 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CacheController
-2026-08-30 14:22:25.102 [http-nio-8080-exec-9] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.OnlineUserController
-2026-08-30 14:48:16.666 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-08-30 14:48:16.672 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
-2026-08-30 14:48:16.679 [SpringApplicationShutdownHook] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
-2026-08-30 14:48:22.499 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.0.Final
-2026-08-30 14:48:22.535 [main] INFO  com.minecraft.MinecraftApplication - Starting MinecraftApplication using Java 21.0.9 with PID 22356 (D:\IDEA\work\Minecraft-system\Minecraft\target\classes started by Admin in D:\IDEA\work\Minecraft-system)
-2026-08-30 14:48:22.535 [main] DEBUG com.minecraft.MinecraftApplication - Running with Spring Boot v3.0.2, Spring v6.0.4
-2026-08-30 14:48:22.535 [main] INFO  com.minecraft.MinecraftApplication - The following 1 profile is active: "dev"
-2026-08-30 14:48:23.937 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-08-30 14:48:23.938 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-08-30 14:48:23.985 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 41 ms. Found 0 JPA repository interfaces.
-2026-08-30 14:48:23.998 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-08-30 14:48:23.998 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-08-30 14:48:24.013 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 8 ms. Found 0 Redis repository interfaces.
-2026-08-30 14:48:24.750 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
-2026-08-30 14:48:24.758 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
-2026-08-30 14:48:24.759 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-08-30 14:48:24.759 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.5]
-2026-08-30 14:48:24.852 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-08-30 14:48:24.852 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2275 ms
-2026-08-30 14:48:24.987 [main] INFO  o.s.b.web.servlet.RegistrationBean - Filter corsFilter was not registered (disabled)
-2026-08-30 14:48:25.005 [main] DEBUG c.m.handler.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
-2026-08-30 14:48:25.177 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure - Init DruidDataSource
-2026-08-30 14:48:25.501 [main] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
-2026-08-30 14:48:25.607 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-08-30 14:48:25.661 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.1.6.Final
-2026-08-30 14:48:25.805 [main] WARN  org.hibernate.orm.deprecation - HHH90000021: Encountered deprecated setting [javax.persistence.sharedCache.mode], use [jakarta.persistence.sharedCache.mode] instead
-2026-08-30 14:48:25.958 [main] INFO  SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
-2026-08-30 14:48:26.200 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2026-08-30 14:48:26.210 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-08-30 14:48:27.520 [main] INFO  c.t.c.g.AbstractImageCaptchaGenerator - 图片验证码[SpringMultiImageCaptchaGenerator]初始化...
-2026-08-30 14:48:28.217 [main] INFO  com.minecraft.utils.FileUtils - 使用目录: D:\Image
-2026-08-30 14:48:28.217 [main] INFO  com.minecraft.utils.FileUtils - 文件上传路径初始化: D:\Image
-2026-08-30 14:48:28.217 [main] INFO  com.minecraft.utils.FileUtils - 文件访问URL初始化: http://localhost:8080/upload/
-2026-08-30 14:48:29.054 [main] INFO  c.minecraft.utils.RedisHealthChecker - ✅ Redis 连接成功
-2026-08-30 14:48:29.145 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-08-30 14:48:29.169 [main] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
-
-Using generated security password: 41822c6c-bd87-4e0e-b5d5-6db558a87c08
-
-This generated password is for development use only. Your security configuration must be updated before running your application in production.
-
-2026-08-30 14:48:29.277 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-08-30 14:48:29.375 [main] INFO  com.minecraft.config.WebConfig - 使用目录: D:\Image
-2026-08-30 14:48:29.964 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
-2026-08-30 14:48:30.001 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@26b9a264, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2c1a86e1, org.springframework.security.web.context.SecurityContextHolderFilter@1ae3d0a8, org.springframework.security.web.header.HeaderWriterFilter@5264e41d, org.springframework.web.filter.CorsFilter@303c195f, org.springframework.security.web.authentication.logout.LogoutFilter@32549c2d, com.minecraft.handler.JwtAuthenticationFilter@14b48f39, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@484a91f5, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@61b83fef, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@36f291c7, org.springframework.security.web.session.SessionManagementFilter@262c75a3, org.springframework.security.web.access.ExceptionTranslationFilter@50c0392d, org.springframework.security.web.access.intercept.AuthorizationFilter@6afed88d]
-2026-08-30 14:48:30.417 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2026-08-30 14:48:30.429 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
-2026-08-30 14:48:30.439 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 8.359 seconds (process running for 8.968)
-2026-08-30 14:48:30.611 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功
-2026-08-30 14:48:30.904 [RMI TCP Connection(3)-10.123.137.149] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-08-30 14:48:30.904 [RMI TCP Connection(3)-10.123.137.149] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2026-08-30 14:48:30.907 [RMI TCP Connection(3)-10.123.137.149] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
-2026-08-30 14:50:50.890 [http-nio-8080-exec-1] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.OnlineUserController
-2026-08-30 14:50:55.881 [http-nio-8080-exec-8] INFO  o.a.tomcat.util.http.parser.Cookie - A cookie header was received [Hm_lvt_0febd9e3cacb3f627ddac64d52caac39=1782624469,1783523905] that contained an invalid cookie. That cookie will be ignored.
- Note: further occurrences of this error will be logged at DEBUG level.
-2026-08-30 14:50:55.881 [http-nio-8080-exec-4] INFO  o.a.tomcat.util.http.parser.Cookie - A cookie header was received [Hm_lvt_0febd9e3cacb3f627ddac64d52caac39=1782624469,1783523905] that contained an invalid cookie. That cookie will be ignored.
- Note: further occurrences of this error will be logged at DEBUG level.
-2026-08-30 14:50:55.881 [http-nio-8080-exec-7] INFO  o.a.tomcat.util.http.parser.Cookie - A cookie header was received [Hm_lvt_0febd9e3cacb3f627ddac64d52caac39=1782624469,1783523905] that contained an invalid cookie. That cookie will be ignored.
- Note: further occurrences of this error will be logged at DEBUG level.
-2026-08-30 14:50:55.881 [http-nio-8080-exec-6] INFO  o.a.tomcat.util.http.parser.Cookie - A cookie header was received [Hm_lvt_0febd9e3cacb3f627ddac64d52caac39=1782624469,1783523905] that contained an invalid cookie. That cookie will be ignored.
- Note: further occurrences of this error will be logged at DEBUG level.
-2026-08-30 14:52:56.063 [http-nio-8080-exec-5] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 1710 ms
-2026-08-30 15:10:39.904 [http-nio-8080-exec-10] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.ImController
-2026-08-30 15:10:39.982 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.ChatGroupController
-2026-08-30 15:11:08.353 [http-nio-8080-exec-6] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CarouselController
-2026-08-30 15:31:27.673 [http-nio-8080-exec-7] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.GroupAlbumController
-2026-08-30 15:31:27.673 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.GroupTripPlanController
-2026-08-30 15:31:27.673 [http-nio-8080-exec-10] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.GroupPostController
-2026-08-30 15:31:27.673 [http-nio-8080-exec-5] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.GroupMemberController
-2026-08-30 15:31:27.674 [http-nio-8080-exec-1] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.GroupPollController
-2026-08-30 15:31:27.677 [http-nio-8080-exec-8] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.GroupBillController
-2026-08-30 15:31:30.868 [http-nio-8080-exec-6] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HomeRecommendationsController
-2026-08-30 15:31:30.868 [http-nio-8080-exec-9] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.NewsController
-2026-08-30 15:31:30.868 [http-nio-8080-exec-4] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.HotelController
-2026-08-30 15:31:38.885 [http-nio-8080-exec-5] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.AttractionController
-2026-08-30 15:32:29.202 [http-nio-8080-exec-8] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.FoodController
-2026-08-30 15:33:53.050 [http-nio-8080-exec-6] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CacheController
-2026-08-30 19:29:21.273 [http-nio-8080-exec-10] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CountriesController
-2026-08-30 19:29:53.456 [http-nio-8080-exec-7] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.WorldCharacteristicsController
-2026-08-30 19:30:06.866 [http-nio-8080-exec-4] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.MonthlyRecommendationController
-2026-08-30 20:03:19.242 [http-nio-8080-exec-7] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.LoginInfoController
+2026-08-31 21:19:33.232 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-08-31 21:19:33.338 [main] INFO  com.minecraft.config.WebConfig - 使用目录: D:\Image
+2026-08-31 21:19:33.970 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+2026-08-31 21:19:34.009 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@35c344ce, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5fb6fdb8, org.springframework.security.web.context.SecurityContextHolderFilter@6f8060ac, org.springframework.security.web.header.HeaderWriterFilter@4de3a1ca, org.springframework.web.filter.CorsFilter@43e587cd, org.springframework.security.web.authentication.logout.LogoutFilter@504ed038, com.minecraft.handler.JwtAuthenticationFilter@2474df51, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1df1bd44, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@179806f3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4a9d0c6f, org.springframework.security.web.session.SessionManagementFilter@6de6467a, org.springframework.security.web.access.ExceptionTranslationFilter@431782fe, org.springframework.security.web.access.intercept.AuthorizationFilter@4afad6bd]
+2026-08-31 21:19:34.646 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-08-31 21:19:34.658 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-08-31 21:19:34.673 [main] INFO  com.minecraft.MinecraftApplication - Started MinecraftApplication in 20.348 seconds (process running for 26.34)
+2026-08-31 21:19:34.844 [main] INFO  c.m.utils.DatabaseHealthChecker - ✅ MySQL 数据库连接成功

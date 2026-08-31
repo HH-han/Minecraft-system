@@ -1,30 +1,32 @@
 <template>
+  <!-- 商品详情模态框（仿 Apple 官网视觉语言） -->
   <div v-if="visible" class="modal-overlay" @click.self="closeModal">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h2>商品详情</h2>
-        <button class="close-btn" @click="closeModal">×</button>
-      </div>
+    <div
+      class="modal-container"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="product-modal-title"
+      @click.stop
+    >
+      <button class="close-btn" aria-label="关闭" @click="closeModal">×</button>
       <div class="modal-body">
-        <div class="product-info">
-          <div class="product-image">
-            <img :src="product.coverImage" :alt="product.name" class="image-main">
-          </div>
-          <div class="product-details">
-            <h3 class="product-name">{{ product.name }}</h3>
-            <div class="product-id">商品ID: {{ product.id }}</div>
-            <div class="product-price">¥{{ product.price }}</div>
-            <div class="product-description">{{ product.description }}</div>
-            <div class="product-actions">
-              <button class="btn btn-cart" @click="handleAddToCart">加入购物车</button>
-              <button class="btn btn-pay" @click="buyNow">立即支付</button>
-            </div>
+        <div class="product-image">
+          <img :src="product.coverImage" :alt="product.name">
+        </div>
+        <div class="product-details">
+          <h3 id="product-modal-title" class="product-name">{{ product.name }}</h3>
+          <p class="product-id">商品编号 {{ product.id }}</p>
+          <div class="product-price">¥{{ product.price }}</div>
+          <p class="product-description">{{ product.description }}</p>
+          <div class="product-actions">
+            <button class="btn btn-secondary" @click="handleAddToCart">加入购物车</button>
+            <button class="btn btn-primary" @click="buyNow">立即支付</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+
   <!-- Element Plus 弹窗 -->
   <el-dialog
     v-model="dialogVisible"
@@ -42,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
@@ -92,9 +94,9 @@ watch(() => props.productId, (newId) => {
 const fetchProductData = async () => {
   const id = props.productId
   const commodity = props.commodity
-  
+
   if (!id || !commodity) return
-  
+
   try {
     if (commodity === '0') {
       // 美食类型，调用food API
@@ -119,7 +121,7 @@ const handleAddToCart = async () => {
     // 从 localStorage 获取用户信息
     const userInfo = JSON.parse(localStorage.getItem('user'))
     const userId = userInfo?.id || userInfo?.userId
-    
+
     // 调用加入购物车 API
     const cartData = {
       itemId: product.value.id,
@@ -130,7 +132,7 @@ const handleAddToCart = async () => {
       itemType: props.commodity === '0' ? 'food' : 'product',
       userId: userId
     }
-    
+
     await addToCart(cartData)
     dialogTitle.value = '成功'
     dialogMessage.value = '商品已加入购物车'
@@ -159,11 +161,11 @@ const buyNow = async () => {
       image: product.value.coverImage,
       remark: ''
     }
-    
+
     const response = await createOrder(orderRequest)
     const orderId = response.data.id
     console.log('订单创建成功:', orderId)
-    
+
     // 跳转到支付页面
     router.push({
       path: '/payment',
@@ -190,15 +192,38 @@ const closeModal = () => {
   emit('close')
 }
 
+// Esc 键关闭模态框（无障碍）
+const handleKeydown = (e) => {
+  if (e.key === 'Escape' && props.visible) {
+    closeModal()
+  }
+}
+
 // 组件挂载时获取商品数据
 onMounted(() => {
   if (props.productId && props.commodity) {
     fetchProductData()
   }
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
 <style scoped>
+/* ===== 色彩与字体令牌（仿 Apple 官网规范） ===== */
+.modal-overlay,
+.modal-container,
+.modal-body,
+.product-details,
+.btn {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC',
+    'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ===== 遮罩层 ===== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -209,197 +234,35 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   animation: fadeIn 0.3s ease;
 }
 
-.modal-container {
-  max-width: 900px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  animation: slideIn 0.3s ease;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 30px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border-radius: 20px 20px 0 0;
-}
-
-.modal-header h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #7f8c8d;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #2c3e50;
-  transform: rotate(90deg);
-}
-
-.modal-body {
-  padding: 30px;
-}
-
-.product-info {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 30px;
-  flex-direction: column;
-}
-
-.product-image {
-  flex: 0 0 35%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border-radius: 12px;
-}
-
-.image-main {
-  min-width: 100%;
-  max-height: 350px;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-.image-main:hover {
-  transform: scale(1.02);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-}
-
-.product-details {
-  flex: 1;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-.product-name {
-  font-size: 24px;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 15px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.product-id {
-  font-size: 14px;
-  color: #7f8c8d;
-  margin-bottom: 20px;
-  opacity: 0.8;
-}
-
-.product-price {
-  font-size: 28px;
-  font-weight: 700;
-  color: #e74c3c;
-  margin-bottom: 30px;
-  text-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
-}
-
-.product-description {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #34495e;
-  margin-bottom: 30px;
-  min-height: 80px;
-  opacity: 0.9;
-}
-
-.product-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: auto;
-}
-
-.btn {
-  flex: 1;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.btn-cart {
-  background: rgba(52, 152, 219, 0.8);
-  color: white;
-  border: 1px solid rgba(52, 152, 219, 0.3);
-}
-
-.btn-cart:hover {
-  background: rgba(41, 128, 185, 0.9);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
-}
-
-.btn-pay {
-  background: rgba(231, 76, 60, 0.8);
-  color: white;
-  border: 1px solid rgba(231, 76, 60, 0.3);
-}
-
-.btn-pay:hover {
-  background: rgba(192, 57, 43, 0.9);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
-}
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes slideIn {
+/* ===== 模态容器（卡片） ===== */
+.modal-container {
+  position: relative;
+  max-width: 880px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #d2d2d6;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: translateY(24px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -407,50 +270,228 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 768px) {
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: #d2d2d6;
+  border-radius: 4px;
+}
+
+/* ===== 关闭按钮 ===== */
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f7;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #6e6e73;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.close-btn:hover {
+  background: #e8e8ed;
+  color: #1d1d1f;
+}
+
+.close-btn:focus-visible {
+  outline: 2px solid #2997ff;
+  outline-offset: 2px;
+}
+
+/* ===== 主体两栏布局 ===== */
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  padding: 2.5rem;
+}
+
+/* ===== 商品图片 ===== */
+.product-image {
+  border-radius: 20px;
+  overflow: hidden;
+  background: #f5f5f7;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-image img:hover {
+  transform: scale(1.01);
+  box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== 商品信息栏 ===== */
+.product-details {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+}
+
+.product-name {
+  font-size: 1.75rem; /* 28px 卡片标题 */
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1d1d1f;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.product-id {
+  font-size: 0.875rem; /* 14px 辅助文字 */
+  font-weight: 400;
+  color: #6e6e73;
+  margin: 0 0 1.5rem 0;
+}
+
+.product-price {
+  font-size: 1.75rem; /* 28px */
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.product-description {
+  font-size: 1.0625rem; /* 17px 正文 */
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6e6e73;
+  margin: 0 0 2rem 0;
+  min-height: 4rem;
+  flex: 1;
+}
+
+/* ===== 操作按钮（胶囊形 CTA） ===== */
+.product-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.75rem 1.75rem; /* 12px 28px */
+  border: none;
+  border-radius: 40px;
+  font-size: 1rem; /* 16px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+/* 次要按钮：浅灰底深色字 */
+.btn-secondary {
+  background: #f5f5f7;
+  color: #1d1d1f;
+}
+
+.btn-secondary:hover {
+  background: #e8e8ed;
+  transform: scale(1.01);
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.15);
+}
+
+/* 主按钮：蓝色强调色 */
+.btn-primary {
+  background: #2997ff;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #0066cc;
+  transform: scale(1.01);
+  box-shadow: 0 8px 20px -8px rgba(41, 151, 255, 0.5);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #2997ff;
+  outline-offset: 2px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 1199px) {
+  .modal-body {
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .product-name {
+    font-size: 1.5rem;
+  }
+
+  .product-price {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 767px) {
   .modal-container {
     width: 95%;
     max-height: 90vh;
-    border-radius: 16px;
+    border-radius: 20px;
   }
-  
-  .modal-header {
-    padding: 15px 20px;
-  }
-  
+
   .modal-body {
-    padding: 20px;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
   }
-  
-  .product-info {
-    flex-direction: column;
-    gap: 20px;
-  }
-  
+
   .product-image {
-    flex: 1;
-    padding: 15px;
+    min-height: 220px;
   }
-  
-  .product-details {
-    min-width: auto;
+
+  .product-image img {
+    max-height: 280px;
   }
-  
+
   .product-name {
-    font-size: 20px;
+    font-size: 1.375rem;
   }
-  
+
   .product-price {
-    font-size: 24px;
+    font-size: 1.375rem;
   }
-  
+
+  .product-description {
+    font-size: 1rem;
+    min-height: auto;
+  }
+
   .product-actions {
     flex-direction: column;
   }
-  
+
   .btn {
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 0.625rem 1.5rem;
   }
 }
 </style>
