@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { uploadFile } from '@/api/upload'
 import { normalizeImageUrl, parseImageList } from '../../utils.js'
@@ -100,8 +100,8 @@ const props = defineProps({
 const emit = defineEmits(['close', 'submit'])
 
 const isEdit = computed(() => !!props.card?.id)
-const submitting = reactive({ value: false })
-const uploading = reactive({ value: false })
+const submitting = ref(false)
+const uploading = ref(false)
 
 const form = reactive({
   title: '',
@@ -285,7 +285,6 @@ function handleSubmit() {
 }
 
 .form-group label {
-  display: block;
   font-size: 14px;
   font-weight: 600;
   color: var(--color-text);

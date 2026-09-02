@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
+import { ref, reactive, watch } from 'vue'
 
 const props = defineProps({
   visible: {
@@ -75,7 +75,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'submit'])
 
-const loading = reactive({ value: false })
+const loading = ref(false)
 
 const form = reactive({
   name: '',
