@@ -200,6 +200,7 @@ const navItems = [
 // 更多下拉菜单项
 const moreMenuItems = [
   { path: '/aboutweb', label: '关于我们' },
+  { path: '/cards', label: '旅行卡片' },
   { path: '/community', label: '旅行社区' },
   { path: '/ticket', label: '购票服务' },
   { path: '/travel', label: '出行计划' },
@@ -294,6 +295,7 @@ const navigateTo = (path) => {
     '/community': community,
     '/ticket': ticket,
     '/travel': travel,
+    '/cards': cards,
     '/SettingsFocus': null,
     '/aboutweb': null,
     '/test': null,
@@ -525,13 +527,14 @@ onMounted(() => {
   // 检查当前路由
   const currentRoute = router.currentRoute.value;
 
-  // 如果当前路由是社区、ticket 或 travel 页面
-  if (['/community', '/ticket', '/travel'].includes(currentRoute.path)) {
+  // 如果当前路由是社区、ticket、travel 或卡片页面
+  if (['/community', '/ticket', '/travel', '/cards'].includes(currentRoute.path)) {
     // 直接从路由路径恢复组件
     const routeComponentMap = {
       '/community': community,
       '/ticket': ticket,
       '/travel': travel,
+      '/cards': null,
     };
     currentComponent.value = routeComponentMap[currentRoute.path];
   } else {

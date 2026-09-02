@@ -76,6 +76,15 @@ const routes = [
         },
       },
       {
+        path: "/cards",
+        name: "Cards",
+        component: () => import("@/views/Cards/index.vue"),
+        meta: {
+          title: "旅行卡片",
+          requiresAuth: false,
+        },
+      },
+      {
         path: "/community",
         name: "Community",
         component: () => import("@/views/Community/index.vue"),
