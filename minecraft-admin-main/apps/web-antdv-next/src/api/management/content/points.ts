@@ -20,9 +20,9 @@ export const getPointsRecords = (page: number = 1, size: number = 10): Promise<a
   })
 }
 
-// 获取商品列表
+// 获取商品列表（管理端：all=true 可查看上架+下架；用户端不传该参数仅返回上架商品）
 export const getProducts = (): Promise<any> => {
-  return request.get('/points/products')
+  return request.get('/points/products', { params: { all: true } })
 }
 
 // 兑换商品

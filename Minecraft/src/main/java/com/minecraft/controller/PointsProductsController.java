@@ -31,9 +31,12 @@ public class PointsProductsController {
     
     // 获取商品列表
     @GetMapping
-    public Result getProducts() {
+    public Result getProducts(@RequestParam(required = false) Boolean all) {
         QueryWrapper<PointsProducts> wrapper = new QueryWrapper<>();
-        wrapper.eq("status", 1); // 只查询上架的商品
+        // 普通用户端仅查看上架商品；管理端传入 all=true 可查看全部（含下架）
+        if (!Boolean.TRUE.equals(all)) {
+            wrapper.eq("status", 1);
+        }
         List<PointsProducts> products = pointsProductsService.list(wrapper);
         return Result.success(products);
     }
@@ -52,10 +55,13 @@ public class PointsProductsController {
     @GetMapping("/page")
     public Result getProductsByPage(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) Boolean all) {
         Page<PointsProducts> productPage = new Page<>(page, size);
         QueryWrapper<PointsProducts> wrapper = new QueryWrapper<>();
-        wrapper.eq("status", 1); // 只查询上架的商品
+        if (!Boolean.TRUE.equals(all)) {
+            wrapper.eq("status", 1);
+        }
         Page<PointsProducts> result = pointsProductsService.page(productPage, wrapper);
         return Result.success(result);
     }
@@ -90,6 +96,10 @@ public class PointsProductsController {
             return Result.error("商品不存在");
         }
         product.setId(id);
+        // 状态字段兜底：若前端未传 status，保留原有状态（避免把状态刷为 null）
+        if (product.getStatus() == null) {
+            product.setStatus(existing.getStatus());
+        }
         boolean updated = pointsProductsService.updateById(product);
         if (!updated) {
             return Result.error("修改商品失败");

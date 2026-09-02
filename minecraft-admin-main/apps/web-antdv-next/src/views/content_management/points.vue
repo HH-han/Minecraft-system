@@ -31,9 +31,12 @@ import {
 } from 'antdv-next';
 
 import {
+  addProduct,
+  deleteProduct,
   getProducts,
+  updateProduct,
+  uploadProductImage,
 } from '#/api/management/content/points';
-import { uploadFile } from '#/api/management/user/upload';
 
 defineOptions({ name: 'PointsProductsManagement' });
 
@@ -223,7 +226,7 @@ async function handleImageUpload(file: File) {
   }
   imageUploading.value = true;
   try {
-    const res: any = await uploadFile(file, '/upload/file');
+    const res: any = await uploadProductImage(file);
     // requestClient 解包成功响应后 data 即 URL 字符串，兼容对象形式
     const relativePath =
       typeof res === 'string'
