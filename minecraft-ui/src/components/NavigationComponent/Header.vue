@@ -167,6 +167,7 @@ import strategy from '@/views/Strategy/index.vue';
 import ticket from '@/views/Ticket/index.vue';
 import travel from '@/views/Travel/index.vue';
 import community from '@/views/Community/index.vue';
+import cards from '@/views/Cards/index.vue';
 import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
 import BacktoTop from '@/components/DisplayBox/BacktoTop.vue';
 import SocialLoginModal from '@/components/PromptComponent/SocialLoginModal.vue';
@@ -220,12 +221,6 @@ const userMenuItems = [
   {
     label: '社区帖子',
     path: '/privatecommunity',
-    style: 'border-radius: 0 0 10px 10px;',
-    show: true
-  },
-  {
-    label: '我的发布',
-    path: '/cards',
     style: 'border-radius: 0 0 10px 10px;',
     show: true
   },
@@ -306,6 +301,7 @@ const navigateTo = (path) => {
     '/community': 'community',
     '/ticket': 'ticket',
     '/travel': 'travel',
+    '/cards': 'cards',
   };
   
   // 处理组件切换
@@ -521,7 +517,8 @@ onMounted(() => {
     'strategy': strategy,
     'ticket': ticket,
     'travel': travel,
-    'community': community
+    'community': community,
+    'cards': cards
   };
 
   // 检查当前路由
@@ -534,7 +531,7 @@ onMounted(() => {
       '/community': community,
       '/ticket': ticket,
       '/travel': travel,
-      '/cards': null,
+      '/cards': cards,
     };
     currentComponent.value = routeComponentMap[currentRoute.path];
   } else {
@@ -558,7 +555,8 @@ onMounted(() => {
       '/strategy': 'strategy',
       '/ticket': 'ticket',
       '/travel': 'travel',
-      '/community': 'community'
+      '/community': 'community',
+      '/cards': 'cards'
     };
 
     // 如果是已知路由，保存状态
