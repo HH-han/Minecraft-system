@@ -203,7 +203,7 @@ const fetchScenic = async () => {
       pageSize: pageSize.value,
       keyword: searchKeyword.value
     };
-    const response = await request.get('/api/public/posts/all', { params });
+    const response = await request.get('/public/posts/all', { params });
     cards.value = response.data.list.map(card => ({
       ...card,
       images: typeof card.image === 'string' ? JSON.parse(card.images) : card.images
@@ -223,7 +223,7 @@ const fetchUsers = async () => {
       pageSize: pageSize.value,
       keyword: searchKeyword.value
     };
-    const response = await request.get('/api/public/user', { params });
+    const response = await request.get('/public/user', { params });
     users.value = response.data.list;
     total.value = response.data.total;
   } catch (error) {
@@ -305,11 +305,11 @@ const validateForm = (data, isEdit) => {
 const handleSubmit = async (data, isEdit) => {
   if (isEdit) {
     data.updatedAt = new Date().toISOString();
-    await request.put(`/api/public/posts/${data.id}`, data);
+    await request.put(`/public/posts/${data.id}`, data);
     showToastMessage('更新景点成功');
   } else {
     data.createdAt = new Date().toISOString();
-    await request.post('/api/public/posts', data);
+    await request.post('/public/posts', data);
     showToastMessage('新增景点成功');
   }
   await fetchScenic();
@@ -347,7 +347,7 @@ const closeDeletePrompt = () => {
 const confirmDelete = async () => {
   if (deleteCardId.value) {
     try {
-      await request.delete(`/api/public/posts/${deleteCardId.value}`);
+      await request.delete(`/public/posts/${deleteCardId.value}`);
       await fetchScenic();
       closeDeletePrompt();
       showToastMessage('删除成功');
