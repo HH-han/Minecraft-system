@@ -7,6 +7,7 @@ import com.minecraft.entity.PointsProducts;
 import com.minecraft.service.PointsProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,6 +17,17 @@ public class PointsProductsController {
     
     @Autowired
     private PointsProductsService pointsProductsService;
+    
+    // 上传商品图片
+    @PostMapping("/upload")
+    public Result uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = pointsProductsService.uploadImage(file);
+            return Result.success(imageUrl);
+        } catch (Exception e) {
+            return Result.error("上传失败: " + e.getMessage());
+        }
+    }
     
     // 获取商品列表
     @GetMapping

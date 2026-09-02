@@ -56,3 +56,12 @@ export const updateProduct = (id: any, data: any): Promise<any> => {
 export const deleteProduct = (id: any): Promise<any> => {
   return request.delete(`/points/products/${id}`)
 }
+
+// 上传积分商品封面图（Multipart：字段名 file，返回 URL/相对路径字符串）
+export const uploadProductImage = (file: File): Promise<any> => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return request.post('/points/products/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}
