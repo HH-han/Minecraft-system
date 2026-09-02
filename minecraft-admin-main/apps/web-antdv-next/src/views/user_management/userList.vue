@@ -661,17 +661,20 @@ async function confirmCropperAvatar() {
     );
 
     cropperUploading.value = true;
-    const res = await uploadFile(uploadPayload);
+    const res = await uploadFile(uploadPayload, '/user/upload');
 
-    // 兼容后端可能返回的字段：url / path / filePath
+    // requestClient 解包成功响应后 data 即 URL 字符串，这里同时兼容对象形式
     const relativePath =
-      res?.url ??
-      res?.path ??
-      res?.filePath ??
-      res?.data?.url ??
-      res?.data?.path ??
-      res?.data?.filePath ??
-      '';
+      typeof res === 'string'
+        ? res
+        : (res?.url ??
+          res?.path ??
+          res?.filePath ??
+          res?.data?.url ??
+          res?.data?.path ??
+          res?.data?.filePath ??
+          res?.data ??
+          '');
 
     if (!relativePath) {
       message.error($t('user.form.avatar_upload_failed'));

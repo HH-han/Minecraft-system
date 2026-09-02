@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.minecraft.utils.ImageUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +20,19 @@ public class MonthlyRecommendationController {
 
     @Autowired
     private MonthlyRecommendationService monthlyRecommendationService;
+
+    @Autowired
+    private ImageUtils imageUtils;
+
+    @Operation(summary = "上传图片")
+    @PostMapping("/upload")
+    public ApiResponse<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            return ApiResponse.success("上传成功", imageUtils.processMultipartFile(file));
+        } catch (Exception e) {
+            return ApiResponse.error("上传失败: " + e.getMessage());
+        }
+    }
 
     @Operation(summary = "获取所有月份")
     @GetMapping("/months")

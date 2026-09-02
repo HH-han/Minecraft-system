@@ -305,41 +305,45 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         }
         
         updateById(hotel);
-        
-        LambdaQueryWrapper<HotelRoom> roomWrapper = new LambdaQueryWrapper<>();
-        roomWrapper.eq(HotelRoom::getHotelId, hotel.getId());
-        hotelRoomMapper.delete(roomWrapper);
-        
-        LambdaQueryWrapper<HotelFacility> facilityWrapper = new LambdaQueryWrapper<>();
-        facilityWrapper.eq(HotelFacility::getHotelId, hotel.getId());
-        hotelFacilityMapper.delete(facilityWrapper);
-        
-        if (hotelVO.getRooms() != null && !hotelVO.getRooms().isEmpty()) {
-            try {
-                for (HotelRoomVO roomVO : hotelVO.getRooms()) {
-                    if (roomVO.getName() == null || roomVO.getName().trim().isEmpty()) {
-                        continue;
+
+        // rooms 为 null 表示本次请求未提交房型数据，保持数据库原样（房型由 /api/hotelRoom 独立维护）
+        if (hotelVO.getRooms() != null) {
+            LambdaQueryWrapper<HotelRoom> roomWrapper = new LambdaQueryWrapper<>();
+            roomWrapper.eq(HotelRoom::getHotelId, hotel.getId());
+            hotelRoomMapper.delete(roomWrapper);
+
+            if (!hotelVO.getRooms().isEmpty()) {
+                try {
+                    for (HotelRoomVO roomVO : hotelVO.getRooms()) {
+                        if (roomVO.getName() == null || roomVO.getName().trim().isEmpty()) {
+                            continue;
+                        }
+
+                        HotelRoom room = new HotelRoom();
+                        room.setHotelId(hotel.getId());
+                        room.setName(roomVO.getName());
+                        room.setDescription(roomVO.getDescription());
+                        if (roomVO.getPrice() != null) {
+                            room.setPrice(roomVO.getPrice());
+                        }
+                        if (roomVO.getFacilities() != null) {
+                            room.setFacilities(objectMapper.writeValueAsString(roomVO.getFacilities()));
+                        }
+                        room.setStatus(1);
+                        hotelRoomMapper.insert(room);
                     }
-                    
-                    HotelRoom room = new HotelRoom();
-                    room.setHotelId(hotel.getId());
-                    room.setName(roomVO.getName());
-                    room.setDescription(roomVO.getDescription());
-                    if (roomVO.getPrice() != null) {
-                        room.setPrice(roomVO.getPrice());
-                    }
-                    if (roomVO.getFacilities() != null) {
-                        room.setFacilities(objectMapper.writeValueAsString(roomVO.getFacilities()));
-                    }
-                    room.setStatus(1);
-                    hotelRoomMapper.insert(room);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
-        
-        if (hotelVO.getFacilityList() != null && !hotelVO.getFacilityList().isEmpty()) {
+
+        // facilityList 为 null 时同样不动原设施数据
+        if (hotelVO.getFacilityList() != null) {
+            LambdaQueryWrapper<HotelFacility> facilityWrapper = new LambdaQueryWrapper<>();
+            facilityWrapper.eq(HotelFacility::getHotelId, hotel.getId());
+            hotelFacilityMapper.delete(facilityWrapper);
+
             for (String facilityName : hotelVO.getFacilityList()) {
                 HotelFacility facility = new HotelFacility();
                 facility.setHotelId(hotel.getId());

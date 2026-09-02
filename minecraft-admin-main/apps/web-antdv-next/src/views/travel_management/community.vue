@@ -44,8 +44,8 @@ interface PostFormState {
   id?: number | string;
   title: string;
   content: string;
-  // 逗号分隔图片 URL
-  images: string;
+  // 帖子图片 URL 列表
+  imageList: string[];
 }
 
 // =========================
@@ -75,7 +75,7 @@ function handlePostImageError(id: any, index: number) {
 
 /** 列表帖子图片（规范化后，最多展示 3 张） */
 function postThumbs(record: any): string[] {
-  return splitList(record?.images)
+  return parseImageList(record?.images)
     .slice(0, 3)
     .map((img) => normalizeImageUrl(img));
 }
@@ -98,7 +98,7 @@ function emptyForm(): PostFormState {
   return {
     title: '',
     content: '',
-    images: '',
+    imageList: [],
   };
 }
 
@@ -136,6 +136,24 @@ function splitList(value: null | string | undefined): string[] {
     .split(',')
     .map((s) => s.trim())
     .filter((s) => s.length > 0);
+}
+
+/** 后端 images 字段解析：兼容 JSON 数组与逗号分隔两种存储格式 */
+function parseImageList(value: null | string | undefined): string[] {
+  const raw = String(value ?? '').trim();
+  if (!raw) return [];
+  if (raw.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.map((s: any) => String(s ?? '').trim()).filter(Boolean);
+      }
+    } catch {
+      // JSON 解析失败时回退到逗号分隔解析
+    }
+    return splitList(raw.slice(1, -1));
+  }
+  return splitList(raw);
 }
 
 // =========================
@@ -287,7 +305,9 @@ function handleAvatarError(id: number | string) {
 
 /** 详情图片列表（规范化后） */
 const detailImages = computed(() =>
-  splitList(currentRecord.value?.images).map((img) => normalizeImageUrl(img)),
+  parseImageList(currentRecord.value?.images).map((img) =>
+    normalizeImageUrl(img),
+  ),
 );
 
 /**
@@ -298,7 +318,7 @@ function recordToForm(rec: any): PostFormState {
     id: rec.id,
     title: String(rec.title ?? ''),
     content: String(rec.content ?? ''),
-    images: String(rec.images ?? ''),
+    imageList: parseImageList(rec.images),
   };
 }
 
@@ -353,16 +373,22 @@ async function handleImageUpload(file: File) {
   }
   imagesUploading.value = true;
   try {
-    const res: any = await uploadFile(file);
+    const res: any = await uploadFile(file, '/community/upload');
+    // requestClient 解包成功响应后 data 即 URL 字符串，这里同时兼容对象形式
     const relativePath =
-      res?.url ?? res?.path ?? res?.filePath ?? res?.data?.url ?? '';
+      typeof res === 'string'
+        ? res
+        : (res?.url ??
+          res?.path ??
+          res?.filePath ??
+          res?.data?.url ??
+          res?.data ??
+          '');
     if (!relativePath) {
       message.error($t('travel.community_list.form.images_upload_failed'));
       return;
     }
-    const list = splitList(formData.images);
-    list.push(String(relativePath));
-    formData.images = list.join(',');
+    formData.imageList.push(String(relativePath));
     message.success($t('travel.community_list.form.images_upload_success'));
   } catch (error: any) {
     const msg =
@@ -379,9 +405,19 @@ function handleImagesChange(event: any) {
   if (file) handleImageUpload(file as File);
 }
 
+/** 移除待提交的帖子图片 */
+function removeImage(index: number) {
+  formData.imageList.splice(index, 1);
+}
+
 function hideBrokenImage(e: Event) {
   const target = e.target as HTMLImageElement;
-  if (target) target.style.display = 'none';
+  if (!target) return;
+  target.style.display = 'none';
+  // 图片地址更新并重新加载成功后自动恢复显示，避免更换封面后预览一直被隐藏
+  target.onload = () => {
+    target.style.display = '';
+  };
 }
 
 // =========================
@@ -402,7 +438,10 @@ async function handleSubmit() {
     const payload: any = {
       title: formData.title,
       content: formData.content || null,
-      images: formData.images || null,
+      // 与库内既有格式保持一致（JSON 数组字符串）
+      images: formData.imageList.length
+        ? JSON.stringify(formData.imageList)
+        : null,
     };
     if (formData.id !== undefined && formData.id !== null) {
       payload.id = formData.id;
@@ -568,11 +607,15 @@ async function handleDelete(record: any) {
                 />
                 <span
                   v-if="
-                    splitList(record.images).length > postThumbs(record).length
+                    parseImageList(record.images).length >
+                    postThumbs(record).length
                   "
                   class="thumb-more"
                 >
-                  +{{ splitList(record.images).length - postThumbs(record).length }}
+                  +{{
+                    parseImageList(record.images).length -
+                    postThumbs(record).length
+                  }}
                 </span>
               </div>
               <span v-else class="text-xs text-muted-foreground">-</span>
@@ -822,21 +865,38 @@ async function handleDelete(record: any) {
               />
             </FormItem>
 
-            <!-- 图片：文本域 + 上传追加 -->
+            <!-- 图片：缩略图预览（可删除） + 上传追加 -->
             <div class="col-span-1" style="width: 100%;">
               <FormItem
                 :label="$t('travel.community_list.form.images_label')"
-                name="images"
-                prop="images"
                 :extra="$t('travel.community_list.form.images_tip')"
                 style="display: block; width: 100%; margin-bottom: 16px;"
               >
-                <Input.TextArea
-                  v-model:value="formData.images"
-                  :rows="2"
-                  class="w-full"
-                  :placeholder="$t('travel.community_list.form.images_tip')"
-                />
+                <div
+                  v-if="formData.imageList.length > 0"
+                  class="form-image-grid"
+                >
+                  <div
+                    v-for="(img, idx) in formData.imageList"
+                    :key="idx"
+                    class="form-image-item"
+                  >
+                    <img
+                      :src="normalizeImageUrl(img)"
+                      :alt="`post-image-${idx}`"
+                      loading="lazy"
+                      class="form-image-thumb"
+                      @error="hideBrokenImage"
+                    />
+                    <button
+                      class="form-image-remove"
+                      type="button"
+                      @click="removeImage(idx)"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
                 <Upload
                   :max-count="1"
                   :show-upload-list="false"
@@ -940,5 +1000,49 @@ async function handleDelete(record: any) {
 .thumb-more {
   font-size: 12px;
   color: var(--muted-foreground-color, rgb(0 0 0 / 45%));
+}
+
+/* 表单内帖子图片缩略图 */
+.form-image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.form-image-item {
+  position: relative;
+  width: 88px;
+  height: 88px;
+}
+
+.form-image-thumb {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border-color, #f0f0f0);
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.form-image-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.form-image-remove:hover {
+  background: rgb(0 0 0 / 80%);
 }
 </style>

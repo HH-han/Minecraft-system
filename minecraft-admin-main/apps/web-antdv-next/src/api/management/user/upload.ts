@@ -1,10 +1,10 @@
 import { requestClient } from '#/api/request';
 
-// 上传文件
-export const uploadFile = (file: any): Promise<any> => {
+// 上传文件；endpoint 可指定业务模块自身的上传接口（如 /hotel/upload），默认走通用文件上传
+export const uploadFile = (file: any, endpoint = '/upload/file'): Promise<any> => {
   const formData = new FormData();
   formData.append('file', file);
-  return requestClient.post('/upload/file', formData, {
+  return requestClient.post(endpoint, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

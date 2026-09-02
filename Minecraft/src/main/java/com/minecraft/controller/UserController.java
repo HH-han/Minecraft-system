@@ -8,6 +8,7 @@ import com.minecraft.entity.PointsRecord;
 import com.minecraft.mapper.PointsRecordMapper;
 import com.minecraft.service.LoginLogService;
 import com.minecraft.service.UserService;
+import com.minecraft.utils.ImageUtils;
 import com.minecraft.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,19 @@ public class UserController {
     
     @Autowired
     private PointsRecordMapper pointsRecordMapper;
+
+    @Autowired
+    private ImageUtils imageUtils;
+
+    @Operation(summary = "上传图片")
+    @PostMapping("/upload")
+    public ApiResponse<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            return ApiResponse.success("上传成功", imageUtils.processMultipartFile(file));
+        } catch (Exception e) {
+            return ApiResponse.error("上传失败: " + e.getMessage());
+        }
+    }
 
     @Operation(summary ="获取用户信息")
     @GetMapping("/info")

@@ -203,9 +203,17 @@ async function handleImageUpload(file: File) {
   }
   imageUploading.value = true;
   try {
-    const res: any = await uploadFile(file);
+    const res: any = await uploadFile(file, '/safety-tips/upload');
+    // requestClient 解包成功响应后 data 即 URL 字符串，这里同时兼容对象形式
     const relativePath =
-      res?.url ?? res?.path ?? res?.filePath ?? res?.data?.url ?? '';
+      typeof res === 'string'
+        ? res
+        : (res?.url ??
+          res?.path ??
+          res?.filePath ??
+          res?.data?.url ??
+          res?.data ??
+          '');
     if (!relativePath) {
       message.error($t('content.safety_page.image_upload_failed'));
       return;
@@ -228,7 +236,12 @@ function handleImageChange(event: any) {
 
 function hideBrokenImage(e: Event) {
   const target = e.target as HTMLImageElement;
-  if (target) target.style.display = 'none';
+  if (!target) return;
+  target.style.display = 'none';
+  // 图片地址更新并重新加载成功后自动恢复显示，避免更换封面后预览一直被隐藏
+  target.onload = () => {
+    target.style.display = '';
+  };
 }
 
 // =========================

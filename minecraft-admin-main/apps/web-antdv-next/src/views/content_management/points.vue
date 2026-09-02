@@ -332,7 +332,12 @@ function openDetail(record: any) {
 
 function hideBrokenImage(e: Event) {
   const target = e.target as HTMLImageElement;
-  if (target) target.style.display = 'none';
+  if (!target) return;
+  target.style.display = 'none';
+  // 图片地址更新并重新加载成功后自动恢复显示，避免更换封面后预览一直被隐藏
+  target.onload = () => {
+    target.style.display = '';
+  };
 }
 </script>
 
