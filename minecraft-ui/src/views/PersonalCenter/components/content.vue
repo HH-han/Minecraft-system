@@ -118,81 +118,155 @@
       </div>
     </div>
 
-    <!-- 修改信息模态框 (玻璃拟态) -->
-    <el-dialog v-model="showEditModal" title="修改个人信息" width="500px" :close-on-click-modal="false" class="glass-dialog"
-      destroy-on-close>
-      <el-form :model="editForm" label-width="80px" class="edit-form">
-        <el-form-item label="用户名">
-          <el-input v-model="editForm.username" placeholder="请输入用户名" />
-        </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="editForm.nickname" placeholder="请输入昵称" />
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="editForm.email" placeholder="请输入邮箱" />
-        </el-form-item>
-        <el-form-item label="手机号">
-          <el-input v-model="editForm.phone" placeholder="请输入手机号" />
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-select v-model="editForm.gender" placeholder="请选择" clearable>
-            <el-option :value="1" label="男" />
-            <el-option :value="0" label="女" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input-number v-model="editForm.age" :min="1" :max="120" controls-position="right" />
-        </el-form-item>
-        <el-form-item label="职业">
-          <el-input v-model="editForm.occupation" placeholder="请输入职业" />
-        </el-form-item>
-        <el-form-item label="爱好">
-          <el-input v-model="editForm.hobbies" placeholder="请输入爱好" />
-        </el-form-item>
-        <el-form-item label="个人简介">
-          <el-input v-model="editForm.bio" type="textarea" :rows="3" placeholder="介绍一下自己" />
-        </el-form-item>
-        <el-form-item label="签名">
-          <el-input v-model="editForm.signature" placeholder="请输入签名" />
-        </el-form-item>
-        <el-form-item label="经验">
-          <el-input v-model="editForm.experience" type="textarea" :rows="3" placeholder="请输入经验" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="closeEditModal">取消</el-button>
-          <el-button type="primary" :loading="loading" @click="handleUpdateUserInfo">保存修改</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <!-- 修改信息模态框 (Apple 风格玻璃拟态) -->
+    <div v-if="showEditModal" class="modal-overlay" @click.self="">
+      <div class="modal-dialog modal-edit" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h3 class="modal-title">修改个人信息</h3>
+          <button class="modal-close" type="button" aria-label="关闭" @click="closeEditModal">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-list">
+            <div class="form-item">
+              <label class="form-label">用户名</label>
+              <input class="form-input" type="text" v-model="editForm.username" placeholder="请输入用户名" />
+            </div>
+            <div class="form-item">
+              <label class="form-label">昵称</label>
+              <input class="form-input" type="text" v-model="editForm.nickname" placeholder="请输入昵称" />
+            </div>
+            <div class="form-item">
+              <label class="form-label">邮箱</label>
+              <input class="form-input" type="email" v-model="editForm.email" placeholder="请输入邮箱" />
+            </div>
+            <div class="form-item">
+              <label class="form-label">手机号</label>
+              <input class="form-input" type="tel" v-model="editForm.phone" placeholder="请输入手机号" />
+            </div>
+            <div class="form-item">
+              <label class="form-label">性别</label>
+              <div class="form-select-wrap">
+                <select class="form-input form-select" v-model="editForm.gender">
+                  <option :value="null" value="">请选择</option>
+                  <option :value="1" value="1">男</option>
+                  <option :value="0" value="0">女</option>
+                </select>
+                <svg class="select-chevron" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <path d="M7 10l5 5 5-5z" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            <div class="form-item">
+              <label class="form-label">年龄</label>
+              <input class="form-input" type="number" min="1" max="120" v-model.number="editForm.age" placeholder="请输入年龄" />
+            </div>
+            <div class="form-item">
+              <label class="form-label">职业</label>
+              <input class="form-input" type="text" v-model="editForm.occupation" placeholder="请输入职业" />
+            </div>
+            <div class="form-item">
+              <label class="form-label">爱好</label>
+              <input class="form-input" type="text" v-model="editForm.hobbies" placeholder="请输入爱好" />
+            </div>
+            <div class="form-item form-item--block">
+              <label class="form-label">个人简介</label>
+              <textarea class="form-input form-textarea" rows="3" v-model="editForm.bio" placeholder="介绍一下自己"></textarea>
+            </div>
+            <div class="form-item">
+              <label class="form-label">签名</label>
+              <input class="form-input" type="text" v-model="editForm.signature" placeholder="请输入签名" />
+            </div>
+            <div class="form-item form-item--block">
+              <label class="form-label">经验</label>
+              <textarea class="form-input form-textarea" rows="3" v-model="editForm.experience" placeholder="请输入经验"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" @click="closeEditModal">取消</button>
+          <button class="btn btn-primary" type="button" :disabled="loading" @click="handleUpdateUserInfo">
+            <span v-if="loading" class="btn-spinner" aria-hidden="true"></span>
+            {{ loading ? '保存中…' : '保存修改' }}
+          </button>
+        </div>
+      </div>
+    </div>
 
-    <!-- 更改密码模态框 (玻璃拟态) -->
-    <el-dialog v-model="showPasswordModal" title="更改密码" width="400px" :close-on-click-modal="false" class="glass-dialog"
-      destroy-on-close>
-      <el-form :model="passwordForm" label-width="100px" class="edit-form">
-        <el-form-item label="原密码">
-          <el-input v-model="passwordForm.oldPassword" type="password" placeholder="请输入原密码" show-password />
-        </el-form-item>
-        <el-form-item label="新密码">
-          <el-input v-model="passwordForm.newPassword" type="password" placeholder="请输入新密码" show-password />
-        </el-form-item>
-        <el-form-item label="确认密码">
-          <el-input v-model="passwordForm.confirmPassword" type="password" placeholder="请再次输入新密码" show-password />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="closePasswordModal">取消</el-button>
-          <el-button type="primary" :loading="passwordLoading" @click="handleUpdatePassword">确认更改</el-button>
-        </span>
-      </template>
-    </el-dialog>
+    <!-- 更改密码模态框 (Apple 风格玻璃拟态) -->
+    <div v-if="showPasswordModal" class="modal-overlay" @click.self="">
+      <div class="modal-dialog modal-password" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h3 class="modal-title">更改密码</h3>
+          <button class="modal-close" type="button" aria-label="关闭" @click="closePasswordModal">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-list">
+            <div class="form-item form-item--block">
+              <label class="form-label">原密码</label>
+              <div class="form-input-wrap">
+                <input class="form-input" :type="showOldPwd ? 'text' : 'password'" v-model="passwordForm.oldPassword" placeholder="请输入原密码" />
+                <button type="button" class="pwd-toggle" :aria-label="showOldPwd ? '隐藏密码' : '显示密码'" @click="showOldPwd = !showOldPwd">
+                  <svg v-if="showOldPwd" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                  </svg>
+                  <svg v-else viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.804 11.804 0 001 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-item form-item--block">
+              <label class="form-label">新密码</label>
+              <div class="form-input-wrap">
+                <input class="form-input" :type="showNewPwd ? 'text' : 'password'" v-model="passwordForm.newPassword" placeholder="请输入新密码" />
+                <button type="button" class="pwd-toggle" :aria-label="showNewPwd ? '隐藏密码' : '显示密码'" @click="showNewPwd = !showNewPwd">
+                  <svg v-if="showNewPwd" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                  </svg>
+                  <svg v-else viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.804 11.804 0 001 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-item form-item--block">
+              <label class="form-label">确认密码</label>
+              <div class="form-input-wrap">
+                <input class="form-input" :type="showConfirmPwd ? 'text' : 'password'" v-model="passwordForm.confirmPassword" placeholder="请再次输入新密码" />
+                <button type="button" class="pwd-toggle" :aria-label="showConfirmPwd ? '隐藏密码' : '显示密码'" @click="showConfirmPwd = !showConfirmPwd">
+                  <svg v-if="showConfirmPwd" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+                  </svg>
+                  <svg v-else viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46A11.804 11.804 0 001 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" @click="closePasswordModal">取消</button>
+          <button class="btn btn-primary" type="button" :disabled="passwordLoading" @click="handleUpdatePassword">
+            <span v-if="passwordLoading" class="btn-spinner" aria-hidden="true"></span>
+            {{ passwordLoading ? '更改中…' : '确认更改' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Edit, Lock } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
@@ -258,6 +332,11 @@ const passwordForm = ref({
   confirmPassword: ''
 });
 
+// 密码显示开关
+const showOldPwd = ref(false);
+const showNewPwd = ref(false);
+const showConfirmPwd = ref(false);
+
 // 头像预览
 const avatarPreview = ref('');
 
@@ -268,9 +347,20 @@ const triggerFileInput = () => {
 };
 
 // 初始化获取用户信息
+const onEscKey = (e) => {
+  if (e.key !== 'Escape') return;
+  if (showEditModal.value)     closeEditModal();
+  if (showPasswordModal.value) closePasswordModal();
+};
+
 onMounted(() => {
   fetchUserInfo();
   fetchUserPoints();
+  window.addEventListener('keydown', onEscKey);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onEscKey);
 });
 
 // 获取用户信息 (从localStorage获取token)
@@ -823,68 +913,302 @@ const formatDate = (dateString) => {
   box-shadow: 0 0 8px #10b981;
 }
 
-/* 玻璃拟态对话框覆盖 */
-:deep(.glass-dialog) {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* ========== 模态框 (Apple 风格玻璃拟态) ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: modal-fade 0.2s ease;
 }
 
-:deep(.glass-dialog .el-dialog) {
-  background: rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 32px !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-:deep(.glass-dialog .el-dialog__header) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 1.5rem 1.5rem 1rem;
+.modal-dialog {
+  position: relative;
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  /* Apple 导航栏玻璃色: rgba(255,255,255,0.72) + blur(20px) */
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 28px;                              /* Apple 卡片圆角 24~28px */
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.25),
+    0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  color: #1d1d1f;                                    /* Apple 主文本色 */
+  font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'SF Pro Display', sans-serif;
+  animation: modal-pop 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:deep(.glass-dialog .el-dialog__title) {
-  color: #0f172a;
-  font-weight: 600;
-  font-size: 1.3rem;
+@keyframes modal-pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-:deep(.glass-dialog .el-dialog__body) {
-  padding: 1.5rem;
+.modal-edit      { max-width: 560px; }
+.modal-password  { max-width: 440px; }
+
+/* --- 头部 --- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #d2d2d6;                /* Apple 分割线色 */
+  flex-shrink: 0;
 }
 
-:deep(.glass-dialog .el-dialog__footer) {
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 1rem 1.5rem 1.5rem;
+.modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;                                 /* Apple H3 600~700 */
+  line-height: 1.2;
+  color: #1d1d1f;
+  letter-spacing: -0.01em;
 }
 
-/* 表单元素适配玻璃背景 */
-:deep(.edit-form .el-input__wrapper),
-:deep(.edit-form .el-textarea__inner),
-:deep(.edit-form .el-select .el-input__wrapper) {
-  background: rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(4px);
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #6e6e73;                                   /* Apple 次要文本色 */
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.modal-close:hover {
+  background: #f5f5f7;                              /* Apple 背景辅色 */
+  color: #1d1d1f;
+}
+.modal-close:focus-visible {
+  outline: 2px solid #2997ff;
+  outline-offset: 2px;
 }
 
-:deep(.edit-form .el-input__inner),
-:deep(.edit-form .el-textarea__inner) {
-  color: #0f172a;
+/* --- 主体 --- */
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1 1 auto;
 }
 
-:deep(.edit-form .el-input__inner::placeholder) {
-  color: rgba(15, 23, 42, 0.5);
+/* --- 表单 (Apple 风格) --- */
+.form-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 20px;                                   /* 8px 网格基准 */
+}
+.form-item--block {
+  grid-column: 1 / -1;
 }
 
-:deep(.edit-form .el-form-item__label) {
-  color: #1e293b;
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
   font-weight: 500;
+  color: #6e6e73;                                   /* Apple 次要文本: 标签 */
+  letter-spacing: 0.01em;
 }
 
-:deep(.el-select .el-input__wrapper.is-focused),
-:deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8) inset !important;
+.form-input-wrap {
+  position: relative;
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font-size: 15px;                                  /* Apple 正文 16~18px, 输入稍小 */
+  line-height: 1.4;
+  font-family: inherit;
+  color: #1d1d1f;                                   /* 输入主文本 */
+  background: #ffffff;                              /* Apple 白色输入底 */
+  border: 1px solid #d2d2d6;                        /* Apple 边框 */
+  border-radius: 12px;                              /* 输入圆角, 与 Apple 表单匹配 */
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input::placeholder {
+  color: #a1a1a6;
+}
+
+.form-input:hover {
+  border-color: #b5b5ba;
+}
+
+.form-input:focus {
+  border-color: #2997ff;                            /* Apple 强调色 */
+  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.12);  /* 蓝色焦点光晕 */
+  background: #ffffff;
+}
+
+/* textarea 高度微调 */
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+  font: inherit;
+}
+
+/* 原生数字输入去箭头 (视觉统一) */
+.form-input[type="number"]::-webkit-outer-spin-button,
+.form-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.form-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* --- 下拉选择 --- */
+.form-select-wrap {
+  position: relative;
+}
+.form-select {
+  padding-right: 36px;                              /* 给 chevron 留位 */
+  cursor: pointer;
+}
+.form-select-wrap .select-chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  color: #6e6e73;
+  pointer-events: none;
+}
+
+/* --- 密码显示按钮 --- */
+.pwd-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #6e6e73;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.pwd-toggle:hover {
+  background: #f5f5f7;
+  color: #1d1d1f;
+}
+.pwd-toggle:focus-visible {
+  outline: 2px solid #2997ff;
+  outline-offset: 1px;
+}
+
+/* --- 底部 --- */
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 20px;
+  border-top: 1px solid #d2d2d6;
+  flex-shrink: 0;
+  background: rgba(245, 245, 247, 0.4);
+}
+
+/* --- 按钮 (Apple 风格) --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 104px;
+  padding: 12px 28px;                               /* Apple 按钮内边距 */
+  border-radius: 40px;                              /* Apple 按钮圆角 40px */
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  font-family: inherit;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease,
+              border-color 0.2s ease, transform 0.2s ease,
+              box-shadow 0.2s ease;
+  user-select: none;
+}
+.btn:focus-visible {
+  outline: 2px solid #2997ff;
+  outline-offset: 2px;
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #1d1d1f;
+  border-color: #d2d2d6;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #f5f5f7;
+  border-color: #b5b5ba;
+}
+
+.btn-primary {
+  background: #2997ff;                              /* Apple 强调色 */
+  color: #ffffff;
+  border-color: #2997ff;
+  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.25);
+}
+.btn-primary:hover:not(:disabled) {
+  background: #0066cc;                              /* Apple 悬停加深 */
+  border-color: #0066cc;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* --- 按钮加载 spinner --- */
+.btn-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.btn-secondary .btn-spinner {
+  border-color: rgba(29, 29, 31, 0.3);
+  border-top-color: #1d1d1f;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* 响应式 */
@@ -919,5 +1243,26 @@ const formatDate = (dateString) => {
     float: none;
     justify-content: center;
   }
+
+  /* 模态框移动端适配 */
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+  .modal-dialog {
+    border-radius: 24px 24px 28px 28px;
+    max-height: 92vh;
+    animation: modal-pop-mobile 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes modal-pop-mobile {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-header  { padding: 16px 20px 12px; }
+  .modal-body    { padding: 16px 20px; }
+  .modal-footer  { padding: 12px 20px 16px; gap: 8px; }
+  .modal-title   { font-size: 18px; }
+  .form-list     { grid-template-columns: 1fr; gap: 12px; }
+  .btn           { min-width: 92px; padding: 11px 20px; font-size: 14px; }
 }
 </style>

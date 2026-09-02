@@ -19,17 +19,21 @@ import {
   Button,
   Card,
   Descriptions,
+  Image,
   Input,
   Modal,
   Result,
   Skeleton,
   Table,
   Tag,
+  Upload,
+  message,
 } from 'antdv-next';
 
 import {
   getProducts,
 } from '#/api/management/content/points';
+import { uploadFile } from '#/api/management/user/upload';
 
 defineOptions({ name: 'PointsProductsManagement' });
 
@@ -202,6 +206,57 @@ const formRecord = reactive({
   status: 0 as number,
   stock: 0 as number,
 });
+
+// =========================
+// 图片上传（单图：商品封面）
+// =========================
+const imageUploading = ref(false);
+
+async function handleImageUpload(file: File) {
+  if (!file.type.startsWith('image/')) {
+    message.error('请选择图片文件');
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    message.error('图片大小不能超过 2MB');
+    return;
+  }
+  imageUploading.value = true;
+  try {
+    const res: any = await uploadFile(file, '/upload/file');
+    // requestClient 解包成功响应后 data 即 URL 字符串，兼容对象形式
+    const relativePath =
+      typeof res === 'string'
+        ? res
+        : String(
+            res?.url ??
+              res?.path ??
+              res?.data ??
+              '',
+          );
+    if (!relativePath) {
+      message.error('图片上传失败');
+      return;
+    }
+    formRecord.imageUrl = String(relativePath);
+    message.success('图片上传成功');
+  } catch (error: any) {
+    message.error(error?.message || '图片上传失败');
+  } finally {
+    imageUploading.value = false;
+  }
+}
+
+function handleImageChange(event: any) {
+  // AntDV 在 before-upload=false 模式下文件通过 originFileObj 暴露
+  const file =
+    event?.fileList?.[0]?.originFileObj ?? event?.fileList?.[0]?.raw;
+  if (file) handleImageUpload(file as File);
+}
+
+function removeCoverImage() {
+  formRecord.imageUrl = '';
+}
 
 const modalTitle = computed(() =>
   editingId.value === null
@@ -712,12 +767,48 @@ function hideBrokenImage(e: Event) {
           <FormItem
             :label="$t('content.points_page.fields.imageUrl')"
             name="imageUrl"
+            class="md:col-span-2"
           >
-            <Input
-              v-model:value="formRecord.imageUrl"
-              class="w-full"
-              :placeholder="$t('content.points_page.image_placeholder')"
-            />
+            <div class="mb-2 flex flex-wrap items-center gap-2">
+              <Input
+                v-model:value="formRecord.imageUrl"
+                class="min-w-0 flex-1"
+                :placeholder="$t('content.points_page.image_placeholder')"
+              />
+              <Upload
+                :max-count="1"
+                :show-upload-list="false"
+                accept="image/*"
+                :before-upload="() => false"
+                @change="handleImageChange"
+              >
+                <Button :loading="imageUploading">上传图片</Button>
+              </Upload>
+            </div>
+            <!-- 图片预览（单图），点击缩略图打开 AntD Preview 大图 -->
+            <div
+              v-if="formRecord.imageUrl"
+              class="group relative inline-flex"
+            >
+              <Image
+                :src="normalizeImageUrl(formRecord.imageUrl)"
+                alt="商品图片预览"
+                :preview="{ maskClosable: true }"
+                class="!size-20 rounded-md border border-border object-cover shadow-sm"
+                @error="hideBrokenImage"
+              />
+              <button
+                type="button"
+                class="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white shadow transition-transform hover:scale-110"
+                title="移除图片"
+                @click="removeCoverImage"
+              >
+                ×
+              </button>
+            </div>
+            <span v-else class="text-xs text-muted-foreground">
+              暂未设置商品图片，可直接输入 URL 或点击上方按钮上传
+            </span>
           </FormItem>
         </div>
 
