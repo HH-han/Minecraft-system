@@ -122,6 +122,15 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: "/cards",
+        name: "Cards",
+        component: () => import("@/views/Cards/index.vue"),
+        meta: {
+          title: "卡片",
+          requiresAuth: false,
+        },
+      }
     ],
   },
 

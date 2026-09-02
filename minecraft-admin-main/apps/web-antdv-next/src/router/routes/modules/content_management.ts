@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
         },
         name: 'Publish',
         path: 'publish',
-        component: () => import('#/views/content_management/index.vue'),
+        component: () => import('#/views/content_management/cards.vue'),
       },
       {
         meta: {
@@ -76,6 +76,15 @@ const routes: RouteRecordRaw[] = [
         path: 'website-intro',
         component: () =>
           import('#/views/content_management/websiteIntroduction.vue'),
+      },
+      {
+        meta: {
+          icon: 'lucide:image',
+          title: $t('content.cards'),
+        },
+        name: 'Cards',
+        path: 'cards',
+        component: () => import('#/views/content_management/cards.vue'),
       },
     ],
   },
