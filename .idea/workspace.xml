@@ -6,22 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="Minecraft-system">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/mapper/LoginLogMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/mapper/LoginLogMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/DESIGN.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/Druid.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/MYBATIS_PLUS_GUIDE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/UI开发文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/UI开发文档.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/development_specifications.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/group.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/jf.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/slider.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/video and voice开发文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/ExchangeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/ExchangeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/bug.md" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/bug.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/pnpm-lock.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/Select.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/Select.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/content/points.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/content/points.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/travel/group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/travel/group.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/points.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/points.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,127 +186,10 @@
       <workItem from="1787832550109" duration="636000" />
       <workItem from="1788061934709" duration="18100000" />
       <workItem from="1788102140967" duration="1532000" />
-      <workItem from="1788182316796" duration="755000" />
-    </task>
-    <task id="LOCAL-00087" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783343208047</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1783343208047</updated>
-    </task>
-    <task id="LOCAL-00088" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783346298572</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1783346298572</updated>
-    </task>
-    <task id="LOCAL-00089" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783350154165</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1783350154166</updated>
-    </task>
-    <task id="LOCAL-00090" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783353723036</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1783353723036</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783432350917</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1783432350918</updated>
-    </task>
-    <task id="LOCAL-00092" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783432653882</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1783432653882</updated>
-    </task>
-    <task id="LOCAL-00093" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783437445756</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1783437445756</updated>
-    </task>
-    <task id="LOCAL-00094" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783518999456</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1783518999456</updated>
-    </task>
-    <task id="LOCAL-00095" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783519839465</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
-      <option name="project" value="LOCAL" />
-      <updated>1783519839465</updated>
-    </task>
-    <task id="LOCAL-00096" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783522185982</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1783522185983</updated>
-    </task>
-    <task id="LOCAL-00097" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783523802192</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1783523802192</updated>
-    </task>
-    <task id="LOCAL-00098" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783607827185</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1783607827186</updated>
-    </task>
-    <task id="LOCAL-00099" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783610039545</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1783610039545</updated>
-    </task>
-    <task id="LOCAL-00100" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783610374892</created>
-      <option name="number" value="00100" />
-      <option name="presentableId" value="LOCAL-00100" />
-      <option name="project" value="LOCAL" />
-      <updated>1783610374892</updated>
-    </task>
-    <task id="LOCAL-00101" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783610469780</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1783610469780</updated>
+      <workItem from="1788182316796" duration="3365000" />
+      <workItem from="1788358793152" duration="7905000" />
+      <workItem from="1790931344912" duration="4005000" />
+      <workItem from="1791041472791" duration="1532000" />
     </task>
     <task id="LOCAL-00102" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -585,7 +463,127 @@
       <option name="project" value="LOCAL" />
       <updated>1788101453273</updated>
     </task>
-    <option name="localTasksCounter" value="136" />
+    <task id="LOCAL-00136" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788185473125</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1788185473125</updated>
+    </task>
+    <task id="LOCAL-00137" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788185506562</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1788185506562</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788186335003</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1788186335003</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788186770685</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1788186770685</updated>
+    </task>
+    <task id="LOCAL-00140" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788188397385</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1788188397385</updated>
+    </task>
+    <task id="LOCAL-00141" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788360606601</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1788360606601</updated>
+    </task>
+    <task id="LOCAL-00142" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788361739588</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1788361739588</updated>
+    </task>
+    <task id="LOCAL-00143" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788362322105</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1788362322106</updated>
+    </task>
+    <task id="LOCAL-00144" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788362641341</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1788362641341</updated>
+    </task>
+    <task id="LOCAL-00145" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788364264958</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1788364264958</updated>
+    </task>
+    <task id="LOCAL-00146" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788364598474</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1788364598474</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788365264286</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1788365264286</updated>
+    </task>
+    <task id="LOCAL-00148" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788366639877</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1788366639877</updated>
+    </task>
+    <task id="LOCAL-00149" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788366773799</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1788366773799</updated>
+    </task>
+    <task id="LOCAL-00150" summary="Minecraft-system">
+      <option name="closed" value="true" />
+      <created>1788367476423</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1788367476423</updated>
+    </task>
+    <option name="localTasksCounter" value="151" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
