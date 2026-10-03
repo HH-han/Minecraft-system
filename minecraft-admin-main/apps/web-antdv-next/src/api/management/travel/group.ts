@@ -40,7 +40,7 @@ export const leaveGroup = (groupId: any): Promise<any> => {
 
 // 修改旅行团
 export const updateGroup = (group: any): Promise<any> => {
-  return request.put('/group/update', group)
+  return request.put(`/group/${group.id}`, group)
 }
 
 // 删除旅行团

@@ -3,8 +3,10 @@ package com.minecraft.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.minecraft.common.Result;
+import com.minecraft.dto.request.ExchangeRequest;
 import com.minecraft.entity.ExchangeOrder;
 import com.minecraft.service.ExchangeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,16 +21,17 @@ public class ExchangeController {
     
     // 兑换商品
     @PostMapping
-    public Result exchangeProduct(
-            @RequestParam Long productId,
-            @RequestParam(defaultValue = "1") Integer quantity,
-            @RequestParam String address,
-            @RequestParam String phone,
-            @RequestParam String receiver) {
+    public Result exchangeProduct(@Valid @RequestBody ExchangeRequest request) {
         // 从上下文获取用户ID
         Long userId = 1L; // 这里应该从认证上下文获取，暂时硬编码
-        
-        boolean success = exchangeService.exchangeProduct(userId, productId, quantity, address, phone, receiver);
+
+        boolean success = exchangeService.exchangeProduct(
+                userId,
+                request.getProductId(),
+                request.getQuantity(),
+                request.getAddress(),
+                request.getPhone(),
+                request.getReceiver());
         if (success) {
             return Result.success("兑换成功");
         } else {

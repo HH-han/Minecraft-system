@@ -26,10 +26,14 @@ export const getProducts = (): Promise<any> => {
 }
 
 // 兑换商品
-export const exchangeProduct = (productId: any): Promise<any> => {
-  return request.post('/exchange', {
-    productId
-  })
+export const exchangeProduct = (data: {
+  productId: any;
+  quantity?: number;
+  address?: string;
+  phone?: string;
+  receiver?: string;
+}): Promise<any> => {
+  return request.post('/exchange', data)
 }
 
 // 获取兑换订单
