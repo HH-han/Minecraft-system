@@ -2,7 +2,7 @@
   <div class="records-container">
     <h2 class="records-title">积分记录</h2>
     
-    <el-table :data="records" style="width: 100%" class="records-table">
+    <el-table :data="pagedRecords" style="width: 100%" class="records-table">
       <el-table-column prop="id" label="记录ID" width="100">
       </el-table-column>
       <el-table-column prop="type" label="类型" width="120">
@@ -12,7 +12,7 @@
       </el-table-column>
       <el-table-column prop="points" label="积分变动" width="120">
         <template #default="scope">
-          <span :class="getPointsClass(scope.row.points)">{{ scope.row.points > 0 ? '+' : '' }}{{ scope.row.points }}</span>
+          <span :class="getPointsClass(scope.row)">{{ formatPoints(scope.row) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="200">
@@ -39,46 +39,68 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getPointsRecords } from '@/api/points';
 
-const records = ref([]);
+// 后端返回全量数组（无分页），allRecords 保存完整数据，pagedRecords 做前端分页
+const allRecords = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
-const total = ref(0);
+const total = computed(() => allRecords.value.length);
+
+const pagedRecords = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  return allRecords.value.slice(start, start + pageSize.value);
+});
 
 // 获取积分记录
 const getRecords = async () => {
   try {
     const response = await getPointsRecords(currentPage.value, pageSize.value);
-    records.value = Array.isArray(response.data) ? response.data : [];
+    allRecords.value = Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     console.error('获取积分记录失败:', error);
     ElMessage.error('获取积分记录失败');
-    records.value = [];
+    allRecords.value = [];
   }
+};
+
+// 类型映射：后端使用字符串枚举 INCOME / EXCHANGE（兼容旧的数字类型）
+const TYPE_MAP = {
+  INCOME: { name: '获取积分', class: 'type-earn' },
+  EXCHANGE: { name: '积分兑换', class: 'type-exchange' },
+  EXPIRE: { name: '积分过期', class: 'type-expire' },
+  1: { name: '获取积分', class: 'type-earn' },
+  2: { name: '积分兑换', class: 'type-exchange' },
+  3: { name: '积分过期', class: 'type-expire' }
 };
 
 // 类型样式
 const getTypeClass = (type) => {
-  if (type === 1) return 'type-earn';
-  if (type === 2) return 'type-exchange';
-  if (type === 3) return 'type-expire';
-  return '';
+  return TYPE_MAP[type]?.class || '';
 };
 
 // 类型名称
 const getTypeName = (type) => {
-  if (type === 1) return '获取积分';
-  if (type === 2) return '积分兑换';
-  if (type === 3) return '积分过期';
-  return '其他';
+  return TYPE_MAP[type]?.name || type || '其他';
 };
 
-// 积分样式
-const getPointsClass = (points) => {
-  return points > 0 ? 'points-earn' : 'points-deduct';
+// 是否为积分扣减记录（points 字段恒为正，方向由 type 决定）
+const isDeduct = (row) => {
+  const type = row.type;
+  return type === 'EXCHANGE' || type === 'EXPIRE' || type === 2 || type === 3;
+};
+
+// 积分变动样式
+const getPointsClass = (row) => {
+  return isDeduct(row) ? 'points-deduct' : 'points-earn';
+};
+
+// 积分变动文案：收入 +N，扣减 -N
+const formatPoints = (row) => {
+  const points = row.points ?? 0;
+  return isDeduct(row) ? `-${points}` : `+${points}`;
 };
 
 // 格式化日期
@@ -87,15 +109,14 @@ const formatDate = (date) => {
   return new Date(date).toLocaleString();
 };
 
-// 分页处理
+// 分页处理（前端分页，无需重新请求）
 const handleSizeChange = (size) => {
   pageSize.value = size;
-  getRecords();
+  currentPage.value = 1;
 };
 
 const handleCurrentChange = (current) => {
   currentPage.value = current;
-  getRecords();
 };
 
 onMounted(() => {

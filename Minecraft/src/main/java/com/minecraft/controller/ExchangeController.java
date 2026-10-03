@@ -6,6 +6,7 @@ import com.minecraft.common.Result;
 import com.minecraft.dto.request.ExchangeRequest;
 import com.minecraft.entity.ExchangeOrder;
 import com.minecraft.service.ExchangeService;
+import com.minecraft.utils.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,10 @@ public class ExchangeController {
     // 兑换商品
     @PostMapping
     public Result exchangeProduct(@Valid @RequestBody ExchangeRequest request) {
-        // 从上下文获取用户ID
-        Long userId = 1L; // 这里应该从认证上下文获取，暂时硬编码
+        Long userId = SecurityUtils.getCurrentUserId();
+        if (userId == null) {
+            return Result.error("请先登录");
+        }
 
         boolean success = exchangeService.exchangeProduct(
                 userId,
@@ -44,8 +47,10 @@ public class ExchangeController {
     public Result getExchangeOrders(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        // 从上下文获取用户ID
-        Long userId = 1L; // 这里应该从认证上下文获取，暂时硬编码
+        Long userId = SecurityUtils.getCurrentUserId();
+        if (userId == null) {
+            return Result.error("请先登录");
+        }
         
         Page<ExchangeOrder> orderPage = new Page<>(page, size);
         QueryWrapper<ExchangeOrder> wrapper = new QueryWrapper<>();
