@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.RecommendationAggregationMapper">
+
+    <!-- ================= 用户-物品行为（recency 窗口内） ================= -->
+
+    <select id="selectLikes" resultType="com.minecraft.recommendation.dto.UserItemInteraction">
+        SELECT user_id AS userId, item_id AS itemId, create_time AS actionTime, NULL AS rating
+        FROM like_record
+        WHERE item_type = #{itemType}
+        <if test="since != null">AND create_time &gt;= #{since}</if>
+    </select>
+
+    <select id="selectCollections" resultType="com.minecraft.recommendation.dto.UserItemInteraction">
+        SELECT user_id AS userId, item_id AS itemId, create_time AS actionTime, NULL AS rating
+        FROM collection
+        WHERE item_type = #{itemType}
+        <if test="since != null">AND create_time &gt;= #{since}</if>
+    </select>
+
+    <select id="selectComments" resultType="com.minecraft.recommendation.dto.UserItemInteraction">
+        SELECT user_id AS userId, item_id AS itemId, create_time AS actionTime, rating AS rating
+        FROM comment
+        WHERE item_type = #{itemType}
+          AND status = 1
+        <if test="since != null">AND create_time &gt;= #{since}</if>
+    </select>
+
+    <select id="selectCartItems" resultType="com.minecraft.recommendation.dto.UserItemInteraction">
+        SELECT user_id AS userId, item_id AS itemId, create_time AS actionTime, NULL AS rating
+        FROM cart
+        WHERE item_type = #{itemType}
+        <if test="since != null">AND create_time &gt;= #{since}</if>
+    </select>
+
+    <select id="selectPaidOrders" resultType="com.minecraft.recommendation.dto.UserItemInteraction">
+        SELECT user_id AS userId, item_id AS itemId, create_time AS actionTime, NULL AS rating
+        FROM orders
+        WHERE item_type = #{itemType}
+          AND status IN ('1', '3')
+        <if test="since != null">AND create_time &gt;= #{since}</if>
+    </select>
+
+    <!-- ================= 单用户全部行为（查询时个性化，UNION 五表） ================= -->
+
+    <select id="selectUserInteractions" resultType="com.minecraft.recommendation.dto.UserItemInteraction">
+        SELECT user_id AS userId, item_id AS itemId, create_time AS actionTime,
+               NULL AS rating, 'LIKE' AS actionType
+        FROM like_record
+        WHERE item_type = #{itemType} AND user_id = #{userId}
+          AND create_time &gt;= #{since}
+        UNION ALL
+        SELECT user_id, item_id, create_time, NULL, 'COLLECT'
+        FROM collection
+        WHERE item_type = #{itemType} AND user_id = #{userId}
+          AND create_time &gt;= #{since}
+        UNION ALL
+        SELECT user_id, item_id, create_time, rating, 'COMMENT'
+        FROM comment
+        WHERE item_type = #{itemType} AND user_id = #{userId} AND status = 1
+          AND create_time &gt;= #{since}
+        UNION ALL
+        SELECT user_id, item_id, create_time, NULL, 'CART'
+        FROM cart
+        WHERE item_type = #{itemType} AND user_id = #{userId}
+          AND create_time &gt;= #{since}
+        UNION ALL
+        SELECT user_id, item_id, create_time, NULL, 'ORDER'
+        FROM orders
+        WHERE item_type = #{itemType} AND user_id = #{userId} AND status IN ('1', '3')
+          AND create_time &gt;= #{since}
+    </select>
+
+    <!-- ================= 全量物品计数（用于热度：购物车/支付订单） ================= -->
+
+    <select id="countCartAll" resultType="com.minecraft.recommendation.dto.ItemCountResult">
+        SELECT item_id AS itemId, COUNT(*) AS cnt
+        FROM cart
+        WHERE item_type = #{itemType}
+        GROUP BY item_id
+    </select>
+
+    <select id="countPaidOrdersAll" resultType="com.minecraft.recommendation.dto.ItemCountResult">
+        SELECT item_id AS itemId, COUNT(*) AS cnt
+        FROM orders
+        WHERE item_type = #{itemType}
+          AND status IN ('1', '3')
+        GROUP BY item_id
+    </select>
+
+</mapper>

@@ -13,8 +13,8 @@ export interface UserDetail {
   username: string;
   /** 昵称 */
   nickname: string;
-  /** 性别：1-男 2-女 0-未知 */
-  gender: number;
+  /** 性别：'1'-男 '0'-女 null-未设置 */
+  gender: null | number | string;
   /** 年龄 */
   age: number;
   /** 邮箱 */

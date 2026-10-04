@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.RecommendationItemSimilarityMapper">
+
+    <insert id="upsertSimilarities">
+        INSERT INTO recommendation_item_similarity
+        (category, item_id, neighbor_id, similarity)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.category}, #{it.itemId}, #{it.neighborId}, #{it.similarity})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            similarity = VALUES(similarity),
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <delete id="deleteByCategory">
+        DELETE FROM recommendation_item_similarity
+        WHERE category = #{category}
+    </delete>
+
+    <select id="selectNeighbors" resultType="com.minecraft.entity.recommendation.RecommendationItemSimilarity">
+        SELECT id, category, item_id AS itemId, neighbor_id AS neighborId,
+               similarity, updated_at AS updatedAt
+        FROM recommendation_item_similarity
+        WHERE category = #{category}
+          AND item_id = #{itemId}
+          AND neighbor_id != #{itemId}
+        ORDER BY similarity DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectNeighborsByItems"
+            resultType="com.minecraft.entity.recommendation.RecommendationItemSimilarity">
+        SELECT id, category, item_id AS itemId, neighbor_id AS neighborId,
+               similarity, updated_at AS updatedAt
+        FROM recommendation_item_similarity
+        WHERE category = #{category}
+          AND item_id IN
+          <foreach collection="itemIds" item="id" open="(" separator="," close=")">
+              #{id}
+          </foreach>
+        ORDER BY item_id, similarity DESC
+    </select>
+
+</mapper>

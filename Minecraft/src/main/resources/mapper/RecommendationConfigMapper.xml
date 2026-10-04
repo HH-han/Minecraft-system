@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.RecommendationConfigMapper">
+
+    <select id="selectByKey" resultType="com.minecraft.entity.recommendation.RecommendationConfig">
+        SELECT id, scope, category, param_key, param_value, value_type,
+               description, updated_by, created_at, updated_at
+        FROM recommendation_config
+        WHERE scope = #{scope}
+          AND category = #{category}
+          AND param_key = #{paramKey}
+        LIMIT 1
+    </select>
+
+</mapper>

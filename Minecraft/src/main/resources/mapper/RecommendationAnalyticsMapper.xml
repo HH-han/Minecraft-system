@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.RecommendationAnalyticsMapper">
+
+    <!-- ================= 曝光基础统计 ================= -->
+
+    <select id="countExposures" resultType="long">
+        SELECT COUNT(*)
+        FROM recommendation_exposure_log
+        WHERE created_at &gt;= #{since}
+        <if test="category != null">AND category = #{category}</if>
+    </select>
+
+    <select id="countExposureUsers" resultType="long">
+        SELECT COUNT(DISTINCT user_id)
+        FROM recommendation_exposure_log
+        WHERE created_at &gt;= #{since}
+          AND user_id IS NOT NULL
+        <if test="category != null">AND category = #{category}</if>
+    </select>
+
+    <select id="countExposureItems" resultType="long">
+        SELECT COUNT(DISTINCT item_id)
+        FROM recommendation_exposure_log
+        WHERE created_at &gt;= #{since}
+        <if test="category != null">AND category = #{category}</if>
+    </select>
+
+    <select id="selectScoreBuckets"
+            resultType="com.minecraft.recommendation.dto.ScoreBucketResult">
+        SELECT LEAST(FLOOR(score * 10), 10) AS bucket, COUNT(*) AS cnt
+        FROM recommendation_exposure_log
+        WHERE created_at &gt;= #{since}
+        <if test="category != null">AND category = #{category}</if>
+        GROUP BY bucket
+        ORDER BY bucket
+    </select>
+
+    <select id="selectTopItems"
+            resultType="com.minecraft.recommendation.dto.ItemExposureResult">
+        SELECT item_id AS itemId, COUNT(*) AS exposures
+        FROM recommendation_exposure_log
+        WHERE created_at &gt;= #{since}
+        <if test="category != null">AND category = #{category}</if>
+        GROUP BY item_id
+        ORDER BY exposures DESC, item_id ASC
+        LIMIT #{limit}
+    </select>
+
+    <!-- ================= 曝光归因（行为发生在曝光后 N 小时内） ================= -->
+
+    <sql id="attributionJoinCondition">
+        INNER JOIN recommendation_exposure_log l
+            ON l.user_id = r.user_id
+           AND l.item_id = r.item_id
+           AND l.category = #{itemType}
+           AND r.create_time &gt;= l.created_at
+           AND r.create_time &lt;= DATE_ADD(l.created_at, INTERVAL #{attributionHours} HOUR)
+        WHERE r.item_type = #{itemType}
+          AND r.create_time &gt;= #{since}
+    </sql>
+
+    <select id="countAttributedInteractions" resultType="long">
+        SELECT COUNT(*) FROM (
+            SELECT r.id FROM like_record r
+            <include refid="attributionJoinCondition"/>
+            UNION ALL
+            SELECT r.id FROM collection r
+            <include refid="attributionJoinCondition"/>
+            UNION ALL
+            SELECT r.id FROM comment r
+            <include refid="attributionJoinCondition"/>
+            AND r.status = 1
+        ) t
+    </select>
+
+    <select id="countAttributedConversions" resultType="long">
+        SELECT COUNT(*) FROM (
+            SELECT r.id FROM cart r
+            <include refid="attributionJoinCondition"/>
+            UNION ALL
+            SELECT r.id FROM orders r
+            <include refid="attributionJoinCondition"/>
+            AND r.status IN ('1', '3')
+        ) t
+    </select>
+
+</mapper>

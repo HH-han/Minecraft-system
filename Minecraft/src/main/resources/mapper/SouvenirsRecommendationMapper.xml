@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.SouvenirsRecommendationMapper">
+
+    <!-- 批量写入纪念品推荐分；冲突时只更新算法列，人工列（is_featured/feature_weight/status）保持不变 -->
+    <insert id="upsertItems">
+        INSERT INTO souvenirs_recommendations
+        (item_id, recommendation_score, user_preference_matching, popularity_index,
+         collaborative_score, content_score, seasonal_score, quality_score)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.itemId}, #{it.recommendationScore}, #{it.userPreferenceMatching},
+             #{it.popularityIndex}, #{it.collaborativeScore}, #{it.contentScore},
+             #{it.seasonalScore}, #{it.qualityScore})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            recommendation_score = VALUES(recommendation_score),
+            user_preference_matching = VALUES(user_preference_matching),
+            popularity_index = VALUES(popularity_index),
+            collaborative_score = VALUES(collaborative_score),
+            content_score = VALUES(content_score),
+            seasonal_score = VALUES(seasonal_score),
+            quality_score = VALUES(quality_score)
+    </insert>
+
+</mapper>

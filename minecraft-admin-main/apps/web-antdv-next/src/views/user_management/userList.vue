@@ -68,7 +68,7 @@ interface UserFormState {
   password: string;
   username: string;
   nickname: string;
-  gender: number; // 1 男 / 2 女 / 0 未知
+  gender: null | number; // 1 男 / 0 女 / null 未设置
   age: null | number;
   email: string;
   phone: string;
@@ -93,7 +93,7 @@ function emptyForm(): UserFormState {
     password: '',
     username: '',
     nickname: '',
-    gender: 0,
+    gender: null,
     age: null,
     email: '',
     phone: '',
@@ -234,9 +234,13 @@ function normalizeList(res: any): UserDetail[] {
   return arr.map((raw) => {
     const row: any = { ...(raw ?? {}) };
     row.avatar = normalizeAvatarUrl(row.avatar);
-    // gender 兼容字符串 / 数字两种
-    const g = Number(row.gender);
-    row.gender = Number.isFinite(g) ? g : 0;
+    // gender 兼容字符串 / 数字两种：'1' 男 / '0' 女 / null 未设置
+    if (row.gender === null || row.gender === undefined || row.gender === '') {
+      row.gender = null;
+    } else {
+      const g = Number(row.gender);
+      row.gender = Number.isFinite(g) ? g : null;
+    }
     // online 0/1 → boolean
     row.online = Number(row.online) === 1;
     // 避免密码字段意外泄漏
@@ -399,18 +403,18 @@ const pagination = computed(() => ({
 // 辅助函数
 // =========================
 function genderText(gender: any): string {
-  const g = Number(gender);
-  switch (g) {
-    case 1: {
-      return $t('user.detail.gender.male');
-    }
-    case 2: {
-      return $t('user.detail.gender.female');
-    }
-    default: {
-      return $t('user.detail.gender.unknown');
-    }
+  // 后端 gender 为字符串：'1' 男 / '0' 女 / null 未设置
+  if (gender === null || gender === undefined || gender === '') {
+    return $t('user.detail.gender.unknown');
   }
+  const g = String(gender);
+  if (g === '1') {
+    return $t('user.detail.gender.male');
+  }
+  if (g === '0') {
+    return $t('user.detail.gender.female');
+  }
+  return $t('user.detail.gender.unknown');
 }
 
 function formatDateTime(value: number | string | undefined): string {
@@ -429,7 +433,10 @@ function formatDateTime(value: number | string | undefined): string {
  * 头像字段同样走 normalizeAvatarUrl，避免编辑态预览时头像不显示
  */
 function recordToForm(rec: any): UserFormState {
-  const g = Number(rec.gender);
+  const g =
+    rec.gender === null || rec.gender === undefined || rec.gender === ''
+      ? Number.NaN
+      : Number(rec.gender);
   const rawAvatar =
     rec.avatar ??
     rec.userAvatar ??
@@ -443,7 +450,7 @@ function recordToForm(rec: any): UserFormState {
     password: '', // 不在表单中预填密码
     username: String(rec.username ?? ''),
     nickname: String(rec.nickname ?? ''),
-    gender: Number.isFinite(g) ? g : 0,
+    gender: Number.isFinite(g) ? g : null,
     age:
       rec.age === undefined || rec.age === null || rec.age === ''
         ? null
@@ -511,6 +518,10 @@ async function handleSubmit() {
   try {
     // 组装载荷：去除空密码（编辑时若未填则不发送）
     const payload: any = { ...formData };
+    // 详情视图专用字段：后端为 Integer/LocalDateTime 类型，布尔值会导致反序列化失败，表单不提交
+    delete payload.online;
+    delete payload.createTime;
+    delete payload.updateTime;
     // id / userId 必需，若表单里有则带上
     if (formData.id !== undefined && formData.id !== null) {
       payload.id = formData.id;
@@ -1115,10 +1126,10 @@ async function confirmCropperAvatar() {
                 <Radio :value="1">
                   {{ $t('user.form.gender_option_male') }}
                 </Radio>
-                <Radio :value="2">
+                <Radio :value="0">
                   {{ $t('user.form.gender_option_female') }}
                 </Radio>
-                <Radio :value="0">
+                <Radio :value="null">
                   {{ $t('user.form.gender_option_unknown') }}
                 </Radio>
               </Radio.Group>

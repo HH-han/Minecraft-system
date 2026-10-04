@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minecraft.mapper.RecommendationExposureLogMapper">
+
+    <!-- 异步批量写入曝光日志 -->
+    <insert id="batchInsert">
+        INSERT INTO recommendation_exposure_log
+        (user_id, category, item_id, score, rank_position, source, request_id, created_at)
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+            (#{it.userId}, #{it.category}, #{it.itemId}, #{it.score},
+             #{it.rankPosition}, #{it.source}, #{it.requestId}, #{it.createdAt})
+        </foreach>
+    </insert>
+
+    <!-- 分批清理过期数据，避免大事务 -->
+    <delete id="purgeBefore">
+        DELETE FROM recommendation_exposure_log
+        WHERE created_at &lt; #{before}
+        LIMIT #{limit}
+    </delete>
+
+</mapper>
