@@ -144,7 +144,7 @@ onMounted(load);
 
 <template>
   <Page auto-content-height>
-    <Card :bordered="false">
+    <Card variant="borderless">
       <Tabs v-model:activeKey="activeTab">
         <Tabs.TabPane
           v-for="tab in filterTabs"

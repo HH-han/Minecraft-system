@@ -154,7 +154,7 @@ onMounted(load);
 
 <template>
   <Page auto-content-height>
-    <Card :bordered="false">
+    <Card variant="borderless">
       <Tabs :active-key="category" @change="switchCategory">
         <Tabs.TabPane
           v-for="tab in categoryTabs"

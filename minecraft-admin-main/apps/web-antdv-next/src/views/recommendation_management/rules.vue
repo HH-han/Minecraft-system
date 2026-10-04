@@ -236,7 +236,7 @@ onMounted(load);
 
 <template>
   <Page auto-content-height>
-    <Card :bordered="false">
+    <Card variant="borderless">
       <Tabs :active-key="category" @change="switchCategory">
         <Tabs.TabPane
           v-for="tab in categoryTabs"
@@ -320,7 +320,7 @@ onMounted(load);
       :open="modalVisible"
       :title="editingId ? $t('recommendation.editRule') : $t('recommendation.addRule')"
       :confirm-loading="submitting"
-      :destroy-on-close="true"
+      destroy-on-hidden
       @ok="submit"
       @cancel="modalVisible = false"
     >

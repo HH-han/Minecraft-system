@@ -125,7 +125,7 @@ onMounted(load);
 
 <template>
   <Page auto-content-height>
-    <Card :bordered="false">
+    <Card variant="borderless">
       <Space wrap>
         <Select
           v-model:value="category"
@@ -201,7 +201,7 @@ onMounted(load);
 
       <Row :gutter="16" style="margin-top: 16px">
         <Col :xs="24" :lg="12">
-          <Card :title="$t('recommendation.scoreBuckets')" :bordered="false">
+          <Card :title="$t('recommendation.scoreBuckets')" variant="borderless">
             <Empty v-if="scoreBuckets.length === 0" :description="$t('recommendation.noData')" />
             <div v-else class="bucket-list">
               <div v-for="b in scoreBuckets" :key="b.bucket" class="bucket-row">
@@ -218,7 +218,7 @@ onMounted(load);
           </Card>
         </Col>
         <Col :xs="24" :lg="12">
-          <Card :title="$t('recommendation.jobStats')" :bordered="false">
+          <Card :title="$t('recommendation.jobStats')" variant="borderless">
             <Empty
               v-if="jobRows.length === 0"
               :description="$t('recommendation.noData')"
@@ -246,7 +246,7 @@ onMounted(load);
 
       <Card
         :title="$t('recommendation.topItems')"
-        :bordered="false"
+        variant="borderless"
         style="margin-top: 16px"
       >
         <Empty v-if="topRows.length === 0" :description="$t('recommendation.noData')" />

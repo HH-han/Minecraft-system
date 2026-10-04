@@ -55,6 +55,16 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
+          icon: 'lucide:workflow',
+          title: $t('recommendation.intervention'),
+        },
+        name: 'RecommendationIntervention',
+        path: 'intervention',
+        component: () =>
+          import('#/views/recommendation_management/intervention.vue'),
+      },
+      {
+        meta: {
           icon: 'lucide:calendar-clock',
           title: $t('recommendation.schedule'),
         },

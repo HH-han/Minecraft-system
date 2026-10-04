@@ -139,7 +139,7 @@ onMounted(loadAll);
       <Col :xs="24" :lg="12">
         <Card
           :title="$t('recommendation.schedule')"
-          :bordered="false"
+          variant="borderless"
           style="margin-bottom: 16px"
         >
           <Skeleton v-if="loading" active :paragraph="{ rows: 3 }" />
@@ -183,7 +183,7 @@ onMounted(loadAll);
         </Card>
       </Col>
       <Col :xs="24" :lg="12">
-        <Card :title="$t('recommendation.recentJobs')" :bordered="false">
+        <Card :title="$t('recommendation.recentJobs')" variant="borderless">
           <Space wrap style="margin-bottom: 12px">
             <Select
               v-model:value="jobCategory"

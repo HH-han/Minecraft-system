@@ -31,7 +31,9 @@ import java.util.Set;
  *   <li>HIDE 规则命中的物品直接剔除；</li>
  *   <li>PIN 规则命中的物品按 sortOrder 升序置顶（即使综合分较低也会被补捞）；</li>
  *   <li>其余物品按综合分降序；BOOST 规则命中时最终分 = 综合分 + boost*(1-综合分)；</li>
- *   <li>没有任何人工规则时，结果等价于纯综合分推荐。</li>
+ *   <li>没有任何人工规则时，结果等价于纯综合分推荐；</li>
+ *   <li>最后应用业务级干预规则（intervention_rule，条件-动作模式）：
+ *       FILTER 筛选 / SORT 排序 / HIDE 隐藏 / PIN 置顶 / BOOST 加权重排。</li>
  * </ol>
  * 城市过滤：参数非空时与物品 city 精确匹配。
  */
@@ -49,6 +51,7 @@ public class ClientRecommendationService {
     private final RecommendationMapperRegistry registry;
     private final RecommendationItemCatalog catalog;
     private final RecommendationRuleService ruleService;
+    private final InterventionRuleService interventionRuleService;
 
     /**
      * 获取客户端推荐列表。
@@ -147,17 +150,33 @@ public class ClientRecommendationService {
             orderedIds.add(row.getItemId());
         }
 
-        // 7. 裁剪 + 组装 VO
-        List<ClientRecommendationItemVO> result = new ArrayList<>(Math.min(size, orderedIds.size()));
-        int rank = 1;
+        // 7. 业务级干预规则（intervention_rule）：条件-动作模式，支持筛选/排序/隐藏/置顶/加权
+        List<InterventionRuleService.Candidate> candidates = new ArrayList<>(orderedIds.size());
         for (Long itemId : orderedIds) {
+            BaseRecommendationItem row = rowById.get(itemId);
+            ItemDetail detail = details.get(itemId);
+            candidates.add(new InterventionRuleService.Candidate(
+                    itemId,
+                    effectiveScore(row.getRecommendationScore(), boosts.get(itemId)),
+                    detail == null ? null : detail.getPrice(),
+                    detail == null ? null : detail.getRating()));
+        }
+        InterventionRuleService.AppliedOrder applied =
+                interventionRuleService.apply(category.code(), candidates, now);
+        List<Long> finalOrder = applied.orderedIds();
+        Set<Long> enginePinned = applied.pinnedIds();
+
+        // 8. 裁剪 + 组装 VO
+        List<ClientRecommendationItemVO> result = new ArrayList<>(Math.min(size, finalOrder.size()));
+        int rank = 1;
+        for (Long itemId : finalOrder) {
             if (result.size() >= size) {
                 break;
             }
             BaseRecommendationItem row = rowById.get(itemId);
             ItemDetail detail = details.get(itemId);
-            result.add(toVO(row, detail, rank,
-                    pinned.contains(itemId), boosts.get(itemId)));
+            boolean isPinned = pinned.contains(itemId) || enginePinned.contains(itemId);
+            result.add(toVO(row, detail, rank, isPinned, boosts.get(itemId)));
             rank++;
         }
         return result;

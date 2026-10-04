@@ -112,3 +112,29 @@ export const updateRecommendationRule = (id: number | string, payload: any): Pro
 export const deleteRecommendationRule = (id: number | string): Promise<any> => {
   return request.delete(`/admin/recommendations/rules/${id}`);
 };
+
+// ---------------- 业务干预规则（条件-动作模式） ----------------
+
+// 业务干预规则列表（范围/状态/类型可选过滤）
+export const getInterventionRules = (params?: {
+  ruleType?: string;
+  scopeCategory?: string;
+  status?: number;
+}): Promise<any> => {
+  return request.get('/admin/intervention/rules', { params });
+};
+
+// 新建业务干预规则（规则编码全局唯一）
+export const createInterventionRule = (payload: any): Promise<any> => {
+  return request.post('/admin/intervention/rules', payload);
+};
+
+// 更新业务干预规则
+export const updateInterventionRule = (id: number | string, payload: any): Promise<any> => {
+  return request.put(`/admin/intervention/rules/${id}`, payload);
+};
+
+// 删除业务干预规则
+export const deleteInterventionRule = (id: number | string): Promise<any> => {
+  return request.delete(`/admin/intervention/rules/${id}`);
+};
