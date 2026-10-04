@@ -1,7 +1,9 @@
 package com.minecraft.recommendation.service;
 
 import com.minecraft.recommendation.algorithm.RecommendationDefaults;
+import com.minecraft.recommendation.config.RecommendationMapperRegistry;
 import com.minecraft.recommendation.enums.JobTriggerType;
+import com.minecraft.recommendation.enums.RecommendCategory;
 import com.minecraft.recommendation.event.RecommendationConfigChangedEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ public class RecommendationScheduleManager {
     private final RecommendationConfigService configService;
     private final RecommendationRecalcService recalcService;
     private final RecommendationAnalyticsService analyticsService;
+    private final RecommendationMapperRegistry registry;
 
     private volatile ScheduledFuture<?> scheduledFuture;
     private volatile CronTrigger cronTrigger;
@@ -43,16 +46,42 @@ public class RecommendationScheduleManager {
             @Qualifier("recommendationTaskScheduler") TaskScheduler taskScheduler,
             RecommendationConfigService configService,
             RecommendationRecalcService recalcService,
-            RecommendationAnalyticsService analyticsService) {
+            RecommendationAnalyticsService analyticsService,
+            RecommendationMapperRegistry registry) {
         this.taskScheduler = taskScheduler;
         this.configService = configService;
         this.recalcService = recalcService;
         this.analyticsService = analyticsService;
+        this.registry = registry;
     }
 
     @PostConstruct
     public void init() {
         reschedule();
+        checkColdStart();
+    }
+
+    /**
+     * 冷启动检测：四张推荐结果表全部为空时给出明确运维提示。
+     * 推荐结果仅由重算任务写入，全新部署后若从未触发过重算，管理端/用户端列表都会为空。
+     */
+    private void checkColdStart() {
+        try {
+            boolean allEmpty = true;
+            for (RecommendCategory category : RecommendCategory.values()) {
+                Long count = registry.mapper(category).selectCount(null);
+                if (count != null && count > 0) {
+                    allEmpty = false;
+                    break;
+                }
+            }
+            if (allEmpty) {
+                log.warn("推荐结果表全部为空：请在管理端「智能推荐 - 推荐物品」点击全量重算，"
+                        + "或调用 POST /api/admin/recommendations/recalc 生成初始推荐数据");
+            }
+        } catch (Exception e) {
+            log.debug("推荐冷启动检测跳过：{}", e.getMessage());
+        }
     }
 
     /**

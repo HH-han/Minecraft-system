@@ -38,15 +38,23 @@
                             v-for="region in filteredDestinations" 
                             :key="region.id" 
                             class="region-card">
-                            <h3 class="region-title">{{ region.provinceName }}</h3>
+                            <div class="region-header">
+                                <span class="region-flag">{{ region.flagEmoji }}</span>
+                                <h3 class="region-title">{{ region.name }}</h3>
+                                <span class="region-city-count">{{ region.cities.length }} 个城市</span>
+                            </div>
+                            <p class="region-description" v-if="region.description">{{ region.description }}</p>
                             <ul class="city-list">
                                 <li 
                                     v-for="city in region.cities" 
                                     :key="city.id || city" 
                                     class="city-item"
-                                    @click="handleCityClick(region.provinceName, city)">
+                                    @click="handleCityClick(region.name, city)">
                                     <div class="city-info">
-                                        <h4 class="city-name">{{ city.cityName || city.chineseName || city.name || city }}</h4>
+                                        <h4 class="city-name">
+                                            {{ city.chineseName || city.name || city }}
+                                            <span v-if="city.isCapital" class="capital-badge">首都</span>
+                                        </h4>
                                         <p class="city-description" v-if="city.description">{{ city.description }}</p>
                                         <div class="city-meta" v-if="city.bestSeason || city.famousFor">
                                             <span class="best-season" v-if="city.bestSeason">最佳季节: {{ city.bestSeason }}</span>
@@ -74,140 +82,129 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import citiesApi from '@/api/cities.js';
+import countriesApi from '@/api/countries.js';
 
-// 标签页配置
+// 标签页配置：按大洲（continent_id）划分，与 countries 表结构对齐
 const tabs = ref([
-  { name: '国内', regionId: 1 },
-  { name: '日本', regionId: 2 },
-  { name: '美洲', regionId: 3 },
-  { name: '欧洲', regionId: 4 },
-  { name: '欧洲美洲', regionId: 5 },
-  { name: '澳洲非洲', regionId: 6 }
+  { name: '亚洲', continentId: 1 },
+  { name: '欧洲', continentId: 2 },
+  { name: '非洲', continentId: 3 },
+  { name: '北美洲', continentId: 4 },
+  { name: '南美洲', continentId: 5 },
+  { name: '大洋洲', continentId: 6 }
 ]);
 
-const currentTab = ref('国内');
-const destinations = ref([]);
+const currentTab = ref('亚洲');
+const destinations = ref([]); // 国家分组数据：[{ id, name, chineseName, flagEmoji, description, cities: [...] }]
 const loading = ref(false);
 const error = ref(null);
 
-// 根据当前标签筛选目的地数据
+// 从后端分页响应中提取记录列表
+const extractRecords = (response) => {
+  if (Array.isArray(response)) return response;
+  if (response?.code === 200 || response?.data) {
+    if (Array.isArray(response.data)) return response.data;
+    if (Array.isArray(response.data?.records)) return response.data.records;
+  }
+  return null;
+};
+
+// 根据当前标签（大洲）筛选国家，并按国家城市数降序排列（热门优先）
 const filteredDestinations = computed(() => {
-  if (!destinations.value.length) return [];
-  
   const currentRegion = tabs.value.find(tab => tab.name === currentTab.value);
   if (!currentRegion) return [];
-  
-  // 根据regionId筛选目的地数据
-  return destinations.value.filter(destination => {
-    return destination.region?.id === currentRegion.regionId || !destination.region;
-  });
+
+  return destinations.value
+    .filter(country => country.continentId === currentRegion.continentId)
+    .sort((a, b) => b.cities.length - a.cities.length || a.id - b.id);
 });
 
-// 获取热门目的地数据
+// 获取所有分页数据
+const fetchAllPages = async (fetchFn, pageSize = 100) => {
+  const allRecords = [];
+  let page = 1;
+  let totalPages = 1;
+
+  while (page <= totalPages) {
+    const response = await fetchFn(page, pageSize);
+    const records = extractRecords(response);
+    if (!records) throw new Error('数据格式解析失败');
+
+    allRecords.push(...records);
+    // IPage 分页信息：records + total + size
+    const total = response?.data?.total;
+    const size = response?.data?.size || pageSize;
+    totalPages = Math.ceil(total / size);
+    if (!total || records.length < size) break; // 无更多数据
+    page++;
+  }
+
+  return allRecords;
+};
+
+// 获取热门目的地数据：拉取全部国家与城市，按国家分组
 const fetchHotDestinations = async () => {
   loading.value = true;
   error.value = null;
-  
+
   try {
-    const response = await citiesApi.getCitiesList();
-    
-    // 尝试不同的响应格式处理
-    let citiesData = [];
-    
-    // 格式1: 后端实际返回的格式 {code: 200, message: "success", data: {records: [...]}}
-    if (response.code === 200 && response.data && response.data.records) {
-      citiesData = response.data.records;
-    }
-    // 格式2: 直接返回数据数组
-    else if (Array.isArray(response)) {
-      citiesData = response;
-    }
-    // 格式3: 其他可能的格式
-    else if (response.data && Array.isArray(response.data)) {
-      citiesData = response.data;
-    }
-    else {
-      // 使用默认数据作为fallback
-      destinations.value = getDefaultDestinations();
+    // 并行获取全部国家和城市数据
+    const [countriesData, citiesData] = await Promise.all([
+      fetchAllPages((page, size) => countriesApi.getCountriesList(page, size)),
+      fetchAllPages((page, size) => citiesApi.getCitiesList(page, size))
+    ]);
+
+    if (!countriesData.length) {
+      destinations.value = [];
       return;
     }
-    
-    // 按国家分组城市数据
-    const groupedDestinations = [];
+
+    // 按国家分组城市数据，优先使用后端 countries 表的真实字段
     const countryMap = new Map();
-    
-    // 国家名称映射
-    const countryNames = {
-      1: '中国',
-      2: '日本',
-      3: '美国',
-      4: '法国',
-      5: '澳大利亚',
-      6: '南非',
-      7: '巴西',
-      8: '德国',
-      9: '印度'
-    };
-    
+
+    countriesData.forEach(country => {
+      countryMap.set(country.id, {
+        id: country.id,
+        name: country.chineseName || country.name,
+        englishName: country.name,
+        flagEmoji: country.flagEmoji || '',
+        continentId: country.continentId,
+        description: country.description || '',
+        cities: []
+      });
+    });
+
+    // 每个城市挂到对应国家下；城市按首都优先、人口降序排列
     citiesData.forEach(city => {
-      // 获取国家名称
-      const countryName = countryNames[city.countryId] || '未知国家';
-      
-      // 根据国家ID确定regionId
-      let regionId = 1; // 默认国内
-      if (city.countryId === 1) {
-        regionId = 1; // 中国 - 国内
-      } else if (city.countryId === 2) {
-        regionId = 2; // 日本
-      } else if (city.countryId === 3) {
-        regionId = 3; // 美国 - 美洲
-      } else if (city.countryId === 4 || city.countryId === 8) {
-        regionId = 4; // 法国、德国 - 欧洲
-      } else if (city.countryId === 5 || city.countryId === 6) {
-        regionId = 6; // 澳大利亚、南非 - 澳洲非洲
-      } else if (city.countryId === 7) {
-        regionId = 5; // 巴西 - 欧洲美洲
+      const countryGroup = countryMap.get(city.countryId);
+      if (countryGroup) {
+        countryGroup.cities.push(city);
       }
-      
-      if (!countryMap.has(countryName)) {
-        countryMap.set(countryName, {
-          id: city.countryId,
-          provinceName: countryName,
-          region: { id: regionId, name: countryName },
-          cities: []
-        });
-      }
-      
-      // 添加城市数据
-      countryMap.get(countryName).cities.push(city);
     });
-    
-    // 转换为数组
-    countryMap.forEach(country => {
-      groupedDestinations.push(country);
-    });
-    
-    destinations.value = groupedDestinations;
+
+    destinations.value = Array.from(countryMap.values())
+      .map(country => ({
+        ...country,
+        // 城市排序：首都在前，其次按人口降序
+        cities: country.cities.sort((a, b) => {
+          if (!!a.isCapital !== !!b.isCapital) return a.isCapital ? -1 : 1;
+          return (b.population || 0) - (a.population || 0);
+        })
+      }))
+      .filter(country => country.continentId); // 过滤无大洲信息的脏数据
   } catch (err) {
     console.error('获取热门目的地失败:', err);
     error.value = err.message || '网络请求失败，请稍后重试';
-    
-    // 如果API调用失败，使用默认数据作为fallback
-    destinations.value = getDefaultDestinations();
+    destinations.value = [];
   } finally {
     loading.value = false;
   }
 };
 
-// 默认目的地数据
-const getDefaultDestinations = () => {
-  return [];
-};
-
 // 处理城市点击事件
-const handleCityClick = (provinceName, city) => {
-  const cityName = city.cityName || city.chineseName || city.name || city;
-  console.log(`点击了 ${provinceName} - ${cityName}`);
+const handleCityClick = (countryName, city) => {
+  const cityName = city.chineseName || city.name || city;
+  console.log(`点击了 ${countryName} - ${cityName}`);
   // 这里可以添加跳转到城市详情页的逻辑
 };
 
@@ -290,6 +287,61 @@ onMounted(() => {
     gap: 24px;
 }
 
+.region-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.region-flag {
+    font-size: 26px;
+    line-height: 1;
+}
+
+.region-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 20px;
+    color: #4a6bff;
+    position: relative;
+}
+
+.region-city-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: #636e72;
+    background: rgba(74, 107, 255, 0.1);
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.region-description {
+    margin: 0 0 20px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #636e72;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.capital-badge {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #f0932b, #eb4d4b);
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 6px;
+}
+
 .region-card {
     background: #ffffff;
     border-radius: 12px;
@@ -301,26 +353,6 @@ onMounted(() => {
 .region-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-}
-
-.region-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 20px;
-    color: #4a6bff;
-    position: relative;
-    padding-bottom: 12px;
-}
-
-.region-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: linear-gradient(90deg, #4a6bff, #6c5ce7);
-    border-radius: 3px;
 }
 
 .city-list {

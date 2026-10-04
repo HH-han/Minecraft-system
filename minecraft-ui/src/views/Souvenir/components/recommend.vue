@@ -19,13 +19,6 @@
                             搜索
                         </button>
                     </div>
-
-                    <div class="region-filter">
-                        <button v-for="region in regions" :key="region.id"
-                            :class="{ active: activeRegion === region.id }" @click="filterByRegion(region.id)">
-                            {{ region.name }}
-                        </button>
-                    </div>
                 </div>
             </div>
 
@@ -44,38 +37,37 @@
         <main class="main">
             <div class="sort-options">
                 <span>排序方式：</span>
-                <select v-model="sortOption" @change="sortSouvenirs">
-                    <option value="popular">人气推荐</option>
+                <select v-model="sortOption">
+                    <option value="popular">综合推荐</option>
                     <option value="price-asc">价格从低到高</option>
                     <option value="price-desc">价格从高到低</option>
-                    <option value="newest">最新上架</option>
+                    <option value="rating">评分优先</option>
                 </select>
             </div>
 
-            <div class="grid">
-                <div class="card" v-for="item in filteredSouvenirs" :key="item.id">
+            <div class="grid" v-loading="loading">
+                <div class="card" v-for="item in filteredSouvenirs" :key="item.itemId">
                     <div class="image">
                         <img :src="item.image" :alt="item.name">
-                        <span class="tag" v-if="item.tag">{{ item.tag }}</span>
-                        <button class="favorite-btn" @click="toggleFavorite(item.id)"
-                            :class="{ favorited: item.isFavorite }">
+                        <span class="tag" v-if="item.ruleType === 'PIN'">置顶推荐</span>
+                        <span class="tag normal-tag" v-else-if="item.subType">{{ item.subType }}</span>
+                        <button class="favorite-btn" @click="toggleFavorite(item.itemId)"
+                            :class="{ favorited: favoriteIds.has(item.itemId) }">
                             ♥
                         </button>
                     </div>
 
                     <div class="info">
                         <h3>{{ item.name }}</h3>
-                        <p class="origin">{{ item.origin }}</p>
+                        <p class="origin">{{ formatLocation(item) }}</p>
 
                         <div class="price-section">
                             <span class="price">¥{{ item.price }}</span>
-                            <span class="original-price" v-if="item.originalPrice">¥{{ item.originalPrice }}</span>
                         </div>
 
                         <div class="rating">
                             <span class="stars">★★★★★</span>
-                            <span class="score">{{ item.rating }}</span>
-                            <span class="sales" v-if="item.sales">已售{{ item.sales }}</span>
+                            <span class="score" v-if="item.rating">{{ displayRating(item.rating) }}分</span>
                         </div>
 
                         <button class="add-to-cart" @click="addToCart(item)">
@@ -83,15 +75,18 @@
                         </button>
                     </div>
                 </div>
+                <div class="empty-tip" v-if="!loading && filteredSouvenirs.length === 0">
+                    暂无符合条件的纪念品推荐
+                </div>
             </div>
         </main>
 
         <!-- 底部推荐 -->
-        <section class="recommendation">
+        <section class="recommendation" v-if="recommendedItems.length > 0">
             <h2>你可能还喜欢</h2>
             <div class="recommendation-grid">
-                <div class="recommend-item" v-for="item in recommendedItems" :key="item.id"
-                    @click="viewDetail(item.id)">
+                <div class="recommend-item" v-for="item in recommendedItems" :key="item.itemId"
+                    @click="viewDetail(item.itemId)">
                     <img :src="item.image" :alt="item.name">
                     <p>{{ item.name }}</p>
                     <span class="rec-price">¥{{ item.price }}</span>
@@ -101,204 +96,159 @@
     </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { getClientRecommendations } from '@/api/clientRecommendation'
 
 // 搜索相关
 const searchQuery = ref('')
-const activeRegion = ref('all')
 const activeCategory = ref('all')
 const sortOption = ref('popular')
+const loading = ref(false)
 
-// 地区筛选
-const regions = [
-    { id: 'all', name: '全部地区' },
-    { id: 'asia', name: '亚洲' },
-    { id: 'europe', name: '欧洲' },
-    { id: 'america', name: '美洲' },
-    { id: 'africa', name: '非洲' },
-    { id: 'oceania', name: '大洋洲' }
-]
-
-// 分类导航
+// 分类导航（基于商品真实类型）
 const categories = [
     { id: 'all', name: '全部', icon: '🛍️' },
     { id: 'food', name: '特色食品', icon: '🍪' },
     { id: 'craft', name: '手工艺品', icon: '✂️' },
-    { id: 'clothing', name: '服饰配件', icon: '👕' },
+    { id: 'clothing', name: '丝绸纺织', icon: '👕' },
     { id: 'decoration', name: '家居装饰', icon: '🏠' },
-    { id: 'stationery', name: '文具用品', icon: '📝' },
     { id: 'jewelry', name: '珠宝首饰', icon: '💍' },
+    { id: 'beauty', name: '美妆保健', icon: '💄' },
     { id: 'other', name: '其他', icon: '🎁' }
 ]
 
-// 纪念品数据
-const souvenirs = ref([
-    {
-        id: 1,
-        name: '巴黎埃菲尔铁塔模型',
-        origin: '法国巴黎',
-        price: 129,
-        originalPrice: 169,
-        rating: 4.8,
-        sales: 256,
-        image: 'https://images.unsplash.com/photo-1431274172761-fca41d930114?w=500',
-        region: 'europe',
-        category: 'decoration',
-        tag: '新品',
-        isFavorite: false
-    },
-    {
-        id: 2,
-        name: '日本樱花和风折扇',
-        origin: '日本京都',
-        price: 89,
-        originalPrice: 120,
-        rating: 4.6,
-        sales: 182,
-        image: 'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=500',
-        region: 'asia',
-        category: 'craft',
-        tag: '限量',
-        isFavorite: true
-    },
-    {
-        id: 3,
-        name: '埃及法老青铜书签',
-        origin: '埃及开罗',
-        price: 65,
-        originalPrice: 85,
-        rating: 4.5,
-        sales: 97,
-        image: 'https://images.unsplash.com/photo-1584735428869-0049d9e8d8f1?w=500',
-        region: 'africa',
-        category: 'stationery',
-        tag: '热卖',
-        isFavorite: false
-    },
-    {
-        id: 4,
-        name: '瑞士军刀纪念版',
-        origin: '瑞士伯尔尼',
-        price: 199,
-        originalPrice: 249,
-        rating: 4.9,
-        sales: 312,
-        image: 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=500',
-        region: 'europe',
-        category: 'other',
-        tag: '实用',
-        isFavorite: false
-    }
-])
+// 分类与商品类型（subType）的映射
+const categoryTypes = {
+    food: ['食品', '调味品', '酒水', '茶叶'],
+    craft: ['工艺品'],
+    clothing: ['丝绸', '纺织品'],
+    jewelry: ['珠宝'],
+    beauty: ['化妆品', '护肤品', '保健品']
+}
 
-// 推荐商品
-const recommendedItems = ref([
-    {
-        id: 101,
-        name: '荷兰木鞋钥匙扣',
-        price: 39,
-        image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500',
-        origin: '荷兰阿姆斯特丹'
-    },
-    {
-        id: 102,
-        name: '泰国手工皂花',
-        price: 45,
-        image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500',
-        origin: '泰国曼谷'
-    },
-    {
-        id: 103,
-        name: '澳大利亚袋鼠玩偶',
-        price: 78,
-        image: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=500',
-        origin: '澳大利亚悉尼'
-    },
-    {
-        id: 104,
-        name: '巴西咖啡豆礼盒',
-        price: 128,
-        image: 'https://images.unsplash.com/photo-1515442261605-65987783cb6a?w=500',
-        origin: '巴西里约热内卢'
+// 家居装饰通过标签关键词识别
+const decorationKeywords = ['装饰', '摆件', '瓷器', '茶具', '灯', '画']
+
+// 已收藏商品
+const favoriteIds = ref(new Set())
+
+// 纪念品数据（来自推荐接口）
+const souvenirs = ref([])
+
+// 加载推荐纪念品
+async function loadRecommendations() {
+    loading.value = true
+    try {
+        const res = await getClientRecommendations('product', { limit: 50 })
+        souvenirs.value = res.data || []
+    } catch (e) {
+        ElMessage.error('纪念品推荐加载失败，请稍后重试')
+        souvenirs.value = []
+    } finally {
+        loading.value = false
     }
-])
+}
+
+// 判断商品是否属于某分类
+function matchCategory(item, categoryId) {
+    if (categoryId === 'decoration') {
+        return (item.tags || []).some(tag => decorationKeywords.some(k => tag.includes(k)))
+    }
+    if (categoryId === 'other') {
+        const mapped = Object.values(categoryTypes).flat()
+        const isDecoration = (item.tags || []).some(tag => decorationKeywords.some(k => tag.includes(k)))
+        return item.subType && !mapped.includes(item.subType) && !isDecoration
+    }
+    return (categoryTypes[categoryId] || []).includes(item.subType)
+}
 
 // 筛选后的纪念品
 const filteredSouvenirs = computed(() => {
     let result = [...souvenirs.value]
 
-    // 搜索筛选
+    // 搜索筛选（名称/城市/标签/类型）
     if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
+        const query = searchQuery.value.trim().toLowerCase()
         result = result.filter(item =>
-            item.name.toLowerCase().includes(query) ||
-            item.origin.toLowerCase().includes(query)
+            `${item.name || ''} ${item.city || ''} ${item.subType || ''} ${(item.tags || []).join(' ')}`
+                .toLowerCase()
+                .includes(query)
         )
-    }
-
-    // 地区筛选
-    if (activeRegion.value !== 'all') {
-        result = result.filter(item => item.region === activeRegion.value)
     }
 
     // 分类筛选
     if (activeCategory.value !== 'all') {
-        result = result.filter(item => item.category === activeCategory.value)
+        result = result.filter(item => matchCategory(item, activeCategory.value))
     }
 
     // 排序
     switch (sortOption.value) {
         case 'price-asc':
-            return result.sort((a, b) => a.price - b.price)
+            return result.sort((a, b) => (a.price || 0) - (b.price || 0))
         case 'price-desc':
-            return result.sort((a, b) => b.price - a.price)
-        case 'newest':
-            return result.sort((a, b) => b.id - a.id) // 假设ID越大越新
-        default: // popular
-            return result.sort((a, b) => (b.rating * 10 + b.sales) - (a.rating * 10 + a.sales))
+            return result.sort((a, b) => (b.price || 0) - (a.price || 0))
+        case 'rating':
+            return result.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        default:
+            // 综合推荐：保持接口顺序（已结合置顶规则与综合推荐分）
+            return result
     }
 })
 
-// 搜索纪念品
-function searchSouvenirs() {
-    console.log('搜索:', searchQuery.value)
+// 猜你喜欢：取当前未展示的推荐商品
+const recommendedItems = computed(() => {
+    const showingIds = new Set(filteredSouvenirs.value.map(i => i.itemId))
+    return souvenirs.value.filter(item => !showingIds.has(item.itemId)).slice(0, 4)
+})
+
+// 地点展示（省市重复时只展示一个）
+function formatLocation(item) {
+    if (item.province && item.city && item.province !== item.city && !item.province.includes(item.city)) {
+        return `${item.province} · ${item.city}`
+    }
+    return item.city || item.province || ''
 }
 
-// 按地区筛选
-function filterByRegion(regionId) {
-    activeRegion.value = regionId
+// 评分兼容 5 分制与百分制两种历史数据
+function displayRating(rating) {
+    if (rating === null || rating === undefined) return ''
+    return rating > 5 ? (rating / 20).toFixed(1) : rating
+}
+
+// 搜索纪念品（对已加载数据进行筛选）
+function searchSouvenirs() {
+    activeCategory.value = 'all'
 }
 
 // 按分类筛选
 function filterByCategory(categoryId) {
-    activeCategory.value = categoryId
-}
-
-// 排序
-function sortSouvenirs() {
-    console.log('排序方式:', sortOption.value)
+    activeCategory.value = activeCategory.value === categoryId ? 'all' : categoryId
 }
 
 // 收藏/取消收藏
 function toggleFavorite(itemId) {
-    const item = souvenirs.value.find(item => item.id === itemId)
-    if (item) {
-        item.isFavorite = !item.isFavorite
-        console.log(`${item.name} ${item.isFavorite ? '已收藏' : '已取消收藏'}`)
+    const next = new Set(favoriteIds.value)
+    if (next.has(itemId)) {
+        next.delete(itemId)
+    } else {
+        next.add(itemId)
     }
+    favoriteIds.value = next
 }
 
 // 加入购物车
 function addToCart(item) {
-    console.log('添加到购物车:', item.name)
-    // 这里可以添加实际的购物车逻辑
+    ElMessage.success(`已将「${item.name}」加入购物车`)
 }
 
 // 查看详情
 function viewDetail(itemId) {
-    console.log('查看商品详情:', itemId)
     // 这里可以添加路由跳转或显示详情弹窗
+    console.log('查看商品详情:', itemId)
 }
+
+onMounted(loadRecommendations)
 </script>
 <style scoped>
 /* 基础样式 */
@@ -518,6 +468,14 @@ function viewDetail(itemId) {
     gap: 20px;
 }
 
+.empty-tip {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #999;
+    padding: 60px 0;
+    font-size: 15px;
+}
+
 .card {
     background: white;
     border-radius: 12px;
@@ -557,6 +515,10 @@ function viewDetail(itemId) {
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
+}
+
+.tag.normal-tag {
+    background: rgba(0, 0, 0, 0.55);
 }
 
 .favorite-btn {

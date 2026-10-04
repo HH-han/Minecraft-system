@@ -43,36 +43,39 @@
                 <h2>精选推荐</h2>
                 <div class="sort-options">
                     <select v-model="sortOption">
+                        <option value="default">综合推荐</option>
                         <option value="rating">按评分排序</option>
-                        <option value="distance">按距离排序</option>
                         <option value="price">按价格排序</option>
                     </select>
                 </div>
             </div>
 
-            <div class="restaurant-list">
-                <div class="restaurant-card" v-for="restaurant in sortedRestaurants" :key="restaurant.id">
+            <div class="restaurant-list" v-loading="isLoading">
+                <div class="restaurant-card" v-for="restaurant in sortedRestaurants" :key="restaurant.itemId">
                     <div class="restaurant-image">
                         <img :src="restaurant.image" :alt="restaurant.name">
-                        <span class="rating-badge">★ {{ restaurant.rating }}</span>
-                        <span class="distance">{{ restaurant.distance }}km</span>
+                        <span class="pin-badge" v-if="restaurant.ruleType === 'PIN'">置顶推荐</span>
+                        <span class="rating-badge" v-if="restaurant.rating">★ {{ displayRating(restaurant.rating) }}</span>
+                        <span class="distance">{{ restaurant.city || '美食' }}</span>
                     </div>
 
                     <div class="restaurant-info">
                         <h3>{{ restaurant.name }}</h3>
-                        <p class="cuisine-type">{{ restaurant.cuisine }}</p>
+                        <p class="cuisine-type">{{ restaurant.subType || '地方美食' }}</p>
 
                         <div class="tags">
-                            <span v-for="tag in restaurant.tags" :key="tag">{{ tag }}</span>
+                            <span v-for="tag in (restaurant.tags || []).slice(0, 3)" :key="tag">{{ tag }}</span>
                         </div>
 
                         <div class="restaurant-footer">
-                            <span class="price-range">
-                                {{ '¥'.repeat(restaurant.priceLevel) }}
-                            </span>
+                            <span class="price-range" v-if="restaurant.price">¥{{ restaurant.price }}/人</span>
+                            <span class="price-range" v-else>价格待定</span>
                             <button class="book-btn-food">立即预订</button>
                         </div>
                     </div>
+                </div>
+                <div class="empty-tip" v-if="!isLoading && sortedRestaurants.length === 0">
+                    暂无符合条件的美食推荐
                 </div>
             </div>
         </section>
@@ -93,132 +96,134 @@
 </template>
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { getClientRecommendations } from '@/api/clientRecommendation'
 
 // 搜索相关
 const searchQuery = ref('')
 const activeFilter = ref('all')
 const selectedCuisine = ref('all')
-const sortOption = ref('rating')
+const sortOption = ref('default')
 const isLoading = ref(false)
 
-// 筛选选项
+// 快速筛选选项（仅保留数据可支持的维度）
 const quickFilters = [
     { id: 'all', label: '全部' },
-    { id: 'nearby', label: '附近' },
-    { id: 'popular', label: '热门' },
-    { id: 'discount', label: '优惠' },
-    { id: 'delivery', label: '外卖' }
+    { id: 'popular', label: '热门高分' }
 ]
 
-// 美食分类
+// 美食分类（按真实菜系数据归组）
 const cuisines = [
     { id: 'all', name: '全部', icon: '🧺' },
-    { id: 'chinese', name: '中餐', icon: '🥢' },
-    { id: 'western', name: '西餐', icon: '🍽️' },
-    { id: 'japanese', name: '日料', icon: '🍣' },
-    { id: 'korean', name: '韩餐', icon: '🍜' },
-    { id: 'hotpot', name: '火锅', icon: '🍲' },
-    { id: 'dessert', name: '甜点', icon: '🍰' },
-    { id: 'street', name: '小吃', icon: '🍢' },
-    { id: 'vegetarian', name: '素食', icon: '🥗' }
+    { id: 'sichuan', name: '川渝风味', icon: '🍲' },
+    { id: 'north', name: '北方风味', icon: '🥟' },
+    { id: 'east', name: '江浙沪徽', icon: '🦀' },
+    { id: 'south', name: '粤闽桂琼', icon: '🍵' },
+    { id: 'hunan', name: '湘黔风味', icon: '🌶️' },
+    { id: 'yunnan', name: '云贵风味', icon: '🍄' },
+    { id: 'central', name: '华中赣鄂', icon: '🍚' },
+    { id: 'snack', name: '小吃面食', icon: '🍢' }
 ]
 
-// 餐厅数据
-// 更新餐厅数据中的cuisine字段
-const restaurants = ref([
-    {
-        id: 1,
-        name: '川味坊',
-        cuisine: 'chinese',
-        rating: 4.8,
-        distance: 1.2,
-        priceLevel: 3,
-        image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500',
-        tags: ['麻辣', '地道', '人气'],
-        isFavorite: false,
-        delivery: true,
-        discount: false,
-        popular: true
-    },
-    {
-        id: 2,
-        name: '意大利风情',
-        cuisine: 'western',
-        rating: 4.6,
-        distance: 2.5,
-        priceLevel: 4,
-        image: 'https://images.unsplash.com/photo-1592861956120-e524fc739696?w=500',
-        tags: ['披萨', '浪漫', '红酒'],
-        isFavorite: true,
-        delivery: true,
-        discount: true,
-        popular: false
-    },
-    {
-        id: 3,
-        name: '东京寿司',
-        cuisine: 'japanese',
-        rating: 4.9,
-        distance: 0.8,
-        priceLevel: 4,
-        image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=500',
-        tags: ['新鲜', '刺身', '清酒'],
-        isFavorite: false,
-        delivery: false,
-        discount: false,
-        popular: true
-    },
-    {
-        id: 4,
-        name: '韩式烤肉',
-        cuisine: 'korean',
-        rating: 4.5,
-        distance: 1.5,
-        priceLevel: 3,
-        image: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=500',
-        tags: ['烤肉', '泡菜', '啤酒'],
-        isFavorite: false,
-        delivery: true,
-        discount: true,
-        popular: false
-    },
-    {
-        id: 5,
-        name: '海底捞火锅',
-        cuisine: 'hotpot',
-        rating: 4.7,
-        distance: 3.2,
-        priceLevel: 3,
-        image: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500',
-        tags: ['服务好', '24小时', '网红'],
-        isFavorite: true,
-        delivery: true,
-        discount: false,
-        popular: true
-    },
-    {
-        id: 6,
-        name: '甜蜜时光',
-        cuisine: 'dessert',
-        rating: 4.4,
-        distance: 0.5,
-        priceLevel: 2,
-        image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=500',
-        tags: ['下午茶', '蛋糕', '咖啡'],
-        isFavorite: false,
-        delivery: true,
-        discount: true,
-        popular: false
-    }
-])
-
-// 更新筛选逻辑
-if (selectedCuisine.value !== 'all') {
-    result = result.filter(r => r.cuisine === selectedCuisine.value)
+// 菜系分组关键词
+const cuisineKeywords = {
+    sichuan: ['川菜', '渝菜'],
+    north: ['京菜', '鲁菜', '东北菜', '晋菜', '冀菜', '津菜', '豫菜', '陕菜', '蒙菜', '宁菜', '陇菜', '青海菜', '新疆菜', '藏菜'],
+    east: ['沪菜', '浙菜', '苏菜', '徽菜'],
+    south: ['粤菜', '闽菜', '琼菜', '桂菜'],
+    hunan: ['湘菜', '黔菜'],
+    yunnan: ['滇菜'],
+    central: ['鄂菜', '赣菜']
 }
 
-// 美食小贴士
-const tips = ref([
+// 小吃面食关键词（匹配菜名）
+const snackKeywords = ['小吃', '火锅', '面', '粉', '馍', '饺', '包子', '汤圆', '麻花', '糕', '饼', '粽', '丸子', '肠', '串']
+
+// 餐厅数据（来自推荐接口）
+const restaurants = ref([])
+
+// 加载推荐餐厅
+async function loadRecommendations() {
+    isLoading.value = true
+    try {
+        const res = await getClientRecommendations('food', { limit: 50 })
+        restaurants.value = res.data || []
+    } catch (e) {
+        ElMessage.error('美食推荐加载失败，请稍后重试')
+        restaurants.value = []
+    } finally {
+        isLoading.value = false
+    }
+}
+
+// 判断餐厅是否属于某分类
+function matchCuisine(restaurant, cuisineId) {
+    if (cuisineId === 'snack') {
+        const text = `${restaurant.name || ''} ${(restaurant.tags || []).join(' ')}`
+        return snackKeywords.some(k => text.includes(k))
+    }
+    const list = cuisineKeywords[cuisineId] || []
+    return list.includes(restaurant.subType)
+}
+
+// 评分兼容 5 分制与百分制两种历史数据
+function displayRating(rating) {
+    if (rating === null || rating === undefined) return ''
+    return rating > 5 ? (rating / 20).toFixed(1) : rating
+}
+
+// 计算属性：筛选和排序后的餐厅
+const sortedRestaurants = computed(() => {
+    let result = [...restaurants.value]
+
+    // 根据搜索词筛选（餐厅名/城市/菜系/标签）
+    if (searchQuery.value) {
+        const query = searchQuery.value.trim().toLowerCase()
+        result = result.filter(restaurant =>
+            `${restaurant.name || ''} ${restaurant.city || ''} ${restaurant.subType || ''} ${(restaurant.tags || []).join(' ')}`
+                .toLowerCase()
+                .includes(query)
+        )
+    }
+
+    // 热门高分
+    if (activeFilter.value === 'popular') {
+        result = result.filter(r => {
+            const score = r.rating > 5 ? r.rating / 20 : r.rating
+            return score >= 4.8 || r.featured || r.ruleType === 'BOOST'
+        })
+    }
+
+    // 根据美食分类筛选
+    if (selectedCuisine.value !== 'all') {
+        result = result.filter(r => matchCuisine(r, selectedCuisine.value))
+    }
+
+    // 排序
+    switch (sortOption.value) {
+        case 'rating':
+            return result.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+        case 'price':
+            return result.sort((a, b) => (a.price || 0) - (b.price || 0))
+        default:
+            // 综合推荐：保持接口顺序（已结合置顶规则与综合推荐分）
+            return result
+    }
+})
+
+// 搜索美食（对已加载数据进行筛选）
+function searchFood() {
+    activeFilter.value = 'all'
+    selectedCuisine.value = 'all'
+}
+
+// 选择美食分类
+function selectCuisine(cuisineId) {
+    selectedCuisine.value = selectedCuisine.value === cuisineId ? 'all' : cuisineId
+}
+
+// 美食小贴士（静态内容）
+const tips = [
     {
         id: 1,
         title: '如何辨别新鲜海鲜',
@@ -243,127 +248,10 @@ const tips = ref([
         description: '用手而非筷子食用，鱼片朝下蘸酱油，米饭不能沾到酱油。',
         image: 'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=500'
     }
-])
-
-// 用户位置
-const userLocation = ref(null)
-
-// 计算属性：排序和筛选后的餐厅
-const sortedRestaurants = computed(() => {
-    let result = [...restaurants.value]
-
-    // 根据搜索词筛选
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        result = result.filter(restaurant =>
-            restaurant.name.toLowerCase().includes(query) ||
-            restaurant.cuisine.toLowerCase().includes(query) ||
-            restaurant.tags.some(tag => tag.toLowerCase().includes(query))
-        )
-    }
-
-    // 根据快速筛选条件筛选
-    switch (activeFilter.value) {
-        case 'nearby':
-            result = result.filter(r => r.distance <= 2)
-            break
-        case 'popular':
-            result = result.filter(r => r.popular)
-            break
-        case 'discount':
-            result = result.filter(r => r.discount)
-            break
-        case 'delivery':
-            result = result.filter(r => r.delivery)
-            break
-    }
-
-    // 根据美食分类筛选
-    if (selectedCuisine.value !== 'all') {
-        result = result.filter(r => r.cuisine.includes(selectedCuisine.value))
-    }
-
-    // 排序逻辑
-    switch (sortOption.value) {
-        case 'rating':
-            return result.sort((a, b) => b.rating - a.rating)
-        case 'distance':
-            return result.sort((a, b) => a.distance - b.distance)
-        case 'price':
-            return result.sort((a, b) => a.priceLevel - b.priceLevel)
-        default:
-            return result
-    }
-})
-
-// 获取用户位置
-function getUserLocation() {
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    userLocation.value = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    }
-                    resolve(userLocation.value)
-                },
-                error => {
-                    console.error('获取位置失败:', error)
-                    // 使用默认位置
-                    userLocation.value = { lat: 39.9042, lng: 116.4074 } // 北京
-                    resolve(userLocation.value)
-                }
-            )
-        } else {
-            console.log('浏览器不支持地理位置')
-            userLocation.value = { lat: 39.9042, lng: 116.4074 } // 北京
-            resolve(userLocation.value)
-        }
-    })
-}
-
-// 搜索美食
-function searchFood() {
-    isLoading.value = true
-    console.log('正在搜索:', searchQuery.value)
-
-    // 模拟API请求延迟
-    setTimeout(() => {
-        isLoading.value = false
-        console.log('搜索结果:', sortedRestaurants.value)
-    }, 800)
-}
-
-// 选择美食分类
-function selectCuisine(cuisineId) {
-    selectedCuisine.value = cuisineId
-    console.log('选择了美食分类:', cuisineId)
-}
-
-// 收藏/取消收藏餐厅
-function toggleFavorite(restaurantId) {
-    const restaurant = restaurants.value.find(r => r.id === restaurantId)
-    if (restaurant) {
-        restaurant.isFavorite = !restaurant.isFavorite
-        console.log(`${restaurant.name} ${restaurant.isFavorite ? '已收藏' : '已取消收藏'}`)
-    }
-}
-
-// 预订餐厅
-function bookRestaurant(restaurantId) {
-    const restaurant = restaurants.value.find(r => r.id === restaurantId)
-    if (restaurant) {
-        console.log(`正在预订: ${restaurant.name}`)
-        // 这里可以添加实际的预订逻辑
-    }
-}
+]
 
 // 初始化
-onMounted(async () => {
-    await getUserLocation()
-    console.log('用户位置:', userLocation.value)
-})
+onMounted(loadRecommendations)
 </script>
 <style scoped>
 /* 基础样式 */
@@ -665,6 +553,25 @@ onMounted(async () => {
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 14px;
+}
+
+.pin-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.empty-tip {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #999;
+    padding: 60px 0;
+    font-size: 15px;
 }
 
 .restaurant-info {

@@ -89,6 +89,20 @@ public class RecommendationMapperRegistry {
     }
 
     /**
+     * 查询在架（status=1）推荐行，严格按综合分降序（忽略人工置顶列）。
+     * 客户端规则推荐接口使用：人工干预完全由 recommendation_rule 决定。
+     * limit 由调用方保证为安全正整数。
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public List<BaseRecommendationItem> selectActiveScored(RecommendCategory category, int limit) {
+        QueryWrapper<BaseRecommendationItem> wrapper = new QueryWrapper<BaseRecommendationItem>()
+                .eq("status", 1)
+                .orderByDesc("recommendation_score")
+                .last("LIMIT " + limit);
+        return (List<BaseRecommendationItem>) ((RecommendationItemMapper) mappers.get(category)).selectList(wrapper);
+    }
+
+    /**
      * 按物品 ID 查询单条在架推荐行。
      */
     @SuppressWarnings({"unchecked", "rawtypes"})

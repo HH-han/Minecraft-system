@@ -85,3 +85,30 @@ export const getRecommendationAnalytics = (
 export const getRecommendationSchedule = (): Promise<any> => {
   return request.get('/admin/recommendations/schedule');
 };
+
+// ---------------- 人工干预规则 ----------------
+
+// 查看某分类的干预规则
+export const getRecommendationRules = (
+  category: string,
+  status?: number,
+): Promise<any> => {
+  return request.get(`/admin/recommendations/rules/${category}`, {
+    params: status === undefined || status === null ? {} : { status },
+  });
+};
+
+// 新建干预规则
+export const createRecommendationRule = (payload: any): Promise<any> => {
+  return request.post('/admin/recommendations/rules', payload);
+};
+
+// 更新干预规则
+export const updateRecommendationRule = (id: number | string, payload: any): Promise<any> => {
+  return request.put(`/admin/recommendations/rules/${id}`, payload);
+};
+
+// 删除干预规则
+export const deleteRecommendationRule = (id: number | string): Promise<any> => {
+  return request.delete(`/admin/recommendations/rules/${id}`);
+};

@@ -36,24 +36,28 @@
                 </div>
             </div>
 
-            <div class="list">
-                <div class="item" v-for="attraction in filteredAttractions" :key="attraction.name">
+            <div class="list" v-loading="loading">
+                <div class="item" v-for="attraction in filteredAttractions" :key="attraction.itemId">
                     <div class="image">
                         <img :src="attraction.image" :alt="attraction.name" />
-                        <span class="type-badge">{{ getTypeLabel(attraction.type) }}</span>
+                        <span class="pin-badge" v-if="attraction.ruleType === 'PIN'">置顶推荐</span>
+                        <span class="type-badge">{{ getAttractionType(attraction) }}</span>
                     </div>
                     <div class="info">
                         <h3>{{ attraction.name }}</h3>
-                        <p class="location">{{ attraction.location }}</p>
+                        <p class="location">{{ formatLocation(attraction) }}</p>
                         <div class="tags">
                             <span v-for="tag in attraction.tags" :key="tag">{{ tag }}</span>
                         </div>
                         <div class="meta">
                             <span class="price" v-if="attraction.price > 0">¥{{ attraction.price }}起</span>
                             <span class="free" v-else>免费</span>
-                            <span class="rating">★ {{ attraction.rating }}</span>
+                            <span class="rating">★ {{ attraction.rating ?? '暂无评分' }}</span>
                         </div>
                     </div>
+                </div>
+                <div class="empty-tip" v-if="!loading && filteredAttractions.length === 0">
+                    暂无符合条件的景点推荐
                 </div>
             </div>
         </section>
@@ -61,10 +65,23 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { getClientRecommendations } from '@/api/clientRecommendation'
 
 // 当前选中的景点类型
 const activeAttractionType = ref('all')
+
+// 加载状态
+const loading = ref(false)
+
+// 搜索条件
+const search = ref({
+    destination: '',
+    startDate: '',
+    endDate: '',
+    travelers: 1
+})
 
 // 景点类型分类
 const attractionTypes = [
@@ -76,54 +93,14 @@ const attractionTypes = [
     { id: 'shopping', label: '购物中心' }
 ]
 
-// 景点数据
-const attractions = [
-    {
-        name: '九寨沟风景区',
-        location: '四川',
-        image: 'https://example.com/attraction1.jpg',
-        type: 'nature',
-        price: 220,
-        rating: 4.9,
-        tags: ['世界遗产', '5A景区']
-    },
-    {
-        name: '故宫博物院',
-        location: '北京',
-        image: 'https://example.com/attraction2.jpg',
-        type: 'history',
-        price: 60,
-        rating: 4.8,
-        tags: ['世界遗产', '必去景点']
-    },
-    {
-        name: '上海迪士尼乐园',
-        location: '上海',
-        image: 'https://example.com/attraction3.jpg',
-        type: 'amusement',
-        price: 399,
-        rating: 4.7,
-        tags: ['亲子游', '主题乐园']
-    },
-    {
-        name: '大英博物馆',
-        location: '伦敦',
-        image: 'https://example.com/attraction4.jpg',
-        type: 'museum',
-        price: 0,
-        rating: 4.6,
-        tags: ['免费', '世界著名']
-    },
-    {
-        name: '银座购物区',
-        location: '东京',
-        image: 'https://example.com/attraction5.jpg',
-        type: 'shopping',
-        price: 0,
-        rating: 4.5,
-        tags: ['购物天堂', '奢侈品']
-    }
-]
+// 各类型对应的标签关键词
+const typeKeywords = {
+    nature: ['自然', '风光', '山', '湖', '海', '森林', '草原', '湿地', '峡谷', '风景'],
+    history: ['历史', '古迹', '古城', '文化', '遗址', '遗产', '寺', '庙', '陵', '宫', '长城'],
+    amusement: ['乐园', '游乐', '主题', '迪士尼', '亲子', '欢乐'],
+    museum: ['博物馆', '纪念馆', '美术馆', '展览馆'],
+    shopping: ['购物', '商圈', '步行街', '商业']
+}
 
 // 特色推荐
 const features = [
@@ -141,31 +118,65 @@ const features = [
     }
 ]
 
+// 推荐景点数据（来自推荐接口）
+const attractions = ref([])
+
+// 加载推荐景点
+async function loadRecommendations() {
+    loading.value = true
+    try {
+        const city = search.value.destination?.trim()
+        const res = await getClientRecommendations('attraction', {
+            limit: 50,
+            city: city || undefined
+        })
+        attractions.value = res.data || []
+    } catch (e) {
+        ElMessage.error('景点推荐加载失败，请稍后重试')
+        attractions.value = []
+    } finally {
+        loading.value = false
+    }
+}
+
 // 根据类型筛选景点
 const filteredAttractions = computed(() => {
-    if (activeAttractionType.value === 'all') return attractions
-    return attractions.filter(attraction => attraction.type === activeAttractionType.value)
+    if (activeAttractionType.value === 'all') return attractions.value
+    const keywords = typeKeywords[activeAttractionType.value] || []
+    return attractions.value.filter(item =>
+        (item.tags || []).some(tag => keywords.some(k => tag.includes(k)))
+    )
 })
 
-// 获取类型标签
-function getTypeLabel(type) {
-    const foundType = attractionTypes.find(t => t.id === type)
-    return foundType ? foundType.label : ''
+// 判断景点所属类型
+function getAttractionType(item) {
+    if (activeAttractionType.value !== 'all') {
+        return attractionTypes.find(t => t.id === activeAttractionType.value)?.label || '景点'
+    }
+    for (const type of attractionTypes.slice(1)) {
+        const keywords = typeKeywords[type.id] || []
+        if ((item.tags || []).some(tag => keywords.some(k => tag.includes(k)))) {
+            return type.label
+        }
+    }
+    return item.subType || (item.tags || [])[0] || '景点'
 }
 
-// 搜索景点
+// 地点展示（省市重复时只展示一个）
+function formatLocation(item) {
+    if (item.province && item.city && item.province !== item.city && !item.province.includes(item.city)) {
+        return `${item.province} · ${item.city}`
+    }
+    return item.city || item.province || ''
+}
+
+// 搜索景点（按目的地城市重新请求推荐）
 function searchAttractions() {
-    // 搜索逻辑实现
-    console.log('搜索景点:', search.value)
+    activeAttractionType.value = 'all'
+    loadRecommendations()
 }
 
-// 搜索条件
-const search = ref({
-    destination: '',
-    startDate: '',
-    endDate: '',
-    travelers: 1
-})
+onMounted(loadRecommendations)
 </script>
 
 <style scoped>
@@ -489,6 +500,26 @@ const search = ref({
 .rating {
     color: #ffb400;
     font-weight: 600;
+}
+
+.pin-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    z-index: 2;
+}
+
+.empty-tip {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #999;
+    padding: 60px 0;
+    font-size: 15px;
 }
 
 /* 响应式设计 */

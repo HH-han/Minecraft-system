@@ -1,8 +1,11 @@
 package com.minecraft.recommendation.service;
 
 import com.minecraft.recommendation.algorithm.RecommendationDefaults;
+import com.minecraft.recommendation.config.RecommendationMapperRegistry;
 import com.minecraft.recommendation.enums.JobTriggerType;
+import com.minecraft.recommendation.enums.RecommendCategory;
 import com.minecraft.recommendation.event.RecommendationConfigChangedEvent;
+import com.minecraft.mapper.RecommendationItemMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +45,11 @@ class RecommendationScheduleManagerTest {
     @Mock
     private RecommendationAnalyticsService analyticsService;
     @Mock
+    private RecommendationMapperRegistry registry;
+    @Mock
+    @SuppressWarnings("rawtypes")
+    private RecommendationItemMapper itemMapper;
+    @Mock
     @SuppressWarnings("rawtypes")
     private ScheduledFuture future;
 
@@ -50,7 +58,7 @@ class RecommendationScheduleManagerTest {
     @BeforeEach
     void setUp() {
         manager = new RecommendationScheduleManager(taskScheduler, configService,
-                recalcService, analyticsService);
+                recalcService, analyticsService, registry);
         when(taskScheduler.schedule(any(Runnable.class), any(CronTrigger.class))).thenReturn(future);
         when(future.isCancelled()).thenReturn(false);
         when(future.isDone()).thenReturn(false);

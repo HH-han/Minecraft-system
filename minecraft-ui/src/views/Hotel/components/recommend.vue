@@ -32,21 +32,25 @@
                 </div>
             </div>
 
-            <div class="list">
-                <div class="item-list" v-for="hotel in filteredHotels" :key="hotel.name"
-                    :data-theme="hotel.theme">
+            <div class="list" v-loading="loading">
+                <div class="item-list" v-for="hotel in filteredHotels" :key="hotel.itemId"
+                    :data-theme="getHotelTheme(hotel)">
                     <div class="image">
                         <img :src="hotel.image" :alt="hotel.name" />
-                        <span class="theme-badge">{{ getThemeLabel(hotel.theme) }}</span>
+                        <span class="pin-badge" v-if="hotel.ruleType === 'PIN'">置顶推荐</span>
+                        <span class="theme-badge">{{ getHotelThemeLabel(hotel) }}</span>
                     </div>
                     <div class="info">
                         <h3>{{ hotel.name }}</h3>
-                        <p class="location">{{ hotel.location }}</p>
+                        <p class="location">{{ formatLocation(hotel) }}</p>
                         <div class="meta">
-                            <span class="price">¥{{ hotel.price }}</span>
-                            <span class="rating">★ {{ hotel.rating }}</span>
+                            <span class="price">¥{{ hotel.price }}<small>/晚</small></span>
+                            <span class="rating" v-if="hotel.rating">★ {{ displayRating(hotel.rating) }}</span>
                         </div>
                     </div>
+                </div>
+                <div class="empty-tip" v-if="!loading && filteredHotels.length === 0">
+                    暂无符合条件的酒店推荐
                 </div>
             </div>
         </section>
@@ -54,7 +58,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import { getClientRecommendations } from '@/api/clientRecommendation';
 
 const search = ref({
     destination: '',
@@ -63,6 +69,7 @@ const search = ref({
     numberOfPeople: ''
 });
 
+const loading = ref(false)
 
 const activeTab = ref('all')
 
@@ -74,41 +81,12 @@ const tabs = [
     { id: 'business', label: '商务酒店' }
 ]
 
-const hotels = [
-    {
-        name: '滨海湾金沙酒店',
-        location: '新加坡',
-        image: 'https://example.com/hotel1.jpg',
-        theme: 'luxury',
-        price: 3200,
-        rating: 4.8
-    },
-    {
-        name: '设计师艺术酒店',
-        location: '上海',
-        image: 'https://example.com/hotel2.jpg',
-        theme: 'boutique',
-        price: 1200,
-        rating: 4.6
-    },
-    {
-        name: '三亚亚龙湾度假村',
-        location: '海南',
-        image: 'https://example.com/hotel3.jpg',
-        theme: 'resort',
-        price: 1800,
-        rating: 4.7
-    },
-    {
-        name: '国际商务酒店',
-        location: '北京',
-        image: 'https://example.com/hotel4.jpg',
-        theme: 'business',
-        price: 800,
-        rating: 4.3
-    }
-]
-
+// 主题关键词（基于酒店名称与设施标签匹配）
+const themeKeywords = {
+    resort: ['度假', '沙滩', '水上乐园', '温泉'],
+    business: ['会议', '商务'],
+    boutique: ['精品', '设计', '艺术', '博舍', '民宿', '客栈']
+}
 
 const features = [
     {
@@ -137,20 +115,73 @@ const features = [
     }
 ]
 
+// 推荐酒店数据（来自推荐接口）
+const hotels = ref([])
+
+// 加载推荐酒店
+async function loadRecommendations() {
+    loading.value = true
+    try {
+        const city = search.value.destination?.trim()
+        const res = await getClientRecommendations('hotel', {
+            limit: 50,
+            city: city || undefined
+        })
+        hotels.value = res.data || []
+    } catch (e) {
+        ElMessage.error('酒店推荐加载失败，请稍后重试')
+        hotels.value = []
+    } finally {
+        loading.value = false
+    }
+}
+
+// 识别酒店主题
+function getHotelTheme(hotel) {
+    const text = `${hotel.name || ''} ${(hotel.tags || []).join(' ')}`
+    for (const id of ['resort', 'business', 'boutique']) {
+        if (themeKeywords[id].some(k => text.includes(k))) return id
+    }
+    // 五星级及以上归为奢华酒店
+    const star = Number(hotel.subType)
+    if (star >= 5) return 'luxury'
+    return ''
+}
+
+// 主题标签文案
+function getHotelThemeLabel(hotel) {
+    const theme = getHotelTheme(hotel)
+    const tab = tabs.find(t => t.id === theme)
+    if (tab) return tab.label
+    return hotel.subType ? `${hotel.subType}星酒店` : '酒店'
+}
+
 const filteredHotels = computed(() => {
-    if (activeTab.value === 'all') return hotels
-    return hotels.filter(hotel => hotel.theme === activeTab.value)
+    if (activeTab.value === 'all') return hotels.value
+    return hotels.value.filter(hotel => getHotelTheme(hotel) === activeTab.value)
 })
 
-function getThemeLabel(theme) {
-    const tab = tabs.find(t => t.id === theme)
-    return tab ? tab.label : ''
+// 地点展示（省市重复时只展示一个）
+function formatLocation(item) {
+    if (item.province && item.city && item.province !== item.city && !item.province.includes(item.city)) {
+        return `${item.province} · ${item.city}`
+    }
+    return item.city || item.province || ''
 }
 
-function searchHotels() {
-    // 搜索酒店逻辑
-    console.log('搜索条件:', search.value)
+// 评分兼容 5 分制与百分制两种历史数据
+function displayRating(rating) {
+    if (rating === null || rating === undefined) return ''
+    return rating > 5 ? (rating / 20).toFixed(1) : rating
 }
+
+// 搜索酒店（按目的地城市重新请求推荐）
+function searchHotels() {
+    activeTab.value = 'all'
+    loadRecommendations()
+}
+
+onMounted(loadRecommendations)
 </script>
 
 <style scoped>
@@ -435,6 +466,32 @@ function searchHotels() {
 
 .rating {
     color: #ffb400;
+}
+
+.price small {
+    color: #adb5bd;
+    font-weight: normal;
+    font-size: 0.75rem;
+}
+
+.pin-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    z-index: 2;
+}
+
+.empty-tip {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #adb5bd;
+    padding: 3rem 0;
+    font-size: 0.95rem;
 }
 
 .list {
