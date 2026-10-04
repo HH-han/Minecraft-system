@@ -7,7 +7,7 @@ import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 
-import { notification } from 'antdv-next';
+import { message, notification } from 'antdv-next';
 import { defineStore } from 'pinia';
 
 import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
@@ -42,10 +42,22 @@ export const useAuthStore = defineStore('auth', () => {
         accessStore.setAccessToken(accessToken);
 
         // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
+        let fetchUserInfoResult: null | UserInfo = null;
+        let accessCodes: string[] = [];
+        try {
+          [fetchUserInfoResult, accessCodes] = await Promise.all([
+            fetchUserInfo(),
+            getAccessCodesApi(),
+          ]);
+        } catch (error) {
+          // 401 等场景请求层已经触发登出跳转（token 已被清空），不再重复提示
+          if (accessStore.accessToken) {
+            message.error('登录成功但无法获取用户信息，请重新登录');
+            accessStore.setAccessToken(null);
+            resetAllStores();
+          }
+          throw error;
+        }
 
         userInfo = fetchUserInfoResult;
 
@@ -101,6 +113,16 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     const userInfo = await getUserInfoApi();
+    // 接口虽返回成功但拿不到有效用户信息（如 token 有效但用户已被删除，
+    // 后端返回 200 + data: null），视为登录失效，交由调用方处理
+    if (
+      !userInfo ||
+      (userInfo.userId == null &&
+        userInfo.id == null &&
+        !userInfo.username)
+    ) {
+      throw new Error('USER_INFO_UNAVAILABLE');
+    }
     userStore.setUserInfo(userInfo);
     return userInfo;
   }

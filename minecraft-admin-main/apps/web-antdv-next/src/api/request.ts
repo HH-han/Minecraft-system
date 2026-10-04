@@ -41,6 +41,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     ) {
       accessStore.setLoginExpired(true);
     } else {
+      message.warning('登录状态已过期，请重新登录');
       await authStore.logout();
     }
   }
@@ -106,6 +107,11 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   // 通用的错误处理,如果没有进入上面的错误处理逻辑，就会进入这里
   client.addResponseInterceptor(
     errorMessageResponseInterceptor((msg: string, error) => {
+      // 401 已由认证拦截器统一处理（提示登录过期并跳转登录页），
+      // 这里不再重复弹出通用的“未授权”提示
+      if (error?.response?.status === 401) {
+        return;
+      }
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};

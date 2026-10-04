@@ -1,5 +1,6 @@
 package com.minecraft.config;
 
+import com.minecraft.handler.JwtAuthenticationEntryPoint;
 import com.minecraft.handler.JwtAuthenticationFilter;
 import com.minecraft.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
@@ -86,6 +87,11 @@ public class SecurityConfig {
                 .requestMatchers("/upload/**").permitAll()
                 .requestMatchers("/image/**").permitAll()
                 .anyRequest().permitAll()
+            )
+            // 未认证（token 缺失/过期/无效）时统一返回 401 JSON，
+            // 供前端识别登录过期并跳转登录页
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
             )
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 

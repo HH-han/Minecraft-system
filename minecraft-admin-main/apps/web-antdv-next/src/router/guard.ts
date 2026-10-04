@@ -1,9 +1,12 @@
+import type { UserInfo } from '@vben/types';
 import type { Router } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
+
+import { message } from 'antdv-next';
 
 import { accessRoutes, coreRouteNames } from '#/router/routes';
 import { useAuthStore } from '#/store';
@@ -92,7 +95,19 @@ function setupAccessGuard(router: Router) {
 
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
-    const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
+    let userInfo: UserInfo;
+    try {
+      userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
+    } catch {
+      // /user/info 无法获取用户信息（token 过期/无效、用户不存在或服务异常）：
+      // 401 时请求层已清空 token 并跳登录页，此处只终止导航；
+      // 其余情况在此提示登录过期并登出跳转，避免页面卡死在空白状态
+      if (accessStore.accessToken) {
+        message.warning('登录状态已过期，请重新登录');
+        await authStore.logout();
+      }
+      return false;
+    }
     const userRoles = userInfo.roles ?? [];
 
     // 生成菜单和路由
