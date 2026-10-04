@@ -274,7 +274,11 @@ onMounted(loadRecommendations)
 .header h1 {
     font-size: 2.2rem;
     margin-bottom: 10px;
-    color: #333;
+    background: linear-gradient(135deg, #ff6b6b, #ff9a44);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
 }
 
 .bg {
@@ -296,12 +300,12 @@ onMounted(loadRecommendations)
     z-index: 1;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 150px;
+    width: 110%;
+    height: 220px;
     border-radius: 50%;
-    background-color: #ff006a;
-    opacity: 1;
-    filter: blur(12px);
+    background: linear-gradient(135deg, #ff6b6b, #ff9a44);
+    opacity: 0.55;
+    filter: blur(48px);
     animation: blob-bounce 5s infinite ease;
 }
 
@@ -360,11 +364,16 @@ onMounted(loadRecommendations)
     font-size: 16px;
     outline: none;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.search-bar input:focus {
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.35);
 }
 
 .search-bar button {
     padding: 0 25px;
-    background: #ff6b6b;
+    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
     color: white;
     border: none;
     border-radius: 0 30px 30px 0;
@@ -378,7 +387,9 @@ onMounted(loadRecommendations)
 }
 
 .search-bar button:hover {
-    background: #ff5252;
+    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
 }
 
 .search-icon {
@@ -412,36 +423,40 @@ onMounted(loadRecommendations)
 /* 分类导航 */
 .category-nav {
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
     margin-bottom: 30px;
-    padding: 15px 0;
+    padding: 15px 10px;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .category-item {
     display: flex;
-    flex-direction: row;
     align-items: center;
+    gap: 8px;
     cursor: pointer;
-    padding: 10px;
-    border-radius: 10px;
+    padding: 10px 16px;
+    border-radius: 999px;
     transition: all 0.3s ease;
 }
 
 .category-item:hover {
-    background: #f8f8f8;
+    background: #fff0f0;
 }
 
 .category-item.active {
-    background: #fff0f0;
-    color: #ff6b6b;
+    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
 }
 
 .category-icon {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
+    font-size: 1.4rem;
+    line-height: 1;
 }
 
 .category-item span {
@@ -456,10 +471,20 @@ onMounted(loadRecommendations)
 }
 
 .sort-options select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
     margin-left: 10px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sort-options select:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
 }
 
 .grid {
@@ -478,15 +503,16 @@ onMounted(loadRecommendations)
 
 .card {
     background: white;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(255, 107, 107, 0.16);
 }
 
 .image {
@@ -519,15 +545,17 @@ onMounted(loadRecommendations)
 
 .tag.normal-tag {
     background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
 }
 
 .favorite-btn {
     position: absolute;
     bottom: 10px;
     right: 10px;
-    width: 30px;
-    height: 30px;
-    background: rgba(255, 255, 255, 0.8);
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
     border: none;
     border-radius: 50%;
     font-size: 16px;
@@ -606,17 +634,19 @@ onMounted(loadRecommendations)
 .add-to-cart {
     width: 100%;
     padding: 10px;
-    background: #ff6b6b;
+    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 999px;
     font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .add-to-cart:hover {
-    background: #ff5252;
+    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    box-shadow: 0 6px 14px rgba(255, 107, 107, 0.35);
 }
 
 /* 推荐区 */
@@ -655,7 +685,8 @@ onMounted(loadRecommendations)
 .recommend-item img {
     width: 100%;
     height: 120px;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 8px;
     margin-bottom: 10px;
 }
 

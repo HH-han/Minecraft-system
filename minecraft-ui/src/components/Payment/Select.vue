@@ -11,16 +11,87 @@
       <button class="close-btn" aria-label="关闭" @click="closeModal">×</button>
       <div class="modal-body">
         <div class="product-image">
-          <img :src="product.coverImage" :alt="product.name">
+          <img :src="currentImage" :alt="product.name">
+        </div>
+        <!-- 图集缩略图（美食/纪念品） -->
+        <div v-if="isShopItem && gallery.length > 1" class="gallery-strip">
+          <button
+            v-for="(img, index) in gallery"
+            :key="index"
+            class="gallery-thumb"
+            :class="{ active: index === currentImageIndex }"
+            :aria-label="`查看第${index + 1}张图片`"
+            @click="currentImageIndex = index"
+          >
+            <img :src="img" :alt="`${product.name} 图片${index + 1}`">
+          </button>
         </div>
         <div class="product-details">
           <h3 id="product-modal-title" class="product-name">{{ product.name }}</h3>
 
-          <!-- 商品类（美食/纪念品）：编号 + 大价格 + 描述 -->
+          <!-- 商品类（美食/纪念品）：编号 + 评分 + 价格 + 图文详情 -->
           <template v-if="isShopItem">
-            <p class="product-id">商品编号 {{ product.id }}</p>
-            <div class="product-price">¥{{ product.price }}</div>
+            <div class="product-head">
+              <p class="product-id">商品编号 {{ product.id }}</p>
+              <span v-if="product.commodity" class="commodity-badge">{{ product.commodity }}</span>
+            </div>
+
+            <!-- 评分（百分制） -->
+            <div v-if="Number(product.rating) > 0" class="modal-rating">
+              <span class="rating">{{ product.rating }}</span>
+              <span class="rating-text">{{ shopRatingText }}</span>
+              <span v-if="product.commentCount" class="review-count">({{ product.commentCount }}条点评)</span>
+            </div>
+
+            <!-- 产地 / 地址 -->
+            <div v-if="shopAddress" class="modal-location">
+              <i class="location-icon" aria-hidden="true">📍</i>
+              <span>{{ shopAddress }}</span>
+            </div>
+
+            <div class="product-price">
+              ¥{{ product.price }}
+              <span v-if="product.stock != null && product.stock > 0" class="stock-hint">库存 {{ product.stock }} 件</span>
+            </div>
             <p class="product-description">{{ product.description }}</p>
+
+            <!-- 商品信息 -->
+            <div v-if="specItems.length" class="info-section">
+              <h3 class="section-title">商品信息</h3>
+              <div class="spec-grid">
+                <div v-for="spec in specItems" :key="spec.label" class="spec-item">
+                  <span class="spec-label">{{ spec.label }}</span>
+                  <span class="spec-value">{{ spec.value }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 标签 -->
+            <div v-if="product.tags?.length" class="info-section">
+              <h3 class="section-title">{{ isFood ? '美食标签' : '商品标签' }}</h3>
+              <div class="tag-list">
+                <span v-for="(tag, index) in product.tags" :key="index" class="tag">{{ tag }}</span>
+              </div>
+            </div>
+
+            <!-- 统计 -->
+            <div
+              v-if="product.collectCount != null || product.likeCount != null || product.commentCount != null"
+              class="modal-stats"
+            >
+              <div v-if="product.collectCount != null" class="stat-item">
+                <span class="stat-label">收藏数</span>
+                <span class="stat-value">{{ product.collectCount }}</span>
+              </div>
+              <div v-if="product.likeCount != null" class="stat-item">
+                <span class="stat-label">点赞数</span>
+                <span class="stat-value">{{ product.likeCount }}</span>
+              </div>
+              <div v-if="product.commentCount != null" class="stat-item">
+                <span class="stat-label">评论数</span>
+                <span class="stat-value">{{ product.commentCount }}</span>
+              </div>
+            </div>
           </template>
 
           <!-- 预订类（酒店/景点） -->
@@ -170,6 +241,7 @@ const bookingStore = useBookingStore()
 
 // 类型判定：0 美食 / 1 纪念品 / 2 酒店 / 3 景点
 const isShopItem = computed(() => props.commodity === '0' || props.commodity === '1')
+const isFood = computed(() => props.commodity === '0')
 const isHotel = computed(() => props.commodity === '2')
 const isAttraction = computed(() => props.commodity === '3')
 
@@ -179,6 +251,66 @@ const ratingText = computed(() => {
   if (isAttraction.value) return r >= 4.5 ? '极好' : r >= 4 ? '很好' : '好'
   return r >= 4.5 ? '超棒' : r >= 4 ? '很好' : '好'
 })
+
+// 商品评分文案（百分制：美食/纪念品）
+const shopRatingText = computed(() => {
+  const r = Number(product.value.rating)
+  return r >= 90 ? '超棒' : r >= 80 ? '很好' : r > 0 ? '好' : ''
+})
+
+// 产地 / 地址：美食优先 address，纪念品拼接省市
+const shopAddress = computed(() => {
+  const p = product.value
+  if (p.address) return p.address
+  return [p.province, p.city].filter(Boolean).join(' · ')
+})
+
+// 商品信息（美食：菜系/套餐；纪念品：类型/包装/库存）
+const specItems = computed(() => {
+  const p = product.value
+  const items = []
+  if (isFood.value) {
+    if (p.cuisineType) items.push({ label: '菜系', value: p.cuisineType })
+    if (p.commodity) items.push({ label: '套餐', value: p.commodity })
+  } else {
+    if (p.type) items.push({ label: '类型', value: p.type })
+    if (p.commodity) items.push({ label: '包装', value: p.commodity })
+  }
+  if (p.stock != null && Number(p.stock) > 0) items.push({ label: '库存', value: `${p.stock} 件` })
+  if (p.province || p.city) items.push({ label: '产地', value: [p.province, p.city].filter(Boolean).join(' · ') })
+  return items
+})
+
+// 图集：封面 + images JSON 数组，点击缩略图切换主图
+const currentImageIndex = ref(0)
+const gallery = computed(() => {
+  const images = product.value.images || []
+  return [...new Set([product.value.coverImage, ...images].filter(Boolean))]
+})
+const currentImage = computed(() => gallery.value[currentImageIndex.value] || product.value.coverImage)
+
+// 归一化美食/纪念品数据：images JSON 字符串 -> 数组，tags 逗号字符串 -> 数组
+const normalizeShopItem = (data) => {
+  if (!data) return data
+  let images = []
+  if (Array.isArray(data.images)) {
+    images = data.images
+  } else if (typeof data.images === 'string' && data.images.trim()) {
+    try {
+      const parsed = JSON.parse(data.images)
+      if (Array.isArray(parsed)) images = parsed
+    } catch {
+      images = []
+    }
+  }
+  let tags = []
+  if (Array.isArray(data.tags)) {
+    tags = data.tags
+  } else if (typeof data.tags === 'string' && data.tags.trim()) {
+    tags = data.tags.split(/[,，、\s]+/).filter(Boolean)
+  }
+  return { ...data, images, tags }
+}
 
 const product = ref({
   id: '',
@@ -210,6 +342,13 @@ watch(() => props.productId, (newId) => {
   }
 }, { immediate: true })
 
+// 弹窗打开时重置图集选中项
+watch(() => props.visible, (visible) => {
+  if (visible) {
+    currentImageIndex.value = 0
+  }
+})
+
 // 获取商品数据
 const fetchProductData = async () => {
   const id = props.productId
@@ -221,11 +360,13 @@ const fetchProductData = async () => {
     if (commodity === '0') {
       // 美食类型
       const response = await getFoodDetail(id)
-      product.value = response.data
+      product.value = normalizeShopItem(response.data)
+      currentImageIndex.value = 0
     } else if (commodity === '1') {
       // 纪念品类型
       const response = await getProductDetail(id)
-      product.value = response.data
+      product.value = normalizeShopItem(response.data)
+      currentImageIndex.value = 0
     } else if (commodity === '2') {
       // 酒店类型
       const response = await getHotelDetail(id)
@@ -522,6 +663,105 @@ onUnmounted(() => {
   margin: 0 0 2rem 0;
   min-height: 4rem;
   flex: 1;
+}
+
+/* ===== 编号 + 套餐/礼盒徽章 ===== */
+.product-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.product-head .product-id {
+  margin: 0;
+}
+
+.commodity-badge {
+  background: rgba(41, 151, 255, 0.12);
+  color: #2997ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 980px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* 库存提示 */
+.stock-hint {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #6e6e73;
+  margin-left: 0.5rem;
+}
+
+/* ===== 图集缩略图条 ===== */
+.gallery-strip {
+  display: flex;
+  gap: 0.625rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.gallery-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery-thumb {
+  flex-shrink: 0;
+  width: 84px;
+  height: 60px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5f5f7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-thumb:hover {
+  transform: translateY(-2px);
+}
+
+.gallery-thumb.active {
+  border-color: #2997ff;
+  box-shadow: 0 4px 12px -4px rgba(41, 151, 255, 0.5);
+}
+
+/* ===== 商品信息（菜系/套餐/类型/包装/库存/产地） ===== */
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.625rem;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  background: #f5f5f7;
+  border-radius: 12px;
+  padding: 0.625rem 0.875rem;
+}
+
+.spec-label {
+  font-size: 0.75rem;
+  color: #6e6e73;
+}
+
+.spec-value {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1d1d1f;
 }
 
 /* ===== 评分（酒店/景点） ===== */

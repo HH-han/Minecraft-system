@@ -299,12 +299,12 @@ onMounted(loadRecommendations)
     z-index: 1;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 150px;
+    width: 110%;
+    height: 220px;
     border-radius: 50%;
-    background-color: #ff0000;
-    opacity: 1;
-    filter: blur(12px);
+    background: linear-gradient(135deg, #ff6b6b, #ff9a44);
+    opacity: 0.55;
+    filter: blur(48px);
     animation: blob-bounce 5s infinite ease;
 }
 
@@ -362,11 +362,17 @@ onMounted(loadRecommendations)
     border-radius: 30px 0 0 30px;
     font-size: 16px;
     outline: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.search-bar input:focus {
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.35);
 }
 
 .search-bar button {
     padding: 0 25px;
-    background: #ff6b6b;
+    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
     color: white;
     border: none;
     border-radius: 0 30px 30px 0;
@@ -379,7 +385,9 @@ onMounted(loadRecommendations)
 }
 
 .search-bar button:hover {
-    background: #ff5252;
+    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
 }
 
 .search-icon {
@@ -394,21 +402,27 @@ onMounted(loadRecommendations)
 }
 
 .quick-filters button {
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.2);
-    color: rgb(0, 0, 0);
+    padding: 8px 18px;
+    background: white;
+    color: #555;
     border: none;
-    border-radius: 20px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.quick-filters button.active {
-    background: white;
+.quick-filters button:hover {
     color: #ff6b6b;
+    transform: translateY(-1px);
+}
+
+.quick-filters button.active {
+    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
+    color: white;
     font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
 }
 
 /* 美食分类 */
@@ -459,6 +473,8 @@ onMounted(loadRecommendations)
 .cuisine-card.active {
     background: #fff5f5;
     border: 1px solid #ff6b6b;
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.2);
+    transform: translateY(-3px);
 }
 
 .cuisine-icon {
@@ -481,19 +497,42 @@ onMounted(loadRecommendations)
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .section-header h2 {
     font-size: 1.8rem;
     color: #333;
+    position: relative;
+    padding-left: 15px;
+}
+
+.section-header h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    height: 70%;
+    width: 5px;
+    background: linear-gradient(180deg, #ff6b6b, #ff9a44);
+    border-radius: 3px;
 }
 
 .sort-options select {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
     background: white;
     font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sort-options select:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
 }
 
 .restaurant-list {
@@ -536,10 +575,11 @@ onMounted(loadRecommendations)
     position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
     color: #ffb400;
     padding: 4px 10px;
-    border-radius: 12px;
+    border-radius: 999px;
     font-size: 14px;
     font-weight: 600;
 }
@@ -548,10 +588,11 @@ onMounted(loadRecommendations)
     position: absolute;
     top: 10px;
     right: 10px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
     color: white;
     padding: 4px 10px;
-    border-radius: 12px;
+    border-radius: 999px;
     font-size: 14px;
 }
 
@@ -597,10 +638,10 @@ onMounted(loadRecommendations)
 }
 
 .tags span {
-    background: #f3f3f3;
-    color: #555;
+    background: rgba(255, 107, 107, 0.08);
+    color: #ff6b6b;
     padding: 4px 10px;
-    border-radius: 4px;
+    border-radius: 999px;
     font-size: 12px;
 }
 
@@ -617,18 +658,20 @@ onMounted(loadRecommendations)
 }
 
 .book-btn-food {
-    background: #ff6b6b;
+    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
     color: white;
     border: none;
-    border-radius: 6px;
-    padding: 8px 15px;
+    border-radius: 999px;
+    padding: 8px 18px;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .book-btn-food:hover {
-    background: #ff5252;
+    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(255, 107, 107, 0.35);
 }
 
 /* 美食小贴士 */
@@ -640,6 +683,19 @@ onMounted(loadRecommendations)
     font-size: 1.8rem;
     margin-bottom: 20px;
     color: #333;
+    position: relative;
+    padding-left: 15px;
+}
+
+.tips h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    height: 70%;
+    width: 5px;
+    background: linear-gradient(180deg, #ff6b6b, #ff9a44);
+    border-radius: 3px;
 }
 
 .tips-grid {

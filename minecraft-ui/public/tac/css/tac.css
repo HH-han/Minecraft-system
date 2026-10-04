@@ -52,28 +52,40 @@
   width: 100%;
 }
 #tianai-captcha-parent .slider-bottom .close-btn {
-  width: 20px;
-  height: 20px;
-  background-image: url(../../tac/images/icon.png);
+  width: 32px;
+  height: 32px;
+  background-image: url(../images/closed.png);
   background-repeat: no-repeat;
-  background-position: 0 -14px;
+  background-position: center;
+  background-size: 100% 100%;
   float: right;
   margin-right: 2px;
   cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 #tianai-captcha-parent .slider-bottom .refresh-btn {
-  width: 20px;
-  height: 20px;
-  background-image: url(../../tac/images/icon.png);
-  background-position: 0 -167px;
+  width: 35px;
+  height: 35px;
+  background-image: url(../images/loaded.png);
+  background-position: center;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   float: right;
   margin-right: 10px;
   cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 #tianai-captcha-parent .slider-bottom .logo {
   height: 30px;
   float: left;
+  display: none;
+}
+#tianai-captcha-parent .slider-bottom .close-btn:hover,
+#tianai-captcha-parent .slider-bottom .refresh-btn:hover {
+  opacity: 0.65;
+}
+#tianai-captcha-parent .slider-bottom .refresh-btn:hover {
+  transform: rotate(180deg);
 }
 #tianai-captcha-parent .slider-move-shadow {
   animation: myanimation 2s infinite;

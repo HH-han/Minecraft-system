@@ -20,6 +20,7 @@
 
         <section class="features">
             <div class="feature" v-for="feature in features" :key="feature.title">
+                <span class="feature-icon">{{ feature.icon }}</span>
                 <h2>{{ feature.title }}</h2>
                 <p>{{ feature.description }}</p>
             </div>
@@ -105,14 +106,17 @@ const typeKeywords = {
 // 特色推荐
 const features = [
     {
+        icon: '🎫',
         title: '免排队',
         description: '电子票快速入园'
     },
     {
+        icon: '🎁',
         title: '超值套餐',
         description: '门票+交通+导游优惠组合'
     },
     {
+        icon: '🎧',
         title: '语音导览',
         description: '多语言讲解服务'
     }
@@ -229,12 +233,12 @@ onMounted(loadRecommendations)
     z-index: 1;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 150px;
+    width: 110%;
+    height: 220px;
     border-radius: 50%;
-    background-color: #00ff5e;
-    opacity: 1;
-    filter: blur(12px);
+    background: linear-gradient(135deg, #3ddc84, #3791c9);
+    opacity: 0.55;
+    filter: blur(48px);
     animation: blob-bounce 5s infinite ease;
 }
 
@@ -322,16 +326,47 @@ onMounted(loadRecommendations)
 }
 
 .feature {
+    position: relative;
     background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px 20px 20px 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.feature::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4361ee, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .feature:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 24px rgba(67, 97, 238, 0.14);
+}
+
+.feature:hover::before {
+    opacity: 1;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+    font-size: 22px;
+    font-style: normal;
+    background: rgba(67, 97, 238, 0.08);
+    border-radius: 12px;
 }
 
 .feature h2 {
@@ -394,9 +429,10 @@ onMounted(loadRecommendations)
 }
 
 .type-tabs button.active {
-    background: #4361ee;
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
     color: white;
-    border-color: #4361ee;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
 }
 
 /* 景点列表 */
@@ -408,15 +444,16 @@ onMounted(loadRecommendations)
 
 .item {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(67, 97, 238, 0.16);
 }
 
 .image {
@@ -433,17 +470,18 @@ onMounted(loadRecommendations)
 }
 
 .item:hover .image img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .type-badge {
     position: absolute;
     bottom: 12px;
     left: 12px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
     color: white;
     padding: 4px 12px;
-    border-radius: 12px;
+    border-radius: 999px;
     font-size: 12px;
 }
 
@@ -471,10 +509,10 @@ onMounted(loadRecommendations)
 }
 
 .tags span {
-    background: #f0f0f0;
-    color: #555;
-    padding: 4px 8px;
-    border-radius: 4px;
+    background: rgba(67, 97, 238, 0.07);
+    color: #4361ee;
+    padding: 4px 10px;
+    border-radius: 999px;
     font-size: 12px;
 }
 

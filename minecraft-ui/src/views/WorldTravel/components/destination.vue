@@ -350,8 +350,6 @@ onMounted(() => {
 
 <style scoped>
 .destination-list-container {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 1rem 1rem 2rem;
     color: #2d3436;
 }
@@ -381,7 +379,7 @@ onMounted(() => {
 /* 筛选工具栏 */
 .filter-toolbar {
     position: sticky;
-    top: 0;
+    top: 70px;
     z-index: 10;
     display: flex;
     flex-direction: column;
@@ -492,8 +490,15 @@ onMounted(() => {
 }
 
 /* 大洲分组 */
+.continent-groups{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
 .continent-section {
-    margin-bottom: 36px;
+    flex: 1 1 460px;
+    min-width: 0;
 }
 
 .continent-title {
@@ -518,20 +523,21 @@ onMounted(() => {
     color: #636e72;
 }
 
-/* 国家卡片 */
+/* 国家卡片：瀑布流布局，按列填充不留空白 */
 .destinations-grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 24px;
+    columns: 340px;
+    column-gap: 20px;
 }
 
 .region-card {
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.04);
     border-radius: 16px;
-    padding: 20px;
+    padding: 18px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
+    break-inside: avoid;
+    margin-bottom: 20px;
 }
 
 .region-card:hover {
@@ -585,8 +591,8 @@ onMounted(() => {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
 }
 
 .city-item {
@@ -827,7 +833,7 @@ onMounted(() => {
     }
 
     .destinations-grid-container {
-        grid-template-columns: 1fr;
+        columns: 1;
     }
 
     .city-list {

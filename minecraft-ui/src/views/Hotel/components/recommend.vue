@@ -43,6 +43,9 @@
                     <div class="info">
                         <h3>{{ hotel.name }}</h3>
                         <p class="location">{{ formatLocation(hotel) }}</p>
+                        <div class="facilities" v-if="(hotel.tags || []).length">
+                            <span v-for="facility in (hotel.tags || []).slice(0, 3)" :key="facility">{{ facility }}</span>
+                        </div>
                         <div class="meta">
                             <span class="price">¥{{ hotel.price }}<small>/晚</small></span>
                             <span class="rating" v-if="hotel.rating">★ {{ displayRating(hotel.rating) }}</span>
@@ -233,12 +236,12 @@ onMounted(loadRecommendations)
     z-index: 1;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 150px;
+    width: 110%;
+    height: 220px;
     border-radius: 50%;
-    background-color: #008cff;
-    opacity: 1;
-    filter: blur(12px);
+    background: linear-gradient(135deg, #377ec9, #7b5cff);
+    opacity: 0.55;
+    filter: blur(48px);
     animation: blob-bounce 5s infinite ease;
 }
 
@@ -320,22 +323,40 @@ onMounted(loadRecommendations)
 /* 特色服务样式 */
 .features {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
 }
 
 .feature {
+    position: relative;
     background: white;
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.feature::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4361ee, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .feature:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 24px rgba(67, 97, 238, 0.14);
+}
+
+.feature:hover::before {
+    opacity: 1;
 }
 
 .feature h2 {
@@ -403,9 +424,10 @@ onMounted(loadRecommendations)
 }
 
 .theme-tabs button.active {
-    background: #4361ee;
+    background: linear-gradient(135deg, #4361ee, #3f37c9);
     color: white;
-    border-color: #4361ee;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
 }
 
 .item {
@@ -440,10 +462,11 @@ onMounted(loadRecommendations)
     position: absolute;
     bottom: 10px;
     left: 10px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
     color: white;
     padding: 0.25rem 0.75rem;
-    border-radius: 12px;
+    border-radius: 999px;
     font-size: 0.75rem;
 }
 
@@ -502,34 +525,58 @@ onMounted(loadRecommendations)
 
 .item-list {
     background: white;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     padding: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .item-list:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(67, 97, 238, 0.16);
 }
 
 .item-list img {
     width: 100%;
     height: 180px;
     object-fit: cover;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.item-list:hover img {
+    transform: scale(1.04);
 }
 
 .item-list h3 {
-    padding: 1rem 1rem 0.5rem;
+    padding: 1rem 0.5rem 0.25rem;
     font-size: 1.1rem;
     color: #1e1e24;
 }
 
-.item-list p {
-    padding: 0 1rem 1rem;
-    color: #adb5bd;
-    font-size: 0.9rem;
+.item-list .location {
+    padding: 0 0.5rem;
+}
+
+.facilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0.5rem 0.5rem 0.75rem;
+}
+
+.facilities span {
+    background: rgba(67, 97, 238, 0.07);
+    color: #4361ee;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+.item-list .meta {
+    padding: 0 0.5rem 0.75rem;
 }
 
 /* 响应式设计 */
