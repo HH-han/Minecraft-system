@@ -1,449 +1,704 @@
 <template>
     <div class="destination-list-container">
-        <h1 class="destination-list-title">热门目的地</h1>
-        
+        <!-- 页头 -->
+        <header class="page-header">
+            <h1 class="destination-list-title">热门目的地</h1>
+            <p class="page-subtitle" v-if="!loading && !error">
+                覆盖 <b>{{ stats.countryCount }}</b> 个国家 · <b>{{ stats.cityCount }}</b> 座城市
+            </p>
+        </header>
+
         <!-- 加载状态 -->
         <div v-if="loading" class="loading-state">
             <div class="loading-spinner"></div>
             <p>正在加载目的地数据...</p>
         </div>
-        
+
         <!-- 错误状态 -->
         <div v-else-if="error" class="error-state">
             <div class="error-icon">⚠️</div>
             <h3>数据加载失败</h3>
             <p>{{ error }}</p>
-            <button @click="fetchHotDestinations" class="retry-button">重新加载</button>
+            <button @click="fetchDestinationData" class="retry-button">重新加载</button>
         </div>
-        
+
         <!-- 正常显示 -->
-        <div v-else>
-            <div class="tabs">
-                <button 
-                    v-for="tab in tabs" 
-                    :key="tab.name" 
-                    :class="{ active: currentTab === tab.name }" 
-                    @click="handleTabClick(tab.name)"
-                    class="tab-button">
-                    {{ tab.name }}
-                    <span class="tab-indicator"></span>
-                </button>
+        <template v-else>
+            <!-- 搜索 + 大洲筛选 -->
+            <div class="filter-toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input
+                        v-model="keyword"
+                        type="text"
+                        class="search-input"
+                        placeholder="搜索城市 / 国家 / 亮点"
+                    />
+                    <button v-if="keyword" class="search-clear" @click="keyword = ''">×</button>
+                </div>
+                <div class="tabs">
+                    <button
+                        v-for="tab in continentTabs"
+                        :key="tab.id"
+                        :class="{ active: currentContinent === tab.id }"
+                        class="tab-button"
+                        @click="currentContinent = tab.id"
+                    >
+                        {{ tab.name }}
+                        <span class="tab-count">{{ tab.count }}</span>
+                    </button>
+                </div>
             </div>
 
+            <!-- 内容区 -->
             <div class="destinations-container">
                 <transition name="fade" mode="out-in">
-                    <!-- 有数据的标签页 -->
-                    <div v-if="filteredDestinations.length > 0" class="destinations-grid-container">
-                        <div 
-                            v-for="region in filteredDestinations" 
-                            :key="region.id" 
-                            class="region-card">
-                            <h3 class="region-title">{{ region.provinceName }}</h3>
-                            <ul class="city-list">
-                                <li 
-                                    v-for="city in region.cities" 
-                                    :key="city.id || city" 
-                                    class="city-item"
-                                    @click="handleCityClick(region.provinceName, city)">
-                                    <div class="city-info">
-                                        <h4 class="city-name">{{ city.cityName || city.chineseName || city.name || city }}</h4>
-                                        <p class="city-description" v-if="city.description">{{ city.description }}</p>
-                                        <div class="city-meta" v-if="city.bestSeason || city.famousFor">
-                                            <span class="best-season" v-if="city.bestSeason">最佳季节: {{ city.bestSeason }}</span>
-                                            <span class="famous-for" v-if="city.famousFor">著名景点: {{ city.famousFor }}</span>
+                    <div v-if="visibleContinents.length > 0" class="continent-groups">
+                        <section
+                            v-for="continent in visibleContinents"
+                            :key="continent.id"
+                            class="continent-section"
+                        >
+                            <h2 class="continent-title">
+                                <span class="continent-bar"></span>
+                                {{ continent.name }}
+                                <span class="continent-count">{{ continent.cityCount }} 座城市</span>
+                            </h2>
+
+                            <div class="destinations-grid-container">
+                                <article
+                                    v-for="country in continent.countries"
+                                    :key="country.id"
+                                    class="region-card"
+                                >
+                                    <header class="region-header">
+                                        <span class="region-flag">{{ country.flagEmoji }}</span>
+                                        <div class="region-name">
+                                            <h3 class="region-title">{{ country.chineseName }}</h3>
+                                            <p class="region-en">{{ country.name }}</p>
                                         </div>
-                                    </div>
-                                    <span class="city-hover-effect"></span>
-                                </li>
-                            </ul>
-                        </div>
+                                        <span class="region-badge">{{ country.cities.length }} 城市</span>
+                                    </header>
+
+                                    <ul class="city-list">
+                                        <li
+                                            v-for="city in country.cities"
+                                            :key="city.id"
+                                            class="city-item"
+                                            :class="{ expanded: expandedIds.has(city.id) }"
+                                            @click="toggleExpand(city.id)"
+                                        >
+                                            <div class="city-name-row">
+                                                <h4 class="city-name">{{ city.chineseName }}</h4>
+                                                <span class="city-en">{{ city.name }}</span>
+                                                <span v-if="city.isCapital" class="capital-tag">首都</span>
+                                            </div>
+
+                                            <p v-if="city.famousFor" class="city-famous">
+                                                🌟 {{ city.famousFor }}
+                                            </p>
+
+                                            <div
+                                                v-if="city.population || city.area || city.timezone || city.bestSeason"
+                                                class="city-meta"
+                                            >
+                                                <span v-if="city.population" class="meta-chip">
+                                                    👥 {{ city.population }}万
+                                                </span>
+                                                <span v-if="city.area" class="meta-chip">
+                                                    📐 {{ city.area }} km²
+                                                </span>
+                                                <span v-if="city.timezone" class="meta-chip">
+                                                    🕐 {{ city.timezone }}
+                                                </span>
+                                                <span v-if="city.bestSeason" class="meta-chip season">
+                                                    ☀️ {{ city.bestSeason }}
+                                                </span>
+                                            </div>
+
+                                            <p v-if="city.description" class="city-description">
+                                                {{ city.description }}
+                                            </p>
+
+                                            <div class="city-footer">
+                                                <a
+                                                    v-if="city.latitude && city.longitude"
+                                                    class="map-link"
+                                                    :href="`https://www.google.com/maps?q=${city.latitude},${city.longitude}`"
+                                                    target="_blank"
+                                                    rel="noopener"
+                                                    @click.stop
+                                                >
+                                                    📍 查看地图
+                                                </a>
+                                                <span class="expand-hint">
+                                                    {{ expandedIds.has(city.id) ? '收起' : '展开简介' }}
+                                                </span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </article>
+                            </div>
+                        </section>
                     </div>
-                    
+
                     <!-- 空状态 -->
                     <div v-else class="empty-state">
                         <div class="empty-icon">🌎</div>
-                        <h3>更多目的地即将上线</h3>
-                        <p>我们正在努力添加更多精彩旅行目的地</p>
+                        <h3>{{ keyword ? '未找到匹配的目的地' : '更多目的地即将上线' }}</h3>
+                        <p>{{ keyword ? '换个关键词试试吧' : '我们正在努力添加更多精彩旅行目的地' }}</p>
                     </div>
                 </transition>
             </div>
-
-            <!-- 分页 -->
-            <div class="pagination-block" v-if="totalPages > 1">
-                <Paging
-                    :total-pages="totalPages"
-                    :current-page="currentPage"
-                    @update:current-page="handleCurrentChange"
-                />
-            </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import citiesApi from '@/api/cities.js';
-import Paging from '@/components/paging/index.vue';
+import countriesApi from '@/api/countries.js';
 
-// 标签页配置
-const tabs = ref([
-  { name: '国内', regionId: 1 },
-  { name: '日本', regionId: 2 },
-  { name: '美洲', regionId: 3 },
-  { name: '欧洲', regionId: 4 },
-  { name: '欧洲美洲', regionId: 5 },
-  { name: '澳洲非洲', regionId: 6 }
-]);
+// 大洲编号 -> 名称（对应 continents 表 1-6）
+const CONTINENT_NAMES = {
+    1: '亚洲',
+    2: '欧洲',
+    3: '北美洲',
+    4: '南美洲',
+    5: '非洲',
+    6: '大洋洲'
+};
 
-const currentTab = ref('国内');
-const destinations = ref([]);
 const loading = ref(false);
 const error = ref(null);
+const keyword = ref('');
+const currentContinent = ref('all');
+const expandedIds = reactive(new Set());
 
-// 分页状态
-const currentPage = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
-const totalPages = ref(0);
+// 原始数据
+const cityList = ref([]);
+const countryMap = ref(new Map());
 
-// 根据当前标签筛选目的地数据
-const filteredDestinations = computed(() => {
-  if (!destinations.value.length) return [];
-  
-  const currentRegion = tabs.value.find(tab => tab.name === currentTab.value);
-  if (!currentRegion) return [];
-  
-  // 根据regionId筛选目的地数据
-  return destinations.value.filter(destination => {
-    return destination.region?.id === currentRegion.regionId || !destination.region;
-  });
+// 人口单位兼容：新数据为“万”，旧数据为绝对人数
+const formatPopulation = (population) => {
+    const value = Number(population);
+    if (!value) return null;
+    return value > 10000 ? Math.round(value / 10000) : value;
+};
+
+// 面积格式化：千位分隔，超千米取整
+const formatArea = (area) => {
+    const value = Number(area);
+    if (!value) return null;
+    return value >= 1000
+        ? Math.round(value).toLocaleString()
+        : Number(value.toFixed(1)).toLocaleString();
+};
+
+// 获取国家 + 城市数据
+const fetchDestinationData = async () => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+        const [cityRes, countryRes] = await Promise.all([
+            citiesApi.getCitiesList(1, 200),
+            countriesApi.getCountriesList(1, 120)
+        ]);
+
+        if (cityRes.code !== 200 || countryRes.code !== 200) {
+            throw new Error(cityRes.message || countryRes.message || '接口返回异常');
+        }
+
+        // 国家映射：id -> { 中文名 / 英文名 / 国旗 / 大洲 }
+        const map = new Map();
+        (countryRes.data?.records ?? []).forEach((country) => {
+            map.set(country.id, {
+                id: country.id,
+                chineseName: country.chineseName,
+                name: country.name,
+                flagEmoji: country.flagEmoji || '🏳️',
+                continentId: country.continentId
+            });
+        });
+        countryMap.value = map;
+
+        // 城市去重：同国家同名的旧数据（绝对人口）让位于新数据（单位：万）
+        const latestById = new Map();
+        (cityRes.data?.records ?? []).forEach((city) => {
+            if (!map.has(city.countryId)) return;
+            latestById.set(city.id, city);
+        });
+        const seen = new Map();
+        const uniqueCities = [];
+        [...latestById.values()]
+            .sort((a, b) => a.id - b.id)
+            .forEach((city) => {
+                const key = `${city.countryId}-${city.chineseName}`;
+                seen.set(key, city); // 后写覆盖先写，保留较大 id
+            });
+        seen.forEach((city) => uniqueCities.push(city));
+
+        cityList.value = uniqueCities.map((city) => ({
+            ...city,
+            isCapital: !!city.isCapital,
+            population: formatPopulation(city.population),
+            area: formatArea(city.area)
+        }));
+    } catch (err) {
+        console.error('获取热门目的地失败:', err);
+        error.value = err.message || '网络请求失败，请稍后重试';
+    } finally {
+        loading.value = false;
+    }
+};
+
+// 大洲 -> 国家 -> 城市 三级分组（首都优先）
+const continentGroups = computed(() => {
+    const groups = new Map();
+    cityList.value.forEach((city) => {
+        const country = countryMap.value.get(city.countryId);
+        if (!country) return;
+        const continentId = country.continentId;
+        if (!CONTINENT_NAMES[continentId]) return;
+
+        if (!groups.has(continentId)) {
+            groups.set(continentId, {
+                id: continentId,
+                name: CONTINENT_NAMES[continentId],
+                countries: new Map(),
+                cityCount: 0
+            });
+        }
+        const group = groups.get(continentId);
+        if (!group.countries.has(country.id)) {
+            group.countries.set(country.id, { ...country, cities: [] });
+        }
+        group.countries.get(country.id).cities.push(city);
+        group.cityCount += 1;
+    });
+
+    return [...groups.values()]
+        .sort((a, b) => a.id - b.id)
+        .map((group) => ({
+            ...group,
+            countries: [...group.countries.values()].map((country) => ({
+                ...country,
+                cities: [...country.cities].sort(
+                    (a, b) => Number(b.isCapital) - Number(a.isCapital) || a.id - b.id
+                )
+            }))
+        }));
 });
 
-// 获取热门目的地数据
-const fetchHotDestinations = async () => {
-  loading.value = true;
-  error.value = null;
-  
-  try {
-    const response = await citiesApi.getCitiesList(currentPage.value, pageSize.value);
-    
-    // 尝试不同的响应格式处理
-    let citiesData = [];
-    
-    // 格式1: 后端实际返回的格式 {code: 200, message: "success", data: {records: [...], total, pages}}
-    if (response.code === 200 && response.data && response.data.records) {
-      citiesData = response.data.records;
-      // 同步后端分页信息
-      total.value = response.data.total || citiesData.length;
-      totalPages.value = response.data.pages || Math.ceil(total.value / pageSize.value);
-    }
-    // 格式2: 直接返回数据数组
-    else if (Array.isArray(response)) {
-      citiesData = response;
-    }
-    // 格式3: 其他可能的格式
-    else if (response.data && Array.isArray(response.data)) {
-      citiesData = response.data;
-    }
-    else {
-      // 使用默认数据作为fallback
-      destinations.value = getDefaultDestinations();
-      total.value = 0;
-      totalPages.value = 0;
-      return;
-    }
-
-    // 非分页格式（格式2/3）时，按返回数据长度计算总页数
-    if (!response.data?.records) {
-      total.value = citiesData.length;
-      totalPages.value = Math.ceil(citiesData.length / pageSize.value);
-    }
-    
-    // 按国家分组城市数据
-    const groupedDestinations = [];
-    const countryMap = new Map();
-    
-    // 国家名称映射
-    const countryNames = {
-      1: '中国',
-      2: '日本',
-      3: '美国',
-      4: '法国',
-      5: '澳大利亚',
-      6: '南非',
-      7: '巴西',
-      8: '德国',
-      9: '印度'
-    };
-    
-    citiesData.forEach(city => {
-      // 获取国家名称
-      const countryName = countryNames[city.countryId] || '未知国家';
-      
-      // 根据国家ID确定regionId
-      let regionId = 1; // 默认国内
-      if (city.countryId === 1) {
-        regionId = 1; // 中国 - 国内
-      } else if (city.countryId === 2) {
-        regionId = 2; // 日本
-      } else if (city.countryId === 3) {
-        regionId = 3; // 美国 - 美洲
-      } else if (city.countryId === 4 || city.countryId === 8) {
-        regionId = 4; // 法国、德国 - 欧洲
-      } else if (city.countryId === 5 || city.countryId === 6) {
-        regionId = 6; // 澳大利亚、南非 - 澳洲非洲
-      } else if (city.countryId === 7) {
-        regionId = 5; // 巴西 - 欧洲美洲
-      }
-      
-      if (!countryMap.has(countryName)) {
-        countryMap.set(countryName, {
-          id: city.countryId,
-          provinceName: countryName,
-          region: { id: regionId, name: countryName },
-          cities: []
-        });
-      }
-      
-      // 添加城市数据
-      countryMap.get(countryName).cities.push(city);
+// 大洲筛选标签（含全部）
+const continentTabs = computed(() => {
+    const tabs = [{ id: 'all', name: '全部', count: cityList.value.length }];
+    continentGroups.value.forEach((group) => {
+        tabs.push({ id: group.id, name: group.name, count: group.cityCount });
     });
-    
-    // 转换为数组
-    countryMap.forEach(country => {
-      groupedDestinations.push(country);
-    });
-    
-    destinations.value = groupedDestinations;
-  } catch (err) {
-    console.error('获取热门目的地失败:', err);
-    error.value = err.message || '网络请求失败，请稍后重试';
-    
-    // 如果API调用失败，使用默认数据作为fallback
-    destinations.value = getDefaultDestinations();
-    total.value = 0;
-    totalPages.value = 0;
-  } finally {
-    loading.value = false;
-  }
-};
+    return tabs;
+});
 
-// 默认目的地数据
-const getDefaultDestinations = () => {
-  return [];
-};
+// 关键词 + 大洲双重过滤
+const visibleContinents = computed(() => {
+    const kw = keyword.value.trim().toLowerCase();
+    return continentGroups.value
+        .filter((group) => currentContinent.value === 'all' || group.id === currentContinent.value)
+        .map((group) => ({
+            ...group,
+            countries: group.countries
+                .map((country) => {
+                    const countryMatch =
+                        !kw ||
+                        country.chineseName.toLowerCase().includes(kw) ||
+                        country.name.toLowerCase().includes(kw);
+                    const cities = countryMatch
+                        ? country.cities
+                        : country.cities.filter(
+                              (city) =>
+                                  city.chineseName.toLowerCase().includes(kw) ||
+                                  (city.name || '').toLowerCase().includes(kw) ||
+                                  (city.famousFor || '').toLowerCase().includes(kw)
+                          );
+                    return { ...country, cities };
+                })
+                .filter((country) => country.cities.length > 0)
+        }))
+        .filter((group) => group.countries.length > 0);
+});
 
-// 切换标签时重置到第一页
-const handleTabClick = (tabName) => {
-  if (currentTab.value === tabName) return;
-  currentTab.value = tabName;
-  currentPage.value = 1;
-};
+// 统计信息
+const stats = computed(() => {
+    const countryIds = new Set(cityList.value.map((city) => city.countryId));
+    return { countryCount: countryIds.size, cityCount: cityList.value.length };
+});
 
-// 分页切换：加载对应页数据
-const handleCurrentChange = (current) => {
-  currentPage.value = current;
-  fetchHotDestinations();
-};
-
-// 处理城市点击事件
-const handleCityClick = (provinceName, city) => {
-  const cityName = city.cityName || city.chineseName || city.name || city;
-  console.log(`点击了 ${provinceName} - ${cityName}`);
-  // 这里可以添加跳转到城市详情页的逻辑
+// 展开 / 收起城市简介
+const toggleExpand = (cityId) => {
+    if (expandedIds.has(cityId)) {
+        expandedIds.delete(cityId);
+    } else {
+        expandedIds.add(cityId);
+    }
 };
 
 onMounted(() => {
-  fetchHotDestinations();
+    fetchDestinationData();
 });
 </script>
+
 <style scoped>
-/* 基础样式 */
 .destination-list-container {
-    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1rem 2rem;
     color: #2d3436;
+}
+
+/* 页头 */
+.page-header {
+    text-align: center;
+    margin-bottom: 24px;
 }
 
 .destination-list-title {
     font-size: 40px;
-    margin-bottom: 20px;
-    text-align: center;
+    margin-bottom: 8px;
     font-weight: bold;
 }
 
-/* 标签页样式 */
-.tabs {
+.page-subtitle {
+    margin: 0;
+    color: #636e72;
+    font-size: 14px;
+}
+
+.page-subtitle b {
+    color: #4a6bff;
+}
+
+/* 筛选工具栏 */
+.filter-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 32px;
-    position: relative;
-    padding-bottom: 4px;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.tab-button {
+.search-box {
     position: relative;
-    padding: 12px 24px;
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    width: min(420px, 100%);
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 36px 10px 36px;
+    border: 1.5px solid #e2e6ee;
+    border-radius: 999px;
+    background: #f7f8fc;
+    font-size: 14px;
+    color: #2d3436;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.search-input:focus {
+    border-color: #4a6bff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(74, 107, 255, 0.12);
+}
+
+.search-clear {
+    position: absolute;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: #dfe3ec;
+    color: #636e72;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.search-clear:hover {
+    background: #cdd3e0;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tab-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    font-size: 14px;
     font-weight: 600;
     color: #636e72;
-    background: none;
-    border: none;
+    background: #f3f5fa;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 12px 12px 0 0;
+    transition: all 0.25s ease;
 }
 
 .tab-button:hover {
     color: #4a6bff;
-    background: rgba(74, 107, 255, 0.05);
+    border-color: rgba(74, 107, 255, 0.35);
 }
 
 .tab-button.active {
-    color: #4a6bff;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4a6bff, #6c5ce7);
+    box-shadow: 0 6px 16px rgba(74, 107, 255, 0.32);
 }
 
-.tab-indicator {
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #4a6bff, #6c5ce7);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
+.tab-count {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    color: inherit;
+}
+
+.tab-button:not(.active) .tab-count {
+    background: #e6eaf4;
+    color: #636e72;
+}
+
+/* 大洲分组 */
+.continent-section {
+    margin-bottom: 36px;
+}
+
+.continent-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.continent-bar {
+    width: 5px;
+    height: 20px;
     border-radius: 3px;
+    background: linear-gradient(180deg, #4a6bff, #6c5ce7);
 }
 
-.tab-button.active .tab-indicator {
-    transform: scaleX(1);
+.continent-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: #636e72;
 }
 
-/* 目的地内容区域 */
-.destinations-container {
-    min-height: 400px;
-}
-
+/* 国家卡片 */
 .destinations-grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 24px;
 }
 
 .region-card {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
 }
 
 .region-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(74, 107, 255, 0.14);
+}
+
+.region-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px dashed #e6eaf4;
+}
+
+.region-flag {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.region-name {
+    flex: 1;
+    min-width: 0;
 }
 
 .region-title {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 20px;
+    margin: 0;
+    font-size: 18px;
     color: #4a6bff;
-    position: relative;
-    padding-bottom: 12px;
 }
 
-.region-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: linear-gradient(90deg, #4a6bff, #6c5ce7);
-    border-radius: 3px;
+.region-en {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #9aa1b2;
 }
 
+.region-badge {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: #4a6bff;
+    background: rgba(74, 107, 255, 0.1);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+/* 城市列表 */
 .city-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
 }
 
 .city-item {
     position: relative;
-    padding: 12px 16px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    padding: 14px;
+    border-radius: 12px;
     cursor: pointer;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    background: #f8f9fd;
+    border: 1px solid #edf0f8;
+    transition: all 0.25s ease;
 }
 
-.city-info {
-    position: relative;
-    z-index: 1;
+.city-item:hover {
+    border-color: rgba(74, 107, 255, 0.4);
+    background: #ffffff;
+    box-shadow: 0 6px 16px rgba(74, 107, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.city-name-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
 .city-name {
-    margin: 0 0 8px 0;
+    margin: 0;
     font-size: 16px;
-    font-weight: 600;
-    color: #4a6bff;
+    font-weight: 700;
+    color: #2d3436;
 }
 
-.city-description {
-    margin: 0 0 12px 0;
-    font-size: 14px;
-    line-height: 1.4;
-    color: #636e72;
+.city-en {
+    font-size: 12px;
+    color: #9aa1b2;
+}
+
+.capital-tag {
+    font-size: 11px;
+    color: #b8860b;
+    background: rgba(255, 193, 7, 0.16);
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.city-famous {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #4a6bff;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .city-meta {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
 }
 
-.best-season,
-.famous-for {
+.meta-chip {
+    font-size: 11px;
+    color: #636e72;
+    background: #eef1f8;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.meta-chip.season {
+    color: #0f9d58;
+    background: rgba(15, 157, 88, 0.1);
+}
+
+.city-description {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #636e72;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.city-item.expanded .city-description {
+    -webkit-line-clamp: unset;
+}
+
+.city-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.map-link {
     font-size: 12px;
-    color: #2d3436;
-    background: rgba(74, 107, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: 10px;
-    display: inline-block;
-    margin-right: 8px;
-    margin-bottom: 4px;
-}
-
-.city-hover-effect {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(74, 107, 255, 0.1), rgba(108, 94, 231, 0.1));
-    transform: translateX(-100%);
-    transition: all 0.3s ease;
-    z-index: -1;
-}
-
-.city-item:hover {
     color: #4a6bff;
-    transform: translateX(5px);
+    text-decoration: none;
 }
 
-.city-item:hover .city-hover-effect {
-    transform: translateY(0);
+.map-link:hover {
+    text-decoration: underline;
+}
+
+.expand-hint {
+    font-size: 11px;
+    color: #b3b9c9;
 }
 
 /* 加载状态样式 */
@@ -467,8 +722,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-state p {
@@ -546,13 +805,6 @@ onMounted(() => {
     color: #636e72;
 }
 
-/* 分页区域 */
-.pagination-block {
-    display: flex;
-    justify-content: center;
-    margin-top: 8px;
-}
-
 /* 过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
@@ -566,16 +818,20 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .tabs {
-        flex-wrap: wrap;
+    .destination-list-title {
+        font-size: 30px;
     }
 
-    .destinations-grid {
+    .filter-toolbar {
+        position: static;
+    }
+
+    .destinations-grid-container {
         grid-template-columns: 1fr;
     }
 
     .city-list {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: 1fr;
     }
 }
 </style>
