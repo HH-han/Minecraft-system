@@ -33,5 +33,11 @@ public class TicketBookingVO {
         private BigDecimal ticketPrice;
         private String description;
         private Integer quantity;
+
+        /** 关联景点ID（通过 ticket -> attraction_ticket.attraction_id 反查） */
+        private Long attractionId;
+
+        /** 关联景点名称 */
+        private String attractionName;
     }
 }

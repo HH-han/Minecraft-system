@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "预订管理")
 @RestController
 @RequestMapping("/api/booking")
@@ -32,6 +34,12 @@ public class BookingController {
         return ApiResponse.success(bookingService.getTicketBooking(id));
     }
 
+    @Operation(summary = "按联系电话查询门票预订列表")
+    @GetMapping("/ticket/list")
+    public ApiResponse<List<TicketBookingVO>> getTicketBookingsByPhone(@RequestParam String phone) {
+        return ApiResponse.success(bookingService.getTicketBookingsByPhone(phone));
+    }
+
     @Operation(summary = "创建酒店预订")
     @PostMapping("/hotel")
     public ApiResponse<Long> createHotelBooking(@Valid @RequestBody HotelBookingRequest request) {
@@ -42,5 +50,11 @@ public class BookingController {
     @GetMapping("/hotel/{id}")
     public ApiResponse<HotelBookingVO> getHotelBooking(@PathVariable Long id) {
         return ApiResponse.success(bookingService.getHotelBooking(id));
+    }
+
+    @Operation(summary = "按联系电话查询酒店预订列表")
+    @GetMapping("/hotel/list")
+    public ApiResponse<List<HotelBookingVO>> getHotelBookingsByPhone(@RequestParam String phone) {
+        return ApiResponse.success(bookingService.getHotelBookingsByPhone(phone));
     }
 }

@@ -37,4 +37,8 @@ public class HotelBookingRequest {
 
     @NotNull(message = "房间ID不能为空")
     private Long roomId;
+
+    /** 房间数量，不传默认1间 */
+    @Min(value = 1, message = "房间数量至少为1")
+    private Integer quantity;
 }
