@@ -1,5 +1,10 @@
 import { ref, onMounted, onUnmounted } from 'vue'
+import axios from 'axios'
 import request from '@/utils/request'
+
+// 判断是否为主动取消的请求（signal abort 或原生 AbortError）
+const isCanceled = (err) =>
+  axios.isCancel(err) || err?.name === 'CanceledError' || err?.name === 'AbortError'
 
 export function useFetch(url, options = {}) {
   const data = ref(null)
@@ -57,7 +62,7 @@ export function useFetch(url, options = {}) {
 
       return data.value
     } catch (err) {
-      if (err.name !== 'AbortError') {
+      if (!isCanceled(err)) {
         error.value = err.message || '请求失败'
         if (onError) {
           onError(err)
