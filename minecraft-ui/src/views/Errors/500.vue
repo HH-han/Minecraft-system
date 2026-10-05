@@ -1,454 +1,667 @@
 <template>
-<div class="scale-wrapper">
-  <div class="wrapper">
-    <div class="left">
-      <h1>500 — 服务器内部错误</h1>
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:nowrap">
-        <div class="error-num" id="err">500</div>
-        <div>
-          <p class="lead" id="msg">服务器正在休息 ☕ — 请稍后重试。</p>
-          <div class="actions">
-            <button class="primary" id="retry">重试</button>
-            <button class="ghost" id="home">返回首页</button>
+  <div class="error-page">
+    <!-- 背景装饰 -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow--red" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow--amber" aria-hidden="true"></div>
+
+    <main class="container">
+      <!-- 左侧：错误信息 -->
+      <section class="hero">
+        <div class="badge">SERVER ERROR · 服务器内部错误</div>
+
+        <div class="code" data-text="500">500</div>
+
+        <h1 class="title">服务器开小差了</h1>
+        <p class="desc">
+          服务器在处理请求时遇到意外状况，无法完成本次操作。<br />
+          这通常不是你的问题 —— 维护机器人已经出发赶往现场。
+        </p>
+
+        <div class="meta">
+          <div class="meta-item">
+            <span class="meta-label">错误代码</span>
+            <span class="meta-value">HTTP 500</span>
           </div>
-          <div class="hint" id="hint">提示：这很可能不是你的问题。错误代码 <code>500</code></div>
+          <div class="meta-item">
+            <span class="meta-label">请求路径</span>
+            <span class="meta-value mono">{{ fromPath }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">发生时间</span>
+            <span class="meta-value mono">{{ occurredAt }}</span>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="server">
-      <div class="rack" id="rack">
-        <div class="drive" id="drive">
-          <div class="panel">DB</div>
-          <div class="light"></div>
+        <div class="actions">
+          <button class="btn btn--primary" @click="reload">
+            <span class="btn-icon">↻</span>刷新页面
+          </button>
+          <button class="btn btn--ghost" @click="goBack">返回上一页</button>
+          <button class="btn btn--ghost" @click="goHome">返回首页</button>
         </div>
-        <div class="robot" id="robot">🤖<div style="font-size:11px;margin-top:4px">服务器机器人</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-          <div class="panel" style="width:44px;height:44px;">API</div>
-          <div class="panel" style="width:44px;height:44px;">CDN</div>
-        </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="foot">调试状态: <span id="debug">空闲</span></div>
+      <!-- 右侧：服务器机架 + 终端日志 -->
+      <section class="panel">
+        <div class="rack" aria-hidden="true">
+          <div
+            v-for="n in 4"
+            :key="n"
+            class="unit"
+            :class="{ 'unit--down': n === 2 }"
+          >
+            <span class="unit-name">NODE-0{{ n }}</span>
+            <div class="unit-slots">
+              <span v-for="s in 6" :key="s" class="slot"></span>
+            </div>
+            <span class="unit-led"></span>
+
+            <template v-if="n === 2">
+              <span class="smoke smoke--1"></span>
+              <span class="smoke smoke--2"></span>
+              <span class="smoke smoke--3"></span>
+            </template>
+          </div>
+
+          <div class="robot">🤖</div>
+        </div>
+
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="dot dot--red"></span>
+            <span class="dot dot--yellow"></span>
+            <span class="dot dot--green"></span>
+            <span class="terminal-title">server-diagnostics</span>
+          </div>
+          <div class="terminal-body">
+            <div
+              v-for="(line, i) in visibleLogs"
+              :key="i"
+              class="log-line"
+              :class="`log-line--${line.type}`"
+            >
+              <span class="log-time">{{ line.time }}</span>
+              <span class="log-text">{{ line.text }}</span>
+            </div>
+            <span v-if="!logsDone" class="caret"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      若问题持续存在，请联系管理员并附上错误标识：
+      <code class="mono">{{ errorId }}</code>
+    </footer>
   </div>
-</div>
-
-<!-- Popup -->
-<div class="popup" id="popup">
-  <div>💡 多点击几次“重试”按钮 — 也许会有好运！</div>
-  <button id="closePopup" aria-label="关闭弹窗">✕</button>
-</div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
 const router = useRouter()
 
-const refreshPage = () => {
-  window.location.reload()
+/* 基本信息 */
+const fromPath = computed(() => {
+  const q = route.query?.from
+  if (typeof q === 'string' && q) return q
+  return route.redirectedFrom?.fullPath || window.location.pathname || '/'
+})
+
+const occurredAt = ref('')
+const errorId = ref('')
+
+const formatTime = (d) =>
+  [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map((v) => String(v).padStart(2, '0'))
+    .join(':')
+
+const now = new Date()
+const stamp = (offsetSec = 0) =>
+  formatTime(new Date(now.getTime() - offsetSec * 1000))
+
+/* 终端诊断日志（逐条输出） */
+const allLogs = [
+  { type: 'cmd', time: stamp(12), text: '$ systemctl status minecraft-server' },
+  { type: 'error', time: stamp(11), text: '[ERROR] java.lang.IllegalStateException: 主循环崩溃' },
+  { type: 'warn', time: stamp(9), text: '[WARN]  at net.minecraft.server.ServerTick.run(ServerTick.java:512)' },
+  { type: 'info', time: stamp(7), text: '[INFO]  正在收集崩溃报告 → crash-reports/crash-500.txt' },
+  { type: 'info', time: stamp(5), text: '[INFO]  已派出服务器维护机器人前往现场 🤖' },
+  { type: 'error', time: stamp(3), text: '[ERROR] 无法自动恢复，需要人工介入' }
+]
+
+const visibleLogs = ref([])
+const logsDone = computed(() => visibleLogs.value.length >= allLogs.length)
+let logTimer = null
+
+/* 操作 */
+const reload = () => window.location.reload()
+
+const goBack = () => {
+  if (window.history.length > 1) router.back()
+  else router.push('/')
 }
 
-const goHome = () => {
-  router.push('/')
-}
-
-let scaleToFitHandler = null
+const goHome = () => router.push('/')
 
 onMounted(() => {
-  const retry = document.getElementById("retry");
-  const home = document.getElementById("home");
-  const err = document.getElementById("err");
-  const msg = document.getElementById("msg");
-  const hint = document.getElementById("hint");
-  const drive = document.getElementById("drive");
-  const debug = document.getElementById("debug");
-  const wrapper = document.querySelector(".wrapper");
-  const scaleWrapper = document.querySelector(".scale-wrapper");
+  occurredAt.value = new Date().toLocaleString('zh-CN', { hour12: false })
+  errorId.value =
+    'ERR-' +
+    Date.now().toString(36).toUpperCase() +
+    '-' +
+    Math.random().toString(36).slice(2, 6).toUpperCase()
 
-  if (!wrapper || !scaleWrapper) {
-    console.warn("[500.vue] DOM elements not found");
-    return;
-  }
-
-  function scaleToFit() {
-    const parentWidth = window.innerWidth;
-    const parentHeight = window.innerHeight;
-    const scaleX = parentWidth / wrapper.offsetWidth;
-    const scaleY = parentHeight / wrapper.offsetHeight;
-    const scale = Math.min(scaleX, scaleY, 1);
-    scaleWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
-  }
-
-  scaleToFitHandler = scaleToFit;
-  window.addEventListener("resize", scaleToFit);
-  scaleToFit();
-
-  function popConfetti(x, y) {
-    const c = document.createElement("canvas");
-    c.width = innerWidth;
-    c.height = innerHeight;
-    c.style.position = "fixed";
-    c.style.left = 0;
-    c.style.top = 0;
-    c.style.pointerEvents = "none";
-    document.body.appendChild(c);
-    const ctx = c.getContext("2d");
-    const parts = [];
-    for (let i = 0; i < 36; i++) {
-      parts.push({
-        x: x || innerWidth / 2,
-        y: y || innerHeight / 2,
-        vx: (Math.random() - 0.5) * 8,
-        vy: Math.random() * -10 - 2,
-        r: Math.random() * 6 + 3,
-        life: Math.random() * 60 + 40,
-        color: ["#ff6b6b", "#ffd166", "#6bcBFF", "#9be7a9", "#c792ff"][
-          Math.floor(Math.random() * 5)
-        ]
-      });
-    }
-    (function frame() {
-      ctx.clearRect(0, 0, c.width, c.height);
-      parts.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.35;
-        p.life--;
-        ctx.beginPath();
-        ctx.fillStyle = p.color;
-        ctx.ellipse(p.x, p.y, p.r, p.r * 0.7, 0, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      if (parts.some((p) => p.life > 0)) requestAnimationFrame(frame);
-      else c.remove();
-    })();
-  }
-
-  function successChance() {
-    return Math.random() > 0.5;
-  }
-
-  retry.addEventListener("click", async (e) => {
-    retry.disabled = true;
-    retry.textContent = "检查中...";
-    debug.textContent = "重试中";
-    await new Promise((r) => setTimeout(r, 900));
-    if (successChance()) {
-      err.textContent = "200";
-      err.style.color = "#9be7a9";
-      msg.textContent = "问题已修复！服务器已恢复正常。";
-      hint.textContent = "正在为您重定向...";
-      popConfetti(e.clientX, e.clientY);
-      debug.textContent = "成功";
-      retry.textContent = "成功！";
+  let index = 0
+  logTimer = setInterval(() => {
+    if (index < allLogs.length) {
+      visibleLogs.value.push(allLogs[index++])
     } else {
-      msg.textContent = "还是不行... 也许服务器打翻了咖啡。";
-      hint.textContent = "稍后再试。";
-      drive.querySelector(".panel").textContent = ["数据库", "¯\\_(ツ)_/¯", "错误"][
-        Math.floor(Math.random() * 3)
-      ];
-      debug.textContent = "错误持续";
-      retry.textContent = "重试";
+      clearInterval(logTimer)
+      logTimer = null
     }
-    retry.disabled = false;
-  });
-
-  home.addEventListener("click", () => {
-    window.location.href = "/";
-  });
-
-  const popup = document.getElementById("popup");
-  const closeBtn = document.getElementById("closePopup");
-  setTimeout(() => popup.classList.add("show"), 2000);
-  const hidePopup = () => popup.classList.remove("show");
-  closeBtn.addEventListener("click", hidePopup);
-  setTimeout(hidePopup, 15000);
+  }, 550)
 })
 
 onUnmounted(() => {
-  if (scaleToFitHandler) {
-    window.removeEventListener("resize", scaleToFitHandler);
-  }
+  if (logTimer) clearInterval(logTimer)
 })
-
 </script>
 
 <style scoped>
-.scale-wrapper {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform-origin: center center;
-  z-index: 1;
-  border-radius: 24px;
+/* ========== 页面骨架 ========== */
+.error-page {
+  position: relative;
+  min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.scale-wrapper::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: #0f1724;
-  z-index: -1;
-}
-
-/* Hoofdcontainer */
-.wrapper {
-  width: 900px;
-  max-width: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.01)
-  );
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(6, 10, 15, 0.6);
-  padding: 36px;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
-  align-items: center;
+  flex-direction: column;
   overflow: hidden;
-  border-radius: 24px;
+  background: #0b1220;
+  color: #e6edf5;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', system-ui, sans-serif;
 }
 
-/* Left content */
-.left h1 {
-  margin: 0 0 12px;
-  font-size: 48px;
-  letter-spacing: -1px;
-  color: white; /* H1 wit */
+.container {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: min(1080px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+  padding: 48px 0;
 }
 
-.error-num {
+.mono {
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+
+/* ========== 背景装饰 ========== */
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 75%);
+}
+
+.bg-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.bg-glow--red {
+  background: #f43f5e;
+  top: -180px;
+  left: -140px;
+  animation: glow-float 14s ease-in-out infinite alternate;
+}
+
+.bg-glow--amber {
+  background: #f59e0b;
+  bottom: -220px;
+  right: -160px;
+  animation: glow-float 18s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes glow-float {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(60px, 40px) scale(1.15); }
+}
+
+/* ========== 左侧内容 ========== */
+.badge {
   display: inline-block;
-  font-weight: 800;
-  font-size: 120px;
-  color: #ff6b6b;
-  line-height: 1;
-  animation: bounce 2s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #fda4af;
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  margin-bottom: 18px;
 }
 
-@keyframes bounce {
-  0% {
-    transform: translateY(0) rotate(-2deg) scale(1);
-  }
-  18% {
-    transform: translateY(-18px) rotate(6deg) scale(1.02);
-  }
-  40% {
-    transform: translateY(0) rotate(-4deg) scale(1);
-  }
-  100% {
-    transform: translateY(0);
-  }
+.code {
+  position: relative;
+  font-size: clamp(96px, 14vw, 168px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  background: linear-gradient(180deg, #ffffff 20%, #94a3b8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  user-select: none;
 }
 
-p.lead {
-  color: #9aa6b2;
-  margin: 8px 0 18px;
-  font-size: 16px;
+.code::before,
+.code::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.code::before {
+  color: #ff4d6d;
+  -webkit-text-fill-color: #ff4d6d;
+  animation: glitch-a 2.4s infinite steps(1);
+}
+
+.code::after {
+  color: #38bdf8;
+  -webkit-text-fill-color: #38bdf8;
+  animation: glitch-b 3.1s infinite steps(1);
+}
+
+@keyframes glitch-a {
+  0%, 86%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  20% { clip-path: inset(18% 0 58% 0); transform: translate(-6px, 2px); }
+  40% { clip-path: inset(60% 0 12% 0); transform: translate(5px, -2px); }
+  60% { clip-path: inset(34% 0 44% 0); transform: translate(-4px, 1px); }
+  80% { clip-path: inset(72% 0 6% 0); transform: translate(6px, -1px); }
+}
+
+@keyframes glitch-b {
+  0%, 82%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  25% { clip-path: inset(8% 0 74% 0); transform: translate(5px, -1px); }
+  50% { clip-path: inset(52% 0 26% 0); transform: translate(-5px, 2px); }
+  75% { clip-path: inset(80% 0 4% 0); transform: translate(4px, 1px); }
+}
+
+.title {
+  margin: 14px 0 10px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.desc {
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #94a3b8;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  margin-bottom: 26px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-label {
+  font-size: 12px;
+  color: #64748b;
+  letter-spacing: 0.06em;
+}
+
+.meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+  word-break: break-all;
 }
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-button {
-  border: 0;
-  padding: 12px 18px;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
   border-radius: 12px;
+  border: 0;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.14s ease, box-shadow 0.14s ease;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
 }
 
-.primary {
-  background: linear-gradient(90deg, #ff8a8a, #ff6b6b);
-  color: white;
-  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.5);
+.btn-icon {
+  display: inline-block;
+  animation: spin 3.2s linear infinite;
 }
 
-.ghost {
-  background: transparent;
-  color: #9aa6b2;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.2);
-}
-
-.ghost:hover {
-  transform: translateY(-3px);
-}
-
-.hint {
-  margin-top: 12px;
-  color: #9aa6b2;
-  font-size: 13px;
-}
-
-/* Right illustration */
-
-.drive {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  background: linear-gradient(180deg, #0f2433, #071724);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.light {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #5ee3b4;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  box-shadow: 0 4px 12px rgba(94, 227, 180, 0.15);
-  animation: blink 1.6s infinite;
-}
-
-@keyframes blink {
-  0%,
-  60% {
-    opacity: 1;
-  }
-  70% {
-    opacity: 0.4;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.panel {
-  width: 50px;
-  height: 40px;
-  border-radius: 6px;
-  background: #081a24;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #90aab6;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.server {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* verdeel ruimte gelijk */
-  position: relative;
-  min-height: 260px;
-  flex-wrap: nowrap; /* voorkom stapeling */
-  width: 100%; /* zodat schaal-wrapper correct past */
-}
-
-.rack {
-  width: 300px;
-  height: 200px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #071025, #0b1624);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Drive, Robot, Panels */
-}
-
-.robot {
-  width: 110px;
-  height: 110px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #021424, #052432);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #9aa6b2;
-  box-shadow: 0 18px 40px rgba(2, 6, 15, 0.6);
-  animation: tilt 3.4s infinite ease-in-out;
-}
-
-.rack > div:last-child {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
-}
-
-@keyframes tilt {
-  0% {
-    transform: rotate(-2deg);
-  }
-  50% {
-    transform: rotate(4deg);
-  }
-  100% {
-    transform: rotate(-2deg);
-  }
-}
-
-.foot {
-  position: absolute;
-  left: 18px;
-  bottom: 14px;
-  color: #9aa6b2;
-  font-size: 12px;
-}
-
-/* Popup notification */
-.popup {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #e6eef6;
-  padding: 16px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
-  max-width: 260px;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  backdrop-filter: blur(6px);
-  z-index: 99;
-}
-.popup.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-.popup button {
-  background: none;
-  border: 0;
-  color: #9aa6b2;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  margin-left: auto;
-  transition: color 0.2s;
-}
-.popup button:hover {
+.btn--primary {
   color: #fff;
+  background: linear-gradient(90deg, #f87171, #f43f5e);
+  box-shadow: 0 8px 22px rgba(244, 63, 94, 0.28);
 }
 
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(244, 63, 94, 0.38);
+}
+
+.btn--ghost {
+  color: #cbd5e1;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.btn--ghost:hover {
+  transform: translateY(-2px);
+  color: #fff;
+  border-color: rgba(203, 213, 225, 0.5);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+/* ========== 右侧面板 ========== */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- 服务器机架 --- */
+.rack {
+  position: relative;
+  padding: 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #0d1a2d, #0a1424);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow: 0 18px 44px rgba(2, 6, 15, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.unit {
+  position: relative;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #13233a, #0f1c30);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.unit--down {
+  border-color: rgba(244, 63, 94, 0.45);
+  background: linear-gradient(180deg, #2b1524, #20101d);
+  animation: unit-shake 4s ease-in-out infinite;
+}
+
+@keyframes unit-shake {
+  0%, 88%, 100% { transform: translateX(0); }
+  90% { transform: translateX(-2px); }
+  92% { transform: translateX(2px); }
+  94% { transform: translateX(-1px); }
+  96% { transform: translateX(1px); }
+}
+
+.unit-name {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.unit--down .unit-name {
+  color: #fb7185;
+}
+
+.unit-slots {
+  display: flex;
+  gap: 5px;
+  flex: 1;
+}
+
+.slot {
+  width: 14px;
+  height: 5px;
+  border-radius: 2px;
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.unit-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+  animation: led-blink 1.8s infinite;
+}
+
+.unit--down .unit-led {
+  background: #f43f5e;
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.8);
+  animation: led-blink 0.7s infinite;
+}
+
+@keyframes led-blink {
+  0%, 60%, 100% { opacity: 1; }
+  30% { opacity: 0.25; }
+}
+
+/* 冒烟 */
+.smoke {
+  position: absolute;
+  bottom: 100%;
+  left: 70%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.35);
+  filter: blur(3px);
+  animation: smoke-rise 2.6s ease-out infinite;
+  pointer-events: none;
+}
+
+.smoke--2 {
+  left: 58%;
+  animation-delay: 0.9s;
+}
+
+.smoke--3 {
+  left: 82%;
+  animation-delay: 1.7s;
+}
+
+@keyframes smoke-rise {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(10px, -34px) scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* 巡逻机器人 */
+.robot {
+  position: absolute;
+  bottom: -14px;
+  left: 0;
+  font-size: 24px;
+  animation: robot-patrol 8s ease-in-out infinite alternate;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+@keyframes robot-patrol {
+  from { transform: translateX(8px); }
+  to { transform: translateX(calc(100% + 240px)); }
+}
+
+/* --- 终端 --- */
+.terminal {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0a111e;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow: 0 18px 44px rgba(2, 6, 15, 0.55);
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: rgba(148, 163, 184, 0.07);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot--red { background: #ff5f57; }
+.dot--yellow { background: #febc2e; }
+.dot--green { background: #28c840; }
+
+.terminal-title {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+
+.terminal-body {
+  padding: 14px 16px;
+  min-height: 168px;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.9;
+}
+
+.log-line {
+  display: flex;
+  gap: 10px;
+  animation: log-in 0.3s ease both;
+}
+
+@keyframes log-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.log-time {
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.log-line--cmd .log-text { color: #a5f3b0; }
+.log-line--info .log-text { color: #7dd3fc; }
+.log-line--warn .log-text { color: #fbbf24; }
+.log-line--error .log-text { color: #ff6b6b; font-weight: 600; }
+
+.caret {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  margin-top: 4px;
+  background: #a5f3b0;
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+/* ========== 页脚 ========== */
+.foot {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.foot .mono {
+  padding: 2px 8px;
+  margin-left: 4px;
+  border-radius: 6px;
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 880px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 40px 0;
+  }
+
+  .panel {
+    max-width: 460px;
+  }
+
+  .robot {
+    display: none;
+  }
+}
+
+/* 减少动态效果（无障碍） */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
 </style>

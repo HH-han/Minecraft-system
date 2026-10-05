@@ -2,11 +2,11 @@
   <!-- 设备检测组件（始终渲染但隐藏） -->
   <!-- Test hot reload in App.vue -->
   <DeviceDetects ref="deviceDetectsRef" style="display: none;" />
-  <div v-if="isMobile">
-    <DeviceDetects />
-  </div>
+<!--  <div>-->
+<!--    <DeviceDetects />-->
+<!--  </div>-->
   <!-- PC设备正常显示 -->
-  <div v-else>
+  <div>
     <!-- loading 加载中效果-->
     <div id="app">
       <RefreshLoad v-if="isLoading" />
