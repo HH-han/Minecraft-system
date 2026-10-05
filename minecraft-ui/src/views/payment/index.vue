@@ -4,12 +4,19 @@
       <!-- 侧边栏导航 -->
       <aside class="payment-sidebar">
         <div class="sidebar-header">
+          <div class="sidebar-badge">PAY</div>
           <h1 class="sidebar-title">支付中心</h1>
           <p class="sidebar-subtitle">一站式支付解决方案</p>
         </div>
         <nav class="sidebar-nav">
-          <button v-for="item in navItems" :key="item.id" class="nav-item" :class="{ active: activeTab === item.id }"
-            @click="switchTab(item.id)">
+          <button
+            v-for="item in navItems"
+            :key="item.id"
+            class="nav-item"
+            :class="{ active: activeTab === item.id, 'nav-home': item.id === 'home' }"
+            @click="switchTab(item.id)"
+          >
+            <span class="nav-indicator"></span>
             <span class="nav-icon" v-html="item.icon"></span>
             <span class="nav-text">{{ item.title }}</span>
           </button>
@@ -18,6 +25,14 @@
 
       <!-- 主内容区 -->
       <main class="payment-content">
+        <!-- 页面标题栏 -->
+        <header class="page-header">
+          <div class="page-title-group">
+            <h2 class="page-title">{{ getActiveTabTitle() }}</h2>
+            <p class="page-desc">管理您的商品、订单与支付流程</p>
+          </div>
+        </header>
+
         <!-- 商品类型选择 -->
         <div v-if="activeTab === 'product'" class="section apple-card">
           <ProductTypeSelector @optionChange="handleOptionChange" />
@@ -25,7 +40,9 @@
             <h3>已选择的选项</h3>
             <div class="options-list">
               <div v-for="(value, key) in selectedOptions" :key="key" class="option-item">
-                {{ key }}: {{ value }}
+                <span class="option-key">{{ key }}</span>
+                <span class="option-sep">·</span>
+                <span class="option-val">{{ value }}</span>
               </div>
             </div>
           </div>
@@ -40,6 +57,10 @@
         <div v-if="activeTab === 'order'" class="section apple-card">
           <OrderDetail @pay="handlePay" />
         </div>
+        <!-- 预定服务 -->
+        <div v-if="activeTab === 'predetermined'" class="section apple-card">
+          <Predetermined />
+        </div>
         <!-- 历史订单 -->
         <div v-if="activeTab === 'history'" class="section apple-card">
           <HistoricalOrders />
@@ -53,12 +74,19 @@
       <!-- 支付模态框 -->
       <div v-if="showPayModal" class="modal-overlay" @click="closePayModal">
         <div class="modal-content" @click.stop>
-            <PayPage 
-              :orderId="paymentData.orderId" 
-              :orderIds="paymentData.orderIds" 
-              :cartItems="paymentData.cartItems" 
-              :userId="paymentData.userId"
-            />
+          <button class="modal-close" @click="closePayModal" aria-label="关闭">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <PayPage
+            :orderId="paymentData.orderId"
+            :orderIds="paymentData.orderIds"
+            :cartItems="paymentData.cartItems"
+            :userId="paymentData.userId"
+            :predetermined="paymentData.predetermined"
+          />
         </div>
       </div>
     </div>
@@ -75,6 +103,7 @@ import ShoppingCart from './components/ShoppingCart.vue'
 import UserReview from './components/UserReview.vue'
 import ProductTypeSelector from './components/ProductTypeSelector.vue'
 import HistoricalOrders from './components/HistoricalOrders.vue'
+import Predetermined from './components/Predetermined.vue'
 import { getFoodDetail } from '@/api/food.js'
 
 const store = useAuthStore()
@@ -118,6 +147,11 @@ const navItems = [
     id: 'cart',
     title: '购物车',
     icon: `<svg t="1774153902264" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="14151" width="24" height="24"><path d="M373.72928 753.55136c-55.76192 0-103.68-45.17888-116.5312-109.87008L164.75136 179.69664c-4.4032-21.91872-18.75968-37.82144-34.12992-37.82144h-44.98432c-20.28032 0-42.11712-12.51328-42.11712-39.9872s21.83168-39.9872 42.11712-39.9872h44.98432c56.63232 0 93.34272 34.1248 106.16832 98.68288l92.4416 463.99488c4.76672 23.65952 30.19264 48.9984 44.4928 48.9984h543.19104c20.28544 0 42.11712 12.51328 42.11712 39.99232 0 27.46368-21.83168 39.97696-42.11712 39.97696l-543.18592 0.00512z m159.4368-609.73568c-20.28032 0-42.10688-12.51328-42.10688-39.9872 0-27.4688 21.82656-39.98208 42.10688-39.98208h23.26528c20.28032 0 42.10688 12.51328 42.10688 39.98208 0 27.47392-21.82656 39.9872-42.10688 39.9872h-23.26528zM821.73952 988.24192c-52.9152 0-95.96416-43.05408-95.96416-95.97952 0-52.9152 43.04896-95.96416 95.96416-95.96416s95.96416 43.04896 95.96416 95.96416c0 52.92032-43.04896 95.97952-95.96416 95.97952z m0-138.03008a41.77408 41.77408 0 0 0-29.71648 12.34432 41.75872 41.75872 0 0 0-12.3392 29.70624c0 23.19872 18.8672 42.07616 42.05568 42.07616s42.0608-18.87232 42.0608-42.06592c0-23.1936-18.87232-42.0608-42.0608-42.0608zM428.7488 988.24192c-52.92032 0-95.9744-43.05408-95.9744-95.97952 0-52.9152 43.05408-95.96416 95.9744-95.96416s95.9744 43.04896 95.9744 95.96416c0 52.92032-43.04896 95.97952-95.9744 95.97952z m0-138.03008c-23.18848 0-42.05568 18.87232-42.05568 42.0608 0 23.1936 18.8672 42.06592 42.05568 42.06592s42.05056-18.87232 42.05056-42.06592c0.00512-23.1936-18.86208-42.0608-42.05056-42.0608z" p-id="14152" fill="currentColor"></path><path d="M471.7056 610.18112c-46.11584 0-85.79072-35.5072-94.34624-84.4288L318.20288 186.86976c-5.376-30.49984 2.08384-61.6704 20.46464-85.5296 18.2528-23.81824 45.12768-37.4784 73.74848-37.4784 25.14432 0 36.85376 11.06944 36.85376 34.83136 0 24.9088-17.23392 30.53568-45.78816 39.85408l-0.57344 0.17408c-16.90624 5.12-27.02848 22.89664-23.4752 40.5504l53.97504 299.99104c3.072 17.0496 17.8176 29.41952 35.1488 29.41952h314.96192c17.3312 0 32.0768-12.36992 35.1488-29.41952l53.97504-299.99104c3.55328-17.65376-6.56896-35.4304-23.4752-40.5504l-0.57344-0.17408c-28.55424-9.3184-45.78816-14.94528-45.78816-39.85408 0-23.76192 11.70944-34.83136 36.85376-34.83136 28.6208 0 55.49568 13.66016 73.74848 37.4784 18.3808 23.8592 25.84064 55.02976 20.46464 85.5296l-59.15648 338.88256c-8.55552 48.9216-48.2304 84.4288-94.34624 84.4288H471.7056z" p-id="14153" fill="currentColor"></path></svg>`
+  },
+  {
+    id: 'predetermined',
+    title: '预定服务',
+    icon: ``
   },
   {
     id: 'order',
@@ -220,84 +254,79 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ==================== Apple Design System Variables ==================== */
-:root {
-  /* Colors */
-  --apple-text-primary: #1d1d1f;
-  --apple-text-secondary: #6e6e73;
-  --apple-bg-primary: #ffffff;
-  --apple-bg-secondary: #f5f5f7;
-  --apple-accent: #2997ff;
-  --apple-accent-hover: #0066cc;
-  --apple-divider: #d2d2d6;
-  --apple-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  --apple-card-shadow-hover: 0 8px 40px rgba(0, 0, 0, 0.12);
-  
-  /* Spacing */
-  --apple-spacing-unit: 8px;
-  --apple-content-max-width: 1200px;
-  --apple-content-padding: 22px;
-  --apple-card-padding: 32px;
-  --apple-section-gap: 64px;
-  
-  /* Border Radius */
-  --apple-radius-card: 24px;
-  --apple-radius-button: 12px;
-  --apple-radius-tag: 20px;
-  
-  /* Transitions */
-  --apple-transition: 0.2s ease;
-}
-
 /* ==================== Base Container ==================== */
 .payment-container {
-  background-color: var(--apple-bg-secondary);
-  padding: var(--apple-content-padding);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(41, 151, 255, 0.06), transparent 40%),
+    radial-gradient(circle at 88% 92%, rgba(175, 82, 222, 0.05), transparent 40%),
+    #f5f5f7;
+  padding: 28px;
   font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   scroll-behavior: smooth;
+  color: #1d1d1f;
 }
 
 .payment-wrapper {
   display: flex;
-  gap: 32px;
-  max-width: var(--apple-content-max-width);
+  gap: 28px;
+  max-width: 1240px;
   margin: 0 auto;
   width: 100%;
+  align-items: flex-start;
 }
 
-/* ==================== Sidebar Styles ==================== */
+/* ==================== Sidebar ==================== */
 .payment-sidebar {
-  width: 280px;
-  min-width: 280px;
-  background: var(--apple-bg-primary);
-  border-radius: var(--apple-radius-card);
-  border: 1px solid var(--apple-divider);
-  box-shadow: var(--apple-card-shadow);
-  padding: 32px 24px;
+  width: 264px;
+  min-width: 264px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 28px 20px;
   height: fit-content;
   position: sticky;
-  top: 22px;
+  top: 24px;
   z-index: 100;
 }
 
 .sidebar-header {
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--apple-divider);
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e5e5ea;
+}
+
+.sidebar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2997ff, #5e5ce6);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 16px rgba(41, 151, 255, 0.35);
 }
 
 .sidebar-title {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 700;
-  margin: 0 0 8px 0;
-  color: var(--apple-text-primary);
+  margin: 0 0 6px 0;
+  color: #1d1d1f;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .sidebar-subtitle {
-  font-size: 14px;
-  color: var(--apple-text-secondary);
+  font-size: 13px;
+  color: #6e6e73;
   margin: 0;
   font-weight: 400;
   line-height: 1.5;
@@ -306,109 +335,155 @@ onMounted(() => {
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 20px;
-  border-radius: 16px;
-  background: var(--apple-bg-primary);
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: transparent;
   border: 1px solid transparent;
-  color: var(--apple-text-primary);
+  color: #6e6e73;
   cursor: pointer;
-  transition: all var(--apple-transition);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.5;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  font-family: inherit;
+}
+
+.nav-indicator {
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 22px;
+  border-radius: 0 3px 3px 0;
+  background: #2997ff;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-item:hover {
-  background: var(--apple-bg-secondary);
-  transform: scale(1.01);
-  box-shadow: var(--apple-card-shadow-hover);
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
 .nav-item.active {
-  background: var(--apple-bg-secondary);
-  border-color: var(--apple-divider);
-  box-shadow: var(--apple-card-shadow);
-  border-radius: 16px;
-}
-
-.nav-item:nth-child(1) {
-  background: linear-gradient(135deg, rgba(255, 59, 48, 0.08), rgba(255, 149, 0, 0.08));
-  border: 1px solid rgba(255, 59, 48, 0.2);
-  margin-bottom: 16px;
-}
-
-.nav-item:nth-child(1):hover {
-  background: linear-gradient(135deg, rgba(255, 59, 48, 0.12), rgba(255, 149, 0, 0.12));
-  border-color: rgba(255, 59, 48, 0.3);
-  transform: scale(1.01);
-  box-shadow: 0 8px 32px rgba(255, 59, 48, 0.15);
-}
-
-.nav-item:nth-child(1) .nav-icon {
-  color: #ff3b30;
-}
-
-.nav-item:nth-child(1) .nav-text {
+  background: rgba(41, 151, 255, 0.1);
+  color: #2997ff;
   font-weight: 600;
+}
+
+.nav-item.active .nav-indicator {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.nav-item.active .nav-icon {
+  color: #2997ff;
+}
+
+/* 返回首页特殊样式 */
+.nav-item.nav-home {
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.06), rgba(255, 149, 0, 0.06));
+  border: 1px solid rgba(255, 59, 48, 0.15);
   color: #ff3b30;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+.nav-item.nav-home:hover {
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.1), rgba(255, 149, 0, 0.1));
+  border-color: rgba(255, 59, 48, 0.25);
+}
+
+.nav-item.nav-home .nav-icon {
+  color: #ff3b30;
+}
+
+.nav-item.nav-home.active {
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.12), rgba(255, 149, 0, 0.12));
+  color: #ff3b30;
+}
+
+.nav-item.nav-home.active .nav-indicator {
+  background: #ff3b30;
 }
 
 .nav-icon {
-  font-size: 20px;
   flex-shrink: 0;
-  color: var(--apple-text-secondary);
+  color: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .nav-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
 }
 
 .nav-text {
   flex: 1;
 }
 
-/* ==================== Main Content Styles ==================== */
+/* ==================== Page Header ==================== */
+.page-header {
+  margin-bottom: 24px;
+  padding: 28px 32px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.page-desc {
+  font-size: 14px;
+  color: #6e6e73;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ==================== Main Content ==================== */
 .payment-content {
   flex: 1;
   min-width: 0;
 }
 
-/* Apple Card Style */
 .apple-card {
-  background: var(--apple-bg-primary);
-  border-radius: var(--apple-radius-card);
-  border: 1px solid var(--apple-divider);
-  box-shadow: var(--apple-card-shadow);
-  padding: var(--apple-card-padding);
-  margin-bottom: 32px;
-  transition: all var(--apple-transition);
-}
-
-.apple-card:hover {
-  transform: scale(1.005);
-  box-shadow: var(--apple-card-shadow-hover);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 32px;
+  margin-bottom: 24px;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section {
-  animation: fadeIn 0.3s ease;
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -416,17 +491,17 @@ onMounted(() => {
   }
 }
 
-/* ==================== Selected Options Styles ==================== */
+/* ==================== Selected Options ==================== */
 .selected-options {
-  margin-top: 24px;
+  margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid var(--apple-divider);
+  border-top: 1px solid #e5e5ea;
 }
 
 .selected-options h3 {
-  font-size: 20px;
-  color: var(--apple-text-primary);
-  margin: 0 0 16px 0;
+  font-size: 17px;
+  color: #1d1d1f;
+  margin: 0 0 14px 0;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -434,54 +509,92 @@ onMounted(() => {
 .options-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .option-item {
-  padding: 10px 20px;
-  background: var(--apple-bg-secondary);
-  border-radius: var(--apple-radius-tag);
-  font-size: 14px;
-  color: var(--apple-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #f5f5f7;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #1d1d1f;
   font-weight: 500;
-  transition: all var(--apple-transition);
-  border: 1px solid var(--apple-divider);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e5e5ea;
 }
 
-.option-item:hover {
-  background: var(--apple-accent);
-  color: white;
-  border-color: var(--apple-accent);
-  transform: scale(1.02);
+.option-key {
+  color: #6e6e73;
+  font-weight: 400;
 }
 
-/* ==================== Modal Styles ==================== */
+.option-sep {
+  color: #8e8e93;
+}
+
+.option-val {
+  color: #2997ff;
+  font-weight: 600;
+}
+
+/* ==================== Modal ==================== */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-content {
-  max-width: 600px;
-  width: 90%;
-  max-height: 85vh;
   position: relative;
-  animation: modalSlideIn 0.3s ease;
-  background: var(--apple-bg-primary);
-  border-radius: var(--apple-radius-card);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+  max-width: 600px;
+  width: 92%;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
   cursor: default;
-  overflow: hidden;
+  animation: modalSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.06);
+  color: #6e6e73;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.12);
+  color: #1d1d1f;
+  transform: rotate(90deg);
 }
 
 @keyframes modalSlideIn {
@@ -495,182 +608,73 @@ onMounted(() => {
   }
 }
 
-/* ==================== Responsive Design ==================== */
-/* Desktop: >= 1200px - Default styles */
-
-/* Tablet: 768px - 1199px */
+/* ==================== Responsive ==================== */
 @media (max-width: 1199px) {
-  .payment-wrapper {
-    gap: 24px;
-  }
-  
-  .payment-sidebar {
-    width: 240px;
-    min-width: 240px;
-    padding: 24px 20px;
-  }
-  
-  .sidebar-title {
-    font-size: 28px;
-  }
-  
-  .apple-card {
-    padding: 28px;
-  }
-  
-  .nav-item {
-    padding: 14px 16px;
-    font-size: 15px;
-  }
+  .payment-wrapper { gap: 22px; }
+  .payment-sidebar { width: 232px; min-width: 232px; padding: 24px 18px; }
+  .sidebar-title { font-size: 23px; }
+  .page-header { padding: 24px 28px; }
+  .page-title { font-size: 25px; }
+  .apple-card { padding: 28px; }
+  .nav-item { padding: 12px 14px; font-size: 14px; }
 }
 
-/* Mobile: <= 767px */
 @media (max-width: 767px) {
-  .payment-container {
-    padding: 16px;
-  }
-  
-  .payment-wrapper {
-    flex-direction: column;
-    gap: 24px;
-  }
-  
+  .payment-container { padding: 16px; }
+  .payment-wrapper { flex-direction: column; gap: 20px; }
+
   .payment-sidebar {
     width: 100%;
     min-width: unset;
     position: static;
-    padding: 24px 20px;
+    padding: 20px;
   }
-  
-  .sidebar-header {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-  }
-  
-  .sidebar-title {
-    font-size: 24px;
-  }
-  
-  .sidebar-subtitle {
-    font-size: 13px;
-  }
-  
+  .sidebar-header { margin-bottom: 18px; padding-bottom: 18px; }
+  .sidebar-badge { width: 38px; height: 38px; font-size: 11px; margin-bottom: 12px; }
+  .sidebar-title { font-size: 22px; }
+  .sidebar-subtitle { font-size: 13px; }
+
   .sidebar-nav {
     flex-direction: row;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     gap: 8px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
-  
-  .sidebar-nav::-webkit-scrollbar {
-    display: none;
-  }
-  
+  .sidebar-nav::-webkit-scrollbar { display: none; }
+
   .nav-item {
     flex-shrink: 0;
-    padding: 12px 16px;
-    font-size: 14px;
+    padding: 10px 14px;
+    font-size: 13px;
     border-radius: 10px;
   }
-  
-  .nav-item:nth-child(1) {
-    margin-bottom: 0;
-  }
-  
-  .nav-icon {
-    font-size: 18px;
-  }
-  
-  .nav-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .nav-text {
-    display: none;
-  }
-  
-  .apple-card {
-    padding: 24px;
-    margin-bottom: 24px;
-    border-radius: 20px;
-  }
-  
-  .selected-options h3 {
-    font-size: 18px;
-  }
-  
-  .option-item {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-  
-  .modal-content {
-    width: 95%;
-    max-height: 90vh;
-    border-radius: 20px;
-  }
+  .nav-item.nav-home { margin-bottom: 0; }
+  .nav-indicator { display: none; }
+  .nav-icon svg { width: 17px; height: 17px; }
+  .nav-text { display: none; }
+
+  .page-header { padding: 20px 22px; margin-bottom: 18px; }
+  .page-title { font-size: 22px; }
+  .page-desc { font-size: 13px; }
+
+  .apple-card { padding: 22px; margin-bottom: 18px; border-radius: 18px; }
+  .selected-options h3 { font-size: 16px; }
+  .option-item { padding: 7px 14px; font-size: 12px; }
+
+  .modal-content { width: 95%; max-height: 92vh; border-radius: 18px; }
+  .modal-close { top: 12px; right: 12px; width: 32px; height: 32px; }
 }
 
-/* Small Mobile: <= 480px */
 @media (max-width: 480px) {
-  .payment-container {
-    padding: 12px;
-  }
-  
-  .payment-sidebar {
-    padding: 20px 16px;
-  }
-  
-  .sidebar-title {
-    font-size: 22px;
-  }
-  
-  .nav-item {
-    padding: 10px 14px;
-  }
-  
-  .apple-card {
-    padding: 20px;
-    border-radius: 16px;
-  }
-  
-  .selected-options {
-    margin-top: 20px;
-    padding-top: 20px;
-  }
-  
-  .selected-options h3 {
-    font-size: 16px;
-  }
-  
-  .options-list {
-    gap: 8px;
-  }
-  
-  .option-item {
-    padding: 6px 12px;
-    font-size: 12px;
-  }
-}
-
-/* ==================== Scrollbar Styles ==================== */
-.payment-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.payment-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.payment-container::-webkit-scrollbar-thumb {
-  background: var(--apple-divider);
-  border-radius: 4px;
-}
-
-.payment-container::-webkit-scrollbar-thumb:hover {
-  background: var(--apple-text-secondary);
+  .payment-container { padding: 12px; }
+  .payment-sidebar { padding: 18px 16px; }
+  .sidebar-title { font-size: 20px; }
+  .page-header { padding: 18px; }
+  .page-title { font-size: 20px; }
+  .apple-card { padding: 18px; border-radius: 16px; }
+  .selected-options { margin-top: 20px; padding-top: 18px; }
+  .options-list { gap: 8px; }
 }
 </style>

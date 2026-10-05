@@ -169,6 +169,7 @@ import { defineProps, ref, computed } from 'vue'
 import DatePicker from './DatePicker.vue'
 import RoomSelector from './RoomSelector.vue'
 import BookingForm from './BookingForm.vue'
+import { createHotelBooking } from '@/api/booking.js'
 
 const props = defineProps({
   dateFields: {
@@ -252,19 +253,38 @@ const selectRoom = (room) => {
   selectedRoom.value = room
 }
 
-const submitBooking = (bookingData) => {
+const submitting = ref(false)
+
+const submitBooking = async (bookingData) => {
   if (!checkInDate.value || !checkOutDate.value) {
     alert('请选择入住和离店日期')
     return
   }
-  console.log('预订信息:', {
-    ...bookingData,
-    checkInDate: checkInDate.value,
-    checkOutDate: checkOutDate.value,
-    guests: guests.value,
-    room: selectedRoom.value
-  })
-  alert('预订提交成功！')
+  if (!selectedRoom.value) {
+    alert('请选择房间')
+    return
+  }
+  if (submitting.value) return
+  submitting.value = true
+  try {
+    const response = await createHotelBooking({
+      ...bookingData,
+      checkInDate: checkInDate.value,
+      checkOutDate: checkOutDate.value,
+      guests: guests.value,
+      roomId: selectedRoom.value.id
+    })
+    if (response && response.code === 200) {
+      alert(`预订提交成功！预订编号：${response.data}`)
+    } else {
+      alert(response?.message || '预订提交失败，请稍后重试')
+    }
+  } catch (error) {
+    console.error('预订提交失败:', error)
+    alert('预订提交失败，请稍后重试')
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 

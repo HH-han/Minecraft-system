@@ -459,6 +459,7 @@ onMounted(loadRecommendations)
     background: white;
     border-radius: 12px;
     padding: 20px 10px;
+    display: flex;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;

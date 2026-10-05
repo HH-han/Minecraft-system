@@ -4,31 +4,7 @@
       <!-- 页面头部：标题 + 描述 -->
       <header class="page-header">
         <h1 class="page-title">预订服务</h1>
-        <p class="page-subtitle">选择酒店或景点，完成您的旅行预订</p>
-
-        <!-- Segmented Control：酒店 / 景点 切换 Tab -->
-        <nav class="segmented-control" role="tablist" aria-label="预订类型">
-          <button
-            role="tab"
-            :aria-selected="currentTab === 'hotel'"
-            class="segmented-item"
-            :class="{ active: currentTab === 'hotel' }"
-            @click="switchTab('hotel')"
-            :tabindex="currentTab === 'hotel' ? 0 : -1"
-          >
-            酒店
-          </button>
-          <button
-            role="tab"
-            :aria-selected="currentTab === 'attraction'"
-            class="segmented-item"
-            :class="{ active: currentTab === 'attraction' }"
-            @click="switchTab('attraction')"
-            :tabindex="currentTab === 'attraction' ? 0 : -1"
-          >
-            景点
-          </button>
-        </nav>
+        <p class="page-subtitle">选择规格数量以及联系人，完成您的旅行预订</p>
       </header>
 
       <!-- 主内容区 -->

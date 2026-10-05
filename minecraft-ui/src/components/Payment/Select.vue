@@ -13,8 +13,8 @@
         <div class="product-image">
           <img :src="currentImage" :alt="product.name">
         </div>
-        <!-- 图集缩略图（美食/纪念品） -->
-        <div v-if="isShopItem && gallery.length > 1" class="gallery-strip">
+        <!-- 图集缩略图（所有类型：美食/纪念品/酒店/景点） -->
+        <div v-if="gallery.length > 1" class="gallery-strip">
           <button
             v-for="(img, index) in gallery"
             :key="index"
@@ -96,19 +96,36 @@
 
           <!-- 预订类（酒店/景点） -->
           <template v-else>
+            <!-- 评分（酒店百分制 / 景点五分制） -->
             <div v-if="product.rating" class="modal-rating">
               <span class="rating">{{ product.rating }}</span>
               <span class="rating-text">{{ ratingText }}</span>
               <span v-if="product.commentCount" class="review-count">({{ product.commentCount }}条点评)</span>
             </div>
-            <div v-if="product.address" class="modal-location">
+
+            <!-- 省市 + 地址 -->
+            <div v-if="bookingLocation" class="modal-location">
               <i class="location-icon" aria-hidden="true">📍</i>
-              <span>{{ product.address }}</span>
+              <span>{{ bookingLocation }}</span>
             </div>
+
+            <!-- 价格（醒目展示） -->
+            <div v-if="product.price != null" class="product-price">
+              ¥{{ product.price }}
+              <span class="stock-hint">{{ isHotel ? '起' : '' }}</span>
+            </div>
+
             <div v-if="product.description" class="info-section">
               <h3 class="section-title">{{ isHotel ? '酒店介绍' : '景点介绍' }}</h3>
               <p class="section-text">{{ product.description }}</p>
             </div>
+
+            <!-- 创建/开业时间 -->
+            <div v-if="product.createTime" class="info-section">
+              <h3 class="section-title">{{ isHotel ? '开业信息' : '发布信息' }}</h3>
+              <p class="section-text">{{ isHotel ? '开业时间：' : '发布时间：' }}{{ formatCreateTime(product.createTime) }}</p>
+            </div>
+
             <!-- 酒店设施 -->
             <div v-if="isHotel && product.facilities?.length" class="info-section">
               <h3 class="section-title">酒店设施</h3>
@@ -164,10 +181,6 @@
               <div v-if="product.likeCount != null" class="stat-item">
                 <span class="stat-label">点赞数</span>
                 <span class="stat-value">{{ product.likeCount }}</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">价格</span>
-                <span class="stat-value">¥{{ product.price }}</span>
               </div>
               <div v-if="isAttraction" class="stat-item">
                 <span class="stat-label">最佳季节</span>
@@ -247,10 +260,28 @@ const isAttraction = computed(() => props.commodity === '3')
 
 // 评分文案
 const ratingText = computed(() => {
-  const r = product.value.rating
+  const r = Number(product.value.rating)
+  // 酒店评分采用百分制（如 87），与美食/纪念品一致
+  if (isHotel.value) {
+    return r >= 90 ? '超棒' : r >= 80 ? '很好' : r > 0 ? '好' : ''
+  }
+  // 景点评分采用五分制
   if (isAttraction.value) return r >= 4.5 ? '极好' : r >= 4 ? '很好' : '好'
   return r >= 4.5 ? '超棒' : r >= 4 ? '很好' : '好'
 })
+
+// 预订类（酒店/景点）的完整地址：省 + 市 + 详细地址
+const bookingLocation = computed(() => {
+  const p = product.value
+  return [p.province, p.city, p.address].filter(Boolean).join(' · ')
+})
+
+// 格式化创建/开业时间：2026-10-04T21:22:02 -> 2026-10-04 21:22
+const formatCreateTime = (time) => {
+  if (!time) return ''
+  const str = String(time).replace('T', ' ').slice(0, 16)
+  return str
+}
 
 // 商品评分文案（百分制：美食/纪念品）
 const shopRatingText = computed(() => {

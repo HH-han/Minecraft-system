@@ -177,6 +177,7 @@ import DatePicker from './DatePicker.vue'
 import TicketSelector from './TicketSelector.vue'
 import TouristInfoForm from './TouristInfoForm.vue'
 import BookingForm from './BookingForm.vue'
+import { createTicketBooking } from '@/api/booking.js'
 
 const props = defineProps({
   dateFields: {
@@ -268,7 +269,9 @@ const handleTouristInfoChange = (ticketId, info) => {
   tourists.value[ticketId] = info
 }
 
-const submitBooking = (bookingData) => {
+const submitting = ref(false)
+
+const submitBooking = async (bookingData) => {
   if (!visitDate.value) {
     alert('请选择游玩日期')
     return
@@ -290,16 +293,28 @@ const submitBooking = (bookingData) => {
     alert('请填写完整的游客信息')
     return
   }
-  console.log('预订信息:', {
-    ...bookingData,
-    visitDate: visitDate.value,
-    tickets: selectedTickets.value.map(ticket => ({
-      ...ticket,
-      quantity: ticketQuantities.value[ticket.id],
-      tourists: tourists.value[ticket.id] || []
-    }))
-  })
-  alert('预订提交成功！')
+  if (submitting.value) return
+  submitting.value = true
+  try {
+    const response = await createTicketBooking({
+      ...bookingData,
+      visitDate: visitDate.value,
+      items: selectedTickets.value.map(ticket => ({
+        ticketId: ticket.id,
+        quantity: ticketQuantities.value[ticket.id]
+      }))
+    })
+    if (response && response.code === 200) {
+      alert(`预订提交成功！预订编号：${response.data}`)
+    } else {
+      alert(response?.message || '预订提交失败，请稍后重试')
+    }
+  } catch (error) {
+    console.error('预订提交失败:', error)
+    alert('预订提交失败，请稍后重试')
+  } finally {
+    submitting.value = false
+  }
 }
 
 onMounted(() => {

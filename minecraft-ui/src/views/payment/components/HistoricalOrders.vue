@@ -45,7 +45,7 @@
             </div>
             <div class="info-item">
               <span class="label">订单金额</span>
-              <span class="value price">{{ order.totalPrice }} 元</span>
+              <span class="value price">¥{{ order.totalPrice }}</span>
             </div>
           </div>
           <div class="order-products">
@@ -56,7 +56,7 @@
               <div class="product-info">
                 <div class="product-name">{{ item.name }}</div>
                 <div class="product-price">
-                  <span class="price">{{ item.price }} 元</span>
+                  <span class="price">¥{{ item.price }}</span>
                   <span class="quantity">x{{ item.quantity }}</span>
                 </div>
               </div>
@@ -66,7 +66,7 @@
         <div class="order-footer">
           <div class="order-total">
             共 {{ order.quantity }} 件商品，合计：
-            <span class="total-price">{{ order.totalPrice }} 元</span>
+            <span class="total-price">¥{{ order.totalPrice }}</span>
           </div>
           <div class="order-actions">
             <button v-if="order.status === '0'" class="btn btn-primary" @click="goToPay(order)">
@@ -303,57 +303,52 @@ watch(activeFilter, () => {
 </script>
 
 <style scoped>
-/* Apple Design System - 极简白色设计 */
 .historical-orders {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 32px;
-  margin-bottom: 32px;
   font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #1d1d1f;
 }
 
 .orders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #d2d2d6;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5ea;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .orders-header h2 {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: #1d1d1f;
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.02em;
 }
 
 .order-filters {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 10px 20px;
-  border: 1px solid #d2d2d6;
-  border-radius: 40px;
+  padding: 7px 16px;
+  border: 1px solid #e5e5ea;
+  border-radius: 20px;
   background: #ffffff;
-  color: #1d1d1f;
+  color: #6e6e73;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
 
 .filter-btn:hover {
   border-color: #2997ff;
   color: #2997ff;
-  transform: translateY(-1px);
 }
 
 .filter-btn.active {
@@ -362,22 +357,22 @@ watch(activeFilter, () => {
   color: #ffffff;
 }
 
+/* 空状态 */
 .empty-orders {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 80px 0;
+  padding: 72px 0;
   text-align: center;
 }
 
 .empty-icon {
-  font-size: 64px;
+  width: 110px;
+  height: 110px;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 120px;
-  height: 120px;
   border-radius: 50%;
   background: #f5f5f7;
 }
@@ -385,173 +380,175 @@ watch(activeFilter, () => {
 .empty-icon svg {
   width: 56px;
   height: 56px;
-  color: #6e6e73;
+  color: #8e8e93;
 }
 
 .empty-text {
-  font-size: 18px;
+  font-size: 16px;
   color: #6e6e73;
-  margin-bottom: 32px;
-  font-weight: 400;
+  margin-bottom: 24px;
+  font-weight: 500;
 }
 
+/* 订单列表 */
 .orders-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
 }
 
 .order-item {
   background: #ffffff;
   border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 
-              0 1px 2px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f0f0f2;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .order-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10), 
-              0 4px 12px rgba(0, 0, 0, 0.06);
-  border-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-color: #e5e5ea;
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #d2d2d6;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0f0f2;
+  gap: 10px;
 }
 
 .order-id {
-  font-size: 16px;
-  color: #1d1d1f;
+  font-size: 13px;
+  color: #6e6e73;
   font-weight: 500;
+  font-family: 'SF Mono', 'Menlo', monospace;
 }
 
 .order-status {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
   display: inline-flex;
   align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
-/* Apple风格状态标签颜色 */
+.order-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .order-status.unpaid {
-  background: #fff5e6;
+  background: rgba(255, 149, 0, 0.1);
   color: #ff9500;
 }
 
 .order-status.paid {
-  background: #e8f5ff;
+  background: rgba(41, 151, 255, 0.1);
   color: #2997ff;
 }
 
 .order-status.shipping {
-  background: #e3f2ff;
+  background: rgba(0, 122, 255, 0.1);
   color: #007aff;
 }
 
 .order-status.completed {
-  background: #e8f5e9;
+  background: rgba(52, 199, 89, 0.1);
   color: #34c759;
 }
 
 .order-status.cancelled {
-  background: #ffebee;
+  background: rgba(255, 59, 48, 0.1);
   color: #ff3b30;
 }
 
 .order-status.refunded {
-  background: #f3e5f5;
+  background: rgba(175, 82, 222, 0.1);
   color: #af52de;
-}
-
-.order-content {
-  margin-bottom: 20px;
 }
 
 .order-info {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px 16px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
 }
 
 .info-item .label {
-  font-size: 14px;
-  color: #6e6e73;
+  font-size: 12px;
+  color: #8e8e93;
   font-weight: 400;
 }
 
 .info-item .value {
-  font-size: 16px;
+  font-size: 13px;
   color: #1d1d1f;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .info-item .price {
   color: #1d1d1f;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .order-products {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .product-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 16px;
-  min-width: 240px;
-  flex: 1;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #f0f0f2;
+  transition: background 0.2s ease;
 }
 
 .product-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  background: #f5f5f7;
 }
 
 .product-image {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #f5f5f7;
+  background: #ffffff;
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s ease;
 }
 
 .product-item:hover .product-image img {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .product-info {
@@ -560,77 +557,81 @@ watch(activeFilter, () => {
 }
 
 .product-name {
-  font-size: 16px;
+  font-size: 14px;
   color: #1d1d1f;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .product-price {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .product-price .price {
   color: #1d1d1f;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .product-price .quantity {
   color: #6e6e73;
-  background: #f5f5f7;
-  padding: 4px 10px;
-  border-radius: 12px;
+  background: #ffffff;
+  padding: 2px 8px;
+  border-radius: 6px;
   font-size: 12px;
+  font-weight: 500;
 }
 
 .order-footer {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding-top: 20px;
-  border-top: 1px solid #d2d2d6;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid #f0f0f2;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .order-total {
-  font-size: 16px;
-  color: #1d1d1f;
+  font-size: 13px;
+  color: #6e6e73;
   font-weight: 400;
 }
 
 .total-price {
   color: #1d1d1f;
   font-weight: 700;
-  margin-left: 8px;
-  font-size: 20px;
+  margin-left: 4px;
+  font-size: 18px;
+  letter-spacing: -0.01em;
 }
 
 .order-actions {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .btn {
-  padding: 10px 24px;
-  border-radius: 40px;
-  font-size: 14px;
+  padding: 7px 16px;
+  border-radius: 10px;
+  font-size: 13px;
   cursor: pointer;
   border: none;
-  font-weight: 400;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -639,187 +640,117 @@ watch(activeFilter, () => {
 }
 
 .btn-primary:hover {
-  background: #333333;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  background: #2d2d2f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .btn-secondary {
   background: #f5f5f7;
   color: #1d1d1f;
-  border: 1px solid #d2d2d6;
+  border: 1px solid #e5e5ea;
 }
 
 .btn-secondary:hover {
   background: #e8e8ed;
-  border-color: #b8b8bf;
 }
 
 .btn-delete {
   background: #ffffff;
   color: #ff3b30;
-  border: 1px solid #ff3b30;
+  border: 1px solid rgba(255, 59, 48, 0.3);
 }
 
 .btn-delete:hover {
   background: #ff3b30;
   color: #ffffff;
+  border-color: #ff3b30;
 }
 
 .btn-link {
-  background: #0887ff;
-  color: #ffffff;
-  padding: 10px 16px;
+  background: rgba(41, 151, 255, 0.1);
+  color: #2997ff;
+  padding: 7px 14px;
 }
 
 .btn-link:hover {
-  text-decoration: underline;
+  background: #2997ff;
+  color: #ffffff;
 }
 
+/* 分页 */
 .orders-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
-  margin-top: 32px;
+  gap: 20px;
+  margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid #e5e5ea;
 }
 
 .page-btn {
-  padding: 12px 24px;
-  border: 1px solid #d2d2d6;
-  border-radius: 40px;
+  padding: 9px 20px;
+  border: 1px solid #e5e5ea;
+  border-radius: 10px;
   background: #ffffff;
   color: #1d1d1f;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .page-btn:hover:not(:disabled) {
   border-color: #2997ff;
   color: #2997ff;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(41, 151, 255, 0.12);
 }
 
 .page-btn:disabled {
   color: #d2d2d6;
   cursor: not-allowed;
-  border-color: #e8e8ed;
-  background: #f5f5f7;
+  border-color: #f0f0f2;
+  background: #fafafa;
 }
 
 .page-info {
-  font-size: 16px;
-  color: #1d1d1f;
+  font-size: 14px;
+  color: #6e6e73;
   font-weight: 500;
 }
 
-/* 响应式设计 - Apple风格 */
+/* 响应式 */
 @media (max-width: 767px) {
-  .historical-orders {
-    padding: 24px;
-    border-radius: 20px;
-  }
-  
   .orders-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 14px;
   }
-  
-  .orders-header h2 {
-    font-size: 28px;
-  }
-  
-  .order-filters {
-    width: 100%;
-    gap: 8px;
-  }
-  
-  .filter-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px 16px;
-  }
-  
-  .order-info {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  
-  .order-products {
-    flex-direction: column;
-  }
-  
-  .product-item {
-    width: 100%;
-  }
-  
-  .order-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  
-  .order-actions {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 8px;
-  }
-  
-  .btn {
-    padding: 10px 20px;
-    font-size: 13px;
-  }
-  
-  .orders-pagination {
-    gap: 16px;
-  }
-  
-  .page-btn {
-    padding: 10px 20px;
-  }
+  .orders-header h2 { font-size: 22px; }
+  .order-filters { width: 100%; }
+  .filter-btn { flex: 1; text-align: center; padding: 7px 12px; font-size: 12px; }
+
+  .orders-list { grid-template-columns: 1fr; }
+
+  .order-info { grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+
+  .order-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .order-actions { width: 100%; flex-wrap: wrap; }
+
+  .orders-pagination { gap: 14px; }
+  .page-btn { padding: 8px 16px; }
 }
 
 @media (max-width: 480px) {
-  .historical-orders {
-    padding: 20px;
-    border-radius: 16px;
-  }
-  
-  .orders-header h2 {
-    font-size: 24px;
-  }
-  
-  .order-item {
-    padding: 20px;
-    border-radius: 20px;
-  }
-  
-  .order-id {
-    font-size: 14px;
-  }
-  
-  .product-item {
-    padding: 12px;
-  }
-  
-  .product-image {
-    width: 56px;
-    height: 56px;
-  }
-  
-  .product-name {
-    font-size: 14px;
-  }
-  
-  .total-price {
-    font-size: 18px;
-  }
+  .orders-header h2 { font-size: 20px; }
+  .order-item { padding: 16px; border-radius: 14px; }
+  .order-id { font-size: 12px; }
+  .product-item { padding: 10px; }
+  .product-image { width: 48px; height: 48px; }
+  .product-name { font-size: 13px; }
+  .total-price { font-size: 16px; }
+  .btn { padding: 6px 12px; font-size: 12px; }
+  .empty-icon { width: 90px; height: 90px; }
 }
 </style>

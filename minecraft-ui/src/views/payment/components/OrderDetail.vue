@@ -337,176 +337,177 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Apple Design System */
 .order-detail {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #1d1d1f;
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid #d2d2d6;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5ea;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .order-title {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: #1d1d1f;
   margin: 0;
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .order-status {
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.order-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .order-status.unpaid {
-  background: rgba(255, 149, 0, 0.12);
+  background: rgba(255, 149, 0, 0.1);
   color: #ff9500;
 }
 
 .order-status.paid {
-  background: rgba(52, 199, 89, 0.12);
+  background: rgba(52, 199, 89, 0.1);
   color: #34c759;
 }
 
 .order-status.shipping {
-  background: rgba(41, 151, 255, 0.12);
+  background: rgba(41, 151, 255, 0.1);
   color: #2997ff;
 }
 
 .order-status.completed {
-  background: rgba(52, 199, 89, 0.12);
+  background: rgba(52, 199, 89, 0.1);
   color: #34c759;
 }
 
 .order-status.cancelled {
-  background: rgba(142, 142, 147, 0.12);
+  background: rgba(142, 142, 147, 0.1);
   color: #8e8e93;
 }
 
 .order-status.refunded {
-  background: rgba(142, 142, 147, 0.12);
-  color: #8e8e93;
+  background: rgba(175, 82, 222, 0.1);
+  color: #af52de;
 }
 
-/* 订单信息卡片 */
-.order-info-card {
-  background: #f5f5f7;
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 24px;
+/* 卡片通用样式 */
+.order-info-card,
+.shipping-address-card,
+.order-items-card,
+.order-summary-card {
+  background: #fafafa;
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  border: 1px solid #f0f0f2;
 }
 
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0 0 14px 0;
+  letter-spacing: -0.01em;
+}
+
+/* 订单信息 */
 .info-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 10px 0;
+  gap: 12px;
 }
 
-.info-item:last-child {
-  border-bottom: none;
+.info-item:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .info-item .label {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #6e6e73;
+  flex-shrink: 0;
 }
 
 .info-item .value {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 500;
   color: #1d1d1f;
+  text-align: right;
+  word-break: break-all;
 }
 
 .info-item .price {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: #1d1d1f;
 }
 
-/* 收货地址卡片 */
-.shipping-address-card {
-  background: #f5f5f7;
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.section-title {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0 0 16px 0;
-  letter-spacing: -0.01em;
-}
-
+/* 收货地址 */
 .address-content {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .name-phone {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 8px;
+  gap: 14px;
 }
 
 .name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #1d1d1f;
 }
 
 .phone {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #6e6e73;
 }
 
 .address-detail {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #6e6e73;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* 商品信息卡片 */
-.order-items-card {
-  background: #f5f5f7;
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
+/* 商品信息 */
 .items-list {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid #f0f0f2;
 }
 
 .item {
   display: flex;
-  padding: 20px;
-  border-bottom: 1px solid #f5f5f7;
+  padding: 16px;
+  gap: 14px;
   transition: background 0.2s ease;
 }
 
@@ -514,16 +515,15 @@ onMounted(() => {
   background: #fafafa;
 }
 
-.item:last-child {
-  border-bottom: none;
+.item:not(:last-child) {
+  border-bottom: 1px solid #f5f5f7;
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
-  margin-right: 20px;
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   background: #f5f5f7;
 }
@@ -539,25 +539,30 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .item-name {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   color: #1d1d1f;
   line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .item-spec {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   color: #6e6e73;
   background: #f5f5f7;
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 8px;
   align-self: flex-start;
+  font-weight: 500;
 }
 
 .item-price {
@@ -567,58 +572,48 @@ onMounted(() => {
 }
 
 .item-price .price {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: #1d1d1f;
 }
 
 .item-price .quantity {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: #6e6e73;
   background: #f5f5f7;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-weight: 500;
 }
 
-/* 订单摘要卡片 */
-.order-summary-card {
-  background: #f5f5f7;
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
+/* 订单摘要 */
 .summary-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 8px 0;
 }
 
 .summary-label {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: #6e6e73;
 }
 
 .summary-value {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 14px;
+  font-weight: 500;
   color: #1d1d1f;
 }
 
 .summary-item.total {
-  border-top: 1px solid #d2d2d6;
-  padding-top: 16px;
-  margin-top: 4px;
+  border-top: 1px solid #e5e5ea;
+  padding-top: 14px;
+  margin-top: 6px;
 }
 
 .summary-item.total .summary-label {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #1d1d1f;
 }
@@ -627,10 +622,7 @@ onMounted(() => {
   font-size: 24px;
   font-weight: 700;
   color: #1d1d1f;
-}
-
-.summary-item.total .price {
-  color: #1d1d1f;
+  letter-spacing: -0.02em;
 }
 
 /* 操作按钮 */
@@ -642,15 +634,14 @@ onMounted(() => {
 }
 
 .btn {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  padding: 12px 28px;
+  font-family: inherit;
+  padding: 11px 26px;
   border-radius: 12px;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
-  letter-spacing: -0.01em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary {
@@ -659,30 +650,28 @@ onMounted(() => {
 }
 
 .btn-primary:hover {
-  background: #333336;
+  background: #2d2d2f;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary {
   background: #f5f5f7;
   color: #1d1d1f;
+  border: 1px solid #e5e5ea;
 }
 
 .btn-secondary:hover {
   background: #e8e8ed;
 }
 
-/* 无订单数据页面 */
+/* 无订单数据 */
 .no-order {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 480px;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 48px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  min-height: 460px;
+  padding: 40px;
 }
 
 .no-order-content {
@@ -702,50 +691,37 @@ onMounted(() => {
 }
 
 .no-order-title {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: #1d1d1f;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   letter-spacing: -0.01em;
 }
 
 .no-order-desc {
-  font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   color: #6e6e73;
-  margin: 0 0 32px 0;
+  margin: 0 0 28px 0;
   line-height: 1.5;
 }
 
-/* 响应式设计 */
+/* 响应式 */
 @media (max-width: 767px) {
-  .order-detail {
-    padding: 24px;
-    border-radius: 20px;
-  }
-
   .order-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 12px;
   }
-
-  .order-title {
-    font-size: 24px;
-  }
-
-  .section-title {
-    font-size: 20px;
-  }
+  .order-title { font-size: 22px; }
+  .section-title { font-size: 15px; }
 
   .order-info-card,
   .shipping-address-card,
   .order-items-card,
   .order-summary-card {
-    padding: 20px;
-    border-radius: 20px;
+    padding: 18px;
+    border-radius: 14px;
   }
 
   .info-item {
@@ -753,116 +729,38 @@ onMounted(() => {
     align-items: flex-start;
     gap: 4px;
   }
+  .info-item .value { text-align: left; }
 
-  .item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px;
-  }
-
-  .item-image {
-    width: 100%;
-    height: 200px;
-    margin-right: 0;
-    border-radius: 16px;
-  }
-
-  .item-info {
-    width: 100%;
-  }
+  .item { padding: 14px; }
+  .item-image { width: 64px; height: 64px; }
 
   .name-phone {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 2px;
   }
 
   .order-actions {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
+  .btn { width: 100%; padding: 13px; }
 
-  .btn {
-    width: 100%;
-    text-align: center;
-    padding: 14px 28px;
-  }
-
-  .no-order {
-    padding: 32px;
-    min-height: 400px;
-  }
-
-  .no-order-icon svg {
-    width: 56px;
-    height: 56px;
-  }
-
-  .no-order-title {
-    font-size: 20px;
-  }
-
-  .no-order-desc {
-    font-size: 15px;
-  }
+  .no-order { padding: 32px; min-height: 380px; }
+  .no-order-icon svg { width: 56px; height: 56px; }
+  .no-order-title { font-size: 20px; }
 }
 
 @media (max-width: 480px) {
-  .order-detail {
-    padding: 20px;
-    border-radius: 16px;
-  }
-
-  .order-title {
-    font-size: 20px;
-  }
-
-  .section-title {
-    font-size: 18px;
-  }
-
+  .order-title { font-size: 20px; }
   .order-info-card,
   .shipping-address-card,
   .order-items-card,
-  .order-summary-card {
-    padding: 16px;
-    border-radius: 16px;
-  }
-
-  .info-item .label,
-  .info-item .value {
-    font-size: 15px;
-  }
-
-  .item-name {
-    font-size: 15px;
-  }
-
-  .item-price .price {
-    font-size: 16px;
-  }
-
-  .summary-item.total .summary-value {
-    font-size: 20px;
-  }
-
-  .no-order {
-    padding: 24px;
-    min-height: 320px;
-  }
-
-  .no-order-icon svg {
-    width: 48px;
-    height: 48px;
-  }
-
-  .no-order-title {
-    font-size: 18px;
-  }
-
-  .no-order-desc {
-    font-size: 14px;
-  }
+  .order-summary-card { padding: 16px; border-radius: 12px; }
+  .info-item .label, .info-item .value { font-size: 13px; }
+  .item-name { font-size: 14px; }
+  .item-price .price { font-size: 15px; }
+  .summary-item.total .summary-value { font-size: 20px; }
+  .no-order { min-height: 320px; padding: 24px; }
 }
 </style>
