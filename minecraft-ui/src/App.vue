@@ -16,6 +16,8 @@
     <div>
       <FloatingButton />
     </div>
+    <!-- 系统公告弹窗（全局唯一，弹窗队列驱动） -->
+    <AnnouncementPopup />
     <!-- 流体仿真效果 -->
     <!-- <div>
       <FluidSimulation />
@@ -25,22 +27,36 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import RefreshLoad from '@/components/TransitionalComponents/RefreshLoad.vue';
 import FloatingButton from '@/components/ComponentButton/FloatingButton.vue';
 import FluidSimulation from '@/components/DisplayBox/FluidSimulation.vue';
 import DeviceDetects from '@/components/ResponseComponents/DeviceDetects.vue';
+import AnnouncementPopup from '@/components/AnnouncementComponents/AnnouncementPopup.vue';
 import MouseStyle from '@/views/MouseStyle/index.vue'
+import { useAnnouncementStore } from '@/stores/announcementStore'
+import { initAnnouncementSse, closeAnnouncementSse } from '@/utils/sse'
 
 const isLoading = ref(true)
 const deviceDetectsRef = ref()
 const isMobile = ref(false)
 
+// 公告模块：拉取展示数据 + 初始化 SSE 推送
+const announcementStore = useAnnouncementStore()
+onMounted(() => {
+  announcementStore.fetchActive()
+  announcementStore.fetchUnread()
+  initAnnouncementSse((ann) => announcementStore.pushRealtime(ann))
+})
+onUnmounted(() => {
+  closeAnnouncementSse()
+})
+
 onMounted(() => {
   // 模拟加载过程
   setTimeout(() => {
     isLoading.value = false
-    
+
     // 获取DeviceDetects组件中的isMobile状态
     if (deviceDetectsRef.value) {
       isMobile.value = deviceDetectsRef.value.isMobile

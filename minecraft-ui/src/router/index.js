@@ -131,6 +131,25 @@ const routes = [
           requiresAuth: true,
         },
       },
+      // 系统公告
+      {
+        path: "/announcement",
+        name: "AnnouncementList",
+        component: () => import("@/views/Announcement/index.vue"),
+        meta: {
+          title: "系统公告",
+          requiresAuth: false,
+        },
+      },
+      {
+        path: "/announcement/:id",
+        name: "AnnouncementDetail",
+        component: () => import("@/views/Announcement/Detail.vue"),
+        meta: {
+          title: "公告详情",
+          requiresAuth: false,
+        },
+      },
       {
         path: "/cards",
         name: "Cards",

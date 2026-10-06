@@ -313,6 +313,7 @@ import CarouselManagement from '@/views/ManagementViews/CarouselManagement.vue';
 import HotRecommendationManagement from '@/views/ManagementViews/HotRecommendationManagement.vue';
 import DestinationworldManagement from '@/views/ManagementViews/DestinationworldManagement.vue';
 import TravelNewsManagement from '@/views/ManagementViews/TravelNewsManagement.vue';
+import AnnouncementManagement from '@/views/ManagementViews/AnnouncementManagement.vue';
 import index from '@/views/DestinationManagement/index.vue';
 import ProductManagement from '@/views/ManagementViews/ProductManagement.vue';
 import CommunityManagement from '@/views/ManagementViews/CommunityManagement.vue';
@@ -481,6 +482,7 @@ const menuItems = reactive([
   { id: 38, title: '系统日志', icon: slIcon, component: SystemLog },
   { id: 39, title: '网站介绍', icon: wiIcon, component: WebsiteIntroduction },
   { id: 40, title: '管理首页', icon: homeIcon, component: Webhome },
+  { id: 41, title: '公告管理', icon: fb, component: AnnouncementManagement },
 ]);
 // 计算属性分类
 const systemMenus = computed(() =>
@@ -488,7 +490,7 @@ const systemMenus = computed(() =>
 )
 
 const contentMenus = computed(() =>
-  menuItems.filter(item => [4, 10, 13, 15 ,32, 33, 34, 39].includes(item.id))
+  menuItems.filter(item => [4, 10, 13, 15 ,32, 33, 34, 39, 41].includes(item.id))
 )
 
 const travelMenus = computed(() =>

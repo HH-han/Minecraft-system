@@ -61,23 +61,35 @@
       <div>
         <Seasonal/>
       </div>
-      <h1 class="page-title">探索世界目的地 🌍</h1>
-      <div class="controls">
-        <div class="search-container">
-          <input type="text" v-model="searchQuery" placeholder="输入城市名称进行搜索..." class="search-input"
-            @input="handleSearchInput" />
-          <i class="fas fa-search search-icon"></i>
-        </div>
-        <div class="category-tabs">
-          <span v-for="category in categories" :key="category" :class="{ active: activeCategory === category }"
-            @click="setActiveCategory(category)">
-            {{ category }}
-          </span>
-        </div>
-      </div>
+      <!-- 探索目的地区域 -->
+      <section class="explore-section">
+        <header class="explore-header">
+          <div>
+            <span class="explore-eyebrow">EXPLORE THE WORLD</span>
+            <h1 class="page-title">探索世界目的地</h1>
+            <p class="explore-subtitle">精选全球目的地，发现属于你的下一站</p>
+          </div>
+          <span class="explore-count" v-if="displayedDestinations.length">共 {{ displayedDestinations.length }} 个目的地</span>
+        </header>
 
-      <div v-if="paginatedDestinations.length" class="destination-list">
-        <div v-for="destination in paginatedDestinations" :key="destination.name" class="destination-card"
+        <div class="controls">
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" v-model="searchQuery" placeholder="搜索目的地 / 城市..." class="search-input"
+              @input="handleSearchInput" />
+            <button v-if="searchQuery" class="search-clear" type="button" aria-label="清空搜索"
+              @click="clearSearch">×</button>
+          </div>
+          <div class="category-tabs">
+            <span v-for="category in categoryTabs" :key="category"
+              :class="{ active: (activeCategory || '全部') === category }" @click="setActiveCategory(category)">
+              {{ category }}
+            </span>
+          </div>
+        </div>
+
+      <div v-if="displayedDestinations.length" class="destination-list">
+        <div v-for="destination in displayedDestinations" :key="destination.name" class="destination-card"
           @click="showDestinationDetail(destination)">
           <div class="image-container">
             <img :src="destination.image || defaultImage" :alt="destination.name" class="destination-image"
@@ -86,9 +98,13 @@
             <span class="destination-category">{{ destination.category }}</span>
           </div>
           <div class="card-content">
-            <h3 class="destination-name">{{ destination.name }}</h3>
-            <p class="destination-description">{{ destination.description ? destination.description.substring(0, 10) + '...' : '' }}</p>
-            <p class="destination-description">{{ destination.badgeText }}</p>
+            <div class="card-head">
+              <h3 class="destination-name">{{ destination.badgeText }} {{ destination.name }}</h3>
+              <span class="card-arrow">›</span>
+            </div>
+            <p class="destination-description">
+              {{ destination.description ? destination.description.substring(0, 42) + (destination.description.length > 42 ? '…' : '') : '暂无简介' }}
+            </p>
             <ul class="city-list">
               <li v-for="city in destination.cities" :key="city" class="city-item">
                 <svg t="1748482186834" class="icon" viewBox="0 0 1028 1024" version="1.1"
@@ -106,7 +122,7 @@
                     d="M185.073937 147.364547c149.416585 22.929651 95.585906 150.558913 137.710832 299.792726 27.336963 96.815467 68.614488 82.667208 105.580243 154.471908 56.464266 74.662599-216.003959 324.005939-362.093253 115.703352-144.801577-357.540553 118.802178-569.967986 118.802178-569.967986z"
                     fill="#9EE3C3" p-id="13375"></path>
                   <path
-                    d="M210.267476 815.165711c-62.587147 0-117.086608-30.535483-157.595658-88.299927l-1.088328-1.549413-0.710321-1.752955c-77.100952-190.365951-39.524571-340.318392 5.574564-432.589467 48.862588-99.972448 115.395961-154.284982 118.204013-156.54887l5.703335-4.594238 7.244441 1.113251c116.463519 17.870174 123.40057 95.747909 131.425947 185.925408 3.402062 38.199469 7.256902 81.499955 19.756054 125.772459 14.555344 51.546022 32.479518 68.020478 53.240823 87.099443 15.84306 14.559498 33.779696 31.042261 50.511695 63.106388 14.061027 19.768516 13.288397 47.711951-2.234811 78.912061-34.311398 68.971726-132.015804 143.405859-230.031754 143.40586z m-129.307447-105.850248c34.340476 48.189653 77.836196 72.61887 129.307447 72.618869 90.106882 0 174.211347-72.585638 200.277209-124.97906 9.790795-19.685438 11.456518-36.201433 4.569315-45.30683l-0.864016-1.142329-0.65632-1.275254c-14.20226-27.586198-28.707757-40.916135-44.060654-55.022855-22.427026-20.615916-45.622529-41.925538-62.736688-102.539571-13.342398-47.263328-17.342626-92.204613-20.87346-131.857956-7.668141-86.110809-12.382842-139.056703-95.884988-154.750221-16.445378 14.85858-66.662145 64.065944-104.363144 141.78583-60.39803 124.517975-61.980675 259.927534-4.714701 402.469377z"
+                    d="M210.267476 815.165711c-62.587147 0-117.086608-30.535483-157.595658-88.299927l-1.088328-1.549413-0.710321-1.752955c-77.100952-190.365951-39.524571-340.318392 5.574564-432.589467 48.862588-99.972448 115.395961-154.284982 118.204013-156.54887l5.703335-4.594238 7.244441 1.113251c116.463519 17.870174 123.40057 95.747909 131.425947 185.925408 3.402062 38.199469 7.256902 81.499955 19.756054 125.772459 14.555344 51.546022 32.479518 68.020478 53.240823 87.099443 15.84306 14.559498 33.779696 31.042261 50.511695 63.106388 14.061027 19.768516 13.288397 47.711951-2.234811 78.912061-34.311398 68.971726-132.015804 143.405859-230.031754 143.40586z m-129.307447-105.850248c34.340476 48.189653 77.836196 72.61887 129.307447 72.618869 90.106882 0 174.211347-72.585638 200.277209-124.97906 9.790795-19.685438 11.456518-36.201433 4.569315-45.30683l-0.864016-1.142329-0.65632-1.275254c-14.20226-27.586198-28.707757-40.916135-44.060654-55.022855-22.427026-20.615916-45.622529-41.925538-62.736688-102.539571-13.342398-47.263328-17.342626-92.204613-20.87346-131.857956-7.668141-86.110809-12.382842-139.056703-95.884988-154.750221-16.445378 14.8585-66.662145 64.065944-104.363144 141.78583-60.39803 124.517975-61.980675 259.927534-4.714701 402.469377z"
                     fill="#6E6E96" p-id="13376"></path>
                   <path
                     d="M531.506902 43.250639s-73.703043 251.225066 88.258387 251.225066c164.578401 0 195.433736 148.984577 298.359623 19.049888-109.759089-264.405462-386.61801-270.274954-386.61801-270.274954z"
@@ -140,8 +156,10 @@
         </div>
       </div>
       <div v-else class="no-results">
-        <img :src="defaultImage" alt="无结果" />
-        <p>没有找到匹配的目的地 😞</p>
+        <div class="no-results-icon">🧭</div>
+        <p class="no-results-title">没有找到匹配的目的地</p>
+        <p class="no-results-hint">换个关键词，或选择其他大洲试试</p>
+        <button class="no-results-reset" @click="resetFilters">查看全部目的地</button>
       </div>
       <!-- 详情页面（Apple 风格） -->
       <div v-if="selectedDestination" class="destination-detail" @click.self="closeDetail">
@@ -173,7 +191,7 @@
             </div>
             <div class="destination-detail-actions">
               <button @click="OrderDetails(selectedDestination.id)" class="btn btn-primary">前往购买</button>
-              <a @click.prevent="collection(selectedBlog.id)" class="btn-link">了解更多 ›</a>
+              <a @click.prevent="collection(selectedDestination.id)" class="btn-link">了解更多 ›</a>
             </div>
           </div>
         </div>
@@ -184,12 +202,13 @@
         :current-page="currentPage" 
         @update:current-page="handlePageChange" 
       />
+      </section>
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Characteristics from './characteristics.vue';
 import Destination from './destination.vue';
 import Seasonal from './season.vue';
@@ -221,13 +240,42 @@ const error = ref('')
 const search = () => {
 }
 
-// 处理搜索输入
+// 搜索 + 分类过滤后的目的地列表
+const displayedDestinations = computed(() => {
+  const keyword = searchQuery.value.trim().toLowerCase()
+  return paginatedDestinations.value.filter((d) => {
+    const matchCategory = !activeCategory.value || activeCategory.value === '全部' || d.category === activeCategory.value
+    if (!matchCategory) return false
+    if (!keyword) return true
+    return (
+      String(d.name || '').toLowerCase().includes(keyword) ||
+      (d.cities || []).some((c) => String(c || '').toLowerCase().includes(keyword)) ||
+      String(d.description || '').toLowerCase().includes(keyword)
+    )
+  })
+})
+
+// 分类标签（含"全部"）
+const categoryTabs = computed(() => ['全部', ...categories.value])
+
+// 处理搜索输入（输入即过滤，displayedDestinations 自动响应）
 const handleSearchInput = () => {
+}
+
+// 清空搜索
+const clearSearch = () => {
+  searchQuery.value = ''
+}
+
+// 重置所有筛选条件
+const resetFilters = () => {
+  searchQuery.value = ''
+  activeCategory.value = ''
 }
 
 // 设置活跃分类
 const setActiveCategory = (category) => {
-  activeCategory.value = category
+  activeCategory.value = category === '全部' ? '' : category
 }
 
 // 显示目的地详情
@@ -397,6 +445,388 @@ const forceUpdate = () => {
 
 <style scoped>
 @import '@/css/Mypage/MyDestination.css';
+
+/* ========== 探索区容器（限宽居中） ========== */
+.explore-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 56px 24px 48px;
+}
+
+/* ========== 头部 ========== */
+.explore-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.explore-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #0ea5e9;
+  margin-bottom: 10px;
+}
+
+.page-title {
+  position: relative;
+  text-align: left;
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  color: #0f172a;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.page-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+}
+
+.explore-subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.explore-count {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0369a1;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  white-space: nowrap;
+}
+
+/* ========== 工具栏 ========== */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+  margin-bottom: 32px;
+}
+
+.search-container {
+  position: relative;
+  flex: 0 1 340px;
+  min-width: 240px;
+  margin: 0;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 11px 40px 11px 42px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 14px;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+.search-input:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+}
+
+.search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.search-clear:hover {
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
+/* ========== 分类标签 ========== */
+.category-tabs {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+
+.category-tabs span {
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.category-tabs span:hover {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.category-tabs span.active {
+  background: #0ea5e9;
+  color: #ffffff;
+  border-color: #0ea5e9;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+/* ========== 卡片 ========== */
+.destination-card {
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.destination-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+}
+
+.image-container {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.destination-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.destination-card:hover .destination-image {
+  transform: scale(1.06);
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.35), transparent 55%);
+}
+
+.destination-category {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(15, 23, 42, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ========== 卡片内容 ========== */
+.card-content {
+  padding: 18px 20px 20px;
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.destination-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.card-arrow {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #cbd5e1;
+  background: #f1f5f9;
+  transition: all 0.25s ease;
+}
+
+.destination-card:hover .card-arrow {
+  color: #ffffff;
+  background: #0ea5e9;
+  transform: translateX(2px);
+}
+
+.destination-description {
+  margin: 8px 0 14px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 44px;
+}
+
+/* ========== 城市标签 ========== */
+.city-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.city-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #0369a1;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  transition: background 0.2s ease;
+}
+
+.city-item .icon {
+  flex-shrink: 0;
+}
+
+/* ========== 无结果状态 ========== */
+.no-results {
+  text-align: center;
+  padding: 72px 24px;
+}
+
+.no-results-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.no-results-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.no-results-hint {
+  margin: 0 0 24px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.no-results-reset {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  background: #0ea5e9;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.no-results-reset:hover {
+  background: #0284c7;
+  transform: translateY(-1px);
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 768px) {
+  .explore-section {
+    padding: 40px 16px 32px;
+  }
+
+  .explore-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container {
+    flex: 1 1 auto;
+  }
+
+  .category-tabs {
+    justify-content: flex-start;
+  }
+}
+
+/* 减少动态效果（无障碍） */
+@media (prefers-reduced-motion: reduce) {
+  .destination-card,
+  .destination-image,
+  .card-arrow,
+  .no-results-reset {
+    transition: none;
+  }
+}
 
 /* 加载状态 */
 .loading-overlay {

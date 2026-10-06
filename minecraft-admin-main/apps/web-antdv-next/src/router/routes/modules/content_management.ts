@@ -33,6 +33,15 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
+          icon: 'lucide:megaphone',
+          title: '公告管理',
+        },
+        name: 'Announcement',
+        path: 'announcement',
+        component: () => import('#/views/content_management/announcement.vue'),
+      },
+      {
+        meta: {
           icon: 'lucide:pencil-line',
           title: $t('content.travelNotes'),
         },

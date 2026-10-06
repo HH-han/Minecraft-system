@@ -63,6 +63,8 @@
                 fill="#EA5D5C" p-id="8266"></path>
             </svg>
           </button>
+          <!-- 系统公告铃铛（未读数红点） -->
+          <AnnouncementBell />
           <!-- 登录和注册按钮（未登录时显示） -->
           <template v-if="!isLoggedIn">
             <button class="action-btn" @click="LoginName">
@@ -157,6 +159,7 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 // 页面组件
 import ThemeSwitching from '@/components/ThemeComponents/ThemeSwitching.vue';
+import AnnouncementBell from '@/components/AnnouncementComponents/AnnouncementBell.vue';
 import home from '@/views/index/index.vue';
 import food from '@/views/Food/index.vue';
 import worldtravel from '@/views/WorldTravel/index.vue';

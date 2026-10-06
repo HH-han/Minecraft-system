@@ -1,5 +1,7 @@
 <template>
   <div class="home-page">
+    <!-- 公告顶部横幅（displayMode=4） -->
+    <AnnouncementBanner />
     <main class="main-content">
       <Main 
         @open-detail="handleOpenDetail" 
@@ -8,6 +10,8 @@
         @open-recommendation-detail="handleOpenRecommendationDetail"
       />
     </main>
+    <!-- 公告轮播（displayMode=3） -->
+    <AnnouncementCarousel />
     <Footer />
     
     <Teleport to="body">
@@ -28,6 +32,8 @@ import { ref } from 'vue';
 import Main from '@/views/index/components/main.vue';
 import Footer from '@/components/DisplayBox/BottomPage.vue'
 import Details from '@/views/index/components/details.vue';
+import AnnouncementBanner from '@/components/AnnouncementComponents/AnnouncementBanner.vue';
+import AnnouncementCarousel from '@/components/AnnouncementComponents/AnnouncementCarousel.vue';
 import { getNewsDetail } from '@/api/news.js';
 import { getHotelDetail } from '@/api/hotel.js';
 import { getFoodDetail } from '@/api/food.js';
