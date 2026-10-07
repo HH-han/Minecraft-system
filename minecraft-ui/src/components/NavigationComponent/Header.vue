@@ -141,14 +141,38 @@
   <!-- 移动端导航面板（≤992px 显示，含主导航与更多菜单） -->
   <Transition name="mobile-nav">
     <div v-if="mobileMenuOpen" class="mobile-nav-panel" @click.stop>
-      <button v-for="navItem in navItems" :key="navItem.path" class="mobile-nav-item"
-        :class="{ 'nav-item-active': isActiveNav(navItem.path) }" @click="navigateTo(navItem.path)">
-        {{ navItem.label }}
+      <div class="mobile-nav-section">导航</div>
+      <button v-for="(navItem, i) in navItems" :key="navItem.path" class="mobile-nav-item"
+        :class="{ 'nav-item-active': isActiveNav(navItem.path) }" :style="{ animationDelay: `${i * 40}ms` }"
+        @click="navigateTo(navItem.path)">
+        <span class="mobile-nav-iconbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path v-for="d in navIcon(navItem.path)" :key="d" :d="d" />
+          </svg>
+        </span>
+        <span class="mobile-nav-text">{{ navItem.label }}</span>
+        <svg class="mobile-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
       </button>
       <div class="mobile-nav-divider"></div>
-      <button v-for="item in moreMenuItems" :key="item.path" class="mobile-nav-item"
-        :class="{ 'nav-item-active': isActiveNav(item.path) }" @click="navigateTo(item.path)">
-        {{ item.label }}
+      <div class="mobile-nav-section">更多</div>
+      <button v-for="(item, i) in moreMenuItems" :key="item.path" class="mobile-nav-item"
+        :class="{ 'nav-item-active': isActiveNav(item.path) }"
+        :style="{ animationDelay: `${(navItems.length + i) * 40}ms` }" @click="navigateTo(item.path)">
+        <span class="mobile-nav-iconbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path v-for="d in navIcon(item.path)" :key="d" :d="d" />
+          </svg>
+        </span>
+        <span class="mobile-nav-text">{{ item.label }}</span>
+        <svg class="mobile-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
       </button>
     </div>
   </Transition>
@@ -302,6 +326,26 @@ const onDocumentClick = () => {
 };
 onMounted(() => document.addEventListener('click', onDocumentClick));
 onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick));
+
+/** 移动端菜单项图标（按路由路径映射，24x24 线性图标） */
+const MOBILE_NAV_ICONS = {
+  '/Home': ['M3 10.5 12 3l9 7.5', 'M5 9.5V21h14V9.5'],
+  '/Scenicspot': ['M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z', 'M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'],
+  '/attractions': ['M3 4h18v16H3z', 'm3 16 5-5 4 4 3-3 6 6'],
+  '/Hotel': ['M4 21V7l8-4 8 4v14', 'M9 21v-6h6v6'],
+  '/Food': ['M7 2v20', 'M7 2v6a2 2 0 0 0 4 0V2', 'M17 2c-1.7 1.2-2.5 3.4-2.5 5.5 0 2.1 1 3.5 2.5 3.5V22'],
+  '/Souvenir': ['M6 7h12l1 14H5L6 7z', 'M9 7a3 3 0 0 1 6 0'],
+  '/Strategy': ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', 'M22 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'],
+  '/Aboutwebsite': ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 16v-4', 'M12 8h.01'],
+  '/Cards': ['M2 6h20v13H2z', 'M2 10h20'],
+  '/Community': ['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
+  '/TicketService': ['M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z', 'M13 5v2', 'M13 11v2', 'M13 17v2'],
+  '/TravelPlanning': ['M3 5h18v16H3z', 'M3 10h18', 'M8 3v4', 'M16 3v4'],
+  '/Maps': ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M2 12h20', 'M12 2c3 3 4 6.5 4 10s-1 7-4 10c-3-3-4-6.5-4-10s1-7 4-10z'],
+  '/TestProject001': ['M9 3h6', 'M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3', 'M7 15h10'],
+};
+const DEFAULT_NAV_ICON = ['M4 6h16', 'M4 12h16', 'M4 18h16'];
+const navIcon = (path) => MOBILE_NAV_ICONS[path] ?? DEFAULT_NAV_ICON;
 const showLogoutConfirm = ref(false);
 const showSocialLoginModal = ref(false);
 const currentPlatform = ref('wechat');
@@ -475,7 +519,7 @@ onMounted(() => {
 
 /* ================= 响应式适配 ================= */
 
-/* 汉堡菜单按钮：默认隐藏，≤992px 显示 */
+/* 汉堡菜单按钮：默认隐藏，≤992px 显示；白色卡片式，深浅背景均清晰可见 */
 .mobile-menu-btn {
   display: none;
   flex-direction: column;
@@ -485,28 +529,34 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.25s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .mobile-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+  transform: translateY(-1px);
 }
 
 .mobile-menu-btn span {
   display: block;
-  width: 22px;
+  width: 20px;
   height: 2px;
   border-radius: 2px;
-  background: #fff;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  background: #334155;
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
 }
 
-/* 展开时变为 X */
+/* 展开时变为 X，并高亮为品牌蓝 */
+.mobile-menu-btn.is-open span {
+  background: #00a2ff;
+}
+
 .mobile-menu-btn.is-open span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
@@ -566,53 +616,139 @@ onMounted(() => {
     justify-content: space-between;
   }
 
-  /* 移动端导航面板 */
+  /* 移动端导航面板：固定宽度卡片，左侧锚定 */
   .mobile-nav-panel {
     display: block;
     position: absolute;
-    top: 70px;
-    left: 12px;
-    right: 12px;
+    top: 78px;
+    left: 16px;
     z-index: 9999;
-    padding: 8px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
-    max-height: 60vh;
+    width: 300px;
+    max-width: calc(100vw - 32px);
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
   }
 
+  /* 分组标题 */
+  .mobile-nav-section {
+    padding: 8px 12px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #94a3b8;
+  }
+
+  /* 菜单项：图标盒 + 文字 + 右箭头，进入时逐项滑入 */
   .mobile-nav-item {
+    position: relative;
     display: flex;
     align-items: center;
+    gap: 12px;
     width: 100%;
-    padding: 12px 16px;
+    padding: 9px 12px;
     border: none;
-    border-radius: 9px;
+    border-radius: 12px;
     background: transparent;
-    color: #303133;
+    color: #334155;
     font-size: 14px;
     font-weight: 500;
     text-align: left;
     cursor: pointer;
+    opacity: 0;
+    animation: mobile-nav-item-in 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
     transition: background 0.2s ease, color 0.2s ease;
   }
 
-  .mobile-nav-item:hover {
+  @keyframes mobile-nav-item-in {
+    from {
+      opacity: 0;
+      transform: translateX(-12px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .mobile-nav-iconbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 10px;
     background: rgba(0, 162, 255, 0.08);
+    color: #00a2ff;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-nav-iconbox svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mobile-nav-text {
+    flex: 1;
+  }
+
+  .mobile-nav-chevron {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #cbd5e1;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-nav-item:hover {
+    background: rgba(0, 162, 255, 0.06);
     color: #00a2ff;
   }
 
+  .mobile-nav-item:hover .mobile-nav-chevron {
+    transform: translateX(3px);
+    color: #00a2ff;
+  }
+
+  /* 当前路由：左侧指示条 + 渐变高亮 */
   .mobile-nav-item.nav-item-active {
-    background: rgba(0, 162, 255, 0.12);
+    background: linear-gradient(90deg, rgba(0, 162, 255, 0.14), rgba(0, 212, 255, 0.06));
     color: #00a2ff;
     font-weight: 600;
   }
 
+  .mobile-nav-item.nav-item-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(to bottom, #00a2ff, #00d4ff);
+  }
+
+  .mobile-nav-item.nav-item-active .mobile-nav-iconbox {
+    background: #00a2ff;
+    color: #fff;
+  }
+
+  .mobile-nav-item.nav-item-active .mobile-nav-chevron {
+    color: #00a2ff;
+  }
+
   .mobile-nav-divider {
     height: 1px;
-    margin: 6px 10px;
-    background: rgba(0, 0, 0, 0.06);
+    margin: 8px 12px;
+    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.08), transparent);
   }
 }
 

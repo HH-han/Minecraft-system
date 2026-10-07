@@ -9,7 +9,7 @@
     </div>
     <!-- 图片列表 -->
     <div v-else class="card-container">
-        <div v-for="item in products" :key="item.id" class="card">
+        <div v-for="item in products" :key="item.id" class="card-souvenir">
             <div @click="() => showDetail(item)" class="card-image-wrapper">
                 <div class="image-container">
                     <img :src="item.coverImage" :alt="item.name" class="image-main">
@@ -123,8 +123,7 @@ const OrderDetails = (productId) => {
 }
 
 /* 卡片容器 */
-.card {
-    width: 450px;
+.card-souvenir {
     height: 380px;
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
@@ -137,7 +136,7 @@ const OrderDetails = (productId) => {
     cursor: pointer;
 }
 
-.card:hover {
+.card-souvenir:hover {
     transform: translateY(-5px);
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
 }
