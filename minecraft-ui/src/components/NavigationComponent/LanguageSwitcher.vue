@@ -79,31 +79,30 @@ onBeforeUnmount(() => {
   display: inline-flex;
 }
 
-/* ===== 触发按钮：玻璃拟态胶囊 ===== */
+/* ===== 触发按钮：白色实体胶囊（浅色/深色导航栏均清晰可见） ===== */
 .ls-trigger {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.95);
+  color: #334155;
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.5px;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, color 0.25s ease;
 }
 
 .ls-trigger:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  background: #ffffff;
+  border-color: rgba(0, 162, 255, 0.4);
+  color: #00a2ff;
+  box-shadow: 0 4px 14px rgba(0, 162, 255, 0.18);
   transform: translateY(-1px);
 }
 
@@ -112,15 +111,18 @@ onBeforeUnmount(() => {
 }
 
 .ls-trigger.is-open {
-  background: rgba(255, 255, 255, 0.32);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: #ffffff;
+  border-color: rgba(0, 162, 255, 0.5);
+  color: #00a2ff;
+  box-shadow: 0 4px 14px rgba(0, 162, 255, 0.2);
 }
 
-/* 地球图标：hover 时旋转，呼应「全球语言」语义 */
+/* 地球图标：品牌蓝，hover 时旋转，呼应「全球语言」语义 */
 .ls-globe {
   width: 17px;
   height: 17px;
   flex-shrink: 0;
+  color: #00a2ff;
   transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -137,7 +139,7 @@ onBeforeUnmount(() => {
   width: 11px;
   height: 11px;
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.6;
   transition: transform 0.3s ease;
 }
 

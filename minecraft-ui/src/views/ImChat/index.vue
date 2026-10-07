@@ -1,5 +1,5 @@
 <template>
-  <div class="im-container">
+  <div class="im-container" :class="{ 'chat-open': !!selectedContact }">
     <Sidebar
       :friends="friends"
       :groups="groups"
@@ -38,6 +38,7 @@
       @voice-call="handleVoiceCall"
       @video-call="handleVideoCall"
       @contact-info="showContactInfo = true"
+      @back="selectedContact = null"
     />
     
     <ContactDetail
@@ -1154,7 +1155,8 @@ onMounted(async () => {
     initWebSocket()
   }
   
-  if (friends.value.length > 0) {
+  // 移动端默认停留在联系人列表，桌面端自动打开第一个会话
+  if (friends.value.length > 0 && window.innerWidth > 768) {
     selectContact(friends.value[0])
   }
 })
@@ -1172,6 +1174,7 @@ watch(selectedContact, () => {
 .im-container {
   display: flex;
   height: 100vh;
+  height: 100dvh; /* 移动端浏览器工具栏适配 */
   background: #f5f5f7;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #1d1d1f;
@@ -1299,5 +1302,52 @@ watch(selectedContact, () => {
 
 .im-container :deep(.list-item.active) {
   background-color: rgba(41, 151, 255, 0.08);
+}
+
+/* ================= 响应式适配 ================= */
+
+/* ---- 平板（769-1024px）：收窄侧栏与详情面板 ---- */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .im-container :deep(.im-sidebar) {
+    width: 260px;
+  }
+
+  .im-container :deep(.sidebar-left) {
+    width: 56px;
+    padding: 12px 0;
+  }
+
+  .im-container :deep(.contact-detail),
+  .im-container :deep(.contact-detail-empty) {
+    width: 280px;
+  }
+}
+
+/* ---- 手机（≤768px）：单面板模式（列表 ⇄ 聊天互斥切换） ---- */
+@media (max-width: 768px) {
+  /* 侧栏占满全宽 */
+  .im-container :deep(.im-sidebar) {
+    width: 100%;
+  }
+
+  /* 打开会话时隐藏侧栏，聊天区全屏 */
+  .im-container.chat-open :deep(.im-sidebar) {
+    display: none;
+  }
+
+  /* 未选会话时隐藏聊天区（空状态） */
+  .im-container:not(.chat-open) :deep(.im-chat) {
+    display: none;
+  }
+
+  /* 联系人详情改为全屏覆盖层 */
+  .im-container :deep(.contact-detail) {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    width: 100%;
+    border-left: none;
+    overflow-y: auto;
+  }
 }
 </style>

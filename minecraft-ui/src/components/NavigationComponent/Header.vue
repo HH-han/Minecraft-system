@@ -10,10 +10,10 @@
           <span></span>
           <span></span>
         </button>
-        <div class="logo" style="display: flex; align-items: center; gap: 10px;">
-          <img v-if="mediaList.images.length > 0" :src="mediaList.images[0].image" alt="">
-          <img v-else :src="defaultLogo" alt="">
-          <span>{{ $t('common.brand') }}</span>
+        <div class="logo" @click="navigateTo('/Home')">
+          <img v-if="mediaList.images.length > 0" :src="mediaList.images[0].image" :alt="$t('common.brand')">
+          <img v-else :src="defaultLogo" :alt="$t('common.brand')">
+          <span class="brand-text">{{ $t('common.brand') }}</span>
         </div>
         <div class="nav-items">
           <div class="center-items">
@@ -516,6 +516,61 @@ onMounted(() => {
 
 <style scoped>
 @import "@/css/Home/HomeViews.css";
+
+/* ================= Logo 品牌区 ================= */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.logo img {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.35s ease;
+}
+
+.logo:hover img {
+  transform: scale(1.06) rotate(-3deg);
+  box-shadow: 0 6px 16px rgba(0, 162, 255, 0.28), 0 0 0 1px rgba(0, 162, 255, 0.2);
+}
+
+/* 品牌文字：品牌蓝渐变 + hover 光泽扫过 */
+.brand-text {
+  position: relative;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(120deg, #0062ff 0%, #00a2ff 45%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.brand-text::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.logo:hover .brand-text::after {
+  left: 120%;
+}
 
 /* ================= 响应式适配 ================= */
 

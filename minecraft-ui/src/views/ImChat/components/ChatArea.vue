@@ -8,6 +8,12 @@
     <div v-else class="chat-content">
       <div class="chat-header">
         <div class="header-info">
+          <button class="back-btn" title="返回列表" @click="emit('back')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
           <img 
             :src="selectedContact.avatar || defaultAvatar" 
             :alt="selectedContact.name"
@@ -64,7 +70,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['voice-call', 'video-call', 'contact-info', 'send'])
+const emit = defineEmits(['voice-call', 'video-call', 'contact-info', 'send', 'back'])
 
 const defaultAvatar = '/src/assets/defaultimage/moren.webp'
 
@@ -185,5 +191,51 @@ defineExpose({ messageListRef })
 .action-btn:hover {
   background: #e8e8ed;
   color: #1d1d1f;
+}
+
+/* ===== 返回按钮：仅移动端显示 ===== */
+.back-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 12px;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #e8e8ed;
+}
+
+/* ===== 响应式适配 ===== */
+@media (max-width: 768px) {
+  .back-btn {
+    display: flex;
+  }
+
+  .chat-header {
+    padding: 10px 12px;
+  }
+
+  .header-avatar {
+    width: 38px;
+    height: 38px;
+    margin-right: 10px;
+  }
+
+  .header-text h3 {
+    font-size: 15px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
 }
 </style>
