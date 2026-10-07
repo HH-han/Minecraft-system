@@ -1,41 +1,36 @@
 <template>
-  <!-- 设备检测组件（始终渲染但隐藏） -->
-  <!-- Test hot reload in App.vue -->
-  <DeviceDetects ref="deviceDetectsRef" style="display: none;" />
-<!--  <div>-->
-<!--    <DeviceDetects />-->
-<!--  </div>-->
-  <!-- PC设备正常显示 -->
-  <div>
-    <!-- loading 加载中效果-->
-    <div id="app">
-      <RefreshLoad v-if="isLoading" />
-      <router-view v-else />
-    </div>
-    <!-- 悬浮按钮 -->
+  <!-- Element Plus 语言包随 i18n 联动切换 -->
+  <el-config-provider :locale="elementLocale">
+    <!-- 设备检测组件（始终渲染但隐藏） -->
+    <DeviceDetects ref="deviceDetectsRef" style="display: none;" />
+    <!-- PC设备正常显示 -->
     <div>
-      <FloatingButton />
+      <!-- loading 加载中效果-->
+      <div id="app">
+        <RefreshLoad v-if="isLoading" />
+        <router-view v-else />
+      </div>
+      <!-- 悬浮按钮 -->
+      <div>
+        <FloatingButton />
+      </div>
+      <!-- 系统公告弹窗（全局唯一，弹窗队列驱动） -->
+      <AnnouncementPopup />
+      <!-- 自定义光标 -->
+      <MouseStyle />
     </div>
-    <!-- 系统公告弹窗（全局唯一，弹窗队列驱动） -->
-    <AnnouncementPopup />
-    <!-- 流体仿真效果 -->
-    <!-- <div>
-      <FluidSimulation />
-    </div> -->
-    <!-- 自定义光标 -->
-    <MouseStyle />
-  </div>
+  </el-config-provider>
 </template>
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import RefreshLoad from '@/components/TransitionalComponents/RefreshLoad.vue';
 import FloatingButton from '@/components/ComponentButton/FloatingButton.vue';
-import FluidSimulation from '@/components/DisplayBox/FluidSimulation.vue';
 import DeviceDetects from '@/components/ResponseComponents/DeviceDetects.vue';
 import AnnouncementPopup from '@/components/AnnouncementComponents/AnnouncementPopup.vue';
 import MouseStyle from '@/views/MouseStyle/index.vue'
 import { useAnnouncementStore } from '@/stores/announcementStore'
 import { initAnnouncementSse, closeAnnouncementSse } from '@/utils/sse'
+import { elementLocale } from '@/locales'
 
 const isLoading = ref(true)
 const deviceDetectsRef = ref()

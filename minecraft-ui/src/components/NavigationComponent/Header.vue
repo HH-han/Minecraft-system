@@ -3,20 +3,28 @@
   <div class="navbar-background">
     <div class="navbar-background-container">
       <div class="navbar-home">
+        <!-- 移动端汉堡菜单按钮（≤992px 显示） -->
+        <button class="mobile-menu-btn" :class="{ 'is-open': mobileMenuOpen }" aria-label="菜单"
+          @click.stop="mobileMenuOpen = !mobileMenuOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
         <div class="logo" style="display: flex; align-items: center; gap: 10px;">
           <img v-if="mediaList.images.length > 0" :src="mediaList.images[0].image" alt="">
           <img v-else :src="defaultLogo" alt="">
-          <span>博览旅行</span>
+          <span>{{ $t('common.brand') }}</span>
         </div>
         <div class="nav-items">
           <div class="center-items">
             <button v-for="navItem in navItems" :key="navItem.path" class="action-btn"
-              @click="handleClick(navItem.path)">
+              :class="{ 'nav-item-active': isActiveNav(navItem.path) }"
+              @click="navigateTo(navItem.path)">
               {{ navItem.label }}
             </button>
           </div>
           <div class="dropdown">
-            <button class="action-btn dropdown-toggle">更多</button>
+            <button class="action-btn dropdown-toggle">{{ $t('header.more') }}</button>
             <div class="dropdown-menu_Home_2">
               <button v-for="(item, index) in moreMenuItems" :key="item.path"
                 :style="index === moreMenuItems.length - 1 ? 'border-radius: 0 0 10px 10px' : ''"
@@ -26,6 +34,7 @@
           </div>
         </div>
         <div class="actions">
+          <LanguageSwitcher />
           <ThemeSwitching />
           <!-- 微信 -->
           <button class="action-btn-iocn" @click="openSocialLogin('wechat')">
@@ -92,7 +101,7 @@
                   d="M389.019 390.334s-59.732-63.856 0-167.162c30.089-52.041 93.162-55.719 122.585-55.719 104.861 0 170.055 34.323 178.302 122.585 7.687 82.908-17.276 112.887-22.288 111.437 0 0-33.435-53.602-33.435-89.15 0 0-122.579 45.912-200.587-44.577-35.663 9.027-44.577 100.297-44.577 122.586z m0 0"
                   fill="#3A8BCE" p-id="10025"></path>
               </svg>
-              <span style="vertical-align: middle;">登录</span>
+              <span style="vertical-align: middle;">{{ $t('header.login') }}</span>
             </button>
             <button class="action-btn" @click="EnrolFirst">
               <svg t="1741965357577" class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -104,7 +113,7 @@
                   d="M738.60096 1024c33.77664 0 63.32416-4.26496 97.09568-17.06496 29.55264-12.8 54.88128-29.87008 80.20992-51.2 21.10976-21.33504 37.9904-46.93504 50.65728-76.8 12.66688-29.87008 21.10976-59.73504 21.10976-93.87008 0-34.12992-4.224-64-21.10976-93.86496-12.66176-29.86496-29.54752-55.46496-50.65728-76.8s-50.65728-38.4-80.20992-51.2c-29.54752-12.8-63.31904-17.06496-97.09568-17.06496-33.77152 0-67.54304 4.26496-97.09056 17.06496-29.55264 12.8-54.8864 29.86496-80.20992 51.2-21.10976 21.33504-42.2144 46.93504-54.88128 76.8-12.66176 25.6-21.10464 59.73504-21.10464 93.86496 0 34.13504 4.21888 64 21.10464 93.87008 12.66688 29.86496 29.55264 55.46496 54.88128 76.8 21.10464 21.32992 50.65728 38.4 80.20992 51.2 29.54752 12.8 63.31904 17.06496 97.09056 17.06496z m122.42432-281.6c21.10976 0 42.21952 17.06496 42.21952 38.4 0 8.53504-4.224 21.33504-12.66688 25.6-8.448 4.26496-16.88576 8.53504-29.55264 8.53504h-88.64768V896c0 12.8-4.224 21.33504-8.448 29.86496-8.44288 8.53504-16.88576 12.8-29.54752 12.8-12.66688 0-21.10976-4.26496-25.32864-12.8-4.224-8.52992-8.448-17.06496-8.448-29.86496v-81.06496h-80.2048c-12.66688 0-21.10976 0-29.55264-8.53504-8.44288-4.26496-12.66176-12.8-12.66176-25.6 0-8.53504 4.21888-21.33504 12.66176-25.6 8.448-8.53504 16.88576-12.8 29.55264-12.8h80.20992v-81.06496c0-8.53504 4.21888-21.33504 8.44288-25.6 4.21888-8.53504 16.88576-12.8 25.32864-12.8 12.66176 0 21.10464 4.26496 29.55264 12.8 8.44288 8.52992 8.44288 17.06496 8.44288 25.6V742.4h88.64768z"
                   fill="#727BB2" p-id="15728"></path>
               </svg>
-              <span style="vertical-align: middle;">注册</span>
+              <span style="vertical-align: middle;">{{ $t('header.register') }}</span>
             </button>
           </template>
 
@@ -129,11 +138,24 @@
       </div>
     </div>
   </div>
-  <!-- 渲染器区域 -->
+  <!-- 移动端导航面板（≤992px 显示，含主导航与更多菜单） -->
+  <Transition name="mobile-nav">
+    <div v-if="mobileMenuOpen" class="mobile-nav-panel" @click.stop>
+      <button v-for="navItem in navItems" :key="navItem.path" class="mobile-nav-item"
+        :class="{ 'nav-item-active': isActiveNav(navItem.path) }" @click="navigateTo(navItem.path)">
+        {{ navItem.label }}
+      </button>
+      <div class="mobile-nav-divider"></div>
+      <button v-for="item in moreMenuItems" :key="item.path" class="mobile-nav-item"
+        :class="{ 'nav-item-active': isActiveNav(item.path) }" @click="navigateTo(item.path)">
+        {{ item.label }}
+      </button>
+    </div>
+  </Transition>
+  <!-- 页面渲染区域：由路由驱动 -->
   <main>
     <div class="content-area">
-      <component :is="currentComponent" v-if="currentComponent" />
-      <router-view v-else />
+      <router-view />
     </div>
   </main>
 
@@ -154,26 +176,19 @@
   />
 </template>
 <script setup>
-import { useRouter } from 'vue-router';
-import { ref, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 // 页面组件
 import ThemeSwitching from '@/components/ThemeComponents/ThemeSwitching.vue';
+import LanguageSwitcher from '@/components/NavigationComponent/LanguageSwitcher.vue';
 import AnnouncementBell from '@/components/AnnouncementComponents/AnnouncementBell.vue';
-import home from '@/views/index/index.vue';
-import food from '@/views/Food/index.vue';
-import worldtravel from '@/views/WorldTravel/index.vue';
-import hotel from '@/views/Hotel/index.vue';
-import scenicspot from '@/views/Scenicspot/index.vue';
-import souvenir from '@/views/Souvenir/index.vue';
-import strategy from '@/views/Strategy/index.vue';
-import ticket from '@/views/Ticket/index.vue';
-import travel from '@/views/Travel/index.vue';
-import community from '@/views/Community/index.vue';
-import cards from '@/views/Cards/index.vue';
 import Launchlogin from '@/components/PromptComponent/Launchlogin.vue';
 import BacktoTop from '@/components/DisplayBox/BacktoTop.vue';
 import SocialLoginModal from '@/components/PromptComponent/SocialLoginModal.vue';
+// 导航菜单（由路由表 meta 派生，路由即导航的唯一数据源）
+import { mainNavMenus, moreNavMenus } from '@/router/routes';
 // 接口
 import { useAuthStore } from '@/stores/auth';
 import { getUserInfo, logout } from '@/api/user';
@@ -187,139 +202,67 @@ const props = defineProps({
 
 const defaultAvatar = new URL('@/assets/defaultimage/mrtx.png', import.meta.url).href
 const defaultLogo = new URL('@/assets/logo/logo.png', import.meta.url).href
-const currentComponent = ref(null);
 const authStore = useAuthStore();
 
-// 导航项数据
-const navItems = [
-  { path: 'home', label: '首页' },
-  { path: 'worldtravel', label: '目的地' },
-  { path: 'scenicspot', label: '景点' },
-  { path: 'hotel', label: '酒店' },
-  { path: 'food', label: '美食' },
-  { path: 'souvenir', label: '小物件' },
-  { path: 'strategy', label: '攻略群' },
-];
+// 导航项数据（路由表派生）
+const navItems = mainNavMenus;
 
-// 更多下拉菜单项
-const moreMenuItems = [
-  { path: '/aboutweb', label: '关于我们' },
-  { path: '/cards', label: '旅行卡片' },
-  { path: '/community', label: '旅行社区' },
-  { path: '/ticket', label: '购票服务' },
-  { path: '/travel', label: '出行计划' },
-  { path: '/SettingsFocus', label: '设置中心' },
-  { path: '/maps', label: '世界地图' },
-  { path: '/test', label: '测试页面' },
-];
+// 更多下拉菜单项（路由表派生）
+const moreMenuItems = moreNavMenus;
 
-// 用户操作菜单项数据
-const userMenuItems = [
+const { t } = useI18n();
+
+// 用户操作菜单项数据（label 使用 i18n key，随语言切换响应式更新）
+const userMenuItems = computed(() => [
   {
-    label: '个人中心',
+    label: t('header.userMenu.profile'),
     path: '/personalcenter',
     style: 'border-radius: 10px 10px 0 0;',
     show: true
   },
   {
-    label: '社区帖子',
+    label: t('header.userMenu.community'),
     path: '/privatecommunity',
     style: 'border-radius: 0 0 10px 10px;',
     show: true
   },
   {
-    label: '支付中心',
+    label: t('header.userMenu.payment'),
     path: '/payment',
     style: 'border-radius: 0 0 10px 10px;',
     show: true
   },
   {
-    label: '账户设置',
+    label: t('header.userMenu.account'),
     path: '/accountsettings',
     style: 'border-radius: 0 0 10px 10px;',
     show: true
   },
   {
-    label: '好友聊天',
+    label: t('header.userMenu.chat'),
     path: '/chat',
     show: true,
     class: 'im-button'
   },
   {
-    label: '退出登录',
+    label: t('header.userMenu.logout'),
     action: 'localLogout',
     show: true,
     class: 'logout-button'
   },
-];
+]);
 
 const router = useRouter();
+const route = useRoute();
 
-const handleClick = (path) => {
-  // 对于其他导航项，设置组件并导航到对应路由
-  const componentMap = {
-    'home': home,
-    'worldtravel': worldtravel,
-    'scenicspot': scenicspot,
-    'hotel': hotel,
-    'food': food,
-    'souvenir': souvenir,
-    'strategy': strategy,
-  };
-
-  // 映射路径到路由
-  const pathToRoute = {
-    'home': '/',
-    'worldtravel': '/worldtravel',
-    'scenicspot': '/scenicspot',
-    'hotel': '/hotel',
-    'food': '/food',
-    'souvenir': '/souvenir',
-    'strategy': '/strategy',
-  };
-
-  currentComponent.value = componentMap[path];
-  // 导航到对应路由
-  if (pathToRoute[path]) {
-    router.push(pathToRoute[path]);
-  }
-  // 保存当前组件路径到Pinia store
-  authStore.currentComponentPath = path;
+/** 判断导航项是否为当前激活路由（含子路径） */
+const isActiveNav = (path) => {
+  return route.path === path || route.path.startsWith(`${path}/`);
 };
 
+/** 统一的导航跳转入口 */
 const navigateTo = (path) => {
-  // 路由到组件的映射
-  const moreComponentMap = {
-    '/community': community,
-    '/ticket': ticket,
-    '/travel': travel,
-    '/cards': cards,
-    '/SettingsFocus': null,
-    '/aboutweb': null,
-    '/test': null,
-  };
-  
-  // 路由到 store 路径的映射
-  const morePathToStore = {
-    '/community': 'community',
-    '/ticket': 'ticket',
-    '/travel': 'travel',
-    '/cards': 'cards',
-  };
-  
-  // 处理组件切换
-  if (moreComponentMap[path] === null) {
-    currentComponent.value = null; // 显示 router-view
-  } else if (moreComponentMap[path]) {
-    currentComponent.value = moreComponentMap[path];
-  }
-  
-  // 更新 store 状态
-  if (morePathToStore[path]) {
-    authStore.currentComponentPath = morePathToStore[path];
-  }
-  
-  // 路由跳转
+  if (path === route.path) return;
   router.push(path);
 };
 // 默认头像
@@ -327,11 +270,11 @@ const navigateTo = (path) => {
 // 页面跳转
 const LoginName = () => {
   router.push('/login');
-  ElMessage.success('返回登录！');
+  ElMessage.success(t('header.messages.backToLogin'));
 };
 const EnrolFirst = () => {
   router.push('/login');
-  ElMessage.success('前往注册！');
+  ElMessage.success(t('header.messages.goRegister'));
 };
 
 const openSocialLogin = (platform) => {
@@ -345,6 +288,20 @@ const closeSocialLoginModal = () => {
 
 const isLoggedIn = ref(false);
 const isDropdownVisible = ref(false);
+// 移动端导航面板开关
+const mobileMenuOpen = ref(false);
+
+// 路由切换后自动收起移动端菜单
+watch(() => route.path, () => {
+  mobileMenuOpen.value = false;
+});
+
+// 点击页面其他区域时收起移动端菜单
+const onDocumentClick = () => {
+  mobileMenuOpen.value = false;
+};
+onMounted(() => document.addEventListener('click', onDocumentClick));
+onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick));
 const showLogoutConfirm = ref(false);
 const showSocialLoginModal = ref(false);
 const currentPlatform = ref('wechat');
@@ -390,7 +347,7 @@ const confirmLogout = async () => {
     // 关闭确认对话框
     showLogoutConfirm.value = false;
 
-    ElMessage.success('退出登录成功');
+    ElMessage.success(t('header.messages.logoutSuccess'));
   } catch (error) {
     console.error('退出登录失败:', error);
     // 即使API调用失败，也清除本地存储
@@ -401,7 +358,7 @@ const confirmLogout = async () => {
     isLoggedIn.value = false;
     isDropdownVisible.value = false;
     showLogoutConfirm.value = false;
-    ElMessage.success('已退出登录');
+    ElMessage.success(t('header.messages.loggedOut'));
   }
 };
 
@@ -440,7 +397,7 @@ const userInfo = ref({
 
 // 过滤后的用户菜单项
 const filteredUserMenuItems = computed(() => {
-  return userMenuItems.filter(item => {
+  return userMenuItems.value.filter(item => {
     if (typeof item.show === 'function') {
       return item.show();
     }
@@ -508,68 +465,203 @@ const fetchUserInfo = async () => {
 
 // 初始化检查登录状态
 onMounted(() => {
-  // 从Pinia store恢复当前组件状态，如果没有则默认显示首页
-  const savedPath = authStore.currentComponentPath;
-  const componentMap = {
-    'home': home,
-    'worldtravel': worldtravel,
-    'scenicspot': scenicspot,
-    'hotel': hotel,
-    'food': food,
-    'souvenir': souvenir,
-    'strategy': strategy,
-    'ticket': ticket,
-    'travel': travel,
-    'community': community,
-    'cards': cards
-  };
-
-  // 检查当前路由
-  const currentRoute = router.currentRoute.value;
-
-  // 如果当前路由是社区、ticket、travel 或卡片页面
-  if (['/community', '/ticket', '/travel', '/cards'].includes(currentRoute.path)) {
-    // 直接从路由路径恢复组件
-    const routeComponentMap = {
-      '/community': community,
-      '/ticket': ticket,
-      '/travel': travel,
-      '/cards': cards,
-    };
-    currentComponent.value = routeComponentMap[currentRoute.path];
-  } else {
-    // 否则恢复之前的组件状态
-    currentComponent.value = savedPath ? componentMap[savedPath] : home;
-  }
-
   isLoggedIn.value = !!localStorage.getItem('token');
   fetchUserInfo();
-
-  // 添加路由守卫，监听路由变化，自动保存状态
-  router.afterEach((to) => {
-    // 映射路由到路径
-    const routeToPath = {
-      '/': 'home',
-      '/worldtravel': 'worldtravel',
-      '/scenicspot': 'scenicspot',
-      '/hotel': 'hotel',
-      '/food': 'food',
-      '/souvenir': 'souvenir',
-      '/strategy': 'strategy',
-      '/ticket': 'ticket',
-      '/travel': 'travel',
-      '/community': 'community',
-      '/cards': 'cards'
-    };
-
-    // 如果是已知路由，保存状态
-    if (routeToPath[to.path]) {
-      authStore.currentComponentPath = routeToPath[to.path];
-    }
-  });
 });
 </script>
 
 <style scoped>
 @import "@/css/Home/HomeViews.css";
+
+/* ================= 响应式适配 ================= */
+
+/* 汉堡菜单按钮：默认隐藏，≤992px 显示 */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.25s ease;
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mobile-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* 展开时变为 X */
+.mobile-menu-btn.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-btn.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-btn.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* 移动端导航面板：默认隐藏 */
+.mobile-nav-panel {
+  display: none;
+}
+
+/* ---- 大屏（≤1400px）：压缩间距 ---- */
+@media (max-width: 1400px) {
+  .navbar-home {
+    gap: 12px;
+    padding: 10px 16px;
+  }
+
+  .nav-items,
+  .center-items {
+    gap: 8px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+}
+
+/* ---- 中屏（≤1300px）：解除固定最小宽度，流式布局 ---- */
+@media (max-width: 1300px) {
+  .navbar-home {
+    min-width: 0;
+    width: 100%;
+    font-size: 20px;
+  }
+}
+
+/* ---- 平板（≤992px）：汉堡菜单替代水平导航 ---- */
+@media (max-width: 992px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  /* 隐藏水平主导航与「更多」下拉 */
+  .nav-items {
+    display: none;
+  }
+
+  /* logo 与操作区两端分布 */
+  .navbar-home {
+    justify-content: space-between;
+  }
+
+  /* 移动端导航面板 */
+  .mobile-nav-panel {
+    display: block;
+    position: absolute;
+    top: 70px;
+    left: 12px;
+    right: 12px;
+    z-index: 9999;
+    padding: 8px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #303133;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-nav-item:hover {
+    background: rgba(0, 162, 255, 0.08);
+    color: #00a2ff;
+  }
+
+  .mobile-nav-item.nav-item-active {
+    background: rgba(0, 162, 255, 0.12);
+    color: #00a2ff;
+    font-weight: 600;
+  }
+
+  .mobile-nav-divider {
+    height: 1px;
+    margin: 6px 10px;
+    background: rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* 面板展开动画 */
+.mobile-nav-enter-active,
+.mobile-nav-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.mobile-nav-enter-from,
+.mobile-nav-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ---- 手机（≤768px）：隐藏社交图标按钮，压缩操作区 ---- */
+@media (max-width: 768px) {
+  /* 微信 / QQ / 微博 图标按钮 */
+  .actions > .action-btn-iocn {
+    display: none;
+  }
+
+  .navbar-home {
+    padding: 8px 12px;
+  }
+}
+
+/* ---- 小屏手机（≤576px）：隐藏品牌文字，语言切换器只留图标 ---- */
+@media (max-width: 576px) {
+  .logo span {
+    display: none;
+  }
+
+  .logo img {
+    height: 36px;
+  }
+
+  .actions :deep(.ls-label) {
+    display: none;
+  }
+
+  .actions :deep(.ls-arrow) {
+    display: none;
+  }
+
+  /* 登录/注册按钮更紧凑 */
+  .actions .action-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
 </style>

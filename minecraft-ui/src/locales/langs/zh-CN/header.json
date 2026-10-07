@@ -1,0 +1,21 @@
+{
+  "header": {
+    "more": "更多",
+    "login": "登录",
+    "register": "注册",
+    "userMenu": {
+      "profile": "个人中心",
+      "community": "社区帖子",
+      "payment": "支付中心",
+      "account": "账户设置",
+      "chat": "好友聊天",
+      "logout": "退出登录"
+    },
+    "messages": {
+      "backToLogin": "返回登录！",
+      "goRegister": "前往注册！",
+      "logoutSuccess": "退出登录成功",
+      "loggedOut": "已退出登录"
+    }
+  }
+}

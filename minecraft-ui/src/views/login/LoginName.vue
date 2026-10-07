@@ -343,7 +343,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { login, register } from '@/api/auth.js';
 import { getUserByAccount } from '@/api/user.js';
 import Login_background from '@/components/LoginComponent/Login_background.vue';
@@ -408,7 +408,14 @@ const confirmAccount = () => {
 };
 
 // 用户信息
+const route = useRoute();
 const router = useRouter();
+
+/** 登录成功后的回跳地址（来自路由守卫携带的 redirect 参数） */
+const getRedirectPath = () => {
+  const redirect = route.query?.redirect;
+  return redirect ? decodeURIComponent(redirect) : '/';
+};
 
 // 状态管理
 const showError = ref(false);
@@ -559,7 +566,7 @@ const performLogin = async () => {
       showSucceeded.value = true;
 
       setTimeout(() => {
-        router.push('/');
+        router.push(getRedirectPath());
       }, 2000);
     } else {
       errorMessage.value = response.message || '登录失败';

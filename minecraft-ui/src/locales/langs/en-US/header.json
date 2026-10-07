@@ -1,0 +1,21 @@
+{
+  "header": {
+    "more": "More",
+    "login": "Log in",
+    "register": "Sign up",
+    "userMenu": {
+      "profile": "Profile",
+      "community": "My Posts",
+      "payment": "Payment Center",
+      "account": "Account Settings",
+      "chat": "Messages",
+      "logout": "Log out"
+    },
+    "messages": {
+      "backToLogin": "Back to login!",
+      "goRegister": "Go to sign up!",
+      "logoutSuccess": "Logged out successfully",
+      "loggedOut": "Logged out"
+    }
+  }
+}

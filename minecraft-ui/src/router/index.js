@@ -1,429 +1,67 @@
-// router/index.js
-import { createRouter, createWebHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router';
 
-const routes = [
-  // 导航
-  {
-    path: "/",
-    name: "Navigation",
-    component: () => import("@/components/NavigationComponent/Header.vue"),
-    meta: {
-      title: "导航",
-      requiresAuth: false,
-    },
-    children: [
-      {
-        path: "/hotel",
-        name: "Hotel",
-        component: () => import("@/views/Hotel/index.vue"),
-        meta: {
-          title: "酒店",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/food",
-        name: "Food",
-        component: () => import("@/views/Food/index.vue"),
-        meta: {
-          title: "美食",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/scenicspot",
-        name: "ScenicSpot",
-        component: () => import("@/views/Scenicspot/index.vue"),
-        meta: {
-          title: "景点",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/ticket",
-        name: "Ticket",
-        component: () => import("@/views/Ticket/index.vue"),
-        meta: {
-          title: "机票",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/travel",
-        name: "Travel",
-        component: () => import("@/views/Travel/index.vue"),
-        meta: {
-          title: "旅行计划",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/souvenir",
-        name: "Souvenir",
-        component: () => import("@/views/Souvenir/index.vue"),
-        meta: {
-          title: "纪念品",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/strategy",
-        name: "Strategy",
-        component: () => import("@/views/Strategy/index.vue"),
-        meta: {
-          title: "攻略",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/cards",
-        name: "Cards",
-        component: () => import("@/views/Cards/index.vue"),
-        meta: {
-          title: "旅行卡片",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/community",
-        name: "Community",
-        component: () => import("@/views/Community/index.vue"),
-        meta: {
-          title: "社区",
-          requiresAuth: true,
-        },
-        children: [
-          {
-            path: "",
-            name: "CommunityMain",
-            component: () => import("@/views/Community/components/main.vue"),
-            meta: {
-              title: "社区",
-              requiresAuth: true,
-            },
-          },
-          {
-            path: "detail/:id",
-            name: "CommunityDetail",
-            component: () => import("@/views/Community/components/details.vue"),
-            meta: {
-              title: "帖子详情",
-              requiresAuth: true,
-            },
-          },
-        ],
-      },
-      {
-        path: "/forum",
-        name: "Forum",
-        component: () => import("@/views/Forum/index.vue"),
-        meta: {
-          title: "论坛",
-          requiresAuth: true,
-        },
-      },
-      {
-        path: "/worldtravel",
-        name: "WorldTravel",
-        component: () => import("@/views/WorldTravel/index.vue"),
-        meta: {
-          title: "世界旅行",
-          requiresAuth: true,
-        },
-      },
-      // 系统公告
-      {
-        path: "/announcement",
-        name: "AnnouncementList",
-        component: () => import("@/views/Announcement/index.vue"),
-        meta: {
-          title: "系统公告",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/announcement/:id",
-        name: "AnnouncementDetail",
-        component: () => import("@/views/Announcement/Detail.vue"),
-        meta: {
-          title: "公告详情",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/cards",
-        name: "Cards",
-        component: () => import("@/views/Cards/index.vue"),
-        meta: {
-          title: "卡片",
-          requiresAuth: false,
-        },
-      }
-    ],
-  },
+import { CHUNK_RELOAD_KEY } from './constants';
+import { createRouterGuard } from './guard';
+import { routes } from './routes';
 
-  {
-    path: "/personalcenter",
-    name: "PersonalCenter",
-    component: () => import("@/views/PersonalCenter/index.vue"),
-    meta: {
-      title: "个人中心",
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/accountsettings",
-    name: "accountsettings",
-    component: () => import("@/views/PersonalCenter/components/accountsettings.vue"),
-    meta: {
-      title: "账户设置",
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/aboutwebsite",
-    name: "AboutWebsite",
-    component: () => import("@/views/Aboutwebsite/index.vue"),
-    meta: {
-      title: "关于",
-      requiresAuth: false,
-    },
-    children: [
-      {
-        path: "/aboutweb",
-        name: "AboutWeb",
-        component: () => import("@/views/Aboutwebsite/components/Aboutweb.vue"),
-        meta: {
-          title: "关于我们",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "/websiteintroduction",
-        name: "WebsiteIntroduction",
-        component: () => import("@/views/Aboutwebsite/components/WebsiteIntroduction.vue"),
-        meta: {
-          title: "网站介绍",
-          requiresAuth: false,
-        },
-      },
-    ]
-  },
-  // 首页
-  {
-    path: "/home",
-    name: "Home",
-    component: () => import("@/views/index/index.vue"),
-    meta: {
-      title: "首页",
-      requiresAuth: false,
-    },
-  },
-  // 登录
-  {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/login/LoginName.vue"),
-    meta: {
-      title: "登录/注册",
-      requiresAuth: false,
-    },
-    children: [
-      {
-        path: "enrolfirst",
-        name: "EnrolFirst",
-        component: () => import("@/views/login/components/EnrolFirst.vue"),
-        meta: {
-          title: "注册",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "emaillogin",
-        name: "EmailLogin",
-        component: () => import("@/views/login/components/EmailLogin.vue"),
-        meta: {
-          title: "邮箱登录",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "ForgotPassword",
-        name: "ForgotPassword",
-        component: () => import("@/views/login/components/ForgotPassword.vue"),
-        meta: {
-          title: "忘记密码",
-          requiresAuth: false,
-        },
-      },
-      {
-        path: "Fanginter",
-        name: "Fanginter",
-        component: () =>
-          import("@/views/login/components/FanginternationalContainer.vue"),
-        meta: {
-          title: "国际登录",
-          requiresAuth: false,
-        },
-      },
-    ],
-  },
-  {
-    path: "/test",
-    name: "Test",
-    component: () => import("@/views/Test/index.vue"),
-    meta: {
-      title: "测试",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/predetermined",
-    name: "Predetermined",
-    component: () => import("@/views/Predetermined/index.vue"),
-    meta: {
-      title: "预订服务",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/payment",
-    name: "Payment",
-    component: () => import("@/views/payment/index.vue"),
-    meta: {
-      title: "支付页面",
-      requiresAuth: false,
-    },
-  },
-  // 积分系统
-  {
-    path: "/points",
-    name: "Points",
-    component: () => import("@/views/Points/index.vue"),
-    meta: {
-      title: "积分商城",
-      requiresAuth: true,
-    },
-  },
-  // 聊天
-  {
-    path: "/chat",
-    name: "Chat",
-    component: () => import("@/views/ImChat/index.vue"),
-    meta: {
-      title: "聊天",
-      requiresAuth: true,
-    },
-  },
-  // 错误页面
-  {
-    path: "/401",
-    name: "Error401",
-    component: () => import("@/views/Errors/401.vue"),
-    meta: {
-      title: "未授权",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/403",
-    name: "Error403",
-    component: () => import("@/views/Errors/403.vue"),
-    meta: {
-      title: "禁止访问",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/404",
-    name: "Error404",
-    component: () => import("@/views/Errors/404.vue"),
-    meta: {
-      title: "页面不存在",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/500",
-    name: "Error500",
-    component: () => import("@/views/Errors/500.vue"),
-    meta: {
-      title: "服务器错误",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/502",
-    name: "Error502",
-    component: () => import("@/views/Errors/502.vue"),
-    meta: {
-      title: "网关错误",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/503",
-    name: "Error503",
-    component: () => import("@/views/Errors/503.vue"),
-    meta: {
-      title: "服务不可用",
-      requiresAuth: false,
-    },
-  },
-  {
-    path: "/504",
-    name: "Error504",
-    component: () => import("@/views/Errors/504.vue"),
-    meta: {
-      title: "网关超时",
-      requiresAuth: false,
-    },
-  },
-  // 捕获所有未匹配的路由，重定向到404
-  {
-    path: "/:pathMatch(.*)*",
-    name: "NotFound",
-    component: () => import("@/views/Errors/404.vue"),
-    meta: {
-      title: "页面不存在",
-      requiresAuth: false,
-    },
-  },
-  // 私有社区
-  {
-    path: "/privatecommunity",
-    name: "PrivateCommunity",
-    component: () => import("@/views/PersonalCenter/Community/index.vue"),
-    meta: {
-      title: "私有社区",
-      requiresAuth: true,
-    },
-  },
-  // 地图
-  {
-    path:"/maps",
-    name:"Maps",
-    component:()=>import("@/views/Maps/index.vue"),
-    meta:{
-      title:"地图",
-      requiresAuth:true
-    }
-  },
-  // 官网首页
-  {
-    path:"/officialwebsite",
-    name:"OfficialWebsite",
-    component:()=>import("@/views/OfficialWebsite/index.vue"),
-    meta:{
-      title:"官网首页",
-      requiresAuth:true
-    }
-  }
-];
-
+/**
+ * 创建 vue-router 实例
+ * - history 模式可通过环境变量 VITE_ROUTER_HISTORY=hash 切换为 hash 模式
+ * - scrollBehavior：前进后退恢复原滚动位置；锚点平滑滚动；其余回到顶部
+ */
 const router = createRouter({
-  history: createWebHistory(),
+  history:
+    import.meta.env.VITE_ROUTER_HISTORY === 'hash'
+      ? createWebHashHistory(import.meta.env.BASE_URL)
+      : createWebHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior: (to, _from, savedPosition) => {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    return to.hash
+      ? { behavior: 'smooth', el: to.hash }
+      : { left: 0, top: 0 };
+  },
 });
 
+/**
+ * 路由错误处理：
+ * 异步页面 chunk 加载失败（常见于发版后旧资源失效）时自动刷新一次页面；
+ * 通过 sessionStorage 标记防止刷新死循环，成功导航后由守卫清除标记
+ */
+router.onError((error, to) => {
+  const message = error?.message || '';
+  const isChunkLoadError =
+    /dynamically imported module|Failed to fetch|Importing a module script failed|error loading/i.test(
+      message,
+    );
+  if (isChunkLoadError && !sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+    sessionStorage.setItem(CHUNK_RELOAD_KEY, '1');
+    window.location.assign(to?.fullPath || '/');
+    return;
+  }
+  console.error('[router] 路由导航异常:', error);
+});
+
+/** 重置路由表为初始静态路由（如退出登录后调用） */
+const resetRoutes = () => {
+  for (const route of router.getRoutes()) {
+    if (route.name) {
+      router.removeRoute(route.name);
+    }
+  }
+  for (const route of routes) {
+    router.addRoute(route);
+  }
+};
+
+// 创建路由守卫
+createRouterGuard(router);
+
+export { resetRoutes, router };
 export default router;
