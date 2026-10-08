@@ -1118,7 +1118,7 @@ svg {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 32px;
   padding: 10px 20px;
   height: 70px;
   right: 0;
