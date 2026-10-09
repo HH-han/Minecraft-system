@@ -1,0 +1,46 @@
+{
+  "website": {
+    "hero": {
+      "eyebrow": "Explore · Discover · Depart",
+      "titleLine1": "The world is wide,",
+      "titleLine2": "and we'll take you to see it all",
+      "subtitle": "A one-stop travel information and trip-planning platform that makes every journey unforgettable.",
+      "ctaPrimary": "Start Exploring",
+      "ctaSecondary": "Learn More",
+      "statDestinations": "Curated Destinations",
+      "statExperiences": "Travel Experiences",
+      "statUsersValue": "{value}0K+",
+      "statUsers": "Trusted Users"
+    },
+    "about": {
+      "eyebrow": "About Us",
+      "title": "Crafting Every Mile of Your Journey",
+      "card1Title": "Smart Destination Picks",
+      "card1Desc": "Smart recommendations based on your preferences and seasonal highlights, so choosing where to go is never hard.",
+      "card2Title": "All-in-One Trip Planning",
+      "card2Desc": "From attractions and hotels to food guides, everything you need to plan the perfect itinerary in one place.",
+      "card3Title": "Vibrant Travel Community",
+      "card3Desc": "Exchange tips with thousands of travelers and share stories, so every trip is well-informed and well-supported."
+    },
+    "features": {
+      "eyebrow": "Core Features",
+      "title": "Full Services Built for Travel",
+      "subtitle": "From inspiration to departure, we deliver a complete travel solution"
+    },
+    "strip": {
+      "eyebrow": "Immersive Experience",
+      "title": "Travel the World from Home",
+      "desc": "HD panoramic imagery and immersive storytelling let you feel the charm of each destination before you set off.",
+      "cta": "Try It Now"
+    },
+    "tech": {
+      "eyebrow": "Technology",
+      "title": "A Stable and Reliable Foundation",
+      "subtitle": "Industry-leading technology stacks ensure high performance and security"
+    },
+    "timeline": {
+      "eyebrow": "Our Journey",
+      "title": "Growing All the Way, True to Our Roots"
+    }
+  }
+}

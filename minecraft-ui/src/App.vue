@@ -16,6 +16,8 @@
       </div>
       <!-- 系统公告弹窗（全局唯一，弹窗队列驱动） -->
       <AnnouncementPopup />
+      <!-- 置顶公告悬浮卡片（用户未关闭时常驻页面最顶层） -->
+      <AnnouncementTopCard />
       <!-- 自定义光标 -->
       <MouseStyle />
     </div>
@@ -27,6 +29,7 @@ import RefreshLoad from '@/components/TransitionalComponents/RefreshLoad.vue';
 import FloatingButton from '@/components/ComponentButton/FloatingButton.vue';
 import DeviceDetects from '@/components/ResponseComponents/DeviceDetects.vue';
 import AnnouncementPopup from '@/components/AnnouncementComponents/AnnouncementPopup.vue';
+import AnnouncementTopCard from '@/components/AnnouncementComponents/AnnouncementTopCard.vue';
 import MouseStyle from '@/views/MouseStyle/index.vue'
 import { useAnnouncementStore } from '@/stores/announcementStore'
 import { initAnnouncementSse, closeAnnouncementSse } from '@/utils/sse'

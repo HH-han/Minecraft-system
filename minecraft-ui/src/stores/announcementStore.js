@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
   getActiveAnnouncements,
   getUnreadCount,
@@ -10,14 +10,21 @@ import {
  * 系统公告状态：
  * - activeList：首页展示公告（弹窗/轮播/横幅数据源）
  * - unreadCount：未读数（红点）
- * - popupQueue：待弹窗公告队列
+ * - popupQueue：待弹窗公告队列（置顶公告除外，置顶走顶部悬浮卡片）
  * - readIds：本地已读 ID 缓存（防止弹窗重复展示）
+ * - closedTopIds：本次会话内已关闭的置顶公告 ID（sessionStorage，刷新保留、重开会话清空）
  */
 export const useAnnouncementStore = defineStore('announcement', () => {
   const activeList = ref([])
   const unreadCount = ref(0)
   const popupQueue = ref([])
   const readIds = ref(new Set(JSON.parse(localStorage.getItem('ann_read') || '[]')))
+  const closedTopIds = ref(new Set(JSON.parse(sessionStorage.getItem('ann_top_closed') || '[]')))
+
+  // 置顶且本次会话未关闭的公告 → 页面最顶层悬浮卡片
+  const topList = computed(() =>
+    activeList.value.filter((a) => a.isTop === 1 && !closedTopIds.value.has(a.id))
+  )
 
   function isLoggedIn() {
     return !!localStorage.getItem('token')
@@ -30,7 +37,7 @@ export const useAnnouncementStore = defineStore('announcement', () => {
       if (res.code === 200) {
         activeList.value = res.data || []
         popupQueue.value = activeList.value.filter(
-          (a) => a.displayMode === 2 && !readIds.value.has(a.id)
+          (a) => a.displayMode === 2 && a.isTop !== 1 && !readIds.value.has(a.id)
         )
       }
     } catch (e) {
@@ -64,10 +71,10 @@ export const useAnnouncementStore = defineStore('announcement', () => {
     popupQueue.value = popupQueue.value.filter((a) => a.id !== id)
   }
 
-  // SSE 实时推送的新公告入列
+  // SSE 实时推送的新公告入列（置顶公告只进顶部卡片，不弹窗）
   function pushRealtime(ann) {
     activeList.value.unshift(ann)
-    if (ann.displayMode === 2 && !readIds.value.has(ann.id)) {
+    if (ann.displayMode === 2 && ann.isTop !== 1 && !readIds.value.has(ann.id)) {
       popupQueue.value.push(ann)
     }
     if (isLoggedIn()) {
@@ -75,15 +82,24 @@ export const useAnnouncementStore = defineStore('announcement', () => {
     }
   }
 
+  // 关闭置顶公告的顶部悬浮卡片（仅本次会话隐藏）
+  function closeTop(id) {
+    closedTopIds.value.add(id)
+    sessionStorage.setItem('ann_top_closed', JSON.stringify([...closedTopIds.value]))
+  }
+
   return {
     activeList,
     unreadCount,
     popupQueue,
     readIds,
+    closedTopIds,
+    topList,
     isLoggedIn,
     fetchActive,
     fetchUnread,
     read,
-    pushRealtime
+    pushRealtime,
+    closeTop
   }
 })

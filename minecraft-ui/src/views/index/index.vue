@@ -10,8 +10,6 @@
         @open-recommendation-detail="handleOpenRecommendationDetail"
       />
     </main>
-    <!-- 公告轮播（displayMode=3） -->
-    <AnnouncementCarousel />
     <Footer />
     
     <Teleport to="body">

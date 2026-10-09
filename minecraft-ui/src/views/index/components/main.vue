@@ -7,12 +7,12 @@
           <Carousel :items="mediaList.images" />
         </transition>
       </section>
+      <!-- 公告轮播（displayMode=3） -->
+      <AnnouncementCarousel />
       <!-- 网站介绍 -->
       <section>
-        <WebsiteIntroduction
-          @open-detail="(type, id) => $emit('open-detail', type, id)"
-          @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)"
-        />
+        <WebsiteIntroduction @open-detail="(type, id) => $emit('open-detail', type, id)"
+          @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
       </section>
       <!-- 新闻内容区 -->
       <section class="two-column-section">
@@ -39,6 +39,7 @@ import News from './news.vue';
 import Carousel from '@/views/Carousel/index.vue';
 import carouselApi from '@/api/carousel.js';
 import WebsiteIntroduction from './WebsiteIntroduction.vue';
+import AnnouncementCarousel from '@/components/AnnouncementComponents/AnnouncementCarousel.vue';
 
 defineEmits(['open-detail', 'open-news-detail', 'open-safety-detail', 'open-recommendation-detail']);
 
@@ -89,8 +90,13 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 淡入淡出过渡效果 */
@@ -148,9 +154,11 @@ onMounted(() => {
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     transform: scale(1);
   }
@@ -162,9 +170,12 @@ onMounted(() => {
 }
 
 @keyframes breath {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.8;
   }
+
   50% {
     opacity: 1;
   }
@@ -187,7 +198,7 @@ onMounted(() => {
   gap: 24px;
 }
 
-.two-column-rc-grid{
+.two-column-rc-grid {
   display: flex;
   flex-direction: row;
   gap: 24px;

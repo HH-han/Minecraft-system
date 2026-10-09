@@ -44,7 +44,6 @@ function stripHtml(html) {
 <style scoped>
 .announcement-carousel {
   margin: 12px auto;
-  max-width: 1200px;
   padding: 8px 16px 18px;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px);
