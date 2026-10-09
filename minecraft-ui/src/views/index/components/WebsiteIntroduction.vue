@@ -3,64 +3,63 @@
         <!-- 主视觉 Hero -->
         <section class="hero-section">
             <div class="hero-content">
-                <p class="hero-eyebrow">探索 · 发现 · 启程</p>
-                <h1 class="hero-title">世界那么大<br>带你去看尽精彩</h1>
-                <p class="hero-subtitle">一站式旅游资讯与旅行规划平台，让每一次出行都成为难忘的旅程。</p>
+                <p class="hero-eyebrow">{{ $t('website.hero.eyebrow') }}</p>
+                <h1 class="hero-title">
+                    <span class="hero-title-line">{{ $t('website.hero.titleLine1') }}</span>
+                    <span class="hero-title-line">{{ $t('website.hero.titleLine2') }}</span>
+                </h1>
+                <p class="hero-subtitle">{{ $t('website.hero.subtitle') }}</p>
                 <div class="hero-cta-group">
                     <button class="cta-primary" @click="scrollToSection('features')">
-                        开始探索
+                        {{ $t('website.hero.ctaPrimary') }}
                         <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
                     </button>
                     <button class="cta-secondary" @click="scrollToSection('about')">
-                        了解更多
+                        {{ $t('website.hero.ctaSecondary') }}
                     </button>
                 </div>
             </div>
             <div class="hero-stats">
                 <div class="stat-item">
                     <span class="stat-number">{{ animatedStats.destinations }}+</span>
-                    <span class="stat-label">精选目的地</span>
+                    <span class="stat-label">{{ $t('website.hero.statDestinations') }}</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">{{ animatedStats.experiences }}+</span>
-                    <span class="stat-label">旅行体验</span>
+                    <span class="stat-label">{{ $t('website.hero.statExperiences') }}</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">{{ animatedStats.users }}万+</span>
-                    <span class="stat-label">用户信赖</span>
+                    <span class="stat-number">{{ $t('website.hero.statUsersValue', { value: animatedStats.users }) }}</span>
+                    <span class="stat-label">{{ $t('website.hero.statUsers') }}</span>
                 </div>
             </div>
         </section>
 
         <!-- 推荐卡片 -->
-        <section>
-      <section class="product-card fade-in-up delay-100">
-        <Recommend />
-      </section>
+        <section class="product-card fade-in-up delay-100">
+            <Recommend />
         </section>
 
         <!-- 关于本站 -->
         <section id="about" class="intro-section about-section">
             <div class="section-header section-header--center">
-                <span class="section-eyebrow">关于我们</span>
-                <h2 class="section-title">用心打造每一程旅程</h2>
+                <span class="section-eyebrow">{{ $t('website.about.eyebrow') }}</span>
+                <h2 class="section-title">{{ $t('website.about.title') }}</h2>
             </div>
             <div class="about-grid">
-                <div class="about-card about-card--primary">
+                <div class="about-card">
                     <div class="about-card-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                             <circle cx="12" cy="10" r="3" />
                         </svg>
                     </div>
-                    <h3 class="about-card-title">精准目的地推荐</h3>
-                    <p class="about-card-desc">
-                        基于用户偏好与季节热点，智能推荐最值得一去的旅行目的地，让选择不再困难。
-                    </p>
+                    <h3 class="about-card-title">{{ $t('website.about.card1Title') }}</h3>
+                    <p class="about-card-desc">{{ $t('website.about.card1Desc') }}</p>
                 </div>
-                <div class="about-card about-card--primary">
+                <div class="about-card">
                     <div class="about-card-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -69,12 +68,10 @@
                             <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
                     </div>
-                    <h3 class="about-card-title">一站式行程规划</h3>
-                    <p class="about-card-desc">
-                        从景点、酒店到美食攻略，全流程覆盖旅行所需，轻松制定专属行程计划。
-                    </p>
+                    <h3 class="about-card-title">{{ $t('website.about.card2Title') }}</h3>
+                    <p class="about-card-desc">{{ $t('website.about.card2Desc') }}</p>
                 </div>
-                <div class="about-card about-card--primary">
+                <div class="about-card">
                     <div class="about-card-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -83,10 +80,8 @@
                             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
                     </div>
-                    <h3 class="about-card-title">活跃旅行社区</h3>
-                    <p class="about-card-desc">
-                        与数万旅行者交流心得，分享旅途故事，让每一次出行都有据可循、有人可问。
-                    </p>
+                    <h3 class="about-card-title">{{ $t('website.about.card3Title') }}</h3>
+                    <p class="about-card-desc">{{ $t('website.about.card3Desc') }}</p>
                 </div>
             </div>
         </section>
@@ -94,9 +89,9 @@
         <!-- 核心功能 -->
         <section id="features" class="intro-section features-section">
             <div class="section-header section-header--center">
-                <span class="section-eyebrow">核心功能</span>
-                <h2 class="section-title">为旅行而生的全方位服务</h2>
-                <p class="section-subtitle">从灵感到出发，我们提供完整的旅行解决方案</p>
+                <span class="section-eyebrow">{{ $t('website.features.eyebrow') }}</span>
+                <h2 class="section-title">{{ $t('website.features.title') }}</h2>
+                <p class="section-subtitle">{{ $t('website.features.subtitle') }}</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card" v-for="feature in features" :key="feature.id">
@@ -122,13 +117,11 @@
         <!-- 全宽深色特色条 -->
         <section class="feature-strip">
             <div class="strip-content">
-                <p class="strip-eyebrow">沉浸式体验</p>
-                <h2 class="strip-title">足不出户，环游世界</h2>
-                <p class="strip-desc">
-                    高清全景影像与沉浸式叙事，让你在出发前就能感受目的地的独特魅力。
-                </p>
+                <p class="strip-eyebrow">{{ $t('website.strip.eyebrow') }}</p>
+                <h2 class="strip-title">{{ $t('website.strip.title') }}</h2>
+                <p class="strip-desc">{{ $t('website.strip.desc') }}</p>
                 <button class="strip-cta" @click="scrollToSection('stories')">
-                    立即体验
+                    {{ $t('website.strip.cta') }}
                     <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
@@ -138,29 +131,23 @@
 
         <!-- 旅行故事 -->
         <section id="stories" class="intro-section stories-section">
-            <!-- 双卡片区 -->
-            <section class="two-column-section">
-                <div class="two-column-flex">
-                    <div class="two-column-rc-grid">
-                        <!-- 三列配件区 -->
-                        <section class="three-column-section fade-in-up delay-200">
-                            <Recommendations @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
-                        </section>
-                        <!-- 首页内容 -->
-                        <section class="product-card fade-in-up delay-200">
-                            <Content @open-detail="(type, id) => $emit('open-detail', type, id)" />
-                        </section>
-                    </div>
-                </div>
-            </section>
+            <div class="stories-flex">
+                <section class="product-card fade-in-up delay-200">
+                    <Recommendations
+                        @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
+                </section>
+                <section class="product-card fade-in-up delay-200">
+                    <Content @open-detail="(type, id) => $emit('open-detail', type, id)" />
+                </section>
+            </div>
         </section>
 
         <!-- 技术架构 -->
         <section class="intro-section tech-section">
             <div class="section-header section-header--center">
-                <span class="section-eyebrow">技术架构</span>
-                <h2 class="section-title">稳定可靠的技术底座</h2>
-                <p class="section-subtitle">采用业界领先的技术栈，保障平台高性能与安全</p>
+                <span class="section-eyebrow">{{ $t('website.tech.eyebrow') }}</span>
+                <h2 class="section-title">{{ $t('website.tech.title') }}</h2>
+                <p class="section-subtitle">{{ $t('website.tech.subtitle') }}</p>
             </div>
             <div class="tech-grid">
                 <div class="tech-card" v-for="tech in techStack" :key="tech.category">
@@ -180,8 +167,8 @@
         <!-- 发展历程 -->
         <section class="intro-section timeline-section">
             <div class="section-header section-header--center">
-                <span class="section-eyebrow">发展历程</span>
-                <h2 class="section-title">一路成长，不忘初心</h2>
+                <span class="section-eyebrow">{{ $t('website.timeline.eyebrow') }}</span>
+                <h2 class="section-title">{{ $t('website.timeline.title') }}</h2>
             </div>
             <div class="timeline">
                 <div class="timeline-item" v-for="(milestone, index) in milestones" :key="index"
@@ -345,11 +332,47 @@ onMounted(async () => {
 
 /* ============ Hero 主视觉 ============ */
 .hero-section {
-    padding: 80px 22px 60px;
+    position: relative;
+    overflow: hidden;
+    padding: 100px 22px 70px;
     text-align: center;
-    background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    background:
+        radial-gradient(ellipse 55% 55% at 50% -8%, rgba(41, 151, 255, 0.12), transparent 65%),
+        linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
     border-radius: 28px;
-    margin-top: 80px;
+    margin-bottom: 24px;
+}
+
+/* 背景光斑装饰 */
+.hero-section::before,
+.hero-section::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hero-section::before {
+    top: -140px;
+    left: -100px;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(41, 151, 255, 0.14) 0%, transparent 70%);
+}
+
+.hero-section::after {
+    top: 18%;
+    right: -140px;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(100, 210, 255, 0.12) 0%, transparent 70%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .hero-eyebrow {
@@ -364,16 +387,23 @@ onMounted(async () => {
 .hero-title {
     font-size: 64px;
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 1.08;
     letter-spacing: -0.02em;
-    color: #1d1d1f;
     margin: 0 0 20px;
+    background: linear-gradient(180deg, #1d1d1f 40%, #515154 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-title-line {
+    display: block;
 }
 
 .hero-subtitle {
     font-size: 21px;
     font-weight: 400;
-    line-height: 1.4;
+    line-height: 1.5;
     color: #6e6e73;
     max-width: 640px;
     margin: 0 auto 36px;
@@ -390,24 +420,27 @@ onMounted(async () => {
 .cta-secondary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 14px 28px;
     border-radius: 980px;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     border: none;
 }
 
 .cta-primary {
     background: #2997ff;
     color: #ffffff;
+    box-shadow: 0 8px 24px rgba(41, 151, 255, 0.3);
 }
 
 .cta-primary:hover {
     background: #0066cc;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(41, 151, 255, 0.38);
 }
 
 .cta-secondary {
@@ -418,49 +451,77 @@ onMounted(async () => {
 
 .cta-secondary:hover {
     background: rgba(41, 151, 255, 0.08);
+    transform: translateY(-2px);
 }
 
 .cta-arrow {
     width: 18px;
     height: 18px;
+    transition: transform 0.25s ease;
+}
+
+.cta-primary:hover .cta-arrow {
+    transform: translateX(4px);
 }
 
 .hero-stats {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: center;
-    gap: 80px;
+    gap: 48px;
     margin-top: 60px;
     padding-top: 40px;
     border-top: 1px solid #d2d2d6;
 }
 
 .stat-item {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 140px;
+}
+
+/* 统计项之间的细分隔线 */
+.stat-item + .stat-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 44px;
+    background: #d2d2d6;
 }
 
 .stat-number {
     font-size: 40px;
     font-weight: 700;
-    color: #1d1d1f;
     letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #1d1d1f 30%, #515154 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .stat-label {
     font-size: 14px;
     color: #6e6e73;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 /* ============ 通用区块 ============ */
 .intro-section {
     padding: 0 22px;
     margin-bottom: 80px;
+    /* 锚点跳转时避开固定导航 */
+    scroll-margin-top: 96px;
 }
 
 .section-header {
-    margin-bottom: 40px;
+    max-width: 1200px;
+    margin: 0 auto 48px;
 }
 
 .section-header--center {
@@ -494,28 +555,6 @@ onMounted(async () => {
     line-height: 1.4;
 }
 
-.two-column-flex {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.two-column-rc-grid {
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-}
-
-/* 三列配件区 */
-.three-column-section {
-    background: #f5f5f7;
-    border-radius: 28px;
-    padding: 40px 24px 30px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    overflow: hidden;
-    flex: 1;
-}
-
 /* 滚动入场动画 */
 .fade-in-up {
     opacity: 0;
@@ -539,81 +578,39 @@ onMounted(async () => {
     animation-delay: 0.2s;
 }
 
-.delay-300 {
-    animation-delay: 0.3s;
-}
-
-.delay-400 {
-    animation-delay: 0.4s;
-}
-
-.delay-500 {
-    animation-delay: 0.5s;
-}
-
-/* 脉冲动画 */
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* 呼吸动画 */
-.breath {
-    animation: breath 3s ease-in-out infinite;
-}
-
-@keyframes breath {
-
-    0%,
-    100% {
-        opacity: 0.8;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-
-/* 产品卡片 */
+/* 面板卡片容器（推荐位 / 内容区共用） */
 .product-card {
     background: #f5f5f7;
     border-radius: 28px;
     padding: 40px 24px 30px;
-    transition: transform 0.2s, box-shadow 0.2s;
     overflow: hidden;
-    flex: 1;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 顶层推荐卡片与后续区块留出间距 */
+.website-introduction > .product-card {
+    margin-bottom: 80px;
 }
 
 /* ============ 关于本站 ============ */
 .about-grid {
+    max-width: 1200px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    margin: 0 auto;
 }
 
 .about-card {
     background: #f5f5f7;
     border-radius: 28px;
     padding: 40px 32px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .about-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12);
 }
 
 .about-card-icon {
@@ -621,6 +618,7 @@ onMounted(async () => {
     height: 56px;
     border-radius: 16px;
     background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -649,22 +647,25 @@ onMounted(async () => {
 
 /* ============ 核心功能 ============ */
 .features-grid {
+    max-width: 1200px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    margin: 0 auto;
 }
 
 .feature-card {
     background: #ffffff;
-    border: 1px solid #d2d2d6;
+    border: 1px solid #e5e5e7;
     border-radius: 24px;
     padding: 36px 28px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .feature-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    border-color: rgba(41, 151, 255, 0.4);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
 }
 
 .feature-icon-wrapper {
@@ -721,13 +722,20 @@ onMounted(async () => {
 
 /* ============ 全宽深色特色条 ============ */
 .feature-strip {
-    background: #000000;
-    padding: 80px 22px;
+    position: relative;
+    overflow: hidden;
+    padding: 100px 22px;
     margin-bottom: 80px;
     text-align: center;
+    background:
+        radial-gradient(ellipse 45% 90% at 18% 15%, rgba(41, 151, 255, 0.2), transparent 60%),
+        radial-gradient(ellipse 40% 80% at 85% 85%, rgba(94, 92, 230, 0.18), transparent 60%),
+        #000000;
 }
 
 .strip-content {
+    position: relative;
+    z-index: 1;
     max-width: 840px;
     margin: 0 auto;
 }
@@ -768,124 +776,44 @@ onMounted(async () => {
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 }
 
 .strip-cta:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
 }
 
 /* ============ 旅行故事 ============ */
-.stories-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+.stories-flex {
+    display: flex;
     gap: 24px;
 }
 
-.story-card {
-    background: #ffffff;
-    border: 1px solid #d2d2d6;
-    border-radius: 24px;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-}
-
-.story-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
-}
-
-.story-image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-}
-
-.story-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.story-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
-}
-
-.story-category {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-radius: 980px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #1d1d1f;
-}
-
-.story-content {
-    padding: 24px;
-}
-
-.story-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: #6e6e73;
-    margin-bottom: 10px;
-}
-
-.story-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1d1d1f;
-    line-height: 1.3;
-    margin: 0 0 10px;
-}
-
-.story-excerpt {
-    font-size: 14px;
-    line-height: 1.5;
-    color: #6e6e73;
-    margin: 0 0 16px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.story-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #2997ff;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.story-link:hover {
-    color: #0066cc;
+.stories-flex > * {
+    flex: 1;
+    min-width: 0;
 }
 
 /* ============ 技术架构 ============ */
 .tech-grid {
+    max-width: 1200px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    margin: 0 auto;
 }
 
 .tech-card {
     background: #f5f5f7;
     border-radius: 24px;
     padding: 32px 28px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tech-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
 }
 
 .tech-card-header {
@@ -984,7 +912,7 @@ onMounted(async () => {
     background: #2997ff;
     border: 3px solid #ffffff;
     border-radius: 50%;
-    box-shadow: 0 0 0 2px #d2d2d6;
+    box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
 }
 
 .timeline-item--right::after {
@@ -996,20 +924,23 @@ onMounted(async () => {
     background: #f5f5f7;
     border-radius: 20px;
     padding: 24px 28px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .timeline-content:hover {
-    transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
 }
 
 .timeline-date {
     display: inline-block;
+    padding: 4px 12px;
+    background: rgba(41, 151, 255, 0.1);
+    border-radius: 980px;
     font-size: 13px;
     font-weight: 600;
     color: #2997ff;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .timeline-title {
@@ -1029,14 +960,16 @@ onMounted(async () => {
 /* ============ 数据统计 ============ */
 .stats-section {
     background: #f5f5f7;
-    padding: 60px 22px;
+    padding: 70px 22px;
     margin-bottom: 80px;
 }
 
 .stats-grid {
+    max-width: 1200px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
+    margin: 0 auto;
 }
 
 .stat-card {
@@ -1048,135 +981,17 @@ onMounted(async () => {
     display: block;
     font-size: 48px;
     font-weight: 700;
-    color: #1d1d1f;
     letter-spacing: -0.02em;
     margin-bottom: 8px;
+    background: linear-gradient(135deg, #2997ff 0%, #64d2ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .stat-card-label {
     font-size: 15px;
     color: #6e6e73;
-}
-
-/* ============ 联系我们 ============ */
-.contact-card {
-    background: #f5f5f7;
-    border-radius: 28px;
-    padding: 60px 40px;
-    margin-bottom: 80px;
-}
-
-.contact-content {
-    max-width: 720px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.contact-title {
-    font-size: 36px;
-    font-weight: 700;
-    color: #1d1d1f;
-    letter-spacing: -0.02em;
-    margin: 0 0 16px;
-}
-
-.contact-desc {
-    font-size: 17px;
-    color: #6e6e73;
-    line-height: 1.5;
-    margin: 0 0 40px;
-}
-
-.contact-methods {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    text-align: left;
-}
-
-.contact-method {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 24px;
-    background: #ffffff;
-    border-radius: 20px;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-}
-
-.contact-method:hover {
-    transform: scale(1.02);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
-}
-
-.contact-method-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: #f5f5f7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.contact-method-icon svg {
-    width: 24px;
-    height: 24px;
-    color: #2997ff;
-}
-
-.contact-method-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.contact-method-label {
-    font-size: 13px;
-    color: #6e6e73;
-    margin-bottom: 2px;
-}
-
-.contact-method-value {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1d1d1f;
-}
-
-.copyright {
-    font-size: 12px;
-    color: #6e6e73;
-    margin: 0;
-}
-
-.social-links {
-    display: flex;
-    gap: 12px;
-}
-
-.social-link {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6e6e73;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.social-link:hover {
-    color: #2997ff;
-    transform: translateY(-2px);
-}
-
-.social-link svg {
-    width: 18px;
-    height: 18px;
 }
 
 /* ============ 响应式 ============ */
@@ -1195,7 +1010,6 @@ onMounted(async () => {
 
     .about-grid,
     .features-grid,
-    .stories-grid,
     .tech-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1205,10 +1019,15 @@ onMounted(async () => {
     }
 }
 
+@media (max-width: 992px) {
+    .stories-flex {
+        flex-direction: column;
+    }
+}
+
 @media (max-width: 768px) {
     .hero-section {
         padding: 60px 20px 40px;
-        margin-bottom: 60px;
     }
 
     .hero-title {
@@ -1227,12 +1046,15 @@ onMounted(async () => {
     .cta-primary,
     .cta-secondary {
         width: 100%;
-        justify-content: center;
     }
 
     .hero-stats {
-        gap: 32px;
+        gap: 24px;
         flex-wrap: wrap;
+    }
+
+    .stat-item + .stat-item::before {
+        display: none;
     }
 
     .stat-number {
@@ -1243,13 +1065,16 @@ onMounted(async () => {
         margin-bottom: 60px;
     }
 
+    .website-introduction > .product-card {
+        margin-bottom: 60px;
+    }
+
     .section-title {
         font-size: 28px;
     }
 
     .about-grid,
     .features-grid,
-    .stories-grid,
     .tech-grid {
         grid-template-columns: 1fr;
     }
@@ -1285,33 +1110,6 @@ onMounted(async () => {
 
     .stat-card-number {
         font-size: 36px;
-    }
-
-    .contact-card {
-        padding: 40px 24px;
-    }
-
-    .contact-title {
-        font-size: 28px;
-    }
-
-    .contact-methods {
-        grid-template-columns: 1fr;
-    }
-
-    .footer-content {
-        grid-template-columns: 1fr;
-        gap: 32px;
-    }
-
-    .footer-links {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
     }
 }
 
