@@ -59,12 +59,9 @@
     />
     <NavigationPanel
       :visible="navOpen"
+      :start-tab="navTab"
       @close="closeNavigation"
       @route-change="onRouteChange"
-    />
-    <ServicePanel
-      :visible="servicesOpen"
-      @close="closeServices"
     />
   </div>
 </template>
@@ -76,7 +73,6 @@ import ControlPanel from './components/ControlPanel.vue'
 import InfoPanel from './components/InfoPanel.vue'
 import TooltipOverlay from './components/TooltipOverlay.vue'
 import NavigationPanel from './components/NavigationPanel.vue'
-import ServicePanel from './components/ServicePanel.vue'
 import { DEFAULT_LAYERS, VIEW_PRESETS } from './config.js'
 import { getCountriesByContinent } from './data/countries.js'
 
@@ -84,7 +80,8 @@ const globeRef = ref(null)
 const isDark = ref(false)
 const autoRotate = ref(true)
 const navOpen = ref(false)
-const servicesOpen = ref(false)
+/** 导航面板打开时的初始标签：nav=路线导航 / services=服务工具箱 */
+const navTab = ref('nav')
 const selectedContinent = ref(null)
 const selectedCountry = ref(null)
 const hoveredMarker = ref(null)
@@ -185,6 +182,7 @@ function handleExploreContinent(continent) {
 /* ---------- 高德导航 ---------- */
 
 function openNavigation() {
+  navTab.value = 'nav'
   navOpen.value = true
   // 导航面板全屏覆盖时暂停地球渲染，节省 GPU
   globeRef.value?.pauseAnimation()
@@ -195,16 +193,11 @@ function closeNavigation() {
   globeRef.value?.resumeAnimation()
 }
 
-/* ---------- 高德服务工具箱 ---------- */
-
+/** 直接打开服务工具箱标签 */
 function openServices() {
-  servicesOpen.value = true
+  navTab.value = 'services'
+  navOpen.value = true
   globeRef.value?.pauseAnimation()
-}
-
-function closeServices() {
-  servicesOpen.value = false
-  globeRef.value?.resumeAnimation()
 }
 
 function onRouteChange(route) {
@@ -221,7 +214,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (navOpen.value || servicesOpen.value) globeRef.value?.resumeAnimation()
+  if (navOpen.value) globeRef.value?.resumeAnimation()
 })
 </script>
 

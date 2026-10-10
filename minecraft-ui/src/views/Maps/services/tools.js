@@ -7,6 +7,7 @@
  * - kind：结果渲染类型（ServicePanel 按类型渲染）
  */
 import { amapRest } from './amapRest.js'
+import { toLngLat } from './mapRender.js'
 
 /** 坐标输入通用校验提示 */
 const LNG_LAT_HINT = '格式：经度,纬度（小数点后不超过 6 位）'
@@ -49,6 +50,18 @@ function fmtDuration(s) {
   return `${Math.floor(min / 60)} 小时 ${min % 60} 分`
 }
 
+/** 把分号串接的 path 字符串序列收集为点位数组（用于地图绘制） */
+function collectPath(paths) {
+  const pts = []
+  for (const seg of paths) {
+    for (const p of String(seg || '').split(';')) {
+      const ll = toLngLat(p)
+      if (ll) pts.push(ll)
+    }
+  }
+  return pts
+}
+
 /** v3驾车/步行 path → 统一路线结构 */
 function normalizeV3Path(path, modeLabel) {
   const steps = (path.steps || []).map(s => ({
@@ -57,21 +70,25 @@ function normalizeV3Path(path, modeLabel) {
     distanceText: s.distance ? fmtDist(s.distance) : '',
     location: (s.path || '').split(';').filter(Boolean)[0] || ''
   }))
+  const pathLines = (path.steps || []).map(s => s.path)
   return {
     modeLabel,
     distanceText: fmtDist(path.distance),
     durationText: fmtDuration(path.time || path.duration),
-    steps
+    steps,
+    path: collectPath(pathLines)
   }
 }
 
 /** v3公交 transits[0] → 统一路线结构 */
 function normalizeTransit(transit) {
   const steps = []
+  const walkPaths = []
   for (const seg of transit.segments || []) {
     const w = seg.walking
     if (w && Number(w.distance) > 0) {
       const first = w.steps?.[0]
+      walkPaths.push(...(w.steps || []).map(s => s.path))
       steps.push({
         instruction: `步行 ${fmtDist(w.distance)}`,
         road: first?.instruction || '',
@@ -101,7 +118,8 @@ function normalizeTransit(transit) {
     modeLabel: '公交',
     distanceText: transit.distance ? fmtDist(transit.distance) : '',
     durationText: fmtDuration(transit.duration),
-    steps
+    steps,
+    path: collectPath(walkPaths)
   }
 }
 
@@ -117,7 +135,8 @@ function normalizeBicycling(path) {
     modeLabel: '骑行',
     distanceText: fmtDist(path.distance),
     durationText: fmtDuration(path.duration),
-    steps
+    steps,
+    path: collectPath((path.steps || []).map(s => s.polyline))
   }
 }
 
@@ -144,6 +163,13 @@ export const SERVICE_GROUPS = [
         async run(v) {
           const url = amapRest.staticMapUrl(v)
           return { url }
+        },
+        render(v, res, r) {
+          const c = toLngLat(v.location)
+          if (c) {
+            r.pin(c, '静态地图中心')
+            r.fit()
+          }
         }
       }
     ]
@@ -167,6 +193,10 @@ export const SERVICE_GROUPS = [
         async run(v) {
           const d = await amapRest.geocode(v)
           return d.geocodes || []
+        },
+        render(v, res, r) {
+          res.forEach(g => r.dot(g.location, { title: g.formatted_address || '' }))
+          r.fit()
         }
       },
       {
@@ -182,6 +212,11 @@ export const SERVICE_GROUPS = [
         ],
         async run(v) {
           return amapRest.regeo(v)
+        },
+        render(v, res, r) {
+          r.pin(v.location, res.formatted_address || '解析位置')
+          r.circle(v.location, v.radius, { color: r.PALETTE.green })
+          r.fit()
         }
       },
       {
@@ -197,6 +232,12 @@ export const SERVICE_GROUPS = [
           const d = await amapRest.ip(v)
           const { status, info, infocode, ...rest } = d
           return rest
+        },
+        render(v, res, r) {
+          if (res.rectangle) {
+            r.rect(res.rectangle)
+            r.fit()
+          }
         }
       },
       {
@@ -213,6 +254,10 @@ export const SERVICE_GROUPS = [
           const locations = await amapRest.convert(v)
           const list = (locations || '').split(';').filter(Boolean)
           return { source: v.locations, coordsys: v.coordsys, locations, list }
+        },
+        render(v, res, r) {
+          res.list.forEach(c => r.dot(c, { color: r.PALETTE.purple }))
+          r.fit()
         }
       }
     ]
@@ -237,6 +282,10 @@ export const SERVICE_GROUPS = [
         ],
         async run(v) {
           return amapRest.placeText(v)
+        },
+        render(v, res, r) {
+          res.pois.forEach(p => r.dot(p.location, { title: p.name || '' }))
+          r.fit()
         }
       },
       {
@@ -254,6 +303,11 @@ export const SERVICE_GROUPS = [
         ],
         async run(v) {
           return amapRest.placeAround(v)
+        },
+        render(v, res, r) {
+          r.circle(v.location, v.radius, { color: r.PALETTE.green })
+          res.pois.forEach(p => r.dot(p.location, { color: r.PALETTE.green, title: p.name || '' }))
+          r.fit()
         }
       },
       {
@@ -269,6 +323,11 @@ export const SERVICE_GROUPS = [
         ],
         async run(v) {
           return amapRest.placePolygon(v)
+        },
+        render(v, res, r) {
+          r.pathFromStr(v.polygon, { color: r.PALETTE.purple, fill: true })
+          res.pois.forEach(p => r.dot(p.location, { color: r.PALETTE.purple, title: p.name || '' }))
+          r.fit()
         }
       },
       {
@@ -284,6 +343,12 @@ export const SERVICE_GROUPS = [
           const poi = await amapRest.placeDetail(v.id)
           if (!poi) throw new Error('未查询到该 POI，请确认 ID 是否正确')
           return poi
+        },
+        render(v, res, r) {
+          if (res.location) {
+            r.pin(res.location, res.name || 'POI')
+            r.fit()
+          }
         }
       },
       {
@@ -301,6 +366,10 @@ export const SERVICE_GROUPS = [
         async run(v) {
           const tips = await amapRest.inputtips(v)
           return tips
+        },
+        render(v, res, r) {
+          res.forEach(t => r.dot(t.location, { title: t.name || '' }))
+          r.fit()
         }
       }
     ]
@@ -342,6 +411,18 @@ export const SERVICE_GROUPS = [
             await amapRest.driving({ origin: v.origin, destination: v.destination, strategy: v.strategy || '0' }),
             '驾车'
           )
+        },
+        render(v, res, r) {
+          const o = toLngLat(v.origin)
+          const d = toLngLat(v.destination)
+          if (o) r.pin(o, '起点')
+          if (d) r.pin(d, '终点')
+          if (res.path?.length > 1) {
+            r.polyline(res.path, { color: r.PALETTE.blue, width: 5 })
+          } else if (o && d) {
+            r.polyline([o, d], { color: r.PALETTE.blue, width: 3, dashed: true })
+          }
+          r.fit()
         }
       }
     ]
@@ -387,6 +468,10 @@ export const SERVICE_GROUPS = [
         ],
         async run(v) {
           return amapRest.trafficRectangle(v)
+        },
+        render(v, res, r) {
+          r.rect(v.rectangle)
+          r.fit()
         }
       },
       {
@@ -403,6 +488,10 @@ export const SERVICE_GROUPS = [
         ],
         async run(v) {
           return amapRest.trafficCircle(v)
+        },
+        render(v, res, r) {
+          r.circle(v.location, v.radius, { color: r.PALETTE.orange })
+          r.fit()
         }
       },
       {
@@ -444,6 +533,17 @@ export const SERVICE_GROUPS = [
           const districts = await amapRest.district(v)
           if (!districts.length) throw new Error('未查询到行政区划，请调整关键词')
           return districts
+        },
+        render(v, res, r) {
+          if (v.extensions !== 'all') return
+          const boundaries = []
+          const walk = list => (list || []).forEach(d => {
+            if (d.polyline) boundaries.push(d.polyline)
+            if (d.districts?.length) walk(d.districts)
+          })
+          walk(res)
+          boundaries.slice(0, 40).forEach(pl => r.pathFromStr(pl, { color: r.PALETTE.blue, width: 2 }))
+          r.fit()
         }
       }
     ]
@@ -492,6 +592,31 @@ export const SERVICE_GROUPS = [
           }
           const data = await amapRest.fenceList({ sid: v.sid_q })
           return { message: '围栏查询成功', data }
+        },
+        render(v, res, r) {
+          if (v.action === 'create') {
+            if (v.shape === 'circle') {
+              r.circle(v.center, v.radius, { color: r.PALETTE.red })
+            } else {
+              r.pathFromStr(v.points, { color: r.PALETTE.red, fill: true })
+            }
+            r.fit()
+          } else if (v.action === 'status') {
+            r.pin(v.loc, '设备位置')
+            r.fit()
+          } else {
+            const list = res?.data?.list || res?.data?.fences || []
+            if (Array.isArray(list)) {
+              list.forEach(f => {
+                if (f?.shape === 'circle' && f.center) {
+                  r.circle(f.center, f.radius, { color: r.PALETTE.red })
+                } else if (f?.points) {
+                  r.pathFromStr(f.points, { color: r.PALETTE.red, fill: true })
+                }
+              })
+              r.fit()
+            }
+          }
         }
       },
       {

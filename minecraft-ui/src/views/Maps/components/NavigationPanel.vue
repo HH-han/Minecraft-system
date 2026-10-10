@@ -1,19 +1,40 @@
 <template>
   <Teleport to="body">
-    <div v-show="visible" class="nav-overlay">
+    <div v-show="visible" class="nav-overlay" :class="{ 'is-light': mapTheme === 'light' }">
       <header class="nav-header">
         <div class="nav-title">
           <span class="nav-logo">🧭</span>
           <div>
-            <h2>高德地图 · 路线导航</h2>
-            <p>路径规划 / 路线渲染 / 逐步导航引导</p>
+            <h2>高德地图 · 智能出行</h2>
+            <p>路线导航 / 服务工具箱 / 地图主题</p>
           </div>
         </div>
-        <button class="close-btn" @click="$emit('close')" aria-label="关闭导航">✕</button>
+        <div class="header-actions">
+          <button
+            class="theme-btn"
+            :title="mapTheme === 'dark' ? '切换到明亮模式' : '切换到暗黑模式'"
+            @click="toggleMapTheme"
+          >{{ mapTheme === 'dark' ? '☀️' : '🌙' }}</button>
+          <button class="close-btn" @click="$emit('close')" aria-label="关闭导航">✕</button>
+        </div>
       </header>
 
       <div class="nav-body">
         <aside class="nav-sidebar">
+          <div class="nav-tabs">
+            <button
+              class="nav-tab"
+              :class="{ 'is-active': tab === 'nav' }"
+              @click="tab = 'nav'"
+            >🧭 路线导航</button>
+            <button
+              class="nav-tab"
+              :class="{ 'is-active': tab === 'services' }"
+              @click="tab = 'services'"
+            >🧰 服务工具箱</button>
+          </div>
+
+          <template v-if="tab === 'nav'">
           <div class="input-row">
             <span class="dot start"></span>
             <input
@@ -92,6 +113,10 @@
               <span v-if="s.distanceText" class="step-distance">{{ s.distanceText }}</span>
             </div>
           </div>
+          </template>
+
+          <!-- 服务工具箱（结果同步渲染到右侧地图） -->
+          <ServicePanel v-else :amap="AMapRef" :map="mapRef" />
         </aside>
 
         <div class="nav-map-wrap">
@@ -107,12 +132,15 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onBeforeUnmount } from 'vue'
+import { ref, shallowRef, watch, nextTick, onBeforeUnmount } from 'vue'
 import AMapLoader from '@amap/amap-jsapi-loader'
 import { AMAP_KEY, AMAP_VERSION, AMAP_PLUGINS } from '../config.js'
+import ServicePanel from './ServicePanel.vue'
 
 const props = defineProps({
-  visible: { type: Boolean, default: false }
+  visible: { type: Boolean, default: false },
+  /** 打开时默认选中的标签：nav=路线导航 / services=服务工具箱 */
+  startTab: { type: String, default: 'nav' }
 })
 
 const emit = defineEmits(['close', 'route-change'])
@@ -149,6 +177,16 @@ const summary = ref(null)
 const steps = ref([])
 const showOnGlobe = ref(true)
 
+/** 侧边栏标签：nav=路线导航 / services=服务工具箱 */
+const tab = ref('nav')
+
+/** 地图主题（dark / light），持久化到 localStorage */
+const mapTheme = ref(localStorage.getItem('amap-nav-theme') || 'dark')
+
+/** 暴露给工具箱的 AMap 构造器与地图实例 */
+const AMapRef = shallowRef(null)
+const mapRef = shallowRef(null)
+
 let AMap = null
 let map = null
 let autocompleteStart = null
@@ -162,8 +200,19 @@ let lastRoutePoints = null
 
 watch(() => props.visible, v => {
   visible.value = v
-  if (v) ensureAMap()
+  if (v) {
+    tab.value = props.startTab === 'services' ? 'services' : 'nav'
+    ensureAMap()
+  }
 })
+
+function toggleMapTheme() {
+  mapTheme.value = mapTheme.value === 'dark' ? 'light' : 'dark'
+  localStorage.setItem('amap-nav-theme', mapTheme.value)
+  if (map) {
+    map.setMapStyle(mapTheme.value === 'dark' ? 'amap://styles/dark' : 'amap://styles/normal')
+  }
+}
 
 watch([mode], () => {
   policy.value = (mode.value === 'transit' ? TRANSIT_POLICIES : DRIVING_POLICIES)[0].v
@@ -184,14 +233,16 @@ async function ensureAMap() {
   }
   try {
     AMap = await AMapLoader.load({ key: AMAP_KEY, version: AMAP_VERSION, plugins: AMAP_PLUGINS })
+    AMapRef.value = AMap
     await nextTick()
     map = new AMap.Map(mapElRef.value, {
       zoom: 12,
       center: [120.15, 30.27],
-      mapStyle: 'amap://styles/dark',
+      mapStyle: mapTheme.value === 'dark' ? 'amap://styles/dark' : 'amap://styles/normal',
       viewMode: '3D',
       pitch: 35
     })
+    mapRef.value = map
     map.addControl(new AMap.ToolBar({ position: 'RB' }))
     map.addControl(new AMap.Scale())
     geocoder = new AMap.Geocoder()
@@ -487,6 +538,7 @@ onBeforeUnmount(() => {
     autocompleteEnd?.off?.('select')
     map?.destroy?.()
   } catch (e) { /* 忽略 */ }
+  mapRef.value = null
 })
 </script>
 
@@ -548,6 +600,57 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.16);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.theme-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- 标签切换 ---------- */
+.nav-tabs {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.nav-tab {
+  flex: 1;
+  padding: 9px 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: transparent;
+  color: #d1d1d6;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.nav-tab.is-active {
+  background: rgba(10, 132, 255, 0.22);
+  border-color: #0a84ff;
+  color: #6db8ff;
+}
+
+.nav-tab:not(.is-active):hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .nav-body {
   flex: 1;
   display: flex;
@@ -562,8 +665,14 @@ onBeforeUnmount(() => {
   gap: 10px;
   padding: 16px;
   overflow-y: auto;
+  scrollbar-width: none; /* Firefox 隐藏滚动条 */
   background: rgba(255, 255, 255, 0.03);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Chrome / Edge / Safari 隐藏滚动条（保留滚动能力） */
+.nav-sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .input-row {
@@ -843,6 +952,140 @@ onBeforeUnmount(() => {
 
   .nav-map-wrap {
     min-height: 0;
+  }
+}
+
+/* ---------- 浅色主题（主题按钮切换时与地图同步生效） ---------- */
+.nav-overlay.is-light {
+  background: #f5f5f7;
+}
+
+.nav-overlay.is-light .nav-header {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.nav-overlay.is-light .nav-title h2 {
+  color: #1d1d1f;
+}
+
+.nav-overlay.is-light .close-btn {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1d1d1f;
+}
+
+.nav-overlay.is-light .close-btn:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.nav-overlay.is-light .theme-btn {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.nav-overlay.is-light .theme-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.nav-overlay.is-light .nav-tab {
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #3a3a3c;
+}
+
+.nav-overlay.is-light .nav-tab.is-active {
+  background: rgba(0, 102, 204, 0.1);
+  border-color: #0066cc;
+  color: #0066cc;
+}
+
+.nav-overlay.is-light .nav-tab:not(.is-active):hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.nav-overlay.is-light .nav-sidebar {
+  background: rgba(255, 255, 255, 0.65);
+  border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+.nav-overlay.is-light .nav-input {
+  border-color: rgba(0, 0, 0, 0.14);
+  background: #fff;
+  color: #1d1d1f;
+}
+
+.nav-overlay.is-light .nav-input::placeholder {
+  color: #a1a1a6;
+}
+
+.nav-overlay.is-light .mini-btn {
+  border-color: rgba(0, 0, 0, 0.14);
+  background: #fff;
+  color: #3a3a3c;
+}
+
+.nav-overlay.is-light .mini-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.nav-overlay.is-light .mode-tab {
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #3a3a3c;
+}
+
+.nav-overlay.is-light .mode-tab.is-active {
+  background: rgba(0, 102, 204, 0.1);
+  border-color: #0066cc;
+  color: #0066cc;
+}
+
+.nav-overlay.is-light .policy-select {
+  border-color: rgba(0, 0, 0, 0.14);
+  background: #fff;
+  color: #1d1d1f;
+}
+
+.nav-overlay.is-light .policy-select option {
+  background: #fff;
+  color: #1d1d1f;
+}
+
+.nav-overlay.is-light .nav-error {
+  background: rgba(255, 69, 58, 0.08);
+  border-color: rgba(255, 69, 58, 0.25);
+  color: #d70015;
+}
+
+.nav-overlay.is-light .summary-label {
+  color: #58719b;
+}
+
+.nav-overlay.is-light .summary-value {
+  color: #0066cc;
+}
+
+.nav-overlay.is-light .globe-sync {
+  color: #6e6e73;
+}
+
+.nav-overlay.is-light .step-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.nav-overlay.is-light .step-index {
+  color: #0066cc;
+}
+
+.nav-overlay.is-light .step-text {
+  color: #1d1d1f;
+}
+
+.nav-overlay.is-light .map-loading {
+  background: #f5f5f7;
+}
+
+@media (max-width: 900px) {
+  .nav-overlay.is-light .nav-sidebar {
+    border-top-color: rgba(0, 0, 0, 0.08);
   }
 }
 </style>

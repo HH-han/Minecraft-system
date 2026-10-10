@@ -1,294 +1,278 @@
 <template>
-  <Teleport to="body">
-    <div v-show="visible" class="svc-overlay">
-      <header class="svc-header">
-        <div class="svc-title">
-          <span class="svc-logo">🧰</span>
-          <div>
-            <h2>高德服务工具箱</h2>
-            <p>「Web服务」Key · REST API · {{ ALL_TOOLS.length }} 项能力全覆盖</p>
-          </div>
-        </div>
-        <button class="close-btn" @click="$emit('close')" aria-label="关闭工具箱">✕</button>
-      </header>
+  <div class="svc-root">
+    <p class="svc-intro">
+      基于「Web服务」Key 的 {{ ALL_TOOLS.length }} 项 REST 服务，结果同步渲染到右侧地图。
+    </p>
 
-      <div class="svc-body">
-        <aside class="svc-menu">
-          <div v-for="g in SERVICE_GROUPS" :key="g.id" class="menu-group">
-            <div class="menu-group-title">{{ g.title }}</div>
-            <button
-              v-for="t in g.tools"
-              :key="t.id"
-              class="menu-item"
-              :class="{ 'is-active': current?.id === t.id }"
-              @click="selectTool(t)"
-            >
-              <span class="menu-icon">{{ t.icon }}</span>
-              <span class="menu-name">{{ t.name }}</span>
-            </button>
-          </div>
-          <div class="menu-foot">
-            <span class="foot-dot"></span>
-            Web服务 Key：db60e30c…f79ba7
-          </div>
-        </aside>
+    <select v-model="selectedId" class="svc-select" aria-label="选择服务工具">
+      <optgroup v-for="g in SERVICE_GROUPS" :key="g.id" :label="g.title">
+        <option v-for="t in g.tools" :key="t.id" :value="t.id">{{ t.icon }} {{ t.name }}</option>
+      </optgroup>
+    </select>
 
-        <main class="svc-main">
-          <template v-if="current">
-            <div class="tool-head">
-              <h2>{{ current.icon }} {{ current.name }}</h2>
-              <p>{{ current.desc }}</p>
-            </div>
-
-            <form class="tool-form" @submit.prevent="run">
-              <div
-                v-for="f in visibleFields"
-                :key="f.key"
-                class="field"
-                :class="{ 'span-2': f.span === 2 }"
-              >
-                <label>{{ f.label }}<i v-if="f.required">*</i></label>
-                <select v-if="f.type === 'select'" v-model="form[f.key]">
-                  <option v-for="o in f.options" :key="o.v" :value="o.v">{{ o.n }}</option>
-                </select>
-                <textarea
-                  v-else-if="f.type === 'textarea'"
-                  v-model="form[f.key]"
-                  :placeholder="f.placeholder || ''"
-                  rows="2"
-                ></textarea>
-                <input
-                  v-else
-                  v-model="form[f.key]"
-                  :placeholder="f.placeholder || ''"
-                  autocomplete="off"
-                />
-                <p v-if="f.hint" class="field-hint">{{ f.hint }}</p>
-              </div>
-
-              <div class="form-actions">
-                <button type="submit" class="run-btn" :disabled="loading">
-                  {{ loading ? '请求中…' : '发起请求' }}
-                </button>
-                <button type="button" class="ghost-btn" :disabled="loading" @click="resetForm">重置参数</button>
-              </div>
-            </form>
-
-            <p v-if="error" class="svc-error">⚠️ {{ error }}</p>
-
-            <section v-if="result" class="result">
-              <div class="result-head">
-                <h3>返回结果</h3>
-                <button class="ghost-btn small" @click="showRaw = !showRaw">
-                  {{ showRaw ? '格式化视图' : '原始 JSON' }}
-                </button>
-              </div>
-
-              <pre v-if="showRaw" class="raw-json">{{ pretty(result) }}</pre>
-
-              <template v-else>
-                <!-- 静态地图 -->
-                <div v-if="current.kind === 'staticmap'" class="staticmap-box">
-                  <img :src="result.url" alt="静态地图" />
-                  <a :href="result.url" target="_blank" rel="noopener" class="staticmap-link">在新窗口查看原图 ↗</a>
-                </div>
-
-                <!-- 地理编码 -->
-                <div v-else-if="current.kind === 'geocode'" class="card-list">
-                  <div v-for="(g, i) in result" :key="i" class="poi-card" title="点击复制坐标" @click="copy(g.location)">
-                    <div class="poi-name">{{ fmt(g.formatted_address) }}</div>
-                    <div class="poi-rows">
-                      <span>{{ fmt(g.province) }}{{ fmt(g.city) }}{{ fmt(g.district) }}</span>
-                      <span v-if="g.adcode">adcode：{{ g.adcode }}</span>
-                      <span v-if="g.level">级别：{{ g.level }}</span>
-                    </div>
-                    <div class="poi-loc">坐标 {{ fmt(g.location) || '—' }}（点击复制）</div>
-                  </div>
-                </div>
-
-                <!-- 逆地理编码 -->
-                <div v-else-if="current.kind === 'regeo'" class="regeo">
-                  <div class="regeo-hero">📍 {{ fmt(result.formatted_address) || '—' }}</div>
-                  <div class="kv-grid">
-                    <div v-for="kv in regeoRows" :key="kv[0]" class="kv">
-                      <span>{{ kv[0] }}</span><b>{{ kv[1] || '—' }}</b>
-                    </div>
-                  </div>
-                  <template v-if="result.pois?.length">
-                    <div class="sub-head">附近 POI（{{ result.pois.length }}）</div>
-                    <div class="card-list">
-                      <div v-for="(p, i) in result.pois" :key="i" class="poi-card" @click="copy(p.location)">
-                        <div class="poi-name">{{ fmt(p.name) }}</div>
-                        <div class="poi-rows">
-                          <span>{{ fmt(p.address) }}</span>
-                          <span v-if="p.distance">距中心 {{ p.distance }} 米</span>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-
-                <!-- IP 定位 -->
-                <div v-else-if="current.kind === 'ip'" class="kv-grid">
-                  <div v-for="kv in ipRows" :key="kv[0]" class="kv">
-                    <span>{{ kv[0] }}</span><b>{{ kv[1] || '—' }}</b>
-                  </div>
-                </div>
-
-                <!-- 坐标转换 -->
-                <div v-else-if="current.kind === 'convert'" class="convert">
-                  <div class="kv-grid">
-                    <div class="kv"><span>源坐标系</span><b>{{ result.coordsys }}</b></div>
-                    <div class="kv"><span>转换结果</span><b>{{ result.locations || '—' }}</b></div>
-                  </div>
-                  <div class="coord-list">
-                    <div v-for="(c, i) in result.list" :key="i" class="coord-item" @click="copy(c)">
-                      <span class="coord-idx">{{ i + 1 }}</span>
-                      <span class="coord-val">{{ c }}</span>
-                      <span class="coord-copy">复制</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- POI 搜索 -->
-                <div v-else-if="current.kind === 'pois'">
-                  <p class="result-meta" v-if="result.count">共 {{ result.count }} 条结果</p>
-                  <div class="card-list">
-                    <div v-for="p in result.pois" :key="p.id" class="poi-card" title="点击复制坐标" @click="copy(p.location)">
-                      <div class="poi-name">
-                        {{ fmt(p.name) }}
-                        <em v-if="p.distance" class="poi-distance">{{ fmtDist(p.distance) }}</em>
-                      </div>
-                      <div class="poi-rows"><span>{{ (fmt(p.type) || '').split(';')[0] }}</span></div>
-                      <div class="poi-rows"><span>📮 {{ fmt(p.address) || '—' }}</span></div>
-                      <div class="poi-rows" v-if="telStr(p)"><span>☎️ {{ telStr(p) }}</span></div>
-                      <div class="poi-loc">{{ fmt(p.location) || '—' }}（点击复制）</div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 输入提示 -->
-                <div v-else-if="current.kind === 'tips'" class="tips-list">
-                  <div v-for="(t, i) in result" :key="i" class="tip-item" title="点击复制坐标" @click="copy(t.location)">
-                    <span class="tip-name">{{ fmt(t.name) }}</span>
-                    <span class="tip-meta">{{ fmt(t.district) }}{{ t.adcode ? `（${t.adcode}）` : '' }}</span>
-                  </div>
-                </div>
-
-                <!-- 行政区划 -->
-                <div v-else-if="current.kind === 'district'" class="district-list">
-                  <div
-                    v-for="(d, i) in districtRows"
-                    :key="i"
-                    class="district-item"
-                    :style="districtIndent(d.depth)"
-                    @click="copy(d.center)"
-                  >
-                    <span class="district-label">{{ d.name }}</span>
-                    <span class="district-meta">{{ d.adcode }} · {{ d.level }}</span>
-                  </div>
-                </div>
-
-                <!-- 天气 -->
-                <div v-else-if="current.kind === 'weather'">
-                  <template v-if="result.lives.length">
-                    <div class="sub-head">实况天气</div>
-                    <div class="weather-grid">
-                      <div v-for="(l, i) in result.lives" :key="i" class="weather-card">
-                        <div class="weather-city">{{ l.city }}</div>
-                        <div class="weather-main">{{ l.weather }} · {{ l.temperature }}℃</div>
-                        <div class="weather-meta">{{ l.winddirection }}风 {{ l.windpower }}级 · 湿度 {{ l.humidity }}%</div>
-                        <div class="weather-meta">更新于 {{ l.reporttime }}</div>
-                      </div>
-                    </div>
-                  </template>
-                  <template v-if="result.forecasts.length">
-                    <div class="sub-head">未来预报</div>
-                    <div v-for="f in result.forecasts" :key="f.city" class="forecast-block">
-                      <div class="weather-city">{{ f.city }} · 更新于 {{ f.reporttime }}</div>
-                      <div class="weather-grid">
-                        <div v-for="c in f.casts" :key="c.date" class="weather-card">
-                          <div class="weather-city">{{ c.date.slice(5) }} {{ weekName(c.week) }}</div>
-                          <div class="weather-main">{{ c.daytemp }}℃ / {{ c.nighttemp }}℃</div>
-                          <div class="weather-meta">{{ c.dayweather }} → {{ c.nightweather }}</div>
-                          <div class="weather-meta">{{ c.daywind }}风 {{ c.daypower }}级</div>
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-
-                <!-- 路径规划 -->
-                <div v-else-if="current.kind === 'route'">
-                  <div class="route-summary">
-                    <div class="summary-item"><span>方式</span><b>{{ result.modeLabel }}</b></div>
-                    <div class="summary-item"><span>总里程</span><b>{{ result.distanceText || '—' }}</b></div>
-                    <div class="summary-item"><span>预计耗时</span><b>{{ result.durationText || '—' }}</b></div>
-                  </div>
-                  <div v-if="result.steps?.length" class="steps-list">
-                    <div v-for="(s, i) in result.steps" :key="i" class="step-item" @click="copy(s.location)">
-                      <span class="step-index">{{ i + 1 }}</span>
-                      <span class="step-text">{{ s.instruction }}<em v-if="s.road">（{{ s.road }}）</em></span>
-                      <span v-if="s.distanceText" class="step-distance">{{ s.distanceText }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 交通态势 -->
-                <div v-else-if="current.kind === 'traffic'">
-                  <div v-if="result.evaluation" class="traffic-eval">
-                    <div class="traffic-desc">{{ result.evaluation.description || statusText(result.evaluation.status) }}</div>
-                    <div class="traffic-bars">
-                      <div v-for="b in trafficBars" :key="b.label" class="traffic-bar">
-                        <span class="bar-label">{{ b.label }}</span>
-                        <div class="bar-track"><div class="bar-fill" :style="{ width: b.pct + '%', background: b.color }"></div></div>
-                        <span class="bar-pct">{{ b.pct }}%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <template v-if="roads.length">
-                    <div class="sub-head">路段详情（{{ roads.length }}）</div>
-                    <div class="road-list">
-                      <div v-for="(r, i) in roads.slice(0, 60)" :key="i" class="road-item">
-                        <span class="road-status" :class="'st-' + (r.status || r.status_code)">{{ statusText(r.status || r.status_code) }}</span>
-                        <span class="road-name">{{ r.name }}</span>
-                        <span v-if="r.direction" class="road-dir">{{ r.direction }}</span>
-                        <span v-if="r.speed" class="road-speed">均速 {{ r.speed }} km/h</span>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-
-                <!-- 通用 JSON -->
-                <pre v-else class="raw-json">{{ pretty(result) }}</pre>
-              </template>
-            </section>
-          </template>
-        </main>
+    <template v-if="current">
+      <div class="tool-head">
+        <h3>{{ current.icon }} {{ current.name }}</h3>
+        <p>{{ current.desc }}</p>
       </div>
 
-      <div v-if="toast" class="svc-toast">{{ toast }}</div>
-    </div>
-  </Teleport>
+      <form class="tool-form" @submit.prevent="run">
+        <div
+          v-for="f in visibleFields"
+          :key="f.key"
+          class="field"
+        >
+          <label>{{ f.label }}<i v-if="f.required">*</i></label>
+          <select v-if="f.type === 'select'" v-model="form[f.key]">
+            <option v-for="o in f.options" :key="o.v" :value="o.v">{{ o.n }}</option>
+          </select>
+          <textarea
+            v-else-if="f.type === 'textarea'"
+            v-model="form[f.key]"
+            :placeholder="f.placeholder || ''"
+            rows="2"
+          ></textarea>
+          <input
+            v-else
+            v-model="form[f.key]"
+            :placeholder="f.placeholder || ''"
+            autocomplete="off"
+          />
+          <p v-if="f.hint" class="field-hint">{{ f.hint }}</p>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="run-btn" :disabled="loading">
+            {{ loading ? '请求中…' : '发起请求' }}
+          </button>
+          <button type="button" class="ghost-btn" :disabled="loading" @click="resetForm">重置</button>
+        </div>
+      </form>
+
+      <p v-if="error" class="svc-error">⚠️ {{ error }}</p>
+
+      <section v-if="result" class="result">
+        <div class="result-head">
+          <h4>返回结果</h4>
+          <button class="ghost-btn small" @click="showRaw = !showRaw">
+            {{ showRaw ? '格式化视图' : '原始 JSON' }}
+          </button>
+        </div>
+
+        <pre v-if="showRaw" class="raw-json">{{ pretty(result) }}</pre>
+
+        <template v-else>
+          <!-- 静态地图 -->
+          <div v-if="current.kind === 'staticmap'" class="staticmap-box">
+            <img :src="result.url" alt="静态地图" />
+            <a :href="result.url" target="_blank" rel="noopener" class="staticmap-link">在新窗口查看原图 ↗</a>
+          </div>
+
+          <!-- 地理编码 -->
+          <div v-else-if="current.kind === 'geocode'" class="stack">
+            <div v-for="(g, i) in result" :key="i" class="poi-card" title="点击复制坐标" @click="copy(g.location)">
+              <div class="poi-name">{{ fmt(g.formatted_address) }}</div>
+              <div class="poi-rows">
+                <span>{{ fmt(g.province) }}{{ fmt(g.city) }}{{ fmt(g.district) }}</span>
+                <span v-if="g.adcode">adcode：{{ g.adcode }}</span>
+                <span v-if="g.level">级别：{{ g.level }}</span>
+              </div>
+              <div class="poi-loc">{{ fmt(g.location) || '—' }}（点击复制）</div>
+            </div>
+          </div>
+
+          <!-- 逆地理编码 -->
+          <div v-else-if="current.kind === 'regeo'">
+            <div class="regeo-hero">📍 {{ fmt(result.formatted_address) || '—' }}</div>
+            <div class="kv-grid">
+              <div v-for="kv in regeoRows" :key="kv[0]" class="kv">
+                <span>{{ kv[0] }}</span><b>{{ kv[1] || '—' }}</b>
+              </div>
+            </div>
+            <template v-if="result.pois?.length">
+              <div class="sub-head">附近 POI（{{ result.pois.length }}）</div>
+              <div class="stack">
+                <div v-for="(p, i) in result.pois" :key="i" class="poi-card" @click="copy(p.location)">
+                  <div class="poi-name">{{ fmt(p.name) }}</div>
+                  <div class="poi-rows">
+                    <span>{{ fmt(p.address) }}</span>
+                    <span v-if="p.distance">距中心 {{ p.distance }} 米</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- IP 定位 -->
+          <div v-else-if="current.kind === 'ip'" class="kv-grid">
+            <div v-for="kv in ipRows" :key="kv[0]" class="kv">
+              <span>{{ kv[0] }}</span><b>{{ kv[1] || '—' }}</b>
+            </div>
+          </div>
+
+          <!-- 坐标转换 -->
+          <div v-else-if="current.kind === 'convert'">
+            <div class="kv-grid">
+              <div class="kv"><span>源坐标系</span><b>{{ result.coordsys }}</b></div>
+              <div class="kv"><span>转换结果</span><b>{{ result.locations || '—' }}</b></div>
+            </div>
+            <div class="coord-list">
+              <div v-for="(c, i) in result.list" :key="i" class="coord-item" @click="copy(c)">
+                <span class="coord-idx">{{ i + 1 }}</span>
+                <span class="coord-val">{{ c }}</span>
+                <span class="coord-copy">复制</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- POI 搜索 -->
+          <div v-else-if="current.kind === 'pois'">
+            <p class="result-meta" v-if="result.count">共 {{ result.count }} 条结果</p>
+            <div class="stack">
+              <div v-for="p in result.pois" :key="p.id" class="poi-card" title="点击复制坐标" @click="copy(p.location)">
+                <div class="poi-name">
+                  {{ fmt(p.name) }}
+                  <em v-if="p.distance" class="poi-distance">{{ fmtDist(p.distance) }}</em>
+                </div>
+                <div class="poi-rows"><span>{{ (fmt(p.type) || '').split(';')[0] }}</span></div>
+                <div class="poi-rows"><span>📮 {{ fmt(p.address) || '—' }}</span></div>
+                <div class="poi-rows" v-if="telStr(p)"><span>☎️ {{ telStr(p) }}</span></div>
+                <div class="poi-loc">{{ fmt(p.location) || '—' }}（点击复制）</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 输入提示 -->
+          <div v-else-if="current.kind === 'tips'" class="stack">
+            <div v-for="(t, i) in result" :key="i" class="tip-item" title="点击复制坐标" @click="copy(t.location)">
+              <span class="tip-name">{{ fmt(t.name) }}</span>
+              <span class="tip-meta">{{ fmt(t.district) }}</span>
+            </div>
+          </div>
+
+          <!-- 行政区划 -->
+          <div v-else-if="current.kind === 'district'" class="district-list">
+            <div
+              v-for="(d, i) in districtRows"
+              :key="i"
+              class="district-item"
+              :style="districtIndent(d.depth)"
+              @click="copy(d.center)"
+            >
+              <span class="district-label">{{ d.name }}</span>
+              <span class="district-meta">{{ d.adcode }} · {{ d.level }}</span>
+            </div>
+          </div>
+
+          <!-- 天气 -->
+          <div v-else-if="current.kind === 'weather'">
+            <template v-if="result.lives.length">
+              <div class="sub-head">实况天气</div>
+              <div v-for="(l, i) in result.lives" :key="i" class="weather-card">
+                <div class="weather-city">{{ l.city }}</div>
+                <div class="weather-main">{{ l.weather }} · {{ l.temperature }}℃</div>
+                <div class="weather-meta">{{ l.winddirection }}风 {{ l.windpower }}级 · 湿度 {{ l.humidity }}%</div>
+                <div class="weather-meta">更新于 {{ l.reporttime }}</div>
+              </div>
+            </template>
+            <template v-if="result.forecasts.length">
+              <div class="sub-head">未来预报</div>
+              <div v-for="f in result.forecasts" :key="f.city" class="forecast-block">
+                <div class="weather-city">{{ f.city }} · 更新于 {{ f.reporttime }}</div>
+                <div v-for="c in f.casts" :key="c.date" class="weather-card">
+                  <div class="weather-city">{{ c.date.slice(5) }} {{ weekName(c.week) }}</div>
+                  <div class="weather-main">{{ c.daytemp }}℃ / {{ c.nighttemp }}℃</div>
+                  <div class="weather-meta">{{ c.dayweather }} → {{ c.nightweather }}</div>
+                  <div class="weather-meta">{{ c.daywind }}风 {{ c.daypower }}级</div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- 路径规划 -->
+          <div v-else-if="current.kind === 'route'">
+            <div class="route-summary">
+              <div class="summary-item"><span>方式</span><b>{{ result.modeLabel }}</b></div>
+              <div class="summary-item"><span>总里程</span><b>{{ result.distanceText || '—' }}</b></div>
+              <div class="summary-item"><span>耗时</span><b>{{ result.durationText || '—' }}</b></div>
+            </div>
+            <div v-if="result.steps?.length" class="steps-list">
+              <div v-for="(s, i) in result.steps" :key="i" class="step-item" @click="copy(s.location)">
+                <span class="step-index">{{ i + 1 }}</span>
+                <span class="step-text">{{ s.instruction }}<em v-if="s.road">（{{ s.road }}）</em></span>
+                <span v-if="s.distanceText" class="step-distance">{{ s.distanceText }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 交通态势 -->
+          <div v-else-if="current.kind === 'traffic'">
+            <div v-if="result.evaluation" class="traffic-eval">
+              <div class="traffic-desc">{{ result.evaluation.description || statusText(result.evaluation.status) }}</div>
+              <div class="traffic-bars">
+                <div v-for="b in trafficBars" :key="b.label" class="traffic-bar">
+                  <span class="bar-label">{{ b.label }}</span>
+                  <div class="bar-track"><div class="bar-fill" :style="{ width: b.pct + '%', background: b.color }"></div></div>
+                  <span class="bar-pct">{{ b.pct }}%</span>
+                </div>
+              </div>
+            </div>
+            <template v-if="roads.length">
+              <div class="sub-head">路段详情（{{ roads.length }}）</div>
+              <div class="road-list">
+                <div v-for="(r, i) in roads.slice(0, 40)" :key="i" class="road-item">
+                  <span class="road-status" :class="'st-' + (r.status || r.status_code)">{{ statusText(r.status || r.status_code) }}</span>
+                  <span class="road-name">{{ r.name }}</span>
+                  <span v-if="r.speed" class="road-speed">{{ r.speed }}km/h</span>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- 通用 JSON -->
+          <pre v-else class="raw-json">{{ pretty(result) }}</pre>
+        </template>
+      </section>
+    </template>
+
+    <div v-if="toast" class="svc-toast">{{ toast }}</div>
+  </div>
 </template>
 
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, shallowRef, watch } from 'vue'
 import { SERVICE_GROUPS, ALL_TOOLS, initialValues } from '../services/tools.js'
+import { createRenderer } from '../services/mapRender.js'
 
 const props = defineProps({
-  visible: { type: Boolean, default: false }
+  /** AMap 构造函数（JSAPI 加载完成后传入） */
+  amap: { type: Object, default: null },
+  /** 地图实例 */
+  map: { type: Object, default: null }
 })
 
-defineEmits(['close'])
-
 const current = ref(null)
+const selectedId = ref(ALL_TOOLS[0]?.id)
 const form = reactive({})
 const loading = ref(false)
 const error = ref('')
 const result = ref(null)
 const showRaw = ref(false)
 const toast = ref('')
+
+/** 地图渲染器（依赖地图实例，懒创建） */
+const renderer = shallowRef(null)
+
+function ensureRenderer() {
+  if (!props.amap || !props.map) return null
+  if (!renderer.value) renderer.value = createRenderer(props.map, props.amap)
+  return renderer.value
+}
+
+watch(selectedId, id => {
+  const found = ALL_TOOLS.find(t => t.id === id)
+  if (found) selectTool(found)
+})
 
 /** 按 showIf 条件过滤字段（围栏/猎鹰等多操作工具联动） */
 const visibleFields = computed(() =>
@@ -300,16 +284,10 @@ function selectTool(tool) {
   error.value = ''
   result.value = null
   showRaw.value = false
+  renderer.value?.clear()
   for (const k of Object.keys(form)) delete form[k]
   Object.assign(form, initialValues(tool))
 }
-
-watch(
-  () => props.visible,
-  v => {
-    if (v && !current.value) selectTool(ALL_TOOLS[0])
-  }
-)
 
 async function run() {
   for (const f of visibleFields.value) {
@@ -322,7 +300,16 @@ async function run() {
   error.value = ''
   result.value = null
   try {
-    result.value = await current.value.run({ ...form })
+    const values = { ...form }
+    result.value = await current.value.run(values)
+    // 成功后把结果渲染到地图（渲染失败不影响结果展示）
+    const r = ensureRenderer()
+    if (r) {
+      r.clear()
+      if (current.value.render) {
+        try { current.value.render(values, result.value, r) } catch (e) { console.warn('地图渲染失败:', e) }
+      }
+    }
   } catch (e) {
     error.value = e?.message || '请求失败，请稍后重试'
   } finally {
@@ -400,7 +387,7 @@ const districtRows = computed(() => {
   return out
 })
 
-const districtIndent = depth => ({ paddingLeft: depth * 18 + 12 + 'px' })
+const districtIndent = depth => ({ paddingLeft: depth * 14 + 10 + 'px' })
 
 function weekName(w) {
   const m = { 1: '周一', 2: '周二', 3: '周三', 4: '周四', 5: '周五', 6: '周六', 7: '周日' }
@@ -427,171 +414,63 @@ const roads = computed(() => result.value?.roads || [])
 </script>
 
 <style scoped>
-.svc-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
+.svc-root {
   display: flex;
   flex-direction: column;
-  background: #0d1117;
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ---------- 头部 ---------- */
-.svc-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.svc-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.svc-logo {
-  font-size: 26px;
-}
-
-.svc-title h2 {
-  margin: 0;
-  font-size: 17px;
-  color: #f5f5f7;
-}
-
-.svc-title p {
-  margin: 2px 0 0;
-  font-size: 12px;
-  color: #86868b;
-}
-
-.close-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f5f7;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.18s ease;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-/* ---------- 主体 ---------- */
-.svc-body {
-  flex: 1;
-  display: flex;
+  gap: 10px;
   min-height: 0;
 }
 
-.svc-menu {
-  width: 264px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px 12px;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.03);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.menu-group-title {
-  padding: 0 10px 4px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
+.svc-intro {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
   color: #86868b;
 }
 
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.svc-select {
   width: 100%;
-  padding: 9px 10px;
-  border: 1px solid transparent;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
-  background: transparent;
-  color: #d1d1d6;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f5f7;
   font-size: 13px;
-  text-align: left;
+  outline: none;
   cursor: pointer;
-  transition: all 0.18s ease;
 }
 
-.menu-item:hover {
-  background: rgba(255, 255, 255, 0.07);
+.svc-select:focus {
+  border-color: #0a84ff;
 }
 
-.menu-item.is-active {
-  background: rgba(10, 132, 255, 0.2);
-  border-color: rgba(10, 132, 255, 0.5);
-  color: #6db8ff;
+.svc-select option,
+.svc-select optgroup {
+  background: #1c1c1e;
+  color: #f5f5f7;
 }
 
-.menu-icon {
-  flex-shrink: 0;
+/* ---------- 工具头 ---------- */
+.tool-head h3 {
+  margin: 2px 0 4px;
   font-size: 15px;
-}
-
-.menu-foot {
-  margin-top: auto;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  color: #86868b;
-}
-
-.foot-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #30d158;
-  box-shadow: 0 0 6px rgba(48, 209, 88, 0.8);
-}
-
-.svc-main {
-  flex: 1;
-  min-width: 0;
-  overflow-y: auto;
-  padding: 22px 26px 40px;
-}
-
-.tool-head h2 {
-  margin: 0 0 6px;
-  font-size: 20px;
   color: #f5f5f7;
 }
 
 .tool-head p {
-  margin: 0 0 18px;
-  font-size: 13px;
-  line-height: 1.55;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
   color: #8e8e93;
-  max-width: 720px;
 }
 
 /* ---------- 表单 ---------- */
 .tool-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 14px;
-  padding: 16px;
-  margin-bottom: 16px;
-  max-width: 860px;
-  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -599,16 +478,12 @@ const roads = computed(() => result.value?.roads || [])
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
 }
 
-.field.span-2 {
-  grid-column: span 2;
-}
-
 .field label {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #aeb7c4;
 }
@@ -622,12 +497,12 @@ const roads = computed(() => result.value?.roads || [])
 .field input,
 .field textarea,
 .field select {
-  padding: 9px 12px;
+  padding: 8px 11px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.06);
   color: #f5f5f7;
-  font-size: 13px;
+  font-size: 12.5px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.18s ease;
@@ -635,7 +510,7 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .field textarea {
-  min-height: 62px;
+  min-height: 56px;
 }
 
 .field input:focus,
@@ -656,31 +531,27 @@ const roads = computed(() => result.value?.roads || [])
 
 .field-hint {
   margin: 0;
-  font-size: 11px;
+  font-size: 10.5px;
   color: #6e6e73;
   line-height: 1.4;
 }
 
 .form-actions {
-  grid-column: span 2;
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .run-btn {
-  padding: 11px 28px;
+  flex: 1;
+  padding: 10px 0;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background: linear-gradient(135deg, #0a84ff, #0055d4);
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.18s ease, opacity 0.18s ease;
-}
-
-.run-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transition: opacity 0.18s ease;
 }
 
 .run-btn:disabled {
@@ -689,12 +560,12 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .ghost-btn {
-  padding: 11px 18px;
+  padding: 10px 14px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
+  border-radius: 10px;
   background: transparent;
   color: #d1d1d6;
-  font-size: 13px;
+  font-size: 12.5px;
   cursor: pointer;
   transition: background 0.18s ease;
 }
@@ -704,50 +575,51 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .ghost-btn.small {
-  padding: 5px 12px;
-  font-size: 11px;
-  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 10.5px;
+  border-radius: 7px;
 }
 
 /* ---------- 结果区 ---------- */
 .svc-error {
-  margin: 0 0 16px;
-  padding: 11px 14px;
+  margin: 0;
+  padding: 10px 12px;
   border-radius: 10px;
   background: rgba(255, 69, 58, 0.14);
   border: 1px solid rgba(255, 69, 58, 0.3);
   color: #ff9f9a;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .result {
-  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .result-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
 }
 
-.result-head h3 {
+.result-head h4 {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   color: #8ea8c9;
   letter-spacing: 1px;
 }
 
 .result-meta {
-  margin: 0 0 10px;
-  font-size: 12px;
+  margin: 0;
+  font-size: 11.5px;
   color: #86868b;
 }
 
 .sub-head {
-  margin: 18px 0 10px;
-  font-size: 12px;
+  margin: 8px 0 6px;
+  font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 1px;
   color: #86868b;
@@ -755,53 +627,52 @@ const roads = computed(() => result.value?.roads || [])
 
 .raw-json {
   margin: 0;
-  padding: 14px;
-  max-height: 480px;
+  padding: 12px;
+  max-height: 320px;
   overflow: auto;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: #a5d6ff;
-  font-size: 12px;
-  line-height: 1.55;
+  font-size: 11px;
+  line-height: 1.5;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
   white-space: pre-wrap;
   word-break: break-all;
 }
 
-/* 卡片 */
-.card-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 10px;
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .poi-card {
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
-  transition: background 0.18s ease, transform 0.18s ease;
+  transition: background 0.18s ease;
 }
 
 .poi-card:hover {
   background: rgba(10, 132, 255, 0.12);
-  transform: translateY(-1px);
 }
 
 .poi-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #f5f5f7;
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .poi-distance {
   font-style: normal;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
   padding: 2px 8px;
   border-radius: 999px;
@@ -812,73 +683,72 @@ const roads = computed(() => result.value?.roads || [])
 .poi-rows {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
-  margin-top: 5px;
-  font-size: 12px;
+  gap: 3px 10px;
+  margin-top: 4px;
+  font-size: 11.5px;
   color: #aeb7c4;
 }
 
 .poi-loc {
-  margin-top: 7px;
-  font-size: 11px;
+  margin-top: 5px;
+  font-size: 10.5px;
   color: #6db8ff;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
 }
 
-/* 逆地理 / IP / 键值 */
+/* 键值 */
 .regeo-hero {
-  padding: 16px;
-  border-radius: 14px;
+  padding: 12px;
+  border-radius: 10px;
   background: rgba(10, 132, 255, 0.14);
   border: 1px solid rgba(10, 132, 255, 0.35);
   color: #f5f5f7;
-  font-size: 16px;
+  font-size: 13.5px;
   font-weight: 600;
   line-height: 1.5;
 }
 
 .kv-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 8px;
-  margin-top: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
 
 .kv {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 10px 12px;
-  border-radius: 10px;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0;
 }
 
 .kv span {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #86868b;
 }
 
 .kv b {
-  font-size: 13px;
+  font-size: 12px;
   color: #f5f5f7;
   word-break: break-all;
 }
 
 /* 坐标转换 */
 .coord-list {
-  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .coord-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: background 0.18s ease;
@@ -890,12 +760,12 @@ const roads = computed(() => result.value?.roads || [])
 
 .coord-idx {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: rgba(10, 132, 255, 0.25);
   color: #6db8ff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -905,30 +775,23 @@ const roads = computed(() => result.value?.roads || [])
 .coord-val {
   flex: 1;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 12.5px;
+  font-size: 11.5px;
   color: #f5f5f7;
 }
 
 .coord-copy {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #6db8ff;
 }
 
 /* 输入提示 */
-.tips-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-width: 640px;
-}
-
 .tip-item {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 9px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
@@ -940,14 +803,14 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .tip-name {
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: #f5f5f7;
   font-weight: 500;
 }
 
 .tip-meta {
   flex-shrink: 0;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: #8e8e93;
 }
 
@@ -955,17 +818,16 @@ const roads = computed(() => result.value?.roads || [])
 .district-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  max-width: 560px;
+  gap: 2px;
 }
 
 .district-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 7px 12px;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 7px;
   cursor: pointer;
   transition: background 0.18s ease;
 }
@@ -975,94 +837,87 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .district-label {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #f5f5f7;
 }
 
 .district-meta {
-  font-size: 11px;
+  flex-shrink: 0;
+  font-size: 10.5px;
   color: #86868b;
 }
 
 /* 天气 */
-.weather-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 10px;
-}
-
 .weather-card {
-  padding: 14px;
-  border-radius: 14px;
+  padding: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
 }
 
 .weather-city {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #8ea8c9;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .weather-main {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #6db8ff;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .weather-meta {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #aeb7c4;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .forecast-block {
-  margin-bottom: 14px;
+  margin-bottom: 6px;
 }
 
 /* 路线 */
 .route-summary {
   display: flex;
-  gap: 10px;
-  max-width: 560px;
-  margin-bottom: 14px;
+  gap: 8px;
 }
 
 .summary-item {
   flex: 1;
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 9px 10px;
+  border-radius: 10px;
   background: rgba(10, 132, 255, 0.12);
   border: 1px solid rgba(10, 132, 255, 0.28);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .summary-item span {
-  font-size: 11px;
+  font-size: 10.5px;
   color: #8ea8c9;
 }
 
 .summary-item b {
-  font-size: 15px;
+  font-size: 13px;
   color: #6db8ff;
 }
 
 .steps-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-width: 720px;
+  gap: 3px;
 }
 
 .step-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 9px 10px;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.18s ease;
 }
@@ -1073,12 +928,12 @@ const roads = computed(() => result.value?.roads || [])
 
 .step-index {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: rgba(10, 132, 255, 0.25);
   color: #6db8ff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1088,9 +943,9 @@ const roads = computed(() => result.value?.roads || [])
 
 .step-text {
   flex: 1;
-  font-size: 12.5px;
+  font-size: 11.5px;
   color: #e5e5ea;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .step-text em {
@@ -1100,49 +955,48 @@ const roads = computed(() => result.value?.roads || [])
 
 .step-distance {
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 10.5px;
   color: #86868b;
 }
 
 /* 交通态势 */
 .traffic-eval {
-  max-width: 640px;
-  padding: 16px;
-  border-radius: 14px;
+  padding: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .traffic-desc {
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #f5f5f7;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   line-height: 1.5;
 }
 
 .traffic-bars {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .traffic-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .bar-label {
   flex-shrink: 0;
-  width: 46px;
-  font-size: 12px;
+  width: 42px;
+  font-size: 11px;
   color: #aeb7c4;
 }
 
 .bar-track {
   flex: 1;
-  height: 8px;
+  height: 7px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
@@ -1156,34 +1010,33 @@ const roads = computed(() => result.value?.roads || [])
 
 .bar-pct {
   flex-shrink: 0;
-  width: 40px;
+  width: 36px;
   text-align: right;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: #8e8e93;
 }
 
 .road-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  max-width: 720px;
+  gap: 4px;
 }
 
 .road-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
-  font-size: 12.5px;
+  font-size: 11.5px;
 }
 
 .road-status {
   flex-shrink: 0;
-  padding: 2px 9px;
+  padding: 2px 8px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.08);
   color: #d1d1d6;
@@ -1203,33 +1056,32 @@ const roads = computed(() => result.value?.roads || [])
   white-space: nowrap;
 }
 
-.road-dir,
 .road-speed {
   flex-shrink: 0;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: #8e8e93;
 }
 
 /* 静态地图 */
 .staticmap-box {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 14px;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .staticmap-box img {
   display: block;
-  max-width: 100%;
-  border-radius: 10px;
+  width: 100%;
+  border-radius: 8px;
   background: #1c1c1e;
 }
 
 .staticmap-link {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #6db8ff;
   text-decoration: none;
 }
@@ -1238,7 +1090,7 @@ const roads = computed(() => result.value?.roads || [])
   text-decoration: underline;
 }
 
-/* Toast */
+/* Toast（Marker 标签在地图层，需全局样式，见下方非 scoped 块） */
 .svc-toast {
   position: fixed;
   bottom: 36px;
@@ -1258,56 +1110,235 @@ const roads = computed(() => result.value?.roads || [])
   white-space: nowrap;
 }
 
-/* ---------- 响应式 ---------- */
-@media (max-width: 900px) {
-  .svc-body {
-    flex-direction: column;
-  }
+/* ---------- 浅色主题（跟随 NavigationPanel 根节点的 .is-light 祖先类） ---------- */
+.is-light .svc-select {
+  border-color: rgba(0, 0, 0, 0.14);
+  background: #fff;
+  color: #1d1d1f;
+}
 
-  .svc-menu {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 6px;
-    max-height: 172px;
-    padding: 10px;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
+.is-light .svc-select option,
+.is-light .svc-select optgroup {
+  background: #fff;
+  color: #1d1d1f;
+}
 
-  .menu-group {
-    width: 100%;
-  }
+.is-light .tool-head h3 {
+  color: #1d1d1f;
+}
 
-  .menu-group-title {
-    display: none;
-  }
+.is-light .tool-form {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
 
-  .menu-group .menu-item {
-    display: inline-flex;
-    width: auto;
-    padding: 7px 12px;
-  }
+.is-light .field label {
+  color: #6e6e73;
+}
 
-  .menu-foot {
-    display: none;
-  }
+.is-light .field input,
+.is-light .field textarea,
+.is-light .field select {
+  border-color: rgba(0, 0, 0, 0.14);
+  background: #fff;
+  color: #1d1d1f;
+}
 
-  .svc-main {
-    padding: 16px;
-  }
+.is-light .field select option {
+  background: #fff;
+  color: #1d1d1f;
+}
 
-  .tool-form {
-    grid-template-columns: 1fr;
-  }
+.is-light .ghost-btn {
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #3a3a3c;
+}
 
-  .field.span-2,
-  .form-actions {
-    grid-column: span 1;
-  }
+.is-light .ghost-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.06);
+}
 
-  .route-summary {
-    flex-direction: column;
-  }
+.is-light .svc-error {
+  background: rgba(255, 69, 58, 0.08);
+  border-color: rgba(255, 69, 58, 0.25);
+  color: #d70015;
+}
+
+.is-light .result-head h4 {
+  color: #58719b;
+}
+
+.is-light .poi-card {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .poi-name {
+  color: #1d1d1f;
+}
+
+.is-light .poi-distance {
+  color: #248a3d;
+}
+
+.is-light .poi-rows {
+  color: #6e6e73;
+}
+
+.is-light .poi-loc {
+  color: #0066cc;
+}
+
+.is-light .regeo-hero {
+  color: #1d1d1f;
+}
+
+.is-light .kv {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .kv b {
+  color: #1d1d1f;
+}
+
+.is-light .coord-item {
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.is-light .coord-idx {
+  color: #0066cc;
+}
+
+.is-light .coord-val {
+  color: #1d1d1f;
+}
+
+.is-light .coord-copy {
+  color: #0066cc;
+}
+
+.is-light .tip-item {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .tip-name {
+  color: #1d1d1f;
+}
+
+.is-light .district-label {
+  color: #1d1d1f;
+}
+
+.is-light .weather-card {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .weather-city {
+  color: #58719b;
+}
+
+.is-light .weather-main {
+  color: #0066cc;
+}
+
+.is-light .weather-meta {
+  color: #6e6e73;
+}
+
+.is-light .summary-item span {
+  color: #58719b;
+}
+
+.is-light .summary-item b {
+  color: #0066cc;
+}
+
+.is-light .step-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.is-light .step-index {
+  color: #0066cc;
+}
+
+.is-light .step-text {
+  color: #1d1d1f;
+}
+
+.is-light .traffic-eval {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .traffic-desc {
+  color: #1d1d1f;
+}
+
+.is-light .bar-track {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .bar-label {
+  color: #6e6e73;
+}
+
+.is-light .road-item {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.is-light .road-status {
+  background: rgba(0, 0, 0, 0.08);
+  color: #3a3a3c;
+}
+
+.is-light .road-status.st-1 {
+  background: rgba(48, 209, 88, 0.18);
+  color: #248a3d;
+}
+
+.is-light .road-status.st-2 {
+  background: rgba(255, 214, 10, 0.25);
+  color: #936b00;
+}
+
+.is-light .road-status.st-3 {
+  background: rgba(255, 69, 58, 0.12);
+  color: #d70015;
+}
+
+.is-light .road-status.st-4 {
+  background: rgba(255, 45, 85, 0.15);
+  color: #c81e4e;
+}
+
+.is-light .road-name {
+  color: #1d1d1f;
+}
+
+.is-light .staticmap-box {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.is-light .staticmap-link {
+  color: #0066cc;
+}
+</style>
+
+<style>
+/* AMap Marker label 渲染在地图容器内（脱离 Vue 作用域），需全局样式 */
+.svc-pin-label {
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: rgba(10, 132, 255, 0.92);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 </style>
