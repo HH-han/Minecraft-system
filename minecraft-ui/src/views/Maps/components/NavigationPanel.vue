@@ -70,9 +70,28 @@
             >{{ m.label }}</button>
           </div>
 
-          <select v-if="policyOptions.length" v-model="policy" class="policy-select">
-            <option v-for="p in policyOptions" :key="p.v" :value="p.v">{{ p.n }}</option>
-          </select>
+          <div v-if="policyOptions.length" class="policy-picker" :class="{ 'is-open': policyOpen }">
+            <button
+              type="button"
+              class="policy-select"
+              aria-label="路线策略"
+              :aria-expanded="policyOpen"
+              @click="policyOpen = !policyOpen"
+            >
+              <span class="policy-label">{{ policyLabel }}</span>
+              <span class="policy-arrow">▾</span>
+            </button>
+            <div v-if="policyOpen" class="policy-pop">
+              <button
+                v-for="p in policyOptions"
+                :key="p.v"
+                type="button"
+                class="policy-opt"
+                :class="{ 'is-active': p.v === policy }"
+                @click="pickPolicy(p.v)"
+              >{{ p.n }}</button>
+            </div>
+          </div>
 
           <button class="plan-btn" :disabled="loading || !amapReady" @click="planRoute">
             {{ loading ? '路线规划中...' : '开始规划' }}
@@ -132,7 +151,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef, watch, nextTick, onBeforeUnmount } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import AMapLoader from '@amap/amap-jsapi-loader'
 import { AMAP_KEY, AMAP_VERSION, AMAP_PLUGINS } from '../config.js'
 import ServicePanel from './ServicePanel.vue'
@@ -221,6 +240,28 @@ watch([mode], () => {
 const policyOptions = ref(mode.value === 'transit' ? TRANSIT_POLICIES : DRIVING_POLICIES)
 watch(mode, m => {
   policyOptions.value = m === 'transit' ? TRANSIT_POLICIES : DRIVING_POLICIES
+})
+
+/* ---------- 策略选择器（自定义下拉，替代原生 select 弹出层） ---------- */
+const policyOpen = ref(false)
+const policyLabel = computed(() => policyOptions.value.find(p => p.v === policy.value)?.n || '')
+
+function pickPolicy(v) {
+  policy.value = v
+  policyOpen.value = false
+}
+
+function onDocMouseDown(e) {
+  if (!e.target.closest?.('.policy-picker')) policyOpen.value = false
+}
+
+function onDocKeydown(e) {
+  if (e.key === 'Escape') policyOpen.value = false
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', onDocMouseDown)
+  document.addEventListener('keydown', onDocKeydown)
 })
 
 /* ---------- 高德初始化（懒加载，仅首次打开时执行） ---------- */
@@ -753,13 +794,95 @@ onBeforeUnmount(() => {
 }
 
 .policy-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 9px 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.06);
   color: #f5f5f7;
   font-size: 13px;
+  font-family: inherit;
+  text-align: left;
   outline: none;
+  cursor: pointer;
+}
+
+.policy-select:focus {
+  border-color: #0a84ff;
+}
+
+/* ---------- 自定义下拉（隐藏滚动条，随明暗主题切换） ---------- */
+.policy-picker {
+  position: relative;
+}
+
+.policy-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.policy-arrow {
+  flex-shrink: 0;
+  font-size: 11px;
+  opacity: 0.7;
+  transition: transform 0.18s ease;
+}
+
+.policy-picker.is-open .policy-arrow {
+  transform: rotate(180deg);
+}
+
+.policy-picker.is-open .policy-select {
+  border-color: #0a84ff;
+}
+
+.policy-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1c1c1e;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* Chrome / Edge / Safari 隐藏滚动条（保留滚动能力） */
+.policy-pop::-webkit-scrollbar {
+  display: none;
+}
+
+.policy-opt {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #f5f5f7;
+  font-size: 12.5px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.policy-opt:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.policy-opt.is-active {
+  background: #0a84ff;
+  color: #fff;
 }
 
 .plan-btn {
@@ -1044,9 +1167,23 @@ onBeforeUnmount(() => {
   color: #1d1d1f;
 }
 
-.nav-overlay.is-light .policy-select option {
+.nav-overlay.is-light .policy-pop {
+  border-color: rgba(0, 0, 0, 0.1);
   background: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.nav-overlay.is-light .policy-opt {
   color: #1d1d1f;
+}
+
+.nav-overlay.is-light .policy-opt:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.nav-overlay.is-light .policy-opt.is-active {
+  background: #0a84ff;
+  color: #fff;
 }
 
 .nav-overlay.is-light .nav-error {

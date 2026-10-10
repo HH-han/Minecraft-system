@@ -4,11 +4,31 @@
       基于「Web服务」Key 的 {{ ALL_TOOLS.length }} 项 REST 服务，结果同步渲染到右侧地图。
     </p>
 
-    <select v-model="selectedId" class="svc-select" aria-label="选择服务工具">
-      <optgroup v-for="g in SERVICE_GROUPS" :key="g.id" :label="g.title">
-        <option v-for="t in g.tools" :key="t.id" :value="t.id">{{ t.icon }} {{ t.name }}</option>
-      </optgroup>
-    </select>
+    <div class="svc-picker" :class="{ 'is-open': pickerOpen }">
+      <button
+        type="button"
+        class="svc-select"
+        aria-label="选择服务工具"
+        :aria-expanded="pickerOpen"
+        @click="pickerOpen = !pickerOpen"
+      >
+        <span class="svc-picker-label">{{ current ? `${current.icon} ${current.name}` : '选择服务工具' }}</span>
+        <span class="svc-picker-arrow">▾</span>
+      </button>
+      <div v-if="pickerOpen" class="svc-picker-pop">
+        <template v-for="g in SERVICE_GROUPS" :key="g.id">
+          <div class="svc-picker-group">{{ g.title }}</div>
+          <button
+            v-for="t in g.tools"
+            :key="t.id"
+            type="button"
+            class="svc-picker-opt"
+            :class="{ 'is-active': t.id === selectedId }"
+            @click="pickTool(t.id)"
+          >{{ t.icon }} {{ t.name }}</button>
+        </template>
+      </div>
+    </div>
 
     <template v-if="current">
       <div class="tool-head">
@@ -240,7 +260,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from 'vue'
 import { SERVICE_GROUPS, ALL_TOOLS, initialValues } from '../services/tools.js'
 import { createRenderer } from '../services/mapRender.js'
 
@@ -272,6 +292,32 @@ function ensureRenderer() {
 watch(selectedId, id => {
   const found = ALL_TOOLS.find(t => t.id === id)
   if (found) selectTool(found)
+}, { immediate: true })
+
+/* ---------- 服务选择器（自定义下拉，替代原生 select 弹出层） ---------- */
+const pickerOpen = ref(false)
+
+function pickTool(id) {
+  selectedId.value = id
+  pickerOpen.value = false
+}
+
+function onDocMouseDown(e) {
+  if (!e.target.closest?.('.svc-picker')) pickerOpen.value = false
+}
+
+function onDocKeydown(e) {
+  if (e.key === 'Escape') pickerOpen.value = false
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', onDocMouseDown)
+  document.addEventListener('keydown', onDocKeydown)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onDocMouseDown)
+  document.removeEventListener('keydown', onDocKeydown)
 })
 
 /** 按 showIf 条件过滤字段（围栏/猎鹰等多操作工具联动） */
@@ -429,6 +475,10 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .svc-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   width: 100%;
   padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -436,6 +486,8 @@ const roads = computed(() => result.value?.roads || [])
   background: rgba(255, 255, 255, 0.06);
   color: #f5f5f7;
   font-size: 13px;
+  font-family: inherit;
+  text-align: left;
   outline: none;
   cursor: pointer;
 }
@@ -444,10 +496,83 @@ const roads = computed(() => result.value?.roads || [])
   border-color: #0a84ff;
 }
 
-.svc-select option,
-.svc-select optgroup {
+/* ---------- 自定义下拉（隐藏滚动条，随明暗主题切换） ---------- */
+.svc-picker {
+  position: relative;
+}
+
+.svc-picker-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.svc-picker-arrow {
+  flex-shrink: 0;
+  font-size: 11px;
+  opacity: 0.7;
+  transition: transform 0.18s ease;
+}
+
+.svc-picker.is-open .svc-picker-arrow {
+  transform: rotate(180deg);
+}
+
+.svc-picker.is-open .svc-select {
+  border-color: #0a84ff;
+}
+
+.svc-picker-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox 隐藏滚动条 */
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: #1c1c1e;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* Chrome / Edge / Safari 隐藏滚动条（保留滚动能力） */
+.svc-picker-pop::-webkit-scrollbar {
+  display: none;
+}
+
+.svc-picker-group {
+  padding: 8px 8px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #86868b;
+}
+
+.svc-picker-opt {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
   color: #f5f5f7;
+  font-size: 12.5px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.svc-picker-opt:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.svc-picker-opt.is-active {
+  background: #0a84ff;
+  color: #fff;
 }
 
 /* ---------- 工具头 ---------- */
@@ -1117,10 +1242,23 @@ const roads = computed(() => result.value?.roads || [])
   color: #1d1d1f;
 }
 
-.is-light .svc-select option,
-.is-light .svc-select optgroup {
+.is-light .svc-picker-pop {
+  border-color: rgba(0, 0, 0, 0.1);
   background: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.is-light .svc-picker-opt {
   color: #1d1d1f;
+}
+
+.is-light .svc-picker-opt:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.is-light .svc-picker-opt.is-active {
+  background: #0a84ff;
+  color: #fff;
 }
 
 .is-light .tool-head h3 {

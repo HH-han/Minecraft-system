@@ -3,6 +3,7 @@ package com.minecraft.exception;
 import com.minecraft.common.exception.RateLimitException;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.service.SystemLogService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
@@ -10,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
@@ -56,6 +58,18 @@ public class GlobalExceptionHandler {
     public ApiResponse<?> handleRateLimitException(RateLimitException e) {
         systemLogService.recordError("安全", "接口限流", "触发接口限流：" + e.getMessage(), e);
         return ApiResponse.error(429, e.getMessage());
+    }
+
+    /**
+     * SSE 长连接（如 /announcement/sse）30 分钟超时。
+     * 此时响应 Content-Type 已预设为 text/event-stream，无法再序列化 ApiResponse JSON，
+     * 若落入通用 handleException 会触发 HttpMessageNotWritableException 二次异常并产生垃圾错误日志。
+     * 这里只打一行 WARN 并以 503 结束响应，不写 body、不落库。
+     */
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e, HttpServletResponse response) {
+        log.warn("SSE 长连接超时断开，等待前端自动重连");
+        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(Exception.class)

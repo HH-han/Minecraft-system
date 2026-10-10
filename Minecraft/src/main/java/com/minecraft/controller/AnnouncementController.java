@@ -12,6 +12,7 @@ import com.minecraft.utils.JwtUtil;
 import com.minecraft.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -92,11 +93,12 @@ public class AnnouncementController {
 
     @Operation(summary = "SSE 实时推送（EventSource 无法携带请求头，通过 token 参数认证）")
     @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter sse(@RequestParam(required = false) String token) {
+    public SseEmitter sse(@RequestParam(required = false) String token, HttpServletResponse response) {
+        // 未授权直接返回 HTTP 401：通过 emitter.completeWithError 报错会进入全局异常处理器，
+        // 而 text/event-stream 响应无法序列化 ApiResponse，会产生二次异常
         if (token == null || token.isEmpty() || !jwtUtil.validateToken(token)) {
-            SseEmitter emitter = new SseEmitter(0L);
-            emitter.completeWithError(new RuntimeException("未授权"));
-            return emitter;
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
         }
         return sseService.subscribe(jwtUtil.getUserId(token));
     }
