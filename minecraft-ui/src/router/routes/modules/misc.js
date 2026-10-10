@@ -11,6 +11,7 @@ export default [
       requiresAuth: false,
       nav: 'more',
       navLabel: '测试页面',
+      navLabelKey: 'header.nav.test',
       order: 7,
     },
   },

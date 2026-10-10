@@ -55,6 +55,7 @@ export default [
       requiresAuth: true,
       nav: 'more',
       navLabel: '世界地图',
+      navLabelKey: 'header.nav.maps',
       order: 6,
     },
   },

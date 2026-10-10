@@ -42,9 +42,11 @@ function resolveFullPath(parentPath, path) {
 
 /**
  * 从路由表收集导航菜单项（meta.nav: 'main' | 'more'）
+ * labelKey 为 i18n key（meta.navLabelKey），Header 中优先用 $t(labelKey) 翻译；
+ * label 为中文兜底文案（meta.navLabel || meta.title）。
  * @param {Array} routeList 路由列表
  * @param {string} parentPath 父级完整路径
- * @returns {Array<{ path: string, label: string, group: string, order: number }>}
+ * @returns {Array<{ path: string, label: string, labelKey: string|null, group: string, order: number }>}
  */
 function collectNavMenus(routeList, parentPath = '') {
   const menus = [];
@@ -56,6 +58,7 @@ function collectNavMenus(routeList, parentPath = '') {
         menus.push({
           path: fullPath,
           label: meta.navLabel || meta.title,
+          labelKey: meta.navLabelKey || null,
           group: meta.nav,
           order: meta.order ?? 99,
         });

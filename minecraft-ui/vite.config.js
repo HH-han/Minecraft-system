@@ -39,7 +39,9 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
+            if (id.includes('three') || id.includes('globe.gl') || id.includes('amap')) {
+              return 'globe'
+            } else if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
               return 'vendor'
             } else if (id.includes('element-plus')) {
               return 'element'

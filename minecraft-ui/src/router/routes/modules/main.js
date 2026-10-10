@@ -7,6 +7,7 @@
  * - requiresAuth: 是否需要登录访问
  * - nav: 'main' | 'more'，声明后自动出现在顶部导航 / 更多下拉菜单
  * - navLabel: 导航菜单显示文案（缺省时使用 title）
+ * - navLabelKey: 导航菜单文案的 i18n key（优先于 navLabel/title，随语言切换响应式更新）
  * - order: 导航菜单排序，越小越靠前
  */
 export default [
@@ -14,7 +15,7 @@ export default [
     path: '/home',
     name: 'Home',
     component: () => import('@/views/index/index.vue'),
-    meta: { title: '首页', requiresAuth: false, nav: 'main', order: 1 },
+    meta: { title: '首页', requiresAuth: false, nav: 'main', navLabelKey: 'header.nav.home', order: 1 },
   },
   {
     path: '/worldtravel',
@@ -25,6 +26,7 @@ export default [
       requiresAuth: true,
       nav: 'main',
       navLabel: '目的地',
+      navLabelKey: 'header.nav.destination',
       order: 2,
     },
   },
@@ -32,19 +34,19 @@ export default [
     path: '/scenicspot',
     name: 'ScenicSpot',
     component: () => import('@/views/Scenicspot/index.vue'),
-    meta: { title: '景点', requiresAuth: false, nav: 'main', order: 3 },
+    meta: { title: '景点', requiresAuth: false, nav: 'main', navLabelKey: 'header.nav.scenic', order: 3 },
   },
   {
     path: '/hotel',
     name: 'Hotel',
     component: () => import('@/views/Hotel/index.vue'),
-    meta: { title: '酒店', requiresAuth: false, nav: 'main', order: 4 },
+    meta: { title: '酒店', requiresAuth: false, nav: 'main', navLabelKey: 'header.nav.hotel', order: 4 },
   },
   {
     path: '/food',
     name: 'Food',
     component: () => import('@/views/Food/index.vue'),
-    meta: { title: '美食', requiresAuth: false, nav: 'main', order: 5 },
+    meta: { title: '美食', requiresAuth: false, nav: 'main', navLabelKey: 'header.nav.food', order: 5 },
   },
   {
     path: '/souvenir',
@@ -55,6 +57,7 @@ export default [
       requiresAuth: false,
       nav: 'main',
       navLabel: '小物件',
+      navLabelKey: 'header.nav.souvenir',
       order: 6,
     },
   },
@@ -67,6 +70,7 @@ export default [
       requiresAuth: false,
       nav: 'main',
       navLabel: '攻略群',
+      navLabelKey: 'header.nav.strategy',
       order: 7,
     },
   },
@@ -74,7 +78,7 @@ export default [
     path: '/cards',
     name: 'Cards',
     component: () => import('@/views/Cards/index.vue'),
-    meta: { title: '旅行卡片', requiresAuth: false, nav: 'more', order: 2 },
+    meta: { title: '旅行卡片', requiresAuth: false, nav: 'more', navLabelKey: 'header.nav.cards', order: 2 },
   },
   {
     path: '/community',
@@ -85,6 +89,7 @@ export default [
       requiresAuth: true,
       nav: 'more',
       navLabel: '旅行社区',
+      navLabelKey: 'header.nav.community',
       order: 3,
     },
     children: [
@@ -117,6 +122,7 @@ export default [
       requiresAuth: false,
       nav: 'more',
       navLabel: '购票服务',
+      navLabelKey: 'header.nav.ticket',
       order: 4,
     },
   },
@@ -129,6 +135,7 @@ export default [
       requiresAuth: false,
       nav: 'more',
       navLabel: '出行计划',
+      navLabelKey: 'header.nav.travel',
       order: 5,
     },
   },

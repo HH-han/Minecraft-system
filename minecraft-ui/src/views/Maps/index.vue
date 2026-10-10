@@ -3,50 +3,50 @@
     <div class="page-header">
       <h1 class="page-title">
         <span class="title-icon">🌍</span>
-        交互式地球探索
+        3D 交互地球 · 高德导航
       </h1>
-      <p class="page-subtitle">点击大洲查看详情，继续放大可探索国家</p>
+      <p class="page-subtitle">地形 · 洋流 · 极光 · 星空 · 卫星轨道 等 39 个图层，左侧面板支持独立开关与场景预设</p>
     </div>
     <div class="globe-wrapper">
       <GlobeCanvas
         ref="globeRef"
         :is-dark="isDark"
-        :texture-url="textureUrl"
+        :auto-rotate="autoRotate"
+        :layers="layers"
         @ready="onGlobeReady"
+        @label-hover="onLabelHover"
+        @globe-select="onGlobeSelect"
+        @zoom-change="onZoomChange"
       />
       <ControlPanel
         :is-dark="isDark"
         :auto-rotate="autoRotate"
         :zoom-level="zoomLevel"
-        :min-zoom="1"
-        :max-zoom="5"
-        @zoom-in="handleZoomIn"
-        @zoom-out="handleZoomOut"
+        :layers="layers"
+        @toggle-layer="toggleLayer"
+        @preset-view="handlePresetView"
+        @apply-scene="applyScene"
+        @open-navigation="openNavigation"
+        @open-services="openServices"
+        @zoom-in="globeRef?.zoomIn()"
+        @zoom-out="globeRef?.zoomOut()"
         @reset="handleReset"
         @toggle-theme="toggleTheme"
         @toggle-auto-rotate="toggleAutoRotate"
       />
       <div class="bottom-hint">
-        <div class="hint-item">
-          <span class="hint-icon">🖱️</span>
-          <span>拖拽旋转</span>
-        </div>
-        <div class="hint-item">
-          <span class="hint-icon">🔍</span>
-          <span>滚轮缩放</span>
-        </div>
-        <div class="hint-item">
-          <span class="hint-icon">📍</span>
-          <span>点击探索</span>
-        </div>
+        <div class="hint-item"><span class="hint-icon">🖱️</span><span>拖拽旋转</span></div>
+        <div class="hint-item"><span class="hint-icon">🔍</span><span>滚轮缩放</span></div>
+        <div class="hint-item"><span class="hint-icon">🏷️</span><span>点击标注探索</span></div>
+        <div class="hint-item"><span class="hint-icon">🧭</span><span>左侧开启导航</span></div>
       </div>
     </div>
     <InfoPanel
       :visible="infoPanelVisible"
       :is-dark="isDark"
-      :continent="displayContinent"
-      :country="displayCountry"
-      :is-hover="isHoverMode"
+      :continent="selectedContinent"
+      :country="selectedCountry"
+      :is-hover="false"
       @close="closeInfoPanel"
       @explore="handleExploreContinent"
     />
@@ -57,205 +57,171 @@
       :mouse-x="mouseX"
       :mouse-y="mouseY"
     />
+    <NavigationPanel
+      :visible="navOpen"
+      @close="closeNavigation"
+      @route-change="onRouteChange"
+    />
+    <ServicePanel
+      :visible="servicesOpen"
+      @close="closeServices"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import GlobeCanvas from './components/GlobeCanvas.vue'
 import ControlPanel from './components/ControlPanel.vue'
 import InfoPanel from './components/InfoPanel.vue'
 import TooltipOverlay from './components/TooltipOverlay.vue'
-import { continents } from './data/continents.js'
+import NavigationPanel from './components/NavigationPanel.vue'
+import ServicePanel from './components/ServicePanel.vue'
+import { DEFAULT_LAYERS, VIEW_PRESETS } from './config.js'
 import { getCountriesByContinent } from './data/countries.js'
-import { getContinentById } from './data/continents.js'
-import { getCountriesByContinent as getCountryByContinentId } from './data/countries.js'
 
 const globeRef = ref(null)
 const isDark = ref(false)
 const autoRotate = ref(true)
-const isGlobeReady = ref(false)
+const navOpen = ref(false)
+const servicesOpen = ref(false)
 const selectedContinent = ref(null)
 const selectedCountry = ref(null)
-const hoveredContinent = ref(null)
-const hoveredCountry = ref(null)
 const hoveredMarker = ref(null)
-const selectedMarker = ref(null)
 const mouseX = ref(0)
 const mouseY = ref(0)
 const zoomLevel = ref(1)
-const isHoverMode = ref(false)
 
-const textureUrl = ref('')
-let pollIntervalId = null
+const layers = reactive({ ...DEFAULT_LAYERS })
 
-const infoPanelVisible = computed(() => {
-  return !!selectedContinent.value || !!selectedCountry.value || !!hoveredContinent.value || !!hoveredCountry.value
-})
+const infoPanelVisible = computed(() => !!selectedContinent.value || !!selectedCountry.value)
 
-const displayContinent = computed(() => {
-  return selectedContinent.value || hoveredContinent.value
-})
+/* ---------- 图层控制 ---------- */
 
-const displayCountry = computed(() => {
-  return selectedCountry.value || hoveredCountry.value
-})
+function toggleLayer(key) {
+  layers[key] = !layers[key]
+}
+
+/** 应用场景预设：整体替换图层开关状态 */
+function applyScene(preset) {
+  if (!preset?.layers) return
+  for (const k of Object.keys(layers)) layers[k] = false
+  for (const [k, v] of Object.entries(preset.layers)) {
+    if (k in layers) layers[k] = v
+  }
+}
+
+function handlePresetView(preset) {
+  globeRef.value?.pointOfView({ lat: preset.lat, lng: preset.lng, altitude: preset.alt }, 600)
+}
+
+/* ---------- 主题 / 旋转 / 缩放 ---------- */
 
 function toggleTheme() {
   isDark.value = !isDark.value
+  localStorage.setItem('globe-theme', isDark.value ? 'dark' : 'light')
 }
 
 function toggleAutoRotate() {
   autoRotate.value = !autoRotate.value
-  if (globeRef.value) {
-    globeRef.value.setAutoRotate(autoRotate.value)
-  }
-}
-
-function handleZoomIn() {
-  if (globeRef.value) {
-    globeRef.value.zoomIn()
-  }
-}
-
-function handleZoomOut() {
-  if (globeRef.value) {
-    globeRef.value.zoomOut()
-  }
 }
 
 function handleReset() {
-  if (globeRef.value) {
-    globeRef.value.resetView()
-  }
+  globeRef.value?.resetView()
+  globeRef.value?.clearLocateRing()
   selectedContinent.value = null
   selectedCountry.value = null
-  selectedMarker.value = null
 }
 
-function onGlobeReady() {
-  isGlobeReady.value = true
-  setupInteractionListeners()
+function onZoomChange(pov) {
+  // altitude(0.1~3.5) 映射为 1~5 缩放级别
+  const z = 1 + (2.6 - pov.altitude) / 2.4 * 4
+  zoomLevel.value = Math.round(Math.min(5, Math.max(1, z)) * 10) / 10
 }
 
-function setupInteractionListeners() {
-  if (!globeRef.value) return
-  const interaction = globeRef.value.interaction
-  if (!interaction) return
-  pollIntervalId = setInterval(() => {
-    if (interaction.state) {
-      // Handle marker selection (click on marker)
-      if (interaction.state.selectedMarker &&
-          interaction.state.selectedMarker !== selectedMarker.value) {
-        const marker = interaction.state.selectedMarker
-        selectedMarker.value = marker
-        // Map marker to continent/country data for InfoPanel
-        if (marker.type === 'continent') {
-          const continent = getContinentById(marker.id)
-          selectedContinent.value = continent || marker
-          selectedCountry.value = null
-        } else {
-          const countries = getCountryByContinentId(marker.continentId)
-          const country = countries?.find(c => c.id === marker.id)
-          selectedCountry.value = country || marker
-          selectedContinent.value = null
-        }
-        hoveredContinent.value = null
-        hoveredCountry.value = null
-        hoveredMarker.value = null
-        isHoverMode.value = false
-      }
-      // Handle selection (persistent on click)
-      if (interaction.state.selectedContinent &&
-          interaction.state.selectedContinent !== selectedContinent.value && !interaction.state.selectedMarker) {
-        selectedContinent.value = interaction.state.selectedContinent
-        selectedCountry.value = null
-        selectedMarker.value = null
-        hoveredContinent.value = null
-        hoveredCountry.value = null
-        hoveredMarker.value = null
-        isHoverMode.value = false
-      }
-      if (interaction.state.selectedCountry &&
-          interaction.state.selectedCountry !== selectedCountry.value && !interaction.state.selectedMarker) {
-        selectedCountry.value = interaction.state.selectedCountry
-        selectedContinent.value = null
-        selectedMarker.value = null
-        hoveredContinent.value = null
-        hoveredCountry.value = null
-        hoveredMarker.value = null
-        isHoverMode.value = false
-      }
-      // Handle hover (temporary) - markers take priority
-      if (!selectedContinent.value && !selectedCountry.value && !selectedMarker.value) {
-        if (interaction.state.hoveredMarker &&
-            interaction.state.hoveredMarker !== hoveredMarker.value) {
-          hoveredMarker.value = interaction.state.hoveredMarker
-          hoveredContinent.value = null
-          hoveredCountry.value = null
-          isHoverMode.value = true
-        } else if (interaction.state.hoveredCountry &&
-                   interaction.state.hoveredCountry !== hoveredCountry.value) {
-          hoveredCountry.value = interaction.state.hoveredCountry
-          hoveredContinent.value = null
-          hoveredMarker.value = null
-          isHoverMode.value = true
-        } else if (interaction.state.hoveredContinent &&
-                   interaction.state.hoveredContinent !== hoveredContinent.value) {
-          hoveredContinent.value = interaction.state.hoveredContinent
-          hoveredCountry.value = null
-          hoveredMarker.value = null
-          isHoverMode.value = true
-        } else if (!interaction.state.hoveredCountry && !interaction.state.hoveredContinent && !interaction.state.hoveredMarker) {
-          if (hoveredContinent.value || hoveredCountry.value || hoveredMarker.value) {
-            hoveredContinent.value = null
-            hoveredCountry.value = null
-            hoveredMarker.value = null
-            isHoverMode.value = false
-          }
-        }
-      }
-      zoomLevel.value = interaction.zoomLevel?.value || 1
-    }
-  }, 100)
+/* ---------- 地球交互 ---------- */
+
+function onGlobeReady() { /* 地球就绪（loading 已由组件内部关闭） */ }
+
+function onLabelHover(marker) {
+  hoveredMarker.value = marker
+  if (marker && window.__globeMouse) {
+    mouseX.value = window.__globeMouse.x
+    mouseY.value = window.__globeMouse.y
+  }
+}
+
+function onGlobeSelect({ type, data }) {
+  if (type === 'country') {
+    selectedContinent.value = null
+    selectedCountry.value = data
+    hoveredMarker.value = null
+    globeRef.value?.locateAt(data.lat, data.lng, 1.5)
+  } else if (type === 'continent') {
+    selectedCountry.value = null
+    selectedContinent.value = data
+    hoveredMarker.value = null
+    globeRef.value?.locateAt(data.centerLat, data.centerLng, 1.7)
+  }
 }
 
 function closeInfoPanel() {
   selectedContinent.value = null
   selectedCountry.value = null
-  hoveredContinent.value = null
-  hoveredCountry.value = null
   hoveredMarker.value = null
-  selectedMarker.value = null
-  isHoverMode.value = false
-  if (globeRef.value?.interaction) {
-    globeRef.value.interaction.closeInfoPanel()
-    globeRef.value.interaction.clearHover()
-  }
 }
 
 function handleExploreContinent(continent) {
-  const countries = getCountriesByContinent(continent.id)
-  if (countries.length > 0 && globeRef.value?.interaction) {
-    const firstCountry = countries[0]
-    globeRef.value.interaction.focusOnCountry(firstCountry)
+  const first = getCountriesByContinent(continent.id)?.[0]
+  if (first) {
     selectedContinent.value = null
-    selectedCountry.value = firstCountry
+    selectedCountry.value = first
+    globeRef.value?.locateAt(first.lat, first.lng, 1.4)
+  } else {
+    globeRef.value?.locateAt(continent.centerLat, continent.centerLng, 1.6)
+  }
+}
+
+/* ---------- 高德导航 ---------- */
+
+function openNavigation() {
+  navOpen.value = true
+  // 导航面板全屏覆盖时暂停地球渲染，节省 GPU
+  globeRef.value?.pauseAnimation()
+}
+
+function closeNavigation() {
+  navOpen.value = false
+  globeRef.value?.resumeAnimation()
+}
+
+/* ---------- 高德服务工具箱 ---------- */
+
+function openServices() {
+  servicesOpen.value = true
+  globeRef.value?.pauseAnimation()
+}
+
+function closeServices() {
+  servicesOpen.value = false
+  globeRef.value?.resumeAnimation()
+}
+
+function onRouteChange(route) {
+  if (route && route.points?.length > 1) {
+    globeRef.value?.setRoutePath(route.points)
+  } else {
+    globeRef.value?.clearRoutePath()
   }
 }
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('globe-theme')
-  if (savedTheme) {
-    isDark.value = savedTheme === 'dark'
-  }
+  if (savedTheme) isDark.value = savedTheme === 'dark'
 })
 
 onUnmounted(() => {
-  if (pollIntervalId) {
-    clearInterval(pollIntervalId)
-    pollIntervalId = null
-  }
+  if (navOpen.value || servicesOpen.value) globeRef.value?.resumeAnimation()
 })
 </script>
 
@@ -317,7 +283,7 @@ onUnmounted(() => {
 
 .page-subtitle {
   margin: 8px 0 0;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 400;
   color: #6e6e73;
   letter-spacing: -0.2px;
@@ -391,66 +357,26 @@ onUnmounted(() => {
 }
 
 @media (max-width: 1199px) {
-  .page-title {
-    font-size: 28px;
-  }
-  .page-subtitle {
-    font-size: 15px;
-  }
-  .hint-item {
-    padding: 8px 14px;
-    font-size: 12px;
-  }
+  .page-title { font-size: 28px; }
+  .page-subtitle { font-size: 14px; }
+  .hint-item { padding: 8px 14px; font-size: 12px; }
 }
 
 @media (max-width: 767px) {
-  .page-header {
-    padding: 16px 20px 0;
-  }
-  .page-title {
-    font-size: 24px;
-    gap: 8px;
-  }
-  .title-icon {
-    font-size: 24px;
-  }
-  .page-subtitle {
-    font-size: 14px;
-    margin-top: 6px;
-  }
-  .globe-wrapper {
-    margin-top: 4px;
-  }
-  .bottom-hint {
-    bottom: 20px;
-    gap: 4px;
-    padding: 4px;
-  }
-  .hint-item {
-    padding: 6px 12px;
-    font-size: 11px;
-    gap: 4px;
-  }
-  .hint-icon {
-    font-size: 12px;
-  }
+  .page-header { padding: 16px 20px 0; }
+  .page-title { font-size: 24px; gap: 8px; }
+  .title-icon { font-size: 24px; }
+  .page-subtitle { font-size: 12px; margin-top: 6px; }
+  .globe-wrapper { margin-top: 4px; }
+  .bottom-hint { bottom: 20px; gap: 4px; padding: 4px; flex-wrap: wrap; justify-content: center; }
+  .hint-item { padding: 6px 12px; font-size: 11px; gap: 4px; }
+  .hint-icon { font-size: 12px; }
 }
 
 @media (max-width: 480px) {
-  .page-title {
-    font-size: 22px;
-  }
-  .page-subtitle {
-    font-size: 13px;
-  }
-  .hint-item span:last-child {
-    display: none;
-  }
-  .hint-item {
-    padding: 8px 10px;
-  }
-  .hint-icon {
-    font-size: 14px;
-  }
+  .page-title { font-size: 22px; }
+  .page-subtitle { font-size: 11px; }
+  .hint-item span:last-child { display: none; }
+  .hint-item { padding: 8px 10px; }
 }
 </style>

@@ -17,6 +17,7 @@ export default [
           title: '关于我们',
           requiresAuth: false,
           nav: 'more',
+          navLabelKey: 'header.nav.about',
           order: 1,
         },
       },

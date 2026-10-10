@@ -4,7 +4,7 @@
     <div class="navbar-background-container">
       <div class="navbar-home">
         <!-- 移动端汉堡菜单按钮（≤992px 显示） -->
-        <button class="mobile-menu-btn" :class="{ 'is-open': mobileMenuOpen }" aria-label="菜单"
+        <button class="mobile-menu-btn" :class="{ 'is-open': mobileMenuOpen }" :aria-label="$t('header.nav.menu')"
           @click.stop="mobileMenuOpen = !mobileMenuOpen">
           <span></span>
           <span></span>
@@ -20,7 +20,7 @@
             <button v-for="navItem in navItems" :key="navItem.path" class="action-btn"
               :class="{ 'nav-item-active': isActiveNav(navItem.path) }"
               @click="navigateTo(navItem.path)">
-              {{ navItem.label }}
+              {{ navItem.labelKey ? $t(navItem.labelKey) : navItem.label }}
             </button>
           </div>
           <div class="dropdown">
@@ -29,7 +29,7 @@
               <button v-for="(item, index) in moreMenuItems" :key="item.path"
                 :style="index === moreMenuItems.length - 1 ? 'border-radius: 0 0 10px 10px' : ''"
                 class="dropdown-item_action-btn"
-                @click="navigateTo(item.path)">{{ item.label }}</button>
+                @click="navigateTo(item.path)">{{ item.labelKey ? $t(item.labelKey) : item.label }}</button>
             </div>
           </div>
         </div>
@@ -141,7 +141,7 @@
   <!-- 移动端导航面板（≤992px 显示，含主导航与更多菜单） -->
   <Transition name="mobile-nav">
     <div v-if="mobileMenuOpen" class="mobile-nav-panel" @click.stop>
-      <div class="mobile-nav-section">导航</div>
+      <div class="mobile-nav-section">{{ $t('header.nav.sectionNav') }}</div>
       <button v-for="(navItem, i) in navItems" :key="navItem.path" class="mobile-nav-item"
         :class="{ 'nav-item-active': isActiveNav(navItem.path) }" :style="{ animationDelay: `${i * 40}ms` }"
         @click="navigateTo(navItem.path)">
@@ -151,14 +151,14 @@
             <path v-for="d in navIcon(navItem.path)" :key="d" :d="d" />
           </svg>
         </span>
-        <span class="mobile-nav-text">{{ navItem.label }}</span>
+        <span class="mobile-nav-text">{{ navItem.labelKey ? $t(navItem.labelKey) : navItem.label }}</span>
         <svg class="mobile-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="m9 18 6-6-6-6" />
         </svg>
       </button>
       <div class="mobile-nav-divider"></div>
-      <div class="mobile-nav-section">更多</div>
+      <div class="mobile-nav-section">{{ $t('header.nav.sectionMore') }}</div>
       <button v-for="(item, i) in moreMenuItems" :key="item.path" class="mobile-nav-item"
         :class="{ 'nav-item-active': isActiveNav(item.path) }"
         :style="{ animationDelay: `${(navItems.length + i) * 40}ms` }" @click="navigateTo(item.path)">
@@ -168,7 +168,7 @@
             <path v-for="d in navIcon(item.path)" :key="d" :d="d" />
           </svg>
         </span>
-        <span class="mobile-nav-text">{{ item.label }}</span>
+        <span class="mobile-nav-text">{{ item.labelKey ? $t(item.labelKey) : item.label }}</span>
         <svg class="mobile-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="m9 18 6-6-6-6" />
