@@ -28,20 +28,21 @@ window._AMapSecurityConfig = { securityJsCode: AMAP_SECURITY_CODE }
 
 /**
  * 使用 JSAPI 1.4.15：需 Key + 安全密钥（securityJsCode）完成鉴权，
- * 该版本提供完整的路线规划（驾车/步行/公交）、POI 搜索、地理编码、定位能力。
+ * 该版本提供完整的路线规划（驾车/步行/公交/骑行）、POI 搜索、地理编码、定位能力。
  */
 export const AMAP_VERSION = '1.4.15'
 
-/** 需要预加载的高德插件 */
+/** 需要预加载的高德插件（缩放/3D 等控件为自定义实现，不再使用 ToolBar） */
 export const AMAP_PLUGINS = [
-  'AMap.ToolBar',
   'AMap.Scale',
   'AMap.Driving',
   'AMap.Walking',
   'AMap.Transfer',
-  'AMap.Autocomplete',
+  'AMap.Riding',
   'AMap.Geocoder',
-  'AMap.Geolocation'
+  'AMap.Geolocation',
+  'AMap.TrafficLayer',
+  'AMap.RangingTool'
 ]
 
 /** 3D 地球视角预设（altitude 单位为地球半径倍数） */
