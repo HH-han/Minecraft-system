@@ -195,7 +195,7 @@ const zoomLevelPercent = computed(() => {
   left: 20px;
   top: 20px;
   width: 248px;
-  max-height: calc(100% - 40px);
+  max-height: calc(100% - 200px);
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
