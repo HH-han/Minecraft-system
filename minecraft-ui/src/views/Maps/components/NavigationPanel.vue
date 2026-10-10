@@ -1162,6 +1162,7 @@ onBeforeUnmount(() => {
 }
 
 .nav-overlay.is-light .policy-select {
+  width: 100%;
   border-color: rgba(0, 0, 0, 0.14);
   background: #fff;
   color: #1d1d1f;
