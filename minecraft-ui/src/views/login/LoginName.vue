@@ -1831,4 +1831,154 @@ onMounted(() => {
   overflow-y: auto;
   animation: slideIn 0.3s ease-in-out;
 }
+
+/* ================= 暗色主题 ================= */
+/* 让主题切换开关浮于子页面弹层之上，保证邮箱/手机/找回密码页也能切换主题 */
+:global(.theme-switch-login) {
+  z-index: 1200;
+}
+
+html[data-theme="dark"] .left-section {
+  background: linear-gradient(135deg, #1b4f86 0%, #0e2f52 100%);
+}
+
+html[data-theme="dark"] .left-section::before {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme="dark"] .right-section {
+  background: #1b1e2b;
+}
+
+html[data-theme="dark"] .right-section::before {
+  background: rgba(78, 161, 240, 0.08);
+}
+
+html[data-theme="dark"] .login-form h3,
+html[data-theme="dark"] .register-form h3 {
+  color: #4ea1f0;
+}
+
+html[data-theme="dark"] .login-form h2,
+html[data-theme="dark"] .register-form h2 {
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .welcome-message,
+html[data-theme="dark"] .form-subtitle {
+  color: #a1a1a6;
+}
+
+html[data-theme="dark"] .user-icon svg,
+html[data-theme="dark"] .userlogin-userIcon {
+  fill: #4ea1f0;
+}
+
+html[data-theme="dark"] .loginpage-avatar {
+  border-color: #4ea1f0;
+  box-shadow: 0 4px 12px rgba(78, 161, 240, 0.35);
+}
+
+html[data-theme="dark"] .registered-avatar-preview {
+  background-color: #2f3448;
+  border-color: #3d4360;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .userlogin-usernameLabel {
+  color: #a1a1a6;
+}
+
+html[data-theme="dark"] #userlogin-passwordField,
+html[data-theme="dark"] #userlogin-usernameField {
+  border-color: #3d4360;
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] #userlogin-passwordField::placeholder,
+html[data-theme="dark"] #userlogin-usernameField::placeholder {
+  color: #7f869e;
+}
+
+html[data-theme="dark"] #userlogin-passwordField:focus,
+html[data-theme="dark"] #userlogin-passwordField:valid,
+html[data-theme="dark"] #userlogin-usernameField:focus,
+html[data-theme="dark"] #userlogin-usernameField:valid {
+  background-color: #262a3a;
+}
+
+html[data-theme="dark"] .other-login-title {
+  color: #8e8e93;
+}
+
+html[data-theme="dark"] .other-login-title::before,
+html[data-theme="dark"] .other-login-title::after {
+  background-color: #3d4360;
+}
+
+html[data-theme="dark"] .other-login-btn {
+  color: #e5e5ea;
+}
+
+html[data-theme="dark"] .qq-login {
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .agreement-checkbox,
+html[data-theme="dark"] .registered-css-a-container input[type="checkbox"] {
+  border-color: #525a78;
+}
+
+html[data-theme="dark"] .agreement-text {
+  color: #a1a1a6;
+}
+
+html[data-theme="dark"] .agreement-link,
+html[data-theme="dark"] .agreement-a4,
+html[data-theme="dark"] .form-footer button {
+  color: #4ea1f0;
+}
+
+html[data-theme="dark"] .agreement-link:hover,
+html[data-theme="dark"] .agreement-a4:hover,
+html[data-theme="dark"] .form-footer button:hover {
+  color: #7cb8f5;
+}
+
+html[data-theme="dark"] .registered-css-input-field {
+  border-bottom-color: #3d4360;
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .registered-css-input-field:focus {
+  border-bottom-color: #4ea1f0;
+}
+
+html[data-theme="dark"] .registered-css-input-label {
+  color: #7f869e;
+}
+
+html[data-theme="dark"] .registered-css-input-field:focus + .registered-css-input-label,
+html[data-theme="dark"] .registered-css-input-field:not(:placeholder-shown) + .registered-css-input-label {
+  color: #4ea1f0;
+}
+
+html[data-theme="dark"] .registered-css-input-highlight {
+  background-color: #4ea1f0;
+}
+
+html[data-theme="dark"] .loginpage-qr-link {
+  color: #4ea1f0;
+  background: rgba(78, 161, 240, 0.15);
+}
+
+html[data-theme="dark"] .submit-btn,
+html[data-theme="dark"] .registered-css-input-registered {
+  background: linear-gradient(135deg, #3f8fe0 0%, #1f6bb0 100%);
+}
+
+html[data-theme="dark"] .blur-modal-content {
+  background: #1b1e2b;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
 </style>

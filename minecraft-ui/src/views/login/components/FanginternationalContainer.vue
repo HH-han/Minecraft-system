@@ -348,4 +348,76 @@ watchEffect(() => {
     font-size: 17px;
   }
 }
+
+/* ================= 暗色主题 ================= */
+html[data-theme="dark"] .phonelogin-card {
+  background: #1c1c1e;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55),
+              0 8px 24px rgba(0, 0, 0, 0.4),
+              0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .phonelogin-title {
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .phonelogin-input-group {
+  background: #2c2c2e;
+  border-color: #3a3a3c;
+}
+
+html[data-theme="dark"] .phonelogin-input-group:focus-within {
+  border-color: #0a84ff;
+  box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.25);
+}
+
+html[data-theme="dark"] .phonelogin-input {
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .phonelogin-input::placeholder {
+  color: #8e8e93;
+}
+
+html[data-theme="dark"] .phonelogin-svg-icon {
+  color: #98989d;
+}
+
+html[data-theme="dark"] .phonelogin-code-btn {
+  background: #2c2c2e;
+  color: #f5f5f7;
+  border-color: #3a3a3c;
+}
+
+html[data-theme="dark"] .phonelogin-code-btn:hover:not(:disabled) {
+  background: #3a3a3c;
+}
+
+html[data-theme="dark"] .phonelogin-code-btn:active:not(:disabled) {
+  background: #48484a;
+}
+
+html[data-theme="dark"] .phonelogin-code-btn:disabled {
+  background: #232325;
+  color: #636366;
+  border-color: #3a3a3c;
+}
+
+html[data-theme="dark"] .phonelogin-submit-btn {
+  background: #0a84ff;
+}
+
+html[data-theme="dark"] .phonelogin-submit-btn:hover:not(:disabled) {
+  background: #3395ff;
+  box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
+}
+
+html[data-theme="dark"] .phonelogin-submit-btn:active:not(:disabled) {
+  background: #0071e3;
+}
+
+html[data-theme="dark"] .phonelogin-submit-btn:disabled {
+  background: #48484a;
+  color: #c7c7cc;
+}
 </style>

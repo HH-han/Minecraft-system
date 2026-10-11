@@ -231,4 +231,51 @@ const handleSubmit = async () => {
   transform: rotate(180deg) scale(9);
   fill: #c0c7ec;
 }
+
+/* ================= 暗色主题 ================= */
+html[data-theme="dark"] .card_forgotPassword {
+  background-color: #20222e;
+  border-bottom-color: #6d8bff;
+  box-shadow: 0 12px 65px -39px rgba(0, 0, 0, 1);
+}
+
+html[data-theme="dark"] .BG svg {
+  fill: #2a2d3d;
+}
+
+html[data-theme="dark"] .card_forgotPassword:hover .BG svg {
+  fill: #3a4a7d;
+}
+
+html[data-theme="dark"] .content_forgotPassword,
+html[data-theme="dark"] .heading_forgotPassword,
+html[data-theme="dark"] .sub-heading_forgotPassword {
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .sub-sub-heading_forgotPassword {
+  color: #8e8e93;
+}
+
+html[data-theme="dark"] .Phone_forgotPassword {
+  border-bottom-color: #3d4360;
+  color: #f5f5f7;
+}
+
+html[data-theme="dark"] .Phone_forgotPassword::placeholder {
+  color: #7f869e;
+}
+
+html[data-theme="dark"] .card-btn_forgotPassword {
+  background: linear-gradient(60deg, #5b7cff, #8fa3ff);
+}
+
+html[data-theme="dark"] .card-btn_forgotPassword:disabled {
+  background-color: #3a3f55;
+  background-image: none;
+}
+
+html[data-theme="dark"] .error-message {
+  color: #ff6b6b;
+}
 </style>
