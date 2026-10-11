@@ -1,8 +1,22 @@
 <template>
   <div class="announcement-page">
     <div class="page-header glass-card">
-      <h2>系统公告</h2>
-      <p class="page-subtitle">了解平台最新动态、活动信息与维护通知</p>
+      <div class="header-hero">
+        <div class="hero-icon">
+          <el-icon :size="26"><Bell /></el-icon>
+        </div>
+        <div class="hero-text">
+          <h2>系统公告</h2>
+          <p class="page-subtitle">了解平台最新动态、活动信息与维护通知</p>
+        </div>
+        <transition name="pop">
+          <div v-if="store.unreadCount > 0" class="unread-chip">
+            <span class="chip-dot" />
+            {{ store.unreadCount }} 条未读
+          </div>
+        </transition>
+      </div>
+
       <div class="filter-bar">
         <el-radio-group v-model="filterType" @change="handleFilter">
           <el-radio-button :value="null">全部</el-radio-button>
@@ -16,25 +30,30 @@
     <div v-if="loading" class="skeleton-grid">
       <el-skeleton v-for="i in 6" :key="i" class="skeleton-card glass-card" animated>
         <template #template>
-          <el-skeleton-item variant="rect" style="height: 90px; border-radius: 12px" />
-          <el-skeleton-item variant="text" style="margin-top: 12px" />
+          <el-skeleton-item variant="rect" style="height: 88px; border-radius: 12px" />
+          <el-skeleton-item variant="text" style="margin-top: 14px" />
           <el-skeleton-item variant="text" style="width: 60%" />
         </template>
       </el-skeleton>
     </div>
 
     <div v-else-if="records.length" class="announcement-list">
-      <div
-        v-for="item in records"
+      <article
+        v-for="(item, index) in records"
         :key="item.id"
         class="announcement-item glass-card"
+        :class="`type-${item.type}`"
+        :style="{ animationDelay: `${index * 55}ms` }"
         @click="goDetail(item.id)"
       >
         <div class="item-head">
-          <el-tag :type="typeTagType(item.type)" size="small">{{ typeText(item.type) }}</el-tag>
-          <el-tag v-if="item.level > 1" :type="item.level === 3 ? 'danger' : 'warning'" size="small" effect="plain">
+          <span class="type-chip">
+            <i class="chip-dot" />
+            {{ typeText(item.type) }}
+          </span>
+          <span v-if="item.level > 1" class="level-chip" :class="`level-${item.level}`">
             {{ levelText(item.level) }}
-          </el-tag>
+          </span>
           <span v-if="!item.isRead" class="unread-dot" title="未读"></span>
         </div>
         <h3 class="item-title">
@@ -44,12 +63,17 @@
         <p class="item-summary">{{ item.summary || stripHtml(item.content) }}</p>
         <div class="item-foot">
           <span class="item-time">{{ formatTime(item.publishTime) }}</span>
-          <span class="item-views">{{ item.viewCount || 0 }} 次浏览</span>
+          <span class="item-views">
+            <el-icon><View /></el-icon>
+            {{ item.viewCount || 0 }} 次浏览
+          </span>
         </div>
-      </div>
+      </article>
     </div>
 
-    <el-empty v-else description="暂无公告" />
+    <div v-else class="empty-wrap glass-card">
+      <el-empty description="暂无公告" :image-size="96" />
+    </div>
 
     <div class="pagination-wrap" v-if="total > pageSize">
       <el-pagination
@@ -66,7 +90,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { Bell, View } from '@element-plus/icons-vue'
 import { getAnnouncementList } from '@/api/announcement'
 import { useAnnouncementStore } from '@/stores/announcementStore'
 import AnnouncementDetailModal from '@/components/AnnouncementComponents/AnnouncementDetailModal.vue'
@@ -92,6 +117,13 @@ onMounted(async () => {
   await fetchList()
   // 回到列表页时刷新未读数
   store.fetchUnread()
+})
+
+// 关闭详情后同步消除列表红点（弹窗内已调 store.read 标记已读）
+watch(detailVisible, (v) => {
+  if (v) return
+  const item = records.value.find((r) => r.id === detailId.value)
+  if (item && !item.isRead) item.isRead = true
 })
 
 async function fetchList() {
@@ -125,16 +157,25 @@ function goDetail(id) {
 function typeText(type) {
   return TYPE_OPTIONS.find((t) => t.value === type)?.label || '公告'
 }
-function typeTagType(type) {
-  return { 1: 'primary', 2: 'warning', 3: 'danger', 4: 'success' }[type] || 'info'
-}
 function levelText(level) {
   return { 2: '重要', 3: '紧急' }[level] || '普通'
 }
 function formatTime(time) {
   if (!time) return ''
   const d = new Date(time)
-  return isNaN(d.getTime()) ? '' : d.toLocaleString('zh-CN', { hour12: false })
+  if (isNaN(d.getTime())) return ''
+  const now = new Date()
+  const diff = now - d
+  const pad = (n) => String(n).padStart(2, '0')
+  const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`
+  if (diff < 60_000) return '刚刚'
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} 分钟前`
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const startYesterday = startToday - 86_400_000
+  if (d >= startToday) return `今天 ${hm}`
+  if (d >= startYesterday) return `昨天 ${hm}`
+  if (diff < 7 * 86_400_000) return `${Math.floor(diff / 86_400_000)} 天前`
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 function stripHtml(html) {
   if (!html) return ''
@@ -144,8 +185,10 @@ function stripHtml(html) {
 
 <style scoped>
 .announcement-page {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 100px;
   padding: 24px 16px 60px;
 }
 .glass-card {
@@ -157,40 +200,222 @@ function stripHtml(html) {
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
   transition: all 0.3s ease;
 }
+
+/* ==================== 页头 ==================== */
 .page-header {
-  padding: 28px 32px;
+  padding: 28px 32px 24px;
   margin-bottom: 24px;
+  animation: card-in 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+.header-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.hero-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #0a84ff, #5e5ce6);
+  box-shadow:
+    0 8px 20px rgba(10, 132, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.hero-text {
+  flex: 1;
+  min-width: 0;
 }
 .page-header h2 {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   color: #1d1d1f;
 }
 .page-subtitle {
-  margin: 0 0 16px;
-  font-size: 14px;
-  color: #888;
+  margin: 0;
+  font-size: 13px;
+  color: #86868b;
 }
+.unread-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ff3b30;
+  background: rgba(255, 59, 48, 0.08);
+  border: 1px solid rgba(255, 59, 48, 0.22);
+}
+.unread-chip .chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3b30;
+  animation: pulse 1.8s ease-out infinite;
+}
+.pop-enter-active {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.pop-leave-active {
+  transition: all 0.2s ease;
+}
+.pop-enter-from,
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+/* iOS 风格分段筛选 */
 .filter-bar {
-  margin-top: 8px;
+  margin-top: 18px;
 }
+.filter-bar :deep(.el-radio-group) {
+  display: inline-flex;
+  gap: 2px;
+  max-width: 100%;
+  padding: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: rgba(120, 120, 128, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.filter-bar :deep(.el-radio-group)::-webkit-scrollbar {
+  display: none;
+}
+.filter-bar :deep(.el-radio-button__inner) {
+  border: none !important;
+  border-radius: 999px !important;
+  background: transparent;
+  padding: 7px 18px;
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+.filter-bar :deep(.el-radio-button__inner:hover) {
+  color: #1d1d1f;
+}
+.filter-bar :deep(.el-radio-button__original-radio:checked + .el-radio-button__inner) {
+  color: #fff;
+  background: linear-gradient(135deg, #2c2c2e, #1d1d1f);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* ==================== 公告卡片 ==================== */
 .announcement-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 .announcement-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   padding: 20px;
   cursor: pointer;
+  overflow: hidden;
+  animation: card-in 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+/* 类型强调色 */
+.type-1 {
+  --accent: #0a84ff;
+  --accent-soft: rgba(10, 132, 255, 0.1);
+}
+.type-2 {
+  --accent: #ff9500;
+  --accent-soft: rgba(255, 149, 0, 0.12);
+}
+.type-3 {
+  --accent: #ff3b30;
+  --accent-soft: rgba(255, 59, 48, 0.1);
+}
+.type-4 {
+  --accent: #34c759;
+  --accent-soft: rgba(52, 199, 89, 0.12);
+}
+/* 悬停时右上角浮现类型色光晕 */
+.announcement-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(240px 150px at 100% 0%, var(--accent-soft), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+/* 悬停时底部浮现类型色渐进线 */
+.announcement-item::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .announcement-item:hover {
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
-  transform: translateY(-2px);
+  box-shadow: 0 16px 44px rgba(31, 38, 135, 0.22);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.65);
 }
+.announcement-item:hover::before {
+  opacity: 1;
+}
+.announcement-item:hover::after {
+  transform: scaleX(1);
+}
+
 .item-head {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+}
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent, #8e8e93);
+  background: var(--accent-soft, rgba(142, 142, 147, 0.12));
+}
+.type-chip .chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.level-chip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+.level-2 {
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.level-3 {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.32);
 }
 .unread-dot {
   width: 8px;
@@ -198,31 +423,38 @@ function stripHtml(html) {
   border-radius: 50%;
   background: #f56c6c;
   margin-left: auto;
+  animation: pulse 1.8s ease-out infinite;
 }
 .item-title {
   margin: 0 0 8px;
   font-size: 16px;
+  font-weight: 600;
   color: #1d1d1f;
+  transition: color 0.25s ease;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.announcement-item:hover .item-title {
+  color: var(--accent);
+}
 .top-badge {
   display: inline-block;
   margin-right: 6px;
-  padding: 1px 6px;
-  border-radius: 4px;
+  padding: 1px 7px;
+  border-radius: 5px;
   background: linear-gradient(135deg, #f97316, #ef4444);
   color: #fff;
   font-size: 12px;
   font-weight: normal;
   vertical-align: 2px;
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3);
 }
 .item-summary {
   margin: 0 0 14px;
   font-size: 13px;
-  color: #666;
+  color: #86868b;
   line-height: 1.7;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -233,9 +465,20 @@ function stripHtml(html) {
 .item-foot {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   font-size: 12px;
-  color: #999;
+  color: #a1a1a6;
 }
+.item-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ==================== 骨架屏 / 空态 / 分页 ==================== */
 .skeleton-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -244,11 +487,58 @@ function stripHtml(html) {
 .skeleton-card {
   padding: 20px;
 }
+.empty-wrap {
+  padding: 48px 20px;
+  animation: card-in 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
 .pagination-wrap {
   display: flex;
   justify-content: center;
   margin-top: 28px;
+  animation: card-in 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
 }
+.pagination-wrap :deep(.el-pagination) {
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1);
+}
+.pagination-wrap :deep(.el-pager li),
+.pagination-wrap :deep(.btn-prev),
+.pagination-wrap :deep(.btn-next) {
+  border-radius: 8px;
+  background: transparent;
+}
+.pagination-wrap :deep(.el-pager li.is-active) {
+  background: linear-gradient(135deg, #2c2c2e, #1d1d1f);
+  color: #fff;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 108, 108, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(245, 108, 108, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 108, 108, 0);
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1199px) {
   .announcement-list,
   .skeleton-grid {
@@ -259,6 +549,21 @@ function stripHtml(html) {
   .announcement-list,
   .skeleton-grid {
     grid-template-columns: 1fr;
+  }
+  .page-header {
+    padding: 22px 18px 18px;
+  }
+  .header-hero {
+    flex-wrap: wrap;
+  }
+  .hero-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+  .filter-bar :deep(.el-radio-button__inner) {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }
 </style>

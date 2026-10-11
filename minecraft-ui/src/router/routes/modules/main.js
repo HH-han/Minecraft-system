@@ -108,6 +108,37 @@ export default [
     ],
   },
   {
+    path: '/travel-note',
+    name: 'TravelNote',
+    component: () => import('@/views/TravelNote/index.vue'),
+    meta: {
+      title: '旅游笔记',
+      requiresAuth: false,
+      nav: 'more',
+      navLabel: '旅游笔记',
+      navLabelKey: 'header.nav.travelNote',
+      order: 6,
+    },
+  },
+  {
+    path: '/travel-note/detail/:id',
+    name: 'TravelNoteDetail',
+    component: () => import('@/views/TravelNote/detail.vue'),
+    meta: { title: '笔记详情', requiresAuth: false },
+  },
+  {
+    path: '/travel-note/editor',
+    name: 'TravelNoteEditor',
+    component: () => import('@/views/TravelNote/editor.vue'),
+    meta: { title: '写笔记', requiresAuth: true },
+  },
+  {
+    path: '/travel-note/mine',
+    name: 'TravelNoteMine',
+    component: () => import('@/views/TravelNote/mine.vue'),
+    meta: { title: '我的笔记', requiresAuth: true },
+  },
+  {
     path: '/forum',
     name: 'Forum',
     component: () => import('@/views/Forum/index.vue'),

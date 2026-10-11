@@ -52,6 +52,10 @@ public class RedisUtil {
         redisTemplate.opsForHash().put(key, field, value);
     }
 
+    public Long hincr(String key, String field, long delta) {
+        return redisTemplate.opsForHash().increment(key, field, delta);
+    }
+
     public Object hget(String key, String field) {
         return redisTemplate.opsForHash().get(key, field);
     }

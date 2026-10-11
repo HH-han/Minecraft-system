@@ -1,0 +1,3 @@
+2026-10-10 22:17:56.409 [http-nio-8080-exec-9] INFO  c.m.s.impl.AnnouncementServiceImpl - [公告] 下架成功 id=1 title=欢迎来到 Minecraft 旅游系统
+2026-10-10 22:18:09.090 [http-nio-8080-exec-11] INFO  c.m.s.impl.AnnouncementServiceImpl - [公告] 发布成功 id=1 title=欢迎来到 Minecraft 旅游系统
+2026-10-10 22:18:11.655 [http-nio-8080-exec-2] INFO  c.m.s.impl.AnnouncementServiceImpl - [公告] 下架成功 id=2 title=五一活动开启

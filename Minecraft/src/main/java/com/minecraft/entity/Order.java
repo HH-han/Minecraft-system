@@ -31,7 +31,21 @@ public class Order {
     private String remark;
     
     private String status;
-    
+
+    /** 物流状态 0-待发货 1-部分发货 2-已发货 3-已签收 */
+    private Integer shippingStatus;
+
+    /** 售后状态 0-无 1-售后中 2-售后完成 */
+    private Integer afterSaleStatus;
+
+    private String carrierCode;
+
+    private String trackingNo;
+
+    private LocalDateTime shipTime;
+
+    private LocalDateTime receiveTime;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     
