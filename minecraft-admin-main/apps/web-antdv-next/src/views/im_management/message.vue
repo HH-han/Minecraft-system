@@ -4,7 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { Avatar, RefreshCw, Search } from '@vben/icons';
+import { RefreshCw, Search } from '@vben/icons';
 
 import {
   Avatar as AntAvatar,
@@ -44,7 +44,7 @@ interface MessageRow {
   createTime?: null | string;
 }
 
-const activeTab = ref<'group' | 'single'>('single');
+const activeTab = ref('single');
 const loading = ref(false);
 const rows = ref<MessageRow[]>([]);
 const pageNum = ref(1);
@@ -63,6 +63,11 @@ const typeOptions = computed(() => [
   { value: 'video', label: $t('im.message.type.video') },
   { value: 'audio', label: $t('im.message.type.audio') },
   { value: 'file', label: $t('im.message.type.file') },
+]);
+
+const tabItems = computed(() => [
+  { key: 'single', label: $t('im.message.tab.single') },
+  { key: 'group', label: $t('im.message.tab.group') },
 ]);
 
 function formatTime(value?: null | string): string {
@@ -159,10 +164,7 @@ onMounted(fetchData);
 <template>
   <Page :title="$t('im.message.title')" :description="$t('im.message.description')">
     <div class="bg-card rounded-lg p-4">
-      <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <Tabs.TabPane key="single" :tab="$t('im.message.tab.single')" />
-        <Tabs.TabPane key="group" :tab="$t('im.message.tab.group')" />
-      </Tabs>
+      <Tabs v-model:active-key="activeTab" :items="tabItems" @change="handleTabChange" />
 
       <div class="mb-4 flex flex-wrap items-center gap-2">
         <Input

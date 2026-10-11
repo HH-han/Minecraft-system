@@ -1,0 +1,231 @@
+{
+  "im": {
+    "title": "通讯管理",
+    "menu": {
+      "friend": "好友关系",
+      "group": "聊天群组",
+      "message": "聊天消息",
+      "call": "通话记录",
+      "emoji": "表情包管理"
+    },
+    "friend": {
+      "title": "好友关系管理",
+      "description": "管理用户好友关系与好友申请，支持通过、拒绝与删除关系",
+      "search_placeholder": "用户ID / 备注",
+      "search": "搜索",
+      "reset": "重置",
+      "total": "共 {total} 条",
+      "empty": "暂无好友数据",
+      "filter": {
+        "status": "状态"
+      },
+      "status": {
+        "pending": "待确认",
+        "accepted": "已添加"
+      },
+      "columns": {
+        "user": "用户",
+        "friend": "好友",
+        "remark": "备注",
+        "status": "状态",
+        "createTime": "申请时间",
+        "action": "操作"
+      },
+      "action": {
+        "approve": "通过",
+        "reject": "拒绝",
+        "delete": "删除",
+        "delete_confirm": "确定删除该好友关系？将同时解除双方好友",
+        "approve_success": "已通过好友申请",
+        "reject_success": "已拒绝好友申请",
+        "delete_success": "好友关系已删除",
+        "delete_failed": "删除失败",
+        "failed": "操作失败"
+      }
+    },
+    "group": {
+      "title": "聊天群组管理",
+      "description": "管理聊天群组信息与群成员，支持编辑、解散群组与移除成员",
+      "search_placeholder": "群名称 / 群描述",
+      "search": "搜索",
+      "reset": "重置",
+      "total": "共 {total} 条",
+      "empty": "暂无群组数据",
+      "member_empty": "该群暂无成员",
+      "save": "保存",
+      "cancel": "取消",
+      "save_success": "群组信息已更新",
+      "columns": {
+        "avatar": "群头像",
+        "name": "群名称",
+        "description": "群描述",
+        "creator": "创建者",
+        "members": "成员数",
+        "createTime": "创建时间",
+        "action": "操作",
+        "member": "成员",
+        "groupNickname": "群昵称",
+        "role": "角色",
+        "joinTime": "加入时间"
+      },
+      "role": {
+        "owner": "群主",
+        "admin": "管理员",
+        "member": "成员"
+      },
+      "action": {
+        "members": "成员",
+        "edit": "编辑",
+        "dissolve": "解散",
+        "dissolve_confirm": "确定解散该群组？将同时清理群成员与群消息",
+        "dissolve_success": "群组已解散",
+        "remove_confirm": "确定将该成员移出群聊？",
+        "member_remove": "移出",
+        "remove_success": "成员已移除",
+        "failed": "操作失败"
+      },
+      "form": {
+        "name": "群名称",
+        "name_required": "请输入群名称",
+        "description": "群描述",
+        "maxMembers": "最大成员数"
+      },
+      "modal": {
+        "edit_title": "编辑群组",
+        "members_title": "群成员"
+      }
+    },
+    "message": {
+      "title": "聊天消息管理",
+      "description": "查询单聊与群聊历史消息，支持按用户、群组与消息类型筛选",
+      "tab": {
+        "single": "单聊消息",
+        "group": "群聊消息"
+      },
+      "search_placeholder": "消息内容",
+      "search": "搜索",
+      "reset": "重置",
+      "total": "共 {total} 条",
+      "empty": "暂无消息数据",
+      "filter": {
+        "userId": "用户ID",
+        "groupId": "群组ID",
+        "messageType": "消息类型"
+      },
+      "type": {
+        "text": "文本",
+        "image": "图片",
+        "emoji": "表情",
+        "video": "视频",
+        "audio": "语音",
+        "file": "文件"
+      },
+      "read": {
+        "yes": "已读",
+        "no": "未读"
+      },
+      "columns": {
+        "sender": "发送者",
+        "receiver": "接收者",
+        "group": "群组",
+        "content": "内容",
+        "type": "类型",
+        "isRead": "状态",
+        "time": "发送时间"
+      }
+    },
+    "call": {
+      "title": "通话记录管理",
+      "description": "查看语音/视频通话记录，支持按用户与通话类型筛选",
+      "search_placeholder": "用户ID / 通话ID",
+      "search": "搜索",
+      "reset": "重置",
+      "delete": "删除",
+      "delete_confirm": "确定删除该通话记录？",
+      "delete_success": "通话记录已删除",
+      "failed": "操作失败",
+      "total": "共 {total} 条",
+      "empty": "暂无通话记录",
+      "filter": {
+        "callType": "通话类型"
+      },
+      "type": {
+        "voice": "语音通话",
+        "video": "视频通话"
+      },
+      "status": {
+        "initiated": "呼叫中",
+        "accepted": "通话中",
+        "rejected": "已拒绝",
+        "ended": "已结束",
+        "canceled": "已取消",
+        "missed": "未接听"
+      },
+      "columns": {
+        "callId": "通话ID",
+        "caller": "发起方",
+        "receiver": "接收方",
+        "callType": "类型",
+        "status": "状态",
+        "duration": "时长",
+        "startTime": "开始时间",
+        "action": "操作"
+      }
+    },
+    "emoji": {
+      "title": "表情包管理",
+      "description": "维护系统表情，支持新增、编辑、启停与删除",
+      "search_placeholder": "表情名称 / 编码",
+      "search": "搜索",
+      "reset": "重置",
+      "save": "保存",
+      "cancel": "取消",
+      "total": "共 {total} 条",
+      "empty": "暂无表情数据",
+      "save_success": "表情已创建",
+      "update_success": "表情已更新",
+      "failed": "操作失败",
+      "filter": {
+        "isActive": "启用状态"
+      },
+      "active": {
+        "enabled": "已启用",
+        "disabled": "已停用"
+      },
+      "action": {
+        "add": "新增表情",
+        "edit": "编辑",
+        "delete": "删除",
+        "delete_confirm": "确定删除该表情？",
+        "delete_success": "表情已删除"
+      },
+      "columns": {
+        "code": "编码",
+        "name": "名称",
+        "category": "分类",
+        "unicode": "Unicode",
+        "description": "描述",
+        "sortOrder": "排序",
+        "isActive": "状态",
+        "updateTime": "更新时间",
+        "action": "操作"
+      },
+      "form": {
+        "code": "表情编码",
+        "code_required": "请输入表情编码",
+        "code_placeholder": "如 smile",
+        "name": "表情名称",
+        "name_required": "请输入表情名称",
+        "category": "分类",
+        "unicode": "Unicode",
+        "description": "描述",
+        "sortOrder": "排序",
+        "isActive": "是否启用"
+      },
+      "modal": {
+        "create_title": "新增表情",
+        "edit_title": "编辑表情"
+      }
+    }
+  }
+}

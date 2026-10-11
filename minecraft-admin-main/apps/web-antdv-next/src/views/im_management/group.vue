@@ -4,7 +4,7 @@ import type { TableColumnsType } from 'antdv-next';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { Avatar, RefreshCw, Search } from '@vben/icons';
+import { RefreshCw, Search } from '@vben/icons';
 
 import {
   Avatar as AntAvatar,
