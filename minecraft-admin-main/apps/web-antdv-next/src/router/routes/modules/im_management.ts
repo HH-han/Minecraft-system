@@ -33,12 +33,48 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
-          icon: 'lucide:messages-square',
+          icon: 'lucide:message-square',
           title: $t('im.menu.message'),
         },
         name: 'ImMessage',
         path: 'messages',
         component: () => import('#/views/im_management/message.vue'),
+      },
+      {
+        meta: {
+          icon: 'lucide:messages-square',
+          title: $t('im.menu.groupMessage'),
+        },
+        name: 'ImGroupMessage',
+        path: 'group-messages',
+        component: () => import('#/views/im_management/groupMessage.vue'),
+      },
+      {
+        meta: {
+          icon: 'lucide:contact',
+          title: $t('im.menu.userGroup'),
+        },
+        name: 'ImUserGroup',
+        path: 'user-groups',
+        component: () => import('#/views/im_management/userGroup.vue'),
+      },
+      {
+        meta: {
+          icon: 'lucide:camera',
+          title: $t('im.menu.moment'),
+        },
+        name: 'ImMoment',
+        path: 'moments',
+        component: () => import('#/views/im_management/moment.vue'),
+      },
+      {
+        meta: {
+          icon: 'lucide:star',
+          title: $t('im.menu.favorite'),
+        },
+        name: 'ImFavorite',
+        path: 'favorites',
+        component: () => import('#/views/im_management/favorite.vue'),
       },
       {
         meta: {

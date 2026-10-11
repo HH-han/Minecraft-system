@@ -3,7 +3,11 @@
   "menu": {
     "friend": "好友关系",
     "group": "聊天群组",
-    "message": "聊天消息",
+    "message": "单聊消息",
+    "groupMessage": "群聊消息",
+    "userGroup": "用户群组",
+    "moment": "朋友圈",
+    "favorite": "收藏",
     "call": "通话记录",
     "emoji": "表情包管理"
   },
@@ -95,8 +99,8 @@
     }
   },
   "message": {
-    "title": "聊天消息管理",
-    "description": "查询单聊与群聊历史消息，支持按用户、群组与消息类型筛选",
+    "title": "单聊消息管理",
+    "description": "查询单聊历史消息，支持按用户与消息类型筛选",
     "tab": {
       "single": "单聊消息",
       "group": "群聊消息"
@@ -131,6 +135,124 @@
       "type": "类型",
       "isRead": "状态",
       "time": "发送时间"
+    }
+  },
+  "groupMessage": {
+    "title": "群聊消息管理",
+    "description": "查询群聊历史消息，支持按群组筛选",
+    "filter": {
+      "groupId": "群组ID"
+    }
+  },
+  "userGroup": {
+    "title": "用户群组管理",
+    "description": "以用户为入口，查看其所在的群组及群内聊天消息",
+    "search_placeholder": "输入用户ID",
+    "search": "查询",
+    "id_required": "请输入用户ID",
+    "current_user": "当前用户：{userId}",
+    "hint": "请输入用户ID后查询该用户所在的群组",
+    "empty": "该用户未加入任何群组",
+    "messages_title": "群聊消息",
+    "message_empty": "该群暂无消息",
+    "columns": {
+      "avatar": "群头像",
+      "name": "群名称",
+      "role": "角色",
+      "members": "成员数",
+      "createTime": "创建时间",
+      "action": "操作"
+    },
+    "role": {
+      "owner": "群主",
+      "admin": "管理员",
+      "member": "成员"
+    },
+    "action": {
+      "viewMessages": "查看消息"
+    }
+  },
+  "moment": {
+    "title": "朋友圈管理",
+    "description": "查看与删除用户朋友圈动态，可查看评论与点赞明细",
+    "search_placeholder": "动态内容",
+    "search": "搜索",
+    "reset": "重置",
+    "total": "共 {total} 条",
+    "empty": "暂无动态数据",
+    "delete_confirm": "确定删除该动态？",
+    "delete_success": "动态已删除",
+    "failed": "操作失败",
+    "detail_title": "评论 / 点赞明细",
+    "likes": "点赞",
+    "comments": "评论",
+    "no_likes": "暂无点赞",
+    "no_comments": "暂无评论",
+    "filter": {
+      "userId": "用户ID",
+      "visibility": "可见范围"
+    },
+    "visibility": {
+      "public": "公开",
+      "friends": "仅好友",
+      "private": "私密"
+    },
+    "columns": {
+      "author": "发布者",
+      "content": "内容",
+      "images": "图片",
+      "location": "位置",
+      "visibility": "可见范围",
+      "likeCount": "点赞数",
+      "commentCount": "评论数",
+      "createTime": "发布时间",
+      "action": "操作"
+    },
+    "action": {
+      "detail": "明细",
+      "delete": "删除"
+    }
+  },
+  "favorite": {
+    "title": "收藏管理",
+    "description": "查看与删除用户收藏，支持按类型与标签筛选",
+    "search_placeholder": "标题 / 内容 / 标签 / 文件名",
+    "search": "搜索",
+    "reset": "重置",
+    "total": "共 {total} 条",
+    "empty": "暂无收藏数据",
+    "delete_confirm": "确定删除该收藏？",
+    "delete_success": "收藏已删除",
+    "failed": "操作失败",
+    "filter": {
+      "userId": "用户ID",
+      "type": "类型",
+      "tag": "标签"
+    },
+    "type": {
+      "note": "笔记",
+      "link": "链接",
+      "image": "图片",
+      "video": "视频",
+      "file": "文件",
+      "chat": "聊天",
+      "voice": "语音",
+      "location": "位置",
+      "miniapp": "小程序"
+    },
+    "columns": {
+      "userId": "用户ID",
+      "type": "类型",
+      "title": "标题",
+      "content": "内容",
+      "cover": "封面",
+      "tags": "标签",
+      "source": "来源",
+      "updateTime": "更新时间",
+      "action": "操作"
+    },
+    "action": {
+      "delete": "删除"
     }
   },
   "call": {

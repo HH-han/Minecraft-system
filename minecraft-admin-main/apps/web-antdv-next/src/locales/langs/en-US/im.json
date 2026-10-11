@@ -3,7 +3,11 @@
   "menu": {
     "friend": "Friends",
     "group": "Chat Groups",
-    "message": "Messages",
+    "message": "Single Chat",
+    "groupMessage": "Group Chat",
+    "userGroup": "User Groups",
+    "moment": "Moments",
+    "favorite": "Favorites",
     "call": "Call Records",
     "emoji": "Emoji"
   },
@@ -95,8 +99,8 @@
     }
   },
   "message": {
-    "title": "Chat Message Management",
-    "description": "Query single and group chat history with filters",
+    "title": "Single Chat Messages",
+    "description": "Query single chat history with user and message type filters",
     "tab": {
       "single": "Single Chat",
       "group": "Group Chat"
@@ -131,6 +135,124 @@
       "type": "Type",
       "isRead": "Status",
       "time": "Sent At"
+    }
+  },
+  "groupMessage": {
+    "title": "Group Chat Messages",
+    "description": "Query group chat history with group filter",
+    "filter": {
+      "groupId": "Group ID"
+    }
+  },
+  "userGroup": {
+    "title": "User Groups",
+    "description": "Look up a user's groups and their group chat messages",
+    "search_placeholder": "Enter user ID",
+    "search": "Search",
+    "id_required": "Please enter user ID",
+    "current_user": "Current user: {userId}",
+    "hint": "Enter a user ID to query the groups the user belongs to",
+    "empty": "This user has joined no groups",
+    "messages_title": "Group Messages",
+    "message_empty": "No messages in this group",
+    "columns": {
+      "avatar": "Avatar",
+      "name": "Name",
+      "role": "Role",
+      "members": "Members",
+      "createTime": "Created At",
+      "action": "Action"
+    },
+    "role": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "action": {
+      "viewMessages": "View Messages"
+    }
+  },
+  "moment": {
+    "title": "Moments Management",
+    "description": "View and delete moments, with comment and like details",
+    "search_placeholder": "Moment content",
+    "search": "Search",
+    "reset": "Reset",
+    "total": "Total {total}",
+    "empty": "No moment data",
+    "delete_confirm": "Delete this moment?",
+    "delete_success": "Moment deleted",
+    "failed": "Operation failed",
+    "detail_title": "Comments / Likes",
+    "likes": "Likes",
+    "comments": "Comments",
+    "no_likes": "No likes",
+    "no_comments": "No comments",
+    "filter": {
+      "userId": "User ID",
+      "visibility": "Visibility"
+    },
+    "visibility": {
+      "public": "Public",
+      "friends": "Friends Only",
+      "private": "Private"
+    },
+    "columns": {
+      "author": "Author",
+      "content": "Content",
+      "images": "Images",
+      "location": "Location",
+      "visibility": "Visibility",
+      "likeCount": "Likes",
+      "commentCount": "Comments",
+      "createTime": "Posted At",
+      "action": "Action"
+    },
+    "action": {
+      "detail": "Detail",
+      "delete": "Delete"
+    }
+  },
+  "favorite": {
+    "title": "Favorites Management",
+    "description": "View and delete favorites with type and tag filters",
+    "search_placeholder": "Title / Content / Tag / File name",
+    "search": "Search",
+    "reset": "Reset",
+    "total": "Total {total}",
+    "empty": "No favorite data",
+    "delete_confirm": "Delete this favorite?",
+    "delete_success": "Favorite deleted",
+    "failed": "Operation failed",
+    "filter": {
+      "userId": "User ID",
+      "type": "Type",
+      "tag": "Tag"
+    },
+    "type": {
+      "note": "Note",
+      "link": "Link",
+      "image": "Image",
+      "video": "Video",
+      "file": "File",
+      "chat": "Chat",
+      "voice": "Voice",
+      "location": "Location",
+      "miniapp": "Mini App"
+    },
+    "columns": {
+      "userId": "User ID",
+      "type": "Type",
+      "title": "Title",
+      "content": "Content",
+      "cover": "Cover",
+      "tags": "Tags",
+      "source": "Source",
+      "updateTime": "Updated At",
+      "action": "Action"
+    },
+    "action": {
+      "delete": "Delete"
     }
   },
   "call": {
