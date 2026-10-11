@@ -1,11 +1,15 @@
 package com.minecraft.service;
 
+import com.minecraft.dto.response.FavoriteVO;
 import com.minecraft.dto.response.ImCallRecordVO;
 import com.minecraft.dto.response.ImFriendVO;
 import com.minecraft.dto.response.ImGroupMemberVO;
 import com.minecraft.dto.response.ImGroupMessageVO;
 import com.minecraft.dto.response.ImGroupVO;
 import com.minecraft.dto.response.ImSingleMessageVO;
+import com.minecraft.dto.response.MomentCommentVO;
+import com.minecraft.dto.response.MomentUserVO;
+import com.minecraft.dto.response.MomentVO;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.ChatGroup;
 import com.minecraft.entity.Emoji;
@@ -60,4 +64,24 @@ public interface ImAdminService {
     void updateEmoji(Long id, Emoji emoji);
 
     void deleteEmoji(Long id);
+
+    // ---------------- 用户所在群 ----------------
+
+    List<ImGroupVO> listUserGroups(Long userId);
+
+    // ---------------- 朋友圈 ----------------
+
+    PageResponse<MomentVO> pageMoments(Integer page, Integer size, Long userId, String keyword, Integer visibility);
+
+    List<MomentCommentVO> listMomentComments(Long momentId);
+
+    List<MomentUserVO> listMomentLikes(Long momentId);
+
+    void deleteMoment(Long momentId);
+
+    // ---------------- 收藏 ----------------
+
+    PageResponse<FavoriteVO> pageFavorites(Integer page, Integer size, Long userId, String type, String tag, String keyword);
+
+    void deleteFavorite(Long id);
 }

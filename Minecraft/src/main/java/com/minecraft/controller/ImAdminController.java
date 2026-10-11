@@ -1,12 +1,16 @@
 package com.minecraft.controller;
 
 import com.minecraft.dto.response.ApiResponse;
+import com.minecraft.dto.response.FavoriteVO;
 import com.minecraft.dto.response.ImCallRecordVO;
 import com.minecraft.dto.response.ImFriendVO;
 import com.minecraft.dto.response.ImGroupMemberVO;
 import com.minecraft.dto.response.ImGroupMessageVO;
 import com.minecraft.dto.response.ImGroupVO;
 import com.minecraft.dto.response.ImSingleMessageVO;
+import com.minecraft.dto.response.MomentCommentVO;
+import com.minecraft.dto.response.MomentUserVO;
+import com.minecraft.dto.response.MomentVO;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.ChatGroup;
 import com.minecraft.entity.Emoji;
@@ -202,6 +206,80 @@ public class ImAdminController {
     public ApiResponse<Void> deleteEmoji(@PathVariable Long id) {
         authorizationService.requireAdmin();
         imAdminService.deleteEmoji(id);
+        return ApiResponse.success("删除成功", null);
+    }
+
+    // =========================================================
+    // 用户所在群
+    // =========================================================
+
+    @Operation(summary = "查询用户所在的群组列表")
+    @GetMapping("/users/{userId}/groups")
+    public ApiResponse<List<ImGroupVO>> listUserGroups(@PathVariable Long userId) {
+        authorizationService.requireAdmin();
+        return ApiResponse.success(imAdminService.listUserGroups(userId));
+    }
+
+    // =========================================================
+    // 朋友圈
+    // =========================================================
+
+    @Operation(summary = "分页查询朋友圈动态")
+    @GetMapping("/moments")
+    public ApiResponse<PageResponse<MomentVO>> pageMoments(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer visibility) {
+        authorizationService.requireAdmin();
+        return ApiResponse.success(imAdminService.pageMoments(page, size, userId, keyword, visibility));
+    }
+
+    @Operation(summary = "查询朋友圈动态评论列表")
+    @GetMapping("/moments/{id}/comments")
+    public ApiResponse<List<MomentCommentVO>> listMomentComments(@PathVariable Long id) {
+        authorizationService.requireAdmin();
+        return ApiResponse.success(imAdminService.listMomentComments(id));
+    }
+
+    @Operation(summary = "查询朋友圈动态点赞用户列表")
+    @GetMapping("/moments/{id}/likes")
+    public ApiResponse<List<MomentUserVO>> listMomentLikes(@PathVariable Long id) {
+        authorizationService.requireAdmin();
+        return ApiResponse.success(imAdminService.listMomentLikes(id));
+    }
+
+    @Operation(summary = "删除朋友圈动态（逻辑删除）")
+    @DeleteMapping("/moments/{id}")
+    public ApiResponse<Void> deleteMoment(@PathVariable Long id) {
+        authorizationService.requireAdmin();
+        imAdminService.deleteMoment(id);
+        return ApiResponse.success("删除成功", null);
+    }
+
+    // =========================================================
+    // 收藏
+    // =========================================================
+
+    @Operation(summary = "分页查询收藏")
+    @GetMapping("/favorites")
+    public ApiResponse<PageResponse<FavoriteVO>> pageFavorites(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) String keyword) {
+        authorizationService.requireAdmin();
+        return ApiResponse.success(imAdminService.pageFavorites(page, size, userId, type, tag, keyword));
+    }
+
+    @Operation(summary = "删除收藏（逻辑删除）")
+    @DeleteMapping("/favorites/{id}")
+    public ApiResponse<Void> deleteFavorite(@PathVariable Long id) {
+        authorizationService.requireAdmin();
+        imAdminService.deleteFavorite(id);
         return ApiResponse.success("删除成功", null);
     }
 }

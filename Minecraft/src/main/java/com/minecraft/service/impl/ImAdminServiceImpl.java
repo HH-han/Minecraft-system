@@ -2,29 +2,41 @@ package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.minecraft.dto.response.FavoriteVO;
 import com.minecraft.dto.response.ImCallRecordVO;
 import com.minecraft.dto.response.ImFriendVO;
 import com.minecraft.dto.response.ImGroupMemberVO;
 import com.minecraft.dto.response.ImGroupMessageVO;
 import com.minecraft.dto.response.ImGroupVO;
 import com.minecraft.dto.response.ImSingleMessageVO;
+import com.minecraft.dto.response.MomentCommentVO;
+import com.minecraft.dto.response.MomentUserVO;
+import com.minecraft.dto.response.MomentVO;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.CallRecord;
 import com.minecraft.entity.ChatGroup;
 import com.minecraft.entity.ChatMessage;
 import com.minecraft.entity.Emoji;
+import com.minecraft.entity.Favorite;
 import com.minecraft.entity.Friend;
 import com.minecraft.entity.GroupChatMessage;
 import com.minecraft.entity.GroupMember;
+import com.minecraft.entity.Moment;
+import com.minecraft.entity.MomentComment;
+import com.minecraft.entity.MomentLike;
 import com.minecraft.entity.User;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.CallRecordMapper;
 import com.minecraft.mapper.ChatGroupMapper;
 import com.minecraft.mapper.ChatMessageMapper;
 import com.minecraft.mapper.EmojiMapper;
+import com.minecraft.mapper.FavoriteMapper;
 import com.minecraft.mapper.FriendMapper;
 import com.minecraft.mapper.GroupChatMessageMapper;
 import com.minecraft.mapper.GroupMemberMapper;
+import com.minecraft.mapper.MomentCommentMapper;
+import com.minecraft.mapper.MomentLikeMapper;
+import com.minecraft.mapper.MomentMapper;
 import com.minecraft.service.FriendService;
 import com.minecraft.service.ImAdminService;
 import com.minecraft.service.UserService;
@@ -51,10 +63,18 @@ public class ImAdminServiceImpl implements ImAdminService {
     private final GroupChatMessageMapper groupChatMessageMapper;
     private final CallRecordMapper callRecordMapper;
     private final EmojiMapper emojiMapper;
+    private final MomentMapper momentMapper;
+    private final MomentCommentMapper momentCommentMapper;
+    private final MomentLikeMapper momentLikeMapper;
+    private final FavoriteMapper favoriteMapper;
     private final UserService userService;
     private final FriendService friendService;
 
     private static final int MAX_PAGE_SIZE = 200;
+    /** 正常状态（朋友圈/收藏通用） */
+    private static final int STATUS_NORMAL = 1;
+    /** 已删除状态 */
+    private static final int STATUS_DELETED = 0;
 
     // =========================================================
     // 好友关系
@@ -451,6 +471,234 @@ public class ImAdminServiceImpl implements ImAdminService {
     }
 
     // =========================================================
+    // 用户所在群
+    // =========================================================
+
+    @Override
+    public List<ImGroupVO> listUserGroups(Long userId) {
+        List<ImGroupVO> vos = new ArrayList<>();
+        if (userId == null) {
+            return vos;
+        }
+        LambdaQueryWrapper<GroupMember> memberWrapper = new LambdaQueryWrapper<>();
+        memberWrapper.eq(GroupMember::getUserId, userId);
+        List<GroupMember> memberships = groupMemberMapper.selectList(memberWrapper);
+        if (memberships.isEmpty()) {
+            return vos;
+        }
+        List<Long> groupIds = new ArrayList<>();
+        Map<Long, String> roleByGroup = new HashMap<>();
+        for (GroupMember member : memberships) {
+            groupIds.add(member.getGroupId());
+            roleByGroup.put(member.getGroupId(), member.getRole());
+        }
+        List<ChatGroup> groups = chatGroupMapper.selectBatchIds(groupIds);
+        Map<Long, User> userCache = new HashMap<>();
+        for (ChatGroup group : groups) {
+            ImGroupVO vo = new ImGroupVO();
+            vo.setId(group.getId());
+            vo.setName(group.getName());
+            vo.setDescription(group.getDescription());
+            vo.setCreatorId(group.getCreatorId());
+            vo.setMaxMembers(group.getMaxMembers());
+            vo.setMemberCount(group.getMemberCount());
+            vo.setAvatar(group.getAvatar());
+            vo.setCreateTime(group.getCreateTime());
+            vo.setUpdateTime(group.getUpdateTime());
+            vo.setRole(roleByGroup.get(group.getId()));
+            User creator = user(group.getCreatorId(), userCache);
+            if (creator != null) {
+                vo.setCreatorName(displayName(creator));
+            }
+            vos.add(vo);
+        }
+        return vos;
+    }
+
+    // =========================================================
+    // 朋友圈
+    // =========================================================
+
+    @Override
+    public PageResponse<MomentVO> pageMoments(Integer page, Integer size, Long userId, String keyword, Integer visibility) {
+        Page<Moment> pageParam = new Page<>(normalizePage(page), normalizeSize(size));
+        LambdaQueryWrapper<Moment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Moment::getStatus, STATUS_NORMAL);
+        if (userId != null) {
+            wrapper.eq(Moment::getUserId, userId);
+        }
+        if (visibility != null) {
+            wrapper.eq(Moment::getVisibility, visibility);
+        }
+        String kw = trim(keyword);
+        if (kw != null) {
+            wrapper.like(Moment::getContent, kw);
+        }
+        wrapper.orderByDesc(Moment::getCreateTime);
+
+        Page<Moment> result = momentMapper.selectPage(pageParam, wrapper);
+        Map<Long, User> userCache = new HashMap<>();
+        List<MomentVO> vos = new ArrayList<>();
+        for (Moment moment : result.getRecords()) {
+            vos.add(buildMomentVO(moment, userCache));
+        }
+        return new PageResponse<>(vos, result.getTotal(), normalizePage(page), normalizeSize(size));
+    }
+
+    @Override
+    public List<MomentCommentVO> listMomentComments(Long momentId) {
+        List<MomentComment> comments = momentCommentMapper.selectList(new LambdaQueryWrapper<MomentComment>()
+                .eq(MomentComment::getMomentId, momentId)
+                .eq(MomentComment::getStatus, STATUS_NORMAL)
+                .orderByAsc(MomentComment::getCreateTime));
+        List<MomentCommentVO> result = new ArrayList<>();
+        for (MomentComment comment : comments) {
+            MomentCommentVO vo = new MomentCommentVO();
+            vo.setId(comment.getId());
+            vo.setMomentId(comment.getMomentId());
+            vo.setUserId(comment.getUserId());
+
+            User author = userService.getById(comment.getUserId());
+            if (author != null) {
+                vo.setUsername(author.getUsername());
+                vo.setNickname(displayName(author));
+                vo.setAvatar(author.getAvatar());
+            }
+            vo.setReplyToUserId(comment.getReplyToUserId());
+            if (comment.getReplyToUserId() != null) {
+                User replyUser = userService.getById(comment.getReplyToUserId());
+                if (replyUser != null) {
+                    vo.setReplyToNickname(displayName(replyUser));
+                }
+            }
+            vo.setContent(comment.getContent());
+            vo.setCreateTime(comment.getCreateTime());
+            result.add(vo);
+        }
+        return result;
+    }
+
+    @Override
+    public List<MomentUserVO> listMomentLikes(Long momentId) {
+        List<MomentLike> likes = momentLikeMapper.selectList(new LambdaQueryWrapper<MomentLike>()
+                .eq(MomentLike::getMomentId, momentId)
+                .orderByAsc(MomentLike::getCreateTime));
+        List<MomentUserVO> result = new ArrayList<>();
+        for (MomentLike like : likes) {
+            User user = userService.getById(like.getUserId());
+            if (user != null) {
+                MomentUserVO vo = new MomentUserVO();
+                vo.setUserId(user.getId());
+                vo.setUsername(user.getUsername());
+                vo.setNickname(displayName(user));
+                vo.setAvatar(user.getAvatar());
+                result.add(vo);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void deleteMoment(Long momentId) {
+        Moment moment = momentMapper.selectById(momentId);
+        if (moment == null) {
+            throw new BusinessException(404, "动态不存在");
+        }
+        Moment update = new Moment();
+        update.setId(momentId);
+        update.setStatus(STATUS_DELETED);
+        momentMapper.updateById(update);
+    }
+
+    // =========================================================
+    // 收藏
+    // =========================================================
+
+    @Override
+    public PageResponse<FavoriteVO> pageFavorites(Integer page, Integer size, Long userId, String type, String tag, String keyword) {
+        Page<Favorite> pageParam = new Page<>(normalizePage(page), normalizeSize(size));
+        LambdaQueryWrapper<Favorite> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Favorite::getStatus, STATUS_NORMAL);
+        if (userId != null) {
+            wrapper.eq(Favorite::getUserId, userId);
+        }
+        String typeValue = trim(type);
+        if (typeValue != null) {
+            wrapper.eq(Favorite::getType, typeValue);
+        }
+        String tagValue = trim(tag);
+        if (tagValue != null) {
+            wrapper.like(Favorite::getTags, tagValue);
+        }
+        String kw = trim(keyword);
+        if (kw != null) {
+            wrapper.and(w -> w.like(Favorite::getTitle, kw)
+                    .or().like(Favorite::getContent, kw)
+                    .or().like(Favorite::getTags, kw)
+                    .or().like(Favorite::getFileName, kw));
+        }
+        wrapper.orderByDesc(Favorite::getUpdateTime).orderByDesc(Favorite::getId);
+
+        Page<Favorite> result = favoriteMapper.selectPage(pageParam, wrapper);
+        List<FavoriteVO> vos = new ArrayList<>();
+        for (Favorite favorite : result.getRecords()) {
+            vos.add(buildFavoriteVO(favorite));
+        }
+        return new PageResponse<>(vos, result.getTotal(), normalizePage(page), normalizeSize(size));
+    }
+
+    @Override
+    public void deleteFavorite(Long id) {
+        Favorite favorite = favoriteMapper.selectById(id);
+        if (favorite == null) {
+            throw new BusinessException(404, "收藏不存在");
+        }
+        Favorite update = new Favorite();
+        update.setId(id);
+        update.setStatus(STATUS_DELETED);
+        favoriteMapper.updateById(update);
+    }
+
+    private MomentVO buildMomentVO(Moment moment, Map<Long, User> userCache) {
+        MomentVO vo = new MomentVO();
+        vo.setId(moment.getId());
+        vo.setUserId(moment.getUserId());
+
+        User author = user(moment.getUserId(), userCache);
+        if (author != null) {
+            vo.setUsername(author.getUsername());
+            vo.setNickname(displayName(author));
+            vo.setAvatar(author.getAvatar());
+        }
+        vo.setContent(moment.getContent());
+        vo.setImages(splitToList(moment.getImages()));
+        vo.setLocation(moment.getLocation());
+        vo.setVisibility(moment.getVisibility());
+        vo.setLikeCount(moment.getLikeCount() != null ? moment.getLikeCount() : 0);
+        vo.setCommentCount(moment.getCommentCount() != null ? moment.getCommentCount() : 0);
+        vo.setCreateTime(moment.getCreateTime());
+        return vo;
+    }
+
+    private FavoriteVO buildFavoriteVO(Favorite favorite) {
+        FavoriteVO vo = new FavoriteVO();
+        vo.setId(favorite.getId());
+        vo.setUserId(favorite.getUserId());
+        vo.setType(favorite.getType());
+        vo.setTitle(favorite.getTitle());
+        vo.setContent(favorite.getContent());
+        vo.setCover(favorite.getCover());
+        vo.setUrl(favorite.getUrl());
+        vo.setFileName(favorite.getFileName());
+        vo.setFileSize(favorite.getFileSize());
+        vo.setTags(splitToList(favorite.getTags()));
+        vo.setSource(favorite.getSource());
+        vo.setCreateTime(favorite.getCreateTime());
+        vo.setUpdateTime(favorite.getUpdateTime());
+        return vo;
+    }
+
+    // =========================================================
     // 工具方法
     // =========================================================
 
@@ -471,6 +719,20 @@ public class ImAdminServiceImpl implements ImAdminService {
         }
         String trimmed = value.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private List<String> splitToList(String value) {
+        List<String> result = new ArrayList<>();
+        if (value == null) {
+            return result;
+        }
+        for (String item : value.split(",")) {
+            String trimmed = item.trim();
+            if (!trimmed.isEmpty()) {
+                result.add(trimmed);
+            }
+        }
+        return result;
     }
 
     private User user(Long id, Map<Long, User> cache) {

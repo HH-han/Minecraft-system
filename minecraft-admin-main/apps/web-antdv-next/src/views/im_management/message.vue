@@ -5,6 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { RefreshCw, Search } from '@vben/icons';
+import { $t } from '@vben/locales';
 
 import {
   Avatar as AntAvatar,
@@ -15,16 +16,10 @@ import {
   InputNumber,
   Select,
   Table,
-  Tabs,
   Tag,
 } from 'antdv-next';
 
-import { $t } from '@vben/locales';
-
-import {
-  getGroupMessagePage,
-  getSingleMessagePage,
-} from '#/api/management/im/message';
+import { getSingleMessagePage } from '#/api/management/im/message';
 
 defineOptions({ name: 'ImMessageManagement' });
 
@@ -36,15 +31,12 @@ interface MessageRow {
   receiverId?: null | number;
   receiverName?: null | string;
   receiverAvatar?: null | string;
-  groupId?: null | number;
-  groupName?: null | string;
   content?: null | string;
   messageType?: null | string;
   isRead?: null | number;
   createTime?: null | string;
 }
 
-const activeTab = ref('single');
 const loading = ref(false);
 const rows = ref<MessageRow[]>([]);
 const pageNum = ref(1);
@@ -53,7 +45,6 @@ const total = ref(0);
 
 const keyword = ref('');
 const userId = ref<null | number>(null);
-const groupId = ref<null | number>(null);
 const messageType = ref<null | string>(null);
 
 const typeOptions = computed(() => [
@@ -63,11 +54,6 @@ const typeOptions = computed(() => [
   { value: 'video', label: $t('im.message.type.video') },
   { value: 'audio', label: $t('im.message.type.audio') },
   { value: 'file', label: $t('im.message.type.file') },
-]);
-
-const tabItems = computed(() => [
-  { key: 'single', label: $t('im.message.tab.single') },
-  { key: 'group', label: $t('im.message.tab.group') },
 ]);
 
 function formatTime(value?: null | string): string {
@@ -86,45 +72,26 @@ function isImage(type?: null | string, content?: null | string): boolean {
   return /\.(png|jpe?g|gif|webp|bmp)(\?.*)?$/i.test(c);
 }
 
-const columns = computed<TableColumnsType>(() => {
-  if (activeTab.value === 'single') {
-    return [
-      { title: 'ID', dataIndex: 'id', width: 70 },
-      { title: $t('im.message.columns.sender'), key: 'sender', width: 180 },
-      { title: $t('im.message.columns.receiver'), key: 'receiver', width: 180 },
-      { title: $t('im.message.columns.content'), key: 'content', width: 280 },
-      { title: $t('im.message.columns.type'), key: 'type', width: 90 },
-      { title: $t('im.message.columns.isRead'), key: 'isRead', width: 90 },
-      { title: $t('im.message.columns.time'), key: 'createTime', width: 170 },
-    ];
-  }
-  return [
-    { title: 'ID', dataIndex: 'id', width: 70 },
-    { title: $t('im.message.columns.group'), key: 'group', width: 160 },
-    { title: $t('im.message.columns.sender'), key: 'sender', width: 180 },
-    { title: $t('im.message.columns.content'), key: 'content', width: 300 },
-    { title: $t('im.message.columns.type'), key: 'type', width: 90 },
-    { title: $t('im.message.columns.time'), key: 'createTime', width: 170 },
-  ];
-});
+const columns = computed<TableColumnsType>(() => [
+  { title: 'ID', dataIndex: 'id', width: 70 },
+  { title: $t('im.message.columns.sender'), key: 'sender', width: 180 },
+  { title: $t('im.message.columns.receiver'), key: 'receiver', width: 180 },
+  { title: $t('im.message.columns.content'), key: 'content', width: 280 },
+  { title: $t('im.message.columns.type'), key: 'type', width: 90 },
+  { title: $t('im.message.columns.isRead'), key: 'isRead', width: 90 },
+  { title: $t('im.message.columns.time'), key: 'createTime', width: 170 },
+]);
 
 async function fetchData() {
   loading.value = true;
   try {
-    const params: any = {
+    const res: any = await getSingleMessagePage({
       page: pageNum.value,
       size: pageSize.value,
       keyword: keyword.value.trim() || undefined,
-    };
-    let res: any;
-    if (activeTab.value === 'single') {
-      params.userId = userId.value ?? undefined;
-      params.messageType = messageType.value ?? undefined;
-      res = await getSingleMessagePage(params);
-    } else {
-      params.groupId = groupId.value ?? undefined;
-      res = await getGroupMessagePage(params);
-    }
+      userId: userId.value ?? undefined,
+      messageType: messageType.value ?? undefined,
+    });
     rows.value = res?.records ?? [];
     total.value = Number(res?.total ?? 0);
   } catch {
@@ -135,11 +102,6 @@ async function fetchData() {
   }
 }
 
-function handleTabChange() {
-  pageNum.value = 1;
-  rows.value = [];
-  fetchData();
-}
 function handleSearch() {
   pageNum.value = 1;
   fetchData();
@@ -147,7 +109,6 @@ function handleSearch() {
 function handleReset() {
   keyword.value = '';
   userId.value = null;
-  groupId.value = null;
   messageType.value = null;
   pageNum.value = 1;
   fetchData();
@@ -164,8 +125,6 @@ onMounted(fetchData);
 <template>
   <Page :title="$t('im.message.title')" :description="$t('im.message.description')">
     <div class="bg-card rounded-lg p-4">
-      <Tabs v-model:active-key="activeTab" :items="tabItems" @change="handleTabChange" />
-
       <div class="mb-4 flex flex-wrap items-center gap-2">
         <Input
           v-model:value="keyword"
@@ -175,7 +134,6 @@ onMounted(fetchData);
           @press-enter="handleSearch"
         />
         <InputNumber
-          v-if="activeTab === 'single'"
           v-model:value="userId"
           :placeholder="$t('im.message.filter.userId')"
           class="w-36"
@@ -183,20 +141,11 @@ onMounted(fetchData);
           :precision="0"
         />
         <Select
-          v-if="activeTab === 'single'"
           v-model:value="messageType"
           :placeholder="$t('im.message.filter.messageType')"
           allow-clear
           class="w-32"
           :options="typeOptions"
-        />
-        <InputNumber
-          v-else
-          v-model:value="groupId"
-          :placeholder="$t('im.message.filter.groupId')"
-          class="w-36"
-          :min="1"
-          :precision="0"
         />
         <Button type="primary" @click="handleSearch">
           <template #icon><Search class="size-4" /></template>
@@ -242,9 +191,6 @@ onMounted(fetchData);
               <span class="truncate">{{ record.receiverName || `#${record.receiverId}` }}</span>
             </div>
           </template>
-          <template v-else-if="column.key === 'group'">
-            {{ record.groupName || `#${record.groupId}` }}
-          </template>
           <template v-else-if="column.key === 'content'">
             <Image
               v-if="isImage(record.messageType, record.content)"
@@ -260,11 +206,7 @@ onMounted(fetchData);
           </template>
           <template v-else-if="column.key === 'isRead'">
             <Tag :color="Number(record.isRead) === 1 ? 'green' : 'orange'">
-              {{
-                Number(record.isRead) === 1
-                  ? $t('im.message.read.yes')
-                  : $t('im.message.read.no')
-              }}
+              {{ Number(record.isRead) === 1 ? $t('im.message.read.yes') : $t('im.message.read.no') }}
             </Tag>
           </template>
           <template v-else-if="column.key === 'createTime'">

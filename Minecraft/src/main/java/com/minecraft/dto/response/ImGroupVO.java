@@ -17,6 +17,8 @@ public class ImGroupVO {
     private Integer maxMembers;
     private Integer memberCount;
     private String avatar;
+    /** 当前查询用户在群内的角色（仅「用户所在群」接口返回） */
+    private String role;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
