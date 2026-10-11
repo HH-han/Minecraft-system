@@ -54,3 +54,20 @@ export const deleteMomentComment = (commentId, userId) => {
     params: { userId }
   })
 }
+
+// 上传朋友圈封面背景图
+export const uploadMomentCover = (userId, file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return request.post('/public/moment/cover', formData, {
+    params: { userId },
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+
+// 获取朋友圈封面背景图
+export const getMomentCover = (userId) => {
+  return request.get('/public/moment/cover', {
+    params: { userId }
+  })
+}

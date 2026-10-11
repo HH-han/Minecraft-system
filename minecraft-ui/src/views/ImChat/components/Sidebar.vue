@@ -32,6 +32,13 @@
           <Icon name="compass" :size="'24px'" />
         </button>
         <button 
+          :class="['nav-item', { active: favoritesActive }]"
+          @click="onFavorites"
+          title="收藏"
+        >
+          <Icon name="star" :size="'24px'" />
+        </button>
+        <button 
           :class="['nav-item', { active: currentTab === 'me' }]"
           @click="onNavChange('me')"
           title="我"
@@ -355,17 +362,6 @@
               </div>
               <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
             </div>
-            <div class="contact-item" @click="onFavorites">
-              <div class="avatar-wrapper">
-                <div class="icon-avatar">
-                  <Icon name="star" :size="'20px'" />
-                </div>
-              </div>
-              <div class="contact-info">
-                <h4 class="contact-name">收藏</h4>
-              </div>
-              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-            </div>
             <div class="contact-item" @click="onSettings">
               <div class="avatar-wrapper">
                 <div class="icon-avatar">
@@ -435,6 +431,10 @@ const props = defineProps({
   currentUserName: {
     type: String,
     default: '用户'
+  },
+  favoritesActive: {
+    type: Boolean,
+    default: false
   }
 })
 

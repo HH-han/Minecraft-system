@@ -1,5 +1,5 @@
 <template>
-  <div class="im-container" :class="{ 'chat-open': !!selectedContact }">
+  <div class="im-container" :class="{ 'chat-open': !!selectedContact, 'moments-open': showMoments, 'favorites-open': showFavorites }">
     <Sidebar
       :friends="friends"
       :groups="groups"
@@ -8,6 +8,7 @@
       :friend-request-count="pendingRequestCount"
       :current-user-avatar="currentUserAvatar"
       :current-user-name="currentUserName"
+      :favorites-active="showFavorites"
       @add-friend="showAddFriend = true"
       @create-group="showCreateGroup = true"
       @tab-change="activeTab = $event"
@@ -30,6 +31,7 @@
     />
     
     <ChatArea
+      v-if="!showMoments && !showFavorites"
       ref="chatAreaRef"
       :selected-contact="selectedContact"
       :messages="messages"
@@ -38,6 +40,21 @@
       @video-call="handleVideoCall"
       @contact-info="showContactInfo = true"
       @back="selectedContact = null"
+    />
+
+    <Moments
+      v-else-if="showMoments"
+      :current-user-id="currentUserId"
+      :current-user-name="currentUserName"
+      :current-user-avatar="currentUserAvatar"
+      @close="showMoments = false"
+    />
+
+    <Favorites
+      v-else
+      :current-user-id="currentUserId"
+      :current-user-name="currentUserName"
+      @close="showFavorites = false"
     />
     
     <ContactDetail
@@ -100,14 +117,6 @@
       @close="showCallPanel = false"
       @call-ended="handleCallEnded"
     />
-
-    <Moments
-      v-if="showMoments"
-      :current-user-id="currentUserId"
-      :current-user-name="currentUserName"
-      :current-user-avatar="currentUserAvatar"
-      @close="showMoments = false"
-    />
   </div>
 </template>
 
@@ -130,6 +139,7 @@ import GroupEditModal from './components/GroupEditModal.vue'
 import FriendRemarkModal from './components/FriendRemarkModal.vue'
 import CallPanel from './components/CallPanel.vue'
 import Moments from './components/Moments.vue'
+import Favorites from './components/Favorites.vue'
 import { initiateVoiceCall, initiateVideoCall } from '@/api/call'
 
 const authStore = useAuthStore()
@@ -157,6 +167,7 @@ const editGroup = ref(null)
 const showFriendRemarkModal = ref(false)
 const editFriend = ref(null)
 const showMoments = ref(false)
+const showFavorites = ref(false)
 
 const chatAreaRef = ref(null)
 
@@ -893,7 +904,9 @@ const onGroupCreated = (group) => {
 
 const handleNavChange = (tab) => {
   console.log('[ImChat] 导航切换:', tab)
-  // 可以根据不同的 tab 做相应的处理
+  // 切换左侧导航时退出朋友圈 / 收藏
+  showMoments.value = false
+  showFavorites.value = false
 }
 
 const handleUserProfile = () => {
@@ -918,6 +931,7 @@ const handleOfficials = () => {
 
 const handleMoments = () => {
   showMoments.value = true
+  showFavorites.value = false
 }
 
 const handleScan = () => {
@@ -941,8 +955,8 @@ const handleServices = () => {
 }
 
 const handleFavorites = () => {
-  console.log('[ImChat] 收藏')
-  // 打开收藏
+  showFavorites.value = true
+  showMoments.value = false
 }
 
 const handleSettings = () => {
@@ -1336,6 +1350,16 @@ watch(selectedContact, () => {
 
   /* 打开会话时隐藏侧栏，聊天区全屏 */
   .im-container.chat-open :deep(.im-sidebar) {
+    display: none;
+  }
+
+  /* 打开朋友圈时隐藏侧栏，朋友圈全屏 */
+  .im-container.moments-open :deep(.im-sidebar) {
+    display: none;
+  }
+
+  /* 打开收藏时隐藏侧栏，收藏页全屏 */
+  .im-container.favorites-open :deep(.im-sidebar) {
     display: none;
   }
 

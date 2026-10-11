@@ -42,4 +42,10 @@ public interface MomentService extends IService<Moment> {
 
     /** 删除评论（仅本人可删） */
     void deleteComment(Long userId, Long commentId);
+
+    /** 上传/更新朋友圈封面背景图，返回图片URL */
+    String uploadCover(Long userId, org.springframework.web.multipart.MultipartFile file);
+
+    /** 获取朋友圈封面背景图URL */
+    String getCover(Long userId);
 }

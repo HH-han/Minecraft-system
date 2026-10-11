@@ -147,6 +147,11 @@
       d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" />
     <circle cx="12" cy="13" r="3" />
   </svg>
+  <svg v-else-if="name === 'bell'" class="icon" viewBox="0 0 24 24" :width="size" :height="size">
+    <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+    <path
+      d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+  </svg>
   <svg v-else-if="name === 'paperclip'" class="icon" viewBox="0 0 24 24" :width="size" :height="size">
     <path
       d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551" />
@@ -212,6 +217,18 @@
     <circle cx="12" cy="12" r="10" />
     <path d="M12 16v-4" />
     <path d="M12 8h.01" />
+  </svg>
+  <svg v-else-if="name === 'clock'" class="icon" viewBox="0 0 24 24" :width="size" :height="size">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+  <svg v-else-if="name === 'search'" class="icon" viewBox="0 0 24 24" :width="size" :height="size">
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </svg>
+  <svg v-else-if="name === 'link'" class="icon" viewBox="0 0 24 24" :width="size" :height="size">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
   </svg>
   <!-- 兼容旧图标名 -->
   <svg v-else-if="name === 'speakerEnabled'" class="icon" viewBox="0 0 24 24" :width="size" :height="size">

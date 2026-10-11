@@ -1,93 +1,59 @@
 <template>
-  <div class="moments-overlay">
-    <!-- 顶部导航栏 -->
-    <header class="moments-header">
-      <button class="header-btn" title="返回" @click="close">
-        <Icon name="chevron-right" :size="'22px'" class="back-icon" />
-      </button>
-      <h1 class="header-title">朋友圈</h1>
-      <button class="header-btn" title="发表" @click="toggleComposer">
-        <Icon name="camera" :size="'20px'" />
-      </button>
-    </header>
+  <div class="moments-pane">
+    <!-- 封面 -->
+    <section class="moments-cover" title="点击更换封面" @click="selectCover">
+      <div class="cover-bg" :style="coverStyle"></div>
+      <div class="cover-shade"></div>
 
-    <!-- 封面 + 个人信息 -->
-    <section class="moments-cover">
-      <div class="cover-mask"></div>
-      <div class="cover-user">
+      <!-- 悬浮工具按钮 -->
+      <div class="cover-toolbar">
+        <button class="tool-btn" title="返回" @click.stop="close">
+          <Icon name="chevron-right" :size="'20px'" class="back-icon" />
+        </button>
+        <div class="cover-tools">
+          <button class="tool-btn" title="刷新" @click.stop="loadFeed(true)">
+            <Icon name="refresh-cw" :size="'18px'" />
+          </button>
+          <button class="tool-btn" title="消息" @click.stop="handleNotice">
+            <Icon name="bell" :size="'18px'" />
+          </button>
+          <button class="tool-btn" title="发表" @click.stop="openComposer">
+            <Icon name="camera" :size="'18px'" />
+          </button>
+        </div>
+      </div>
+
+      <div class="cover-hint">
+        <Icon name="camera" :size="'16px'" />
+        <span>点击更换封面</span>
+      </div>
+
+      <!-- 昵称 + 头像 -->
+      <div class="cover-user" @click.stop>
         <span class="cover-name">{{ displayName }}</span>
         <img :src="currentUserAvatar || defaultAvatar" :alt="displayName" class="cover-avatar" />
       </div>
     </section>
 
+    <input
+      ref="coverInputRef"
+      type="file"
+      accept="image/*"
+      class="cover-input"
+      @change="handleCoverSelect"
+    />
+
+    <!-- 动态信息流 -->
     <div class="moments-body">
-      <!-- 发布区 -->
-      <transition name="composer-fade">
-        <div v-if="showComposer" class="composer card">
-          <textarea
-            v-model="composerText"
-            class="composer-input"
-            rows="3"
-            maxlength="500"
-            placeholder="这一刻的想法…"
-          ></textarea>
-
-          <div v-if="composerImages.length" class="composer-grid">
-            <div
-              v-for="(img, index) in composerImages"
-              :key="index"
-              class="composer-thumb"
-            >
-              <img :src="img" alt="待发布图片" />
-              <button class="thumb-remove" title="移除" @click="removeComposerImage(index)">
-                <Icon name="close" :size="'12px'" />
-              </button>
-            </div>
-          </div>
-
-          <div class="composer-footer">
-            <label class="composer-add" :class="{ disabled: composerImages.length >= 9 }">
-              <Icon name="picture" :size="'18px'" />
-              <span>{{ composerImages.length }}/9</span>
-              <input
-                ref="imageInputRef"
-                type="file"
-                accept="image/*"
-                multiple
-                :disabled="composerImages.length >= 9"
-                @change="handleComposerImages"
-              />
-            </label>
-            <div class="composer-right">
-              <input
-                v-model="composerLocation"
-                class="composer-location"
-                type="text"
-                maxlength="50"
-                placeholder="所在位置（选填）"
-              />
-              <button
-                class="publish-btn"
-                :disabled="publishing || (!composerText.trim() && composerImages.length === 0)"
-                @click="handlePublish"
-              >
-                {{ publishing ? '发布中…' : '发表' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </transition>
-
-      <!-- 动态信息流 -->
       <div v-if="loading && !moments.length" class="state-tip">加载中…</div>
 
       <div v-else-if="!moments.length" class="state-tip">
         <Icon name="camera" :size="'40px'" />
-        <p>还没有动态，发布第一条朋友圈吧</p>
+        <p>还没有动态，点击右上角相机发布第一条朋友圈吧</p>
       </div>
 
       <template v-else>
-        <article v-for="moment in moments" :key="moment.id" class="moment card">
+        <article v-for="moment in moments" :key="moment.id" class="moment">
           <img :src="moment.avatar || defaultAvatar" :alt="moment.nickname" class="moment-avatar" />
 
           <div class="moment-main">
@@ -95,7 +61,10 @@
             <p v-if="moment.content" class="moment-content">{{ moment.content }}</p>
 
             <!-- 九宫格图片 -->
-            <div v-if="moment.images && moment.images.length" :class="['moment-images', imageGridClass(moment.images.length)]">
+            <div
+              v-if="moment.images && moment.images.length"
+              :class="['moment-images', imageGridClass(moment.images.length)]"
+            >
               <img
                 v-for="(img, index) in moment.images"
                 :key="index"
@@ -112,99 +81,85 @@
                 {{ moment.location }}
               </span>
               <span class="moment-time">{{ formatTime(moment.createTime) }}</span>
-              <button class="moment-action" @click="toggleActionPanel(moment.id)">
+              <button class="moment-action" title="赞和评论" @click.stop="toggleActionPanel(moment.id)">
                 <Icon name="more" :size="'16px'" />
               </button>
             </div>
 
-            <!-- 操作气泡 -->
+            <!-- 赞 / 评论 操作气泡 -->
             <transition name="pop">
               <div v-if="activeMomentId === moment.id" class="action-pop" @click.stop>
-                <button v-if="isMine(moment)" class="action-item danger" @click="handleDeleteMoment(moment)">
-                  删除
+                <button class="action-item" @click="handleLike(moment)">
+                  <svg class="like-icon" viewBox="0 0 24 24" width="15" height="15">
+                    <path
+                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    />
+                  </svg>
+                  {{ moment.liked ? '取消' : '赞' }}
                 </button>
                 <button class="action-item" @click="startComment(moment)">
-                  {{ isMine(moment) ? '评论' : '评论' }}
+                  <Icon name="message" :size="'15px'" />
+                  评论
+                </button>
+                <button v-if="isMine(moment)" class="action-item danger" @click="handleDeleteMoment(moment)">
+                  <Icon name="trash" :size="'15px'" />
+                  删除
                 </button>
               </div>
             </transition>
 
             <!-- 点赞 / 评论区 -->
-            <div class="interaction">
-              <div class="interaction-actions">
-                <button
-                  :class="['like-btn', { active: moment.liked }]"
-                  @click="handleLike(moment)"
-                >
-                  <svg class="like-icon" viewBox="0 0 24 24" width="16" height="16">
-                    <path
-                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    />
-                  </svg>
-                  <span>{{ moment.likeCount || 0 }}</span>
-                </button>
-                <button class="comment-btn" @click="startComment(moment)">
-                  <Icon name="message" :size="'15px'" />
-                  <span>{{ moment.commentCount || 0 }}</span>
-                </button>
+            <div v-if="(moment.likes && moment.likes.length) || (moment.comments && moment.comments.length)" class="interaction-panel">
+              <div v-if="moment.likes && moment.likes.length" class="like-list">
+                <svg class="like-icon filled" viewBox="0 0 24 24" width="13" height="13">
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  />
+                </svg>
+                <span class="like-names">
+                  {{ moment.likes.map(u => u.nickname || u.username).join('，') }}
+                </span>
               </div>
 
-              <div v-if="(moment.likes && moment.likes.length) || (moment.comments && moment.comments.length)" class="interaction-panel">
-                <div v-if="moment.likes && moment.likes.length" class="like-list">
-                  <svg class="like-icon small" viewBox="0 0 24 24" width="13" height="13">
-                    <path
-                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    />
-                  </svg>
-                  <span class="like-names">
-                    {{ moment.likes.map(u => u.nickname || u.username).join('、') }}
-                  </span>
-                </div>
-
-                <div v-if="moment.comments && moment.comments.length" class="comment-list">
-                  <div
-                    v-for="comment in moment.comments"
-                    :key="comment.id"
-                    class="comment-item"
-                  >
+              <div v-if="moment.comments && moment.comments.length" class="comment-list">
+                <div v-for="comment in moment.comments" :key="comment.id" class="comment-item">
+                  <span
+                    class="comment-user"
+                    @click="startComment(moment, { userId: comment.userId, nickname: comment.nickname || comment.username })"
+                  >{{ comment.nickname || comment.username }}</span>
+                  <template v-if="comment.replyToNickname">
+                    <span class="comment-reply">回复</span>
                     <span
                       class="comment-user"
-                      @click="startComment(moment, { userId: comment.userId, nickname: comment.nickname || comment.username })"
-                    >{{ comment.nickname || comment.username }}</span>
-                    <template v-if="comment.replyToNickname">
-                      <span class="comment-reply">回复</span>
-                      <span
-                        class="comment-user"
-                        @click="startComment(moment, { userId: comment.replyToUserId, nickname: comment.replyToNickname })"
-                      >{{ comment.replyToNickname }}</span>
-                    </template>
-                    <span class="comment-sep">：</span>
-                    <span class="comment-text">{{ comment.content }}</span>
-                    <button
-                      v-if="Number(comment.userId) === Number(currentUserId)"
-                      class="comment-delete"
-                      @click="handleDeleteComment(moment, comment)"
-                    >
-                      删除
-                    </button>
-                  </div>
+                      @click="startComment(moment, { userId: comment.replyToUserId, nickname: comment.replyToNickname })"
+                    >{{ comment.replyToNickname }}</span>
+                  </template>
+                  <span class="comment-sep">：</span>
+                  <span class="comment-text">{{ comment.content }}</span>
+                  <button
+                    v-if="Number(comment.userId) === Number(currentUserId)"
+                    class="comment-delete"
+                    @click="handleDeleteComment(moment, comment)"
+                  >
+                    删除
+                  </button>
                 </div>
               </div>
+            </div>
 
-              <!-- 评论输入 -->
-              <div v-if="commentingMomentId === moment.id" class="comment-input-row">
-                <input
-                  v-model="commentText"
-                  class="comment-input"
-                  type="text"
-                  maxlength="200"
-                  :placeholder="replyTarget ? `回复 ${replyTarget.nickname}：` : '评论…'"
-                  @keyup.enter="submitComment(moment)"
-                />
-                <button class="comment-send" :disabled="!commentText.trim()" @click="submitComment(moment)">
-                  发送
-                </button>
-              </div>
+            <!-- 评论输入 -->
+            <div v-if="commentingMomentId === moment.id" class="comment-input-row">
+              <input
+                v-model="commentText"
+                class="comment-input"
+                type="text"
+                maxlength="200"
+                :placeholder="replyTarget ? `回复 ${replyTarget.nickname}：` : '评论…'"
+                @keyup.enter="submitComment(moment)"
+              />
+              <button class="comment-send" :disabled="!commentText.trim()" @click="submitComment(moment)">
+                发送
+              </button>
             </div>
           </div>
         </article>
@@ -213,10 +168,70 @@
           <button v-if="hasMore" class="load-more-btn" :disabled="loading" @click="loadMore">
             {{ loading ? '加载中…' : '加载更多' }}
           </button>
-          <span v-else class="load-more-end">没有更多了</span>
+          <span v-else class="load-more-end">— 没有更多了 —</span>
         </div>
       </template>
     </div>
+
+    <!-- 发表窗口（参考微信发表弹窗） -->
+    <transition name="fade">
+      <div v-if="showComposer" class="publish-overlay" @click.self="closeComposer">
+        <div class="publish-window">
+          <header class="publish-header">
+            <button class="publish-cancel" @click="closeComposer">取消</button>
+            <h3 class="publish-title">发表</h3>
+            <button
+              class="publish-submit"
+              :disabled="publishing || (!composerText.trim() && composerImages.length === 0)"
+              @click="handlePublish"
+            >
+              {{ publishing ? '发布中…' : '发表' }}
+            </button>
+          </header>
+
+          <div class="publish-body">
+            <textarea
+              v-model="composerText"
+              class="publish-input"
+              rows="4"
+              maxlength="500"
+              placeholder="这一刻的想法…"
+            ></textarea>
+
+            <div class="publish-grid">
+              <div v-for="(img, index) in composerImages" :key="index" class="publish-thumb">
+                <img :src="img" alt="待发布图片" />
+                <button class="thumb-remove" title="移除" @click="removeComposerImage(index)">
+                  <Icon name="close" :size="'12px'" />
+                </button>
+              </div>
+              <label class="publish-add" :class="{ disabled: composerImages.length >= 9 }">
+                <Icon name="plus" :size="'22px'" />
+                <span v-if="composerImages.length">{{ composerImages.length }}/9</span>
+                <input
+                  ref="imageInputRef"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  :disabled="composerImages.length >= 9"
+                  @change="handleComposerImages"
+                />
+              </label>
+            </div>
+
+            <div class="publish-location">
+              <Icon name="map-pin" :size="'15px'" />
+              <input
+                v-model="composerLocation"
+                type="text"
+                maxlength="50"
+                placeholder="所在位置（选填）"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- 图片预览 -->
     <div v-if="preview.visible" class="preview-overlay" @click="preview.visible = false">
@@ -240,7 +255,9 @@ import {
   toggleMomentLike,
   getMomentLikes,
   addMomentComment,
-  deleteMomentComment
+  deleteMomentComment,
+  uploadMomentCover,
+  getMomentCover
 } from '@/api/moment'
 
 const props = defineProps({
@@ -275,6 +292,9 @@ const composerLocation = ref('')
 const composerImages = ref([])
 const imageInputRef = ref(null)
 
+const coverUrl = ref('')
+const coverInputRef = ref(null)
+
 const activeMomentId = ref(null)
 const commentingMomentId = ref(null)
 const commentText = ref('')
@@ -287,6 +307,13 @@ const preview = reactive({
 })
 
 const displayName = computed(() => props.currentUserName || '用户')
+
+const coverStyle = computed(() => {
+  if (coverUrl.value) {
+    return { backgroundImage: `url("${coverUrl.value}")` }
+  }
+  return {}
+})
 
 const isMine = (moment) => Number(moment.userId) === Number(props.currentUserId)
 
@@ -319,8 +346,51 @@ const loadMore = async () => {
   await loadFeed(false)
 }
 
-const toggleComposer = () => {
-  showComposer.value = !showComposer.value
+const handleNotice = () => {
+  ElMessage.info('暂无新的朋友圈消息')
+}
+
+const loadCover = async () => {
+  if (!props.currentUserId) return
+  try {
+    const response = await getMomentCover(props.currentUserId)
+    if (response.code === 200 && response.data) {
+      coverUrl.value = response.data
+    }
+  } catch (error) {
+    console.error('[Moments] 获取封面失败:', error)
+  }
+}
+
+const selectCover = () => {
+  coverInputRef.value?.click()
+}
+
+const handleCoverSelect = async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  try {
+    const response = await uploadMomentCover(props.currentUserId, file)
+    if (response.code === 200) {
+      coverUrl.value = response.data
+      ElMessage.success('封面已更新')
+    } else {
+      ElMessage.error(response.message || '封面上传失败')
+    }
+  } catch (error) {
+    console.error('[Moments] 封面上传失败:', error)
+  }
+
+  event.target.value = ''
+}
+
+const openComposer = () => {
+  showComposer.value = true
+}
+
+const closeComposer = () => {
+  showComposer.value = false
 }
 
 const handleComposerImages = async (event) => {
@@ -390,6 +460,7 @@ const toggleActionPanel = (momentId) => {
 }
 
 const handleLike = async (moment) => {
+  activeMomentId.value = null
   try {
     const response = await toggleMomentLike(moment.id, props.currentUserId)
     if (response.code === 200) {
@@ -450,6 +521,7 @@ const handleDeleteComment = async (moment, comment) => {
 }
 
 const handleDeleteMoment = async (moment) => {
+  activeMomentId.value = null
   try {
     await ElMessageBox.confirm('确定删除这条动态吗？', '提示', {
       confirmButtonText: '删除',
@@ -469,7 +541,6 @@ const handleDeleteMoment = async (moment) => {
   } catch (error) {
     console.error('[Moments] 删除动态失败:', error)
   }
-  activeMomentId.value = null
 }
 
 const imageGridClass = (count) => {
@@ -509,6 +580,7 @@ const handleGlobalClick = () => {
 
 onMounted(() => {
   loadFeed(true)
+  loadCover()
   document.addEventListener('click', handleGlobalClick)
 })
 
@@ -518,272 +590,162 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.moments-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-  background: #f5f5f7;
+.moments-pane {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: #ffffff;
   overflow-y: auto;
+  position: relative;
   font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #1d1d1f;
   -webkit-font-smoothing: antialiased;
 }
 
-.moments-overlay::-webkit-scrollbar {
+.moments-pane::-webkit-scrollbar {
   width: 6px;
 }
 
-.moments-overlay::-webkit-scrollbar-thumb {
+.moments-pane::-webkit-scrollbar-thumb {
   background: #d2d2d6;
   border-radius: 3px;
 }
 
-/* 顶部栏 */
-.moments-header {
-  position: sticky;
+/* 封面 */
+.moments-cover {
+  position: relative;
+  height: 320px;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 55%, #4a6cf7 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cover-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.05) 45%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+/* 更换封面提示 */
+.cover-hint {
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #ffffff;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.moments-cover:hover .cover-hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cover-input {
+  display: none;
+}
+
+.cover-toolbar {
+  position: absolute;
   top: 0;
-  z-index: 10;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 52px;
-  padding: 0 12px;
-  background: rgba(245, 245, 247, 0.82);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 14px 18px;
+  z-index: 2;
 }
 
-.header-title {
-  font-size: 17px;
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: -0.01em;
+.cover-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.header-btn {
-  width: 40px;
-  height: 40px;
+.tool-btn {
+  width: 38px;
+  height: 38px;
   border: none;
-  background: transparent;
-  color: #1d1d1f;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.header-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.38);
+  transform: scale(1.05);
 }
 
 .back-icon {
   transform: rotate(180deg);
 }
 
-/* 封面 */
-.moments-cover {
-  position: relative;
-  height: 240px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  overflow: visible;
-}
-
-.cover-mask {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 100%);
-}
-
 .cover-user {
   position: absolute;
-  right: 20px;
-  bottom: -18px;
+  right: 22px;
+  bottom: -20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  z-index: 2;
 }
 
 .cover-name {
   color: #ffffff;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
 }
 
 .cover-avatar {
-  width: 68px;
-  height: 68px;
-  border-radius: 10px;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
   border: 3px solid #ffffff;
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  background: #ffffff;
 }
 
 /* 主体 */
 .moments-body {
-  max-width: 680px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 40px 16px 60px;
+  padding: 26px 24px 70px;
+  min-height: 300px;
 }
 
-.card {
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-/* 发布区 */
-.composer {
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.composer-input {
-  width: 100%;
-  border: none;
-  resize: none;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #1d1d1f;
-  outline: none;
-  background: transparent;
-  font-family: inherit;
-  box-sizing: border-box;
-}
-
-.composer-input::placeholder {
-  color: #a1a1a6;
-}
-
-.composer-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.composer-thumb {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.composer-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumb-remove {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 20px;
-  height: 20px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.composer-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid #f0f0f2;
-}
-
-.composer-add {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 10px;
-  background: #f5f5f7;
-  color: #2997ff;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.composer-add:hover {
-  background: #e8e8ed;
-}
-
-.composer-add.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.composer-add input {
-  display: none;
-}
-
-.composer-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.composer-location {
-  flex: 1;
-  max-width: 220px;
-  padding: 8px 12px;
-  border: 1px solid #e5e5ea;
-  border-radius: 10px;
-  font-size: 13px;
-  outline: none;
-  font-family: inherit;
-  color: #1d1d1f;
-  transition: border-color 0.2s ease;
-}
-
-.composer-location:focus {
-  border-color: #2997ff;
-}
-
-.publish-btn {
-  padding: 8px 20px;
-  border: none;
-  border-radius: 999px;
-  background: #2997ff;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  white-space: nowrap;
-}
-
-.publish-btn:hover:not(:disabled) {
-  background: #0066cc;
-}
-
-.publish-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 状态提示 */
 .state-tip {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 60px 0;
+  padding: 70px 0;
   color: #a1a1a6;
   font-size: 14px;
 }
@@ -792,18 +754,18 @@ onUnmounted(() => {
   margin: 0;
 }
 
-/* 动态卡片 */
+/* 动态条目 */
 .moment {
   display: flex;
   gap: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f2;
 }
 
 .moment-avatar {
   width: 44px;
   height: 44px;
-  border-radius: 8px;
+  border-radius: 6px;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -817,7 +779,7 @@ onUnmounted(() => {
   margin: 0 0 6px;
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: #2997ff;
 }
 
 .moment-content {
@@ -855,7 +817,7 @@ onUnmounted(() => {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: zoom-in;
   background: #f5f5f7;
   transition: opacity 0.2s ease;
@@ -883,29 +845,31 @@ onUnmounted(() => {
 .moment-action {
   margin-left: auto;
   border: none;
-  background: transparent;
-  color: #a1a1a6;
+  background: #f5f5f7;
+  color: #6e6e73;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 3px 10px;
   border-radius: 6px;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .moment-action:hover {
-  background: #f5f5f7;
+  background: #e8e8ed;
   color: #1d1d1f;
 }
 
 /* 操作气泡 */
 .action-pop {
-  position: relative;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .action-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 5px 14px;
   border: none;
   border-radius: 8px;
@@ -924,61 +888,11 @@ onUnmounted(() => {
   color: #ff3b30;
 }
 
-/* 互动区 */
-.interaction {
-  margin-top: 10px;
-}
-
-.interaction-actions {
-  display: flex;
-  gap: 16px;
-}
-
-.like-btn,
-.comment-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: none;
-  background: transparent;
-  color: #6e6e73;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 2px 0;
-  transition: color 0.2s ease;
-}
-
-.like-btn:hover,
-.comment-btn:hover {
-  color: #2997ff;
-}
-
-.like-btn.active {
-  color: #ff3b30;
-}
-
-.like-icon {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linejoin: round;
-}
-
-.like-btn.active .like-icon {
-  fill: currentColor;
-}
-
-.like-icon.small {
-  color: #ff3b30;
-  fill: currentColor;
-  stroke: none;
-  flex-shrink: 0;
-}
-
+/* 互动面板 */
 .interaction-panel {
   margin-top: 8px;
   background: #f5f5f7;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 8px 12px;
 }
 
@@ -987,6 +901,20 @@ onUnmounted(() => {
   align-items: flex-start;
   gap: 6px;
   padding-bottom: 6px;
+}
+
+.like-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.like-icon.filled {
+  fill: #2997ff;
+  stroke: #2997ff;
+  margin-top: 2px;
 }
 
 .like-names {
@@ -1001,10 +929,6 @@ onUnmounted(() => {
   padding-top: 6px;
 }
 
-.like-list + .comment-list {
-  border-top: 1px solid #e5e5ea;
-}
-
 .comment-item {
   font-size: 13px;
   line-height: 1.6;
@@ -1015,6 +939,7 @@ onUnmounted(() => {
 .comment-user {
   color: #2997ff;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .comment-reply,
@@ -1085,23 +1010,22 @@ onUnmounted(() => {
 /* 加载更多 */
 .load-more {
   text-align: center;
-  padding: 12px 0 24px;
+  padding: 18px 0 8px;
 }
 
 .load-more-btn {
   padding: 9px 28px;
   border: none;
   border-radius: 999px;
-  background: #ffffff;
+  background: #f5f5f7;
   color: #2997ff;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: background 0.2s ease;
 }
 
 .load-more-btn:hover:not(:disabled) {
-  background: #f0f7ff;
+  background: #e8e8ed;
 }
 
 .load-more-end {
@@ -1109,11 +1033,190 @@ onUnmounted(() => {
   font-size: 13px;
 }
 
+/* 发表窗口 */
+.publish-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.publish-window {
+  width: 520px;
+  max-width: calc(100vw - 40px);
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+}
+
+.publish-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #f0f0f2;
+}
+
+.publish-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.publish-cancel {
+  border: none;
+  background: transparent;
+  color: #6e6e73;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.publish-cancel:hover {
+  color: #1d1d1f;
+}
+
+.publish-submit {
+  padding: 7px 20px;
+  border: none;
+  border-radius: 999px;
+  background: #2997ff;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.publish-submit:hover:not(:disabled) {
+  background: #0066cc;
+}
+
+.publish-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.publish-body {
+  padding: 16px 18px 20px;
+}
+
+.publish-input {
+  width: 100%;
+  border: none;
+  resize: none;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1d1d1f;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.publish-input::placeholder {
+  color: #a1a1a6;
+}
+
+.publish-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.publish-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.publish-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.publish-add {
+  aspect-ratio: 1;
+  border: 1px dashed #d2d2d6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #a1a1a6;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.publish-add:hover {
+  border-color: #2997ff;
+  color: #2997ff;
+}
+
+.publish-add.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.publish-add input {
+  display: none;
+}
+
+.publish-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 9px 12px;
+  border: 1px solid #e5e5ea;
+  border-radius: 10px;
+  color: #a1a1a6;
+  transition: border-color 0.2s ease;
+}
+
+.publish-location:focus-within {
+  border-color: #2997ff;
+}
+
+.publish-location input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #1d1d1f;
+  font-family: inherit;
+}
+
 /* 图片预览 */
 .preview-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1300;
+  z-index: 1400;
   background: rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
@@ -1144,15 +1247,14 @@ onUnmounted(() => {
 }
 
 /* 过渡动画 */
-.composer-fade-enter-active,
-.composer-fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-.composer-fade-enter-from,
-.composer-fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
 }
 
 .pop-enter-active,
@@ -1168,16 +1270,20 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .moments-cover {
-    height: 180px;
+    height: 200px;
   }
 
   .cover-avatar {
-    width: 56px;
-    height: 56px;
+    width: 58px;
+    height: 58px;
   }
 
-  .moment-images.grid-three {
-    max-width: 100%;
+  .moments-body {
+    padding: 22px 16px 60px;
+  }
+
+  .publish-window {
+    width: 100%;
   }
 }
 </style>

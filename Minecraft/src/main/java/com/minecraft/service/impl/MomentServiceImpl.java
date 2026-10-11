@@ -11,19 +11,24 @@ import com.minecraft.dto.response.MomentVO;
 import com.minecraft.entity.Friend;
 import com.minecraft.entity.Moment;
 import com.minecraft.entity.MomentComment;
+import com.minecraft.entity.MomentCover;
 import com.minecraft.entity.MomentLike;
 import com.minecraft.entity.User;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.MomentCommentMapper;
+import com.minecraft.mapper.MomentCoverMapper;
 import com.minecraft.mapper.MomentLikeMapper;
 import com.minecraft.mapper.MomentMapper;
 import com.minecraft.service.FriendService;
 import com.minecraft.service.MomentService;
 import com.minecraft.service.UserService;
+import com.minecraft.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +61,12 @@ public class MomentServiceImpl extends ServiceImpl<MomentMapper, Moment> impleme
 
     @Autowired
     private MomentCommentMapper momentCommentMapper;
+
+    @Autowired
+    private MomentCoverMapper momentCoverMapper;
+
+    @Autowired
+    private FileUtils fileUtils;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -264,6 +275,47 @@ public class MomentServiceImpl extends ServiceImpl<MomentMapper, Moment> impleme
         update.setId(comment.getMomentId());
         update.setCommentCount((int) commentCount);
         updateById(update);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String uploadCover(Long userId, MultipartFile file) {
+        if (userId == null) {
+            throw new BusinessException("用户未登录");
+        }
+        if (file == null || file.isEmpty()) {
+            throw new BusinessException("请选择封面图片");
+        }
+
+        String url;
+        try {
+            url = fileUtils.uploadFile(file);
+        } catch (IOException e) {
+            throw new BusinessException("封面上传失败：" + e.getMessage());
+        }
+
+        MomentCover cover = momentCoverMapper.selectOne(new LambdaQueryWrapper<MomentCover>()
+                .eq(MomentCover::getUserId, userId));
+        if (cover == null) {
+            cover = new MomentCover();
+            cover.setUserId(userId);
+            cover.setCoverUrl(url);
+            momentCoverMapper.insert(cover);
+        } else {
+            cover.setCoverUrl(url);
+            momentCoverMapper.updateById(cover);
+        }
+        return url;
+    }
+
+    @Override
+    public String getCover(Long userId) {
+        if (userId == null) {
+            return null;
+        }
+        MomentCover cover = momentCoverMapper.selectOne(new LambdaQueryWrapper<MomentCover>()
+                .eq(MomentCover::getUserId, userId));
+        return cover != null ? cover.getCoverUrl() : null;
     }
 
     private List<MomentVO> toVOList(List<Moment> moments, Long currentUserId) {

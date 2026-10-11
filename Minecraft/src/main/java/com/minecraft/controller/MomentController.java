@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -89,5 +90,19 @@ public class MomentController {
     public ApiResponse<Void> deleteComment(@PathVariable Long commentId, @RequestParam Long userId) {
         momentService.deleteComment(userId, commentId);
         return ApiResponse.success("删除成功", null);
+    }
+
+    @Operation(summary = "上传朋友圈封面背景图")
+    @PostMapping("/cover")
+    public ApiResponse<String> uploadCover(
+            @RequestParam Long userId,
+            @RequestParam("file") MultipartFile file) {
+        return ApiResponse.success("上传成功", momentService.uploadCover(userId, file));
+    }
+
+    @Operation(summary = "获取朋友圈封面背景图")
+    @GetMapping("/cover")
+    public ApiResponse<String> getCover(@RequestParam Long userId) {
+        return ApiResponse.success("成功", momentService.getCover(userId));
     }
 }
