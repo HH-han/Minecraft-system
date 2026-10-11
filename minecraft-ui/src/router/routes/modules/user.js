@@ -65,4 +65,16 @@ export default [
     component: () => import('@/views/OfficialWebsite/index.vue'),
     meta: { title: '官网首页', requiresAuth: true },
   },
+  {
+    path: '/logistics',
+    name: 'Logistics',
+    component: () => import('@/views/Logistics/index.vue'),
+    meta: { title: '物流详情', requiresAuth: true },
+  },
+  {
+    path: '/aftersale',
+    name: 'AfterSale',
+    component: () => import('@/views/AfterSale/index.vue'),
+    meta: { title: '售后服务', requiresAuth: true },
+  },
 ];

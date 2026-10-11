@@ -1,0 +1,138 @@
+{
+  "title": "物流与售后",
+  "shipping": "发货管理",
+  "carrier": "承运商管理",
+  "freight": "运费模板",
+  "after_sale": "售后审核",
+  "refund": "退款管理",
+  "common": {
+    "refresh": "刷新",
+    "add": "新增",
+    "edit": "编辑",
+    "delete": "删除",
+    "detail": "详情",
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭",
+    "action": "操作",
+    "search_placeholder": "搜索",
+    "save_success": "保存成功",
+    "save_failed": "保存失败",
+    "delete_success": "删除成功",
+    "delete_failed": "删除失败",
+    "delete_confirm": "确定删除吗？此操作不可恢复。",
+    "empty": "暂无数据",
+    "loading": "加载中..."
+  },
+  "shipping_page": {
+    "title": "发货管理",
+    "create_title": "创建发货单",
+    "batch_title": "批量发货",
+    "track_title": "物流轨迹",
+    "batch_order_ids": "订单ID列表（英文逗号分隔）",
+    "batch_order_ids_required": "请输入订单ID列表",
+    "order_id_required": "请输入订单ID",
+    "receiver_required": "请填写收件人信息",
+    "empty_track": "暂无轨迹",
+    "fields": {
+      "shippingNo": "发货单号",
+      "orderId": "订单ID",
+      "orderNo": "订单号",
+      "itemName": "商品",
+      "quantity": "数量",
+      "carrier": "承运商",
+      "trackingNo": "运单号",
+      "receiver": "收件人",
+      "receiverName": "收件人",
+      "receiverPhone": "收件电话",
+      "receiverAddress": "收件地址",
+      "freight": "运费",
+      "remark": "备注",
+      "status": "状态",
+      "shipTime": "发货时间"
+    }
+  },
+  "after_sale_page": {
+    "title": "售后审核",
+    "detail_title": "售后详情",
+    "audit_title": "售后审核",
+    "receive": "确认收货",
+    "refund": "发起退款",
+    "close": "关闭售后",
+    "audit_approved": "审核通过",
+    "audit_reject": "驳回",
+    "audit_remark": "审核备注",
+    "actual_amount": "实际退款金额",
+    "close_reason_default": "管理员关闭",
+    "reason": "问题描述",
+    "messages": "协商记录",
+    "sender": {
+      "user": "用户",
+      "merchant": "商家",
+      "system": "系统"
+    },
+    "fields": {
+      "afterSaleNo": "售后单号",
+      "orderNo": "订单号",
+      "itemName": "商品",
+      "quantity": "数量",
+      "type": "类型",
+      "status": "状态",
+      "refundAmount": "退款金额",
+      "createTime": "申请时间"
+    }
+  },
+  "refund_page": {
+    "title": "退款管理",
+    "notify_success": "标记成功",
+    "notify_fail": "标记失败",
+    "fields": {
+      "refundNo": "退款单号",
+      "orderNo": "订单号",
+      "channel": "渠道",
+      "amount": "退款金额",
+      "status": "状态",
+      "channelRefundNo": "渠道单号",
+      "failReason": "失败原因",
+      "refundTime": "退款时间",
+      "createTime": "创建时间"
+    }
+  },
+  "carrier_page": {
+    "title": "承运商管理",
+    "create_title": "承运商",
+    "code_required": "请输入承运商编码",
+    "name_required": "请输入承运商名称",
+    "api": {
+      "kuaidi100": "快递100",
+      "kuaidiniao": "快递鸟",
+      "aliyun": "阿里云物流"
+    },
+    "fields": {
+      "code": "编码",
+      "name": "名称",
+      "apiType": "接口类型",
+      "phone": "客服电话",
+      "website": "官网",
+      "sort": "排序",
+      "status": "状态"
+    },
+    "status": { "on": "启用", "off": "禁用" }
+  },
+  "freight_page": {
+    "title": "运费模板",
+    "create_title": "运费模板",
+    "name_required": "请输入模板名称",
+    "fields": {
+      "name": "模板名称",
+      "chargeType": "计费方式",
+      "firstUnit": "首件/首重",
+      "firstPrice": "首费",
+      "extraUnit": "续件/续重",
+      "extraPrice": "续费",
+      "status": "状态"
+    },
+    "charge": { "byPiece": "按件", "byWeight": "按重量", "byVolume": "按体积" },
+    "status": { "on": "启用", "off": "禁用" }
+  }
+}

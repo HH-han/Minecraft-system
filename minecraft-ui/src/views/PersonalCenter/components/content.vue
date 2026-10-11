@@ -55,6 +55,8 @@
             <el-button type="primary" :icon="Edit" @click="openEditModal" round>修改信息</el-button>
             <el-button :icon="Lock" @click="openPasswordModal" round>更改密码</el-button>
             <el-button type="success" @click="goToPoints" round>积分商城</el-button>
+            <el-button type="warning" :icon="Van" @click="goToLogistics" round>物流详情</el-button>
+            <el-button type="info" :icon="RefreshLeft" @click="goToAfterSale" round>售后服务</el-button>
           </div>
         </div>
       </div>
@@ -268,7 +270,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { Edit, Lock } from '@element-plus/icons-vue';
+import { Edit, Lock, RefreshLeft, Van } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
 import { getUserPoints } from '@/api/points';
@@ -405,6 +407,16 @@ const fetchUserPoints = async () => {
 // 跳转到积分商城
 const goToPoints = () => {
   router.push('/points');
+};
+
+// 跳转到物流详情
+const goToLogistics = () => {
+  router.push('/logistics');
+};
+
+// 跳转到售后服务
+const goToAfterSale = () => {
+  router.push('/aftersale');
 };
 
 // 处理头像上传

@@ -73,6 +73,24 @@ export const API_ENDPOINTS = {
     STATUS: '/payment/status'
   },
 
+  LOGISTICS: {
+    BASE: '/logistics',
+    ORDER: '/logistics/order',
+    TRACK: '/logistics/track',
+    CONFIRM: '/logistics/confirm',
+    SUBSCRIBE: '/logistics/subscribe'
+  },
+
+  AFTER_SALE: {
+    BASE: '/after-sale',
+    APPLY: '/after-sale/apply',
+    PAGE: '/after-sale/page',
+    DETAIL: '/after-sale',
+    RETURN: '/after-sale/return',
+    CANCEL: '/after-sale/cancel',
+    MESSAGE: '/after-sale/message'
+  },
+
   POINTS: {
     BASE: '/points',
     LIST: '/points/list',

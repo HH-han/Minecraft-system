@@ -9,6 +9,7 @@ import com.minecraft.dto.request.TravelNoteQueryDTO;
 import com.minecraft.dto.request.TravelNoteSaveDTO;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.*;
+import com.minecraft.enums.FriendStatus;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.*;
 import com.minecraft.service.TravelNoteService;
@@ -227,11 +228,8 @@ public class TravelNoteServiceImpl extends ServiceImpl<TravelNoteMapper, TravelN
                         .orderByDesc(TravelNote::getPublishTime);
             }
             case "city" -> {
-                if (query.getCityId() == null) {
-                    wrapper.orderByDesc(TravelNote::getIsTop).orderByDesc(TravelNote::getPublishTime);
-                } else {
-                    wrapper.orderByDesc(TravelNote::getIsTop).orderByDesc(TravelNote::getPublishTime);
-                }
+                // 同城：cityId 为空的兜底等同最新；有 cityId 时已在上面按 cityId 过滤
+                wrapper.orderByDesc(TravelNote::getIsTop).orderByDesc(TravelNote::getPublishTime);
             }
             default -> wrapper.orderByDesc(TravelNote::getIsTop).orderByDesc(TravelNote::getPublishTime);
         }
@@ -810,7 +808,8 @@ public class TravelNoteServiceImpl extends ServiceImpl<TravelNoteMapper, TravelN
             return Collections.emptyList();
         }
         return friendMapper.selectList(new LambdaQueryWrapper<Friend>()
-                        .eq(Friend::getUserId, userId))
+                        .eq(Friend::getUserId, userId)
+                        .eq(Friend::getStatus, FriendStatus.ACCEPTED.ordinal()))
                 .stream()
                 .map(Friend::getFriendId)
                 .filter(Objects::nonNull)

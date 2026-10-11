@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       {
         meta: {
           icon: 'lucide:megaphone',
-          title: '公告管理',
+          title: $t('content.announcement_page.title'),
         },
         name: 'Announcement',
         path: 'announcement',
@@ -42,12 +42,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
-          icon: 'lucide:pencil-line',
-          title: $t('content.travelNotes'),
+          icon: 'lucide:notebook-pen',
+          title: $t('content.travelNoteManage'),
         },
-        name: 'TravelNotes',
-        path: 'travel-notes',
-        component: () => import('#/views/content_management/index.vue'),
+        name: 'TravelNoteManage',
+        path: 'travel-note-manage',
+        component: () => import('#/views/content_management/travelNote.vue'),
       },
       {
         meta: {

@@ -1,0 +1,138 @@
+{
+  "title": "Logistics & After-sale",
+  "shipping": "Shipping Management",
+  "carrier": "Carrier Management",
+  "freight": "Freight Templates",
+  "after_sale": "After-sale Review",
+  "refund": "Refund Management",
+  "common": {
+    "refresh": "Refresh",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "detail": "Detail",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "action": "Action",
+    "search_placeholder": "Search",
+    "save_success": "Saved successfully",
+    "save_failed": "Save failed",
+    "delete_success": "Deleted successfully",
+    "delete_failed": "Delete failed",
+    "delete_confirm": "Are you sure to delete? This cannot be undone.",
+    "empty": "No data",
+    "loading": "Loading..."
+  },
+  "shipping_page": {
+    "title": "Shipping Management",
+    "create_title": "Create Shipment",
+    "batch_title": "Batch Ship",
+    "track_title": "Logistics Tracks",
+    "batch_order_ids": "Order IDs (comma separated)",
+    "batch_order_ids_required": "Please enter order IDs",
+    "order_id_required": "Please enter order ID",
+    "receiver_required": "Please fill receiver info",
+    "empty_track": "No tracks",
+    "fields": {
+      "shippingNo": "Shipping No.",
+      "orderId": "Order ID",
+      "orderNo": "Order No.",
+      "itemName": "Item",
+      "quantity": "Qty",
+      "carrier": "Carrier",
+      "trackingNo": "Tracking No.",
+      "receiver": "Receiver",
+      "receiverName": "Receiver",
+      "receiverPhone": "Receiver Phone",
+      "receiverAddress": "Receiver Address",
+      "freight": "Freight",
+      "remark": "Remark",
+      "status": "Status",
+      "shipTime": "Shipped At"
+    }
+  },
+  "after_sale_page": {
+    "title": "After-sale Review",
+    "detail_title": "After-sale Detail",
+    "audit_title": "Audit",
+    "receive": "Confirm Receipt",
+    "refund": "Refund",
+    "close": "Close",
+    "audit_approved": "Approved",
+    "audit_reject": "Reject",
+    "audit_remark": "Audit Remark",
+    "actual_amount": "Actual Refund Amount",
+    "close_reason_default": "Closed by admin",
+    "reason": "Reason",
+    "messages": "Messages",
+    "sender": {
+      "user": "User",
+      "merchant": "Merchant",
+      "system": "System"
+    },
+    "fields": {
+      "afterSaleNo": "After-sale No.",
+      "orderNo": "Order No.",
+      "itemName": "Item",
+      "quantity": "Qty",
+      "type": "Type",
+      "status": "Status",
+      "refundAmount": "Refund Amount",
+      "createTime": "Applied At"
+    }
+  },
+  "refund_page": {
+    "title": "Refund Management",
+    "notify_success": "Mark Success",
+    "notify_fail": "Mark Failed",
+    "fields": {
+      "refundNo": "Refund No.",
+      "orderNo": "Order No.",
+      "channel": "Channel",
+      "amount": "Amount",
+      "status": "Status",
+      "channelRefundNo": "Channel Refund No.",
+      "failReason": "Fail Reason",
+      "refundTime": "Refunded At",
+      "createTime": "Created At"
+    }
+  },
+  "carrier_page": {
+    "title": "Carrier Management",
+    "create_title": "Carrier",
+    "code_required": "Please enter carrier code",
+    "name_required": "Please enter carrier name",
+    "api": {
+      "kuaidi100": "Kuaidi100",
+      "kuaidiniao": "Kuaidiniao",
+      "aliyun": "Aliyun Logistics"
+    },
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "apiType": "API Type",
+      "phone": "Phone",
+      "website": "Website",
+      "sort": "Sort",
+      "status": "Status"
+    },
+    "status": { "on": "Enabled", "off": "Disabled" }
+  },
+  "freight_page": {
+    "title": "Freight Templates",
+    "create_title": "Freight Template",
+    "name_required": "Please enter template name",
+    "fields": {
+      "name": "Name",
+      "chargeType": "Charge Type",
+      "firstUnit": "First Unit",
+      "firstPrice": "First Price",
+      "extraUnit": "Extra Unit",
+      "extraPrice": "Extra Price",
+      "status": "Status"
+    },
+    "charge": { "byPiece": "By Piece", "byWeight": "By Weight", "byVolume": "By Volume" },
+    "status": { "on": "Enabled", "off": "Disabled" }
+  }
+}

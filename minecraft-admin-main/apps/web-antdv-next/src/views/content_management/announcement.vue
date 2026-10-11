@@ -5,6 +5,7 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { Plus, RefreshCw, Search } from '@vben/icons';
+import { $t } from '@vben/locales';
 
 import {
   Button,
@@ -55,34 +56,34 @@ interface AnnouncementInfo {
   viewCount?: null | number;
 }
 
-const TYPE_OPTIONS = [
-  { value: 1, label: '系统公告' },
-  { value: 2, label: '活动通知' },
-  { value: 3, label: '维护通知' },
-  { value: 4, label: '版本更新' },
-];
-const LEVEL_OPTIONS = [
-  { value: 1, label: '普通' },
-  { value: 2, label: '重要' },
-  { value: 3, label: '紧急' },
-];
-const DISPLAY_MODES = [
-  { value: 1, label: '仅列表' },
-  { value: 2, label: '弹窗' },
-  { value: 3, label: '轮播' },
-  { value: 4, label: '顶部横幅' },
-];
-const AUDIENCES = [
-  { value: 1, label: '全体' },
-  { value: 2, label: '登录用户' },
-  { value: 3, label: '新用户' },
-  { value: 4, label: '指定用户' },
-];
-const STATUS_OPTIONS = [
-  { value: 0, label: '草稿' },
-  { value: 1, label: '已发布' },
-  { value: 2, label: '已下架' },
-];
+const typeOptions = computed(() => [
+  { value: 1, label: $t('content.announcement_page.type.system') },
+  { value: 2, label: $t('content.announcement_page.type.activity') },
+  { value: 3, label: $t('content.announcement_page.type.maintenance') },
+  { value: 4, label: $t('content.announcement_page.type.version') },
+]);
+const levelOptions = computed(() => [
+  { value: 1, label: $t('content.announcement_page.level.normal') },
+  { value: 2, label: $t('content.announcement_page.level.important') },
+  { value: 3, label: $t('content.announcement_page.level.urgent') },
+]);
+const displayModes = computed(() => [
+  { value: 1, label: $t('content.announcement_page.displayMode.list') },
+  { value: 2, label: $t('content.announcement_page.displayMode.popup') },
+  { value: 3, label: $t('content.announcement_page.displayMode.carousel') },
+  { value: 4, label: $t('content.announcement_page.displayMode.banner') },
+]);
+const audiences = computed(() => [
+  { value: 1, label: $t('content.announcement_page.audience.all') },
+  { value: 2, label: $t('content.announcement_page.audience.login') },
+  { value: 3, label: $t('content.announcement_page.audience.new') },
+  { value: 4, label: $t('content.announcement_page.audience.specified') },
+]);
+const statusOptions = computed(() => [
+  { value: 0, label: $t('content.announcement_page.status.draft') },
+  { value: 1, label: $t('content.announcement_page.status.published') },
+  { value: 2, label: $t('content.announcement_page.status.offline') },
+]);
 
 // =========================
 // 状态
@@ -135,34 +136,29 @@ const futurePublish = computed(
 // 工具
 // =========================
 function typeText(t?: null | number): string {
-  return TYPE_OPTIONS.find((o) => o.value === Number(t))?.label ?? '-';
+  return typeOptions.value.find((o) => o.value === Number(t))?.label ?? '-';
 }
 function typeColor(t?: null | number): string {
   return { 1: 'blue', 2: 'orange', 3: 'red', 4: 'green' }[Number(t)] ?? 'default';
 }
 function levelText(l?: null | number): string {
-  return LEVEL_OPTIONS.find((o) => o.value === Number(l))?.label ?? '-';
+  return levelOptions.value.find((o) => o.value === Number(l))?.label ?? '-';
 }
 function levelColor(l?: null | number): string {
   return { 1: 'default', 2: 'orange', 3: 'red' }[Number(l)] ?? 'default';
 }
 function statusText(s?: null | number): string {
-  return STATUS_OPTIONS.find((o) => o.value === Number(s))?.label ?? '-';
+  return statusOptions.value.find((o) => o.value === Number(s))?.label ?? '-';
 }
 function statusColor(s?: null | number): string {
   return { 0: 'default', 1: 'green', 2: 'red' }[Number(s)] ?? 'default';
 }
 function displayModeText(m?: null | number): string {
-  return DISPLAY_MODES.find((o) => o.value === Number(m))?.label ?? '-';
+  return displayModes.value.find((o) => o.value === Number(m))?.label ?? '-';
 }
 function formatTime(value?: null | string): string {
   if (!value) return '-';
   return String(value).replace('T', ' ').slice(0, 19);
-}
-function formatStatTime(value?: null | string): string {
-  if (!value) return '-';
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? '-' : d.toLocaleString('zh-CN', { hour12: false });
 }
 
 // =========================
@@ -170,17 +166,56 @@ function formatStatTime(value?: null | string): string {
 // =========================
 const columns = computed<TableColumnsType>(() => [
   { title: 'ID', dataIndex: 'id', width: 70 },
-  { title: '标题', key: 'title', width: 220, ellipsis: true },
-  { title: '类型', key: 'type', width: 100 },
-  { title: '级别', key: 'level', width: 80 },
-  { title: '展示方式', key: 'displayMode', width: 100 },
-  { title: '状态', key: 'status', width: 90 },
-  { title: '浏览量', dataIndex: 'viewCount', width: 90 },
-  { title: '已读数', dataIndex: 'readCount', width: 90 },
-  { title: '发布时间', key: 'publishTime', width: 160 },
-  { title: '过期时间', key: 'expireTime', width: 160 },
-  { title: '创建人', dataIndex: 'creatorName', width: 100, ellipsis: true },
-  { title: '操作', key: 'action', width: 300, fixed: 'right' },
+  {
+    title: $t('content.announcement_page.columns.title'),
+    key: 'title',
+    width: 220,
+    ellipsis: true,
+  },
+  { title: $t('content.announcement_page.columns.type'), key: 'type', width: 100 },
+  { title: $t('content.announcement_page.columns.level'), key: 'level', width: 80 },
+  {
+    title: $t('content.announcement_page.columns.displayMode'),
+    key: 'displayMode',
+    width: 100,
+  },
+  {
+    title: $t('content.announcement_page.columns.status'),
+    key: 'status',
+    width: 90,
+  },
+  {
+    title: $t('content.announcement_page.columns.viewCount'),
+    dataIndex: 'viewCount',
+    width: 90,
+  },
+  {
+    title: $t('content.announcement_page.columns.readCount'),
+    dataIndex: 'readCount',
+    width: 90,
+  },
+  {
+    title: $t('content.announcement_page.columns.publishTime'),
+    key: 'publishTime',
+    width: 160,
+  },
+  {
+    title: $t('content.announcement_page.columns.expireTime'),
+    key: 'expireTime',
+    width: 160,
+  },
+  {
+    title: $t('content.announcement_page.columns.creatorName'),
+    dataIndex: 'creatorName',
+    width: 100,
+    ellipsis: true,
+  },
+  {
+    title: $t('content.announcement_page.columns.action'),
+    key: 'action',
+    width: 300,
+    fixed: 'right',
+  },
 ]);
 
 // =========================
@@ -274,11 +309,17 @@ function toggleSource() {
   }
 }
 function insertLink() {
-  const url = window.prompt('请输入链接地址：', 'https://');
+  const url = window.prompt(
+    $t('content.announcement_page.link_prompt'),
+    'https://',
+  );
   if (url) exec('createLink', url);
 }
 function insertImage() {
-  const url = window.prompt('请输入图片地址：', 'https://');
+  const url = window.prompt(
+    $t('content.announcement_page.image_prompt'),
+    'https://',
+  );
   if (url) exec('insertImage', url);
 }
 
@@ -286,12 +327,12 @@ function insertImage() {
 async function submit(status: 0 | 1) {
   if (sourceMode.value) form.value.content = sourceContent.value;
   if (!form.value.title?.trim()) {
-    message.error('请填写公告标题');
+    message.error($t('content.announcement_page.title_required'));
     return;
   }
   const plain = (form.value.content ?? '').replace(/<[^>]+>/g, '').trim();
   if (!plain) {
-    message.error('请填写公告内容');
+    message.error($t('content.announcement_page.content_required'));
     return;
   }
   if (
@@ -299,7 +340,7 @@ async function submit(status: 0 | 1) {
     form.value.publishTime &&
     new Date(form.value.expireTime) <= new Date(form.value.publishTime)
   ) {
-    message.error('过期时间必须晚于发布时间');
+    message.error($t('content.announcement_page.expire_before_publish'));
     return;
   }
   submitting.value = true;
@@ -321,11 +362,17 @@ async function submit(status: 0 | 1) {
     } else {
       await addAnnouncement(data);
     }
-    message.success(futurePublish.value ? '定时发布已保存' : status === 1 ? '发布成功' : '草稿已保存');
+    message.success(
+      futurePublish.value
+        ? $t('content.announcement_page.scheduled_success')
+        : status === 1
+          ? $t('content.announcement_page.publish_success')
+          : $t('content.announcement_page.save_draft_success'),
+    );
     showDialog.value = false;
     await fetchData();
   } catch (e: any) {
-    message.error(e?.message || '操作失败');
+    message.error(e?.message || $t('content.announcement_page.action_failed'));
   } finally {
     submitting.value = false;
   }
@@ -337,28 +384,32 @@ async function submit(status: 0 | 1) {
 async function handlePublish(row: AnnouncementInfo) {
   try {
     await publishAnnouncement(row.id);
-    message.success('发布成功');
+    message.success($t('content.announcement_page.publish_success'));
     await fetchData();
   } catch (e: any) {
-    message.error(e?.message || '发布失败');
+    message.error(e?.message || $t('content.announcement_page.publish_failed'));
   }
 }
 async function handleOffline(row: AnnouncementInfo) {
   try {
     await offlineAnnouncement(row.id);
-    message.success('下架成功');
+    message.success($t('content.announcement_page.offline_success'));
     await fetchData();
   } catch (e: any) {
-    message.error(e?.message || '下架失败');
+    message.error(e?.message || $t('content.announcement_page.offline_failed'));
   }
 }
 async function handleTop(row: AnnouncementInfo) {
   try {
     await topAnnouncement(row.id, Number(row.isTop) === 1 ? 0 : 1);
-    message.success(Number(row.isTop) === 1 ? '已取消置顶' : '置顶成功');
+    message.success(
+      Number(row.isTop) === 1
+        ? $t('content.announcement_page.cancel_top_success')
+        : $t('content.announcement_page.top_success'),
+    );
     await fetchData();
   } catch (e: any) {
-    message.error(e?.message || '操作失败');
+    message.error(e?.message || $t('content.announcement_page.action_failed'));
   }
 }
 async function showStatDialog(row: AnnouncementInfo) {
@@ -372,16 +423,16 @@ async function showStatDialog(row: AnnouncementInfo) {
     });
     statVisible.value = true;
   } catch {
-    message.error('获取统计失败');
+    message.error($t('content.announcement_page.stat_failed'));
   }
 }
 async function handleDelete(row: AnnouncementInfo) {
   try {
     await deleteAnnouncement(row.id);
-    message.success('删除成功');
+    message.success($t('content.announcement_page.delete_success'));
     await fetchData();
   } catch (e: any) {
-    message.error(e?.message || '删除失败');
+    message.error(e?.message || $t('content.announcement_page.delete_failed'));
   }
 }
 
@@ -389,45 +440,48 @@ onMounted(fetchData);
 </script>
 
 <template>
-  <Page title="公告管理" description="系统公告的创建、发布、下架与阅读统计">
+  <Page
+    :title="$t('content.announcement_page.title')"
+    :description="$t('content.announcement_page.description')"
+  >
     <div class="bg-card rounded-lg p-4">
       <!-- 搜索/操作栏 -->
       <div class="mb-4 flex flex-wrap items-center gap-2">
         <Input
           v-model:value="keyword"
-          placeholder="输入公告标题搜索"
+          :placeholder="$t('content.announcement_page.search_placeholder')"
           class="w-52"
           allow-clear
           @press-enter="handleSearch"
         />
         <Button type="primary" @click="handleSearch">
           <template #icon><Search class="size-4" /></template>
-          搜索
+          {{ $t('content.announcement_page.search') }}
         </Button>
         <Select
           v-model:value="statusFilter"
-          placeholder="状态"
+          :placeholder="$t('content.announcement_page.filter.status')"
           allow-clear
           class="w-28"
-          :options="STATUS_OPTIONS"
+          :options="statusOptions"
           @change="handleSearch"
         />
         <Select
           v-model:value="typeFilter"
-          placeholder="类型"
+          :placeholder="$t('content.announcement_page.filter.type')"
           allow-clear
           class="w-28"
-          :options="TYPE_OPTIONS"
+          :options="typeOptions"
           @change="handleSearch"
         />
         <div class="flex-1"></div>
         <Button @click="handleRefresh">
           <template #icon><RefreshCw class="size-4" /></template>
-          重置
+          {{ $t('content.announcement_page.reset') }}
         </Button>
         <Button type="primary" @click="showAddDialog">
           <template #icon><Plus class="size-4" /></template>
-          新建公告
+          {{ $t('content.announcement_page.add') }}
         </Button>
       </div>
 
@@ -441,7 +495,8 @@ onMounted(fetchData);
           pageSize,
           total,
           showSizeChanger: true,
-          showTotal: (t: number) => `共 ${t} 条`,
+          showTotal: (t: number) =>
+            $t('content.announcement_page.total', { total: t }),
           onChange: handlePageChange,
         }"
         :scroll="{ x: 1560 }"
@@ -450,7 +505,9 @@ onMounted(fetchData);
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'title'">
-            <Tag v-if="record.isTop === 1" color="volcano">置顶</Tag>
+            <Tag v-if="record.isTop === 1" color="volcano">
+              {{ $t('content.announcement_page.topped') }}
+            </Tag>
             <span>{{ record.title }}</span>
           </template>
           <template v-else-if="column.key === 'type'">
@@ -472,14 +529,16 @@ onMounted(fetchData);
             {{ formatTime(record.expireTime) }}
           </template>
           <template v-else-if="column.key === 'action'">
-            <Button type="link" size="small" @click="showEditDialog(record)">编辑</Button>
+            <Button type="link" size="small" @click="showEditDialog(record)">
+              {{ $t('content.announcement_page.edit') }}
+            </Button>
             <Button
               v-if="record.status !== 1"
               type="link"
               size="small"
               @click="handlePublish(record)"
             >
-              发布
+              {{ $t('content.announcement_page.publish') }}
             </Button>
             <Button
               v-if="record.status === 1"
@@ -487,14 +546,25 @@ onMounted(fetchData);
               size="small"
               @click="handleOffline(record)"
             >
-              下架
+              {{ $t('content.announcement_page.offline') }}
             </Button>
             <Button type="link" size="small" @click="handleTop(record)">
-              {{ record.isTop === 1 ? '取消置顶' : '置顶' }}
+              {{
+                record.isTop === 1
+                  ? $t('content.announcement_page.cancel_top')
+                  : $t('content.announcement_page.top')
+              }}
             </Button>
-            <Button type="link" size="small" @click="showStatDialog(record)">统计</Button>
-            <Popconfirm title="确认删除该公告？" @confirm="handleDelete(record)">
-              <Button type="link" size="small" danger>删除</Button>
+            <Button type="link" size="small" @click="showStatDialog(record)">
+              {{ $t('content.announcement_page.stat_button') }}
+            </Button>
+            <Popconfirm
+              :title="$t('content.announcement_page.delete_confirm')"
+              @confirm="handleDelete(record)"
+            >
+              <Button type="link" size="small" danger>
+                {{ $t('content.announcement_page.delete') }}
+              </Button>
             </Popconfirm>
           </template>
         </template>
@@ -504,73 +574,154 @@ onMounted(fetchData);
     <!-- 新建/编辑弹窗 -->
     <Modal
       v-model:open="showDialog"
-      :title="isEditing ? '编辑公告' : '新建公告'"
+      :title="
+        isEditing
+          ? $t('content.announcement_page.edit_title')
+          : $t('content.announcement_page.create_title')
+      "
       width="760px"
       :mask-closable="false"
       destroy-on-close
     >
       <Form layout="horizontal" :label-col="{ span: 5 }" :wrapper-col="{ span: 18 }">
-        <FormItem label="公告标题" required>
-          <Input v-model:value="form.title" :maxlength="200" show-count placeholder="请输入公告标题" />
+        <FormItem :label="$t('content.announcement_page.form.title')" required>
+          <Input
+            v-model:value="form.title"
+            :maxlength="200"
+            show-count
+            :placeholder="$t('content.announcement_page.title_placeholder')"
+          />
         </FormItem>
-        <FormItem label="公告摘要">
+        <FormItem :label="$t('content.announcement_page.form.summary')">
           <Input.TextArea
             v-model:value="form.summary"
             :rows="2"
             :maxlength="500"
             show-count
-            placeholder="列表/弹窗摘要（可留空）"
+            :placeholder="$t('content.announcement_page.summary_placeholder')"
           />
         </FormItem>
-        <FormItem label="类型 / 级别">
+        <FormItem :label="$t('content.announcement_page.form.type_level')">
           <div class="flex gap-2">
-            <Select v-model:value="form.type" class="w-1/2" :options="TYPE_OPTIONS" />
-            <Select v-model:value="form.level" class="w-1/2" :options="LEVEL_OPTIONS" />
+            <Select v-model:value="form.type" class="w-1/2" :options="typeOptions" />
+            <Select v-model:value="form.level" class="w-1/2" :options="levelOptions" />
           </div>
         </FormItem>
-        <FormItem label="展示方式">
-          <Select v-model:value="form.displayMode" :options="DISPLAY_MODES" />
+        <FormItem :label="$t('content.announcement_page.form.display_mode')">
+          <Select v-model:value="form.displayMode" :options="displayModes" />
         </FormItem>
-        <FormItem label="目标人群">
-          <Select v-model:value="form.targetAudience" :options="AUDIENCES" />
+        <FormItem :label="$t('content.announcement_page.form.target_audience')">
+          <Select v-model:value="form.targetAudience" :options="audiences" />
         </FormItem>
-        <FormItem v-if="form.targetAudience === 4" label="定向用户ID">
-          <Input v-model:value="targetUserIdsText" placeholder="多个用户ID用英文逗号分隔，如 1,2,3" />
-        </FormItem>
-        <FormItem label="定时发布">
+        <FormItem
+          v-if="form.targetAudience === 4"
+          :label="$t('content.announcement_page.form.target_user_ids')"
+        >
           <Input
-            v-model:value="form.publishTime"
-            placeholder="ISO 格式，留空且点立即发布则为立即发布，如 2026-01-15T10:00:00"
+            v-model:value="targetUserIdsText"
+            :placeholder="$t('content.announcement_page.target_users_placeholder')"
           />
         </FormItem>
-        <FormItem label="过期时间">
-          <Input v-model:value="form.expireTime" placeholder="ISO 格式，留空=永不过期" />
+        <FormItem :label="$t('content.announcement_page.form.publish_time')">
+          <Input
+            v-model:value="form.publishTime"
+            :placeholder="$t('content.announcement_page.publish_time_placeholder')"
+          />
         </FormItem>
-        <FormItem label="封面图URL">
-          <Input v-model:value="form.coverImage" placeholder="https://..." />
+        <FormItem :label="$t('content.announcement_page.form.expire_time')">
+          <Input
+            v-model:value="form.expireTime"
+            :placeholder="$t('content.announcement_page.expire_time_placeholder')"
+          />
         </FormItem>
-        <FormItem label="置顶 / 权重">
+        <FormItem :label="$t('content.announcement_page.form.cover_image')">
+          <Input
+            v-model:value="form.coverImage"
+            :placeholder="$t('content.announcement_page.cover_placeholder')"
+          />
+        </FormItem>
+        <FormItem :label="$t('content.announcement_page.form.top_weight')">
           <div class="flex items-center gap-4">
             <Switch :checked="form.isTop === 1" @change="(v: any) => (form.isTop = v ? 1 : 0)" />
             <InputNumber v-model:value="form.sortWeight" :min="0" :max="9999" />
           </div>
         </FormItem>
-        <FormItem label="公告内容" required>
+        <FormItem :label="$t('content.announcement_page.form.content')" required>
           <div class="rich-editor w-full">
             <div class="editor-toolbar">
-              <button type="button" title="加粗" @click="exec('bold')"><b>B</b></button>
-              <button type="button" title="斜体" @click="exec('italic')"><i>I</i></button>
-              <button type="button" title="下划线" @click="exec('underline')"><u>U</u></button>
-              <button type="button" title="标题" @click="exec('formatBlock', 'h2')">H2</button>
-              <button type="button" title="正文" @click="exec('formatBlock', 'p')">P</button>
-              <button type="button" title="无序列表" @click="exec('insertUnorderedList')">•≡</button>
-              <button type="button" title="有序列表" @click="exec('insertOrderedList')">1≡</button>
-              <button type="button" title="插入链接" @click="insertLink">链接</button>
-              <button type="button" title="插入图片" @click="insertImage">图片</button>
-              <button type="button" title="清除格式" @click="exec('removeFormat')">清除</button>
               <button
                 type="button"
-                title="HTML 源码"
+                :title="$t('content.announcement_page.editor.bold')"
+                @click="exec('bold')"
+              >
+                <b>B</b>
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.italic')"
+                @click="exec('italic')"
+              >
+                <i>I</i>
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.underline')"
+                @click="exec('underline')"
+              >
+                <u>U</u>
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.heading')"
+                @click="exec('formatBlock', 'h2')"
+              >
+                H2
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.paragraph')"
+                @click="exec('formatBlock', 'p')"
+              >
+                P
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.unorderedList')"
+                @click="exec('insertUnorderedList')"
+              >
+                •≡
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.orderedList')"
+                @click="exec('insertOrderedList')"
+              >
+                1≡
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.link')"
+                @click="insertLink"
+              >
+                {{ $t('content.announcement_page.editor.link') }}
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.image')"
+                @click="insertImage"
+              >
+                {{ $t('content.announcement_page.editor.image') }}
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.clear')"
+                @click="exec('removeFormat')"
+              >
+                {{ $t('content.announcement_page.editor.clear') }}
+              </button>
+              <button
+                type="button"
+                :title="$t('content.announcement_page.editor.source')"
                 :class="{ active: sourceMode }"
                 @click="toggleSource"
               >
@@ -588,27 +739,49 @@ onMounted(fetchData);
               ref="editorRef"
               class="editor-body"
               contenteditable="true"
+              :data-placeholder="$t('content.announcement_page.content_placeholder')"
               @input="onEditorInput"
             ></div>
           </div>
         </FormItem>
       </Form>
       <template #footer>
-        <Button @click="showDialog = false">取消</Button>
-        <Button :disabled="submitting" @click="submit(0)">存为草稿</Button>
+        <Button @click="showDialog = false">
+          {{ $t('content.announcement_page.cancel') }}
+        </Button>
+        <Button :disabled="submitting" @click="submit(0)">
+          {{ $t('content.announcement_page.save_draft') }}
+        </Button>
         <Button type="primary" :loading="submitting" @click="submit(1)">
-          {{ futurePublish ? '定时发布' : '立即发布' }}
+          {{
+            futurePublish
+              ? $t('content.announcement_page.publish_scheduled')
+              : $t('content.announcement_page.publish_now')
+          }}
         </Button>
       </template>
     </Modal>
 
     <!-- 阅读统计弹窗 -->
-    <Modal v-model:open="statVisible" title="阅读统计" width="440px" :footer="null">
+    <Modal
+      v-model:open="statVisible"
+      :title="$t('content.announcement_page.title') + ' · ' + $t('content.announcement_page.stat_button')"
+      width="440px"
+      :footer="null"
+    >
       <Descriptions :column="1" bordered size="small">
-        <Descriptions.Item label="公告标题">{{ stat.title }}</Descriptions.Item>
-        <Descriptions.Item label="浏览量">{{ stat.viewCount }}</Descriptions.Item>
-        <Descriptions.Item label="已读数">{{ stat.readCount }}</Descriptions.Item>
-        <Descriptions.Item label="阅读率">{{ stat.readRate }}%</Descriptions.Item>
+        <Descriptions.Item :label="$t('content.announcement_page.stat.title')">
+          {{ stat.title }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('content.announcement_page.stat.viewCount')">
+          {{ stat.viewCount }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('content.announcement_page.stat.readCount')">
+          {{ stat.readCount }}
+        </Descriptions.Item>
+        <Descriptions.Item :label="$t('content.announcement_page.stat.readRate')">
+          {{ stat.readRate }}%
+        </Descriptions.Item>
       </Descriptions>
     </Modal>
   </Page>
@@ -663,7 +836,7 @@ onMounted(fetchData);
 
 .editor-body:empty::before {
   color: #bbb;
-  content: '请输入公告内容...';
+  content: attr(data-placeholder);
 }
 
 .editor-source {

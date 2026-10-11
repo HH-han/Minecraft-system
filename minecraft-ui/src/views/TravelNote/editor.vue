@@ -328,15 +328,64 @@ async function save(status) {
 </script>
 
 <style scoped>
+/* ============ shell ============ */
 .note-editor {
-  max-width: 860px;
+  --tn-ink: #1d1d1f;
+  --tn-ink-2: #6e6e73;
+  --tn-ink-3: #9a9aa0;
+  --tn-accent: #2997ff;
+  --tn-accent-2: #5e5ce6;
+  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-font: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  position: relative;
+  min-height: 100vh;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 32px 16px 64px;
+  margin-top: 100px;
+  padding: 40px 20px 96px;
+  font-family: var(--tn-font);
+  color: var(--tn-ink);
+}
+
+.note-editor::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(900px 460px at 8% -10%, rgba(41, 151, 255, 0.1), transparent 60%),
+    radial-gradient(760px 420px at 100% 0%, rgba(94, 92, 230, 0.09), transparent 58%),
+    #f5f5f7;
 }
 
 .note-editor__title {
-  margin: 0 0 24px;
-  font-size: 24px;
+  margin: 0 0 22px;
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  animation: ne-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* form card */
+.note-editor__form {
+  padding: 28px 30px 24px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid var(--tn-line);
+  box-shadow: 0 20px 50px -28px rgba(20, 40, 80, 0.35);
+  animation: ne-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.note-editor__form :deep(.el-form-item__label) {
+  font-weight: 600;
+  color: var(--tn-ink);
+}
+
+.note-editor__form :deep(.el-input__wrapper),
+.note-editor__form :deep(.el-textarea__inner),
+.note-editor__form :deep(.el-input-number) {
+  border-radius: 12px;
 }
 
 .note-editor__grid {
@@ -345,80 +394,111 @@ async function save(status) {
   gap: 0 24px;
 }
 
+/* ============ upload ============ */
 .note-editor__upload :deep(.el-upload--picture-card) {
-  width: 100px;
-  height: 100px;
+  width: 104px;
+  height: 104px;
+  border-radius: 16px;
+  border: 1.5px dashed rgba(41, 151, 255, 0.4);
+  background: rgba(41, 151, 255, 0.04);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.note-editor__upload :deep(.el-upload--picture-card:hover) {
+  border-color: var(--tn-accent);
+  background: rgba(41, 151, 255, 0.08);
+  transform: translateY(-2px);
 }
 
 .note-editor__upload :deep(.el-upload-list--picture-card .el-upload-list__item) {
-  width: 100px;
-  height: 100px;
+  width: 104px;
+  height: 104px;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .note-editor__hint {
+  margin-top: 8px;
   font-size: 12px;
-  color: var(--el-text-color-secondary);
-  margin-top: 6px;
+  color: var(--tn-ink-3);
 }
 
+/* ============ rich editor ============ */
 .rich-editor {
   width: 100%;
-  border: 1px solid var(--el-border-color);
-  border-radius: 8px;
+  border: 1px solid var(--tn-line);
+  border-radius: 16px;
   overflow: hidden;
+  background: #fff;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.rich-editor:focus-within {
+  border-color: rgba(41, 151, 255, 0.5);
+  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.12);
 }
 
 .rich-editor__toolbar {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
-  background: var(--el-fill-color-light);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--tn-line);
+  background: linear-gradient(180deg, #fafbfd, #f2f4f8);
 }
 
 .rich-editor__toolbar button {
-  min-width: 30px;
-  height: 28px;
+  min-width: 32px;
+  height: 30px;
+  padding: 0 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
   cursor: pointer;
   font-size: 13px;
-  color: var(--el-text-color-primary);
+  font-weight: 600;
+  color: var(--tn-ink-2);
+  transition: all 0.18s ease;
+  font-family: inherit;
 }
 
 .rich-editor__toolbar button:hover {
-  background: var(--el-fill-color);
+  background: #fff;
+  color: var(--tn-accent);
+  box-shadow: 0 2px 8px -2px rgba(20, 40, 80, 0.2);
 }
 
 .rich-editor__area {
-  min-height: 320px;
-  max-height: 560px;
+  min-height: 340px;
+  max-height: 580px;
   overflow-y: auto;
-  padding: 14px 16px;
-  font-size: 15px;
-  line-height: 1.8;
+  padding: 18px 20px;
+  font-size: 15.5px;
+  line-height: 1.9;
   outline: none;
+  color: #2b2b2f;
 }
 
 .rich-editor__area:empty::before {
   content: attr(data-placeholder);
-  color: var(--el-text-color-placeholder);
+  color: var(--tn-ink-3);
 }
 
 .rich-editor__area :deep(img) {
   max-width: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .rich-editor__area :deep(blockquote) {
-  margin: 8px 0;
-  padding: 6px 12px;
-  border-left: 3px solid var(--el-color-primary);
-  background: var(--el-fill-color-light);
-  color: var(--el-text-color-secondary);
+  margin: 10px 0;
+  padding: 8px 14px;
+  border-left: 3px solid var(--tn-accent);
+  background: rgba(41, 151, 255, 0.06);
+  border-radius: 0 10px 10px 0;
+  color: var(--tn-ink-2);
 }
 
+/* ============ tags ============ */
 .note-editor__tags {
   display: flex;
   flex-wrap: wrap;
@@ -426,15 +506,24 @@ async function save(status) {
   gap: 8px;
 }
 
-.note-editor__tag-input {
-  width: 140px;
+.note-editor__tags :deep(.el-tag) {
+  border: none;
+  background: rgba(41, 151, 255, 0.09);
+  color: var(--tn-accent);
+  border-radius: 999px;
+  font-weight: 500;
 }
 
+.note-editor__tag-input {
+  width: 150px;
+}
+
+/* ============ relation / route rows ============ */
 .note-editor__relations,
 .note-editor__routes {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -444,12 +533,48 @@ async function save(status) {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #f7f8fb;
+  border: 1px solid rgba(20, 30, 60, 0.05);
 }
 
+/* ============ submit bar ============ */
 .note-editor__submit {
+  position: sticky;
+  bottom: 16px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 30px -16px rgba(20, 40, 80, 0.4);
+}
+
+@keyframes ne-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .note-editor {
+    margin-top: 84px;
+    padding: 20px 12px 88px;
+  }
+  .note-editor__form {
+    padding: 20px 18px;
+    border-radius: 20px;
+  }
 }
 </style>

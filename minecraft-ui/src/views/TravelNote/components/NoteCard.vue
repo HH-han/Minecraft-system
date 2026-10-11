@@ -3,9 +3,11 @@
     <div class="note-card__cover">
       <img v-if="note.coverUrl" :src="note.coverUrl" :alt="note.title" loading="lazy" />
       <div v-else class="note-card__placeholder">
-        <el-icon :size="36"><Picture /></el-icon>
+        <el-icon :size="34"><Picture /></el-icon>
       </div>
-      <span v-if="note.isFeatured" class="note-card__badge">精</span>
+      <span class="note-card__scrim" aria-hidden="true"></span>
+
+      <span v-if="note.isFeatured" class="note-card__badge note-card__badge--featured">精</span>
       <span v-if="note.isTop" class="note-card__badge note-card__badge--top">顶</span>
     </div>
 
@@ -21,7 +23,7 @@
         <span v-if="note.destination" class="note-card__dest">
           <el-icon><Location /></el-icon>{{ note.destination }}
         </span>
-        <span v-if="note.travelDays" class="note-card__days">{{ note.travelDays }}天</span>
+        <span v-if="note.travelDays" class="note-card__days">{{ note.travelDays }} 天</span>
       </div>
 
       <div class="note-card__footer">
@@ -56,26 +58,33 @@ const formatCount = (n) => {
 
 <style scoped>
 .note-card {
+  position: relative;
   break-inside: avoid;
-  margin-bottom: 16px;
-  border-radius: 12px;
+  border-radius: 18px;
   overflow: hidden;
-  background: var(--el-bg-color);
-  border: 1px solid var(--el-border-color-lighter);
+  background: #fff;
+  border: 1px solid rgba(20, 30, 60, 0.07);
+  box-shadow: 0 4px 16px rgba(20, 40, 80, 0.05);
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s ease;
 }
 
 .note-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--el-box-shadow-light);
+  transform: translateY(-6px);
+  border-color: rgba(41, 151, 255, 0.28);
+  box-shadow: 0 22px 44px -20px rgba(20, 40, 80, 0.35);
 }
 
+/* Cover */
 .note-card__cover {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: var(--el-fill-color-light);
+  background: #eef0f4;
+  overflow: hidden;
 }
 
 .note-card__cover img {
@@ -83,6 +92,18 @@ const formatCount = (n) => {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.note-card:hover .note-card__cover img {
+  transform: scale(1.07);
+}
+
+.note-card__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, transparent 38%, rgba(0, 0, 0, 0.28) 100%);
+  pointer-events: none;
 }
 
 .note-card__placeholder {
@@ -91,55 +112,73 @@ const formatCount = (n) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--el-text-color-placeholder);
+  color: #b9bcc4;
 }
 
+/* Badges */
 .note-card__badge {
   position: absolute;
   top: 10px;
   left: 10px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
   font-size: 12px;
+  font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, #f59e0b, #f97316);
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(6px);
+}
+
+.note-card__badge--featured {
+  background: linear-gradient(135deg, #ffb340, #ff8f1f);
+  box-shadow: 0 6px 14px -6px rgba(255, 143, 31, 0.9);
 }
 
 .note-card__badge--top {
   left: auto;
   right: 10px;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #ff5f57, #e5484d);
+  box-shadow: 0 6px 14px -6px rgba(229, 72, 77, 0.9);
 }
 
+/* Body */
 .note-card__body {
-  padding: 12px 14px 10px;
+  padding: 14px 15px 13px;
 }
 
 .note-card__title {
   margin: 0;
   font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--el-text-color-primary);
+  font-weight: 700;
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  color: #1d1d1f;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .note-card__summary {
-  margin: 6px 0 0;
+  margin: 7px 0 0;
   font-size: 13px;
-  line-height: 1.5;
-  color: var(--el-text-color-secondary);
+  line-height: 1.55;
+  color: #6e6e73;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .note-card__tags {
-  margin-top: 8px;
+  margin-top: 9px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -147,28 +186,41 @@ const formatCount = (n) => {
 
 .note-card__tag {
   font-size: 12px;
-  color: var(--el-color-primary);
+  line-height: 1;
+  padding: 4px 9px;
+  border-radius: 999px;
+  color: #2997ff;
+  background: rgba(41, 151, 255, 0.09);
 }
 
 .note-card__meta {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: var(--el-text-color-secondary);
+  color: #9a9aa0;
 }
 
-.note-card__dest {
+.note-card__dest,
+.note-card__days {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
 }
 
+.note-card__days {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f2f3f6;
+  color: #6e6e73;
+}
+
+/* Footer */
 .note-card__footer {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--el-border-color-extra-light);
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(20, 30, 60, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -177,13 +229,13 @@ const formatCount = (n) => {
 .note-card__author {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   min-width: 0;
 }
 
 .note-card__username {
   font-size: 12px;
-  color: var(--el-text-color-regular);
+  color: #6e6e73;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -194,7 +246,7 @@ const formatCount = (n) => {
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: var(--el-text-color-secondary);
+  color: #9a9aa0;
   flex-shrink: 0;
 }
 
