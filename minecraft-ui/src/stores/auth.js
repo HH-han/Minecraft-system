@@ -63,14 +63,14 @@ export const useAuthStore = defineStore('auth', {
     
     // 邮箱登录
     async emailLogin(data) {
-      const response = await request.post('/api/auth/email-login', data)
+      const response = await request.post('/auth/email-login', data)
       if (response.code === 200) {
         const userData = response.data
         const userInfo = {
+          ...userData,
           token: userData.token,
-          username: userData.username || userData.user?.username || userData.user?.email,
-          id: userData.id || userData.user?.id,
-          ...(userData.user || {})
+          username: userData.username || userData.account || userData.email,
+          id: userData.userId
         }
         this.setUserInfo(userInfo)
       }

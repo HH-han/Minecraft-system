@@ -140,29 +140,25 @@ const handleSubmit = async () => {
         // 使用auth store的emailLogin方法进行邮箱登录
         const response = await authStore.emailLogin({
             email: email.value.trim(),
-            code: code.value
+            captcha: code.value
         });
 
         console.log('登录响应:', response);
 
-        if (response.code === '0') {
-            // 严格验证响应数据结构
-            if (!response.data?.token || !response.data?.user) {
+        if (response.code === 200) {
+            // 后端 LoginResponse 为扁平结构：token/username/email 等直接位于 data 上
+            const { token, email: userEmail } = response.data || {};
+
+            // 验证必要字段
+            if (!token || !userEmail) {
                 throw new Error('响应数据不完整');
             }
 
-            const { user, token } = response.data;
-
-            // 验证必要字段
-            if (!token || !user?.email) {
-                throw new Error('无效的用户数据');
-            }
-
             ElMessage.success('登录成功！');
-            // 跳转
-            router.push({ name: 'systemhomeView' });
+            // 跳转主页
+            router.push('/home');
         } else {
-            ElMessage.error('登录失败/使用账号密码登录');
+            ElMessage.error(response.message || '登录失败，请使用账号密码登录');
             setTimeout(() => {
                 router.push('/login');
             }, 3000);
