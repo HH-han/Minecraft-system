@@ -318,7 +318,7 @@ onMounted(fetchData);
 
       <div class="mb-2 font-medium">{{ $t('im.moment.likes') }}（{{ likes.length }}）</div>
       <div v-if="likes.length" class="mb-4 flex flex-wrap gap-3">
-        <div v-for="like in likes" :key="like.userId" class="flex items-center gap-2">
+        <div v-for="(like, idx) in likes" :key="idx" class="flex items-center gap-2">
           <AntAvatar :src="like.avatar || undefined" :size="26">
             {{ (like.username || '?').slice(0, 1) }}
           </AntAvatar>
