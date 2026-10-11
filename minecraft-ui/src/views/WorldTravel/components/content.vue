@@ -448,7 +448,6 @@ const forceUpdate = () => {
 
 /* ========== 探索区容器（限宽居中） ========== */
 .explore-section {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 56px 24px 48px;
 }

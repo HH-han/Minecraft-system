@@ -2074,25 +2074,34 @@ html[data-theme="light"] .website-introduction .feature-list li {
     color: rgba(16, 24, 40, 0.82);
 }
 
-/* 全宽特色条：亮色下保留深色对比带，文字改用浅色 */
+/* 全宽特色条：亮色下改为浅色带，文字与按钮同步 */
 html[data-theme="light"] .website-introduction .feature-strip {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--wi-hairline);
+    box-shadow: 0 30px 60px -42px rgba(15, 23, 42, 0.32);
     background:
-        radial-gradient(ellipse 46% 92% at 14% 12%, rgba(77, 163, 255, 0.28), transparent 62%),
-        radial-gradient(ellipse 44% 86% at 88% 88%, rgba(139, 108, 255, 0.24), transparent 62%),
-        linear-gradient(180deg, #0b1220 0%, #05070d 100%);
+        radial-gradient(ellipse 46% 92% at 14% 12%, rgba(77, 163, 255, 0.16), transparent 62%),
+        radial-gradient(ellipse 44% 86% at 88% 88%, rgba(139, 108, 255, 0.14), transparent 62%),
+        linear-gradient(180deg, #eef4ff 0%, #f7faff 100%);
 }
 
-html[data-theme="light"] .website-introduction .strip-title {
-    color: #f6f7fb;
+html[data-theme="light"] .website-introduction .strip-aura {
+    background: radial-gradient(ellipse at center, rgba(255, 143, 94, 0.12), transparent 68%);
 }
 
-html[data-theme="light"] .website-introduction .strip-desc {
-    color: rgba(236, 238, 245, 0.72);
+html[data-theme="light"] .website-introduction .cine-grain--strip {
+    opacity: 0.025;
 }
 
-html[data-theme="light"] .website-introduction .strip-eyebrow {
-    color: #6cb4ff;
+/* 标题 / 描述 / eyebrow 基础样式已使用 --wi-* 变量，随主题自动翻转 */
+html[data-theme="light"] .website-introduction .strip-cta {
+    color: #ffffff;
+    background: linear-gradient(120deg, #0b74e5 0%, #6a48ff 100%);
+    box-shadow: 0 18px 40px -18px rgba(11, 116, 229, 0.7);
+}
+
+html[data-theme="light"] .website-introduction .strip-cta:hover {
+    box-shadow: 0 24px 50px -18px rgba(11, 116, 229, 0.85);
+    filter: brightness(1.05);
 }
 
 /* 技术架构 */
@@ -2140,14 +2149,15 @@ html[data-theme="light"] .website-introduction :deep(.stage-body--recommend .car
     box-shadow: 0 28px 60px -28px rgba(11, 116, 229, 0.35);
 }
 
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .category-btn),
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .tab-btn) {
+/* 仅覆盖未选中态，避免盖过 .active 的品牌渐变（否则白底白字） */
+html[data-theme="light"] .website-introduction :deep(.stage-body--listing .category-btn:not(.active)),
+html[data-theme="light"] .website-introduction :deep(.stage-body--listing .tab-btn:not(.active)) {
     background: #ffffff;
     border-color: rgba(15, 23, 42, 0.1);
 }
 
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .category-btn:hover),
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .tab-btn:hover) {
+html[data-theme="light"] .website-introduction :deep(.stage-body--listing .category-btn:not(.active):hover),
+html[data-theme="light"] .website-introduction :deep(.stage-body--listing .tab-btn:not(.active):hover) {
     background: #eef4ff;
 }
 
@@ -2165,7 +2175,11 @@ html[data-theme="light"] .website-introduction :deep(.stage-body--listing .card:
 html[data-theme="light"] .website-introduction :deep(.stage-body--listing .secondary-cta) {
     background: rgba(15, 23, 42, 0.04);
     border-color: rgba(15, 23, 42, 0.12);
-    color: var(--wi-txt-2);
+}
+
+html[data-theme="light"] .website-introduction :deep(.stage-body--listing .secondary-cta:hover) {
+    background: rgba(255, 92, 91, 0.14);
+    color: #e04343;
 }
 
 html[data-theme="light"] .website-introduction :deep(.stage-body--listing .expand-btn) {

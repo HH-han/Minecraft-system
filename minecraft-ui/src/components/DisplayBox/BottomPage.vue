@@ -478,6 +478,12 @@ html[data-theme="light"] .footer-wrapper .social-icons a {
   box-shadow: 0 4px 12px rgba(30, 144, 255, 0.12);
 }
 
+html[data-theme="light"] .footer-wrapper .social-icons a:hover {
+  background: rgba(30, 144, 255, 0.16);
+  border-color: #2a7fd4;
+  color: #0b63c5;
+}
+
 html[data-theme="light"] .footer-wrapper .newsletter-col p {
   color: #466084;
 }
