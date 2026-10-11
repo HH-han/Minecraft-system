@@ -6,7 +6,14 @@
     </div>
 
     <div class="news-grid">
-      <div v-for="news in newsList" :key="news.id" class="news-card" @click="viewNewsDetail(news.id)">
+      <div
+        v-for="(news, index) in displayedNews"
+        :key="news.id"
+        class="news-card"
+        :class="{ 'news-card--expanded': isExpanded && index >= DEFAULT_DISPLAY_COUNT }"
+        :style="{ animationDelay: `${Math.min(index, DEFAULT_DISPLAY_COUNT) * 0.05}s` }"
+        @click="viewNewsDetail(news.id)"
+      >
         <div class="card-image-wrapper">
           <img 
             :src="getCoverImage(news.coverImage)" 
@@ -45,27 +52,58 @@
       </div>
     </div>
 
-    <div class="load-more">
-      <button class="load-more-btn">查看更多新闻</button>
+    <div v-if="hasMoreData" class="expand-actions">
+      <button class="expand-btn" @click="toggleExpand">
+        <span>{{ isExpanded ? '收起' : '展开全部' }}</span>
+        <svg
+          class="expand-arrow"
+          :class="{ 'expand-arrow--up': isExpanded }"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { getHotNews } from '@/api/news.js';
 
 const emit = defineEmits(['open-news-detail']);
 
+// 默认展示的数据条数
+const DEFAULT_DISPLAY_COUNT = 4;
+
 const newsList = ref([]);
 const loading = ref(false);
 const error = ref('');
+const isExpanded = ref(false);
+
+// 默认仅展示前若干条，展开后显示全部
+const displayedNews = computed(() => {
+    if (isExpanded.value || newsList.value.length <= DEFAULT_DISPLAY_COUNT) {
+        return newsList.value;
+    }
+    return newsList.value.slice(0, DEFAULT_DISPLAY_COUNT);
+});
+
+// 是否存在折叠数据（用于控制按钮显示）
+const hasMoreData = computed(() => newsList.value.length > DEFAULT_DISPLAY_COUNT);
+
+const toggleExpand = () => {
+    isExpanded.value = !isExpanded.value;
+};
 
 const fetchNews = async () => {
     loading.value = true;
     error.value = '';
     try {
-        const response = await getHotNews({ limit: 6 });
+        const response = await getHotNews({ limit: 20 });
         if (response.code === 200 && response.data) {
             newsList.value = response.data;
         } else {
@@ -96,88 +134,154 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 深色电影感主题：设计变量由父级 .home-main 统一提供（main.vue） */
 .news-container {
-  margin: 0 auto;
+  margin: 0;
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: 40px;
+  text-align: left;
+  margin-bottom: 28px;
 }
 
 .section-title {
-  font-size: 40px;
+  font-size: clamp(22px, 2.4vw, 30px);
   font-weight: 700;
-  margin: 0 0 12px;
-  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  letter-spacing: -0.03em;
+  color: var(--wi-txt-1, #f6f7fb);
 }
 
 .section-description {
-  font-size: 18px;
-  color: #6e6e73;
+  font-size: 14px;
+  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
   margin: 0;
 }
 
 .news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 .news-card {
-  background: #ffffff;
+  position: relative;
   border-radius: 24px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease-out forwards;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
+  border: 1px solid var(--wi-hairline, rgba(255, 255, 255, 0.09));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 顶部玻璃高光 */
+.news-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  opacity: 0.7;
+  pointer-events: none;
 }
 
 .news-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: rgba(120, 180, 255, 0.34);
+  box-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(120, 180, 255, 0.12);
+}
+
+/* 展开时新增卡片使用更轻量的淡入动画 */
+.news-card--expanded {
+  animation: fadeInExpand 0.5s ease-out forwards;
+}
+
+@keyframes fadeInExpand {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-image-wrapper {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 172px;
   overflow: hidden;
+}
+
+/* 图片底部压暗，向卡片底色过渡 */
+.card-image-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(5, 6, 10, 0.55) 100%);
+  pointer-events: none;
 }
 
 .card-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .news-card:hover .card-image {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .category-tag {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(255, 255, 255, 0.9);
+  z-index: 1;
+  padding: 5px 12px;
+  border-radius: 980px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--wi-txt-1, #f6f7fb);
+  background: rgba(10, 12, 18, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #1d1d1f;
 }
 
 .card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   padding: 20px;
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 16.5px;
   font-weight: 600;
-  margin: 0 0 12px;
-  line-height: 1.3;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  color: var(--wi-txt-1, #f6f7fb);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -185,9 +289,9 @@ onMounted(() => {
 }
 
 .card-description {
-  font-size: 14px;
-  line-height: 1.5;
-  color: #6e6e73;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
   margin: 0 0 16px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -199,21 +303,28 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 16px;
-  border-top: 1px solid #f5f5f7;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .author {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  color: #999;
+  font-size: 12.5px;
+  color: var(--wi-txt-3, rgba(236, 238, 245, 0.42));
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .stats {
   display: flex;
-  gap: 16px;
+  gap: 14px;
+  flex-shrink: 0;
 }
 
 .view-count,
@@ -222,95 +333,116 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #999;
+  color: var(--wi-txt-3, rgba(236, 238, 245, 0.42));
 }
 
-.load-more {
-  text-align: center;
-  margin-top: 48px;
+.expand-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
 }
 
-.load-more-btn {
-  background: transparent;
-  border: 1px solid #d2d2d6;
-  color: #1d1d1f;
-  font-size: 14px;
+.expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 34px;
+  border-radius: 980px;
+  font-size: 14.5px;
   font-weight: 500;
-  padding: 14px 32px;
-  border-radius: 24px;
+  color: var(--wi-txt-1, #f6f7fb);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--wi-hairline-2, rgba(255, 255, 255, 0.16));
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.load-more-btn:hover {
-  background: #1d1d1f;
-  color: #ffffff;
-  border-color: #1d1d1f;
+.expand-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(120, 180, 255, 0.5);
+  box-shadow: 0 16px 34px -18px rgba(93, 140, 255, 0.9);
+}
+
+.expand-btn:active {
+  transform: translateY(0);
+}
+
+.expand-arrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.expand-arrow--up {
+  transform: rotate(180deg);
 }
 
 .loading {
   text-align: center;
-  padding: 80px;
-  color: #6e6e73;
+  padding: 60px 0;
+  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
 }
 
 .error {
   text-align: center;
-  padding: 80px;
-  color: #ff4757;
+  padding: 60px 0;
+  color: #ff9b9b;
 }
 
 @media (max-width: 768px) {
-  .section-title {
-    font-size: 28px;
-  }
-  
   .news-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
-  
-  .news-card {
-    border-radius: 20px;
-  }
-  
+
   .card-image-wrapper {
-    height: 150px;
+    height: 180px;
   }
-  
-  .card-content {
-    padding: 16px;
-  }
-  
-  .card-title {
-    font-size: 16px;
-  }
-  
-  .load-more-btn {
-    padding: 12px 24px;
-    font-size: 13px;
+
+  .expand-actions {
+    margin-top: 28px;
   }
 }
 
-@media (max-width: 480px) {
-  .news-card {
-    border-radius: 16px;
-  }
-  
-  .card-image-wrapper {
-    height: 140px;
-  }
-  
-  .card-content {
-    padding: 14px;
-  }
-  
-  .card-title {
-    font-size: 16px;
-  }
-  
-  .card-description {
-    font-size: 13px;
-  }
+/* ================= 亮色主题 ================= */
+html[data-theme="light"] .news-card {
+  background: linear-gradient(160deg, #ffffff, #f7f9fd);
+  border-color: var(--wi-hairline, rgba(15, 23, 42, 0.1));
+  box-shadow: 0 18px 44px -32px rgba(15, 23, 42, 0.28);
+}
+
+html[data-theme="light"] .news-card::before {
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.1), transparent);
+}
+
+html[data-theme="light"] .news-card:hover {
+  border-color: rgba(11, 116, 229, 0.36);
+  box-shadow: 0 28px 60px -30px rgba(15, 23, 42, 0.32), 0 0 0 1px rgba(11, 116, 229, 0.12);
+}
+
+html[data-theme="light"] .card-image-wrapper::after {
+  background: linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.85) 100%);
+}
+
+html[data-theme="light"] .category-tag {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .card-meta {
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme="light"] .expand-btn {
+  color: var(--wi-txt-1, #101828);
+  background: #ffffff;
+  border-color: var(--wi-hairline-2, rgba(15, 23, 42, 0.18));
+  box-shadow: 0 10px 26px -18px rgba(15, 23, 42, 0.3);
+}
+
+html[data-theme="light"] .expand-btn:hover {
+  background: #eef4ff;
+  border-color: rgba(11, 116, 229, 0.5);
 }
 </style>

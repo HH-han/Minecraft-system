@@ -138,6 +138,11 @@ const getTypeLabel = (type) => {
   background: #ffffff;
 }
 
+/* 暗色主题下页面外壳同步为深色，避免滚动露白 */
+html[data-theme="dark"] .home-page {
+  background: #05060a;
+}
+
 .main-content {
   position: relative;
   z-index: 1;

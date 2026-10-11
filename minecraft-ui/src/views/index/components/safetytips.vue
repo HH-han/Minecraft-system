@@ -6,7 +6,14 @@
     </div>
 
     <div class="tips-grid">
-      <div v-for="tip in safetyTips" :key="tip.id" class="tips-card" @click="openTipDetail(tip)">
+      <div
+        v-for="(tip, index) in displayedTips"
+        :key="tip.id"
+        class="tips-card"
+        :class="{ 'tips-card--expanded': isExpanded && index >= DEFAULT_DISPLAY_COUNT }"
+        :style="{ animationDelay: `${Math.min(index, DEFAULT_DISPLAY_COUNT) * 0.05}s` }"
+        @click="openTipDetail(tip)"
+      >
         <div class="tips-icon-wrapper">
           <svg t="1776522975294" class="icon" viewBox="0 0 1024 1024" version="1.1"
               xmlns="http://www.w3.org/2000/svg" p-id="6403" width="48" height="48">
@@ -27,16 +34,51 @@
         </div>
       </div>
     </div>
+
+    <div v-if="hasMoreData" class="expand-actions">
+      <button class="expand-btn" @click="toggleExpand">
+        <span>{{ isExpanded ? '收起' : '展开全部' }}</span>
+        <svg
+          class="expand-arrow"
+          :class="{ 'expand-arrow--up': isExpanded }"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import safetyTipsApi from '@/api/safetytips';
 
 const emit = defineEmits(['open-safety-detail']);
 
+// 默认展示的数据条数
+const DEFAULT_DISPLAY_COUNT = 4;
+
 const safetyTips = ref([]);
+const isExpanded = ref(false);
+
+// 默认仅展示前若干条，展开后显示全部
+const displayedTips = computed(() => {
+    if (isExpanded.value || safetyTips.value.length <= DEFAULT_DISPLAY_COUNT) {
+        return safetyTips.value;
+    }
+    return safetyTips.value.slice(0, DEFAULT_DISPLAY_COUNT);
+});
+
+// 是否存在折叠数据（用于控制按钮显示）
+const hasMoreData = computed(() => safetyTips.value.length > DEFAULT_DISPLAY_COUNT);
+
+const toggleExpand = () => {
+    isExpanded.value = !isExpanded.value;
+};
 
 const fetchSafetyTips = async () => {
     try {
@@ -55,61 +97,113 @@ onMounted(fetchSafetyTips);
 </script>
 
 <style scoped>
+/* 深色电影感主题：设计变量由父级 .home-main 统一提供（main.vue） */
 .safety-tips {
-  margin: 0 auto;
+  margin: 0;
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: 40px;
+  text-align: left;
+  margin-bottom: 28px;
 }
 
 .section-title {
-  font-size: 40px;
+  font-size: clamp(22px, 2.4vw, 30px);
   font-weight: 700;
-  margin: 0 0 12px;
-  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  letter-spacing: -0.03em;
+  color: var(--wi-txt-1, #f6f7fb);
 }
 
 .section-description {
-  font-size: 18px;
-  color: #6e6e73;
+  font-size: 14px;
+  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
   margin: 0;
 }
 
 .tips-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .tips-card {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
-  background: #ffffff;
-  border-radius: 20px;
+  gap: 18px;
+  padding: 20px 22px;
+  border-radius: 22px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border: 1px solid #f5f5f7;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease-out forwards;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
+  border: 1px solid var(--wi-hairline, rgba(255, 255, 255, 0.09));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 顶部玻璃高光 */
+.tips-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  opacity: 0.7;
+  pointer-events: none;
 }
 
 .tips-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border-color: #e8e8ed;
+  border-color: rgba(120, 180, 255, 0.34);
+  box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(120, 180, 255, 0.12);
+}
+
+/* 展开时新增卡片使用更轻量的淡入动画 */
+.tips-card--expanded {
+  animation: fadeInExpand 0.5s ease-out forwards;
+}
+
+@keyframes fadeInExpand {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tips-icon-wrapper {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fef3c7;
-  border-radius: 16px;
   flex-shrink: 0;
+  border-radius: 16px;
+  background: rgba(245, 181, 58, 0.14);
+  border: 1px solid rgba(245, 181, 58, 0.3);
+  box-shadow: 0 12px 28px -14px rgba(245, 181, 58, 0.7);
+}
+
+.tips-icon-wrapper svg {
+  width: 34px;
+  height: 34px;
 }
 
 .tips-content {
@@ -118,16 +212,16 @@ onMounted(fetchSafetyTips);
 }
 
 .tips-title {
-  font-size: 18px;
+  font-size: 16.5px;
   font-weight: 600;
   margin: 0 0 6px;
-  color: #1d1d1f;
+  color: var(--wi-txt-1, #f6f7fb);
 }
 
 .tips-desc {
-  font-size: 14px;
-  line-height: 1.5;
-  color: #6e6e73;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -136,14 +230,56 @@ onMounted(fetchSafetyTips);
 }
 
 .tips-arrow {
-  color: #999;
   flex-shrink: 0;
-  transition: transform 0.3s;
+  color: var(--wi-txt-3, rgba(236, 238, 245, 0.42));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .tips-card:hover .tips-arrow {
   transform: translateX(4px);
-  color: #2997ff;
+  color: var(--wi-azure, #4da3ff);
+}
+
+.expand-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 34px;
+  border-radius: 980px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--wi-txt-1, #f6f7fb);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--wi-hairline-2, rgba(255, 255, 255, 0.16));
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.expand-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(120, 180, 255, 0.5);
+  box-shadow: 0 16px 34px -18px rgba(93, 140, 255, 0.9);
+}
+
+.expand-btn:active {
+  transform: translateY(0);
+}
+
+.expand-arrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.expand-arrow--up {
+  transform: rotate(180deg);
 }
 
 .modal-overlay {
@@ -261,70 +397,60 @@ onMounted(fetchSafetyTips);
 }
 
 @media (max-width: 768px) {
-  .section-title {
-    font-size: 28px;
-  }
-  
-  .tips-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
   .tips-card {
-    padding: 20px;
-    border-radius: 16px;
+    padding: 18px;
   }
-  
+
   .tips-icon-wrapper {
-    width: 48px;
-    height: 48px;
+    width: 46px;
+    height: 46px;
   }
-  
+
   .tips-icon-wrapper svg {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
   }
-  
+
   .tips-title {
-    font-size: 16px;
+    font-size: 15.5px;
   }
-  
-  .modal-content {
-    border-radius: 24px;
-    margin: 20px;
-  }
-  
-  .modal-header {
-    padding: 20px;
-  }
-  
-  .modal-body {
-    padding: 20px;
+
+  .expand-actions {
+    margin-top: 28px;
   }
 }
 
-@media (max-width: 480px) {
-  .tips-card {
-    padding: 16px;
-    border-radius: 12px;
-  }
-  
-  .tips-icon-wrapper {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .tips-icon-wrapper svg {
-    width: 32px;
-    height: 32px;
-  }
-  
-  .tips-title {
-    font-size: 16px;
-  }
-  
-  .tips-desc {
-    font-size: 13px;
-  }
+/* ================= 亮色主题 ================= */
+html[data-theme="light"] .tips-card {
+  background: linear-gradient(160deg, #ffffff, #f7f9fd);
+  border-color: var(--wi-hairline, rgba(15, 23, 42, 0.1));
+  box-shadow: 0 18px 44px -32px rgba(15, 23, 42, 0.28);
+}
+
+html[data-theme="light"] .tips-card::before {
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.1), transparent);
+}
+
+html[data-theme="light"] .tips-card:hover {
+  border-color: rgba(11, 116, 229, 0.36);
+  box-shadow: 0 28px 60px -30px rgba(15, 23, 42, 0.32), 0 0 0 1px rgba(11, 116, 229, 0.12);
+}
+
+html[data-theme="light"] .tips-icon-wrapper {
+  background: rgba(245, 181, 58, 0.16);
+  border-color: rgba(217, 148, 20, 0.35);
+  box-shadow: 0 12px 28px -16px rgba(245, 181, 58, 0.6);
+}
+
+html[data-theme="light"] .expand-btn {
+  color: var(--wi-txt-1, #101828);
+  background: #ffffff;
+  border-color: var(--wi-hairline-2, rgba(15, 23, 42, 0.18));
+  box-shadow: 0 10px 26px -18px rgba(15, 23, 42, 0.3);
+}
+
+html[data-theme="light"] .expand-btn:hover {
+  background: #eef4ff;
+  border-color: rgba(11, 116, 229, 0.5);
 }
 </style>

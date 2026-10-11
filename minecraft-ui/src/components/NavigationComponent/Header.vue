@@ -855,4 +855,10 @@ onMounted(() => {
     font-size: 12px;
   }
 }
+
+/* 暗色主题下导航栏改为深色玻璃，保持与页面一致 */
+html[data-theme="dark"] .navbar-background {
+  background-color: rgba(10, 12, 18, 0.55);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
 </style>

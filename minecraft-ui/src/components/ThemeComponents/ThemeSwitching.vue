@@ -1,6 +1,6 @@
 <template>
     <label class="switch">
-        <input id="input" type="checkbox" checked="darkTheme" />
+        <input id="input" type="checkbox" :checked="isDark" @change="toggleTheme" />
         <div class="slider round">
             <div class="sun-moon">
                 <svg id="moon-dot-1" class="moon-dot" viewBox="0 0 100 100">
@@ -68,14 +68,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getCurrentTheme, setTheme, THEMES } from '@/utils/theme'
 
 const isDark = ref(false)
 
+// 切换亮 / 暗主题（写入 localStorage 并更新 <html data-theme>）
 function toggleTheme(event) {
   isDark.value = event.target.checked
-  document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : '')
+  setTheme(isDark.value ? THEMES.DARK : THEMES.LIGHT)
 }
+
+// 与当前已应用的主题保持同步（默认亮色）
+onMounted(() => {
+  isDark.value = getCurrentTheme() === THEMES.DARK
+})
 </script>
 
 <style scoped>

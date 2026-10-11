@@ -847,7 +847,7 @@ function reportStatusLabel(status: number): string {
     <Modal
       v-model:open="reportVisible"
       title="举报处理"
-      :width="820"
+      :width="1200"
       :footer="null"
       :styles="{ body: { padding: '20px 24px' } }"
     >

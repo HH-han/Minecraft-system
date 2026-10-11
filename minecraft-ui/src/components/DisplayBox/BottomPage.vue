@@ -430,8 +430,95 @@ export default {
     }
 
     .logo {
-        font-size: 2rem;
-        justify-content: center;
-    }
+    font-size: 2rem;
+    justify-content: center;
+  }
+}
+
+/* ===== 亮色主题（html[data-theme="light"]） ===== */
+html[data-theme="light"] .footer-wrapper {
+  background: linear-gradient(160deg, #f2f6fc 0%, #e8f0fb 45%, #eef4fd 100%);
+  color: #1e3a5f;
+  border-top-color: rgba(64, 164, 255, 0.35);
+}
+
+html[data-theme="light"] .footer-wrapper .logo {
+  color: #14304f;
+  text-shadow: none;
+}
+
+html[data-theme="light"] .footer-wrapper .brand-desc {
+  color: #466084;
+  background: rgba(30, 144, 255, 0.05);
+  box-shadow: 0 0 12px rgba(30, 144, 255, 0.06);
+}
+
+html[data-theme="light"] .footer-wrapper .brand-col span[style] {
+  color: #3b6ea5 !important;
+}
+
+html[data-theme="light"] .footer-wrapper .footer-title {
+  color: #14304f;
+  border-bottom-color: rgba(64, 164, 255, 0.35);
+}
+
+html[data-theme="light"] .footer-wrapper .footer-links li a {
+  color: #33587f;
+}
+
+html[data-theme="light"] .footer-wrapper .footer-links li a:hover {
+  color: #0b63c5;
+  border-bottom-color: rgba(64, 164, 255, 0.35);
+}
+
+html[data-theme="light"] .footer-wrapper .social-icons a {
+  background: rgba(30, 144, 255, 0.08);
+  border-color: rgba(64, 164, 255, 0.3);
+  color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(30, 144, 255, 0.12);
+}
+
+html[data-theme="light"] .footer-wrapper .newsletter-col p {
+  color: #466084;
+}
+
+html[data-theme="light"] .footer-wrapper .newsletter-input-group {
+  background: #ffffff;
+  border-color: rgba(64, 164, 255, 0.25);
+  box-shadow: 0 0 15px rgba(30, 144, 255, 0.08);
+}
+
+html[data-theme="light"] .footer-wrapper .newsletter-input-group input {
+  color: #14304f;
+}
+
+html[data-theme="light"] .footer-wrapper .newsletter-input-group input::placeholder {
+  color: #7b9fc9;
+}
+
+html[data-theme="light"] .footer-wrapper .newsletter-input-group button {
+  background: linear-gradient(145deg, #2a7fd4, #135ba6);
+  color: #ffffff;
+}
+
+html[data-theme="light"] .footer-wrapper .newsletter-input-group button i {
+  color: #dbeaff;
+}
+
+html[data-theme="light"] .footer-wrapper .footer-bottom {
+  color: #5d7a99;
+  border-top-color: rgba(64, 164, 255, 0.2);
+}
+
+html[data-theme="light"] .footer-wrapper .footer-bottom .legal a {
+  color: #5d7a99;
+}
+
+html[data-theme="light"] .footer-wrapper .footer-bottom .legal a:hover {
+  color: #0b63c5;
+}
+
+html[data-theme="light"] .footer-wrapper .footer-bottom strong {
+  color: #14304f !important;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="home-main">
+  <div class="home-main" ref="rootEl">
     <main>
       <!-- 主视觉 Hero -->
       <section class="hero-section">
@@ -7,25 +7,33 @@
           <Carousel :items="mediaList.images" />
         </transition>
       </section>
+
       <!-- 公告轮播（displayMode=3） -->
       <AnnouncementCarousel />
+
       <!-- 网站介绍 -->
       <section>
         <WebsiteIntroduction @open-detail="(type, id) => $emit('open-detail', type, id)"
           @open-recommendation-detail="(item) => $emit('open-recommendation-detail', item)" />
       </section>
-      <!-- 新闻内容区 -->
-      <section class="two-column-section">
-        <div class="two-column-grid">
-          <div class="two-column-ns-grid">
-            <!-- 新闻 -->
-            <section class="product-card fade-in-up delay-300">
-              <News @open-news-detail="(id) => $emit('open-news-detail', id)" />
-            </section>
-            <!-- 安全提示 -->
-            <section class="product-card fade-in-up delay-200">
-              <SafetyTips @open-safety-detail="(tip) => $emit('open-safety-detail', tip)" />
-            </section>
+
+      <!-- 资讯与安全（08 / 09） -->
+      <section class="insight-section">
+        <div class="insight-grid">
+          <div class="stage" data-reveal>
+            <div class="stage-head">
+              <span class="stage-index">08</span>
+              <span class="stage-rule"></span>
+            </div>
+            <News @open-news-detail="(id) => $emit('open-news-detail', id)" />
+          </div>
+
+          <div class="stage" data-reveal>
+            <div class="stage-head">
+              <span class="stage-index">09</span>
+              <span class="stage-rule"></span>
+            </div>
+            <SafetyTips @open-safety-detail="(tip) => $emit('open-safety-detail', tip)" />
           </div>
         </div>
       </section>
@@ -33,7 +41,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import SafetyTips from './safetytips.vue';
 import News from './news.vue';
 import Carousel from '@/views/Carousel/index.vue';
@@ -42,6 +50,8 @@ import WebsiteIntroduction from './WebsiteIntroduction.vue';
 import AnnouncementCarousel from '@/components/AnnouncementComponents/AnnouncementCarousel.vue';
 
 defineEmits(['open-detail', 'open-news-detail', 'open-safety-detail', 'open-recommendation-detail']);
+
+const rootEl = ref(null);
 
 // 轮播图数据
 const mediaList = ref({ images: [] });
@@ -64,18 +74,96 @@ const fetchcarousel = async () => {
   }
 }
 
+// 滚动入场观察器（与 WebsiteIntroduction 保持一致的表现）
+let revealObserver = null;
+
+const setupReveal = () => {
+  const targets = rootEl.value?.querySelectorAll('[data-reveal]');
+  if (!targets?.length || !('IntersectionObserver' in window)) return;
+
+  rootEl.value.classList.add('is-armed');
+
+  revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+
+  targets.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.9) {
+      el.classList.add('is-revealed');
+    } else {
+      revealObserver.observe(el);
+    }
+  });
+};
+
 // 初始化
 onMounted(() => {
   fetchcarousel();
+  setupReveal();
+});
+
+onBeforeUnmount(() => {
+  revealObserver?.disconnect();
+  revealObserver = null;
 });
 </script>
 <style scoped>
+/* ============================================================
+   页面外壳：暗色电影感画布
+   这里定义的 --wi-* 设计变量同时供 news.vue / safetytips.vue 继承使用
+   ============================================================ */
 .home-main {
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-  color: #1d1d1f;
-  background-color: #ffffff;
+  --wi-surface: rgba(255, 255, 255, 0.045);
+  --wi-hairline: rgba(255, 255, 255, 0.09);
+  --wi-hairline-2: rgba(255, 255, 255, 0.16);
+  --wi-txt-1: #f6f7fb;
+  --wi-txt-2: rgba(236, 238, 245, 0.66);
+  --wi-txt-3: rgba(236, 238, 245, 0.42);
+  --wi-azure: #4da3ff;
+  --wi-violet: #8b6cff;
+  --wi-mint: #37e0a0;
+  --wi-accent: linear-gradient(120deg, #6cc4ff 0%, #8b6cff 58%, #ff8f5e 118%);
+  --wi-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
+  color: var(--wi-txt-1);
+  font-family: 'SF Pro Display', 'SF Pro', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #05060a;
+  background-image:
+    radial-gradient(1100px 560px at 50% -10%, rgba(77, 163, 255, 0.1), transparent 62%),
+    radial-gradient(900px 500px at 92% 24%, rgba(139, 108, 255, 0.08), transparent 66%);
   scroll-behavior: smooth;
+}
+
+/* ============================================================
+   亮色主题（html[data-theme="light"]）
+   深色为设计基底，此处覆盖为亮色；--wi-* 会随继承传给
+   news.vue / safetytips.vue 等子组件
+   ============================================================ */
+html[data-theme="light"] .home-main {
+  --wi-surface: rgba(15, 23, 42, 0.035);
+  --wi-hairline: rgba(15, 23, 42, 0.1);
+  --wi-hairline-2: rgba(15, 23, 42, 0.18);
+  --wi-txt-1: #101828;
+  --wi-txt-2: rgba(16, 24, 40, 0.66);
+  --wi-txt-3: rgba(16, 24, 40, 0.45);
+  --wi-azure: #0b74e5;
+  --wi-violet: #6a48ff;
+  --wi-mint: #0f9d68;
+  --wi-accent: linear-gradient(120deg, #0b74e5 0%, #6a48ff 58%, #e2542a 118%);
+
+  color: var(--wi-txt-1);
+  background-color: #f4f6fb;
+  background-image:
+    radial-gradient(1100px 560px at 50% -10%, rgba(77, 163, 255, 0.16), transparent 62%),
+    radial-gradient(900px 500px at 92% 24%, rgba(139, 108, 255, 0.12), transparent 66%);
 }
 
 /* 主视觉 Hero */
@@ -89,16 +177,6 @@ onMounted(() => {
   justify-content: center;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /* 淡入淡出过渡效果 */
 .fade-enter-active,
 .fade-leave-active {
@@ -110,250 +188,86 @@ onMounted(() => {
   opacity: 0;
 }
 
-/* 滚动入场动画 */
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.8s ease forwards;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 延迟动画 */
-.delay-100 {
-  animation-delay: 0.1s;
-}
-
-.delay-200 {
-  animation-delay: 0.2s;
-}
-
-.delay-300 {
-  animation-delay: 0.3s;
-}
-
-.delay-400 {
-  animation-delay: 0.4s;
-}
-
-.delay-500 {
-  animation-delay: 0.5s;
-}
-
-/* 脉冲动画 */
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.05);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* 呼吸动画 */
-.breath {
-  animation: breath 3s ease-in-out infinite;
-}
-
-@keyframes breath {
-
-  0%,
-  100% {
-    opacity: 0.8;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-/* 双卡片区 */
-.two-column-section {
-  padding: 0px 22px;
-}
-
-.two-column-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.two-column-flex {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.two-column-rc-grid {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-}
-
-.two-column-ns-grid {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  padding: 24px;
-  border-radius: 24px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* 产品卡片 */
-.product-card {
-  background: #f5f5f7;
-  border-radius: 28px;
-  padding: 40px 24px 30px;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow: hidden;
-  flex: 1;
-}
-
-.product-card:hover {
-  transform: scale(1.01);
-  box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
-}
-
-/* 全宽特色条 */
-.feature-section {
-  background-color: #000000;
-  color: #ffffff;
-  padding: 80px 22px;
-  text-align: center;
-  margin: 40px 0;
-}
-
-.feature-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.feature-content h2 {
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 1.05;
-  margin-bottom: 16px;
-}
-
-.feature-content p {
-  font-size: 18px;
-  line-height: 1.4;
-  margin-bottom: 32px;
-  color: #a1a1a6;
-}
-
-/* CTA链接 */
-.cta-links {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.cta-links a {
-  color: #2997ff;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  transition: all 0.3s ease;
+/* ============ 资讯与安全 ============ */
+.insight-section {
   position: relative;
-  padding: 8px 16px;
-  border-radius: 8px;
-  overflow: hidden;
+  z-index: 1;
+  max-width: 1244px;
+  margin: 0 auto;
+  padding: 0 22px 96px;
 }
 
-.cta-links a:hover {
-  color: #0066cc;
-  text-decoration: none;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.3);
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px;
 }
 
-.cta-links a::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
+.stage {
+  position: relative;
+  min-width: 0;
 }
 
-.cta-links a:hover::after {
-  left: 100%;
+.stage-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 26px;
 }
 
-/* 三列配件区 */
-.three-column-section {
-  background: #f5f5f7;
-  border-radius: 28px;
-  padding: 40px 24px 30px;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow: hidden;
+.stage-index {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  font-variant-numeric: tabular-nums;
+  color: var(--wi-txt-3);
+}
+
+.stage-rule {
   flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--wi-hairline-2), transparent 82%);
 }
 
-/* 响应式设计 */
-@media (max-width: 1199px) {
-  .feature-content h2 {
-    font-size: 44px;
-  }
+/* ============ 滚动入场 ============ */
+.home-main.is-armed [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition-property: opacity, transform;
+  transition-duration: 0.9s;
+  transition-timing-function: var(--wi-ease);
+  transition-delay: var(--d, 0ms);
+}
 
-  .two-column-section,
-  .three-column-section {
-    padding: 32px 20px;
+.home-main.is-armed [data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 992px) {
+  .insight-grid {
+    grid-template-columns: 1fr;
+    gap: 64px;
   }
 }
 
 @media (max-width: 768px) {
-  .two-column-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .insight-section {
+    padding: 0 20px 72px;
   }
 
-  .product-card {
-    padding: 24px 16px 20px;
-    border-radius: 24px;
-  }
-
-  .feature-content h2 {
-    font-size: 32px;
-  }
-
-  .feature-content p {
-    font-size: 16px;
-  }
-
-  .cta-links {
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+  .insight-grid {
+    gap: 56px;
   }
 }
 
-@media (max-width: 480px) {
-  .feature-content h2 {
-    font-size: 28px;
-  }
-
-  .two-column-section,
-  .three-column-section {
-    padding: 24px 16px;
+/* ============ 无障碍：尊重系统动效偏好 ============ */
+@media (prefers-reduced-motion: reduce) {
+  .home-main.is-armed [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 </style>
