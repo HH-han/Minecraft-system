@@ -79,6 +79,7 @@
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
+            <span v-if="friendRequestCount > 0" class="plus-dot"></span>
           </button>
           <transition name="menu">
             <div v-if="showPlusMenu" class="plus-menu">
@@ -1007,7 +1008,20 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
   transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.plus-dot {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff3b30;
+  border: 1.5px solid #ffffff;
+  box-sizing: border-box;
 }
 
 .plus-btn:hover {

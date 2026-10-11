@@ -724,7 +724,7 @@ onUnmounted(() => {
 .cover-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 55%, #4a6cf7 100%);
+  background-color: rgba(0, 0, 0, 0.14);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1380,11 +1380,11 @@ onUnmounted(() => {
   color: #b2b2b8;
 }
 
-/* 可见范围菜单 */
+/* 可见范围菜单（向上弹出，避免被弹窗底边裁切） */
 .visibility-menu {
   position: absolute;
   right: 12px;
-  top: 46px;
+  bottom: 58px;
   width: 132px;
   padding: 6px;
   background: #ffffff;
