@@ -224,6 +224,40 @@
 				"navigationBarBackgroundColor": "#4A90E2",
 				"navigationBarTextStyle": "white"
 			}
+		},
+		{
+			"path": "pages/travelNote/index",
+			"style": {
+				"navigationBarTitleText": "旅游笔记",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/travelNote/detail",
+			"style": {
+				"navigationBarTitleText": "笔记详情",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/travelNote/editor",
+			"style": {
+				"navigationBarTitleText": "写笔记",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/travelNote/mine",
+			"style": {
+				"navigationBarTitleText": "我的笔记",
+				"navigationBarBackgroundColor": "#4A90E2",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": true
+			}
 		}
 	],
 	"globalStyle": {
