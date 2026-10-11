@@ -34,7 +34,7 @@
           <span class="phone">{{ order.address.phone }}</span>
         </div>
         <div class="address-detail">
-          {{ order.address.province }}{{ order.address.city }}{{ order.address.district }}{{ order.address.detail }}
+          {{ order.address.detail }}
         </div>
       </div>
     </div>
@@ -78,6 +78,9 @@
     <div class="order-actions" v-if="order.status === '0'">
       <button class="btn btn-secondary" @click="handleCancelOrder">取消订单</button>
       <button class="btn btn-primary" @click="goToPay">立即支付</button>
+    </div>
+    <div class="order-actions" v-else-if="['1', '2', '3'].includes(order.status)">
+      <button class="btn btn-primary" @click="viewLogistics">查看物流</button>
     </div>
   </div>
   
@@ -158,12 +161,9 @@ const fetchProductData = async () => {
           shippingFee: 0,
           payPrice: 0,
           address: {
-            name: '张三',
-            phone: '13800138000',
-            province: '北京市',
-            city: '北京市',
-            district: '朝阳区',
-            detail: '某某街道某某小区1号楼101室'
+            name: orderData.receiverName || '未填写',
+            phone: orderData.receiverPhone || '',
+            detail: orderData.receiverAddress || '暂无收货地址'
           },
           items: []
         }
@@ -306,6 +306,14 @@ const goToPay = () => {
 const goToHome = () => {
   // 跳转到首页
   router.push('/')
+}
+
+// 查看物流
+const viewLogistics = () => {
+  const orderId = route.query.orderId
+  if (orderId) {
+    router.push({ path: '/logistics', query: { orderId } })
+  }
 }
 
 const handleCancelOrder = async () => {

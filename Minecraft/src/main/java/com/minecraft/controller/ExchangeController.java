@@ -1,6 +1,5 @@
 package com.minecraft.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.minecraft.common.Result;
 import com.minecraft.dto.request.ExchangeRequest;
@@ -10,8 +9,6 @@ import com.minecraft.utils.SecurityUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/exchange")
@@ -51,12 +48,8 @@ public class ExchangeController {
         if (userId == null) {
             return Result.error("请先登录");
         }
-        
-        Page<ExchangeOrder> orderPage = new Page<>(page, size);
-        QueryWrapper<ExchangeOrder> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id", userId);
-        wrapper.orderByDesc("create_time");
-        Page<ExchangeOrder> result = exchangeService.page(orderPage, wrapper);
+
+        Page<ExchangeOrder> result = exchangeService.listUserOrders(userId, page, size);
         return Result.success(result);
     }
     

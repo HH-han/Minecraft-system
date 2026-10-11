@@ -52,6 +52,27 @@
       "shipTime": "发货时间"
     }
   },
+  "pending_page": {
+    "title": "待发货订单",
+    "ship": "发货",
+    "empty": "暂无待发货订单",
+    "item_type": {
+      "points": "积分兑换",
+      "product": "纪念品",
+      "food": "美食",
+      "ticket": "票务"
+    },
+    "fields": {
+      "orderNo": "订单号",
+      "itemType": "商品类型",
+      "itemName": "商品",
+      "quantity": "数量",
+      "receiver": "收件人",
+      "receiverPhone": "收件电话",
+      "receiverAddress": "收件地址",
+      "createTime": "下单时间"
+    }
+  },
   "after_sale_page": {
     "title": "售后审核",
     "detail_title": "售后详情",

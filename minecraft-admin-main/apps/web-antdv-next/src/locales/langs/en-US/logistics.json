@@ -52,6 +52,27 @@
       "shipTime": "Shipped At"
     }
   },
+  "pending_page": {
+    "title": "Pending Shipments",
+    "ship": "Ship",
+    "empty": "No pending orders",
+    "item_type": {
+      "points": "Points Exchange",
+      "product": "Souvenir",
+      "food": "Food",
+      "ticket": "Ticket"
+    },
+    "fields": {
+      "orderNo": "Order No.",
+      "itemType": "Item Type",
+      "itemName": "Item",
+      "quantity": "Qty",
+      "receiver": "Receiver",
+      "receiverPhone": "Receiver Phone",
+      "receiverAddress": "Receiver Address",
+      "createTime": "Created At"
+    }
+  },
   "after_sale_page": {
     "title": "After-sale Review",
     "detail_title": "After-sale Detail",

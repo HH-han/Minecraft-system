@@ -55,6 +55,13 @@ public class LogisticsAdminController {
                 result.getRecords(), result.getTotal(), request.getPageNum(), request.getPageSize()));
     }
 
+    @Operation(summary = "待发货订单分页列表（已支付未发货，含纪念品与积分兑换）")
+    @GetMapping("/shipping/pending")
+    public ApiResponse<PageResponse<?>> pendingShippingPage(PageRequest request) {
+        adminAuthorizationService.requireAdmin();
+        return ApiResponse.success(orderShippingService.listPendingOrders(request));
+    }
+
     @Operation(summary = "创建发货单（录入收货信息与运单）")
     @PostMapping("/shipping")
     public ApiResponse<OrderShipping> createShipping(@Valid @RequestBody ShippingCreateRequest request) {

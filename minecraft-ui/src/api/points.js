@@ -25,10 +25,9 @@ export const getProducts = () => {
 }
 
 // 兑换商品
-export const exchangeProduct = (productId) => {
-  return request.post('/exchange', {
-    productId
-  })
+// data: { productId, quantity, receiver, phone, address }
+export const exchangeProduct = (data) => {
+  return request.post('/exchange', data)
 }
 
 // 获取兑换订单

@@ -24,6 +24,15 @@ public class Order {
 
     private String image;
 
+    /** 收件人（下单时留存，发货时自动带入） */
+    private String receiverName;
+
+    /** 收件电话 */
+    private String receiverPhone;
+
+    /** 收件地址 */
+    private String receiverAddress;
+
     private BigDecimal amount;
     
     private Integer quantity;

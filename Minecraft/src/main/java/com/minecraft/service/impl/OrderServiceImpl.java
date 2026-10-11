@@ -26,10 +26,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setItemId(request.getItemId());
         order.setItemName(request.getItemName());
         order.setImage(request.getImage());
+        order.setReceiverName(request.getReceiverName());
+        order.setReceiverPhone(request.getReceiverPhone());
+        order.setReceiverAddress(request.getReceiverAddress());
         order.setAmount(request.getAmount());
         order.setQuantity(request.getQuantity());
         order.setRemark(request.getRemark());
         order.setStatus(OrderStatus.PENDING.getCode().toString());
+        order.setShippingStatus(0);
         
         // 生成订单编号：日期 + 4位自增数
         String orderNo = generateOrderNo();

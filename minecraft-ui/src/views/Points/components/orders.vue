@@ -16,10 +16,10 @@
       </el-table-column>
       <el-table-column prop="pointsUsed" label="消耗积分" width="90">
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="100">
+      <el-table-column label="物流状态" width="110">
         <template #default="scope">
-          <el-tag :type="getStatusType(scope.row.status)" effect="light" round>
-            {{ getStatusName(scope.row.status) }}
+          <el-tag :type="getShippingType(scope.row)" effect="light" round>
+            {{ scope.row.statusDesc || getStatusName(scope.row.status) }}
           </el-tag>
         </template>
       </el-table-column>
@@ -35,6 +35,20 @@
       <el-table-column prop="createTime" label="兑换时间" width="170">
         <template #default="scope">
           {{ formatDate(scope.row.createTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="110" fixed="right">
+        <template #default="scope">
+          <el-button
+            v-if="scope.row.orderId && scope.row.shippingStatus > 0"
+            type="primary"
+            link
+            size="small"
+            @click="viewLogistics(scope.row)"
+          >
+            查看物流
+          </el-button>
+          <span v-else class="empty-text">待发货</span>
         </template>
       </el-table-column>
     </el-table>
@@ -55,8 +69,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { getExchangeOrders } from '@/api/points';
+
+const router = useRouter();
 
 const orders = ref([]);
 const loading = ref(false);
@@ -83,12 +100,12 @@ const getOrders = async () => {
   }
 };
 
-// 状态对应 el-tag 类型（兼容数字状态码与中文字符串）
-const getStatusType = (status) => {
-  if (status === 1 || status === '待处理') return 'warning';
-  if (status === 2 || status === '已完成') return 'success';
-  if (status === 3 || status === '兑换失败' || status === '已取消') return 'danger';
-  return 'info';
+// 物流状态标签类型（后端回填 statusDesc / shippingStatus）
+const getShippingType = (row) => {
+  const desc = row.statusDesc || '';
+  if (desc === '已签收') return 'success';
+  if (desc === '已发货' || desc === '部分发货') return 'primary';
+  return 'warning';
 };
 
 // 状态名称
@@ -98,6 +115,11 @@ const getStatusName = (status) => {
   if (status === 3) return '兑换失败';
   // 后端直接返回中文状态字符串
   return status || '未知状态';
+};
+
+// 查看物流
+const viewLogistics = (row) => {
+  router.push({ path: '/logistics', query: { orderId: row.orderId } });
 };
 
 // 格式化日期

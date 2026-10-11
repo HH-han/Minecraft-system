@@ -25,4 +25,13 @@ public class OrderRequest {
     private Integer quantity;
 
     private String remark;
+
+    /** 收件人 */
+    private String receiverName;
+
+    /** 收件电话 */
+    private String receiverPhone;
+
+    /** 收件地址 */
+    private String receiverAddress;
 }

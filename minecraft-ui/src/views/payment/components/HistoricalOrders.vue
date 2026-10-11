@@ -47,6 +47,10 @@
               <span class="label">订单金额</span>
               <span class="value price">¥{{ order.totalPrice }}</span>
             </div>
+            <div class="info-item">
+              <span class="label">物流状态</span>
+              <span class="value">{{ order.statusDesc }}</span>
+            </div>
           </div>
           <div class="order-products">
             <div class="product-item" v-for="(item, index) in order.items" :key="index">
@@ -81,7 +85,7 @@
             <button class="btn btn-link" @click="viewOrderDetail(order.id)">
               查看详情
             </button>
-            <button class="btn btn-secondary" @click="viewOrderDetail(order.id)">
+            <button v-if="canViewLogistics(order)" class="btn btn-secondary" @click="viewLogistics(order)">
               查看物流
             </button>
             <button class="btn btn-delete" @click="handleDeleteOrder(order.id)">
@@ -169,6 +173,10 @@ const fetchOrders = async () => {
       updateTime: order.updateTime || '',
       totalPrice: order.amount,
       quantity: order.quantity,
+      shippingStatus: order.shippingStatus,
+      carrierCode: order.carrierCode,
+      trackingNo: order.trackingNo,
+      statusDesc: shippingStatusText(order.status),
       items: [{
         id: order.itemId,
         name: order.itemName,
@@ -211,6 +219,30 @@ const getStatusClass = (status) => {
     '5': 'refunded'
   }
   return classMap[status] || 'unpaid'
+}
+
+// 物流状态文本（已支付即进入待发货）
+const shippingStatusText = (status) => {
+  const map = {
+    '0': '待支付',
+    '1': '待发货',
+    '2': '已发货',
+    '3': '已签收',
+    '4': '已取消',
+    '5': '已退款'
+  }
+  return map[status] || '未知状态'
+}
+
+// 是否已进入物流环节（可查看物流）
+const canViewLogistics = (order) => ['1', '2', '3'].includes(order.status)
+
+// 查看物流
+const viewLogistics = (order) => {
+  router.push({
+    path: '/logistics',
+    query: { orderId: order.id }
+  })
 }
 
 // 跳转到支付页面

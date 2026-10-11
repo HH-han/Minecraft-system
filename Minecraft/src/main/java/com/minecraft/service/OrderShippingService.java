@@ -1,9 +1,11 @@
 package com.minecraft.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.request.ShippingBatchRequest;
 import com.minecraft.dto.request.ShippingCreateRequest;
 import com.minecraft.dto.response.OrderShippingVO;
+import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.OrderShipping;
 
 import java.util.List;
@@ -18,6 +20,9 @@ public interface OrderShippingService extends IService<OrderShipping> {
 
     /** 批量发货（同一承运商多订单） */
     void batchCreateShipping(ShippingBatchRequest request, Long adminId);
+
+    /** 待发货订单分页列表（已支付且未发货，含纪念品购买与积分兑换） */
+    PageResponse<?> listPendingOrders(PageRequest request);
 
     /** 查询订单下所有包裹 */
     List<OrderShippingVO> listByOrder(Long orderId);

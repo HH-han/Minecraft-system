@@ -26,6 +26,7 @@ import { getCarrierList } from '#/api/management/logistics/carrier';
 import {
   batchShipping,
   createShipping,
+  getPendingOrders,
   getShippingPage,
   getShippingTrack,
 } from '#/api/management/logistics/shipping';
@@ -40,6 +41,13 @@ const pageSize = ref(10);
 const keyword = ref('');
 const carriers = ref<any[]>([]);
 
+// 待发货订单（已支付未发货，含纪念品购买与积分兑换）
+const pendingLoading = ref(false);
+const pendingList = ref<any[]>([]);
+const pendingTotal = ref(0);
+const pendingPageNum = ref(1);
+const pendingPageSize = ref(10);
+
 const columns = computed<TableColumnsType>(() => [
   { title: $t('logistics.shipping_page.fields.shippingNo'), dataIndex: 'shippingNo', width: 170 },
   { title: $t('logistics.shipping_page.fields.orderNo'), dataIndex: 'orderNo', width: 140 },
@@ -50,6 +58,18 @@ const columns = computed<TableColumnsType>(() => [
   { title: $t('logistics.shipping_page.fields.receiver'), dataIndex: 'receiverName', width: 100 },
   { title: $t('logistics.shipping_page.fields.status'), key: 'status', width: 100 },
   { title: $t('logistics.shipping_page.fields.shipTime'), key: 'shipTime', width: 170 },
+  { title: $t('logistics.common.action'), key: 'action', width: 90, fixed: 'right' },
+]);
+
+const pendingColumns = computed<TableColumnsType>(() => [
+  { title: $t('logistics.pending_page.fields.orderNo'), dataIndex: 'orderNo', width: 150 },
+  { title: $t('logistics.pending_page.fields.itemType'), key: 'itemType', width: 100 },
+  { title: $t('logistics.pending_page.fields.itemName'), dataIndex: 'itemName', ellipsis: true },
+  { title: $t('logistics.pending_page.fields.quantity'), dataIndex: 'quantity', width: 70 },
+  { title: $t('logistics.pending_page.fields.receiver'), dataIndex: 'receiverName', width: 100 },
+  { title: $t('logistics.pending_page.fields.receiverPhone'), dataIndex: 'receiverPhone', width: 130 },
+  { title: $t('logistics.pending_page.fields.receiverAddress'), dataIndex: 'receiverAddress', ellipsis: true },
+  { title: $t('logistics.pending_page.fields.createTime'), key: 'createTime', width: 170 },
   { title: $t('logistics.common.action'), key: 'action', width: 90, fixed: 'right' },
 ]);
 
@@ -103,6 +123,34 @@ async function fetchCarriers() {
   }
 }
 
+async function fetchPending() {
+  pendingLoading.value = true;
+  try {
+    const res: any = await getPendingOrders({
+      pageNum: pendingPageNum.value,
+      pageSize: pendingPageSize.value,
+    });
+    pendingList.value = res?.records ?? [];
+    pendingTotal.value = res?.total ?? 0;
+  } catch {
+    // 统一错误提示
+  } finally {
+    pendingLoading.value = false;
+  }
+}
+
+function handlePendingTableChange(pagination: any) {
+  pendingPageNum.value = pagination.current;
+  fetchPending();
+}
+
+function itemTypeLabel(type?: string) {
+  if (!type) return '-';
+  const key = `logistics.pending_page.item_type.${type}`;
+  const label = $t(key);
+  return label === key ? type : label;
+}
+
 function handleTableChange(pagination: any) {
   pageNum.value = pagination.current;
   fetchList();
@@ -110,6 +158,7 @@ function handleTableChange(pagination: any) {
 
 onMounted(() => {
   fetchList();
+  fetchPending();
   fetchCarriers();
 });
 
@@ -146,6 +195,23 @@ function openCreate() {
   createVisible.value = true;
 }
 
+// 从待发货订单一键带入收货信息发货
+function openCreateFromOrder(record: any) {
+  Object.assign(form, {
+    orderId: record.id,
+    carrierId: undefined,
+    carrierCode: '',
+    trackingNo: '',
+    receiverName: record.receiverName ?? '',
+    receiverPhone: record.receiverPhone ?? '',
+    receiverAddress: record.receiverAddress ?? '',
+    quantity: record.quantity ?? undefined,
+    freight: undefined,
+    remark: '',
+  });
+  createVisible.value = true;
+}
+
 function onCarrierChange(val: number) {
   const carrier = carriers.value.find((c) => c.id === val);
   form.carrierCode = carrier?.code ?? '';
@@ -162,7 +228,7 @@ async function submitCreate() {
     await createShipping({ ...form });
     message.success($t('logistics.common.save_success'));
     createVisible.value = false;
-    await fetchList();
+    await Promise.all([fetchList(), fetchPending()]);
   } catch {
     // 统一错误提示
   } finally {
@@ -205,7 +271,7 @@ async function submitBatch() {
     });
     message.success($t('logistics.common.save_success'));
     batchVisible.value = false;
-    await fetchList();
+    await Promise.all([fetchList(), fetchPending()]);
   } catch {
     // 统一错误提示
   } finally {
@@ -233,6 +299,51 @@ async function openTrack(record: any) {
 
 <template>
   <Page :auto-content-height="true">
+    <Card
+      :title="$t('logistics.pending_page.title')"
+      :styles="{ body: { padding: '0' } }"
+      class="mb-4"
+    >
+      <template #extra>
+        <Button :loading="pendingLoading" @click="fetchPending">
+          <template #icon><RefreshCw class="mr-1 size-4 align-middle" /></template>
+          {{ $t('logistics.common.refresh') }}
+        </Button>
+      </template>
+      <Table
+        :columns="pendingColumns"
+        :data-source="pendingList"
+        :loading="pendingLoading"
+        :pagination="{
+          current: pendingPageNum,
+          pageSize: pendingPageSize,
+          total: pendingTotal,
+          showSizeChanger: false,
+        }"
+        :scroll="{ x: 1280 }"
+        size="small"
+        row-key="id"
+        @change="handlePendingTableChange"
+      >
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'itemType'">
+            <Tag>{{ itemTypeLabel(record.itemType) }}</Tag>
+          </template>
+          <template v-else-if="column.key === 'createTime'">
+            <span class="text-xs text-muted-foreground">{{ formatTime(record.createTime) }}</span>
+          </template>
+          <template v-else-if="column.key === 'action'">
+            <Button type="link" size="small" @click="openCreateFromOrder(record)">
+              {{ $t('logistics.pending_page.ship') }}
+            </Button>
+          </template>
+        </template>
+        <template #emptyText>
+          <span class="text-sm text-muted-foreground">{{ $t('logistics.pending_page.empty') }}</span>
+        </template>
+      </Table>
+    </Card>
+
     <Card :title="$t('logistics.shipping_page.title')" :styles="{ body: { padding: '0' } }">
       <template #extra>
         <div class="flex items-center gap-2">

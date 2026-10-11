@@ -1,10 +1,14 @@
 package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.request.ShippingBatchRequest;
 import com.minecraft.dto.request.ShippingCreateRequest;
 import com.minecraft.dto.response.OrderShippingVO;
+import com.minecraft.dto.response.PageResponse;
+import com.minecraft.entity.ExchangeOrder;
 import com.minecraft.entity.LogisticsCarrier;
 import com.minecraft.entity.LogisticsSubscription;
 import com.minecraft.entity.Order;
@@ -12,6 +16,7 @@ import com.minecraft.entity.OrderShipping;
 import com.minecraft.enums.OrderStatus;
 import com.minecraft.enums.ShippingStatus;
 import com.minecraft.exception.BusinessException;
+import com.minecraft.mapper.ExchangeOrderMapper;
 import com.minecraft.mapper.LogisticsCarrierMapper;
 import com.minecraft.mapper.LogisticsSubscriptionMapper;
 import com.minecraft.mapper.OrderMapper;
@@ -38,6 +43,7 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
     private final OrderMapper orderMapper;
     private final LogisticsCarrierMapper carrierMapper;
     private final LogisticsSubscriptionMapper subscriptionMapper;
+    private final ExchangeOrderMapper exchangeOrderMapper;
     private final LogisticsTrackService logisticsTrackService;
 
     @Override
@@ -66,9 +72,10 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         shipping.setCarrierId(request.getCarrierId());
         shipping.setCarrierCode(request.getCarrierCode());
         shipping.setTrackingNo(request.getTrackingNo());
-        shipping.setReceiverName(request.getReceiverName());
-        shipping.setReceiverPhone(request.getReceiverPhone());
-        shipping.setReceiverAddress(request.getReceiverAddress());
+        // 收货信息优先取发货单录入值，缺省回落到订单在下单时留存的收件信息
+        shipping.setReceiverName(hasText(request.getReceiverName()) ? request.getReceiverName() : order.getReceiverName());
+        shipping.setReceiverPhone(hasText(request.getReceiverPhone()) ? request.getReceiverPhone() : order.getReceiverPhone());
+        shipping.setReceiverAddress(hasText(request.getReceiverAddress()) ? request.getReceiverAddress() : order.getReceiverAddress());
         shipping.setPackageWeight(request.getPackageWeight());
         shipping.setFreight(request.getFreight());
         shipping.setExpectTime(request.getExpectTime());
@@ -88,6 +95,9 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         order.setShipTime(shipping.getShipTime());
         order.setStatus(OrderStatus.SHIPPED.getCode().toString());
         orderMapper.updateById(order);
+
+        // 积分兑换来源的订单，同步更新兑换单状态
+        syncExchangeOrderStatus(order, "已发货");
 
         // TODO 调用承运商 subscribe 订阅轨迹回调；通过 WebSocket/SSE 推送"已发货"
         return shipping;
@@ -149,6 +159,8 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
             order.setReceiveTime(now);
             order.setStatus(OrderStatus.COMPLETED.getCode().toString());
             orderMapper.updateById(order);
+            // 积分兑换来源的订单，同步更新兑换单状态
+            syncExchangeOrderStatus(order, "已完成");
         }
         // TODO 多包裹场景需全部签收后再置订单完成
     }
@@ -191,6 +203,38 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
             confirmReceive(shipping.getId(), null);
         }
         return list.size();
+    }
+
+    @Override
+    public PageResponse<?> listPendingOrders(PageRequest request) {
+        Page<Order> page = new Page<>(request.getPageNum(), request.getPageSize());
+        LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Order::getStatus, OrderStatus.PAID.getCode().toString())
+                .and(w -> w.isNull(Order::getShippingStatus).or().eq(Order::getShippingStatus, 0))
+                .orderByDesc(Order::getCreateTime);
+        Page<Order> result = orderMapper.selectPage(page, wrapper);
+        return new PageResponse<>(result.getRecords(), result.getTotal(),
+                request.getPageNum(), request.getPageSize());
+    }
+
+    /** 积分兑换来源的订单：同步兑换单状态（发货/签收） */
+    private void syncExchangeOrderStatus(Order order, String status) {
+        if (order == null || !"points".equals(order.getItemType())) {
+            return;
+        }
+        ExchangeOrder exchangeOrder = exchangeOrderMapper.selectOne(
+                new LambdaQueryWrapper<ExchangeOrder>()
+                        .eq(ExchangeOrder::getOrderId, order.getId())
+                        .last("LIMIT 1"));
+        if (exchangeOrder != null) {
+            exchangeOrder.setStatus(status);
+            exchangeOrder.setUpdateTime(LocalDateTime.now());
+            exchangeOrderMapper.updateById(exchangeOrder);
+        }
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
     }
 
     private OrderShippingVO toVO(OrderShipping shipping) {

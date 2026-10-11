@@ -10,6 +10,11 @@ export const getShippingPage = (params: any): Promise<any> => {
   return request.get('/admin/logistics/shipping/page', { params });
 };
 
+// 待发货订单分页列表（已支付未发货，含纪念品与积分兑换）
+export const getPendingOrders = (params: any): Promise<any> => {
+  return request.get('/admin/logistics/shipping/pending', { params });
+};
+
 // 创建发货单（录入收货信息与运单）
 export const createShipping = (data: any): Promise<any> => {
   return request.post('/admin/logistics/shipping', data);

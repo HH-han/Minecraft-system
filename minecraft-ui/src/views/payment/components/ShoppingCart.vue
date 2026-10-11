@@ -101,11 +101,41 @@
         <button class="primary-button checkout-btn" @click="checkout">去结算</button>
       </div>
     </div>
+
+    <!-- 收货信息：结算后订单需通过物流发货 -->
+    <el-dialog
+      v-model="addressVisible"
+      title="填写收货信息"
+      width="460px"
+      :close-on-click-modal="false"
+    >
+      <el-form ref="addressFormRef" :model="addressForm" :rules="addressRules" label-width="80px">
+        <el-form-item label="收件人" prop="receiverName">
+          <el-input v-model="addressForm.receiverName" placeholder="请输入收件人姓名" maxlength="50" />
+        </el-form-item>
+        <el-form-item label="联系电话" prop="receiverPhone">
+          <el-input v-model="addressForm.receiverPhone" placeholder="请输入手机号" maxlength="20" />
+        </el-form-item>
+        <el-form-item label="收货地址" prop="receiverAddress">
+          <el-input
+            v-model="addressForm.receiverAddress"
+            type="textarea"
+            :rows="2"
+            placeholder="请输入详细收货地址"
+            maxlength="200"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="addressVisible = false">取消</el-button>
+        <el-button type="primary" :loading="submitting" @click="confirmAddress">确认并结算</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCartList, updateCart, deleteFromCart } from '@/api/cart.js'
 import { createOrder } from '@/api/order.js'
@@ -115,6 +145,25 @@ const emit = defineEmits(['checkout'])
 const router = useRouter()
 
 const cartItems = ref([])
+
+// 收货信息弹窗（结算即进入物流发货流程）
+const ADDRESS_STORAGE_KEY = 'cart-receiver-info'
+const addressVisible = ref(false)
+const addressFormRef = ref(null)
+const submitting = ref(false)
+const addressForm = reactive({
+  receiverName: '',
+  receiverPhone: '',
+  receiverAddress: ''
+})
+const addressRules = {
+  receiverName: [{ required: true, message: '请输入收件人姓名', trigger: 'blur' }],
+  receiverPhone: [
+    { required: true, message: '请输入联系电话', trigger: 'blur' },
+    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+  ],
+  receiverAddress: [{ required: true, message: '请输入收货地址', trigger: 'blur' }]
+}
 
 const selectAllFlag = ref(false)
 
@@ -224,7 +273,7 @@ const deleteSelected = async () => {
   }
 }
 
-const checkout = async () => {
+const checkout = () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
     ElMessage.warning('请选择要结算的商品')
@@ -233,17 +282,50 @@ const checkout = async () => {
   // 从 localStorage 获取用户信息
   const userInfo = JSON.parse(localStorage.getItem('user'))
   const userId = userInfo?.id || userInfo?.userId
-  
+
   if (!userId) {
     ElMessage.warning('请先登录')
     router.push('/login')
     return
   }
-  
+
+  // 回填上次填写的收货信息
+  try {
+    const saved = JSON.parse(localStorage.getItem(ADDRESS_STORAGE_KEY) || '{}')
+    addressForm.receiverName = saved.receiverName || ''
+    addressForm.receiverPhone = saved.receiverPhone || ''
+    addressForm.receiverAddress = saved.receiverAddress || ''
+  } catch {
+    addressForm.receiverName = ''
+    addressForm.receiverPhone = ''
+    addressForm.receiverAddress = ''
+  }
+  addressVisible.value = true
+}
+
+// 确认收货信息后创建订单（订单携带收货信息，进入物流发货流程）
+const confirmAddress = async () => {
+  try {
+    await addressFormRef.value?.validate()
+  } catch {
+    return
+  }
+
+  const userInfo = JSON.parse(localStorage.getItem('user'))
+  const userId = userInfo?.id || userInfo?.userId
+  const selectedItems = cartItems.value.filter(item => item.selected)
+  if (selectedItems.length === 0) return
+
+  localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify({
+    receiverName: addressForm.receiverName,
+    receiverPhone: addressForm.receiverPhone,
+    receiverAddress: addressForm.receiverAddress
+  }))
+
+  submitting.value = true
   try {
     // 为每个选中的商品创建单独的订单
     const orderPromises = selectedItems.map(item => {
-      // 构建订单请求数据
       const orderRequest = {
         itemType: item.itemType || (item.category === 'food' ? 'food' : 'product'),
         itemId: item.id,
@@ -251,30 +333,28 @@ const checkout = async () => {
         image: item.image,
         amount: item.price * item.quantity,
         quantity: item.quantity,
-        remark: ''
+        remark: '',
+        receiverName: addressForm.receiverName,
+        receiverPhone: addressForm.receiverPhone,
+        receiverAddress: addressForm.receiverAddress
       }
-      
-      // 调用创建订单接口
       return createOrder(orderRequest)
     })
-    
-    // 并行处理所有订单创建请求
+
     const responses = await Promise.all(orderPromises)
-    
-    // 检查所有订单是否创建成功
+
     const failedOrders = responses.filter(response => response.code !== 200)
     if (failedOrders.length > 0) {
       ElMessage.error('部分订单创建失败，请重试')
       return
     }
-    
-    // 收集所有订单ID
+
     const orderIds = responses.map(response => response.data.orderId || response.data.id || response.data.orderNo)
-    
+
     // 记录本次结算的购物车条目 ID，待支付成功后精准移除
-    // 仅当支付成功（收到 PayPage 的 closeModal 消息）时才会触发删除
     pendingCartItemIds.value = selectedItems.map(item => item.id)
-    
+
+    addressVisible.value = false
     // 触发结算事件，传递订单数据
     emit('checkout', {
       orderId: orderIds[0],
@@ -285,6 +365,8 @@ const checkout = async () => {
   } catch (error) {
     console.error('创建订单失败:', error)
     ElMessage.error('创建订单失败，请检查网络')
+  } finally {
+    submitting.value = false
   }
 }
 
