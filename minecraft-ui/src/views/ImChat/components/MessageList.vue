@@ -1,57 +1,57 @@
 <template>
   <div class="message-list" ref="messageList">
-    <div 
-      v-for="message in messages" 
-      :key="message.id"
-      :class="['message-item', { mine: message.senderId === currentUserInfo?.id }]"
-    >
-      <img 
-        v-if="message.senderId !== currentUserInfo?.id"
-        :src="getSenderAvatar(message)" 
-        :alt="getSenderName(message)"
-        class="message-avatar"
-        @error="handleAvatarError"
-      />
-      <div class="message-content">
-        <div :class="['message-bubble', { mine: message.senderId === currentUserInfo?.id, 'no-blue-bg': isImageMessage(message) || isEmojiMessage(message) }]">
-          <p v-if="isTextMessage(message)">{{ message.content }}</p>
-          <img 
-            v-else-if="isImageMessage(message)" 
-            :src="getMessageImageUrl(message.content)" 
-            :alt="'图片'"
-            class="message-image"
-            @click="previewImage(message.content)"
-          />
-          <span 
-            v-else-if="isEmojiMessage(message) && isUnicodeEmoji(message.content)" 
-            class="message-emoji-text"
-          >{{ message.content }}</span>
-          <div 
-            v-else-if="isEmojiMessage(message)" 
-            class="emoji-container"
-          >
+    <template v-for="message in messagesWithTime" :key="message.id">
+      <div v-if="message._showTime" class="time-separator">{{ message._timeLabel }}</div>
+      <div 
+        :class="['message-item', { mine: message.senderId === currentUserInfo?.id }]"
+      >
+        <img 
+          v-if="message.senderId !== currentUserInfo?.id"
+          :src="getSenderAvatar(message)" 
+          :alt="getSenderName(message)"
+          class="message-avatar"
+          @error="handleAvatarError"
+        />
+        <div class="message-content">
+          <div :class="['message-bubble', { mine: message.senderId === currentUserInfo?.id, 'no-blue-bg': isImageMessage(message) || isEmojiMessage(message) }]">
+            <p v-if="isTextMessage(message)">{{ message.content }}</p>
             <img 
+              v-else-if="isImageMessage(message)" 
               :src="getMessageImageUrl(message.content)" 
-              :alt="'表情'"
-              class="message-emoji-image"
-              @error="handleEmojiError"
+              :alt="'图片'"
+              class="message-image"
+              @click="previewImage(message.content)"
             />
-          </div>
-          <div v-else class="message-other">
-            <Icon name="file" :size="'24px'" />
-            <span>{{ message.content }}</span>
+            <span 
+              v-else-if="isEmojiMessage(message) && isUnicodeEmoji(message.content)" 
+              class="message-emoji-text"
+            >{{ message.content }}</span>
+            <div 
+              v-else-if="isEmojiMessage(message)" 
+              class="emoji-container"
+            >
+              <img 
+                :src="getMessageImageUrl(message.content)" 
+                :alt="'表情'"
+                class="message-emoji-image"
+                @error="handleEmojiError"
+              />
+            </div>
+            <div v-else class="message-other">
+              <Icon name="file" :size="'24px'" />
+              <span>{{ message.content }}</span>
+            </div>
           </div>
         </div>
-        <span class="message-time">{{ formatTime(message.createTime) }}</span>
+        <img 
+          v-if="message.senderId === currentUserInfo?.id"
+          :src="currentUserInfo?.avatar || defaultAvatar" 
+          :alt="currentUserInfo?.username || '用户'"
+          class="message-avatar"
+          @error="handleAvatarError"
+        />
       </div>
-      <img 
-        v-if="message.senderId === currentUserInfo?.id"
-        :src="currentUserInfo?.avatar || defaultAvatar" 
-        :alt="currentUserInfo?.username || '用户'"
-        class="message-avatar"
-        @error="handleAvatarError"
-      />
-    </div>
+    </template>
     
     <div v-if="messages.length === 0" class="no-messages">
       <Icon name="sms" :size="'64px'" />
@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { getUserInfo } from '@/api/user'
 import { getToken } from '@/utils/storage'
 import Icon from './Icon.vue'
@@ -148,14 +148,33 @@ const formatTime = (timeStr) => {
   if (!timeStr) return ''
   const date = new Date(timeStr)
   const now = new Date()
-  const diff = now - date
-  
-  if (diff < 60000) return '刚刚'
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
-  
-  return `${date.getMonth() + 1}/${date.getDate()}`
+
+  const pad = (n) => String(n).padStart(2, '0')
+  const hm = `${pad(date.getHours())}:${pad(date.getMinutes())}`
+  const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+  const dayDiff = Math.round((startOfDay(now) - startOfDay(date)) / 86400000)
+
+  if (dayDiff <= 0) return hm
+  if (dayDiff === 1) return `昨天 ${hm}`
+  if (dayDiff < 7) return `${['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]} ${hm}`
+  if (date.getFullYear() === now.getFullYear()) return `${date.getMonth() + 1}月${date.getDate()}日 ${hm}`
+  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 ${hm}`
 }
+
+// 微信风：相邻消息间隔超过 5 分钟才显示居中的时间分隔
+const messagesWithTime = computed(() => {
+  let lastTs = 0
+  return props.messages.map((message, index) => {
+    const ts = message.createTime ? new Date(message.createTime).getTime() : 0
+    const showTime = !ts || index === 0 || ts - lastTs > 5 * 60 * 1000
+    if (ts) lastTs = ts
+    return {
+      ...message,
+      _showTime: showTime,
+      _timeLabel: formatTime(message.createTime)
+    }
+  })
+})
 
 const scrollToBottom = () => {
   if (messageList.value) {
@@ -239,9 +258,10 @@ defineExpose({ scrollToBottom, currentUserInfo })
 
 <style scoped>
 .message-list {
-  max-height: calc(100vh - 240px);
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 20px;
+  padding: 16px 20px;
   -ms-overflow-style: none;
   scrollbar-width: none;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -249,6 +269,14 @@ defineExpose({ scrollToBottom, currentUserInfo })
 
 .message-list::-webkit-scrollbar {
   display: none;
+}
+
+.time-separator {
+  text-align: center;
+  font-size: 12px;
+  color: #a6a6a6;
+  margin: 14px 0 12px;
+  user-select: none;
 }
 
 .message-item {
@@ -272,6 +300,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   max-width: 60%;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .message-item.mine .message-content {
@@ -279,17 +308,40 @@ defineExpose({ scrollToBottom, currentUserInfo })
 }
 
 .message-bubble {
-  background: #4ab81b;
-  padding: 10px 14px;
-  border-radius: 18px;
+  position: relative;
+  background: #ffffff;
+  padding: 9px 12px;
+  border-radius: 8px;
   margin: 0 10px;
   max-width: 100%;
   display: inline-block;
-  transition: 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .message-item.mine .message-bubble {
-  background: #2997ff;
+  background: #95ec69;
+}
+
+/* 微信风：气泡小尖角 */
+.message-bubble::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.message-item:not(.mine) .message-bubble::after {
+  left: -6px;
+  border-width: 5px 6px 5px 0;
+  border-color: transparent #ffffff transparent transparent;
+}
+
+.message-item.mine .message-bubble::after {
+  right: -6px;
+  border-width: 5px 0 5px 6px;
+  border-color: transparent transparent transparent #95ec69;
 }
 
 .message-item .message-bubble.no-blue-bg {
@@ -299,9 +351,14 @@ defineExpose({ scrollToBottom, currentUserInfo })
   padding: 0;
 }
 
+.message-item .message-bubble.no-blue-bg::after,
+.message-item.mine .message-bubble.no-blue-bg::after {
+  display: none;
+}
+
 .message-bubble.emoji-bubble {
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 .message-bubble p {
@@ -309,18 +366,18 @@ defineExpose({ scrollToBottom, currentUserInfo })
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
-  color: #ffffff;
+  color: #191919;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .message-item.mine .message-bubble p {
-  color: #ffffff;
+  color: #191919;
 }
 
 .message-image {
   max-width: 200px;
   max-height: 200px;
-  border-radius: 12px;
+  border-radius: 6px;
   cursor: pointer;
   object-fit: cover;
   display: block;
@@ -343,7 +400,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   width: 100%;
   height: 120px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 6px;
   background: #f5f5f7;
   transition: transform 0.15s ease;
 }
@@ -356,19 +413,12 @@ defineExpose({ scrollToBottom, currentUserInfo })
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #1d1d1f;
+  color: #191919;
   font-size: 14px;
 }
 
 .message-item.mine .message-other {
-  color: #ffffff;
-}
-
-.message-time {
-  font-size: 11px;
-  color: #6e6e73;
-  margin: 4px 10px;
-  font-weight: 400;
+  color: #191919;
 }
 
 .no-messages {

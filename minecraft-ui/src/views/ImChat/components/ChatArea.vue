@@ -27,14 +27,25 @@
           </div>
         </div>
         <div class="header-actions">
-          <button class="action-btn" @click="onVoiceCall">
-            <Icon name="phone" :size="'16px'" />
+          <button class="action-btn" title="语音通话" @click="onVoiceCall">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
           </button>
-          <button class="action-btn" @click="onVideoCall">
-            <Icon name="video-camera" :size="'16px'" />
+          <button class="action-btn" title="视频通话" @click="onVideoCall">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            </svg>
           </button>
-          <button class="action-btn" @click="onContactInfo">
-            <Icon name="more" :size="'16px'" />
+          <button class="action-btn" title="更多" @click="onContactInfo">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <circle cx="5" cy="12" r="1.8" />
+              <circle cx="12" cy="12" r="1.8" />
+              <circle cx="19" cy="12" r="1.8" />
+            </svg>
           </button>
         </div>
       </div>
@@ -110,7 +121,7 @@ defineExpose({ messageListRef })
   align-items: center;
   justify-content: center;
   color: #6e6e73;
-  background: #f5f5f7;
+  background: #f5f5f5;
 }
 
 .empty-chat .svg-icon {
@@ -127,41 +138,56 @@ defineExpose({ messageListRef })
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #f5f5f7;
+  background: #f5f5f5;
 }
 
 .chat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 24px;
+  height: 56px;
+  padding: 0 20px;
   background: #ffffff;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid #ededed;
+  flex-shrink: 0;
 }
 
 .header-info {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .header-avatar {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 12px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.header-text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
 }
 
 .header-text h3 {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   color: #1d1d1f;
-  margin: 0 0 4px 0;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .online-status {
-  font-size: 13px;
-  color: #6e6e73;
+  font-size: 12px;
+  color: #9a9aa0;
+  flex-shrink: 0;
 }
 
 .online-status.online {
@@ -170,26 +196,27 @@ defineExpose({ messageListRef })
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .action-btn {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border: none;
-  border-radius: 12px;
-  background: #f5f5f7;
-  color: #6e6e73;
-  font-size: 16px;
+  border-radius: 8px;
+  background: transparent;
+  color: #4a4a4f;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .action-btn:hover {
-  background: #e8e8ed;
+  background: #f0f0f2;
   color: #1d1d1f;
 }
 
@@ -198,20 +225,20 @@ defineExpose({ messageListRef })
   display: none;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  margin-right: 10px;
+  width: 34px;
+  height: 34px;
+  margin-right: 8px;
   border: none;
-  border-radius: 12px;
-  background: #f5f5f7;
+  border-radius: 8px;
+  background: transparent;
   color: #1d1d1f;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.2s ease;
+  transition: background 0.15s ease;
 }
 
 .back-btn:hover {
-  background: #e8e8ed;
+  background: #f0f0f2;
 }
 
 /* ===== 响应式适配 ===== */
@@ -221,13 +248,13 @@ defineExpose({ messageListRef })
   }
 
   .chat-header {
-    padding: 10px 12px;
+    padding: 0 12px;
   }
 
   .header-avatar {
-    width: 38px;
-    height: 38px;
-    margin-right: 10px;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
   }
 
   .header-text h3 {
@@ -235,7 +262,7 @@ defineExpose({ messageListRef })
   }
 
   .header-actions {
-    gap: 8px;
+    gap: 2px;
   }
 }
 </style>

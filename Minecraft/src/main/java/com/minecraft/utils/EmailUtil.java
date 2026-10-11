@@ -52,7 +52,7 @@ public class EmailUtil {
             InternetAddress from = new InternetAddress(fromEmail, "博览科技", "UTF-8");
             mimeMessage.setFrom(from);
             mimeMessage.setRecipients(MimeMessage.RecipientType.TO, toEmail);
-            mimeMessage.setSubject("【博览科技】注册验证码", "UTF-8");
+            mimeMessage.setSubject("【博览科技】验证码", "UTF-8");
 
             String htmlContent = buildVerificationCodeEmail(code);
             mimeMessage.setContent(htmlContent, "text/html; charset=UTF-8");
