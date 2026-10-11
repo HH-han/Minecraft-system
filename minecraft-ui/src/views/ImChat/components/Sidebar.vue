@@ -10,7 +10,7 @@
       </div>
       <div class="nav-list">
         <button 
-          :class="['nav-item', { active: currentTab === 'chat' }]"
+          :class="['nav-item', { active: isTabActive('chat') }]"
           @click="onNavChange('chat')"
           title="聊天"
         >
@@ -18,14 +18,14 @@
           <span v-if="unreadTotal > 0" class="nav-badge">{{ unreadTotal > 99 ? '99+' : unreadTotal }}</span>
         </button>
         <button 
-          :class="['nav-item', { active: currentTab === 'contacts' }]"
+          :class="['nav-item', { active: isTabActive('contacts') }]"
           @click="onNavChange('contacts')"
           title="通讯录"
         >
           <Icon name="user" :size="'24px'" />
         </button>
         <button 
-          :class="['nav-item', { active: currentTab === 'discover' }]"
+          :class="['nav-item', { active: isTabActive('discover') }]"
           @click="onNavChange('discover')"
           title="发现"
         >
@@ -39,7 +39,7 @@
           <Icon name="star" :size="'24px'" />
         </button>
         <button 
-          :class="['nav-item', { active: currentTab === 'me' }]"
+          :class="['nav-item', { active: isTabActive('me') }]"
           @click="onNavChange('me')"
           title="我"
         >
@@ -700,6 +700,9 @@ const onStarEntryToggle = () => {
     contactListRef.value.scrollTop = 0
   }
 }
+
+// 收藏面板由父组件独立控制，其打开时左侧导航不再高亮任何 tab，避免出现双高亮
+const isTabActive = (tab) => !props.favoritesActive && currentTab.value === tab
 
 const onNavChange = (tab) => {
   currentTab.value = tab
