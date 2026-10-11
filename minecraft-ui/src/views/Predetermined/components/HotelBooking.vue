@@ -146,6 +146,7 @@
       <div v-if="selectedRoom" :key="selectedRoom.id">
         <BookingForm
           :totalPrice="totalPrice + serviceFee"
+          :initialContact="prefill?.contact"
           @submit="submitBooking"
         >
           <template #price-items>
@@ -165,7 +166,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, computed } from 'vue'
+import { defineProps, ref, computed, onMounted, watch } from 'vue'
 import DatePicker from './DatePicker.vue'
 import RoomSelector from './RoomSelector.vue'
 import BookingForm from './BookingForm.vue'
@@ -187,6 +188,11 @@ const props = defineProps({
   hotelData: {
     type: Object,
     default: null
+  },
+  // 修改预订时的回填数据
+  prefill: {
+    type: Object,
+    default: null
   }
 })
 
@@ -194,6 +200,22 @@ const checkInDate = ref('')
 const checkOutDate = ref('')
 const guests = ref(2)
 const selectedRoom = ref(null)
+
+// 用回填数据初始化日期 / 住客 / 房型
+const applyPrefill = () => {
+  if (!props.prefill) return
+  if (props.prefill.checkInDate) checkInDate.value = props.prefill.checkInDate
+  if (props.prefill.checkOutDate) checkOutDate.value = props.prefill.checkOutDate
+  if (props.prefill.guests) guests.value = props.prefill.guests
+  if (props.prefill.roomId && props.rooms.length) {
+    const room = props.rooms.find(r => r.id === props.prefill.roomId)
+    if (room) selectedRoom.value = room
+  }
+}
+
+onMounted(applyPrefill)
+watch(() => props.prefill, applyPrefill, { deep: true })
+watch(() => props.rooms, applyPrefill, { deep: true })
 
 const nights = computed(() => {
   if (!checkInDate.value || !checkOutDate.value) return 0

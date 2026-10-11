@@ -145,6 +145,7 @@
         <BookingForm
           :totalPrice="totalPrice"
           :showSpecialRequest="false"
+          :initialContact="prefill?.contact"
           @submit="submitBooking"
         >
           <!-- additional-info: TouristInfoForm for EACH selected ticket -->
@@ -199,6 +200,11 @@ const props = defineProps({
   attractionData: {
     type: Object,
     default: null
+  },
+  // 修改预订时的回填数据
+  prefill: {
+    type: Object,
+    default: null
   }
 })
 
@@ -235,6 +241,20 @@ const initTicketQuantities = () => {
     initial[ticket.id] = 0
   })
   ticketQuantities.value = initial
+}
+
+// 用回填数据初始化游玩日期 / 票种数量
+const applyPrefill = () => {
+  if (!props.prefill) return
+  if (props.prefill.visitDate) {
+    visitDate.value = props.prefill.visitDate
+  }
+  const items = props.prefill.items || []
+  items.forEach(item => {
+    if (props.tickets.some(t => t.id === item.ticketId)) {
+      ticketQuantities.value[item.ticketId] = item.quantity || 0
+    }
+  })
 }
 
 const selectedTickets = computed(() => {
@@ -319,11 +339,15 @@ const submitBooking = async (bookingData) => {
 
 onMounted(() => {
   initTicketQuantities()
+  applyPrefill()
 })
 
 watch(() => props.tickets, () => {
   initTicketQuantities()
+  applyPrefill()
 }, { deep: true })
+
+watch(() => props.prefill, applyPrefill, { deep: true })
 </script>
 
 <style scoped>

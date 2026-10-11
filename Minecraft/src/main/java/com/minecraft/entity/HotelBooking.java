@@ -37,6 +37,9 @@ public class HotelBooking {
 
     private String roomFacilities;
 
+    /** 状态：0-待支付 1-已完成 2-已取消 */
+    private Integer status;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

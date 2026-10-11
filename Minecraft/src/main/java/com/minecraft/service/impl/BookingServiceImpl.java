@@ -64,6 +64,13 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private HotelMapper hotelMapper;
 
+    /** 预订状态：待支付 */
+    private static final int STATUS_PENDING = 0;
+    /** 预订状态：已完成 */
+    private static final int STATUS_COMPLETED = 1;
+    /** 预订状态：已取消 */
+    private static final int STATUS_CANCELLED = 2;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createTicketBooking(TicketBookingRequest request) {
@@ -112,6 +119,7 @@ public class BookingServiceImpl implements BookingService {
     public List<TicketBookingVO> getTicketBookingsByPhone(String phone) {
         LambdaQueryWrapper<TicketBooking> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TicketBooking::getContactPhone, phone)
+                .eq(TicketBooking::getStatus, STATUS_PENDING)
                 .orderByDesc(TicketBooking::getCreatedAt);
         return ticketBookingMapper.selectList(wrapper).stream()
                 .map(this::toTicketBookingVO)
@@ -254,6 +262,7 @@ public class BookingServiceImpl implements BookingService {
     public List<HotelBookingVO> getHotelBookingsByPhone(String phone) {
         LambdaQueryWrapper<HotelBooking> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(HotelBooking::getContactPhone, phone)
+                .eq(HotelBooking::getStatus, STATUS_PENDING)
                 .orderByDesc(HotelBooking::getCreatedAt);
         return hotelBookingMapper.selectList(wrapper).stream()
                 .map(this::toHotelBookingVO)
@@ -303,5 +312,67 @@ public class BookingServiceImpl implements BookingService {
         }).toList());
 
         return vo;
+    }
+
+    @Override
+    public void cancelTicketBooking(Long id) {
+        updateTicketStatus(id, STATUS_CANCELLED);
+    }
+
+    @Override
+    public void completeTicketBooking(Long id) {
+        updateTicketStatus(id, STATUS_COMPLETED);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteTicketBooking(Long id) {
+        if (ticketBookingMapper.selectById(id) == null) {
+            throw new BusinessException("预订记录不存在");
+        }
+        LambdaQueryWrapper<TicketBookingItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TicketBookingItem::getBookingId, id);
+        ticketBookingItemMapper.delete(wrapper);
+        ticketBookingMapper.deleteById(id);
+    }
+
+    @Override
+    public void cancelHotelBooking(Long id) {
+        updateHotelStatus(id, STATUS_CANCELLED);
+    }
+
+    @Override
+    public void completeHotelBooking(Long id) {
+        updateHotelStatus(id, STATUS_COMPLETED);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteHotelBooking(Long id) {
+        if (hotelBookingMapper.selectById(id) == null) {
+            throw new BusinessException("预订记录不存在");
+        }
+        LambdaQueryWrapper<HotelBookingItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(HotelBookingItem::getBookingId, id);
+        hotelBookingItemMapper.delete(wrapper);
+        hotelBookingMapper.deleteById(id);
+    }
+
+    private void updateTicketStatus(Long id, int status) {
+        TicketBooking booking = ticketBookingMapper.selectById(id);
+        if (booking == null) {
+            throw new BusinessException("预订记录不存在");
+        }
+        booking.setStatus(status);
+        ticketBookingMapper.updateById(booking);
+    }
+
+    private void updateHotelStatus(Long id, int status) {
+        HotelBooking booking = hotelBookingMapper.selectById(id);
+        if (booking == null) {
+            throw new BusinessException("预订记录不存在");
+        }
+        booking.setStatus(status);
+        hotelBookingMapper.updateById(booking);
     }
 }

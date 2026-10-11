@@ -62,9 +62,9 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from 'vue'
+import { defineProps, defineEmits, ref, onMounted, watch } from 'vue'
 
-defineProps({
+const props = defineProps({
   totalPrice: {
     type: Number,
     default: 0
@@ -72,6 +72,11 @@ defineProps({
   showSpecialRequest: {
     type: Boolean,
     default: true
+  },
+  // 修改预订时回填的联系人信息
+  initialContact: {
+    type: Object,
+    default: null
   }
 })
 
@@ -81,6 +86,19 @@ const contactName = ref('')
 const contactPhone = ref('')
 const contactEmail = ref('')
 const specialRequest = ref('')
+
+// 用外部传入的联系人信息回填表单
+const applyContact = () => {
+  const c = props.initialContact
+  if (!c) return
+  contactName.value = c.name || ''
+  contactPhone.value = c.phone || ''
+  contactEmail.value = c.email || ''
+  specialRequest.value = c.specialRequest || ''
+}
+
+onMounted(applyContact)
+watch(() => props.initialContact, applyContact, { deep: true })
 
 const submitBooking = () => {
   if (!contactName.value || !contactPhone.value || !contactEmail.value) {

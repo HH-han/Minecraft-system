@@ -13,22 +13,28 @@
       :tickets="tickets"
       :attractionData="attractionData"
       :attractionId="currentAttractionId"
+      :prefill="prefill"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import AttractionBooking from '../components/AttractionBooking.vue'
 import { useBookingStore } from '@/stores/bookingStore.js'
 import { getAttractionDetail } from '@/api/attraction.js'
+import { getTicketBookingDetail } from '@/api/booking.js'
 
 const bookingStore = useBookingStore()
+const route = useRoute()
 const attractionData = ref(null)
 const tickets = ref([])
 const tags = ref([])
 const facilities = ref([])
 const loading = ref(false)
+// 修改预订时的回填数据
+const prefill = ref(null)
 
 let loadTimer = null
 let lastRequestId = null
@@ -38,14 +44,14 @@ const currentAttractionId = computed(() => {
   return id
 })
 
-const dateFields = [
+const dateFields = reactive([
   {
     name: 'visitDate',
     label: '游玩日期',
     value: '',
     min: new Date().toISOString().split('T')[0]
   }
-]
+])
 
 const loadData = async () => {
   if (loading.value) return
@@ -93,7 +99,47 @@ const debouncedLoadData = () => {
   }, 300)
 }
 
-onMounted(() => {
+// 修改预订：按预订详情回填景点/票种/日期/联系人
+const loadEditPrefill = async () => {
+  if (route.query.editType !== 'ticket' || !route.query.editId) return false
+  try {
+    const res = await getTicketBookingDetail(route.query.editId)
+    const data = res && res.data
+    if (!data) return false
+    const items = data.items || []
+    const attractionId = items.find(i => i.attractionId)?.attractionId
+    if (!attractionId) return false
+
+    const attractionRes = await getAttractionDetail(attractionId)
+    if (!(attractionRes && attractionRes.code === 200 && attractionRes.data)) return false
+
+    attractionData.value = attractionRes.data
+    tickets.value = attractionRes.data.tickets || []
+    tags.value = attractionRes.data.tags || []
+    facilities.value = attractionRes.data.facilities || []
+
+    dateFields[0].value = data.visitDate || ''
+
+    prefill.value = {
+      visitDate: data.visitDate || '',
+      items: items.map(i => ({ ticketId: i.ticketId, quantity: i.quantity || 0 })),
+      contact: {
+        name: data.contactName || '',
+        phone: data.contactPhone || '',
+        email: data.contactEmail || '',
+        specialRequest: data.specialRequest || ''
+      }
+    }
+    return true
+  } catch (error) {
+    console.error('加载门票预订回填数据失败:', error)
+    return false
+  }
+}
+
+onMounted(async () => {
+  const handled = await loadEditPrefill()
+  if (handled) return
   attractionData.value = bookingStore.getAttractionData
   debouncedLoadData()
 })

@@ -59,11 +59,11 @@
         </div>
         <!-- 预定服务 -->
         <div v-if="activeTab === 'predetermined'" class="section apple-card">
-          <Predetermined />
+          <Predetermined @checkout="handleCheckout" />
         </div>
         <!-- 历史订单 -->
         <div v-if="activeTab === 'history'" class="section apple-card">
-          <HistoricalOrders />
+          <HistoricalOrders @view-detail="handleViewOrderDetail" @pay="handlePayOrder" />
         </div>
         <!-- 用户评价 -->
         <div v-if="activeTab === 'review'" class="section apple-card">
@@ -211,6 +211,23 @@ const handlePay = () => {
   if (orderId) {
     paymentData.value.orderId = orderId
     paymentData.value.orderIds = [orderId]
+  }
+  showPayModal.value = true
+}
+
+// 从历史订单查看订单详情：切到订单详情标签并加载对应订单
+const handleViewOrderDetail = async (orderId) => {
+  await router.push({ path: '/payment', query: { orderId } })
+  activeTab.value = 'order'
+}
+
+// 从历史订单直接发起支付：以订单主键 id 拉起支付弹窗
+const handlePayOrder = (orderId) => {
+  paymentData.value = {
+    orderId: String(orderId),
+    orderIds: [String(orderId)],
+    userId: '',
+    cartItems: []
   }
   showPayModal.value = true
 }

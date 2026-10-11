@@ -10,11 +10,20 @@
     <div class="order-info-card">
       <div class="info-item">
         <span class="label">订单编号</span>
-        <span class="value">{{ order.orderId }}</span>
+        <span class="value">
+          {{ order.orderNo || '-' }}
+          <button v-if="order.orderNo" type="button" class="copy-btn" @click="copyText(order.orderNo)">
+            复制
+          </button>
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="label">订单类型</span>
+        <span class="value">{{ getItemTypeText(order.itemType) }}</span>
       </div>
       <div class="info-item">
         <span class="label">下单时间</span>
-        <span class="value">{{ order.createTime }}</span>
+        <span class="value">{{ order.createTime || '-' }}</span>
       </div>
       <div class="info-item">
         <span class="label">支付时间</span>
@@ -22,7 +31,7 @@
       </div>
       <div class="info-item">
         <span class="label">订单金额</span>
-        <span class="value price">¥{{ order.totalPrice }}</span>
+        <span class="value price">{{ priceText(order.amount) }}</span>
       </div>
     </div>
     
@@ -48,30 +57,69 @@
           </div>
           <div class="item-info">
             <div class="item-name">{{ item.name }}</div>
-            <div class="item-spec" v-if="item.spec">
-              {{ item.spec }}
-            </div>
             <div class="item-price">
-              <span class="price">¥{{ item.price }}</span>
+              <span class="price">{{ priceText(item.price) }}</span>
               <span class="quantity">x{{ item.quantity }}</span>
             </div>
           </div>
         </div>
       </div>
+      <div v-if="order.remark" class="order-remark">
+        <span class="order-remark__label">备注</span>
+        {{ order.remark }}
+      </div>
     </div>
     
     <div class="order-summary-card">
       <div class="summary-item">
-        <span class="summary-label">商品总价</span>
-        <span class="summary-value">¥{{ order.totalPrice }}</span>
+        <span class="summary-label">商品数量</span>
+        <span class="summary-value">{{ order.quantity }} 件</span>
       </div>
-      <div class="summary-item">
-        <span class="summary-label">运费</span>
-        <span class="summary-value">¥{{ order.shippingFee }}</span>
-      </div>
+      <template v-if="!isPointsOrder">
+        <div class="summary-item">
+          <span class="summary-label">商品总价</span>
+          <span class="summary-value">¥{{ formatMoney(order.amount) }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">运费</span>
+          <span class="summary-value">¥{{ formatMoney(order.freight) }}</span>
+        </div>
+      </template>
       <div class="summary-item total">
         <span class="summary-label">实付金额</span>
-        <span class="summary-value price">¥{{ order.payPrice }}</span>
+        <span class="summary-value price">{{ priceText(order.amount) }}</span>
+      </div>
+    </div>
+
+    <!-- 物流信息 -->
+    <div class="shipping-info-card" v-if="hasShippingInfo">
+      <h3 class="section-title">物流信息</h3>
+      <div class="info-item">
+        <span class="label">物流状态</span>
+        <span class="value">{{ getShippingStatusText(order.shippingStatus) }}</span>
+      </div>
+      <div class="info-item" v-if="order.carrierName">
+        <span class="label">承运商</span>
+        <span class="value">{{ order.carrierName }}</span>
+      </div>
+      <div class="info-item" v-if="order.trackingNo">
+        <span class="label">运单号</span>
+        <span class="value">
+          {{ order.trackingNo }}
+          <button type="button" class="copy-btn" @click="copyText(order.trackingNo)">复制</button>
+        </span>
+      </div>
+      <div class="info-item" v-if="order.shipTime">
+        <span class="label">发货时间</span>
+        <span class="value">{{ order.shipTime }}</span>
+      </div>
+      <div class="info-item" v-if="order.receiveTime">
+        <span class="label">签收时间</span>
+        <span class="value">{{ order.receiveTime }}</span>
+      </div>
+      <div class="info-item" v-if="order.afterSaleStatus > 0">
+        <span class="label">售后状态</span>
+        <span class="value">{{ getAfterSaleText(order.afterSaleStatus) }}</span>
       </div>
     </div>
     
@@ -79,7 +127,7 @@
       <button class="btn btn-secondary" @click="handleCancelOrder">取消订单</button>
       <button class="btn btn-primary" @click="goToPay">立即支付</button>
     </div>
-    <div class="order-actions" v-else-if="['1', '2', '3'].includes(order.status)">
+    <div class="order-actions" v-else-if="canViewLogistics">
       <button class="btn btn-primary" @click="viewLogistics">查看物流</button>
     </div>
   </div>
@@ -102,7 +150,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
@@ -113,155 +161,81 @@ const emit = defineEmits(['pay'])
 const router = useRouter()
 const route = useRoute()
 
-const order = ref({
-  orderId: '20240101001',
-  status: 'unpaid',
-  createTime: new Date().toLocaleString('zh-CN'),
+// 承运商代码 → 名称
+const CARRIER_MAP = {
+  YTO: '圆通速递',
+  ZTO: '中通快递',
+  STO: '申通快递',
+  YD: '韵达速递',
+  SF: '顺丰速运',
+  JD: '京东物流',
+  EMS: '中国邮政',
+  YZPY: '邮政快递包裹',
+  DBL: '德邦快递'
+}
+
+// 订单默认结构
+const createDefaultOrder = () => ({
+  orderNo: '',
+  status: '',
+  itemType: '',
+  createTime: '',
   payTime: '',
-  totalPrice: 0,
-  shippingFee: 0,
-  payPrice: 0,
-  address: {
-    name: '张三',
-    phone: '13800138000',
-    province: '北京市',
-    city: '北京市',
-    district: '朝阳区',
-    detail: '某某街道某某小区1号楼101室'
-  },
-  items: []
+  amount: 0,
+  quantity: 1,
+  freight: 0,
+  remark: '',
+  address: { name: '未填写', phone: '', detail: '暂无收货地址' },
+  items: [],
+  carrierCode: '',
+  carrierName: '',
+  trackingNo: '',
+  shippingStatus: null,
+  shipTime: '',
+  receiveTime: '',
+  afterSaleStatus: 0
 })
+
+const order = ref(createDefaultOrder())
 
 // 订单数据是否存在
 const hasOrderData = ref(false)
 
-// 获取订单数据
-const fetchProductData = async () => {
-  const orderId = route.query.orderId
-  const id = route.query.id
-  const commodity = route.query.commodity
-  
-  // 初始设置为false
-  hasOrderData.value = false
-  
-  if (orderId) {
-    // 如果有订单编号，从后端获取订单数据
-    try {
-      const response = await getOrderDetail(orderId)
-      const orderData = response.data
-      
-      if (orderData) {
-        // 构建订单信息
-        order.value = {
-          orderId: orderData.orderNo || orderData.id,
-          status: orderData.status,
-          createTime: new Date(orderData.createTime).toLocaleString('zh-CN'),
-          payTime: orderData.payTime ? new Date(orderData.payTime).toLocaleString('zh-CN') : '',
-          totalPrice: 0, // 后端可能没有计算，需要从商品API获取
-          shippingFee: 0,
-          payPrice: 0,
-          address: {
-            name: orderData.receiverName || '未填写',
-            phone: orderData.receiverPhone || '',
-            detail: orderData.receiverAddress || '暂无收货地址'
-          },
-          items: []
-        }
-        
-        // 根据商品类型获取商品详情
-        if (id && commodity) {
-          if (commodity === '0') {
-            // 美食类型，调用food API
-            const foodResponse = await getFoodDetail(id)
-            const food = foodResponse.data
-            order.value.items = [{
-              id: food.id,
-              name: food.name,
-              price: food.price,
-              quantity: 1,
-              image: food.coverImage
-            }]
-            order.value.totalPrice = food.price
-            order.value.payPrice = food.price
-          } else if (commodity === '1') {
-            // 纪念品类型，调用product API
-            const productResponse = await getProductDetail(id)
-            const product = productResponse.data
-            order.value.items = [{
-              id: product.id,
-              name: product.name,
-              price: product.price,
-              quantity: 1,
-              image: product.coverImage
-            }]
-            order.value.totalPrice = product.price
-            order.value.payPrice = product.price
-          }
-        }
-        
-        // 设置为有订单数据
-        hasOrderData.value = true
-      }
-    } catch (err) {
-      console.error('获取订单数据失败:', err)
-      // 如果获取订单失败，使用默认数据
-      setDefaultOrderData()
-    }
-  } else {
-    // 如果没有订单编号，使用默认数据
-    setDefaultOrderData()
-  }
+// 积分兑换订单（无实际支付金额）
+const isPointsOrder = computed(() => order.value.itemType === 'points')
+
+// 是否展示物流信息：非待支付且已进入物流环节
+const hasShippingInfo = computed(
+  () =>
+    ['1', '2', '3'].includes(order.value.status) &&
+    ((order.value.shippingStatus !== null && order.value.shippingStatus !== undefined) ||
+      !!order.value.trackingNo)
+)
+
+// 是否可查看物流
+const canViewLogistics = computed(() => ['1', '2', '3'].includes(order.value.status))
+
+// 时间格式化：2026-10-11T16:16:02 → 2026-10-11 16:16:02
+const formatTime = (time) => (time ? String(time).replace('T', ' ') : '')
+
+// 金额格式化：整数不带小数，非整数保留两位
+const formatMoney = (value) => {
+  const num = Number(value || 0)
+  return Number.isInteger(num) ? String(num) : num.toFixed(2)
 }
 
-// 设置默认订单数据
-const setDefaultOrderData = () => {
-  const id = route.query.id
-  const commodity = route.query.commodity
-  
-  if (id && commodity) {
-    // 根据商品类型获取商品详情
-    if (commodity === '0') {
-      // 美食类型，调用food API
-      getFoodDetail(id).then(response => {
-        const food = response.data
-        if (food) {
-          order.value.items = [{
-            id: food.id,
-            name: food.name,
-            price: food.price,
-            quantity: 1,
-            image: food.coverImage
-          }]
-          order.value.totalPrice = food.price
-          order.value.payPrice = food.price
-          // 设置为有订单数据
-          hasOrderData.value = true
-        }
-      }).catch(err => {
-        console.error('获取美食数据失败:', err)
-      })
-    } else if (commodity === '1') {
-      // 纪念品类型，调用product API
-      getProductDetail(id).then(response => {
-        const product = response.data
-        if (product) {
-          order.value.items = [{
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            quantity: 1,
-            image: product.coverImage
-          }]
-          order.value.totalPrice = product.price
-          order.value.payPrice = product.price
-          // 设置为有订单数据
-          hasOrderData.value = true
-        }
-      }).catch(err => {
-        console.error('获取商品数据失败:', err)
-      })
-    }
+// 金额展示：积分订单不显示金额
+const priceText = (value) => (isPointsOrder.value ? '积分兑换' : `¥${formatMoney(value)}`)
+
+const getItemTypeText = (type) => {
+  const map = {
+    food: '美食',
+    product: '纪念品',
+    points: '积分兑换',
+    hotel: '酒店',
+    attraction: '景点'
   }
+  return map[type] || '商品'
 }
 
 const getStatusText = (status) => {
@@ -271,14 +245,9 @@ const getStatusText = (status) => {
     '2': '已发货',
     '3': '已完成',
     '4': '已取消',
-    '5': '已退款',
-    unpaid: '待支付',
-    paid: '已支付',
-    shipping: '配送中',
-    completed: '已完成',
-    cancelled: '已取消'
+    '5': '已退款'
   }
-  return status in statusMap ? statusMap[status] : '未知状态'
+  return statusMap[status] || '未知状态'
 }
 
 const getStatusClass = (status) => {
@@ -288,14 +257,153 @@ const getStatusClass = (status) => {
     '2': 'shipping',
     '3': 'completed',
     '4': 'cancelled',
-    '5': 'refunded',
-    unpaid: 'unpaid',
-    paid: 'paid',
-    shipping: 'shipping',
-    completed: 'completed',
-    cancelled: 'cancelled'
+    '5': 'refunded'
   }
   return classMap[status] || 'unpaid'
+}
+
+// 物流状态 0-待发货 1-部分发货 2-已发货 3-已签收
+const getShippingStatusText = (status) => {
+  const map = { 0: '待发货', 1: '部分发货', 2: '已发货', 3: '已签收' }
+  return map[status] ?? '待发货'
+}
+
+// 售后状态 0-无 1-售后中 2-售后完成
+const getAfterSaleText = (status) => {
+  const map = { 1: '售后中', 2: '售后完成' }
+  return map[status] || '无'
+}
+
+// 复制文本
+const copyText = async (text) => {
+  try {
+    await navigator.clipboard.writeText(String(text))
+    ElMessage.success('已复制')
+  } catch {
+    ElMessage.warning('复制失败，请手动复制')
+  }
+}
+
+// 将后端订单数据映射为页面数据
+const normalizeOrder = (data) => {
+  const status = data.status != null ? String(data.status) : ''
+  const amount = Number(data.amount) || 0
+  return {
+    orderNo: data.orderNo || (data.id != null ? String(data.id) : ''),
+    status,
+    itemType: data.itemType || '',
+    createTime: formatTime(data.createTime),
+    // 后端无独立支付时间字段，非待支付订单以更新时间近似
+    payTime: formatTime(data.payTime || (status !== '0' ? data.updateTime : '')),
+    amount,
+    quantity: data.quantity || 1,
+    freight: Number(data.freight) || 0,
+    remark: data.remark || '',
+    address: {
+      name: data.receiverName || '未填写',
+      phone: data.receiverPhone || '',
+      detail: data.receiverAddress || '暂无收货地址'
+    },
+    items: data.itemName
+      ? [
+          {
+            id: data.itemId,
+            name: data.itemName,
+            price: amount,
+            quantity: data.quantity || 1,
+            image: data.image
+          }
+        ]
+      : [],
+    carrierCode: data.carrierCode || '',
+    carrierName: CARRIER_MAP[data.carrierCode] || data.carrierName || data.carrierCode || '',
+    trackingNo: data.trackingNo || '',
+    shippingStatus: data.shippingStatus ?? null,
+    shipTime: formatTime(data.shipTime),
+    receiveTime: formatTime(data.receiveTime),
+    afterSaleStatus: data.afterSaleStatus || 0
+  }
+}
+
+// 按商品类型获取商品详情，转换为订单商品项
+const fetchCommodityItem = async (id, commodity) => {
+  if (commodity === '0') {
+    const { data } = await getFoodDetail(id)
+    return data
+      ? { id: data.id, name: data.name, price: Number(data.price) || 0, quantity: 1, image: data.coverImage }
+      : null
+  }
+  if (commodity === '1') {
+    const { data } = await getProductDetail(id)
+    return data
+      ? { id: data.id, name: data.name, price: Number(data.price) || 0, quantity: 1, image: data.coverImage }
+      : null
+  }
+  return null
+}
+
+// 获取订单数据
+const fetchProductData = async () => {
+  const orderId = route.query.orderId
+  const id = route.query.id
+  const commodity = route.query.commodity
+
+  // 初始设置为false
+  hasOrderData.value = false
+
+  if (orderId) {
+    // 如果有订单编号，从后端获取订单数据
+    try {
+      const response = await getOrderDetail(orderId)
+      const orderData = response.data
+
+      if (orderData) {
+        order.value = normalizeOrder(orderData)
+
+        // 订单缺少商品信息时，按商品类型获取商品详情
+        if (!orderData.itemName && id && commodity) {
+          const item = await fetchCommodityItem(id, commodity)
+          if (item) {
+            order.value.items = [item]
+            order.value.amount = item.price
+          }
+        }
+
+        // 设置为有订单数据
+        hasOrderData.value = true
+      }
+    } catch (err) {
+      console.error('获取订单数据失败:', err)
+      // 如果获取订单失败，尝试用商品数据兜底
+      await setDefaultOrderData()
+    }
+  } else {
+    // 如果没有订单编号，使用商品数据
+    await setDefaultOrderData()
+  }
+}
+
+// 无订单编号时，根据商品详情构建订单数据
+const setDefaultOrderData = async () => {
+  const id = route.query.id
+  const commodity = route.query.commodity
+  if (!id || !commodity) return
+
+  try {
+    const item = await fetchCommodityItem(id, commodity)
+    if (item) {
+      order.value = {
+        ...createDefaultOrder(),
+        itemType: commodity === '0' ? 'food' : commodity === '1' ? 'product' : '',
+        amount: item.price,
+        quantity: item.quantity,
+        items: [item]
+      }
+      hasOrderData.value = true
+    }
+  } catch (err) {
+    console.error('获取商品数据失败:', err)
+  }
 }
 
 const goToPay = () => {
@@ -422,12 +530,34 @@ onMounted(() => {
 .order-info-card,
 .shipping-address-card,
 .order-items-card,
-.order-summary-card {
+.order-summary-card,
+.shipping-info-card {
   background: #fafafa;
   border-radius: 16px;
   padding: 20px 22px;
   margin-bottom: 16px;
   border: 1px solid #f0f0f2;
+}
+
+/* 复制按钮 */
+.copy-btn {
+  margin-left: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(41, 151, 255, 0.35);
+  background: rgba(41, 151, 255, 0.08);
+  color: #2997ff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: #2997ff;
+  color: #ffffff;
 }
 
 .section-title {
@@ -563,14 +693,24 @@ onMounted(() => {
   -webkit-box-orient: vertical;
 }
 
-.item-spec {
-  font-size: 12px;
-  color: #6e6e73;
+.order-remark {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
   background: #f5f5f7;
-  padding: 3px 10px;
-  border-radius: 8px;
-  align-self: flex-start;
-  font-weight: 500;
+  font-size: 13px;
+  color: #6e6e73;
+  line-height: 1.5;
+}
+
+.order-remark__label {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 8px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #8e8e93;
+  font-weight: 600;
 }
 
 .item-price {
@@ -727,7 +867,8 @@ onMounted(() => {
   .order-info-card,
   .shipping-address-card,
   .order-items-card,
-  .order-summary-card {
+  .order-summary-card,
+  .shipping-info-card {
     padding: 18px;
     border-radius: 14px;
   }
@@ -764,7 +905,8 @@ onMounted(() => {
   .order-info-card,
   .shipping-address-card,
   .order-items-card,
-  .order-summary-card { padding: 16px; border-radius: 12px; }
+  .order-summary-card,
+  .shipping-info-card { padding: 16px; border-radius: 12px; }
   .info-item .label, .info-item .value { font-size: 13px; }
   .item-name { font-size: 14px; }
   .item-price .price { font-size: 15px; }

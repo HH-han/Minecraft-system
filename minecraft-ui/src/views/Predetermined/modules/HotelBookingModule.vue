@@ -12,22 +12,28 @@
       :rooms="rooms"
       :hotelData="hotelData"
       :hotelId="currentHotelId"
+      :prefill="prefill"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import HotelBooking from '../components/HotelBooking.vue'
 import { useBookingStore } from '@/stores/bookingStore.js'
 import { getHotelDetail } from '@/api/hotel.js'
+import { getHotelBookingDetail } from '@/api/booking.js'
 
 
 const bookingStore = useBookingStore()
+const route = useRoute()
 const hotelData = ref(null)
 const rooms = ref([])
 const facilities = ref([])
 const loading = ref(false)
+// 修改预订时的回填数据
+const prefill = ref(null)
 
 let loadTimer = null
 let lastRequestId = null
@@ -37,7 +43,7 @@ const currentHotelId = computed(() => {
   return id
 })
 
-const dateFields = [
+const dateFields = reactive([
   {
     name: 'checkInDate',
     label: '入住日期',
@@ -50,7 +56,7 @@ const dateFields = [
     value: '',
     min: new Date().toISOString().split('T')[0]
   }
-]
+])
 
 const loadData = async () => {
   if (loading.value) return
@@ -95,7 +101,49 @@ const debouncedLoadData = () => {
   }, 300)
 }
 
-onMounted(() => {
+// 修改预订：按预订详情回填酒店/房型/日期/联系人
+const loadEditPrefill = async () => {
+  if (route.query.editType !== 'hotel' || !route.query.editId) return false
+  try {
+    const res = await getHotelBookingDetail(route.query.editId)
+    const data = res && res.data
+    if (!data) return false
+    const item = (data.items || [])[0] || {}
+    const hotelId = item.hotelId
+    if (!hotelId) return false
+
+    const hotelRes = await getHotelDetail(hotelId)
+    if (!(hotelRes && hotelRes.code === 200 && hotelRes.data)) return false
+
+    hotelData.value = hotelRes.data
+    rooms.value = hotelRes.data.rooms || []
+    facilities.value = hotelRes.data.facilities || []
+
+    dateFields[0].value = data.checkInDate || ''
+    dateFields[1].value = data.checkOutDate || ''
+
+    prefill.value = {
+      checkInDate: data.checkInDate || '',
+      checkOutDate: data.checkOutDate || '',
+      guests: data.guests || 2,
+      roomId: data.roomId || item.roomId || null,
+      contact: {
+        name: data.contactName || '',
+        phone: data.contactPhone || '',
+        email: data.contactEmail || '',
+        specialRequest: data.specialRequest || ''
+      }
+    }
+    return true
+  } catch (error) {
+    console.error('加载酒店预订回填数据失败:', error)
+    return false
+  }
+}
+
+onMounted(async () => {
+  const handled = await loadEditPrefill()
+  if (handled) return
   hotelData.value = bookingStore.getHotelData
   debouncedLoadData()
 })

@@ -127,8 +127,15 @@
             </div>
 
             <div class="item-footer">
-              <span class="booking-no">预订编号：{{ booking.id }}</span>
-              <span class="booking-time">{{ booking.createdText }}</span>
+              <div class="footer-meta">
+                <span class="booking-no">预订编号：{{ booking.id }}</span>
+                <span class="booking-time">{{ booking.createdText }}</span>
+              </div>
+              <div class="booking-actions" @click.stop>
+                <button type="button" class="mini-btn" @click="handleEdit(booking)">修改</button>
+                <button type="button" class="mini-btn" @click="handleCancel(booking)">取消</button>
+                <button type="button" class="mini-btn mini-btn--danger" @click="handleDelete(booking)">删除</button>
+              </div>
             </div>
           </div>
         </div>
@@ -163,12 +170,23 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
-import { getTicketBookingList, getHotelBookingList } from '@/api/booking.js'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import {
+  getTicketBookingList,
+  getHotelBookingList,
+  cancelTicketBooking,
+  completeTicketBooking,
+  deleteTicketBooking,
+  cancelHotelBooking,
+  completeHotelBooking,
+  deleteHotelBooking
+} from '@/api/booking.js'
 import { createOrder } from '@/api/order.js'
 
 const emit = defineEmits(['checkout'])
+const router = useRouter()
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -178,6 +196,9 @@ const userPhone = ref('')
 
 // 统一的预订卡片数据：type = 'ticket' | 'hotel'
 const bookingList = ref([])
+
+// 本次结算的预订（支付成功后据此更新状态并移除）
+const pendingPayBookings = ref([])
 
 const filters = [
   { label: '全部', value: 'all' },
@@ -393,6 +414,12 @@ const checkout = async () => {
 
     const orderIds = responses.map(response => response.data.orderId || response.data.id || response.data.orderNo)
 
+    // 记录本次结算的预订，待支付成功后更新状态并移除
+    pendingPayBookings.value = selectedBookings.value.map(booking => ({
+      type: booking.type,
+      id: booking.id
+    }))
+
     emit('checkout', {
       orderId: orderIds[0],
       orderIds,
@@ -413,8 +440,110 @@ const checkout = async () => {
   }
 }
 
+// 从列表移除指定预订（本地即时反馈）
+const removeBookingFromList = (booking) => {
+  bookingList.value = bookingList.value.filter(item => item.key !== booking.key)
+  syncSelectAllFlag()
+}
+
+// 取消预订
+const handleCancel = async (booking) => {
+  try {
+    await ElMessageBox.confirm('确定要取消该预订吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+  } catch {
+    return
+  }
+  try {
+    const response = booking.type === 'ticket'
+      ? await cancelTicketBooking(booking.id)
+      : await cancelHotelBooking(booking.id)
+    if (response && response.code === 200) {
+      ElMessage.success('预订已取消')
+      removeBookingFromList(booking)
+    } else {
+      ElMessage.error(response?.message || '取消失败，请重试')
+    }
+  } catch (error) {
+    console.error('取消预订失败:', error)
+    ElMessage.error('取消失败，请重试')
+  }
+}
+
+// 删除预订
+const handleDelete = async (booking) => {
+  try {
+    await ElMessageBox.confirm('确定要删除该预订吗？此操作不可恢复！', '警告', {
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+      type: 'error'
+    })
+  } catch {
+    return
+  }
+  try {
+    const response = booking.type === 'ticket'
+      ? await deleteTicketBooking(booking.id)
+      : await deleteHotelBooking(booking.id)
+    if (response && response.code === 200) {
+      ElMessage.success('预订已删除')
+      removeBookingFromList(booking)
+    } else {
+      ElMessage.error(response?.message || '删除失败，请重试')
+    }
+  } catch (error) {
+    console.error('删除预订失败:', error)
+    ElMessage.error('删除失败，请重试')
+  }
+}
+
+// 修改预订：跳转回预订表单并回填该预订数据
+const handleEdit = (booking) => {
+  router.push({
+    path: '/predetermined',
+    query: {
+      tab: booking.type === 'ticket' ? 'attraction' : 'hotel',
+      editType: booking.type,
+      editId: booking.id
+    }
+  })
+}
+
+// 支付成功后：将本次结算的预订置为已完成（列表中随之移除）
+const completePaidBookings = async () => {
+  const refs = pendingPayBookings.value
+  if (refs.length === 0) return
+  try {
+    await Promise.all(refs.map(ref =>
+      ref.type === 'ticket' ? completeTicketBooking(ref.id) : completeHotelBooking(ref.id)
+    ))
+    ElMessage.success('支付成功，已移除对应预订')
+    await fetchBookings()
+  } catch (error) {
+    console.error('更新预订状态失败:', error)
+    ElMessage.error('预订状态更新失败，请手动刷新')
+  } finally {
+    pendingPayBookings.value = []
+  }
+}
+
+// 监听 PayPage 支付成功后发出的 closeModal 消息（仅支付成功时会发出）
+const handlePaymentMessage = (event) => {
+  if (event.data?.action === 'closeModal' && pendingPayBookings.value.length > 0) {
+    completePaidBookings()
+  }
+}
+
 onMounted(() => {
   fetchBookings()
+  window.addEventListener('message', handlePaymentMessage)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handlePaymentMessage)
 })
 </script>
 
@@ -671,6 +800,52 @@ onMounted(() => {
   font-size: 12px;
   color: #8e8e93;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.booking-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.mini-btn {
+  padding: 4px 12px;
+  border: 1px solid #e5e5ea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1d1d1f;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.mini-btn:hover {
+  border-color: #2997ff;
+  color: #2997ff;
+}
+
+.mini-btn--danger {
+  color: #ff3b30;
+  border-color: rgba(255, 59, 48, 0.3);
+}
+
+.mini-btn--danger:hover {
+  background: #ff3b30;
+  border-color: #ff3b30;
+  color: #ffffff;
 }
 
 .booking-no {
@@ -827,7 +1002,18 @@ onMounted(() => {
   .item-footer {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 10px;
+  }
+
+  .booking-actions {
+    margin-left: 0;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .mini-btn {
+    flex: 1;
+    text-align: center;
   }
 
   .card-footer {

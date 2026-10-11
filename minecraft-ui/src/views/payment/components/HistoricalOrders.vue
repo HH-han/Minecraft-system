@@ -121,6 +121,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getOrderList, cancelOrder, deleteOrder } from '@/api/order.js'
 
 const router = useRouter()
+const emit = defineEmits(['view-detail', 'pay'])
 
 // 订单数据
 const orders = ref([])
@@ -245,14 +246,9 @@ const viewLogistics = (order) => {
   })
 }
 
-// 跳转到支付页面
+// 立即支付：拉起支付弹窗（使用数据库主键 id，而非订单编号 orderNo）
 const goToPay = (order) => {
-  router.push({
-    path: '/payment',
-    query: {
-      orderId: order.orderId
-    }
-  })
+  emit('pay', order.id)
 }
 
 // 取消订单
@@ -308,13 +304,7 @@ const reviewOrder = (orderId) => {
 
 // 查看订单详情
 const viewOrderDetail = (orderId) => {
-  router.push({
-    path: '/payment',
-    query: {
-      orderId: orderId,
-      tab: 'order'
-    }
-  })
+  emit('view-detail', orderId)
 }
 
 // 组件挂载时的逻辑
