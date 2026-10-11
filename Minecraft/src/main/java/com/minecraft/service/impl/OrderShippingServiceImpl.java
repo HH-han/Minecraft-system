@@ -29,7 +29,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -71,7 +73,11 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         // 承运与收货信息
         shipping.setCarrierId(request.getCarrierId());
         shipping.setCarrierCode(request.getCarrierCode());
-        shipping.setTrackingNo(request.getTrackingNo());
+        // 运单号由系统自动生成（管理员如需录入真实运单号也可手动指定）
+        String trackingNo = hasText(request.getTrackingNo())
+                ? request.getTrackingNo().trim()
+                : generateTrackingNo(request.getCarrierCode());
+        shipping.setTrackingNo(trackingNo);
         // 收货信息优先取发货单录入值，缺省回落到订单在下单时留存的收件信息
         shipping.setReceiverName(hasText(request.getReceiverName()) ? request.getReceiverName() : order.getReceiverName());
         shipping.setReceiverPhone(hasText(request.getReceiverPhone()) ? request.getReceiverPhone() : order.getReceiverPhone());
@@ -81,17 +87,15 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         shipping.setExpectTime(request.getExpectTime());
         shipping.setRemark(request.getRemark());
 
-        boolean shipped = request.getTrackingNo() != null && !request.getTrackingNo().isEmpty();
-        shipping.setStatus(shipped ? ShippingStatus.SHIPPED.getCode() : ShippingStatus.PENDING.getCode());
-        if (shipped) {
-            shipping.setShipTime(LocalDateTime.now());
-        }
+        // 创建发货单即视为已发货
+        shipping.setStatus(ShippingStatus.SHIPPED.getCode());
+        shipping.setShipTime(LocalDateTime.now());
         save(shipping);
 
         // 同步订单物流字段
         order.setShippingStatus(2);
         order.setCarrierCode(request.getCarrierCode());
-        order.setTrackingNo(request.getTrackingNo());
+        order.setTrackingNo(trackingNo);
         order.setShipTime(shipping.getShipTime());
         order.setStatus(OrderStatus.SHIPPED.getCode().toString());
         orderMapper.updateById(order);
@@ -264,6 +268,14 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
             }
         }
         return vo;
+    }
+
+    /** 系统自动生成运单号：承运商编码(缺省 SF) + yyyyMMdd + 8位随机数 */
+    private String generateTrackingNo(String carrierCode) {
+        String prefix = hasText(carrierCode) ? carrierCode.trim().toUpperCase() : "SF";
+        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        long rand = ThreadLocalRandom.current().nextLong(10_000_000L, 100_000_000L);
+        return prefix + dateStr + rand;
     }
 
     private String generateShippingNo() {

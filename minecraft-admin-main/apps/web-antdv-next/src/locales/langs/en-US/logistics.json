@@ -33,6 +33,7 @@
     "batch_order_ids_required": "Please enter order IDs",
     "order_id_required": "Please enter order ID",
     "receiver_required": "Please fill receiver info",
+    "tracking_no_auto": "Leave empty to auto-generate tracking no.",
     "empty_track": "No tracks",
     "fields": {
       "shippingNo": "Shipping No.",

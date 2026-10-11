@@ -435,8 +435,16 @@ async function openTrack(record: any) {
               @change="onCarrierChange"
             />
           </FormItem>
-          <FormItem :label="$t('logistics.shipping_page.fields.trackingNo')" name="trackingNo">
-            <Input v-model:value="form.trackingNo" class="w-full" />
+          <FormItem
+            :label="$t('logistics.shipping_page.fields.trackingNo')"
+            name="trackingNo"
+            :extra="$t('logistics.shipping_page.tracking_no_auto')"
+          >
+            <Input
+              v-model:value="form.trackingNo"
+              class="w-full"
+              :placeholder="$t('logistics.shipping_page.tracking_no_auto')"
+            />
           </FormItem>
           <FormItem :label="$t('logistics.shipping_page.fields.quantity')" name="quantity">
             <InputNumber v-model:value="form.quantity" :min="1" class="w-full" />

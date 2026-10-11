@@ -33,6 +33,7 @@
     "batch_order_ids_required": "请输入订单ID列表",
     "order_id_required": "请输入订单ID",
     "receiver_required": "请填写收件人信息",
+    "tracking_no_auto": "留空则由系统自动生成运单号",
     "empty_track": "暂无轨迹",
     "fields": {
       "shippingNo": "发货单号",
