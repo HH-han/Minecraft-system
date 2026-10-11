@@ -147,19 +147,49 @@
               </div>
             </div>
 
-            <!-- 评论输入 -->
-            <div v-if="commentingMomentId === moment.id" class="comment-input-row">
-              <input
+            <!-- 评论输入（微信风格） -->
+            <div v-if="commentingMomentId === moment.id" class="comment-editor" @click.stop>
+              <textarea
+                ref="commentInputRef"
                 v-model="commentText"
-                class="comment-input"
-                type="text"
+                class="comment-textarea"
+                rows="2"
                 maxlength="200"
-                :placeholder="replyTarget ? `回复 ${replyTarget.nickname}：` : '评论…'"
-                @keyup.enter="submitComment(moment)"
-              />
-              <button class="comment-send" :disabled="!commentText.trim()" @click="submitComment(moment)">
-                发送
-              </button>
+                :placeholder="replyTarget ? `回复 ${replyTarget.nickname}：` : '评论'"
+                @keydown.enter.exact.prevent="submitComment(moment)"
+              ></textarea>
+
+              <div class="comment-toolbar">
+                <button class="tool-btn" type="button" title="语音" @click="handleCommentVoice">
+                  <Icon name="mic" :size="'19px'" />
+                </button>
+                <button class="tool-btn" type="button" title="表情" @click.stop="toggleCommentEmoji">
+                  <Icon name="smile" :size="'19px'" />
+                </button>
+                <button class="tool-btn" type="button" title="图片" @click="handleCommentImage">
+                  <Icon name="image" :size="'19px'" />
+                </button>
+                <button
+                  class="comment-send"
+                  :class="{ 'is-active': !!commentText.trim() }"
+                  :disabled="!commentText.trim()"
+                  @click="submitComment(moment)"
+                >
+                  发送
+                </button>
+              </div>
+
+              <transition name="pop">
+                <div v-if="showCommentEmoji" class="comment-emoji-panel" @click.stop>
+                  <button
+                    v-for="emoji in emojiList"
+                    :key="emoji"
+                    class="emoji-item"
+                    type="button"
+                    @click="insertCommentEmoji(emoji)"
+                  >{{ emoji }}</button>
+                </div>
+              </transition>
             </div>
           </div>
         </article>
@@ -294,7 +324,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
+import { ref, computed, onMounted, onUnmounted, reactive, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import Icon from './Icon.vue'
 import { uploadFile } from '@/api/upload'
@@ -365,6 +395,8 @@ const activeMomentId = ref(null)
 const commentingMomentId = ref(null)
 const commentText = ref('')
 const replyTarget = ref(null)
+const showCommentEmoji = ref(false)
+const commentInputRef = ref(null)
 
 const preview = reactive({
   visible: false,
@@ -581,6 +613,29 @@ const startComment = (moment, target = null) => {
   commentingMomentId.value = moment.id
   replyTarget.value = target
   commentText.value = ''
+  showCommentEmoji.value = false
+  nextTick(() => {
+    const el = commentInputRef.value
+    const target = Array.isArray(el) ? el[0] : el
+    target?.focus?.()
+  })
+}
+
+const toggleCommentEmoji = () => {
+  showCommentEmoji.value = !showCommentEmoji.value
+}
+
+const insertCommentEmoji = (emoji) => {
+  if (commentText.value.length + emoji.length > 200) return
+  commentText.value += emoji
+}
+
+const handleCommentVoice = () => {
+  ElMessage.info('语音评论功能暂未开放')
+}
+
+const handleCommentImage = () => {
+  ElMessage.info('图片评论功能暂未开放')
 }
 
 const submitComment = async (moment) => {
@@ -598,6 +653,7 @@ const submitComment = async (moment) => {
       moment.commentCount = (moment.commentCount || 0) + 1
       commentText.value = ''
       replyTarget.value = null
+      showCommentEmoji.value = false
       commentingMomentId.value = null
     } else {
       ElMessage.error(response.message || '评论失败')
@@ -1067,46 +1123,108 @@ onUnmounted(() => {
   color: #ff3b30;
 }
 
-.comment-input-row {
-  display: flex;
-  gap: 8px;
+.comment-editor {
+  position: relative;
   margin-top: 8px;
+  padding: 10px 12px 8px;
+  border: 1px solid #c7daeb;
+  border-radius: 8px;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.comment-input {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #e5e5ea;
-  border-radius: 999px;
-  font-size: 13px;
-  outline: none;
-  font-family: inherit;
-  color: #1d1d1f;
-  transition: border-color 0.2s ease;
-}
-
-.comment-input:focus {
+.comment-editor:focus-within {
   border-color: #2997ff;
+  box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.08);
+}
+
+.comment-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  max-height: 140px;
+  padding: 0;
+  border: none;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1d1d1f;
+  font-family: inherit;
+  background: transparent;
+  outline: none;
+  resize: none;
+}
+
+.comment-textarea::placeholder {
+  color: #b0b0b5;
+}
+
+.comment-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tool-btn {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #5f6368;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tool-btn:hover {
+  background: #f2f2f5;
+  color: #1d1d1f;
 }
 
 .comment-send {
+  min-width: 58px;
+  height: 32px;
   padding: 0 16px;
+  margin-left: 6px;
   border: none;
-  border-radius: 999px;
+  border-radius: 6px;
+  background: #f0f0f2;
+  color: #b0b0b5;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: not-allowed;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.comment-send.is-active {
   background: #2997ff;
   color: #ffffff;
-  font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s ease;
 }
 
-.comment-send:hover:not(:disabled) {
-  background: #0066cc;
+.comment-send.is-active:hover {
+  background: #1986ec;
 }
 
-.comment-send:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.comment-emoji-panel {
+  position: absolute;
+  right: 8px;
+  bottom: 46px;
+  z-index: 20;
+  display: grid;
+  width: 288px;
+  max-height: 196px;
+  padding: 8px;
+  overflow-y: auto;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* 加载更多 */
@@ -1414,7 +1532,7 @@ onUnmounted(() => {
 }
 
 .visibility-item.active {
-  color: #07c160;
+  color: #2997ff;
 }
 
 /* 底部按钮 */
@@ -1430,7 +1548,7 @@ onUnmounted(() => {
   height: 44px;
   border: none;
   border-radius: 6px;
-  background: #07c160;
+  background: #2997ff;
   color: #ffffff;
   font-size: 16px;
   font-weight: 500;
