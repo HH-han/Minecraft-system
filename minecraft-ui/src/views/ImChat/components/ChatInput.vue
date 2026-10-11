@@ -256,14 +256,14 @@ const handleSend = () => {
   border-radius: 6px;
   font-size: 13.5px;
   color: #ffffff;
-  background: #07c160;
+  background: #2997ff;
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease;
 }
 
 .send-btn:hover:not(:disabled) {
-  background: #06ad56;
+  background: #2997ff;
 }
 
 .send-btn:disabled {

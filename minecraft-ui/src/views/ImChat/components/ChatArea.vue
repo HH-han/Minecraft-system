@@ -109,6 +109,8 @@ defineExpose({ messageListRef })
 <style scoped>
 .im-chat {
   flex: 1;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -135,6 +137,7 @@ defineExpose({ messageListRef })
 
 .chat-content {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

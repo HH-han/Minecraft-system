@@ -110,6 +110,7 @@
       </div>
       <div v-if="showPlusMenu" class="menu-mask" @click="closePlusMenu"></div>
       
+      <!-- ============ 通讯录：分组入口 ============ -->
       <div v-if="currentTab === 'contacts'" class="contacts-actions">
         <div class="contact-item" @click="onNewFriends">
           <div class="avatar-wrapper">
@@ -120,6 +121,8 @@
           <div class="contact-info">
             <h4 class="contact-name">新的朋友</h4>
           </div>
+          <span v-if="friendRequestCount > 0" class="entry-badge">{{ friendRequestCount > 99 ? '99+' : friendRequestCount }}</span>
+          <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
         </div>
         <div class="contact-item" @click="onGroups">
           <div class="avatar-wrapper">
@@ -130,6 +133,8 @@
           <div class="contact-info">
             <h4 class="contact-name">群聊</h4>
           </div>
+          <span v-if="groups.length" class="entry-count">{{ groups.length }}</span>
+          <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
         </div>
         <div class="contact-item" @click="onTags">
           <div class="avatar-wrapper">
@@ -140,6 +145,7 @@
           <div class="contact-info">
             <h4 class="contact-name">标签</h4>
           </div>
+          <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
         </div>
         <div class="contact-item" @click="onOfficials">
           <div class="avatar-wrapper">
@@ -148,203 +154,257 @@
             </div>
           </div>
           <div class="contact-info">
-            <h4 class="contact-name">公众号</h4>
+            <h4 class="contact-name">公众号、服务号</h4>
           </div>
+          <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
         </div>
-        <div class="section-divider"></div>
       </div>
       
-      <div class="contact-list">
-        <template v-if="currentTab === 'chat'">
-          <div 
-            v-for="contact in filteredContacts" 
-            :key="contact.id"
-            :class="['contact-item', { active: selectedContact?.id === contact.id }]"
-          >
+      <div class="list-wrap">
+        <div ref="contactListRef" class="contact-list" @scroll="onListScroll">
+          <template v-if="currentTab === 'chat'">
             <div 
-              class="contact-content"
-              @click="onSelectContact(contact)"
+              v-for="contact in filteredContacts" 
+              :key="contact.id"
+              :class="['contact-item', { active: selectedContact?.id === contact.id }]"
             >
-              <div class="avatar-wrapper">
-                <img 
-                  :src="contact.avatar || defaultAvatar" 
-                  :alt="contact.name"
-                  class="contact-avatar"
-                />
-                <span v-if="contact.isGroup" class="group-badge">
-                  <Icon name="users" :size="'10px'" />
-                </span>
-                <span v-if="contact.unreadCount > 0" class="unread-badge">{{ contact.unreadCount > 99 ? '99+' : contact.unreadCount }}</span>
-                <span v-if="!contact.isGroup" :class="['online-status', { online: contact.online }]"></span>
-              </div>
-              <div class="contact-main">
-                <div class="contact-row-top">
-                  <h4 class="contact-name">
-                    <span class="name-text">{{ contact.name }}</span>
-                    <span v-if="contact.isGroup" class="contact-tag">群聊</span>
-                  </h4>
-                  <span v-if="contact.time" class="contact-time">{{ contact.time }}</span>
+              <div 
+                class="contact-content"
+                @click="onSelectContact(contact)"
+              >
+                <div class="avatar-wrapper">
+                  <img 
+                    :src="contact.avatar || defaultAvatar" 
+                    :alt="contact.name"
+                    class="contact-avatar"
+                  />
+                  <span v-if="contact.isGroup" class="group-badge">
+                    <Icon name="users" :size="'10px'" />
+                  </span>
+                  <span v-if="contact.unreadCount > 0" class="unread-badge">{{ contact.unreadCount > 99 ? '99+' : contact.unreadCount }}</span>
+                  <span v-if="!contact.isGroup" :class="['online-status', { online: contact.online }]"></span>
                 </div>
-                <p class="contact-last-message">
-                  <span v-if="contact.isGroup && contact.memberCount" class="member-count">{{ contact.memberCount }}人</span>{{ contact.lastMessage }}
-                </p>
+                <div class="contact-main">
+                  <div class="contact-row-top">
+                    <h4 class="contact-name">
+                      <span class="name-text">{{ contact.name }}</span>
+                      <span v-if="contact.isGroup" class="contact-tag">群聊</span>
+                    </h4>
+                    <span v-if="contact.time" class="contact-time">{{ contact.time }}</span>
+                  </div>
+                  <p class="contact-last-message">
+                    <span v-if="contact.isGroup && contact.memberCount" class="member-count">{{ contact.memberCount }}人</span>{{ contact.lastMessage }}
+                  </p>
+                </div>
               </div>
+              <button 
+                class="detail-btn"
+                @click.stop="onOpenDetail(contact)"
+                title="详情"
+              >
+                <Icon name="info" :size="'14px'" />
+              </button>
             </div>
-            <button 
-              class="detail-btn"
-              @click.stop="onOpenDetail(contact)"
-              title="详情"
-            >
-              <Icon name="info" :size="'14px'" />
-            </button>
-          </div>
+            
+            <div v-if="filteredContacts.length === 0" class="empty-state">
+              <Icon name="message" :size="'48px'" />
+              <p>暂无联系人</p>
+            </div>
+          </template>
           
-          <div v-if="filteredContacts.length === 0" class="empty-state">
-            <Icon name="message" :size="'48px'" />
-            <p>暂无联系人</p>
-          </div>
-        </template>
-        
-        <template v-if="currentTab === 'contacts'">
-          <div 
-            v-for="contact in filteredFriends" 
-            :key="contact.id"
-            class="contact-item"
-          >
-            <div 
-              class="contact-content"
-              @click="onSelectFriend(contact)"
-            >
+          <!-- ============ 通讯录：联系人分组列表 ============ -->
+          <template v-if="currentTab === 'contacts'">
+            <div class="section-header" @click="contactsCollapsed = !contactsCollapsed">
+              <span :class="['section-chevron', { collapsed: contactsCollapsed }]">
+                <Icon name="chevron-right" :size="'14px'" />
+              </span>
+              <span class="section-title">联系人</span>
+              <span class="section-count">{{ friends.length }}</span>
+            </div>
+
+            <template v-if="!contactsCollapsed">
+              <div 
+                :class="['contact-item', 'star-entry', { active: showStarOnly }]" 
+                @click="onStarEntryToggle"
+              >
+                <div class="avatar-wrapper">
+                  <div class="icon-avatar star-avatar">
+                    <Icon name="star" :size="'18px'" />
+                  </div>
+                </div>
+                <div class="contact-info">
+                  <h4 class="contact-name">星标朋友</h4>
+                </div>
+                <span v-if="starredFriends.length" class="entry-count">{{ starredFriends.length }}</span>
+                <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
+              </div>
+
+              <div 
+                v-for="group in contactGroups" 
+                :key="group.letter" 
+                :ref="(el) => setGroupRef(group.letter, el)"
+                class="letter-group"
+              >
+                <div class="letter-header">{{ group.letter }}</div>
+                <div 
+                  v-for="friend in group.friends" 
+                  :key="friend.id"
+                  class="contact-item"
+                  @click="onOpenDetail(friend)"
+                >
+                  <div class="avatar-wrapper">
+                    <img 
+                      :src="friend.avatar || defaultAvatar" 
+                      :alt="friend.name"
+                      class="contact-avatar"
+                    />
+                  </div>
+                  <div class="contact-info">
+                    <h4 class="contact-name">
+                      <span class="name-text">{{ friend.name }}</span>
+                    </h4>
+                  </div>
+                  <button 
+                    :class="['star-btn', { active: isStarred(friend.id) }]"
+                    :title="isStarred(friend.id) ? '取消星标朋友' : '设为星标朋友'"
+                    @click.stop="toggleStar(friend)"
+                  >
+                    <Icon name="star" :size="'16px'" />
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="contactGroups.length === 0" class="empty-state">
+                <Icon :name="showStarOnly ? 'star' : 'user'" :size="'48px'" />
+                <p>{{ showStarOnly ? '暂无星标朋友' : '暂无好友' }}</p>
+              </div>
+            </template>
+          </template>
+          
+          <template v-if="currentTab === 'discover'">
+            <div class="contact-item" @click="onMoments">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="camera" :size="'20px'" />
+                </div>
+              </div>
+              <div class="contact-info">
+                <h4 class="contact-name">朋友圈</h4>
+              </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
+            </div>
+            <div class="contact-item" @click="onScan">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="scan" :size="'20px'" />
+                </div>
+              </div>
+              <div class="contact-info">
+                <h4 class="contact-name">扫一扫</h4>
+              </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
+            </div>
+            <div class="contact-item" @click="onNearby">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="map-pin" :size="'20px'" />
+                </div>
+              </div>
+              <div class="contact-info">
+                <h4 class="contact-name">附近的人</h4>
+              </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
+            </div>
+            <div class="contact-item" @click="onShake">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="refresh-cw" :size="'20px'" />
+                </div>
+              </div>
+              <div class="contact-info">
+                <h4 class="contact-name">摇一摇</h4>
+              </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
+            </div>
+          </template>
+          
+          <template v-if="currentTab === 'me'">
+            <div class="contact-item" @click="onProfile">
               <div class="avatar-wrapper">
                 <img 
-                  :src="contact.avatar || defaultAvatar" 
-                  :alt="contact.name"
+                  :src="currentUserAvatar || defaultAvatar" 
+                  :alt="currentUserName"
                   class="contact-avatar"
                 />
               </div>
               <div class="contact-info">
-                <h4 class="contact-name">{{ contact.name }}</h4>
+                <h4 class="contact-name">{{ currentUserName }}</h4>
+                <p class="contact-last-message">个人信息</p>
               </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
             </div>
-            <button 
-              class="detail-btn"
-              @click.stop="onOpenDetail(contact)"
-              title="详情"
-            >
-              <Icon name="info" :size="'14px'" />
-            </button>
-          </div>
-          
-          <div v-if="filteredFriends.length === 0" class="empty-state">
-            <Icon name="user" :size="'48px'" />
-            <p>暂无好友</p>
-          </div>
-        </template>
-        
-        <template v-if="currentTab === 'discover'">
-          <div class="contact-item" @click="onMoments">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="camera" :size="'20px'" />
+            <div class="section-divider"></div>
+            <div class="contact-item" @click="onServices">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="credit-card" :size="'20px'" />
+                </div>
               </div>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-name">朋友圈</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-          <div class="contact-item" @click="onScan">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="scan" :size="'20px'" />
+              <div class="contact-info">
+                <h4 class="contact-name">服务</h4>
               </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
             </div>
-            <div class="contact-info">
-              <h4 class="contact-name">扫一扫</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-          <div class="contact-item" @click="onNearby">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="map-pin" :size="'20px'" />
+            <div class="contact-item" @click="onFavorites">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="star" :size="'20px'" />
+                </div>
               </div>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-name">附近的人</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-          <div class="contact-item" @click="onShake">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="refresh-cw" :size="'20px'" />
+              <div class="contact-info">
+                <h4 class="contact-name">收藏</h4>
               </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
             </div>
-            <div class="contact-info">
-              <h4 class="contact-name">摇一摇</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-        </template>
-        
-        <template v-if="currentTab === 'me'">
-          <div class="contact-item" @click="onProfile">
-            <div class="avatar-wrapper">
-              <img 
-                :src="currentUserAvatar || defaultAvatar" 
-                :alt="currentUserName"
-                class="contact-avatar"
-              />
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-name">{{ currentUserName }}</h4>
-              <p class="contact-last-message">个人信息</p>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-          <div class="section-divider"></div>
-          <div class="contact-item" @click="onServices">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="credit-card" :size="'20px'" />
+            <div class="contact-item" @click="onSettings">
+              <div class="avatar-wrapper">
+                <div class="icon-avatar">
+                  <Icon name="settings" :size="'20px'" />
+                </div>
               </div>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-name">服务</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-          <div class="contact-item" @click="onFavorites">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="star" :size="'20px'" />
+              <div class="contact-info">
+                <h4 class="contact-name">设置</h4>
               </div>
+              <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
             </div>
-            <div class="contact-info">
-              <h4 class="contact-name">收藏</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-          <div class="contact-item" @click="onSettings">
-            <div class="avatar-wrapper">
-              <div class="icon-avatar">
-                <Icon name="settings" :size="'20px'" />
-              </div>
-            </div>
-            <div class="contact-info">
-              <h4 class="contact-name">设置</h4>
-            </div>
-            <Icon name="chevron-right" :size="'16px'" class="arrow-icon" />
-          </div>
-        </template>
+          </template>
+        </div>
+
+        <!-- A-Z 字母索引条 -->
+        <div 
+          v-if="currentTab === 'contacts' && !contactsCollapsed && indexLetters.length" 
+          class="index-bar"
+        >
+          <span 
+            v-for="letter in indexLetters" 
+            :key="letter"
+            :class="['index-letter', { active: activeLetter === letter }]"
+            :data-letter="letter"
+            @pointerdown="onIndexDown($event, letter)"
+          >{{ letter }}</span>
+        </div>
+
+        <!-- 定位气泡 -->
+        <transition name="bubble">
+          <div v-if="bubbleLetter" class="index-bubble">{{ bubbleLetter }}</div>
+        </transition>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import Icon from './Icon.vue'
 
 const props = defineProps({
@@ -397,7 +457,6 @@ const emit = defineEmits([
   'services',
   'favorites',
   'settings',
-  'select-friend',
   'open-detail'
 ])
 
@@ -447,13 +506,206 @@ const filteredContacts = computed(() => {
   return unifiedContacts.value.filter(c => c.name.includes(searchKeyword.value))
 })
 
-const filteredFriends = computed(() => {
-  if (!searchKeyword.value) return props.friends
-  return props.friends.filter(f => f.name.includes(searchKeyword.value))
+/* ============ 通讯录：字母排序与分组 ============ */
+// 拼音首字母：GB2312 一级汉字按拼音排序，通过 GBK 编码区间定位首字母
+const PINYIN_BOUNDARY = '啊芭擦搭蛾发噶哈击喀垃妈拿哦啪期然撒塌挖昔压匝'
+const PINYIN_LETTERS = 'ABCDEFGHJKLMNOPQRSTWXYZ'
+const LETTER_ORDER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').concat('#')
+const nameCollator = new Intl.Collator('zh-Hans-CN', { sensitivity: 'base' })
+const initialCache = new Map()
+
+// Unicode 汉字 → GBK 编码映射（GB2312 一级汉字区，按拼音排序），首次使用时构建
+let gbkCodeMap = null
+let boundaryCodes = null
+const initPinyinTable = () => {
+  if (gbkCodeMap) return true
+  if (typeof TextDecoder === 'undefined') return false
+  let decoder
+  try {
+    decoder = new TextDecoder('gbk')
+  } catch (e) {
+    return false
+  }
+  const map = new Map()
+  const bytes = new Uint8Array(2)
+  for (let hi = 0xB0; hi <= 0xD7; hi++) {
+    for (let lo = 0xA1; lo <= 0xFE; lo++) {
+      const code = (hi << 8) | lo
+      if (code > 0xD7F9) break
+      bytes[0] = hi
+      bytes[1] = lo
+      const ch = decoder.decode(bytes)
+      if (ch && ch !== '\uFFFD' && !map.has(ch)) map.set(ch, code)
+    }
+  }
+  if (map.size === 0) return false
+  gbkCodeMap = map
+  boundaryCodes = PINYIN_BOUNDARY.split('').map(ch => map.get(ch))
+  return true
+}
+
+// 取名称的拼音首字母：中文按拼音，英文取大写，其余归入 #
+const getInitial = (name) => {
+  const ch = String(name || '').trim().charAt(0)
+  if (!ch) return '#'
+  if (/[a-zA-Z]/.test(ch)) return ch.toUpperCase()
+  if (initialCache.has(ch)) return initialCache.get(ch)
+  let letter = '#'
+  if (initPinyinTable()) {
+    const code = gbkCodeMap.get(ch)
+    if (code !== undefined) {
+      for (let i = 0; i < boundaryCodes.length; i++) {
+        if (boundaryCodes[i] !== undefined && code >= boundaryCodes[i]) {
+          letter = PINYIN_LETTERS[i]
+        } else {
+          break
+        }
+      }
+    }
+  }
+  initialCache.set(ch, letter)
+  return letter
+}
+
+// 星标朋友（本地持久化）
+const STARRED_KEY = 'im-starred-friends'
+const starredIds = ref([])
+try {
+  starredIds.value = JSON.parse(localStorage.getItem(STARRED_KEY) || '[]')
+} catch (e) {
+  starredIds.value = []
+}
+const isStarred = (id) => starredIds.value.includes(id)
+const toggleStar = (friend) => {
+  const index = starredIds.value.indexOf(friend.id)
+  if (index === -1) {
+    starredIds.value.push(friend.id)
+  } else {
+    starredIds.value.splice(index, 1)
+  }
+  try {
+    localStorage.setItem(STARRED_KEY, JSON.stringify(starredIds.value))
+  } catch (e) {
+    // 忽略存储异常（隐私模式等）
+  }
+}
+const starredFriends = computed(() => props.friends.filter(f => isStarred(f.id)))
+
+const contactsCollapsed = ref(false)
+const showStarOnly = ref(false)
+
+const contactSource = computed(() => {
+  let list = showStarOnly.value ? starredFriends.value : props.friends
+  const keyword = searchKeyword.value.trim()
+  if (keyword) {
+    list = list.filter(f => (f.name || '').includes(keyword))
+  }
+  return list
 })
+
+const contactGroups = computed(() => {
+  const map = new Map()
+  for (const friend of contactSource.value) {
+    const key = getInitial(friend.name)
+    if (!map.has(key)) map.set(key, [])
+    map.get(key).push(friend)
+  }
+  return LETTER_ORDER
+    .filter(letter => map.has(letter))
+    .map(letter => ({
+      letter,
+      friends: map.get(letter).slice().sort((a, b) => nameCollator.compare(a.name || '', b.name || ''))
+    }))
+})
+
+const indexLetters = computed(() => contactGroups.value.map(g => g.letter))
+
+/* ============ 通讯录：字母索引定位 ============ */
+const contactListRef = ref(null)
+const activeLetter = ref('')
+const bubbleLetter = ref('')
+const groupRefs = {}
+let bubbleTimer = null
+let dragging = false
+
+const setGroupRef = (letter, el) => {
+  if (el) {
+    groupRefs[letter] = el
+  } else {
+    delete groupRefs[letter]
+  }
+}
+
+const showBubble = (letter) => {
+  bubbleLetter.value = letter
+  if (bubbleTimer) clearTimeout(bubbleTimer)
+  bubbleTimer = setTimeout(() => {
+    bubbleLetter.value = ''
+  }, 500)
+}
+
+const scrollToLetter = (letter) => {
+  const container = contactListRef.value
+  const el = groupRefs[letter]
+  if (!container || !el) return
+  container.scrollTop = el.offsetTop
+  activeLetter.value = letter
+}
+
+const onListScroll = () => {
+  const container = contactListRef.value
+  if (!container) return
+  const threshold = container.scrollTop + 4
+  let current = ''
+  for (const group of contactGroups.value) {
+    const el = groupRefs[group.letter]
+    if (el && el.offsetTop <= threshold) {
+      current = group.letter
+    } else {
+      break
+    }
+  }
+  if (current) activeLetter.value = current
+}
+
+const onIndexMove = (event) => {
+  if (!dragging) return
+  const el = document.elementFromPoint(event.clientX, event.clientY)
+  const letter = el && el.dataset ? el.dataset.letter : ''
+  if (letter) {
+    showBubble(letter)
+    scrollToLetter(letter)
+  }
+}
+
+const onIndexUp = () => {
+  dragging = false
+  window.removeEventListener('pointermove', onIndexMove)
+  window.removeEventListener('pointerup', onIndexUp)
+}
+
+const onIndexDown = (event, letter) => {
+  event.preventDefault()
+  dragging = true
+  showBubble(letter)
+  scrollToLetter(letter)
+  window.addEventListener('pointermove', onIndexMove)
+  window.addEventListener('pointerup', onIndexUp)
+}
+
+const onStarEntryToggle = () => {
+  showStarOnly.value = !showStarOnly.value
+  activeLetter.value = ''
+  if (contactListRef.value) {
+    contactListRef.value.scrollTop = 0
+  }
+}
 
 const onNavChange = (tab) => {
   currentTab.value = tab
+  if (tab !== 'contacts') {
+    showStarOnly.value = false
+  }
   emit('nav-change', tab)
 }
 
@@ -498,10 +750,6 @@ const onSearch = () => {
 
 const onSelectContact = (contact) => {
   emit('select-contact', contact)
-}
-
-const onSelectFriend = (friend) => {
-  emit('select-friend', friend)
 }
 
 const onOpenDetail = (contact) => {
@@ -559,6 +807,11 @@ const onSettings = () => {
 const onProfile = () => {
   emit('user-profile')
 }
+
+onUnmounted(() => {
+  onIndexUp()
+  if (bubbleTimer) clearTimeout(bubbleTimer)
+})
 </script>
 
 <style scoped>
@@ -575,6 +828,7 @@ const onProfile = () => {
 .sidebar-left {
   width: 64px;
   height: 100%;
+  box-sizing: border-box; /* 无全局 border-box 重置，避免纵向 padding 撑高竖栏 */
   background: #f5f5f7;
   display: flex;
   flex-direction: column;
@@ -843,14 +1097,22 @@ const onProfile = () => {
 /* ============ 列表 ============ */
 .contacts-actions {
   background: #ffffff;
-  padding: 2px 0;
+  padding: 2px 0 6px;
+}
+
+.list-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
 }
 
 .contact-list {
   flex: 1;
+  min-width: 0;
   overflow-y: auto;
   background: #ffffff;
-  scroll-behavior: smooth;
+  position: relative;
 }
 
 .contact-list::-webkit-scrollbar {
@@ -1016,6 +1278,208 @@ const onProfile = () => {
 .arrow-icon {
   color: #c7c7cc;
   flex-shrink: 0;
+}
+
+/* ---- 通讯录分组入口计数 ---- */
+.entry-count {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: #b2b2b6;
+  margin-left: 8px;
+}
+
+.entry-badge {
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 8px;
+  background: #ff3b30;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* ---- 联系人分组标题（可折叠） ---- */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 12px 8px;
+  cursor: pointer;
+  user-select: none;
+  background: #ffffff;
+  transition: background 0.15s ease;
+}
+
+.section-header:hover {
+  background: #f7f7f9;
+}
+
+.section-chevron {
+  display: flex;
+  align-items: center;
+  color: #b2b2b6;
+  transform: rotate(90deg);
+  transition: transform 0.18s ease;
+}
+
+.section-chevron.collapsed {
+  transform: rotate(0deg);
+}
+
+.section-title {
+  flex: 1;
+  font-size: 12.5px;
+  color: #8a8a8f;
+  letter-spacing: 0.3px;
+}
+
+.section-count {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: #b2b2b6;
+}
+
+/* ---- 星标朋友入口 ---- */
+.star-entry .star-avatar {
+  background: #fff6e6;
+  color: #f5a623;
+}
+
+.star-entry.active {
+  background: #e8f2ff;
+}
+
+.star-entry.active:hover {
+  background: #dfecff;
+}
+
+/* ---- 字母分组 ---- */
+.letter-group {
+  position: relative;
+}
+
+.letter-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8a8a8f;
+  background: #f5f5f7;
+  border-top: 1px solid #ececf0;
+  border-bottom: 1px solid #ececf0;
+}
+
+/* ---- 星标按钮 ---- */
+.star-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: #c4c4c8;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 2px;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.contact-item:hover .star-btn {
+  opacity: 1;
+}
+
+.star-btn:hover {
+  background: #e4e4e8;
+  color: #6e6e73;
+}
+
+.star-btn.active {
+  opacity: 1;
+  color: #f5a623;
+}
+
+.star-btn.active :deep(svg) {
+  fill: currentColor;
+}
+
+/* ---- A-Z 字母索引条 ---- */
+.index-bar {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 5px 3px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  touch-action: none;
+  user-select: none;
+}
+
+.index-letter {
+  width: 16px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6e6e73;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.index-letter.active {
+  background: #2997ff;
+  color: #ffffff;
+}
+
+/* ---- 定位气泡 ---- */
+.index-bubble {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.bubble-enter-active,
+.bubble-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.bubble-enter-from,
+.bubble-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
 }
 
 .unread-badge {

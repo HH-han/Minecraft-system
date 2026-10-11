@@ -262,6 +262,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   min-height: 0;
   overflow-y: auto;
   padding: 16px 20px;
+  box-sizing: border-box; /* 无全局 border-box 重置，避免 padding 撑高滚动容器 */
   -ms-overflow-style: none;
   scrollbar-width: none;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

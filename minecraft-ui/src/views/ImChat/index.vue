@@ -26,7 +26,6 @@
       @services="handleServices"
       @favorites="handleFavorites"
       @settings="handleSettings"
-      @select-friend="handleSelectFriend"
       @open-detail="handleOpenDetail"
     />
     
@@ -101,6 +100,14 @@
       @close="showCallPanel = false"
       @call-ended="handleCallEnded"
     />
+
+    <Moments
+      v-if="showMoments"
+      :current-user-id="currentUserId"
+      :current-user-name="currentUserName"
+      :current-user-avatar="currentUserAvatar"
+      @close="showMoments = false"
+    />
   </div>
 </template>
 
@@ -122,6 +129,7 @@ import InviteFriendModal from './components/InviteFriendModal.vue'
 import GroupEditModal from './components/GroupEditModal.vue'
 import FriendRemarkModal from './components/FriendRemarkModal.vue'
 import CallPanel from './components/CallPanel.vue'
+import Moments from './components/Moments.vue'
 import { initiateVoiceCall, initiateVideoCall } from '@/api/call'
 
 const authStore = useAuthStore()
@@ -148,6 +156,7 @@ const showGroupEditModal = ref(false)
 const editGroup = ref(null)
 const showFriendRemarkModal = ref(false)
 const editFriend = ref(null)
+const showMoments = ref(false)
 
 const chatAreaRef = ref(null)
 
@@ -908,8 +917,7 @@ const handleOfficials = () => {
 }
 
 const handleMoments = () => {
-  console.log('[ImChat] 朋友圈')
-  // 打开朋友圈
+  showMoments.value = true
 }
 
 const handleScan = () => {
@@ -940,11 +948,6 @@ const handleFavorites = () => {
 const handleSettings = () => {
   console.log('[ImChat] 设置')
   // 打开设置
-}
-
-const handleSelectFriend = (friend) => {
-  console.log('[ImChat] 选择好友:', friend)
-  // 可以选择好友后跳转到聊天或查看详情
 }
 
 const handleOpenDetail = (contact) => {
@@ -1175,6 +1178,7 @@ watch(selectedContact, () => {
   display: flex;
   height: 100vh;
   height: 100dvh; /* 移动端浏览器工具栏适配 */
+  overflow: hidden; /* 内部各自滚动，禁止整页滚动 */
   background: #f5f5f7;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #1d1d1f;
