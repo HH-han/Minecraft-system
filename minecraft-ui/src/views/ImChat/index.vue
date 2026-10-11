@@ -1255,8 +1255,6 @@ watch(selectedContact, () => {
 .im-container :deep(textarea) {
   font-family: inherit;
   color: #1d1d1f;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -1264,7 +1262,6 @@ watch(selectedContact, () => {
 .im-container :deep(textarea:focus) {
   outline: none;
   border-color: #2997ff;
-  box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.15);
 }
 
 .im-container :deep(.text-primary) {

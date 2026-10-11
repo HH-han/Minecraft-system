@@ -177,9 +177,99 @@
     <transition name="fade">
       <div v-if="showComposer" class="publish-overlay" @click.self="closeComposer">
         <div class="publish-window">
-          <header class="publish-header">
-            <button class="publish-cancel" @click="closeComposer">取消</button>
-            <h3 class="publish-title">发表</h3>
+          <!-- 想法输入 + 表情 -->
+          <div class="publish-compose">
+            <textarea
+              v-model="composerText"
+              class="publish-input"
+              rows="5"
+              maxlength="500"
+              placeholder="这一刻的想法…"
+            ></textarea>
+
+            <div class="publish-emoji-wrap">
+              <button class="emoji-btn" type="button" title="表情" @click.stop="toggleEmoji">
+                <Icon name="smile" :size="'24px'" />
+              </button>
+              <transition name="pop">
+                <div v-if="showEmoji" class="emoji-panel" @click.stop>
+                  <button
+                    v-for="emoji in emojiList"
+                    :key="emoji"
+                    class="emoji-item"
+                    type="button"
+                    @click="insertEmoji(emoji)"
+                  >{{ emoji }}</button>
+                </div>
+              </transition>
+            </div>
+          </div>
+
+          <!-- 图片九宫格 -->
+          <div class="publish-grid">
+            <div v-for="(img, index) in composerImages" :key="index" class="publish-thumb">
+              <img :src="img" alt="待发布图片" />
+              <button class="thumb-remove" title="移除" @click="removeComposerImage(index)">
+                <Icon name="close" :size="'12px'" />
+              </button>
+            </div>
+            <label v-if="composerImages.length < 9" class="publish-add">
+              <Icon name="plus" :size="'26px'" />
+              <input
+                ref="imageInputRef"
+                type="file"
+                accept="image/*"
+                multiple
+                @change="handleComposerImages"
+              />
+            </label>
+          </div>
+
+          <!-- 选项行 -->
+          <div class="publish-options">
+            <div class="option-row">
+              <Icon name="map-pin" :size="'18px'" class="option-icon" />
+              <span class="option-label">所在位置</span>
+              <input
+                v-model="composerLocation"
+                class="option-input"
+                type="text"
+                maxlength="50"
+                placeholder="不显示"
+              />
+            </div>
+
+            <button class="option-row option-clickable" type="button" @click="handleRemind">
+              <Icon name="at-sign" :size="'18px'" class="option-icon" />
+              <span class="option-label">提醒谁看</span>
+              <Icon name="chevron-right" :size="'16px'" class="option-arrow" />
+            </button>
+
+            <div class="option-row option-clickable" @click.stop="toggleVisibilityMenu">
+              <Icon name="user" :size="'18px'" class="option-icon" />
+              <span class="option-label">谁可以看</span>
+              <span class="option-value">{{ visibilityLabel }}</span>
+              <Icon name="chevron-right" :size="'16px'" class="option-arrow" />
+              <transition name="pop">
+                <div v-if="showVisibility" class="visibility-menu">
+                  <button
+                    v-for="opt in visibilityOptions"
+                    :key="opt.value"
+                    class="visibility-item"
+                    :class="{ active: visibility === opt.value }"
+                    type="button"
+                    @click.stop="selectVisibility(opt.value)"
+                  >
+                    <span>{{ opt.label }}</span>
+                    <Icon v-if="visibility === opt.value" name="check" :size="'15px'" />
+                  </button>
+                </div>
+              </transition>
+            </div>
+          </div>
+
+          <!-- 底部按钮 -->
+          <div class="publish-actions">
             <button
               class="publish-submit"
               :disabled="publishing || (!composerText.trim() && composerImages.length === 0)"
@@ -187,47 +277,7 @@
             >
               {{ publishing ? '发布中…' : '发表' }}
             </button>
-          </header>
-
-          <div class="publish-body">
-            <textarea
-              v-model="composerText"
-              class="publish-input"
-              rows="4"
-              maxlength="500"
-              placeholder="这一刻的想法…"
-            ></textarea>
-
-            <div class="publish-grid">
-              <div v-for="(img, index) in composerImages" :key="index" class="publish-thumb">
-                <img :src="img" alt="待发布图片" />
-                <button class="thumb-remove" title="移除" @click="removeComposerImage(index)">
-                  <Icon name="close" :size="'12px'" />
-                </button>
-              </div>
-              <label class="publish-add" :class="{ disabled: composerImages.length >= 9 }">
-                <Icon name="plus" :size="'22px'" />
-                <span v-if="composerImages.length">{{ composerImages.length }}/9</span>
-                <input
-                  ref="imageInputRef"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  :disabled="composerImages.length >= 9"
-                  @change="handleComposerImages"
-                />
-              </label>
-            </div>
-
-            <div class="publish-location">
-              <Icon name="map-pin" :size="'15px'" />
-              <input
-                v-model="composerLocation"
-                type="text"
-                maxlength="50"
-                placeholder="所在位置（选填）"
-              />
-            </div>
+            <button class="publish-cancel" @click="closeComposer">取消</button>
           </div>
         </div>
       </div>
@@ -291,6 +341,22 @@ const composerText = ref('')
 const composerLocation = ref('')
 const composerImages = ref([])
 const imageInputRef = ref(null)
+const showEmoji = ref(false)
+const showVisibility = ref(false)
+const visibility = ref(0)
+
+const emojiList = [
+  '😀', '😄', '😁', '😆', '😅', '🤣', '😊', '😍',
+  '😘', '😜', '🤔', '😎', '😭', '😡', '🥰', '😴',
+  '👍', '👏', '🙏', '🎉', '❤️', '🔥', '🌹', '⭐',
+  '💪', '🐶', '🐱', '🌸', '🌈', '✨', '🍰', '☕'
+]
+
+const visibilityOptions = [
+  { label: '公开', value: 0 },
+  { label: '仅好友', value: 1 },
+  { label: '私密', value: 2 }
+]
 
 const coverUrl = ref('')
 const coverInputRef = ref(null)
@@ -307,6 +373,10 @@ const preview = reactive({
 })
 
 const displayName = computed(() => props.currentUserName || '用户')
+
+const visibilityLabel = computed(
+  () => visibilityOptions.find(opt => opt.value === visibility.value)?.label || '公开'
+)
 
 const coverStyle = computed(() => {
   if (coverUrl.value) {
@@ -386,11 +456,38 @@ const handleCoverSelect = async (event) => {
 }
 
 const openComposer = () => {
+  showEmoji.value = false
+  showVisibility.value = false
   showComposer.value = true
 }
 
 const closeComposer = () => {
+  showEmoji.value = false
+  showVisibility.value = false
   showComposer.value = false
+}
+
+const toggleEmoji = () => {
+  showEmoji.value = !showEmoji.value
+  if (showEmoji.value) showVisibility.value = false
+}
+
+const insertEmoji = (emoji) => {
+  composerText.value += emoji
+}
+
+const toggleVisibilityMenu = () => {
+  showVisibility.value = !showVisibility.value
+  if (showVisibility.value) showEmoji.value = false
+}
+
+const selectVisibility = (value) => {
+  visibility.value = value
+  showVisibility.value = false
+}
+
+const handleRemind = () => {
+  ElMessage.info('“提醒谁看”功能暂未开放')
 }
 
 const handleComposerImages = async (event) => {
@@ -424,6 +521,9 @@ const resetComposer = () => {
   composerText.value = ''
   composerLocation.value = ''
   composerImages.value = []
+  visibility.value = 0
+  showEmoji.value = false
+  showVisibility.value = false
 }
 
 const handlePublish = async () => {
@@ -437,7 +537,7 @@ const handlePublish = async () => {
       content,
       images: [...composerImages.value],
       location: composerLocation.value.trim() || null,
-      visibility: 0
+      visibility: visibility.value
     })
     if (response.code === 200) {
       moments.value.unshift(response.data)
@@ -576,6 +676,8 @@ const close = () => {
 
 const handleGlobalClick = () => {
   activeMomentId.value = null
+  showEmoji.value = false
+  showVisibility.value = false
 }
 
 onMounted(() => {
@@ -1046,71 +1148,30 @@ onUnmounted(() => {
 }
 
 .publish-window {
-  width: 520px;
+  width: 500px;
   max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 60px);
   background: #ffffff;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
-}
-
-.publish-header {
+  border-radius: 12px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1px solid #f0f0f2;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.publish-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.publish-cancel {
-  border: none;
-  background: transparent;
-  color: #6e6e73;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.publish-cancel:hover {
-  color: #1d1d1f;
-}
-
-.publish-submit {
-  padding: 7px 20px;
-  border: none;
-  border-radius: 999px;
-  background: #2997ff;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.publish-submit:hover:not(:disabled) {
-  background: #0066cc;
-}
-
-.publish-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.publish-body {
-  padding: 16px 18px 20px;
+/* 想法输入 */
+.publish-compose {
+  padding: 22px 24px 10px;
 }
 
 .publish-input {
   width: 100%;
+  min-height: 110px;
+  border-radius: 12px;
   border: none;
   resize: none;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
+  border: none;
   color: #1d1d1f;
   outline: none;
   background: transparent;
@@ -1119,14 +1180,70 @@ onUnmounted(() => {
 }
 
 .publish-input::placeholder {
-  color: #a1a1a6;
+  color: #b2b2b8;
 }
 
+/* 表情 */
+.publish-emoji-wrap {
+  position: relative;
+  display: inline-flex;
+  margin-top: 6px;
+}
+
+.emoji-btn {
+  border: none;
+  background: transparent;
+  color: #b2b2b8;
+  padding: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.emoji-btn:hover {
+  color: #6e6e73;
+}
+
+.emoji-panel {
+  position: absolute;
+  left: 0;
+  top: 36px;
+  width: 300px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #ececee;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  z-index: 3;
+}
+
+.emoji-item {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.emoji-item:hover {
+  background: #f2f2f5;
+}
+
+/* 图片九宫格 */
 .publish-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-top: 14px;
+  padding: 12px 24px 4px;
 }
 
 .publish-thumb {
@@ -1134,6 +1251,7 @@ onUnmounted(() => {
   aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
+  background: #f5f5f7;
 }
 
 .publish-thumb img {
@@ -1144,8 +1262,8 @@ onUnmounted(() => {
 
 .thumb-remove {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 5px;
+  right: 5px;
   width: 20px;
   height: 20px;
   border: none;
@@ -1160,56 +1278,189 @@ onUnmounted(() => {
 
 .publish-add {
   aspect-ratio: 1;
-  border: 1px dashed #d2d2d6;
+  background: #f2f2f5;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  color: #a1a1a6;
-  font-size: 12px;
+  color: #b0b0b6;
   cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .publish-add:hover {
-  border-color: #2997ff;
-  color: #2997ff;
-}
-
-.publish-add.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background: #eaeaee;
+  color: #6e6e73;
 }
 
 .publish-add input {
   display: none;
 }
 
-.publish-location {
+/* 选项行 */
+.publish-options {
+  margin: 18px 24px 4px;
+  border: 1px solid #ececee;
+  border-radius: 10px;
+}
+
+.option-row {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding: 9px 12px;
-  border: 1px solid #e5e5ea;
-  border-radius: 10px;
-  color: #a1a1a6;
-  transition: border-color 0.2s ease;
+  gap: 12px;
+  width: 100%;
+  padding: 0 16px;
+  height: 52px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: #1d1d1f;
+  font-family: inherit;
+  text-align: left;
+  box-sizing: border-box;
 }
 
-.publish-location:focus-within {
-  border-color: #2997ff;
+.option-row + .option-row {
+  border-top: 1px solid #f0f0f2;
 }
 
-.publish-location input {
+.option-clickable {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.option-clickable:hover {
+  background: #fafafa;
+}
+
+.option-row:first-child {
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+}
+
+.option-row:last-child {
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+}
+
+.option-icon {
+  color: #1d1d1f;
+  flex-shrink: 0;
+}
+
+.option-label {
   flex: 1;
+  min-width: 0;
+}
+
+.option-value {
+  color: #8a8a90;
+  font-size: 14px;
+}
+
+.option-arrow {
+  color: #c4c4ca;
+  flex-shrink: 0;
+}
+
+.option-input {
+  flex: 1;
+  min-width: 0;
   border: none;
   outline: none;
+  background: transparent;
+  text-align: right;
   font-size: 14px;
   color: #1d1d1f;
   font-family: inherit;
+}
+
+.option-input::placeholder {
+  color: #b2b2b8;
+}
+
+/* 可见范围菜单 */
+.visibility-menu {
+  position: absolute;
+  right: 12px;
+  top: 46px;
+  width: 132px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #ececee;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  z-index: 3;
+}
+
+.visibility-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  font-size: 14px;
+  color: #1d1d1f;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.visibility-item:hover {
+  background: #f2f2f5;
+}
+
+.visibility-item.active {
+  color: #07c160;
+}
+
+/* 底部按钮 */
+.publish-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  padding: 20px 24px 24px;
+}
+
+.publish-submit {
+  width: 140px;
+  height: 44px;
+  border: none;
+  border-radius: 6px;
+  background: #07c160;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.publish-submit:hover:not(:disabled) {
+  background: #06ad56;
+}
+
+.publish-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.publish-cancel {
+  width: 140px;
+  height: 44px;
+  border: none;
+  border-radius: 6px;
+  background: #f2f2f5;
+  color: #1d1d1f;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.publish-cancel:hover {
+  background: #e8e8ec;
 }
 
 /* 图片预览 */

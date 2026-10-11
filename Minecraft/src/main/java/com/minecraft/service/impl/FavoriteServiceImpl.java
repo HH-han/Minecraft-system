@@ -208,7 +208,8 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
         List<Favorite> list = lambdaQuery()
                 .eq(Favorite::getUserId, userId)
                 .eq(Favorite::getStatus, STATUS_NORMAL)
-                .select(Favorite::getTags)
+                // 必须带上非空主键：仅 select tags 时，tags 为 NULL 的行会被 MyBatis 视为空行而返回 null 元素
+                .select(Favorite::getId, Favorite::getTags)
                 .list();
         LinkedHashSet<String> set = new LinkedHashSet<>();
         for (Favorite favorite : list) {
