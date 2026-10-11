@@ -134,7 +134,7 @@ function openCreate() {
   Object.assign(form, emptyForm());
   showDialog.value = true;
 }
-function openEdit(row: EmojiRow) {
+function openEdit(row: any) {
   isEditing.value = true;
   Object.assign(form, {
     id: row.id,
@@ -185,7 +185,7 @@ async function handleSubmit() {
   }
 }
 
-async function handleDelete(row: EmojiRow) {
+async function handleDelete(row: any) {
   try {
     await deleteEmoji(row.id);
     message.success($t('im.emoji.delete_success'));

@@ -1,231 +1,229 @@
 {
-  "im": {
-    "title": "Messaging",
-    "menu": {
-      "friend": "Friends",
-      "group": "Chat Groups",
-      "message": "Messages",
-      "call": "Call Records",
-      "emoji": "Emoji"
+  "title": "Messaging",
+  "menu": {
+    "friend": "Friends",
+    "group": "Chat Groups",
+    "message": "Messages",
+    "call": "Call Records",
+    "emoji": "Emoji"
+  },
+  "friend": {
+    "title": "Friend Relations",
+    "description": "Manage user friend relations and requests: approve, reject or remove",
+    "search_placeholder": "User ID / Remark",
+    "search": "Search",
+    "reset": "Reset",
+    "total": "Total {total}",
+    "empty": "No friend data",
+    "filter": {
+      "status": "Status"
     },
-    "friend": {
-      "title": "Friend Relations",
-      "description": "Manage user friend relations and requests: approve, reject or remove",
-      "search_placeholder": "User ID / Remark",
-      "search": "Search",
-      "reset": "Reset",
-      "total": "Total {total}",
-      "empty": "No friend data",
-      "filter": {
-        "status": "Status"
-      },
-      "status": {
-        "pending": "Pending",
-        "accepted": "Accepted"
-      },
-      "columns": {
-        "user": "User",
-        "friend": "Friend",
-        "remark": "Remark",
-        "status": "Status",
-        "createTime": "Requested At",
-        "action": "Action"
-      },
-      "action": {
-        "approve": "Approve",
-        "reject": "Reject",
-        "delete": "Delete",
-        "delete_confirm": "Delete this friend relation? Both sides will be removed.",
-        "approve_success": "Friend request approved",
-        "reject_success": "Friend request rejected",
-        "delete_success": "Friend relation deleted",
-        "delete_failed": "Delete failed",
-        "failed": "Operation failed"
-      }
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted"
     },
-    "group": {
-      "title": "Chat Group Management",
-      "description": "Manage chat groups and members: edit, dissolve and remove members",
-      "search_placeholder": "Group name / description",
-      "search": "Search",
-      "reset": "Reset",
-      "total": "Total {total}",
-      "empty": "No group data",
-      "member_empty": "No members",
-      "save": "Save",
-      "cancel": "Cancel",
-      "save_success": "Group updated",
-      "columns": {
-        "avatar": "Avatar",
-        "name": "Name",
-        "description": "Description",
-        "creator": "Creator",
-        "members": "Members",
-        "createTime": "Created At",
-        "action": "Action",
-        "member": "Member",
-        "groupNickname": "Group Nickname",
-        "role": "Role",
-        "joinTime": "Joined At"
-      },
-      "role": {
-        "owner": "Owner",
-        "admin": "Admin",
-        "member": "Member"
-      },
-      "action": {
-        "members": "Members",
-        "edit": "Edit",
-        "dissolve": "Dissolve",
-        "dissolve_confirm": "Dissolve this group? All members and messages will be removed.",
-        "dissolve_success": "Group dissolved",
-        "remove_confirm": "Remove this member from the group?",
-        "member_remove": "Remove",
-        "remove_success": "Member removed",
-        "failed": "Operation failed"
-      },
-      "form": {
-        "name": "Group Name",
-        "name_required": "Please enter group name",
-        "description": "Description",
-        "maxMembers": "Max Members"
-      },
-      "modal": {
-        "edit_title": "Edit Group",
-        "members_title": "Group Members"
-      }
+    "columns": {
+      "user": "User",
+      "friend": "Friend",
+      "remark": "Remark",
+      "status": "Status",
+      "createTime": "Requested At",
+      "action": "Action"
     },
-    "message": {
-      "title": "Chat Message Management",
-      "description": "Query single and group chat history with filters",
-      "tab": {
-        "single": "Single Chat",
-        "group": "Group Chat"
-      },
-      "search_placeholder": "Message content",
-      "search": "Search",
-      "reset": "Reset",
-      "total": "Total {total}",
-      "empty": "No message data",
-      "filter": {
-        "userId": "User ID",
-        "groupId": "Group ID",
-        "messageType": "Message Type"
-      },
-      "type": {
-        "text": "Text",
-        "image": "Image",
-        "emoji": "Emoji",
-        "video": "Video",
-        "audio": "Audio",
-        "file": "File"
-      },
-      "read": {
-        "yes": "Read",
-        "no": "Unread"
-      },
-      "columns": {
-        "sender": "Sender",
-        "receiver": "Receiver",
-        "group": "Group",
-        "content": "Content",
-        "type": "Type",
-        "isRead": "Status",
-        "time": "Sent At"
-      }
-    },
-    "call": {
-      "title": "Call Records",
-      "description": "View voice/video call records with filters",
-      "search_placeholder": "User ID / Call ID",
-      "search": "Search",
-      "reset": "Reset",
+    "action": {
+      "approve": "Approve",
+      "reject": "Reject",
       "delete": "Delete",
-      "delete_confirm": "Delete this call record?",
-      "delete_success": "Call record deleted",
-      "failed": "Operation failed",
-      "total": "Total {total}",
-      "empty": "No call records",
-      "filter": {
-        "callType": "Call Type"
-      },
-      "type": {
-        "voice": "Voice Call",
-        "video": "Video Call"
-      },
-      "status": {
-        "initiated": "Calling",
-        "accepted": "In Call",
-        "rejected": "Rejected",
-        "ended": "Ended",
-        "canceled": "Canceled",
-        "missed": "Missed"
-      },
-      "columns": {
-        "callId": "Call ID",
-        "caller": "Caller",
-        "receiver": "Receiver",
-        "callType": "Type",
-        "status": "Status",
-        "duration": "Duration",
-        "startTime": "Started At",
-        "action": "Action"
-      }
+      "delete_confirm": "Delete this friend relation? Both sides will be removed.",
+      "approve_success": "Friend request approved",
+      "reject_success": "Friend request rejected",
+      "delete_success": "Friend relation deleted",
+      "delete_failed": "Delete failed",
+      "failed": "Operation failed"
+    }
+  },
+  "group": {
+    "title": "Chat Group Management",
+    "description": "Manage chat groups and members: edit, dissolve and remove members",
+    "search_placeholder": "Group name / description",
+    "search": "Search",
+    "reset": "Reset",
+    "total": "Total {total}",
+    "empty": "No group data",
+    "member_empty": "No members",
+    "save": "Save",
+    "cancel": "Cancel",
+    "save_success": "Group updated",
+    "columns": {
+      "avatar": "Avatar",
+      "name": "Name",
+      "description": "Description",
+      "creator": "Creator",
+      "members": "Members",
+      "createTime": "Created At",
+      "action": "Action",
+      "member": "Member",
+      "groupNickname": "Group Nickname",
+      "role": "Role",
+      "joinTime": "Joined At"
     },
-    "emoji": {
-      "title": "Emoji Management",
-      "description": "Maintain system emoji: create, edit, enable/disable and delete",
-      "search_placeholder": "Emoji name / code",
-      "search": "Search",
-      "reset": "Reset",
-      "save": "Save",
-      "cancel": "Cancel",
-      "total": "Total {total}",
-      "empty": "No emoji data",
-      "save_success": "Emoji created",
-      "update_success": "Emoji updated",
-      "failed": "Operation failed",
-      "filter": {
-        "isActive": "Status"
-      },
-      "active": {
-        "enabled": "Enabled",
-        "disabled": "Disabled"
-      },
-      "action": {
-        "add": "Add Emoji",
-        "edit": "Edit",
-        "delete": "Delete",
-        "delete_confirm": "Delete this emoji?",
-        "delete_success": "Emoji deleted"
-      },
-      "columns": {
-        "code": "Code",
-        "name": "Name",
-        "category": "Category",
-        "unicode": "Unicode",
-        "description": "Description",
-        "sortOrder": "Sort",
-        "isActive": "Status",
-        "updateTime": "Updated At",
-        "action": "Action"
-      },
-      "form": {
-        "code": "Emoji Code",
-        "code_required": "Please enter emoji code",
-        "code_placeholder": "e.g. smile",
-        "name": "Emoji Name",
-        "name_required": "Please enter emoji name",
-        "category": "Category",
-        "unicode": "Unicode",
-        "description": "Description",
-        "sortOrder": "Sort",
-        "isActive": "Enabled"
-      },
-      "modal": {
-        "create_title": "Add Emoji",
-        "edit_title": "Edit Emoji"
-      }
+    "role": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "action": {
+      "members": "Members",
+      "edit": "Edit",
+      "dissolve": "Dissolve",
+      "dissolve_confirm": "Dissolve this group? All members and messages will be removed.",
+      "dissolve_success": "Group dissolved",
+      "remove_confirm": "Remove this member from the group?",
+      "member_remove": "Remove",
+      "remove_success": "Member removed",
+      "failed": "Operation failed"
+    },
+    "form": {
+      "name": "Group Name",
+      "name_required": "Please enter group name",
+      "description": "Description",
+      "maxMembers": "Max Members"
+    },
+    "modal": {
+      "edit_title": "Edit Group",
+      "members_title": "Group Members"
+    }
+  },
+  "message": {
+    "title": "Chat Message Management",
+    "description": "Query single and group chat history with filters",
+    "tab": {
+      "single": "Single Chat",
+      "group": "Group Chat"
+    },
+    "search_placeholder": "Message content",
+    "search": "Search",
+    "reset": "Reset",
+    "total": "Total {total}",
+    "empty": "No message data",
+    "filter": {
+      "userId": "User ID",
+      "groupId": "Group ID",
+      "messageType": "Message Type"
+    },
+    "type": {
+      "text": "Text",
+      "image": "Image",
+      "emoji": "Emoji",
+      "video": "Video",
+      "audio": "Audio",
+      "file": "File"
+    },
+    "read": {
+      "yes": "Read",
+      "no": "Unread"
+    },
+    "columns": {
+      "sender": "Sender",
+      "receiver": "Receiver",
+      "group": "Group",
+      "content": "Content",
+      "type": "Type",
+      "isRead": "Status",
+      "time": "Sent At"
+    }
+  },
+  "call": {
+    "title": "Call Records",
+    "description": "View voice/video call records with filters",
+    "search_placeholder": "User ID / Call ID",
+    "search": "Search",
+    "reset": "Reset",
+    "delete": "Delete",
+    "delete_confirm": "Delete this call record?",
+    "delete_success": "Call record deleted",
+    "failed": "Operation failed",
+    "total": "Total {total}",
+    "empty": "No call records",
+    "filter": {
+      "callType": "Call Type"
+    },
+    "type": {
+      "voice": "Voice Call",
+      "video": "Video Call"
+    },
+    "status": {
+      "initiated": "Calling",
+      "accepted": "In Call",
+      "rejected": "Rejected",
+      "ended": "Ended",
+      "canceled": "Canceled",
+      "missed": "Missed"
+    },
+    "columns": {
+      "callId": "Call ID",
+      "caller": "Caller",
+      "receiver": "Receiver",
+      "callType": "Type",
+      "status": "Status",
+      "duration": "Duration",
+      "startTime": "Started At",
+      "action": "Action"
+    }
+  },
+  "emoji": {
+    "title": "Emoji Management",
+    "description": "Maintain system emoji: create, edit, enable/disable and delete",
+    "search_placeholder": "Emoji name / code",
+    "search": "Search",
+    "reset": "Reset",
+    "save": "Save",
+    "cancel": "Cancel",
+    "total": "Total {total}",
+    "empty": "No emoji data",
+    "save_success": "Emoji created",
+    "update_success": "Emoji updated",
+    "failed": "Operation failed",
+    "filter": {
+      "isActive": "Status"
+    },
+    "active": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "action": {
+      "add": "Add Emoji",
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_confirm": "Delete this emoji?",
+      "delete_success": "Emoji deleted"
+    },
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "category": "Category",
+      "unicode": "Unicode",
+      "description": "Description",
+      "sortOrder": "Sort",
+      "isActive": "Status",
+      "updateTime": "Updated At",
+      "action": "Action"
+    },
+    "form": {
+      "code": "Emoji Code",
+      "code_required": "Please enter emoji code",
+      "code_placeholder": "e.g. smile",
+      "name": "Emoji Name",
+      "name_required": "Please enter emoji name",
+      "category": "Category",
+      "unicode": "Unicode",
+      "description": "Description",
+      "sortOrder": "Sort",
+      "isActive": "Enabled"
+    },
+    "modal": {
+      "create_title": "Add Emoji",
+      "edit_title": "Edit Emoji"
     }
   }
 }

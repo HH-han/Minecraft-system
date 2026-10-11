@@ -150,7 +150,7 @@ function handlePageChange(page: number, size: number) {
   fetchData();
 }
 
-function openEdit(row: GroupRow) {
+function openEdit(row: any) {
   form.id = row.id;
   form.name = row.name ?? '';
   form.description = row.description ?? '';
@@ -180,7 +180,7 @@ async function handleSave() {
   }
 }
 
-async function handleDissolve(row: GroupRow) {
+async function handleDissolve(row: any) {
   try {
     await deleteChatGroup(row.id);
     message.success($t('im.group.action.dissolve_success'));
@@ -190,7 +190,7 @@ async function handleDissolve(row: GroupRow) {
   }
 }
 
-async function openMembers(row: GroupRow) {
+async function openMembers(row: any) {
   currentGroup.value = row;
   showMembers.value = true;
   memberLoading.value = true;
@@ -204,7 +204,7 @@ async function openMembers(row: GroupRow) {
   }
 }
 
-async function handleRemoveMember(member: MemberRow) {
+async function handleRemoveMember(member: any) {
   if (!currentGroup.value) return;
   try {
     await removeGroupMember(currentGroup.value.id, member.userId);

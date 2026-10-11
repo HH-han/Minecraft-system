@@ -116,7 +116,7 @@ function handlePageChange(page: number, size: number) {
   fetchData();
 }
 
-async function handleApprove(row: FriendRow) {
+async function handleApprove(row: any) {
   try {
     await approveFriendRequest(row.id);
     message.success($t('im.friend.action.approve_success'));
@@ -125,7 +125,7 @@ async function handleApprove(row: FriendRow) {
     message.error(e?.message || $t('im.friend.action.failed'));
   }
 }
-async function handleReject(row: FriendRow) {
+async function handleReject(row: any) {
   try {
     await rejectFriendRequest(row.id);
     message.success($t('im.friend.action.reject_success'));
@@ -134,7 +134,7 @@ async function handleReject(row: FriendRow) {
     message.error(e?.message || $t('im.friend.action.failed'));
   }
 }
-async function handleDelete(row: FriendRow) {
+async function handleDelete(row: any) {
   try {
     await deleteFriendRelation(row.id);
     message.success($t('im.friend.action.delete_success'));

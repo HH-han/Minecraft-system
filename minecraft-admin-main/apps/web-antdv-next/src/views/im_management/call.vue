@@ -138,7 +138,7 @@ function handlePageChange(page: number, size: number) {
   fetchData();
 }
 
-async function handleDelete(row: CallRow) {
+async function handleDelete(row: any) {
   try {
     await deleteCallRecord(row.id);
     message.success($t('im.call.delete_success'));
