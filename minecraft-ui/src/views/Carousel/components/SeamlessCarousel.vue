@@ -412,6 +412,7 @@ onUnmounted(() => {
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: background 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease;
 }
 
 .carousel-pagination button {
@@ -504,5 +505,47 @@ onUnmounted(() => {
     .slide-caption {
         padding: 1.5rem;
     }
+}
+
+/* ============================================================
+   亮色主题（html[data-theme="light"]）
+   深色为设计基底；控件悬浮在照片之上，亮色页面下改用
+   深色玻璃 + 白色图标，保证在明亮底图上依然清晰。
+   文案与遮罩保持白字 + 暗色渐变（与照片亮度相关，不随主题变）。
+   ============================================================ */
+html[data-theme="light"] .modern-carousel {
+    box-shadow: 0 18px 44px -26px rgba(15, 23, 42, 0.5);
+}
+
+html[data-theme="light"] .carousel-nav {
+    background: rgba(15, 23, 42, 0.42);
+    color: #ffffff;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+        0 10px 26px -14px rgba(15, 23, 42, 0.6);
+}
+
+html[data-theme="light"] .carousel-nav:hover {
+    background: rgba(15, 23, 42, 0.64);
+}
+
+html[data-theme="light"] .carousel-pagination {
+    background: rgba(15, 23, 42, 0.3);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+        0 10px 26px -16px rgba(15, 23, 42, 0.55);
+}
+
+html[data-theme="light"] .carousel-pagination button {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+html[data-theme="light"] .carousel-pagination button:hover {
+    background: rgba(255, 255, 255, 0.78);
+}
+
+html[data-theme="light"] .carousel-pagination button.active {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55);
 }
 </style>

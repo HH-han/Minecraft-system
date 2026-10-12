@@ -1,94 +1,134 @@
 <template>
-    <div class="world-liquid-glass-container">
-        <header class="world-page-header">
-            <h1>全球特色地点探索</h1>
+    <section class="world-characteristics">
+        <!-- 区块标题 -->
+        <header class="world-header">
+            <span class="world-eyebrow">CULTURE &amp; NATURE</span>
+            <h2 class="world-title">全球特色地点探索</h2>
             <p class="world-subtitle">穿越时空的文化与自然奇观</p>
         </header>
 
-        <div class="world-filter-controls">
-            <button v-for="category in categories" :key="category" @click="filterByCategory(category)"
-                :class="{ 'world-active': activeCategory === category }">
-                {{ category }}
+        <!-- 筛选工具栏 -->
+        <div class="world-toolbar">
+            <div class="world-filters" role="tablist" aria-label="按分类筛选特色地点">
+                <button v-for="category in categories" :key="category" class="world-filter"
+                    :class="{ 'is-active': activeCategory === category }" type="button" role="tab"
+                    :aria-selected="activeCategory === category" @click="filterByCategory(category)">
+                    {{ category }}
+                </button>
+            </div>
+            <span v-if="!loading && locations.length" class="world-count">共 {{ locations.length }} 处</span>
+        </div>
+
+        <!-- 加载骨架 -->
+        <div v-if="loading" class="world-grid" aria-busy="true" aria-label="加载中">
+            <div v-for="index in 3" :key="index" class="world-card is-skeleton">
+                <div class="skeleton-block"></div>
+                <div class="world-card-body">
+                    <span class="skeleton-line skeleton-line--sm"></span>
+                    <span class="skeleton-line skeleton-line--lg"></span>
+                    <span class="skeleton-line"></span>
+                    <span class="skeleton-line"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地点卡片 -->
+        <div v-else-if="locations.length" class="world-grid">
+            <article v-for="location in locations" :key="location.id" class="world-card"
+                :style="{ '--wc-accent': location.color || DEFAULT_ACCENT }">
+                <div class="world-card-media">
+                    <img :src="location.image || FALLBACK_IMAGE" :alt="location.name" loading="lazy"
+                        @error="handleImageError" />
+                    <span v-if="location.country" class="world-card-country">{{ location.country }}</span>
+                </div>
+
+                <div class="world-card-body">
+                    <span class="world-card-category">{{ location.category || '世界特色' }}</span>
+                    <h3 class="world-card-name">{{ location.name }}</h3>
+
+                    <ul v-if="location.tagList.length" class="world-card-tags">
+                        <li v-for="tag in location.tagList" :key="tag" class="world-tag">{{ tag }}</li>
+                    </ul>
+
+                    <p class="world-card-desc">{{ location.description || '暂无描述' }}</p>
+
+                    <dl class="world-card-facts">
+                        <div class="world-fact">
+                            <dt>特色</dt>
+                            <dd>{{ location.features || '暂无信息' }}</dd>
+                        </div>
+                        <div class="world-fact">
+                            <dt>历史</dt>
+                            <dd>{{ location.history || '暂无信息' }}</dd>
+                        </div>
+                        <div class="world-fact">
+                            <dt>人文</dt>
+                            <dd>{{ location.culture || '暂无信息' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </article>
+        </div>
+
+        <!-- 空状态 -->
+        <div v-else class="world-empty">
+            <span class="world-empty-icon" aria-hidden="true">🧭</span>
+            <h3 class="world-empty-title">暂未收录该分类的地点</h3>
+            <p class="world-empty-hint">换个分类看看，或浏览全部特色地点</p>
+            <button v-if="activeCategory !== '全部'" class="world-empty-reset" type="button"
+                @click="filterByCategory('全部')">
+                查看全部地点
             </button>
         </div>
 
-        <div v-if="loading" class="world-loading">
-            <div class="world-loading-spinner"></div>
-            <p>加载中...</p>
+        <!-- 分页（仅全部数据分页，分类结果为完整列表） -->
+        <div v-if="activeCategory === '全部' && totalPages > 1" class="world-paging">
+            <Paging :total-pages="totalPages" :current-page="currentPage" @update:current-page="handleCurrentChange" />
         </div>
-
-        <div v-else class="world-locations-grid">
-            <div v-for="location in filteredLocations" :key="location.id" class="world-location-card"
-                :style="{ '--card-accent': location.color || '#3a7bd5' }">
-                <div class="world-card-image">
-                    <img :src="location.image || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Minecraft%20world%20landscape%20with%20beautiful%20scenery&image_size=landscape_16_9'" :alt="location.name" />
-                    <div class="world-image-overlay"></div>
-                </div>
-                <div class="world-card-content">
-                    <div class="world-card-header">
-                        <h2>{{ location.name }}</h2>
-                        <span class="world-location-country">{{ location.country }}</span>
-                    </div>
-                    <div class="world-card-tags">
-                        <span v-for="tag in splitTags(location.tags)" :key="tag" class="world-tag">{{ tag }}</span>
-                    </div>
-                    <p class="world-card-description">{{ location.description || '暂无描述' }}</p>
-                    <div class="world-card-details">
-                        <div class="world-detail-item">
-                            <span class="world-detail-label">特色</span>
-                            <p>{{ location.features || '暂无信息' }}</p>
-                        </div>
-                        <div class="world-detail-item">
-                            <span class="world-detail-label">历史</span>
-                            <p>{{ location.history || '暂无信息' }}</p>
-                        </div>
-                        <div class="world-detail-item">
-                            <span class="world-detail-label">人文</span>
-                            <p>{{ location.culture || '暂无信息' }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div v-if="filteredLocations.length === 0" class="world-empty">
-                <p>暂无数据</p>
-            </div>
-        </div>
-    </div>
-    <!-- 分页 -->
-    <div class="block-world">
-        <Paging 
-            :total-pages="totalPages" 
-            :current-page="currentPage" 
-            @update:current-page="handleCurrentChange" 
-        />
-    </div>
-
+    </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import {
-  getWorldCharacteristicsList,
   getWorldCharacteristicsPage,
   getWorldCharacteristicsByCategory
 } from '@/api/worldcharacteristics';
 import Paging from '@/components/paging/index.vue';
 
+const DEFAULT_ACCENT = '#0d9488';
+// src 下的静态资源需经打包器解析，直接写 /assets/... 会 404
+const FALLBACK_IMAGE = new URL('@/assets/defaultimage/moren.webp', import.meta.url).href;
 // 数据状态
 const locations = ref([]);
 const categories = ref(['全部', '建筑', '自然景观', '文物', '文化遗产']);
 const activeCategory = ref('全部');
 const currentPage = ref(1);
 const pageSize = ref(10);
-const total = ref(0);
 const totalPages = ref(0);
 const loading = ref(false);
 
-// 计算过滤后的地点
-const filteredLocations = computed(() => {
-  return locations.value;
-});
+// 分割标签
+const splitTags = (tags) => {
+  if (!tags) return [];
+  return String(tags)
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+};
+
+// 预处理数据，模板中无需重复解析
+const normalize = (records) => {
+  if (!Array.isArray(records)) return [];
+  return records.filter(Boolean).map((item) => ({
+    ...item,
+    tagList: splitTags(item.tags)
+  }));
+};
+
+const resolveTotalPages = (pages, total) => {
+  return Number(pages) || Math.ceil((Number(total) || 0) / pageSize.value) || 0;
+};
 
 // 加载数据
 const loadData = async () => {
@@ -96,12 +136,14 @@ const loadData = async () => {
   try {
     const response = await getWorldCharacteristicsPage(currentPage.value, pageSize.value);
     if (response.code === 200) {
-      locations.value = response.data.records;
-      total.value = response.data.total;
-      totalPages.value = response.data.pages || Math.ceil(response.data.total / pageSize.value);
+      const data = response.data || {};
+      locations.value = normalize(data.records);
+      totalPages.value = resolveTotalPages(data.pages, data.total);
     }
   } catch (error) {
-    console.error('加载数据失败:', error);
+    console.error('加载世界特色地点失败:', error);
+    locations.value = [];
+    totalPages.value = 0;
   } finally {
     loading.value = false;
   }
@@ -116,20 +158,21 @@ const filterByCategory = async (category) => {
     if (category === '全部') {
       const response = await getWorldCharacteristicsPage(1, pageSize.value);
       if (response.code === 200) {
-        locations.value = response.data.records;
-        total.value = response.data.total;
-        totalPages.value = response.data.pages || Math.ceil(response.data.total / pageSize.value);
+        const data = response.data || {};
+        locations.value = normalize(data.records);
+        totalPages.value = resolveTotalPages(data.pages, data.total);
       }
     } else {
       const response = await getWorldCharacteristicsByCategory(category);
       if (response.code === 200) {
-        locations.value = response.data;
-        total.value = response.data.length;
-        totalPages.value = Math.ceil(response.data.length / pageSize.value);
+        locations.value = normalize(response.data);
+        totalPages.value = 0;
       }
     }
   } catch (error) {
-    console.error('过滤数据失败:', error);
+    console.error('按分类加载世界特色地点失败:', error);
+    locations.value = [];
+    totalPages.value = 0;
   } finally {
     loading.value = false;
   }
@@ -140,269 +183,437 @@ const handleCurrentChange = (current) => {
   loadData();
 };
 
-// 分割标签
-const splitTags = (tags) => {
-  if (!tags) return [];
-  return tags.split(',').map(tag => tag.trim());
+// 图片加载失败时回退到默认图
+const handleImageError = (event) => {
+  const image = event.target;
+  if (image.src !== FALLBACK_IMAGE) image.src = FALLBACK_IMAGE;
 };
 
 // 组件挂载时加载数据
-onMounted(() => {
-  loadData();
-});
+onMounted(loadData);
 </script>
 
 <style scoped>
-.world-liquid-glass-container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+.world-characteristics {
+    --world-accent: #0d9488;
+    --world-hairline: rgba(148, 163, 184, 0.18);
+    --world-title: #0f172a;
+    --world-text: #64748b;
+    --world-muted: #94a3b8;
+
+    padding: 48px 24px;
+    color: var(--world-title);
+    font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.world-page-header {
+/* ========== 区块标题 ========== */
+.world-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 34px;
 }
 
-.world-page-header h1 {
-    font-size: 2.5rem;
+.world-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--world-accent);
+    font-size: 12px;
     font-weight: 700;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(90deg, #3a7bd5, #00d2ff);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    letter-spacing: 0.28em;
+}
+
+.world-title {
+    position: relative;
+    margin: 0 0 14px;
+    color: var(--world-title);
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.world-title::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 4px;
+    margin: 14px auto 0;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--world-accent),
+            color-mix(in srgb, var(--world-accent) 55%, #ffffff));
 }
 
 .world-subtitle {
-    font-size: 1.2rem;
-    color: #666;
+    margin: 0;
+    color: var(--world-text);
+    font-size: 15px;
 }
 
-.world-filter-controls {
+/* ========== 筛选工具栏 ========== */
+.world-toolbar {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
 }
 
-.world-filter-controls button {
-    padding: 0.5rem 1.5rem;
-    border: none;
-    border-radius: 2rem;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    color: #333;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.world-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.world-filter {
+    padding: 9px 20px;
+    border: 1.5px solid transparent;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 14px;
     font-weight: 500;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.world-filter-controls button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+.world-filter:hover {
+    color: var(--world-accent);
+    background: color-mix(in srgb, var(--world-accent) 9%, transparent);
 }
 
-.world-filter-controls button.world-active {
-    background: linear-gradient(90deg, #3a7bd5, #00d2ff);
-    color: white;
+.world-filter.is-active {
+    color: #ffffff;
+    border-color: transparent;
+    background: linear-gradient(135deg, var(--world-accent),
+            color-mix(in srgb, var(--world-accent) 62%, #ffffff));
+    box-shadow: 0 8px 20px -10px color-mix(in srgb, var(--world-accent) 85%, transparent);
 }
 
-.world-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem;
-    color: #666;
+.world-count {
+    padding: 6px 14px;
+    border: 1px solid color-mix(in srgb, var(--world-accent) 22%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--world-accent) 9%, transparent);
+    color: var(--world-accent);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.world-loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(58, 123, 213, 0.2);
-    border-left-color: #3a7bd5;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.world-empty {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem;
-    color: #666;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.world-locations-grid {
+/* ========== 卡片网格 ========== */
+.world-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    gap: 26px;
 }
 
-.world-location-card {
-    width: 100%;
-    min-width: 350px;
-    border-radius: 1rem;
+.world-card {
+    --wc-accent: var(--world-accent);
+
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--world-hairline);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.world-location-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+.world-card:hover {
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--wc-accent) 45%, transparent);
+    box-shadow: 0 20px 40px -18px rgba(15, 23, 42, 0.28);
 }
 
-.world-card-image {
+/* 图片区 */
+.world-card-media {
     position: relative;
-    height: 600px;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
+    background: #eef2f7;
 }
 
-.world-card-image img {
+.world-card-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.5), transparent 60%);
+}
+
+.world-card-media img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.world-location-card:hover .world-card-image img {
-    transform: scale(1.05);
+.world-card:hover .world-card-media img {
+    transform: scale(1.06);
 }
 
-.world-image-overlay {
+.world-card-country {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.7));
-}
-
-.world-card-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    opacity: 1;
-    transition: all 0.4s ease;
-}
-
-.world-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.world-card-header::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, var(--card-accent), transparent);
-}
-
-.world-card-header h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-    color: #222;
-}
-
-.world-location-country {
-    background: var(--card-accent);
-    color: white;
-    padding: 0.2rem 0.8rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
+    left: 14px;
+    bottom: 12px;
+    z-index: 1;
+    padding: 5px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.5);
+    color: #ffffff;
+    font-size: 12px;
     font-weight: 600;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+/* 卡片内容 */
+.world-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 20px 22px;
+}
+
+.world-card-category {
+    color: var(--wc-accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.world-card-name {
+    margin: 0;
+    color: var(--world-title);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
 .world-card-tags {
     display: flex;
-    gap: 0.5rem;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .world-tag {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    padding: 0.2rem 0.8rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
-    color: #343434;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
 }
 
-.world-card-description {
-    color: #343434;
-    margin-bottom: 1.5rem;
+.world-card-desc {
+    margin: 0;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--world-text);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* 特色 / 历史 / 人文 */
+.world-card-facts {
+    margin: 4px 0 0;
+    padding: 0;
+    border-top: 1px solid var(--world-hairline);
+}
+
+.world-fact {
+    display: flex;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.world-fact:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.world-fact dt {
+    flex: none;
+    min-width: 36px;
+    padding-top: 1px;
+    color: var(--wc-accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+}
+
+.world-fact dd {
+    margin: 0;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: #475569;
+    font-size: 13px;
     line-height: 1.6;
 }
 
-.world-card-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 1rem;
+/* ========== 加载骨架 ========== */
+.world-card.is-skeleton {
+    pointer-events: none;
 }
 
-.world-detail-item {
-    background: rgba(255, 255, 255, 0.3);
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    backdrop-filter: blur(5px);
+.skeleton-block {
+    aspect-ratio: 16 / 10;
+    background: #eef2f7;
 }
 
-.world-detail-label {
+.skeleton-line {
     display: block;
+    height: 12px;
+    border-radius: 6px;
+    background: #eef2f7;
+}
+
+.skeleton-line--sm {
+    width: 34%;
+    height: 10px;
+}
+
+.skeleton-line--lg {
+    width: 62%;
+    height: 18px;
+}
+
+.skeleton-block,
+.skeleton-line {
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-block::after,
+.skeleton-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    animation: world-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes world-shimmer {
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* ========== 空状态 ========== */
+.world-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 72px 24px;
+    text-align: center;
+}
+
+.world-empty-icon {
+    margin-bottom: 14px;
+    font-size: 44px;
+}
+
+.world-empty-title {
+    margin: 0 0 8px;
+    color: #334155;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 0.3rem;
-    color: var(--card-accent);
 }
 
-.world-detail-item p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #343434;
-    line-height: 1.5;
+.world-empty-hint {
+    margin: 0 0 22px;
+    color: var(--world-muted);
+    font-size: 14px;
 }
 
-.block-world{
+.world-empty-reset {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 999px;
+    background: var(--world-accent);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.world-empty-reset:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--world-accent) 85%, transparent);
+}
+
+/* ========== 分页 ========== */
+.world-paging {
     display: flex;
     justify-content: center;
-    margin-bottom: 40px;
+    margin-top: 36px;
 }
+
+/* ========== 响应式 ========== */
 @media (max-width: 768px) {
-    .world-locations-grid {
-        grid-template-columns: 1fr;
+    .world-characteristics {
+        padding: 36px 16px;
     }
 
-    .world-filter-controls {
-        flex-wrap: wrap;
+    .world-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .world-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+    }
+
+    .world-card-name {
+        font-size: 18px;
+    }
+
+    .world-card-body {
+        padding: 16px 16px 18px;
+    }
+}
+
+@media (max-width: 420px) {
+    .world-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .world-card,
+    .world-card-media img,
+    .world-filter,
+    .world-empty-reset {
+        transition: none;
+    }
+
+    .world-card:hover {
+        transform: none;
+    }
+
+    .world-card:hover .world-card-media img {
+        transform: none;
+    }
+
+    .skeleton-block::after,
+    .skeleton-line::after {
+        animation: none;
     }
 }
 </style>

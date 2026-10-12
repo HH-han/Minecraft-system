@@ -159,31 +159,6 @@ body {
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.search_input {
-  bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.search_input input {
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 15px;
-  margin-right: 10px;
-  width: 500px;
-}
-
-.search_button-home-5 {
-  padding: 15px 20px;
-  background-color: #ff9900;
-  color: #fff;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-}
-
 /* card展示框 */
 .backgroundgradient {
   animation: fadeInUp 1s ease-out;
