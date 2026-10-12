@@ -820,7 +820,7 @@ onMounted(() => {
   height: 80px;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--theme-border);
 }
 
 .image-preview-item img {
@@ -840,7 +840,7 @@ onMounted(() => {
 
 .upload-progress .progress-bar {
   height: 100%;
-  background: #4CAF50;
+  background: var(--theme-primary);
   transition: width 0.3s ease;
 }
 
@@ -850,11 +850,11 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 0, 0, 0.5);
+  background: color-mix(in srgb, var(--theme-danger) 55%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #fff;
   font-size: 12px;
 }
 
@@ -878,7 +878,7 @@ onMounted(() => {
 }
 
 .remove-image-btn:hover:not(:disabled) {
-  background: rgba(255, 0, 0, 0.7);
+  background: color-mix(in srgb, var(--theme-danger) 70%, transparent);
 }
 
 .remove-image-btn:disabled {
@@ -889,7 +889,7 @@ onMounted(() => {
 .upload-trigger {
   width: 80px;
   height: 80px;
-  border: 2px dashed #d0d0d0;
+  border: 2px dashed var(--theme-border-strong);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -897,12 +897,12 @@ onMounted(() => {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .upload-trigger:hover {
-  border-color: #4CAF50;
-  color: #4CAF50;
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
 }
 
 .file-input-hidden {
@@ -920,7 +920,7 @@ onMounted(() => {
 }
 
 .upload-error-message {
-  color: #ff4d4f;
+  color: var(--theme-danger);
   font-size: 12px;
   margin-top: 8px;
 }

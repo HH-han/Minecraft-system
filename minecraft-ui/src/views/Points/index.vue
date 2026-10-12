@@ -278,7 +278,7 @@ const handleMenuSelect = (key) => {
     width: 100%;
     height: auto;
     border-right: none;
-    border-bottom: 1px solid #eef0f4;
+    border-bottom: 1px solid var(--theme-hairline);
   }
 
   .sidebar-brand {

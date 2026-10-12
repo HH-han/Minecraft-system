@@ -136,7 +136,7 @@ onMounted(() => {
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .records-table {
@@ -144,27 +144,27 @@ onMounted(() => {
 }
 
 .type-earn {
-  color: #67C23A;
+  color: var(--theme-success);
   font-weight: bold;
 }
 
 .type-exchange {
-  color: #E6A23C;
+  color: var(--theme-warning);
   font-weight: bold;
 }
 
 .type-expire {
-  color: #909399;
+  color: var(--theme-text-3);
   font-weight: bold;
 }
 
 .points-earn {
-  color: #67C23A;
+  color: var(--theme-success);
   font-weight: bold;
 }
 
 .points-deduct {
-  color: #F56C6C;
+  color: var(--theme-danger);
   font-weight: bold;
 }
 

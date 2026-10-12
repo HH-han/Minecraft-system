@@ -189,11 +189,11 @@ onMounted(() => {
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .user-points {
-  background-color: #f5f7fa;
+  background-color: var(--theme-bg-surface-2);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -202,14 +202,14 @@ onMounted(() => {
 
 .points-label {
   font-size: 16px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-right: 10px;
 }
 
 .points-value {
   font-size: 20px;
   font-weight: bold;
-  color: #409EFF;
+  color: var(--theme-primary);
 }
 
 .product-list {
@@ -219,15 +219,15 @@ onMounted(() => {
 }
 
 .product-item {
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
   padding: 15px;
   transition: all 0.3s;
-  background-color: #fff;
+  background-color: var(--theme-bg-surface);
 }
 
 .product-item:hover {
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .product-image {
@@ -242,12 +242,12 @@ onMounted(() => {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .product-description {
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-bottom: 15px;
   line-height: 1.4;
 }
@@ -258,14 +258,14 @@ onMounted(() => {
 
 .price-label {
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-right: 10px;
 }
 
 .price-value {
   font-size: 16px;
   font-weight: bold;
-  color: #F56C6C;
+  color: var(--theme-danger);
 }
 
 .product-stock {
@@ -274,13 +274,13 @@ onMounted(() => {
 
 .stock-label {
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-right: 10px;
 }
 
 .stock-value {
   font-size: 14px;
-  color: #67C23A;
+  color: var(--theme-success);
 }
 
 .exchange-button {
@@ -296,8 +296,8 @@ onMounted(() => {
   padding: 12px;
   margin-bottom: 18px;
   border-radius: 10px;
-  background: #faf7f0;
-  border: 1px solid #f3e6cf;
+  background: var(--theme-warning-soft);
+  border: 1px solid var(--theme-border);
 }
 
 .exchange-summary__img {
@@ -306,7 +306,7 @@ onMounted(() => {
   border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  background: #fff;
+  background: var(--theme-bg-surface);
 }
 
 .exchange-summary__info {
@@ -316,7 +316,7 @@ onMounted(() => {
 .exchange-summary__name {
   font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -325,7 +325,7 @@ onMounted(() => {
 .exchange-summary__points {
   margin-top: 4px;
   font-size: 13px;
-  color: #f59e0b;
+  color: var(--theme-warning);
   font-weight: 600;
 }
 </style>

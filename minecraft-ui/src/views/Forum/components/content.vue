@@ -332,14 +332,14 @@ function viewDetail(itemId) {
     margin: 0px 30px;
     padding: 0 15px;
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 /* 顶部区域 */
 .souvenir-header {
     text-align: center;
     padding: 30px 0;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    background: linear-gradient(135deg, var(--theme-bg-surface-2) 0%, var(--theme-bg-muted) 100%);
     border-radius: 0 0 20px 20px;
     margin-bottom: 30px;
 }
@@ -347,12 +347,12 @@ function viewDetail(itemId) {
 .souvenir-header h1 {
     font-size: 2.2rem;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 .subtitle {
     font-size: 1.1rem;
-    color: #555;
+    color: var(--theme-text-2);
     margin-bottom: 25px;
 }
 
@@ -374,13 +374,14 @@ function viewDetail(itemId) {
     border-radius: 30px 0 0 30px;
     font-size: 16px;
     outline: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .search-bar button {
     padding: 0 25px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 0 30px 30px 0;
     font-size: 16px;
@@ -388,12 +389,12 @@ function viewDetail(itemId) {
     cursor: pointer;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .search-bar button:hover {
-    background: #ff5252;
+    background: color-mix(in srgb, var(--theme-highlight) 86%, #000);
 }
 
 .search-icon {
@@ -409,8 +410,8 @@ function viewDetail(itemId) {
 
 .region-filter button {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.7);
-    color: #333;
+    background: var(--theme-bg-glass);
+    color: var(--theme-text-1);
     border: none;
     border-radius: 20px;
     font-size: 14px;
@@ -419,8 +420,8 @@ function viewDetail(itemId) {
 }
 
 .region-filter button.active {
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     font-weight: 600;
 }
 
@@ -430,9 +431,9 @@ function viewDetail(itemId) {
     justify-content: space-around;
     margin-bottom: 30px;
     padding: 15px 0;
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .category-item {
@@ -446,12 +447,12 @@ function viewDetail(itemId) {
 }
 
 .category-item:hover {
-    background: #f8f8f8;
+    background: var(--theme-bg-hover);
 }
 
 .category-item.active {
-    background: #fff0f0;
-    color: #ff6b6b;
+    background: color-mix(in srgb, var(--theme-highlight) 12%, transparent);
+    color: var(--theme-highlight);
 }
 
 .category-icon {
@@ -473,7 +474,9 @@ function viewDetail(itemId) {
 .sort-options select {
     padding: 8px 12px;
     border-radius: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--theme-border);
+    background: var(--theme-bg-surface);
+    color: var(--theme-text-1);
     margin-left: 10px;
 }
 

@@ -191,7 +191,7 @@ onMounted(loadRecommendations)
 .booking {
     padding: 0 15px;
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 /* 头部样式 */
@@ -210,7 +210,7 @@ onMounted(loadRecommendations)
 .header h1 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #ee7f43, #377ec9);
+    background: var(--theme-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -224,11 +224,11 @@ onMounted(loadRecommendations)
     width: calc(100% - 10px);
     height: 290px;
     z-index: 2;
-    background: rgba(255, 255, 255, .95);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(24px);
     border-radius: 10px;
     overflow: hidden;
-    outline: 2px solid white;
+    outline: 2px solid var(--theme-border);
 }
 
 .blob {
@@ -281,16 +281,16 @@ onMounted(loadRecommendations)
     display: flex;
     flex-direction: row;
     gap: 1rem;
-    background: white;
+    background: var(--theme-bg-surface);
     padding: 1.5rem;
     margin: 1rem;
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .search-bar input {
     padding: 0.8rem 1.2rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--theme-border);
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -298,13 +298,13 @@ onMounted(loadRecommendations)
 
 .search-bar input:focus {
     outline: none;
-    border-color: #4361ee;
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-ring);
 }
 
 .search-bar button {
-    background: linear-gradient(135deg, #4361ee, #3f37c9);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 8px;
     padding: 0.8rem;
@@ -315,9 +315,9 @@ onMounted(loadRecommendations)
 }
 
 .search-bar button:hover {
-    background: linear-gradient(135deg, #3f37c9, #4361ee);
+    background: var(--theme-gradient);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 特色服务样式 */
@@ -330,10 +330,10 @@ onMounted(loadRecommendations)
 
 .feature {
     position: relative;
-    background: white;
+    background: var(--theme-bg-surface);
     padding: 1.5rem;
     border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
 }
@@ -345,14 +345,14 @@ onMounted(loadRecommendations)
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #4361ee, transparent);
+    background: linear-gradient(90deg, var(--theme-primary), transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .feature:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 24px rgba(67, 97, 238, 0.14);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .feature:hover::before {
@@ -360,13 +360,13 @@ onMounted(loadRecommendations)
 }
 
 .feature h2 {
-    color: #4361ee;
+    color: var(--theme-primary);
     margin-bottom: 0.5rem;
     font-size: 1.2rem;
 }
 
 .feature p {
-    color: #adb5bd;
+    color: var(--theme-text-3);
     line-height: 1.6;
 }
 
@@ -378,7 +378,7 @@ onMounted(loadRecommendations)
 .themed-hotels h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    color: #1e1e24;
+    color: var(--theme-text-1);
     position: relative;
     display: inline-block;
 }
@@ -390,7 +390,7 @@ onMounted(loadRecommendations)
     left: 0;
     width: 50%;
     height: 4px;
-    background: linear-gradient(90deg, #4361ee, transparent);
+    background: linear-gradient(90deg, var(--theme-primary), transparent);
     border-radius: 2px;
 }
 
@@ -411,8 +411,8 @@ onMounted(loadRecommendations)
 
 .theme-tabs button {
     padding: 0.5rem 1rem;
-    background: white;
-    border: 1px solid #e0e0e0;
+    background: var(--theme-bg-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 20px;
     font-size: 0.9rem;
     cursor: pointer;
@@ -420,22 +420,22 @@ onMounted(loadRecommendations)
 }
 
 .theme-tabs button:hover {
-    background: #f5f5f5;
+    background: var(--theme-bg-hover);
 }
 
 .theme-tabs button.active {
-    background: linear-gradient(135deg, #4361ee, #3f37c9);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .item {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 12px;
     width: 100%;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     transition: transform 0.3s ease;
     padding: 10px;
 }
@@ -472,7 +472,7 @@ onMounted(loadRecommendations)
 
 .info {
     padding: 1rem;
-    background: white;
+    background: var(--theme-bg-surface);
 }
 
 .meta {
@@ -483,16 +483,16 @@ onMounted(loadRecommendations)
 }
 
 .price {
-    color: #4361ee;
+    color: var(--theme-primary);
     font-weight: bold;
 }
 
 .rating {
-    color: #ffb400;
+    color: var(--theme-warning);
 }
 
 .price small {
-    color: #adb5bd;
+    color: var(--theme-text-3);
     font-weight: normal;
     font-size: 0.75rem;
 }
@@ -501,8 +501,8 @@ onMounted(loadRecommendations)
     position: absolute;
     top: 10px;
     left: 10px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    color: white;
+    background: linear-gradient(135deg, var(--theme-danger), var(--theme-warning));
+    color: var(--theme-primary-text);
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -512,7 +512,7 @@ onMounted(loadRecommendations)
 .empty-tip {
     grid-column: 1 / -1;
     text-align: center;
-    color: #adb5bd;
+    color: var(--theme-text-3);
     padding: 3rem 0;
     font-size: 0.95rem;
 }
@@ -524,18 +524,18 @@ onMounted(loadRecommendations)
 }
 
 .item-list {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 14px;
     overflow: hidden;
     padding: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .item-list:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(67, 97, 238, 0.16);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .item-list img {
@@ -553,7 +553,7 @@ onMounted(loadRecommendations)
 .item-list h3 {
     padding: 1rem 0.5rem 0.25rem;
     font-size: 1.1rem;
-    color: #1e1e24;
+    color: var(--theme-text-1);
 }
 
 .item-list .location {
@@ -568,8 +568,8 @@ onMounted(loadRecommendations)
 }
 
 .facilities span {
-    background: rgba(67, 97, 238, 0.07);
-    color: #4361ee;
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
     padding: 3px 10px;
     border-radius: 999px;
     font-size: 12px;

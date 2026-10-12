@@ -156,7 +156,7 @@ onMounted(() => {
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .orders-table {
@@ -165,16 +165,16 @@ onMounted(() => {
 
 .receiver-phone {
   margin-left: 8px;
-  color: #606266;
+  color: var(--theme-text-2);
 }
 
 .address-text {
-  color: #909399;
+  color: var(--theme-text-3);
   font-size: 12px;
 }
 
 .empty-text {
-  color: #c0c4cc;
+  color: var(--theme-text-3);
 }
 
 .pagination-container {

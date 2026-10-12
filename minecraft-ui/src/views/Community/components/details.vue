@@ -497,17 +497,17 @@ onMounted(() => {
 
 .back-btn {
   padding: 8px 16px;
-  background-color: #f5f5f5;
+  background-color: var(--theme-bg-surface-2);
   border: none;
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: var(--theme-text-1);
   transition: all 0.3s;
 }
 
 .back-btn:hover {
-  background-color: #e8e8e8;
+  background-color: var(--theme-bg-hover);
 }
 
 .loading-state, .error-state, .not-found {
@@ -522,8 +522,8 @@ onMounted(() => {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #f0f0f0;
-  border-top: 3px solid #00A2FF;
+  border: 3px solid var(--theme-bg-surface-2);
+  border-top: 3px solid var(--theme-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 15px;
@@ -535,14 +535,14 @@ onMounted(() => {
 }
 
 .error-state p {
-  color: #ff4d4f;
+  color: var(--theme-danger);
   margin: 0 0 15px 0;
 }
 
 .retry-btn {
   padding: 10px 24px;
-  background-color: #00A2FF;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -550,7 +550,7 @@ onMounted(() => {
 }
 
 .not-found p {
-  color: #999;
+  color: var(--theme-text-3);
   margin: 0 0 15px 0;
 }
 
@@ -561,9 +561,9 @@ onMounted(() => {
 
 .main-content {
   flex: 1;
-  background: white;
+  background: var(--theme-bg-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-sm);
   overflow: hidden;
 }
 
@@ -681,7 +681,7 @@ onMounted(() => {
 .post-image-placeholder {
   width: 100%;
   height: 400px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  background: var(--theme-bg-surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -690,13 +690,13 @@ onMounted(() => {
 .placeholder-icon {
   width: 64px;
   height: 64px;
-  color: #ccc;
+  color: var(--theme-text-3);
 }
 
 .post-actions {
   display: flex;
   padding: 15px 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .action-btn {
@@ -708,16 +708,16 @@ onMounted(() => {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: #666;
+  color: var(--theme-text-2);
   transition: color 0.3s;
 }
 
 .action-btn:hover {
-  color: #00A2FF;
+  color: var(--theme-primary);
 }
 
 .action-btn.liked {
-  color: #FF6161;
+  color: var(--theme-highlight);
 }
 
 .action-icon {
@@ -741,14 +741,14 @@ onMounted(() => {
   margin: 0 0 15px 0;
   font-size: 20px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--theme-text-1);
   line-height: 1.4;
 }
 
 .post-text {
   margin: 0;
   font-size: 15px;
-  color: #333;
+  color: var(--theme-text-1);
   line-height: 1.8;
 }
 
@@ -762,14 +762,14 @@ onMounted(() => {
 .tag {
   padding: 5px 12px;
   font-size: 13px;
-  background: #e8f4fd;
-  color: #00A2FF;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   border-radius: 15px;
 }
 
 .comments-section {
   padding: 20px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .comments-header {
@@ -783,7 +783,7 @@ onMounted(() => {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .sort-buttons {
@@ -794,7 +794,7 @@ onMounted(() => {
 .sort-btn {
   padding: 5px 12px;
   font-size: 14px;
-  color: #999;
+  color: var(--theme-text-3);
   border: none;
   background: transparent;
   cursor: pointer;
@@ -803,8 +803,8 @@ onMounted(() => {
 }
 
 .sort-btn.active {
-  color: #00A2FF;
-  background: #e8f4fd;
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .comment-form {
@@ -819,7 +819,7 @@ onMounted(() => {
 .comment-input {
   flex: 1;
   padding: 12px 16px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--theme-border);
   border-radius: 25px;
   font-size: 14px;
   outline: none;
@@ -827,13 +827,13 @@ onMounted(() => {
 }
 
 .comment-input:focus {
-  border-color: #00A2FF;
+  border-color: var(--theme-primary);
 }
 
 .submit-comment-btn {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #00A2FF 0%, #0088e6 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 25px;
   font-size: 14px;
@@ -858,7 +858,7 @@ onMounted(() => {
 
 .comment-item {
   padding-bottom: 20px;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .comment-item:last-child {
@@ -876,8 +876,8 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #999;
-  color: white;
+  background-color: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -895,8 +895,8 @@ onMounted(() => {
   justify-content: center;
   font-size: 16px;
   font-weight: 600;
-  color: white;
-  background-color: #0088e6;
+  color: var(--theme-primary-text);
+  background-color: var(--theme-primary);
 }
 
 .author-info {
@@ -913,7 +913,7 @@ onMounted(() => {
   margin: 0 0 3px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .vip-badge {
@@ -923,12 +923,12 @@ onMounted(() => {
 .comment-time {
   margin: 0;
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .comment-content {
   font-size: 14px;
-  color: #333;
+  color: var(--theme-text-1);
   line-height: 1.6;
   margin-bottom: 10px;
   padding-left: 52px;
@@ -949,12 +949,12 @@ onMounted(() => {
   background: transparent;
   cursor: pointer;
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
   transition: color 0.3s;
 }
 
 .comment-action-btn:hover {
-  color: #00A2FF;
+  color: var(--theme-primary);
 }
 
 .mini-icon {
@@ -965,8 +965,8 @@ onMounted(() => {
 .no-comments {
   text-align: center;
   padding: 40px 0;
-  color: #999;
-  background: #fafafa;
+  color: var(--theme-text-3);
+  background: var(--theme-bg-surface-2);
   border-radius: 8px;
 }
 
@@ -980,9 +980,9 @@ onMounted(() => {
 }
 
 .author-card {
-  background: white;
+  background: var(--theme-bg-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-sm);
   padding: 20px;
 }
 
@@ -996,8 +996,8 @@ onMounted(() => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1021,8 +1021,8 @@ onMounted(() => {
   justify-content: center;
   font-size: 24px;
   font-weight: 600;
-  color: white;
-  background-color: #0088e6;
+  color: var(--theme-primary-text);
+  background-color: var(--theme-primary);
 }
 
 .author-basic {
@@ -1037,14 +1037,14 @@ onMounted(() => {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .follow-btn {
   align-self: flex-start;
   padding: 6px 16px;
-  background: linear-gradient(135deg, #00A2FF 0%, #0088e6 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 20px;
   font-size: 13px;
@@ -1060,8 +1060,8 @@ onMounted(() => {
   display: flex;
   justify-content: space-around;
   padding: 15px 0;
-  border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid var(--theme-hairline);
+  border-bottom: 1px solid var(--theme-hairline);
   margin-bottom: 15px;
 }
 
@@ -1075,22 +1075,22 @@ onMounted(() => {
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .stat-label {
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .stat-divider {
   width: 1px;
-  background: #f0f0f0;
+  background: var(--theme-border);
 }
 
 .author-desc {
   font-size: 13px;
-  color: #666;
+  color: var(--theme-text-2);
   line-height: 1.6;
   margin-bottom: 15px;
 }
@@ -1104,8 +1104,8 @@ onMounted(() => {
 .author-tag {
   padding: 4px 10px;
   font-size: 12px;
-  background: #f5f5f5;
-  color: #666;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   border-radius: 10px;
 }
 

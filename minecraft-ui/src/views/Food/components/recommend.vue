@@ -258,7 +258,7 @@ onMounted(loadRecommendations)
 .recommendation {
     padding: 0 15px;
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 /* 头部样式 */
@@ -287,11 +287,11 @@ onMounted(loadRecommendations)
     width: calc(100% - 10px);
     height: 240px;
     z-index: 2;
-    background: rgba(255, 255, 255, .95);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(24px);
     border-radius: 10px;
     overflow: hidden;
-    outline: 2px solid white;
+    outline: 2px solid var(--theme-border);
 }
 
 .blob {
@@ -362,18 +362,18 @@ onMounted(loadRecommendations)
     border-radius: 30px 0 0 30px;
     font-size: 16px;
     outline: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     transition: box-shadow 0.3s ease;
 }
 
 .search-bar input:focus {
-    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.35);
+    box-shadow: var(--theme-ring);
 }
 
 .search-bar button {
     padding: 0 25px;
-    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 0 30px 30px 0;
     font-size: 16px;
@@ -385,9 +385,9 @@ onMounted(loadRecommendations)
 }
 
 .search-bar button:hover {
-    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    background: var(--theme-gradient);
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .search-icon {
@@ -403,26 +403,26 @@ onMounted(loadRecommendations)
 
 .quick-filters button {
     padding: 8px 18px;
-    background: white;
-    color: #555;
+    background: var(--theme-bg-surface);
+    color: var(--theme-text-2);
     border: none;
     border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .quick-filters button:hover {
-    color: #ff6b6b;
+    color: var(--theme-primary);
     transform: translateY(-1px);
 }
 
 .quick-filters button.active {
-    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 美食分类 */
@@ -433,7 +433,7 @@ onMounted(loadRecommendations)
 .cuisine-types h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--theme-text-1);
     position: relative;
     padding-left: 15px;
 }
@@ -445,7 +445,7 @@ onMounted(loadRecommendations)
     top: 5px;
     height: 70%;
     width: 5px;
-    background: #ff6b6b;
+    background: var(--theme-primary);
     border-radius: 3px;
 }
 
@@ -456,25 +456,25 @@ onMounted(loadRecommendations)
 }
 
 .cuisine-card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 12px;
     padding: 20px 10px;
     display: flex;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .cuisine-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .cuisine-card.active {
-    background: #fff5f5;
-    border: 1px solid #ff6b6b;
-    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.2);
+    background: var(--theme-primary-soft);
+    border: 1px solid var(--theme-primary);
+    box-shadow: var(--theme-shadow-md);
     transform: translateY(-3px);
 }
 
@@ -504,7 +504,7 @@ onMounted(loadRecommendations)
 
 .section-header h2 {
     font-size: 1.8rem;
-    color: #333;
+    color: var(--theme-text-1);
     position: relative;
     padding-left: 15px;
 }
@@ -516,15 +516,15 @@ onMounted(loadRecommendations)
     top: 5px;
     height: 70%;
     width: 5px;
-    background: linear-gradient(180deg, #ff6b6b, #ff9a44);
+    background: var(--theme-gradient);
     border-radius: 3px;
 }
 
 .sort-options select {
     padding: 8px 14px;
     border-radius: 8px;
-    border: 1px solid #e5e5e5;
-    background: white;
+    border: 1px solid var(--theme-border);
+    background: var(--theme-bg-surface);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -532,8 +532,8 @@ onMounted(loadRecommendations)
 
 .sort-options select:focus {
     outline: none;
-    border-color: #ff6b6b;
-    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-ring);
 }
 
 .restaurant-list {
@@ -543,16 +543,16 @@ onMounted(loadRecommendations)
 }
 
 .restaurant-card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .restaurant-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .restaurant-image {
@@ -578,7 +578,7 @@ onMounted(loadRecommendations)
     left: 10px;
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(6px);
-    color: #ffb400;
+    color: var(--theme-warning);
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 14px;
@@ -601,8 +601,8 @@ onMounted(loadRecommendations)
     position: absolute;
     bottom: 10px;
     right: 10px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    color: white;
+    background: linear-gradient(135deg, var(--theme-danger), var(--theme-warning));
+    color: var(--theme-primary-text);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -611,7 +611,7 @@ onMounted(loadRecommendations)
 .empty-tip {
     grid-column: 1 / -1;
     text-align: center;
-    color: #999;
+    color: var(--theme-text-3);
     padding: 60px 0;
     font-size: 15px;
 }
@@ -626,7 +626,7 @@ onMounted(loadRecommendations)
 }
 
 .cuisine-type {
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 14px;
     margin-bottom: 10px;
 }
@@ -639,8 +639,8 @@ onMounted(loadRecommendations)
 }
 
 .tags span {
-    background: rgba(255, 107, 107, 0.08);
-    color: #ff6b6b;
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 12px;
@@ -653,14 +653,14 @@ onMounted(loadRecommendations)
 }
 
 .price-range {
-    color: #ff6b6b;
+    color: var(--theme-primary);
     font-size: 16px;
     font-weight: 600;
 }
 
 .book-btn-food {
-    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 999px;
     padding: 8px 18px;
@@ -670,9 +670,9 @@ onMounted(loadRecommendations)
 }
 
 .book-btn-food:hover {
-    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    background: var(--theme-gradient);
     transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(255, 107, 107, 0.35);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 美食小贴士 */
@@ -683,7 +683,7 @@ onMounted(loadRecommendations)
 .tips h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--theme-text-1);
     position: relative;
     padding-left: 15px;
 }
@@ -695,7 +695,7 @@ onMounted(loadRecommendations)
     top: 5px;
     height: 70%;
     width: 5px;
-    background: linear-gradient(180deg, #ff6b6b, #ff9a44);
+    background: var(--theme-gradient);
     border-radius: 3px;
 }
 
@@ -706,16 +706,16 @@ onMounted(loadRecommendations)
 }
 
 .tip-card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .tip-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .tip-image {
@@ -741,7 +741,7 @@ onMounted(loadRecommendations)
 
 .tip-card p {
     padding: 0 15px 15px;
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 14px;
     line-height: 1.6;
 }

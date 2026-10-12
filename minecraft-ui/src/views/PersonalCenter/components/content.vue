@@ -608,7 +608,7 @@ const formatDate = (dateString) => {
   justify-content: center;
   align-items: center;
   position: relative;
-  background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  background: var(--theme-gradient);
   overflow: hidden;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -626,11 +626,11 @@ const formatDate = (dateString) => {
 .glass-orb {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .orb1 {
@@ -638,7 +638,7 @@ const formatDate = (dateString) => {
   height: 400px;
   top: -100px;
   right: -100px;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+  background: radial-gradient(circle at 30% 30%, var(--theme-bg-glass-strong), var(--theme-bg-glass));
 }
 
 .orb2 {
@@ -646,7 +646,7 @@ const formatDate = (dateString) => {
   height: 300px;
   bottom: -50px;
   left: -50px;
-  background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+  background: radial-gradient(circle at 70% 70%, var(--theme-bg-glass-strong), var(--theme-bg-glass));
 }
 
 .orb3 {
@@ -655,7 +655,7 @@ const formatDate = (dateString) => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background: radial-gradient(circle at 50% 50%, var(--theme-bg-glass), transparent);
   filter: blur(20px);
 }
 
@@ -665,20 +665,20 @@ const formatDate = (dateString) => {
   z-index: 1;
   width: 100%;
   max-width: 900px;
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--theme-border-strong);
+  box-shadow: var(--theme-shadow-lg);
   padding: 2.5rem;
-  color: #1e293b;
+  color: var(--theme-text-1);
   transition: transform 0.3s ease;
 }
 
 .profile-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 /* 头部区域 */
@@ -708,14 +708,14 @@ const formatDate = (dateString) => {
   border-radius: 50%;
   position: relative;
   cursor: pointer;
-  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border: 2px dashed var(--theme-border-strong);
   transition: all 0.3s ease;
   overflow: hidden;
 }
 
 .avatar-wrapper:hover {
   transform: scale(1.05);
-  border-color: rgba(255, 255, 255, 0.8);
+  border-color: var(--theme-primary);
 }
 
 .avatar {
@@ -731,13 +731,13 @@ const formatDate = (dateString) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--theme-bg-glass);
   border-radius: 50%;
 }
 
 .avatar-placeholder i {
   font-size: 40px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--theme-text-2);
 }
 
 .avatar-hover {
@@ -746,7 +746,7 @@ const formatDate = (dateString) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(191, 191, 191, 0.5);
+  background: var(--theme-overlay);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -770,11 +770,11 @@ const formatDate = (dateString) => {
 }
 
 .account-badge {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(4px);
   padding: 0.4rem 1rem;
   border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--theme-border-strong);
   font-size: 0.85rem;
   display: flex;
   gap: 0.3rem;
@@ -799,8 +799,8 @@ const formatDate = (dateString) => {
   font-size: 2.2rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  color: #0f172a;
-  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+  color: var(--theme-text-1);
+  text-shadow: 0 2px 4px var(--theme-bg-glass);
 }
 
 .user-meta {
@@ -814,10 +814,10 @@ const formatDate = (dateString) => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--theme-bg-glass);
   padding: 0.4rem 1rem;
   border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--theme-border);
   font-size: 0.9rem;
 }
 
@@ -830,27 +830,29 @@ const formatDate = (dateString) => {
 /* 按钮自定义 — 保持玻璃感 */
 :deep(.el-button) {
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.6) !important;
-  background: rgba(255, 255, 255, 0.3) !important;
-  color: #1e293b !important;
+  border: 1px solid var(--theme-border-strong) !important;
+  background: var(--theme-bg-glass) !important;
+  color: var(--theme-text-1) !important;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 :deep(.el-button:hover) {
-  background: rgba(255, 255, 255, 0.5) !important;
-  border-color: rgba(255, 255, 255, 0.8) !important;
+  background: var(--theme-bg-glass-strong) !important;
+  border-color: var(--theme-border-strong) !important;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 :deep(.el-button--primary) {
-  background: rgba(64, 128, 255, 0.4) !important;
-  border-color: rgba(255, 255, 255, 0.8) !important;
+  background: var(--theme-primary-soft) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
 }
 
 :deep(.el-button--primary:hover) {
-  background: rgba(64, 128, 255, 0.6) !important;
+  background: var(--theme-primary) !important;
+  color: var(--theme-primary-text) !important;
 }
 
 /* 信息网格 */
@@ -862,17 +864,17 @@ const formatDate = (dateString) => {
 }
 
 .info-item {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--theme-border);
   border-radius: 24px;
   padding: 1rem 1.2rem;
   transition: all 0.2s;
 }
 
 .info-item:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: var(--theme-bg-glass-strong);
+  border-color: var(--theme-border-strong);
 }
 
 .item-label {
@@ -887,7 +889,7 @@ const formatDate = (dateString) => {
 .item-value {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #0f172a;
+  color: var(--theme-text-1);
   word-break: break-word;
 }
 
@@ -905,24 +907,24 @@ const formatDate = (dateString) => {
   gap: 0.5rem;
   justify-content: flex-end;
   font-size: 0.9rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-bg-glass);
   padding: 0.5rem 1.5rem;
   border-radius: 40px;
   float: right;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--theme-border);
 }
 
 .status-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #94a3b8;
+  background: var(--theme-text-3);
   transition: background 0.3s;
 }
 
 .status-dot.online {
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  background: var(--theme-success);
+  box-shadow: 0 0 8px var(--theme-success);
 }
 
 /* ========== 模态框 (Apple 风格玻璃拟态) ========== */
@@ -934,7 +936,7 @@ const formatDate = (dateString) => {
   justify-content: center;
   align-items: center;
   padding: 24px;
-  background: rgba(0, 0, 0, 0.36);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   animation: modal-fade 0.2s ease;
@@ -951,17 +953,17 @@ const formatDate = (dateString) => {
   max-height: calc(100vh - 48px);
   display: flex;
   flex-direction: column;
-  /* Apple 导航栏玻璃色: rgba(255,255,255,0.72) + blur(20px) */
-  background: rgba(255, 255, 255, 0.78);
+  /* Apple 导航栏玻璃色: 玻璃底 + blur(20px) */
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 28px;                              /* Apple 卡片圆角 24~28px */
   box-shadow:
-    0 30px 60px -20px rgba(0, 0, 0, 0.25),
-    0 0 0 0.5px rgba(0, 0, 0, 0.06);
+    var(--theme-shadow-lg),
+    0 0 0 0.5px var(--theme-hairline);
   overflow: hidden;
-  color: #1d1d1f;                                    /* Apple 主文本色 */
+  color: var(--theme-text-1);                        /* Apple 主文本色 */
   font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'SF Pro Display', sans-serif;
   animation: modal-pop 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -980,7 +982,7 @@ const formatDate = (dateString) => {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px 16px;
-  border-bottom: 1px solid #d2d2d6;                /* Apple 分割线色 */
+  border-bottom: 1px solid var(--theme-border);                /* Apple 分割线色 */
   flex-shrink: 0;
 }
 
@@ -989,7 +991,7 @@ const formatDate = (dateString) => {
   font-size: 20px;
   font-weight: 600;                                 /* Apple H3 600~700 */
   line-height: 1.2;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.01em;
 }
 
@@ -1002,16 +1004,16 @@ const formatDate = (dateString) => {
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #6e6e73;                                   /* Apple 次要文本色 */
+  color: var(--theme-text-2);                                   /* Apple 次要文本色 */
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 .modal-close:hover {
-  background: #f5f5f7;                              /* Apple 背景辅色 */
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);                              /* Apple 背景辅色 */
+  color: var(--theme-text-1);
 }
 .modal-close:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -1037,7 +1039,7 @@ const formatDate = (dateString) => {
   margin-bottom: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #6e6e73;                                   /* Apple 次要文本: 标签 */
+  color: var(--theme-text-2);                                   /* Apple 次要文本: 标签 */
   letter-spacing: 0.01em;
 }
 
@@ -1053,9 +1055,9 @@ const formatDate = (dateString) => {
   font-size: 15px;                                  /* Apple 正文 16~18px, 输入稍小 */
   line-height: 1.4;
   font-family: inherit;
-  color: #1d1d1f;                                   /* 输入主文本 */
-  background: #ffffff;                              /* Apple 白色输入底 */
-  border: 1px solid #d2d2d6;                        /* Apple 边框 */
+  color: var(--theme-text-1);                                   /* 输入主文本 */
+  background: var(--theme-bg-surface);                              /* 白色输入底 */
+  border: 1px solid var(--theme-border);                        /* Apple 边框 */
   border-radius: 12px;                              /* 输入圆角, 与 Apple 表单匹配 */
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -1064,17 +1066,17 @@ const formatDate = (dateString) => {
 }
 
 .form-input::placeholder {
-  color: #a1a1a6;
+  color: var(--theme-text-3);
 }
 
 .form-input:hover {
-  border-color: #b5b5ba;
+  border-color: var(--theme-border-strong);
 }
 
 .form-input:focus {
-  border-color: #2997ff;                            /* Apple 强调色 */
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.12);  /* 蓝色焦点光晕 */
-  background: #ffffff;
+  border-color: var(--theme-primary);                            /* Apple 强调色 */
+  box-shadow: var(--theme-ring);  /* 蓝色焦点光晕 */
+  background: var(--theme-bg-surface);
 }
 
 /* textarea 高度微调 */
@@ -1107,7 +1109,7 @@ const formatDate = (dateString) => {
   top: 50%;
   right: 12px;
   transform: translateY(-50%);
-  color: #6e6e73;
+  color: var(--theme-text-2);
   pointer-events: none;
 }
 
@@ -1125,16 +1127,16 @@ const formatDate = (dateString) => {
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 .pwd-toggle:hover {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 .pwd-toggle:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 1px;
 }
 
@@ -1145,9 +1147,9 @@ const formatDate = (dateString) => {
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px 20px;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border);
   flex-shrink: 0;
-  background: rgba(245, 245, 247, 0.4);
+  background: var(--theme-bg-surface-2);
 }
 
 /* --- 按钮 (Apple 风格) --- */
