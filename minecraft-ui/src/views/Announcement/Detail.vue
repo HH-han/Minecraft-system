@@ -84,12 +84,12 @@ function formatTime(time) {
   padding: 24px 16px 60px;
 }
 .glass-card {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--theme-border);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 .detail-card {
   padding: 36px 40px;
@@ -102,25 +102,25 @@ function formatTime(time) {
 .top-badge {
   padding: 1px 6px;
   border-radius: 4px;
-  background: linear-gradient(135deg, #f97316, #ef4444);
-  color: #fff;
+  background: linear-gradient(135deg, var(--theme-warning), var(--theme-danger));
+  color: var(--theme-primary-text);
   font-size: 12px;
 }
 .detail-title {
   margin: 16px 0 10px;
   font-size: 24px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.4;
 }
 .detail-meta {
   display: flex;
   gap: 16px;
   font-size: 13px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 .detail-content {
   line-height: 1.9;
-  color: #333;
+  color: var(--theme-text-1);
   font-size: 15px;
   word-break: break-word;
 }

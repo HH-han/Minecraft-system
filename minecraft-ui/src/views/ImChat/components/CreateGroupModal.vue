@@ -216,7 +216,7 @@ const onClose = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -227,12 +227,12 @@ const onClose = () => {
 .modal-content {
   width: 480px;
   max-height: 80vh;
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
@@ -241,14 +241,14 @@ const onClose = () => {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 17px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.01em;
 }
 
@@ -256,9 +256,9 @@ const onClose = () => {
   width: 32px;
   height: 32px;
   border: none;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 50%;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -267,8 +267,8 @@ const onClose = () => {
 }
 
 .close-btn:hover {
-  background: #e8e8ed;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .modal-body {
@@ -290,7 +290,7 @@ const onClose = () => {
   margin-bottom: 10px;
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .avatar-item {
@@ -301,23 +301,23 @@ const onClose = () => {
   width: 120px;
   height: 120px;
   margin: 0 auto;
-  border: 2px dashed #d2d2d6;
+  border: 2px dashed var(--theme-border);
   border-radius: 50%;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   transition: 0.2s ease;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 .avatar-upload:hover {
-  border-color: #2997ff;
-  background: rgba(41, 151, 255, 0.05);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .avatar-upload.drag-over {
-  border-color: #2997ff;
-  background: rgba(41, 151, 255, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .preview-avatar {
@@ -333,7 +333,7 @@ const onClose = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .upload-placeholder p {
@@ -343,7 +343,7 @@ const onClose = () => {
 
 .upload-placeholder .hint {
   font-size: 10px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .file-input {
@@ -360,57 +360,57 @@ const onClose = () => {
   width: 100%;
   height: 44px;
   padding: 0 14px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   outline: none;
   transition: 0.2s ease;
   box-sizing: border-box;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .form-input::placeholder {
-  color: #6e6e73;
+  color: var(--theme-text-3);
 }
 
 .form-input:focus {
-  border-color: #2997ff;
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .form-textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   outline: none;
   resize: none;
   transition: 0.2s ease;
   box-sizing: border-box;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .form-textarea::placeholder {
-  color: #6e6e73;
+  color: var(--theme-text-3);
 }
 
 .form-textarea:focus {
-  border-color: #2997ff;
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .friend-list {
   max-height: 200px;
   overflow-y: auto;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   padding: 8px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 .friend-item {
@@ -424,11 +424,11 @@ const onClose = () => {
 }
 
 .friend-item:hover {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
 }
 
 .friend-item.selected {
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
 }
 
 .friend-avatar {
@@ -442,7 +442,7 @@ const onClose = () => {
 .friend-name {
   flex: 1;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
@@ -450,8 +450,8 @@ const onClose = () => {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -462,7 +462,7 @@ const onClose = () => {
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px 24px;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border);
 }
 
 .btn {
@@ -476,23 +476,23 @@ const onClose = () => {
 }
 
 .btn-cancel {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   border-radius: 12px;
 }
 
 .btn-cancel:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .btn-confirm {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 40px;
 }
 
 .btn-confirm:hover:not(:disabled) {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .btn-confirm:disabled {

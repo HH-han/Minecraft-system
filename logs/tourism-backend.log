@@ -1538,3 +1538,8 @@ This generated password is for development use only. Your security configuration
 2026-10-13 00:30:00.090 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=ZTO5556667778889
 2026-10-13 00:30:00.097 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=YTO9876543210987
 2026-10-13 00:30:00.118 [rec-schedule-1] DEBUG c.m.logistics.KuaidiniaoProvider - [快递鸟] queryTrack 骨架调用 trackingNo=DBL4445556667778
+2026-10-13 00:38:18.882 [http-nio-8080-exec-8] WARN  c.m.exception.GlobalExceptionHandler - SSE 长连接超时断开，等待前端自动重连
+2026-10-13 00:42:12.992 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.ProductController
+2026-10-13 00:42:21.211 [http-nio-8080-exec-5] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CarouselController
+2026-10-13 00:42:30.689 [http-nio-8080-exec-9] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.CardController
+2026-10-13 00:42:39.869 [http-nio-8080-exec-3] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.TravelNoteController

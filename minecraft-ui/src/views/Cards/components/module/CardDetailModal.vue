@@ -137,7 +137,7 @@ function previewImage(url) {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -161,7 +161,7 @@ function previewImage(url) {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
   animation: modalIn var(--transition-normal);
 }
 
@@ -199,7 +199,7 @@ function previewImage(url) {
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--theme-bg-active);
   color: var(--color-text);
 }
 
@@ -233,7 +233,7 @@ function previewImage(url) {
 }
 
 .tag-pill {
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
   color: var(--color-primary-hover);
   padding: var(--spacing-4) var(--spacing-12);
   border-radius: var(--radius-full);
@@ -315,7 +315,7 @@ function previewImage(url) {
 
 .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .btn-primary:hover {
@@ -332,24 +332,24 @@ function previewImage(url) {
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--theme-bg-active);
 }
 
 .btn-danger {
-  background: rgba(255, 59, 48, 0.1);
+  background: var(--theme-danger-soft);
   color: var(--color-danger);
 }
 
 .btn-danger:hover {
-  background: rgba(255, 59, 48, 0.18);
+  background: color-mix(in srgb, var(--theme-danger) 20%, transparent);
 }
 
 /* 骨架 */
 .detail-skeleton {
-  background: #ececf0;
+  background: var(--theme-bg-surface-2);
   border-radius: 8px;
   animation: shimmer 1.4s infinite;
-  background-image: linear-gradient(90deg, #ececf0 25%, #f5f5f7 50%, #ececf0 75%);
+  background-image: linear-gradient(90deg, var(--theme-bg-surface-2) 25%, var(--theme-bg-hover) 50%, var(--theme-bg-surface-2) 75%);
   background-size: 200% 100%;
 }
 
@@ -367,7 +367,7 @@ function previewImage(url) {
 .image-preview {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: center;

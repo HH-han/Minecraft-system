@@ -454,7 +454,7 @@ function stripHtml(html) {
 .item-summary {
   margin: 0 0 14px;
   font-size: 13px;
-  color: #86868b;
+  color: var(--theme-text-2);
   line-height: 1.7;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -468,9 +468,9 @@ function stripHtml(html) {
   align-items: center;
   margin-top: auto;
   padding-top: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--theme-hairline);
   font-size: 12px;
-  color: #a1a1a6;
+  color: var(--theme-text-3);
 }
 .item-views {
   display: inline-flex;
@@ -499,12 +499,12 @@ function stripHtml(html) {
 }
 .pagination-wrap :deep(.el-pagination) {
   padding: 7px 14px;
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--theme-border);
   border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 .pagination-wrap :deep(.el-pager li),
 .pagination-wrap :deep(.btn-prev),
@@ -513,8 +513,8 @@ function stripHtml(html) {
   background: transparent;
 }
 .pagination-wrap :deep(.el-pager li.is-active) {
-  background: linear-gradient(135deg, #2c2c2e, #1d1d1f);
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 @keyframes card-in {
@@ -529,13 +529,13 @@ function stripHtml(html) {
 }
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(245, 108, 108, 0.45);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-danger) 45%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 7px rgba(245, 108, 108, 0);
+    box-shadow: 0 0 0 7px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(245, 108, 108, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 

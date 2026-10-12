@@ -313,7 +313,7 @@ function tagNames(card) {
 
 .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
   border: none;
   padding: var(--spacing-12) var(--spacing-28);
   border-radius: var(--radius-full);
@@ -345,7 +345,7 @@ function tagNames(card) {
 
 .skeleton-image {
   height: 200px;
-  background: linear-gradient(90deg, #ececf0 25%, #f5f5f7 50%, #ececf0 75%);
+  background: linear-gradient(90deg, var(--theme-bg-surface-2) 25%, var(--theme-bg-hover) 50%, var(--theme-bg-surface-2) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -357,7 +357,7 @@ function tagNames(card) {
 .skeleton-line {
   height: 14px;
   border-radius: 6px;
-  background: #e3e3e8;
+  background: var(--theme-bg-surface-2);
   margin-bottom: var(--spacing-12);
 }
 
@@ -390,7 +390,7 @@ function tagNames(card) {
 }
 
 .btn-secondary:hover {
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
 }
 
 .btn-secondary:disabled {

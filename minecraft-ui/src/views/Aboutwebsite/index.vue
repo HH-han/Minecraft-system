@@ -101,13 +101,13 @@ const getComponent = () => componentMap[currentComponent.value] || Aboutweb;
 .about-layout {
   display: flex;
   min-height: 100vh;
-  background: #ffffff;
+  background: var(--theme-bg-app);
 }
 
 .sidebar {
   width: 280px;
-  background: #f5f5f7;
-  border-right: 1px solid #e5e5e7;
+  background: var(--theme-bg-surface-2);
+  border-right: 1px solid var(--theme-border);
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -116,13 +116,13 @@ const getComponent = () => componentMap[currentComponent.value] || Aboutweb;
 
 .sidebar-header {
   padding: 40px 24px 24px;
-  border-bottom: 1px solid #e5e5e7;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .sidebar-title {
   font-size: 28px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
 }
 
@@ -140,7 +140,7 @@ const getComponent = () => componentMap[currentComponent.value] || Aboutweb;
   padding: 14px 16px;
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 15px;
   font-weight: 500;
   border-radius: 12px;
@@ -157,14 +157,14 @@ const getComponent = () => componentMap[currentComponent.value] || Aboutweb;
 }
 
 .nav-item:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .nav-item.active {
-  background: #ffffff;
-  color: #2997ff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: var(--theme-bg-surface);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .main-content {
@@ -182,7 +182,7 @@ const getComponent = () => componentMap[currentComponent.value] || Aboutweb;
     height: auto;
     position: static;
     border-right: none;
-    border-bottom: 1px solid #e5e5e7;
+    border-bottom: 1px solid var(--theme-border);
   }
 
   .sidebar-header {

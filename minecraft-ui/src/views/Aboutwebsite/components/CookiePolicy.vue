@@ -100,20 +100,20 @@
 .policy-header {
   margin-bottom: 48px;
   padding-bottom: 32px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .policy-title {
   font-size: 48px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 12px 0;
   line-height: 1.05;
 }
 
 .policy-date {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0;
 }
 
@@ -126,14 +126,14 @@
 .policy-section h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 16px 0;
   line-height: 1.2;
 }
 
 .policy-section p {
   font-size: 16px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.6;
   margin: 0 0 12px 0;
 }
@@ -145,7 +145,7 @@
 
 .policy-section li {
   font-size: 16px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.6;
   margin-bottom: 8px;
 }
@@ -155,7 +155,7 @@
 }
 
 .cookie-category {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 16px;
@@ -168,7 +168,7 @@
 .cookie-category h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 12px 0;
 }
 
@@ -177,7 +177,7 @@
 }
 
 .contact-info {
-  color: #2997ff !important;
+  color: var(--theme-primary) !important;
 }
 
 @media (max-width: 768px) {

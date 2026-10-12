@@ -336,7 +336,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
 .message-item:not(.mine) .message-bubble::after {
   left: -6px;
   border-width: 5px 6px 5px 0;
-  border-color: transparent #ffffff transparent transparent;
+  border-color: transparent var(--theme-bg-surface) transparent transparent;
 }
 
 .message-item.mine .message-bubble::after {
@@ -367,7 +367,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
-  color: #191919;
+  color: var(--theme-text-1);
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -402,7 +402,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   height: 120px;
   object-fit: cover;
   border-radius: 6px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   transition: transform 0.15s ease;
 }
 
@@ -414,7 +414,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #191919;
+  color: var(--theme-text-1);
   font-size: 14px;
 }
 
@@ -428,7 +428,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
   align-items: center;
   justify-content: center;
   padding: 60px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .no-messages .svg-icon {
