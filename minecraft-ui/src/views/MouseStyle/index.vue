@@ -1,21 +1,40 @@
 <template>
     <div class="mouse-style-page" ref="pageRef">
         <div id="cursor-svg-source">
-            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 48 48">
-                <linearGradient id="SVGID_1__s3JOUU9Yp36E_gr1" x1="34.618" x2="17.284" y1="11.573" y2="28.908"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0" stop-color="#60affe"></stop>
-                    <stop offset="1" stop-color="#fff"></stop>
-                </linearGradient>
-                <path fill="url(#SVGID_1__s3JOUU9Yp36E_gr1)"
-                    d="M34.625,18.575L12.163,7.711c-0.734-0.355-1.562,0.271-1.42,1.074l4.338,24.572	c0.152,0.86,1.256,1.126,1.783,0.429l4.444-5.879l9.384,12.086c0.333,0.44,0.96,0.528,1.401,0.194l4.785-3.619	c0.44-0.333,0.528-0.96,0.194-1.401l-9.384-12.086l6.866-2.675C35.367,20.09,35.412,18.955,34.625,18.575z">
-                </path>
-                <path fill="none" stroke="#2e9bfe" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                    d="M30.696,27.048l-2.556-3.291l6.866-2.675c0.814-0.317,0.859-1.452,0.072-1.832L12.616,8.386	c-0.734-0.355-1.562,0.271-1.42,1.074l1.464,8.562">
-                </path>
-                <path fill="none" stroke="#2e9bfe" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                    d="M13.572,22.919l1.962,11.112c0.152,0.86,1.256,1.126,1.783,0.429l4.444-5.879l9.384,12.086	c0.333,0.44,0.96,0.528,1.401,0.194l4.785-3.619c0.44-0.333,0.528-0.96,0.194-1.401l-3.258-4.196">
-                </path>
+            <!-- Minecraft 像素风光标：16x16 像素网格，每格 2 个单位，深色描边 + 浅色填充 -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                shape-rendering="crispEdges">
+                <!-- 外层描边 -->
+                <rect x="0" y="0" width="2" height="2" fill="#1b1b1b" />
+                <rect x="0" y="2" width="4" height="2" fill="#1b1b1b" />
+                <rect x="0" y="4" width="8" height="2" fill="#1b1b1b" />
+                <rect x="0" y="6" width="10" height="2" fill="#1b1b1b" />
+                <rect x="0" y="8" width="14" height="2" fill="#1b1b1b" />
+                <rect x="0" y="10" width="18" height="2" fill="#1b1b1b" />
+                <rect x="0" y="12" width="20" height="2" fill="#1b1b1b" />
+                <rect x="0" y="14" width="14" height="2" fill="#1b1b1b" />
+                <rect x="0" y="16" width="14" height="2" fill="#1b1b1b" />
+                <rect x="0" y="18" width="16" height="2" fill="#1b1b1b" />
+                <rect x="0" y="20" width="4" height="2" fill="#1b1b1b" />
+                <rect x="8" y="20" width="8" height="2" fill="#1b1b1b" />
+                <rect x="0" y="22" width="2" height="2" fill="#1b1b1b" />
+                <rect x="10" y="22" width="8" height="2" fill="#1b1b1b" />
+                <rect x="10" y="24" width="8" height="2" fill="#1b1b1b" />
+                <rect x="12" y="26" width="6" height="2" fill="#1b1b1b" />
+                <rect x="12" y="28" width="2" height="2" fill="#1b1b1b" />
+                <!-- 内层填充 -->
+                <rect x="2" y="4" width="2" height="2" fill="#f5f5f5" />
+                <rect x="2" y="6" width="6" height="2" fill="#f5f5f5" />
+                <rect x="2" y="8" width="8" height="2" fill="#f5f5f5" />
+                <rect x="2" y="10" width="12" height="2" fill="#f5f5f5" />
+                <rect x="2" y="12" width="12" height="2" fill="#f5f5f5" />
+                <rect x="2" y="14" width="10" height="2" fill="#f5f5f5" />
+                <rect x="2" y="16" width="10" height="2" fill="#f5f5f5" />
+                <rect x="2" y="18" width="2" height="2" fill="#f5f5f5" />
+                <rect x="8" y="18" width="6" height="2" fill="#f5f5f5" />
+                <rect x="10" y="20" width="4" height="2" fill="#f5f5f5" />
+                <rect x="12" y="22" width="4" height="2" fill="#f5f5f5" />
+                <rect x="12" y="24" width="4" height="2" fill="#f5f5f5" />
             </svg>
         </div>
     </div>
@@ -81,11 +100,10 @@ onMounted(() => {
     const pctDataUri = `data:image/svg+xml,${urlEncoded}`;
 
     // 光标热点计算：
-    // 当前 SVG viewBox = 0 0 1024 1024，光标实际渲染尺寸 = width/height = 32x32
-    // 蓝色箭头的"尖端"在 viewBox 中大约位于 (390, 210)
-    // 映射到 32px： x = 390/1024 * 32 ≈ 12,  y = 210/1024 * 32 ≈ 7
-    const HOTSPOT_X = 12;
-    const HOTSPOT_Y = 7;
+    // 当前 SVG viewBox = 0 0 32 32，光标实际渲染尺寸 = width/height = 32x32
+    // 像素箭头的"尖端"位于网格 (0,0)，每个像素 2 个单位，映射到 viewBox 即 (0, 0)
+    const HOTSPOT_X = 0;
+    const HOTSPOT_Y = 0;
 
     // 使用 url() 不加分号外的额外包裹——Chrome 对无引号版本最友好
     const cursorStyle = `url(${base64DataUri}) ${HOTSPOT_X} ${HOTSPOT_Y}, pointer`;
