@@ -62,9 +62,9 @@ const formatCount = (n) => {
   break-inside: avoid;
   border-radius: 18px;
   overflow: hidden;
-  background: #fff;
-  border: 1px solid rgba(20, 30, 60, 0.07);
-  box-shadow: 0 4px 16px rgba(20, 40, 80, 0.05);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
   cursor: pointer;
   transition:
     transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -74,8 +74,8 @@ const formatCount = (n) => {
 
 .note-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(41, 151, 255, 0.28);
-  box-shadow: 0 22px 44px -20px rgba(20, 40, 80, 0.35);
+  border-color: color-mix(in srgb, var(--theme-primary) 28%, transparent);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 /* Cover */
@@ -83,7 +83,7 @@ const formatCount = (n) => {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: #eef0f4;
+  background: var(--theme-bg-surface-2);
   overflow: hidden;
 }
 
@@ -112,7 +112,7 @@ const formatCount = (n) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #b9bcc4;
+  color: var(--theme-text-3);
 }
 
 /* Badges */
@@ -135,15 +135,15 @@ const formatCount = (n) => {
 }
 
 .note-card__badge--featured {
-  background: linear-gradient(135deg, #ffb340, #ff8f1f);
-  box-shadow: 0 6px 14px -6px rgba(255, 143, 31, 0.9);
+  background: var(--theme-warning);
+  box-shadow: 0 6px 14px -6px color-mix(in srgb, var(--theme-warning) 90%, transparent);
 }
 
 .note-card__badge--top {
   left: auto;
   right: 10px;
-  background: linear-gradient(135deg, #ff5f57, #e5484d);
-  box-shadow: 0 6px 14px -6px rgba(229, 72, 77, 0.9);
+  background: var(--theme-danger);
+  box-shadow: 0 6px 14px -6px color-mix(in srgb, var(--theme-danger) 90%, transparent);
 }
 
 /* Body */
@@ -157,7 +157,7 @@ const formatCount = (n) => {
   font-weight: 700;
   line-height: 1.42;
   letter-spacing: -0.01em;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -169,7 +169,7 @@ const formatCount = (n) => {
   margin: 7px 0 0;
   font-size: 13px;
   line-height: 1.55;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -189,8 +189,8 @@ const formatCount = (n) => {
   line-height: 1;
   padding: 4px 9px;
   border-radius: 999px;
-  color: #2997ff;
-  background: rgba(41, 151, 255, 0.09);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .note-card__meta {
@@ -199,7 +199,7 @@ const formatCount = (n) => {
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: #9a9aa0;
+  color: var(--theme-text-3);
 }
 
 .note-card__dest,
@@ -212,15 +212,15 @@ const formatCount = (n) => {
 .note-card__days {
   padding: 2px 8px;
   border-radius: 999px;
-  background: #f2f3f6;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 
 /* Footer */
 .note-card__footer {
   margin-top: 12px;
   padding-top: 11px;
-  border-top: 1px solid rgba(20, 30, 60, 0.06);
+  border-top: 1px solid var(--theme-hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -235,7 +235,7 @@ const formatCount = (n) => {
 
 .note-card__username {
   font-size: 12px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -246,7 +246,7 @@ const formatCount = (n) => {
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: #9a9aa0;
+  color: var(--theme-text-3);
   flex-shrink: 0;
 }
 

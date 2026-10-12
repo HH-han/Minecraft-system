@@ -169,12 +169,12 @@ function formatTime(value) {
 
 <style scoped>
 .note-mine {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-ink-3: #9a9aa0;
-  --tn-accent: #2997ff;
-  --tn-accent-2: #5e5ce6;
-  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-ink-3: var(--theme-text-3);
+  --tn-accent: var(--theme-primary);
+  --tn-accent-2: var(--theme-accent-2);
+  --tn-line: var(--theme-border);
   --tn-font: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   position: relative;
@@ -193,9 +193,9 @@ function formatTime(value) {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(900px 460px at 6% -8%, rgba(41, 151, 255, 0.1), transparent 60%),
-    radial-gradient(760px 420px at 100% 2%, rgba(94, 92, 230, 0.09), transparent 58%),
-    #f5f5f7;
+    radial-gradient(900px 460px at 6% -8%, var(--theme-primary-soft), transparent 60%),
+    radial-gradient(760px 420px at 100% 2%, color-mix(in srgb, var(--theme-accent-2) 9%, transparent), transparent 58%),
+    var(--theme-bg-surface-2);
 }
 
 /* Hero */
@@ -237,11 +237,11 @@ function formatTime(value) {
 .note-mine__filters {
   padding: 6px 18px 0;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--theme-bg-glass);
   backdrop-filter: saturate(180%) blur(16px);
   -webkit-backdrop-filter: saturate(180%) blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 16px rgba(20, 40, 80, 0.05);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
   margin-bottom: 18px;
   animation: nm-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
@@ -284,9 +284,9 @@ function formatTime(value) {
   gap: 14px;
   padding: 14px;
   border-radius: 18px;
-  background: #fff;
+  background: var(--theme-bg-surface);
   border: 1px solid var(--tn-line);
-  box-shadow: 0 4px 16px rgba(20, 40, 80, 0.05);
+  box-shadow: var(--theme-shadow-sm);
   cursor: pointer;
   transition:
     transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
@@ -297,8 +297,8 @@ function formatTime(value) {
 
 .note-mine__item:hover {
   transform: translateY(-3px);
-  border-color: rgba(41, 151, 255, 0.24);
-  box-shadow: 0 18px 36px -18px rgba(20, 40, 80, 0.32);
+  border-color: color-mix(in srgb, var(--theme-primary) 24%, transparent);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .note-mine__cover {
@@ -306,11 +306,11 @@ function formatTime(value) {
   height: 90px;
   border-radius: 12px;
   overflow: hidden;
-  background: #eef0f4;
+  background: var(--theme-bg-surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #b9bcc4;
+  color: var(--theme-text-3);
   flex-shrink: 0;
 }
 
@@ -372,7 +372,7 @@ function formatTime(value) {
 
 .note-mine__reject {
   font-size: 12px;
-  color: var(--el-color-danger);
+  color: var(--theme-danger);
   text-align: right;
 }
 

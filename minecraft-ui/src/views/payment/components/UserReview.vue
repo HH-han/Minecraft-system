@@ -158,15 +158,15 @@ const ratingDistribution = computed(() => {
 
 <style scoped>
 .user-review {
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #8e8e93;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f5f5f7;
-  --bg-tertiary: #fafafa;
-  --accent: #2997ff;
-  --star: #ff9500;
-  --divider: #e5e5ea;
+  --text-primary: var(--theme-text-1);
+  --text-secondary: var(--theme-text-2);
+  --text-tertiary: var(--theme-text-3);
+  --bg-primary: var(--theme-bg-surface);
+  --bg-secondary: var(--theme-bg-surface-2);
+  --bg-tertiary: var(--theme-bg-surface-2);
+  --accent: var(--theme-primary);
+  --star: var(--theme-warning);
+  --divider: var(--theme-border);
 
   font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-primary);
@@ -199,11 +199,11 @@ const ratingDistribution = computed(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fff8ee, #fff3e0);
+  background: var(--theme-warning-soft);
   padding: 24px 28px;
   border-radius: 16px;
   min-width: 150px;
-  border: 1px solid rgba(255, 149, 0, 0.15);
+  border: 1px solid color-mix(in srgb, var(--theme-warning) 15%, transparent);
 }
 
 .rating-score {
@@ -229,7 +229,7 @@ const ratingDistribution = computed(() => {
 
 .star.active {
   color: var(--star);
-  filter: drop-shadow(0 1px 2px rgba(255, 149, 0, 0.3));
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--theme-warning) 30%, transparent));
 }
 
 .rating-count {
@@ -244,7 +244,7 @@ const ratingDistribution = computed(() => {
   background: var(--bg-secondary);
   padding: 20px 22px;
   border-radius: 16px;
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
 }
 
 .rating-bar {
@@ -273,7 +273,7 @@ const ratingDistribution = computed(() => {
 .bar-container {
   flex: 1;
   height: 8px;
-  background: #e8e8ed;
+  background: var(--theme-border);
   border-radius: 4px;
   margin: 0 12px;
   overflow: hidden;
@@ -281,7 +281,7 @@ const ratingDistribution = computed(() => {
 
 .bar {
   height: 100%;
-  background: linear-gradient(90deg, #ffb340, #ff9500);
+  background: var(--theme-warning);
   border-radius: 4px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -304,7 +304,7 @@ const ratingDistribution = computed(() => {
   margin-bottom: 12px;
   border-radius: 16px;
   background: var(--bg-tertiary);
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
   transition: all 0.2s ease;
 }
 
@@ -314,7 +314,7 @@ const ratingDistribution = computed(() => {
 
 .review-item:hover {
   background: var(--bg-secondary);
-  border-color: #e5e5ea;
+  border-color: var(--theme-border);
 }
 
 /* Review User */
@@ -332,7 +332,7 @@ const ratingDistribution = computed(() => {
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--bg-primary);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-sm);
   background: var(--divider);
 }
 
@@ -392,13 +392,13 @@ const ratingDistribution = computed(() => {
   object-fit: cover;
   border-radius: 12px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
   cursor: pointer;
 }
 
 .review-image:hover {
   transform: scale(1.03);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--theme-shadow-md);
 }
 
 /* Review Spec */
@@ -410,7 +410,7 @@ const ratingDistribution = computed(() => {
   padding: 5px 12px;
   border-radius: 8px;
   display: inline-block;
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
 }
 
 /* Pagination */

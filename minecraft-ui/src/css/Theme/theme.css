@@ -59,7 +59,7 @@ html[data-theme="light"] {
   --theme-bg-elevated: #ffffff;
   --theme-bg-hover: rgba(15, 23, 42, 0.05);
   --theme-bg-active: rgba(15, 23, 42, 0.09);
-  --theme-bg-glass: rgba(255, 255, 255, 0.72);
+  --theme-bg-glass: rgba(255, 255, 255, 0.12);
   --theme-bg-glass-strong: rgba(255, 255, 255, 0.92);
   --theme-bg-muted: rgba(15, 23, 42, 0.04);
 
@@ -120,7 +120,7 @@ html[data-theme="dark"] {
   --theme-bg-elevated: #16181f;
   --theme-bg-hover: rgba(255, 255, 255, 0.08);
   --theme-bg-active: rgba(255, 255, 255, 0.14);
-  --theme-bg-glass: rgba(22, 24, 31, 0.72);
+  --theme-bg-glass: rgba(22, 24, 31, 0.12);
   --theme-bg-glass-strong: rgba(22, 24, 31, 0.92);
   --theme-bg-muted: rgba(255, 255, 255, 0.05);
 
@@ -136,8 +136,8 @@ html[data-theme="dark"] {
   --theme-primary: #4da3ff;
   --theme-primary-hover: #6cc4ff;
   --theme-primary-soft: rgba(77, 163, 255, 0.16);
-  --theme-primary-text: #06121f;
-  --theme-gradient: linear-gradient(120deg, #6cc4ff, #8b6cff 58%, #ff8f5e 118%);
+  --theme-primary-text: #ffffff;
+  --theme-gradient: rgb(77, 163, 255);
 
   --theme-accent-2: #8b6cff;
   --theme-accent-3: #37e0a0;
@@ -174,7 +174,7 @@ html[data-theme="game"] {
   --theme-bg-elevated: #1e293b;
   --theme-bg-hover: rgba(148, 163, 184, 0.16);
   --theme-bg-active: rgba(148, 163, 184, 0.26);
-  --theme-bg-glass: rgba(30, 41, 59, 0.72);
+  --theme-bg-glass: rgba(30, 41, 59, 0.12);
   --theme-bg-glass-strong: rgba(30, 41, 59, 0.92);
   --theme-bg-muted: rgba(148, 163, 184, 0.1);
 
@@ -190,7 +190,7 @@ html[data-theme="game"] {
   --theme-primary: #4ade80;
   --theme-primary-hover: #22c55e;
   --theme-primary-soft: rgba(74, 222, 128, 0.16);
-  --theme-primary-text: #052e16;
+  --theme-primary-text: #ffffff;
   --theme-gradient: linear-gradient(135deg, #4ade80, #22c55e);
 
   --theme-accent-2: #22c55e;

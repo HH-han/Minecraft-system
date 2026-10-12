@@ -170,9 +170,9 @@ watch(currentAttractionId, () => {
 .loading-spinner {
   width: 32px;
   height: 32px;
-  border: 2px solid #d2d2d6;
-  border-top-color: #2997ff;
-  border-right-color: #2997ff;
+  border: 2px solid var(--theme-border-strong);
+  border-top-color: var(--theme-primary);
+  border-right-color: var(--theme-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   box-sizing: border-box;
@@ -185,7 +185,7 @@ watch(currentAttractionId, () => {
 
 .loading-text {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 @media (max-width: 767px) {

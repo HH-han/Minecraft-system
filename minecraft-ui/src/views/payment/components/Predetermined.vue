@@ -550,7 +550,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .predetermined-card {
   font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 /* ===== 头部 ===== */
@@ -560,7 +560,7 @@ onBeforeUnmount(() => {
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e5e5ea;
+  border-bottom: 1px solid var(--theme-hairline);
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -568,7 +568,7 @@ onBeforeUnmount(() => {
 .card-title {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -583,14 +583,14 @@ onBeforeUnmount(() => {
 .filter-tabs {
   display: inline-flex;
   padding: 3px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 20px;
 }
 
 .filter-btn {
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 13px;
   font-weight: 500;
   padding: 6px 16px;
@@ -601,14 +601,14 @@ onBeforeUnmount(() => {
 }
 
 .filter-btn:hover:not(.active) {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .filter-btn.active {
-  background: #ffffff;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .refresh-btn {
@@ -617,17 +617,17 @@ onBeforeUnmount(() => {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 1px solid #e5e5ea;
+  border: 1px solid var(--theme-border);
   border-radius: 50%;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .refresh-btn:hover {
-  color: #2997ff;
-  border-color: #2997ff;
+  color: var(--theme-primary);
+  border-color: var(--theme-primary);
   transform: rotate(30deg);
 }
 
@@ -648,15 +648,15 @@ onBeforeUnmount(() => {
 
 .state-text {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .loading-spinner {
   width: 28px;
   height: 28px;
-  border: 2px solid #d2d2d6;
-  border-top-color: #2997ff;
-  border-right-color: #2997ff;
+  border: 2px solid var(--theme-border-strong);
+  border-top-color: var(--theme-primary);
+  border-right-color: var(--theme-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -677,21 +677,21 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 14px;
   padding: 18px 20px;
-  background: #ffffff;
-  border: 1px solid #e5e5ea;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .booking-item:hover {
-  border-color: #c7c7cc;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border-color: var(--theme-border-strong);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .booking-item.selected {
-  border-color: #2997ff;
-  background: rgba(41, 151, 255, 0.04);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .item-main {
@@ -726,19 +726,19 @@ onBeforeUnmount(() => {
 }
 
 .badge-ticket {
-  background: rgba(41, 151, 255, 0.12);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .badge-hotel {
-  background: rgba(175, 82, 222, 0.12);
-  color: #af52de;
+  background: color-mix(in srgb, var(--theme-accent-2) 12%, transparent);
+  color: var(--theme-accent-2);
 }
 
 .item-name {
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -748,7 +748,7 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   font-size: 17px;
   font-weight: 700;
-  color: #ff3b30;
+  color: var(--theme-danger);
 }
 
 .item-meta {
@@ -763,7 +763,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   line-height: 1.5;
 }
 
@@ -771,7 +771,7 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 .ticket-items {
@@ -784,10 +784,10 @@ onBeforeUnmount(() => {
 .ticket-tag {
   display: inline-flex;
   padding: 4px 12px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 14px;
   font-size: 12px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.4;
 }
 
@@ -796,9 +796,9 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   padding-top: 10px;
-  border-top: 1px dashed #e5e5ea;
+  border-top: 1px dashed var(--theme-border);
   font-size: 12px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -820,10 +820,10 @@ onBeforeUnmount(() => {
 
 .mini-btn {
   padding: 4px 12px;
-  border: 1px solid #e5e5ea;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
-  background: #ffffff;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -833,19 +833,19 @@ onBeforeUnmount(() => {
 }
 
 .mini-btn:hover {
-  border-color: #2997ff;
-  color: #2997ff;
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
 }
 
 .mini-btn--danger {
-  color: #ff3b30;
-  border-color: rgba(255, 59, 48, 0.3);
+  color: var(--theme-danger);
+  border-color: color-mix(in srgb, var(--theme-danger) 30%, transparent);
 }
 
 .mini-btn--danger:hover {
-  background: #ff3b30;
-  border-color: #ff3b30;
-  color: #ffffff;
+  background: var(--theme-danger);
+  border-color: var(--theme-danger);
+  color: var(--theme-primary-text);
 }
 
 .booking-no {
@@ -874,17 +874,17 @@ onBeforeUnmount(() => {
 .checkbox-custom {
   width: 20px;
   height: 20px;
-  border: 1.5px solid #d2d2d6;
+  border: 1.5px solid var(--theme-border-strong);
   border-radius: 6px;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   flex-shrink: 0;
 }
 
 .apple-checkbox input:checked + .checkbox-custom {
-  background: #2997ff;
-  border-color: #2997ff;
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .apple-checkbox input:checked + .checkbox-custom::after {
@@ -894,7 +894,7 @@ onBeforeUnmount(() => {
   top: 2px;
   width: 5px;
   height: 10px;
-  border: solid #ffffff;
+  border: solid var(--theme-primary-text);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -912,7 +912,7 @@ onBeforeUnmount(() => {
   align-items: center;
   margin-top: 24px;
   padding: 18px 20px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 16px;
   flex-wrap: wrap;
   gap: 12px;
@@ -926,12 +926,12 @@ onBeforeUnmount(() => {
 
 .select-label {
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .selected-count {
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .footer-right {
@@ -948,13 +948,13 @@ onBeforeUnmount(() => {
 
 .total-label {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .price-value {
   font-size: 22px;
   font-weight: 700;
-  color: #ff3b30;
+  color: var(--theme-danger);
 }
 
 .primary-button {
@@ -963,8 +963,8 @@ onBeforeUnmount(() => {
   justify-content: center;
   height: 42px;
   padding: 0 26px;
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 21px;
   font-size: 14px;
@@ -976,7 +976,7 @@ onBeforeUnmount(() => {
 }
 
 .primary-button:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .pay-btn:disabled {

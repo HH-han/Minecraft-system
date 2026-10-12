@@ -127,13 +127,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(145deg, #e8eaef 0%, #dde0e6 100%);
+    background: var(--theme-bg-app);
     overflow: hidden;
 }
 
 .container {
     border-radius: 10px;
-    box-shadow: -5px -5px 10px #f8f9fc, 5px 5px 10px #c2c6ce;
+    box-shadow: -5px -5px 10px var(--theme-bg-surface), 5px 5px 10px var(--theme-border-strong);
     position: absolute;
     width: 768px;
     min-height: 480px;
@@ -141,7 +141,7 @@ body {
 }
 
 form {
-    background: #e4e6ec;
+    background: var(--theme-bg-surface-2);
     display: flex;
     flex-direction: column;
     padding: 0 50px;
@@ -151,14 +151,14 @@ form {
 }
 
 form input {
-    background: #e4e6ec;
+    background: var(--theme-bg-surface-2);
     padding: 16px;
     margin: 8px 0;
     width: 85%;
     border: 0;
     outline: none;
     border-radius: 20px;
-    box-shadow: inset 7px 2px 10px #c2c6ce, inset -5px -5px 12px #f8f9fc;
+    box-shadow: inset 7px 2px 10px var(--theme-border-strong), inset -5px -5px 12px var(--theme-bg-surface);
 }
 
 button {
@@ -176,12 +176,12 @@ button {
 }
 
 .form_btn {
-    box-shadow: -5px -5px 10px #f8f9fc, 5px 5px 8px #c2c6ce;
-    color: #334155;
+    box-shadow: -5px -5px 10px var(--theme-bg-surface), 5px 5px 8px var(--theme-border-strong);
+    color: var(--theme-text-1);
 }
 
 .form_btn:active {
-    box-shadow: inset 1px 1px 2px #c2c6ce, inset -1px -1px 2px #f8f9fc;
+    box-shadow: inset 1px 1px 2px var(--theme-border-strong), inset -1px -1px 2px var(--theme-bg-surface);
 }
 
 .overlay_btn {
@@ -267,7 +267,7 @@ button {
 form h1 {
     font-weight: bold;
     margin: 0;
-    color: #1e293b;
+    color: var(--theme-text-1);
 }
 
 p {
@@ -285,7 +285,7 @@ p {
 
 span {
     font-size: 12px;
-    color: #475569;
+    color: var(--theme-text-2);
     letter-spacing: 0.5px;
     margin-bottom: 10px;
 }
@@ -298,15 +298,15 @@ span {
     align-items: center;
     margin: 0 5px;
     border-radius: 50%;
-    box-shadow: -5px -5px 10px #f8f9fc, 5px 5px 8px #c2c6ce;
+    box-shadow: -5px -5px 10px var(--theme-bg-surface), 5px 5px 8px var(--theme-border-strong);
     cursor: pointer;
 }
 
 .social-links a {
-    color: #475569;
+    color: var(--theme-text-2);
 }
 
 .social-links div:active {
-    box-shadow: inset 1px 1px 2px #c2c6ce, inset -1px -1px 2px #f8f9fc;
+    box-shadow: inset 1px 1px 2px var(--theme-border-strong), inset -1px -1px 2px var(--theme-bg-surface);
 }
 </style>

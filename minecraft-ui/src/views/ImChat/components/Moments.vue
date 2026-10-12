@@ -1223,8 +1223,8 @@ onUnmounted(() => {
   grid-template-columns: repeat(8, 1fr);
   gap: 2px;
   border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-md);
 }
 
 /* 加载更多 */
@@ -1237,19 +1237,19 @@ onUnmounted(() => {
   padding: 9px 28px;
   border: none;
   border-radius: 999px;
-  background: #f5f5f7;
-  color: #2997ff;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-primary);
   font-size: 14px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .load-more-btn:hover:not(:disabled) {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .load-more-end {
-  color: #a1a1a6;
+  color: var(--theme-text-3);
   font-size: 13px;
 }
 
@@ -1258,7 +1258,7 @@ onUnmounted(() => {
   position: fixed;
   inset: 0;
   z-index: 1300;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--theme-overlay);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -1269,7 +1269,7 @@ onUnmounted(() => {
   width: 500px;
   max-width: calc(100vw - 40px);
   max-height: calc(100vh - 60px);
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -1290,7 +1290,7 @@ onUnmounted(() => {
   font-size: 15px;
   line-height: 1.7;
   border: none;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   outline: none;
   background: transparent;
   font-family: inherit;
@@ -1298,7 +1298,7 @@ onUnmounted(() => {
 }
 
 .publish-input::placeholder {
-  color: #b2b2b8;
+  color: var(--theme-text-3);
 }
 
 /* 表情 */
@@ -1311,7 +1311,7 @@ onUnmounted(() => {
 .emoji-btn {
   border: none;
   background: transparent;
-  color: #b2b2b8;
+  color: var(--theme-text-3);
   padding: 2px;
   cursor: pointer;
   display: flex;
@@ -1320,7 +1320,7 @@ onUnmounted(() => {
 }
 
 .emoji-btn:hover {
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .emoji-panel {
@@ -1334,10 +1334,10 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 4px;
-  background: #ffffff;
-  border: 1px solid #ececee;
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  box-shadow: var(--theme-shadow-md);
   z-index: 3;
 }
 
@@ -1353,7 +1353,7 @@ onUnmounted(() => {
 }
 
 .emoji-item:hover {
-  background: #f2f2f5;
+  background: var(--theme-bg-hover);
 }
 
 /* 图片九宫格 */
@@ -1369,7 +1369,7 @@ onUnmounted(() => {
   aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 .publish-thumb img {
@@ -1396,19 +1396,19 @@ onUnmounted(() => {
 
 .publish-add {
   aspect-ratio: 1;
-  background: #f2f2f5;
+  background: var(--theme-bg-surface-2);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #b0b0b6;
+  color: var(--theme-text-3);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .publish-add:hover {
-  background: #eaeaee;
-  color: #6e6e73;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-2);
 }
 
 .publish-add input {
@@ -1418,7 +1418,7 @@ onUnmounted(() => {
 /* 选项行 */
 .publish-options {
   margin: 18px 24px 4px;
-  border: 1px solid #ececee;
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
 }
 
@@ -1433,14 +1433,14 @@ onUnmounted(() => {
   border: none;
   background: transparent;
   font-size: 15px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-family: inherit;
   text-align: left;
   box-sizing: border-box;
 }
 
 .option-row + .option-row {
-  border-top: 1px solid #f0f0f2;
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .option-clickable {
@@ -1449,7 +1449,7 @@ onUnmounted(() => {
 }
 
 .option-clickable:hover {
-  background: #fafafa;
+  background: var(--theme-bg-hover);
 }
 
 .option-row:first-child {
@@ -1463,7 +1463,7 @@ onUnmounted(() => {
 }
 
 .option-icon {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   flex-shrink: 0;
 }
 
@@ -1473,12 +1473,12 @@ onUnmounted(() => {
 }
 
 .option-value {
-  color: #8a8a90;
+  color: var(--theme-text-3);
   font-size: 14px;
 }
 
 .option-arrow {
-  color: #c4c4ca;
+  color: var(--theme-text-3);
   flex-shrink: 0;
 }
 
@@ -1490,12 +1490,12 @@ onUnmounted(() => {
   background: transparent;
   text-align: right;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-family: inherit;
 }
 
 .option-input::placeholder {
-  color: #b2b2b8;
+  color: var(--theme-text-3);
 }
 
 /* 可见范围菜单（向上弹出，避免被弹窗底边裁切） */
@@ -1505,10 +1505,10 @@ onUnmounted(() => {
   bottom: 58px;
   width: 132px;
   padding: 6px;
-  background: #ffffff;
-  border: 1px solid #ececee;
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  box-shadow: var(--theme-shadow-md);
   z-index: 3;
 }
 
@@ -1522,17 +1522,17 @@ onUnmounted(() => {
   border-radius: 7px;
   background: transparent;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .visibility-item:hover {
-  background: #f2f2f5;
+  background: var(--theme-bg-hover);
 }
 
 .visibility-item.active {
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 /* 底部按钮 */
@@ -1548,8 +1548,8 @@ onUnmounted(() => {
   height: 44px;
   border: none;
   border-radius: 6px;
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -1557,7 +1557,7 @@ onUnmounted(() => {
 }
 
 .publish-submit:hover:not(:disabled) {
-  background: #06ad56;
+  background: var(--theme-primary-hover);
 }
 
 .publish-submit:disabled {
@@ -1570,15 +1570,15 @@ onUnmounted(() => {
   height: 44px;
   border: none;
   border-radius: 6px;
-  background: #f2f2f5;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   font-size: 16px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .publish-cancel:hover {
-  background: #e8e8ec;
+  background: var(--theme-bg-hover);
 }
 
 /* 图片预览 */

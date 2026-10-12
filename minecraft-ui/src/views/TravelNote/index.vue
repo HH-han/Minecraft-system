@@ -183,15 +183,15 @@ function goMine() {
 <style scoped>
 /* ============ Design tokens ============ */
 .tn-square {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-ink-3: #9a9aa0;
-  --tn-accent: #2997ff;
-  --tn-accent-2: #5e5ce6;
-  --tn-surface: rgba(255, 255, 255, 0.72);
-  --tn-line: rgba(20, 30, 60, 0.08);
-  --tn-shadow-sm: 0 4px 16px rgba(20, 40, 80, 0.06);
-  --tn-shadow-md: 0 18px 40px -18px rgba(20, 40, 80, 0.28);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-ink-3: var(--theme-text-3);
+  --tn-accent: var(--theme-primary);
+  --tn-accent-2: var(--theme-accent-2);
+  --tn-surface: var(--theme-bg-glass);
+  --tn-line: var(--theme-border);
+  --tn-shadow-sm: var(--theme-shadow-sm);
+  --tn-shadow-md: var(--theme-shadow-md);
   --tn-font: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   position: relative;
@@ -201,10 +201,10 @@ function goMine() {
   font-family: var(--tn-font);
   color: var(--tn-ink);
   background:
-    radial-gradient(1100px 560px at 8% -12%, rgba(41, 151, 255, 0.12), transparent 60%),
-    radial-gradient(900px 520px at 102% -4%, rgba(94, 92, 230, 0.1), transparent 58%),
-    radial-gradient(800px 620px at 50% 118%, rgba(52, 199, 89, 0.06), transparent 62%),
-    #f5f5f7;
+    radial-gradient(1100px 560px at 8% -12%, var(--theme-primary-soft), transparent 60%),
+    radial-gradient(900px 520px at 102% -4%, color-mix(in srgb, var(--theme-accent-2) 10%, transparent), transparent 58%),
+    radial-gradient(800px 620px at 50% 118%, var(--theme-success-soft), transparent 62%),
+    var(--theme-bg-surface-2);
 }
 
 .tn-square::before {
@@ -212,9 +212,9 @@ function goMine() {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(20, 40, 80, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(color-mix(in srgb, var(--theme-text-1) 6%, transparent) 1px, transparent 1px);
   background-size: 26px 26px;
-  mask-image: linear-gradient(180deg, #000 0%, transparent 42%);
+  mask-image: linear-gradient(180deg, var(--theme-text-1) 0%, transparent 42%);
 }
 
 .tn-square > * {
@@ -266,7 +266,7 @@ function goMine() {
   background: var(--tn-surface);
   backdrop-filter: saturate(180%) blur(18px);
   -webkit-backdrop-filter: saturate(180%) blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--theme-border);
   box-shadow: var(--tn-shadow-sm);
   animation: tn-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
@@ -314,7 +314,7 @@ function goMine() {
 
 .tn-toolbar__search :deep(.el-input__wrapper) {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--theme-bg-surface);
   box-shadow: 0 0 0 1px var(--tn-line) inset;
   padding-left: 14px;
 }
@@ -336,7 +336,7 @@ function goMine() {
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid var(--tn-line);
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--theme-bg-glass);
   color: var(--tn-ink-2);
   font-size: 13px;
   font-weight: 500;
@@ -348,15 +348,15 @@ function goMine() {
 .tn-chip:hover {
   transform: translateY(-1px);
   color: var(--tn-accent);
-  border-color: rgba(41, 151, 255, 0.35);
+  border-color: color-mix(in srgb, var(--theme-primary) 35%, transparent);
   box-shadow: var(--tn-shadow-sm);
 }
 
 .tn-chip--active {
-  color: #fff;
+  color: var(--theme-primary-text);
   border-color: transparent;
-  background: linear-gradient(135deg, var(--tn-accent), var(--tn-accent-2));
-  box-shadow: 0 8px 18px -8px rgba(41, 151, 255, 0.7);
+  background: var(--theme-gradient);
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--theme-primary) 70%, transparent);
 }
 
 /* ============ Waterfall ============ */

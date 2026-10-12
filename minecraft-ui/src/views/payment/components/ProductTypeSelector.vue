@@ -72,7 +72,7 @@ const selectOption = (typeLabel, optionValue) => {
 <style scoped>
 .product-type-selector {
   font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .type-item {
@@ -89,7 +89,7 @@ const selectOption = (typeLabel, optionValue) => {
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 14px;
   letter-spacing: -0.01em;
 }
@@ -98,7 +98,7 @@ const selectOption = (typeLabel, optionValue) => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #2997ff;
+  background: var(--theme-primary);
   flex-shrink: 0;
 }
 
@@ -114,36 +114,36 @@ const selectOption = (typeLabel, optionValue) => {
   align-items: center;
   gap: 6px;
   padding: 10px 18px;
-  border: 1.5px solid #e5e5ea;
+  border: 1.5px solid var(--theme-border);
   border-radius: 12px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  background: #fafafa;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   user-select: none;
 }
 
 .option-item:hover {
-  border-color: #2997ff;
-  background: rgba(41, 151, 255, 0.04);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
   transform: translateY(-1px);
 }
 
 .option-item.active {
-  border-color: #2997ff;
-  color: #2997ff;
-  background: rgba(41, 151, 255, 0.08);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
   font-weight: 600;
-  box-shadow: 0 4px 14px rgba(41, 151, 255, 0.18);
+  box-shadow: var(--theme-ring);
 }
 
 .option-check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #2997ff;
+  color: var(--theme-primary);
   animation: checkPop 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

@@ -144,8 +144,8 @@ const switchPage = (component) => {
 /* 侧边栏样式 */
 .sidebar {
   width: 180px;
-  background: #fff;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  background: var(--theme-bg-surface);
+  box-shadow: var(--theme-shadow-md);
   position: fixed;
   height: 100vh;
   z-index: 100;
@@ -158,8 +158,8 @@ const switchPage = (component) => {
   font-size: 1.2rem;
   font-weight: 800;
   text-align: center;
-  color: #4e73df;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--theme-primary);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .nav-menu {
@@ -187,16 +187,16 @@ const switchPage = (component) => {
 }
 
 .nav-menu li:hover {
-  background-color: rgba(78, 115, 223, 0.1);
+  background-color: var(--theme-primary-soft);
 }
 
 .nav-menu li.active {
-  background-color: #4e73df;
-  color: #fff;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .nav-menu li.active .nav-icon {
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .nav-icon {
@@ -205,7 +205,7 @@ const switchPage = (component) => {
   height: 2.5rem;
   line-height: 2.5rem;
   text-align: center;
-  color: #4e73df;
+  color: var(--theme-primary);
   transition: all 0.3s ease;
 }
 
@@ -216,7 +216,7 @@ const switchPage = (component) => {
 
 .sidebar-footer {
   padding: 1rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .user-info {
@@ -248,26 +248,26 @@ const switchPage = (component) => {
 }
 
 .content-container {
-  background: #fff;
+  background: var(--theme-bg-surface);
   border-radius: 15px;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  box-shadow: var(--theme-shadow-md);
   padding: 1rem;
   min-height: calc(100vh - 8rem);
 }
 
 .header-bar {
   position: fixed;
-  background: #ffffff;
-  color: #000;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   display: flex;
   width: 100%;
   height: 80px;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  box-shadow: var(--theme-shadow-md);
   top: 0;
   left: 0;
   right: 0;
   z-index: 10;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .content-header {
@@ -289,7 +289,7 @@ const switchPage = (component) => {
 
 .breadcrumb {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--theme-text-2);
 }
 
 /* 返回按钮样式 */

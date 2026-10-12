@@ -308,7 +308,7 @@ const isRegister = ref(false)
 
 .right-section {
   width: 50%;
-  background: white;
+  background: var(--theme-bg-surface);
   padding: 60px;
   display: flex;
   flex-direction: column;
@@ -367,12 +367,12 @@ const isRegister = ref(false)
 .register-form h2 {
   font-size: 28px;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--theme-text-1);
   animation: slideInUp 0.8s ease-out 0.4s both;
 }
 
 .form-subtitle {
-  color: #666;
+  color: var(--theme-text-2);
   margin-bottom: 40px;
   font-size: 14px;
   animation: slideInUp 0.8s ease-out 0.6s both;
@@ -394,8 +394,8 @@ const isRegister = ref(false)
 .role-btn {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -421,7 +421,7 @@ const isRegister = ref(false)
 
 .role-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .role-btn.active {
@@ -450,7 +450,7 @@ const isRegister = ref(false)
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #333;
+  color: var(--theme-text-1);
   font-weight: 500;
   transition: all 0.3s ease;
 }
@@ -458,7 +458,7 @@ const isRegister = ref(false)
 .input-animation {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -468,7 +468,7 @@ const isRegister = ref(false)
 
 .input-animation::placeholder {
   transition: all 0.3s ease;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .input-animation:focus {

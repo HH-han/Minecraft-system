@@ -240,10 +240,10 @@ const handleCancel = async () => {
 
 <style scoped>
 .as-detail {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-ink-3: #9a9aa0;
-  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-ink-3: var(--theme-text-3);
+  --tn-line: var(--theme-hairline);
   color: var(--tn-ink);
 }
 
@@ -255,8 +255,8 @@ const handleCancel = async () => {
   gap: 12px;
   padding: 14px 16px;
   border-radius: 16px;
-  background: linear-gradient(180deg, #f7f8fb, #eef1f6);
-  border: 1px solid rgba(20, 30, 60, 0.05);
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
 }
 
 .as-detail__no {
@@ -279,20 +279,20 @@ const handleCancel = async () => {
   font-weight: 700;
 }
 .as-detail__status--active {
-  background: rgba(41, 151, 255, 0.12);
-  color: #0473e2;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 .as-detail__status--warn {
-  background: rgba(255, 159, 10, 0.14);
-  color: #b26a00;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 .as-detail__status--done {
-  background: rgba(52, 199, 89, 0.14);
-  color: #1f9d4d;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 .as-detail__status--idle {
-  background: #f0f2f6;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 
 /* descriptions */
@@ -328,7 +328,7 @@ const handleCancel = async () => {
   width: 4px;
   height: 15px;
   border-radius: 3px;
-  background: linear-gradient(180deg, #2997ff, #5e5ce6);
+  background: var(--theme-gradient);
 }
 
 .as-detail__evidence {
@@ -348,7 +348,7 @@ const handleCancel = async () => {
 
 .as-detail__evidence-img:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px -12px rgba(20, 40, 80, 0.4);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .as-return {
@@ -389,7 +389,7 @@ const handleCancel = async () => {
   font-size: 13px;
   color: var(--tn-ink-3);
   border-radius: 12px;
-  background: #f7f8fb;
+  background: var(--theme-bg-surface-2);
 }
 
 .as-msg__input {
@@ -411,7 +411,7 @@ const handleCancel = async () => {
 .as-detail-dialog.el-dialog {
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 30px 80px -30px rgba(20, 40, 80, 0.5);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .as-detail-dialog .el-dialog__header,
@@ -425,7 +425,7 @@ const handleCancel = async () => {
   font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.01em;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .as-detail-dialog .el-dialog__body,

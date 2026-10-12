@@ -330,12 +330,12 @@ async function save(status) {
 <style scoped>
 /* ============ shell ============ */
 .note-editor {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-ink-3: #9a9aa0;
-  --tn-accent: #2997ff;
-  --tn-accent-2: #5e5ce6;
-  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-ink-3: var(--theme-text-3);
+  --tn-accent: var(--theme-primary);
+  --tn-accent-2: var(--theme-accent-2);
+  --tn-line: var(--theme-border);
   --tn-font: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   position: relative;
@@ -354,9 +354,9 @@ async function save(status) {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(900px 460px at 8% -10%, rgba(41, 151, 255, 0.1), transparent 60%),
-    radial-gradient(760px 420px at 100% 0%, rgba(94, 92, 230, 0.09), transparent 58%),
-    #f5f5f7;
+    radial-gradient(900px 460px at 8% -10%, var(--theme-primary-soft), transparent 60%),
+    radial-gradient(760px 420px at 100% 0%, color-mix(in srgb, var(--theme-accent-2) 9%, transparent), transparent 58%),
+    var(--theme-bg-surface-2);
 }
 
 .note-editor__title {
@@ -371,9 +371,9 @@ async function save(status) {
 .note-editor__form {
   padding: 28px 30px 24px;
   border-radius: 24px;
-  background: #fff;
+  background: var(--theme-bg-surface);
   border: 1px solid var(--tn-line);
-  box-shadow: 0 20px 50px -28px rgba(20, 40, 80, 0.35);
+  box-shadow: var(--theme-shadow-lg);
   animation: ne-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 
@@ -399,14 +399,14 @@ async function save(status) {
   width: 104px;
   height: 104px;
   border-radius: 16px;
-  border: 1.5px dashed rgba(41, 151, 255, 0.4);
-  background: rgba(41, 151, 255, 0.04);
+  border: 1.5px dashed color-mix(in srgb, var(--theme-primary) 40%, transparent);
+  background: var(--theme-primary-soft);
   transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .note-editor__upload :deep(.el-upload--picture-card:hover) {
   border-color: var(--tn-accent);
-  background: rgba(41, 151, 255, 0.08);
+  background: var(--theme-primary-soft);
   transform: translateY(-2px);
 }
 
@@ -429,13 +429,13 @@ async function save(status) {
   border: 1px solid var(--tn-line);
   border-radius: 16px;
   overflow: hidden;
-  background: #fff;
+  background: var(--theme-bg-surface);
   transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .rich-editor:focus-within {
-  border-color: rgba(41, 151, 255, 0.5);
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.12);
+  border-color: color-mix(in srgb, var(--theme-primary) 55%, transparent);
+  box-shadow: var(--theme-ring);
 }
 
 .rich-editor__toolbar {
@@ -444,7 +444,7 @@ async function save(status) {
   gap: 4px;
   padding: 8px 10px;
   border-bottom: 1px solid var(--tn-line);
-  background: linear-gradient(180deg, #fafbfd, #f2f4f8);
+  background: var(--theme-bg-surface-2);
 }
 
 .rich-editor__toolbar button {
@@ -463,9 +463,9 @@ async function save(status) {
 }
 
 .rich-editor__toolbar button:hover {
-  background: #fff;
+  background: var(--theme-bg-surface);
   color: var(--tn-accent);
-  box-shadow: 0 2px 8px -2px rgba(20, 40, 80, 0.2);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .rich-editor__area {
@@ -476,7 +476,7 @@ async function save(status) {
   font-size: 15.5px;
   line-height: 1.9;
   outline: none;
-  color: #2b2b2f;
+  color: var(--theme-text-1);
 }
 
 .rich-editor__area:empty::before {
@@ -493,7 +493,7 @@ async function save(status) {
   margin: 10px 0;
   padding: 8px 14px;
   border-left: 3px solid var(--tn-accent);
-  background: rgba(41, 151, 255, 0.06);
+  background: var(--theme-primary-soft);
   border-radius: 0 10px 10px 0;
   color: var(--tn-ink-2);
 }
@@ -508,7 +508,7 @@ async function save(status) {
 
 .note-editor__tags :deep(.el-tag) {
   border: none;
-  background: rgba(41, 151, 255, 0.09);
+  background: var(--theme-primary-soft);
   color: var(--tn-accent);
   border-radius: 999px;
   font-weight: 500;
@@ -535,8 +535,8 @@ async function save(status) {
   flex-wrap: wrap;
   padding: 10px 12px;
   border-radius: 14px;
-  background: #f7f8fb;
-  border: 1px solid rgba(20, 30, 60, 0.05);
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
 }
 
 /* ============ submit bar ============ */
@@ -549,11 +549,11 @@ async function save(status) {
   margin-top: 20px;
   padding: 12px 16px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: saturate(180%) blur(16px);
   -webkit-backdrop-filter: saturate(180%) blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 30px -16px rgba(20, 40, 80, 0.4);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 @keyframes ne-rise {

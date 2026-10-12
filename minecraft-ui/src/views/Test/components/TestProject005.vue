@@ -91,7 +91,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  background: var(--theme-bg-app);
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -156,7 +156,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: bold;
   letter-spacing: 4px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--theme-text-3);
   text-transform: uppercase;
   animation: textPulse 1.5s ease-in-out infinite;
 }
@@ -168,7 +168,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  color: #fff;
+  color: var(--theme-text-1);
   overflow: hidden;
   white-space: nowrap;
   animation: textReveal 1.5s ease-in-out infinite;
@@ -221,7 +221,7 @@ onMounted(() => {
 .gradient-bg {
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at center, #0f0f1f 0%, #000000 100%);
+  background: var(--theme-bg-app);
   position: relative;
 }
 
@@ -326,7 +326,7 @@ onMounted(() => {
 }
 
 .subtitle .text {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--theme-text-1);
   font-size: 14px;
   letter-spacing: 4px;
   text-transform: uppercase;
@@ -347,7 +347,7 @@ onMounted(() => {
 }
 
 .scroll-indicator span {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--theme-text-2);
   font-size: 12px;
   letter-spacing: 2px;
 }
@@ -355,7 +355,7 @@ onMounted(() => {
 .mouse {
   width: 26px;
   height: 42px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid var(--theme-border-strong);
   border-radius: 20px;
   position: relative;
 }

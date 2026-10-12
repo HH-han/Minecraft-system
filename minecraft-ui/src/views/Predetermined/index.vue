@@ -116,8 +116,8 @@ watch(() => route.query.tab, (newTab) => {
 /* ===== 全页容器（Apple 辅色背景） ===== */
 .predetermined-page {
   min-height: 100vh;
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-app);
+  color: var(--theme-text-1);
   box-sizing: border-box;
 }
 
@@ -140,14 +140,14 @@ watch(() => route.query.tab, (newTab) => {
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .page-subtitle {
   margin: 0 0 32px;
   font-size: 18px;
   line-height: 1.4;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 /* ===== Segmented Control (iOS Tab) ===== */
@@ -156,7 +156,7 @@ watch(() => route.query.tab, (newTab) => {
   align-items: center;
   width: 280px;
   padding: 4px;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-muted);
   border-radius: 28px;
   box-sizing: border-box;
 }
@@ -166,7 +166,7 @@ watch(() => route.query.tab, (newTab) => {
   height: 36px;
   border: none;
   background: transparent;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-size: 14px;
   font-weight: 500;
   border-radius: 24px;
@@ -177,18 +177,18 @@ watch(() => route.query.tab, (newTab) => {
 }
 
 .segmented-item:hover:not(.active) {
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 .segmented-item.active {
-  background: #ffffff;
-  color: #1d1d1f;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  box-shadow: var(--theme-shadow-sm);
   font-weight: 600;
 }
 
 .segmented-item:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -214,9 +214,9 @@ watch(() => route.query.tab, (newTab) => {
 .loading-spinner {
   width: 32px;
   height: 32px;
-  border: 2px solid #d2d2d6;
-  border-top-color: #2997ff;
-  border-right-color: #2997ff;
+  border: 2px solid var(--theme-border-strong);
+  border-top-color: var(--theme-primary);
+  border-right-color: var(--theme-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   box-sizing: border-box;
@@ -229,7 +229,7 @@ watch(() => route.query.tab, (newTab) => {
 
 .loading-text {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 /* ===== 模块切换淡入淡出 ===== */

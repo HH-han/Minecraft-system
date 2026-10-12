@@ -165,9 +165,9 @@ const submit = async () => {
 
 <style scoped>
 .as-dialog-body {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-line: var(--theme-hairline);
 
   color: var(--tn-ink);
 }
@@ -177,8 +177,8 @@ const submit = async () => {
   padding: 10px 14px;
   border-radius: 12px;
   font-size: 13px;
-  color: #0473e2;
-  background: rgba(41, 151, 255, 0.08);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .as-grid {
@@ -203,14 +203,14 @@ const submit = async () => {
   width: 88px;
   height: 88px;
   border-radius: 14px;
-  border: 1.5px dashed rgba(41, 151, 255, 0.4);
-  background: rgba(41, 151, 255, 0.04);
+  border: 1.5px dashed color-mix(in srgb, var(--theme-primary) 40%, transparent);
+  background: var(--theme-primary-soft);
   transition: all 0.22s ease;
 }
 
 .as-upload :deep(.el-upload--picture-card:hover) {
-  border-color: #2997ff;
-  background: rgba(41, 151, 255, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
   transform: translateY(-2px);
 }
 
@@ -222,7 +222,7 @@ const submit = async () => {
 
 .as-upload__plus {
   font-size: 20px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
   line-height: 1;
 }
 
@@ -239,7 +239,7 @@ const submit = async () => {
 .as-dialog.el-dialog {
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 30px 80px -30px rgba(20, 40, 80, 0.5);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .as-dialog .el-dialog__header,
@@ -253,7 +253,7 @@ const submit = async () => {
   font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.01em;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .as-dialog .el-dialog__body,

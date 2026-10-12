@@ -327,7 +327,7 @@ watch(activeFilter, () => {
 <style scoped>
 .historical-orders {
   font-family: 'Inter', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .orders-header {
@@ -336,7 +336,7 @@ watch(activeFilter, () => {
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e5e5ea;
+  border-bottom: 1px solid var(--theme-hairline);
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -344,7 +344,7 @@ watch(activeFilter, () => {
 .orders-header h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
   letter-spacing: -0.02em;
 }
@@ -357,10 +357,10 @@ watch(activeFilter, () => {
 
 .filter-btn {
   padding: 7px 16px;
-  border: 1px solid #e5e5ea;
+  border: 1px solid var(--theme-border);
   border-radius: 20px;
-  background: #ffffff;
-  color: #6e6e73;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-2);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -369,14 +369,14 @@ watch(activeFilter, () => {
 }
 
 .filter-btn:hover {
-  border-color: #2997ff;
-  color: #2997ff;
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
 }
 
 .filter-btn.active {
-  background: #1d1d1f;
-  border-color: #1d1d1f;
-  color: #ffffff;
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 /* 空状态 */
@@ -396,18 +396,18 @@ watch(activeFilter, () => {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 .empty-icon svg {
   width: 56px;
   height: 56px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 .empty-text {
   font-size: 16px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin-bottom: 24px;
   font-weight: 500;
 }
@@ -420,12 +420,12 @@ watch(activeFilter, () => {
 }
 
 .order-item {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-sm);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -433,8 +433,8 @@ watch(activeFilter, () => {
 
 .order-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border-color: #e5e5ea;
+  box-shadow: var(--theme-shadow-md);
+  border-color: var(--theme-border);
 }
 
 .order-header {
@@ -442,13 +442,13 @@ watch(activeFilter, () => {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 14px;
-  border-bottom: 1px solid #f0f0f2;
+  border-bottom: 1px solid var(--theme-hairline);
   gap: 10px;
 }
 
 .order-id {
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-weight: 500;
   font-family: 'SF Mono', 'Menlo', monospace;
 }
@@ -473,33 +473,33 @@ watch(activeFilter, () => {
 }
 
 .order-status.unpaid {
-  background: rgba(255, 149, 0, 0.1);
-  color: #ff9500;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 
 .order-status.paid {
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .order-status.shipping {
-  background: rgba(0, 122, 255, 0.1);
-  color: #007aff;
+  background: var(--theme-info-soft);
+  color: var(--theme-info);
 }
 
 .order-status.completed {
-  background: rgba(52, 199, 89, 0.1);
-  color: #34c759;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .order-status.cancelled {
-  background: rgba(255, 59, 48, 0.1);
-  color: #ff3b30;
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
 }
 
 .order-status.refunded {
-  background: rgba(175, 82, 222, 0.1);
-  color: #af52de;
+  background: color-mix(in srgb, var(--theme-accent-2) 10%, transparent);
+  color: var(--theme-accent-2);
 }
 
 .order-info {
@@ -516,18 +516,18 @@ watch(activeFilter, () => {
 
 .info-item .label {
   font-size: 12px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
   font-weight: 400;
 }
 
 .info-item .value {
   font-size: 13px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
 .info-item .price {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 700;
   font-size: 14px;
 }
@@ -542,15 +542,15 @@ watch(activeFilter, () => {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #fafafa;
+  background: var(--theme-bg-surface-2);
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
   transition: background 0.2s ease;
 }
 
 .product-item:hover {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 .product-image {
@@ -559,7 +559,7 @@ watch(activeFilter, () => {
   border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
 }
 
 .product-image img {
@@ -580,7 +580,7 @@ watch(activeFilter, () => {
 
 .product-name {
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 6px;
   white-space: nowrap;
   overflow: hidden;
@@ -596,13 +596,13 @@ watch(activeFilter, () => {
 }
 
 .product-price .price {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 700;
 }
 
 .product-price .quantity {
-  color: #6e6e73;
-  background: #ffffff;
+  color: var(--theme-text-2);
+  background: var(--theme-bg-surface);
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 12px;
@@ -614,19 +614,19 @@ watch(activeFilter, () => {
   justify-content: space-between;
   align-items: center;
   padding-top: 14px;
-  border-top: 1px solid #f0f0f2;
+  border-top: 1px solid var(--theme-hairline);
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .order-total {
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-weight: 400;
 }
 
 .total-price {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 700;
   margin-left: 4px;
   font-size: 18px;
@@ -657,47 +657,47 @@ watch(activeFilter, () => {
 }
 
 .btn-primary {
-  background: #1d1d1f;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .btn-primary:hover {
-  background: #2d2d2f;
+  background: var(--theme-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .btn-secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
-  border: 1px solid #e5e5ea;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
+  border: 1px solid var(--theme-border);
 }
 
 .btn-secondary:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .btn-delete {
-  background: #ffffff;
-  color: #ff3b30;
-  border: 1px solid rgba(255, 59, 48, 0.3);
+  background: var(--theme-bg-surface);
+  color: var(--theme-danger);
+  border: 1px solid color-mix(in srgb, var(--theme-danger) 30%, transparent);
 }
 
 .btn-delete:hover {
-  background: #ff3b30;
-  color: #ffffff;
-  border-color: #ff3b30;
+  background: var(--theme-danger);
+  color: var(--theme-primary-text);
+  border-color: var(--theme-danger);
 }
 
 .btn-link {
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   padding: 7px 14px;
 }
 
 .btn-link:hover {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 /* 分页 */
@@ -708,15 +708,15 @@ watch(activeFilter, () => {
   gap: 20px;
   margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid #e5e5ea;
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .page-btn {
   padding: 9px 20px;
-  border: 1px solid #e5e5ea;
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  background: #ffffff;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
@@ -725,20 +725,20 @@ watch(activeFilter, () => {
 }
 
 .page-btn:hover:not(:disabled) {
-  border-color: #2997ff;
-  color: #2997ff;
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
 }
 
 .page-btn:disabled {
-  color: #d2d2d6;
+  color: var(--theme-text-3);
   cursor: not-allowed;
-  border-color: #f0f0f2;
-  background: #fafafa;
+  border-color: var(--theme-hairline);
+  background: var(--theme-bg-surface-2);
 }
 
 .page-info {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-weight: 500;
 }
 

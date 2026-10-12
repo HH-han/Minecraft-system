@@ -418,7 +418,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--theme-overlay);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -429,9 +429,9 @@ onMounted(() => {
 }
 
 .blur-modal-content {
-  background: white;
+  background: var(--theme-bg-elevated);
   border-radius: 15px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-lg);
   width: 90%;
   max-width: 500px;
   max-height: 90vh;

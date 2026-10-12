@@ -455,7 +455,7 @@ onMounted(() => {
 <style scoped>
 .order-detail {
   font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .order-header {
@@ -464,7 +464,7 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 28px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e5e5ea;
+  border-bottom: 1px solid var(--theme-hairline);
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -472,7 +472,7 @@ onMounted(() => {
 .order-title {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -497,33 +497,33 @@ onMounted(() => {
 }
 
 .order-status.unpaid {
-  background: rgba(255, 149, 0, 0.1);
-  color: #ff9500;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 
 .order-status.paid {
-  background: rgba(52, 199, 89, 0.1);
-  color: #34c759;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .order-status.shipping {
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .order-status.completed {
-  background: rgba(52, 199, 89, 0.1);
-  color: #34c759;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .order-status.cancelled {
-  background: rgba(142, 142, 147, 0.1);
-  color: #8e8e93;
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-3);
 }
 
 .order-status.refunded {
-  background: rgba(175, 82, 222, 0.1);
-  color: #af52de;
+  background: color-mix(in srgb, var(--theme-accent-2) 10%, transparent);
+  color: var(--theme-accent-2);
 }
 
 /* 卡片通用样式 */
@@ -532,11 +532,11 @@ onMounted(() => {
 .order-items-card,
 .order-summary-card,
 .shipping-info-card {
-  background: #fafafa;
+  background: var(--theme-bg-surface-2);
   border-radius: 16px;
   padding: 20px 22px;
   margin-bottom: 16px;
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
 }
 
 /* 复制按钮 */
@@ -544,9 +544,9 @@ onMounted(() => {
   margin-left: 8px;
   padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(41, 151, 255, 0.35);
-  background: rgba(41, 151, 255, 0.08);
-  color: #2997ff;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 35%, transparent);
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -556,14 +556,14 @@ onMounted(() => {
 }
 
 .copy-btn:hover {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .section-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 14px 0;
   letter-spacing: -0.01em;
 }
@@ -578,20 +578,20 @@ onMounted(() => {
 }
 
 .info-item:not(:last-child) {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .info-item .label {
   font-size: 14px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   flex-shrink: 0;
 }
 
 .info-item .value {
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   text-align: right;
   word-break: break-all;
 }
@@ -599,7 +599,7 @@ onMounted(() => {
 .info-item .price {
   font-size: 16px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 /* 收货地址 */
@@ -618,28 +618,28 @@ onMounted(() => {
 .name {
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .phone {
   font-size: 14px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .address-detail {
   font-size: 14px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   line-height: 1.6;
 }
 
 /* 商品信息 */
 .items-list {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #f0f0f2;
+  border: 1px solid var(--theme-hairline);
 }
 
 .item {
@@ -650,11 +650,11 @@ onMounted(() => {
 }
 
 .item:hover {
-  background: #fafafa;
+  background: var(--theme-bg-surface-2);
 }
 
 .item:not(:last-child) {
-  border-bottom: 1px solid #f5f5f7;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .item-image {
@@ -663,7 +663,7 @@ onMounted(() => {
   flex-shrink: 0;
   border-radius: 10px;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 .item-image img {
@@ -684,7 +684,7 @@ onMounted(() => {
 .item-name {
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -697,9 +697,9 @@ onMounted(() => {
   margin-top: 12px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   line-height: 1.5;
 }
 
@@ -708,8 +708,8 @@ onMounted(() => {
   margin-right: 8px;
   padding: 1px 8px;
   border-radius: 6px;
-  background: #ffffff;
-  color: #8e8e93;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-3);
   font-weight: 600;
 }
 
@@ -722,13 +722,13 @@ onMounted(() => {
 .item-price .price {
   font-size: 16px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .item-price .quantity {
   font-size: 13px;
-  color: #6e6e73;
-  background: #f5f5f7;
+  color: var(--theme-text-2);
+  background: var(--theme-bg-surface-2);
   padding: 3px 10px;
   border-radius: 8px;
   font-weight: 500;
@@ -745,17 +745,17 @@ onMounted(() => {
 .summary-label {
   font-size: 14px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .summary-value {
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .summary-item.total {
-  border-top: 1px solid #e5e5ea;
+  border-top: 1px solid var(--theme-hairline);
   padding-top: 14px;
   margin-top: 6px;
 }
@@ -763,13 +763,13 @@ onMounted(() => {
 .summary-item.total .summary-label {
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .summary-item.total .summary-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.02em;
 }
 
@@ -793,24 +793,24 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: #1d1d1f;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .btn-primary:hover {
-  background: #2d2d2f;
+  background: var(--theme-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .btn-secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
-  border: 1px solid #e5e5ea;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
+  border: 1px solid var(--theme-border);
 }
 
 .btn-secondary:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 /* 无订单数据 */
@@ -830,7 +830,7 @@ onMounted(() => {
 
 .no-order-icon {
   margin-bottom: 24px;
-  color: #d2d2d6;
+  color: var(--theme-text-3);
 }
 
 .no-order-icon svg {
@@ -841,7 +841,7 @@ onMounted(() => {
 .no-order-title {
   font-size: 22px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 10px 0;
   letter-spacing: -0.01em;
 }
@@ -849,7 +849,7 @@ onMounted(() => {
 .no-order-desc {
   font-size: 15px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 0 28px 0;
   line-height: 1.5;
 }

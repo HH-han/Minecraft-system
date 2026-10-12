@@ -1487,6 +1487,6 @@ svg {
 
 .profilepicture_img img:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 0 2px var(--theme-bg-surface), 0 0 0 5px var(--theme-primary);
+  box-shadow: 0 0 0 0px var(--theme-bg-surface), 0 0 0 3px var(--theme-primary);
 }
 
