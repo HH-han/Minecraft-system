@@ -1,6 +1,6 @@
 <template>
-    <label class="switch">
-        <input id="input" type="checkbox" :checked="isDark" @change="toggleTheme" />
+    <label class="switch" :title="`当前主题：${currentThemeName}（点击切换）`">
+        <input id="input" type="checkbox" :checked="isDark" @change="handleToggle" />
         <div class="slider round">
             <div class="sun-moon">
                 <svg id="moon-dot-1" class="moon-dot" viewBox="0 0 100 100">
@@ -68,21 +68,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getCurrentTheme, setTheme, THEMES } from '@/utils/theme'
+import { computed } from 'vue'
+import { useThemeStore } from '@/stores/themeStore'
 
-const isDark = ref(false)
+// 统一走主题 store，切换顺序：亮色 → 暗色 → 游戏 → 亮色
+const themeStore = useThemeStore()
 
-// 切换亮 / 暗主题（写入 localStorage 并更新 <html data-theme>）
-function toggleTheme(event) {
-  isDark.value = event.target.checked
-  setTheme(isDark.value ? THEMES.DARK : THEMES.LIGHT)
+// 开关的选中态：dark / game 均显示为「深色」
+const isDark = computed(() => themeStore.isDark)
+const currentThemeName = computed(() => themeStore.currentThemeInfo?.name || '亮色')
+
+function handleToggle() {
+  themeStore.toggleTheme()
 }
-
-// 与当前已应用的主题保持同步（默认亮色）
-onMounted(() => {
-  isDark.value = getCurrentTheme() === THEMES.DARK
-})
 </script>
 
 <style scoped>

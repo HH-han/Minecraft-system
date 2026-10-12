@@ -1,0 +1,551 @@
+/* ============================================================================
+   全局主题样式（统一主题切换方案 · 全站唯一主题真源）
+   ----------------------------------------------------------------------------
+   驱动方式：utils/theme.js（唯一入口）在 <html> 写入 data-theme 与 dark class
+             取值：light（默认） / dark / game
+
+   使用说明
+   1) 已在 main.js 全局引入，无需在组件里重复 @import
+   2) 组件内直接用令牌，主题切换自动生效：
+        .card {
+          background: var(--theme-bg-surface);
+          color: var(--theme-text-1);
+          border: 1px solid var(--theme-border);
+        }
+   3) 需要「切换时不硬跳」的元素，加 class="theme-transition"
+   4) 常见形态可直接套工具类（工具类为 opt-in，优先级低于组件 scoped 样式）：
+        <div class="theme-card theme-transition">…</div>
+        <span class="theme-text-2">…</span>
+        <button class="theme-button theme-button--primary">…</button>
+   5) 页面自定义的局部主题变量请一律「别名」到本文件令牌，禁止再写各主题三套值：
+        --sb-bg: var(--theme-bg-glass);   /* 而不是在 dark/game 里各写一遍 */
+   6) Element Plus 深色由 html.dark 触发，本文件末尾已把 EP 变量桥接到令牌
+   7) 扩展新主题：在「主题令牌」区按 html[data-theme="xxx"] 复制一份即可，
+      未覆盖的令牌会自动继承亮色默认值
+   ============================================================================ */
+
+/* ============================================================
+   1. 通用令牌（与主题无关，只声明一次）
+   ============================================================ */
+:root {
+  /* 圆角 */
+  --theme-radius-sm: 10px;
+  --theme-radius-md: 14px;
+  --theme-radius-lg: 18px;
+  --theme-radius-xl: 24px;
+  --theme-radius-pill: 999px;
+
+  /* 动效 */
+  --theme-duration-fast: 0.18s;
+  --theme-duration: 0.28s;
+  --theme-duration-slow: 0.42s;
+  --theme-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* 毛玻璃 */
+  --theme-blur: 16px;
+}
+
+/* ============================================================
+   2. 主题令牌 —— 亮色（默认）
+   ============================================================ */
+:root,
+html[data-theme="light"] {
+  color-scheme: light;
+
+  /* 背景层级 */
+  --theme-bg-app: #ffffff;
+  --theme-bg-surface: #ffffff;
+  --theme-bg-surface-2: #f1f5f9;
+  --theme-bg-elevated: #ffffff;
+  --theme-bg-hover: rgba(15, 23, 42, 0.05);
+  --theme-bg-active: rgba(15, 23, 42, 0.09);
+  --theme-bg-glass: rgba(255, 255, 255, 0.72);
+  --theme-bg-glass-strong: rgba(255, 255, 255, 0.92);
+  --theme-bg-muted: rgba(15, 23, 42, 0.04);
+
+  /* 文本层级 */
+  --theme-text-1: #0f172a;
+  --theme-text-2: #64748b;
+  --theme-text-3: #94a3b8;
+  --theme-text-inverse: #ffffff;
+
+  /* 描边 */
+  --theme-border: rgba(148, 163, 184, 0.24);
+  --theme-border-strong: rgba(15, 23, 42, 0.24);
+  --theme-hairline: rgba(148, 163, 184, 0.18);
+
+  /* 主色 */
+  --theme-primary: #0ea5e9;
+  --theme-primary-hover: #0284c7;
+  --theme-primary-soft: rgba(14, 165, 233, 0.1);
+  --theme-primary-text: #ffffff;
+  --theme-gradient: linear-gradient(135deg, #0ea5e9, #6366f1);
+
+  /* 辅助强调色（紫 / 薄荷） */
+  --theme-accent-2: #6366f1;
+  --theme-accent-3: #10b981;
+  --theme-highlight: #e8385a;
+
+  /* 状态色 */
+  --theme-success: #10b981;
+  --theme-success-soft: rgba(16, 185, 129, 0.12);
+  --theme-warning: #f59e0b;
+  --theme-warning-soft: rgba(245, 158, 11, 0.14);
+  --theme-danger: #ef4444;
+  --theme-danger-soft: rgba(239, 68, 68, 0.12);
+  --theme-info: #3b82f6;
+  --theme-info-soft: rgba(59, 130, 246, 0.12);
+
+  /* 阴影与外环 */
+  --theme-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --theme-shadow-md: 0 8px 24px -12px rgba(15, 23, 42, 0.22);
+  --theme-shadow-lg: 0 24px 56px -22px rgba(15, 23, 42, 0.32);
+  --theme-ring: 0 0 0 4px rgba(14, 165, 233, 0.18);
+
+  /* 遮罩与滚动条 */
+  --theme-overlay: rgba(15, 23, 42, 0.45);
+  --theme-scrollbar-thumb: rgba(15, 23, 42, 0.2);
+  --theme-scrollbar-thumb-hover: rgba(15, 23, 42, 0.32);
+}
+
+/* ============================================================
+   3. 主题令牌 —— 暗色（对齐首页暗色设计系统）
+   ============================================================ */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --theme-bg-app: #0b0d12;
+  --theme-bg-surface: rgba(255, 255, 255, 0.045);
+  --theme-bg-surface-2: rgba(255, 255, 255, 0.07);
+  --theme-bg-elevated: #16181f;
+  --theme-bg-hover: rgba(255, 255, 255, 0.08);
+  --theme-bg-active: rgba(255, 255, 255, 0.14);
+  --theme-bg-glass: rgba(22, 24, 31, 0.72);
+  --theme-bg-glass-strong: rgba(22, 24, 31, 0.92);
+  --theme-bg-muted: rgba(255, 255, 255, 0.05);
+
+  --theme-text-1: #f6f7fb;
+  --theme-text-2: rgba(236, 238, 245, 0.66);
+  --theme-text-3: rgba(236, 238, 245, 0.42);
+  --theme-text-inverse: #0f172a;
+
+  --theme-border: rgba(255, 255, 255, 0.1);
+  --theme-border-strong: rgba(255, 255, 255, 0.22);
+  --theme-hairline: rgba(255, 255, 255, 0.09);
+
+  --theme-primary: #4da3ff;
+  --theme-primary-hover: #6cc4ff;
+  --theme-primary-soft: rgba(77, 163, 255, 0.16);
+  --theme-primary-text: #06121f;
+  --theme-gradient: linear-gradient(120deg, #6cc4ff, #8b6cff 58%, #ff8f5e 118%);
+
+  --theme-accent-2: #8b6cff;
+  --theme-accent-3: #37e0a0;
+  --theme-highlight: #ff4d6d;
+
+  --theme-success: #37e0a0;
+  --theme-success-soft: rgba(55, 224, 160, 0.16);
+  --theme-warning: #f0b95e;
+  --theme-warning-soft: rgba(240, 185, 94, 0.16);
+  --theme-danger: #ff6b6b;
+  --theme-danger-soft: rgba(255, 107, 107, 0.16);
+  --theme-info: #4da3ff;
+  --theme-info-soft: rgba(77, 163, 255, 0.16);
+
+  --theme-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --theme-shadow-md: 0 14px 34px -18px rgba(0, 0, 0, 0.7);
+  --theme-shadow-lg: 0 28px 60px -24px rgba(0, 0, 0, 0.8);
+  --theme-ring: 0 0 0 4px rgba(77, 163, 255, 0.22);
+
+  --theme-overlay: rgba(0, 0, 0, 0.6);
+  --theme-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --theme-scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   4. 主题令牌 —— 游戏（石板暗底 + 绿色强调）
+   ============================================================ */
+html[data-theme="game"] {
+  color-scheme: dark;
+
+  --theme-bg-app: #0b1220;
+  --theme-bg-surface: #1e293b;
+  --theme-bg-surface-2: #334155;
+  --theme-bg-elevated: #1e293b;
+  --theme-bg-hover: rgba(148, 163, 184, 0.16);
+  --theme-bg-active: rgba(148, 163, 184, 0.26);
+  --theme-bg-glass: rgba(30, 41, 59, 0.72);
+  --theme-bg-glass-strong: rgba(30, 41, 59, 0.92);
+  --theme-bg-muted: rgba(148, 163, 184, 0.1);
+
+  --theme-text-1: #f8fafc;
+  --theme-text-2: #cbd5e1;
+  --theme-text-3: #94a3b8;
+  --theme-text-inverse: #0f172a;
+
+  --theme-border: rgba(148, 163, 184, 0.24);
+  --theme-border-strong: rgba(148, 163, 184, 0.48);
+  --theme-hairline: rgba(148, 163, 184, 0.18);
+
+  --theme-primary: #4ade80;
+  --theme-primary-hover: #22c55e;
+  --theme-primary-soft: rgba(74, 222, 128, 0.16);
+  --theme-primary-text: #052e16;
+  --theme-gradient: linear-gradient(135deg, #4ade80, #22c55e);
+
+  --theme-accent-2: #22c55e;
+  --theme-accent-3: #4ade80;
+  --theme-highlight: #4ade80;
+
+  --theme-success: #4ade80;
+  --theme-success-soft: rgba(74, 222, 128, 0.16);
+  --theme-warning: #fbbf24;
+  --theme-warning-soft: rgba(251, 191, 36, 0.16);
+  --theme-danger: #f87171;
+  --theme-danger-soft: rgba(248, 113, 113, 0.16);
+  --theme-info: #60a5fa;
+  --theme-info-soft: rgba(96, 165, 250, 0.16);
+
+  --theme-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.45);
+  --theme-shadow-md: 0 14px 34px -18px rgba(0, 0, 0, 0.72);
+  --theme-shadow-lg: 0 28px 60px -24px rgba(0, 0, 0, 0.82);
+  --theme-ring: 0 0 0 4px rgba(74, 222, 128, 0.22);
+
+  --theme-overlay: rgba(2, 6, 23, 0.68);
+  --theme-scrollbar-thumb: rgba(148, 163, 184, 0.3);
+  --theme-scrollbar-thumb-hover: rgba(148, 163, 184, 0.46);
+}
+
+/* ============================================================
+   5. 应用外壳
+   仅提供主题底色与默认文本色；页面/组件的自身背景仍以自身样式为准
+   ============================================================ */
+html {
+  background-color: var(--theme-bg-app);
+}
+
+body {
+  background-color: var(--theme-bg-app);
+  color: var(--theme-text-1);
+  transition:
+    background-color var(--theme-duration-slow) var(--theme-ease),
+    color var(--theme-duration-slow) var(--theme-ease);
+}
+
+/* 全局滚动条随主题 */
+body {
+  scrollbar-color: var(--theme-scrollbar-thumb) transparent;
+}
+
+/* ============================================================
+   6. 可复用工具类（opt-in）
+   ============================================================ */
+
+/* 主题切换过渡：加在需要平滑变色的元素上 */
+.theme-transition {
+  transition:
+    background-color var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease);
+}
+
+/* 表面 */
+.theme-surface {
+  background-color: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  border: 1px solid var(--theme-border);
+}
+
+.theme-surface-2 {
+  background-color: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
+}
+
+.theme-glass {
+  background-color: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  -webkit-backdrop-filter: blur(var(--theme-blur));
+  backdrop-filter: blur(var(--theme-blur));
+}
+
+.theme-glass-strong {
+  background-color: var(--theme-bg-glass-strong);
+  border: 1px solid var(--theme-border);
+  -webkit-backdrop-filter: blur(var(--theme-blur));
+  backdrop-filter: blur(var(--theme-blur));
+}
+
+.theme-card {
+  background-color: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.theme-panel {
+  background-color: var(--theme-bg-elevated);
+  color: var(--theme-text-1);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  box-shadow: var(--theme-shadow-lg);
+}
+
+.theme-overlay {
+  background-color: var(--theme-overlay);
+  -webkit-backdrop-filter: blur(var(--theme-blur));
+  backdrop-filter: blur(var(--theme-blur));
+}
+
+/* 文本 */
+.theme-text-1 {
+  color: var(--theme-text-1);
+}
+
+.theme-text-2 {
+  color: var(--theme-text-2);
+}
+
+.theme-text-3 {
+  color: var(--theme-text-3);
+}
+
+.theme-text-inverse {
+  color: var(--theme-text-inverse);
+}
+
+.theme-text-primary {
+  color: var(--theme-primary);
+}
+
+.theme-divider {
+  border: none;
+  border-top: 1px solid var(--theme-hairline);
+}
+
+/* 按钮 */
+.theme-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-pill);
+  background-color: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.theme-button:hover {
+  background-color: var(--theme-bg-hover);
+}
+
+.theme-button:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+.theme-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.theme-button--primary {
+  border-color: transparent;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+}
+
+.theme-button--primary:hover {
+  background: var(--theme-gradient);
+  filter: brightness(1.06);
+}
+
+.theme-button--ghost {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.theme-button--ghost:hover {
+  background-color: var(--theme-bg-hover);
+}
+
+/* 输入框 */
+.theme-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--theme-border);
+  border-radius: var(--theme-radius-pill);
+  background-color: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.theme-input::placeholder {
+  color: var(--theme-text-3);
+}
+
+.theme-input:focus {
+  border-color: var(--theme-primary);
+  background-color: var(--theme-bg-surface);
+  box-shadow: var(--theme-ring);
+}
+
+/* 标签 / 胶囊 */
+.theme-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--theme-radius-pill);
+  background-color: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.theme-chip--active {
+  background-color: var(--theme-primary-soft);
+  border-color: color-mix(in srgb, var(--theme-primary) 34%, transparent);
+  color: var(--theme-primary);
+}
+
+/* 链接 */
+.theme-link {
+  color: var(--theme-primary);
+  text-decoration: none;
+}
+
+.theme-link:hover {
+  color: var(--theme-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* 状态色文本 */
+.theme-text-success {
+  color: var(--theme-success);
+}
+
+.theme-text-warning {
+  color: var(--theme-warning);
+}
+
+.theme-text-danger {
+  color: var(--theme-danger);
+}
+
+/* 阴影 */
+.theme-shadow-sm {
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.theme-shadow-md {
+  box-shadow: var(--theme-shadow-md);
+}
+
+.theme-shadow-lg {
+  box-shadow: var(--theme-shadow-lg);
+}
+
+/* 滚动条 */
+.theme-scrollbar {
+  scrollbar-color: var(--theme-scrollbar-thumb) transparent;
+}
+
+.theme-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.theme-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.theme-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-scrollbar-thumb);
+}
+
+.theme-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-scrollbar-thumb-hover);
+}
+
+/* ============================================================
+   7. Element Plus 桥接
+   把 EP 语义变量对齐到主题令牌；html.dark 由 utils/theme.js 在
+   dark / game 主题下挂载，EP 深色 css-vars 在 main.js 中先行引入，
+   本区块后置以覆盖 EP 默认值。
+   ============================================================ */
+:root,
+html.dark {
+  /* 主色及其派生层级（用 color-mix 对齐各主题底色） */
+  --el-color-primary: var(--theme-primary);
+  --el-color-primary-light-3: color-mix(in srgb, var(--theme-primary) 72%, var(--theme-bg-app));
+  --el-color-primary-light-5: color-mix(in srgb, var(--theme-primary) 52%, var(--theme-bg-app));
+  --el-color-primary-light-7: color-mix(in srgb, var(--theme-primary) 32%, var(--theme-bg-app));
+  --el-color-primary-light-8: color-mix(in srgb, var(--theme-primary) 22%, var(--theme-bg-app));
+  --el-color-primary-light-9: color-mix(in srgb, var(--theme-primary) 12%, var(--theme-bg-app));
+  --el-color-primary-dark-2: var(--theme-primary-hover);
+
+  /* 状态色 */
+  --el-color-success: var(--theme-success);
+  --el-color-warning: var(--theme-warning);
+  --el-color-danger: var(--theme-danger);
+  --el-color-error: var(--theme-danger);
+  --el-color-info: var(--theme-info);
+
+  /* 背景 */
+  --el-bg-color-page: var(--theme-bg-app);
+  --el-bg-color: var(--theme-bg-elevated);
+  --el-bg-color-overlay: var(--theme-bg-elevated);
+  --el-fill-color-blank: var(--theme-bg-surface);
+  --el-fill-color: var(--theme-bg-surface-2);
+  --el-fill-color-light: var(--theme-bg-hover);
+  --el-fill-color-lighter: var(--theme-bg-hover);
+  --el-fill-color-dark: var(--theme-bg-active);
+  --el-fill-color-darker: var(--theme-bg-active);
+
+  /* 文本 */
+  --el-text-color-primary: var(--theme-text-1);
+  --el-text-color-regular: var(--theme-text-2);
+  --el-text-color-secondary: var(--theme-text-3);
+  --el-text-color-placeholder: var(--theme-text-3);
+  --el-text-color-disabled: var(--theme-text-3);
+
+  /* 描边 */
+  --el-border-color-darker: var(--theme-border-strong);
+  --el-border-color-dark: var(--theme-border-strong);
+  --el-border-color: var(--theme-border-strong);
+  --el-border-color-light: var(--theme-border);
+  --el-border-color-lighter: var(--theme-hairline);
+  --el-border-color-extra-light: var(--theme-hairline);
+
+  /* 遮罩与阴影 */
+  --el-mask-color: var(--theme-overlay);
+  --el-mask-color-extra-light: var(--theme-overlay);
+  --el-box-shadow-light: var(--theme-shadow-sm);
+  --el-box-shadow: var(--theme-shadow-md);
+  --el-box-shadow-dark: var(--theme-shadow-lg);
+}
+
+/* ============================================================
+   8. 无障碍：尊重系统动效偏好
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+
+  body,
+  .theme-transition,
+  .theme-button,
+  .theme-input {
+    transition: none;
+  }
+}

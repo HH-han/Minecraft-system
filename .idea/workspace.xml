@@ -4,19 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="Minecraft-system">
+    <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="页面主题切换/搜索框ui优化">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/ExchangeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/ExchangeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/bug.md" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/md/bug.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-controller.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-controller.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/content/points.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/content/points.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/travel/group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/travel/group.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/points.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/content_management/points.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/DisplayBox/SearchBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/DisplayBox/SearchBox.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,14 +185,6 @@
       <workItem from="1788358793152" duration="7905000" />
       <workItem from="1790931344912" duration="4005000" />
       <workItem from="1791041472791" duration="1532000" />
-    </task>
-    <task id="LOCAL-00102" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783611265338</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1783611265338</updated>
     </task>
     <task id="LOCAL-00103" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -583,7 +570,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788367476423</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary="页面主题切换/搜索框ui优化">
+      <option name="closed" value="true" />
+      <created>1791820415765</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1791820415765</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -591,6 +586,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Minecraft-system" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minecraft-system" />
+    <MESSAGE value="页面主题切换/搜索框ui优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="页面主题切换/搜索框ui优化" />
   </component>
 </project>

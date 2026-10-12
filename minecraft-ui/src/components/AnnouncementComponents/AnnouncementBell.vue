@@ -107,19 +107,13 @@ onMounted(() => {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--theme-border);
   border-radius: 50%;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.55),
-    rgba(178, 178, 178, 0.45)
-  );
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.65),
-    0 2px 8px rgba(31, 38, 135, 0.08);
-  color: #5b6472;
+  box-shadow: var(--theme-shadow-sm);
+  color: var(--theme-text-2);
   cursor: pointer;
   transition:
     color 0.25s ease,
@@ -132,15 +126,9 @@ onMounted(() => {
   transition: color 0.25s ease;
 }
 .bell-btn:hover {
-  color: #1d1d1f;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.95),
-    rgba(233, 237, 244, 0.85)
-  );
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    0 6px 18px rgba(31, 38, 135, 0.18);
+  color: var(--theme-text-1);
+  background: var(--theme-bg-glass-strong);
+  box-shadow: var(--theme-shadow-md);
   transform: translateY(-1px);
 }
 /* hover 摇铃动画 */
@@ -151,7 +139,7 @@ onMounted(() => {
   transform: translateY(0) scale(0.94);
 }
 .bell-btn:focus-visible {
-  outline: 2px solid rgba(76, 110, 245, 0.55);
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -181,16 +169,16 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 2px 4px 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 .ann-panel__title {
   font-size: 14px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 .ann-panel__more {
   font-size: 12px;
-  color: #4c6ef5;
+  color: var(--theme-primary);
   cursor: pointer;
 }
 .ann-panel__more:hover {
@@ -214,7 +202,7 @@ onMounted(() => {
   margin-top: 2px;
 }
 .ann-item:hover {
-  background: rgba(76, 110, 245, 0.06);
+  background: var(--theme-bg-hover);
 }
 .ann-item.is-top .ann-item__title {
   font-weight: 600;
@@ -227,12 +215,12 @@ onMounted(() => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #f5554a;
+  background: var(--theme-danger);
 }
 
 .ann-item__title {
   font-size: 13px;
-  color: #333;
+  color: var(--theme-text-1);
   line-height: 1.5;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -252,35 +240,35 @@ onMounted(() => {
   padding: 0 6px;
   line-height: 18px;
   border-radius: 4px;
-  background: #f0f2f5;
-  color: #666;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 .ann-item__tag--t1 {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
+  background: var(--theme-info-soft);
+  color: var(--theme-info);
 }
 .ann-item__tag--t2 {
-  background: rgba(249, 115, 22, 0.1);
-  color: #ea580c;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 .ann-item__tag--t3 {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
 }
 .ann-item__tag--t4 {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .ann-item__urgent {
   font-size: 11px;
-  color: #dc2626;
+  color: var(--theme-danger);
   font-weight: 600;
 }
 
 .ann-item__time {
   font-size: 11px;
-  color: #999;
+  color: var(--theme-text-3);
   margin-left: auto;
 }
 
@@ -288,7 +276,7 @@ onMounted(() => {
   padding: 32px 0;
   text-align: center;
   font-size: 13px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 </style>
 
@@ -296,6 +284,6 @@ onMounted(() => {
 /* popover 内容非 scoped，需全局样式（popper 挂在 body 下） */
 .ann-bell-popover {
   border-radius: 14px !important;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.12) !important;
+  box-shadow: var(--theme-shadow-md) !important;
 }
 </style>

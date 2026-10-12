@@ -43,18 +43,18 @@ function dismiss() {
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-bottom: 1px solid rgba(31, 38, 135, 0.1);
-  color: #1d1d1f;
+  border: 1px solid var(--theme-border);
+  border-bottom: 1px solid var(--theme-border);
+  color: var(--theme-text-1);
 }
 .announcement-banner.important {
-  background: rgba(255, 244, 224, 0.85);
+  background: var(--theme-warning-soft);
 }
 .announcement-banner.urgent {
-  background: rgba(255, 235, 235, 0.85);
+  background: var(--theme-danger-soft);
 }
 .banner-icon {
   font-size: 16px;
@@ -73,7 +73,7 @@ function dismiss() {
   background: transparent;
   font-size: 18px;
   cursor: pointer;
-  color: #999;
+  color: var(--theme-text-3);
   line-height: 1;
 }
 .banner-slide-enter-active,

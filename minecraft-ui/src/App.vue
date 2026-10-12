@@ -97,16 +97,16 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--theme-bg-surface-2);
   border-radius: 10px;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--theme-scrollbar-thumb);
   border-radius: 10px;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--theme-scrollbar-thumb-hover);
 }
 </style>

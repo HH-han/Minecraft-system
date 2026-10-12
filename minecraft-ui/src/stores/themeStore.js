@@ -1,52 +1,51 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import {
+  THEME_LIST,
+  getCurrentTheme,
+  setTheme as persistTheme,
+  initTheme as applyInitTheme,
+  isDarkTheme
+} from '@/utils/theme'
 
+/**
+ * 主题状态（唯一主题源）
+ * ------------------------------------------------------------------
+ * 状态持久化统一由 utils/theme.js 写入 localStorage('theme')，
+ * 本 store 只做响应式包装，不再重复持久化，避免与工具函数争抢同一 key。
+ */
 export const useThemeStore = defineStore('theme', () => {
-  const currentTheme = ref('light')
-  const themes = ref([
-    { id: 'light', name: '亮色', icon: '☀️' },
-    { id: 'dark', name: '暗色', icon: '🌙' },
-    { id: 'game', name: '游戏', icon: '🎮' }
-  ])
+  const currentTheme = ref(getCurrentTheme())
+  const themes = ref(THEME_LIST)
 
   const currentThemeInfo = computed(() => {
-    return themes.value.find(t => t.id === currentTheme.value) || themes.value[0]
+    return themes.value.find((t) => t.id === currentTheme.value) || themes.value[0]
   })
 
+  // dark / game 均为深色系
+  const isDark = computed(() => isDarkTheme(currentTheme.value))
+
   function setTheme(themeId) {
-    const theme = themes.value.find(t => t.id === themeId)
-    if (theme) {
-      currentTheme.value = themeId
-      document.documentElement.setAttribute('data-theme', themeId)
-      localStorage.setItem('theme', themeId)
-    }
+    currentTheme.value = persistTheme(themeId)
   }
 
   function toggleTheme() {
-    const themeIds = themes.value.map(t => t.id)
-    const currentIndex = themeIds.indexOf(currentTheme.value)
-    const nextIndex = (currentIndex + 1) % themeIds.length
-    setTheme(themeIds[nextIndex])
+    const ids = themes.value.map((t) => t.id)
+    const nextIndex = (ids.indexOf(currentTheme.value) + 1) % ids.length
+    setTheme(ids[nextIndex])
   }
 
   function initTheme() {
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme && themes.value.some(t => t.id === savedTheme)) {
-      setTheme(savedTheme)
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setTheme(prefersDark ? 'dark' : 'light')
-    }
+    currentTheme.value = applyInitTheme()
   }
 
   return {
     currentTheme,
     themes,
     currentThemeInfo,
+    isDark,
     setTheme,
     toggleTheme,
     initTheme
   }
-}, {
-  persist: true
 })

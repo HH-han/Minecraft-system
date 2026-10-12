@@ -13,6 +13,25 @@
     />
     <!-- 由 vite 注入 VITE_APP_TITLE 变量，在根目录 .env 文件内配置 -->
     <title>%VITE_APP_TITLE%</title>
+    <!-- 首屏前应用主题，避免主题闪烁（与 utils/theme.js 逻辑保持一致） -->
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme')
+          if (theme !== 'light' && theme !== 'dark' && theme !== 'game') {
+            theme =
+              window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+          }
+          var root = document.documentElement
+          root.setAttribute('data-theme', theme)
+          if (theme === 'dark' || theme === 'game') root.classList.add('dark')
+        } catch (e) {
+          /* 忽略隐私模式等异常 */
+        }
+      })()
+    </script>
     <link rel="icon" type="image/svg+xml" href="/attractions.svg" />
     <link rel="stylesheet" href="/tac/css/tac.css" />
   </head>

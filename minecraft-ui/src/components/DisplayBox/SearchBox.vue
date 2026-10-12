@@ -231,7 +231,7 @@ defineExpose({
   --sb-border-focus: rgba(15, 23, 42, 0.26);
   --sb-shadow: 0 12px 30px -16px rgba(15, 23, 42, 0.28);
   --sb-shadow-focus: 0 16px 36px -18px rgba(15, 23, 42, 0.36), 0 0 0 4px rgba(15, 23, 42, 0.07);
-  --sb-hairline: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+  --sb-hairline: transparent; /* 亮色底无高光可加，交由描边与投影表达层次 */
   --sb-text: #0f172a;
   --sb-placeholder: rgba(15, 23, 42, 0.42);
   --sb-divider: rgba(15, 23, 42, 0.12);
@@ -359,7 +359,7 @@ html[data-theme="game"] .search-box {
   border: none;
   outline: none;
   background: transparent;
-  color: #f7f8fa;
+  color: var(--sb-text);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -367,7 +367,7 @@ html[data-theme="game"] .search-box {
 }
 
 .search-field::placeholder {
-  color: rgba(255, 255, 255, 0.42);
+  color: var(--sb-placeholder);
   font-weight: 300;
   letter-spacing: 0.3px;
 }
@@ -381,12 +381,8 @@ html[data-theme="game"] .search-box {
   flex: none;
   width: 1px;
   height: 26px;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--sb-divider);
   transition: background 0.28s ease;
-}
-
-.search-shell.is-focused .search-divider {
-  background: rgba(255, 255, 255, 0.26);
 }
 
 /* 清空按钮 */
@@ -401,7 +397,7 @@ html[data-theme="game"] .search-box {
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--sb-clear-bg);
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
 }
@@ -410,13 +406,13 @@ html[data-theme="game"] .search-box {
   width: 13px;
   height: 13px;
   fill: none;
-  stroke: rgba(255, 255, 255, 0.72);
+  stroke: var(--sb-clear-icon);
   stroke-width: 2.2;
   stroke-linecap: round;
 }
 
 .search-clear:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--sb-clear-bg-hover);
   transform: scale(1.08);
 }
 
@@ -436,7 +432,7 @@ html[data-theme="game"] .search-box {
   border: none;
   border-radius: 12px;
   background: transparent;
-  color: #fbfbfd;
+  color: var(--sb-action);
   font-family: inherit;
   font-size: 16px;
   font-weight: 500;
@@ -455,7 +451,7 @@ html[data-theme="game"] .search-box {
 }
 
 .search-submit:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--sb-action-hover);
 }
 
 .search-submit:active {
@@ -463,7 +459,7 @@ html[data-theme="game"] .search-box {
 }
 
 .search-submit:focus-visible {
-  outline: 1px solid rgba(255, 255, 255, 0.45);
+  outline: 1px solid var(--sb-action-ring);
   outline-offset: 2px;
 }
 
@@ -479,12 +475,13 @@ html[data-theme="game"] .search-box {
   padding: 10px 0;
   overflow-y: auto;
   list-style: none;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--sb-panel-border);
   border-radius: 14px;
-  background: rgba(38, 38, 43, 0.98);
-  box-shadow: 0 26px 60px -18px rgba(15, 23, 42, 0.6);
+  background: var(--sb-panel-bg);
+  box-shadow: var(--sb-panel-shadow);
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
+  transition: background 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease;
 }
 
 .search-panel::-webkit-scrollbar {
@@ -493,14 +490,14 @@ html[data-theme="game"] .search-box {
 
 .search-panel::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--sb-scrollbar);
 }
 
 .search-panel-item {
   display: flex;
   align-items: center;
   padding: 11px 22px;
-  color: rgba(245, 245, 247, 0.86);
+  color: var(--sb-item-text);
   font-size: 16px;
   line-height: 1.5;
   cursor: pointer;
@@ -511,8 +508,8 @@ html[data-theme="game"] .search-box {
 
 .search-panel-item.is-active,
 .search-panel-item:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
+  background: var(--sb-item-hover-bg);
+  color: var(--sb-item-hover-text);
 }
 
 .search-panel-text {
@@ -524,7 +521,7 @@ html[data-theme="game"] .search-box {
 
 /* 命中关键词 */
 .search-panel-hl {
-  color: #ff4d6d;
+  color: var(--sb-hl);
   font-style: normal;
   font-weight: 500;
 }
