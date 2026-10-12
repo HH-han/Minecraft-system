@@ -90,15 +90,15 @@ const handleMenuSelect = (key) => {
 .points-main-container {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: var(--theme-bg-surface-2);
 }
 
 /* 侧边栏 */
 .points-sidebar {
   width: 220px;
   flex-shrink: 0;
-  background-color: #fff;
-  border-right: 1px solid #eef0f4;
+  background-color: var(--theme-bg-surface);
+  border-right: 1px solid var(--theme-hairline);
   position: sticky;
   top: 0;
   align-self: flex-start;
@@ -112,7 +112,7 @@ const handleMenuSelect = (key) => {
   align-items: center;
   gap: 12px;
   padding: 22px 20px;
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .brand-icon {
@@ -124,15 +124,15 @@ const handleMenuSelect = (key) => {
   justify-content: center;
   font-size: 22px;
   color: #fff;
-  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
-  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 72%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+  box-shadow: var(--theme-shadow-sm);
   flex-shrink: 0;
 }
 
 .brand-title {
   font-size: 17px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--theme-text-1);
   margin: 0;
   line-height: 1.3;
 }
@@ -140,7 +140,7 @@ const handleMenuSelect = (key) => {
 .brand-subtitle {
   font-size: 10px;
   letter-spacing: 1px;
-  color: #9ca3af;
+  color: var(--theme-text-3);
   margin: 2px 0 0;
 }
 
@@ -155,7 +155,7 @@ const handleMenuSelect = (key) => {
   line-height: 46px;
   border-radius: 10px;
   margin-bottom: 6px;
-  color: #4b5563;
+  color: var(--theme-text-2);
   font-size: 14px;
 }
 
@@ -164,14 +164,14 @@ const handleMenuSelect = (key) => {
 }
 
 .sidebar-menu :deep(.el-menu-item:hover) {
-  background-color: #f7f8fa;
-  color: #f59e0b;
+  background-color: var(--theme-bg-hover);
+  color: var(--theme-warning);
 }
 
 .sidebar-menu :deep(.el-menu-item.is-active) {
   color: #fff;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  box-shadow: 0 6px 14px rgba(245, 158, 11, 0.35);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 72%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 /* 内容区 */
@@ -188,9 +188,9 @@ const handleMenuSelect = (key) => {
   max-width: none;
   margin: 0;
   padding: 24px;
-  background-color: #fff;
+  background-color: var(--theme-bg-surface);
   border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.06);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 /* 统一子页面标题：左对齐 + 分隔线 */
@@ -200,10 +200,10 @@ const handleMenuSelect = (key) => {
   text-align: left;
   font-size: 20px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--theme-text-1);
   margin: 0 0 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 /* 积分商城：我的积分条 */
@@ -212,8 +212,8 @@ const handleMenuSelect = (key) => {
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
-  background: linear-gradient(135deg, #fff7e6 0%, #fffbf0 100%);
-  border: 1px solid #ffe7ba;
+  background: var(--theme-warning-soft);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   padding: 14px 20px;
   margin-bottom: 20px;
@@ -224,7 +224,7 @@ const handleMenuSelect = (key) => {
 }
 
 .points-content :deep(.points-value) {
-  color: #f59e0b;
+  color: var(--theme-warning);
   font-size: 22px;
 }
 
@@ -236,23 +236,23 @@ const handleMenuSelect = (key) => {
 
 .points-content :deep(.product-item:hover) {
   transform: translateY(-4px);
-  border-color: #ffd591;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--theme-warning);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .points-content :deep(.price-value) {
-  color: #f59e0b;
+  color: var(--theme-warning);
 }
 
 /* 兑换按钮与主题色统一 */
 .points-content :deep(.exchange-button.el-button--primary) {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 72%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
   border: none;
 }
 
 .points-content :deep(.exchange-button.el-button--primary:hover),
 .points-content :deep(.exchange-button.el-button--primary:focus) {
-  background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 88%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
   opacity: 0.92;
 }
 

@@ -217,7 +217,7 @@ import DynamicParticle from '@/components/ThemeComponents/DynamicParticle.vue'
     width: 100%;
     text-align: center;
     font-weight: 700;
-    color: rgb(87, 110, 129);
+    color: var(--theme-text-2);
 }
 
 .loader_cogs__text {
@@ -232,7 +232,7 @@ import DynamicParticle from '@/components/ThemeComponents/DynamicParticle.vue'
 h1 {
     text-transform: uppercase;
     font-size: 30px;
-    color: rgb(87, 110, 129);
+    color: var(--theme-text-2);
 }
 
 h2 {

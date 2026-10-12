@@ -206,11 +206,9 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12),
-              0 8px 24px rgba(0, 0, 0, 0.06),
-              0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   padding: 40px 32px;
   width: 90%;
   max-width: 400px;
@@ -226,7 +224,7 @@ onMounted(() => {
   text-align: left;
   font-size: 28px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 32px 0;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -247,11 +245,11 @@ onMounted(() => {
 .input-container-3 input {
   width: 100%;
   padding: 16px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   font-size: 16px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
   font-family: inherit;
@@ -259,8 +257,8 @@ onMounted(() => {
 
 .input-container-3 input:focus {
   outline: none;
-  border-color: #0071e3;
-  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .input-container-3 input::placeholder {
@@ -273,7 +271,7 @@ onMounted(() => {
   top: 16px;
   left: 16px;
   font-size: 16px;
-  color: #a1a1a6;
+  color: var(--theme-text-3);
   transition: all 0.2s ease;
   pointer-events: none;
   background: transparent;
@@ -284,9 +282,9 @@ onMounted(() => {
   top: -8px;
   left: 12px;
   font-size: 12px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-weight: 500;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   padding: 0 6px;
 }
 
@@ -297,7 +295,7 @@ onMounted(() => {
   left: 16px;
   width: 0;
   height: 2px;
-  background: #0071e3;
+  background: var(--theme-primary);
   border-radius: 2px;
   transition: width 0.2s ease;
   opacity: 0;
@@ -317,8 +315,8 @@ onMounted(() => {
 /* 登录按钮 — Apple 风格胶囊按钮 */
 .btn-content {
   width: 100%;
-  background: #0071e3;
-  color: white;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 980px;
   padding: 14px 24px;
@@ -337,12 +335,12 @@ onMounted(() => {
 }
 
 .btn-content:hover {
-  background: #0077ed;
-  box-shadow: 0 4px 14px rgba(0, 113, 227, 0.25);
+  background: var(--theme-primary-hover);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--theme-primary) 25%, transparent);
 }
 
 .btn-content:active {
-  background: #006edc;
+  background: var(--theme-primary-hover);
   transform: scale(0.99);
 }
 
@@ -364,7 +362,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin-top: 20px;
 }
 
@@ -378,7 +376,7 @@ onMounted(() => {
 .radio_1 input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #0071e3;
+  accent-color: var(--theme-primary);
   cursor: pointer;
 }
 
@@ -386,7 +384,7 @@ onMounted(() => {
 .phone {
   background: transparent;
   border: none;
-  color: #0071e3;
+  color: var(--theme-primary);
   font-size: 14px;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -395,7 +393,7 @@ onMounted(() => {
 }
 
 .phone:hover {
-  color: #0077ed;
+  color: var(--theme-primary-hover);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -405,11 +403,11 @@ onMounted(() => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #ffffff;
-  border-left: 4px solid #ff3b30;
+  background: var(--theme-bg-elevated);
+  border-left: 4px solid var(--theme-danger);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--theme-shadow-md);
   z-index: 1000;
   animation: slideIn 0.3s ease-out;
 }
@@ -426,7 +424,7 @@ onMounted(() => {
 
 .error-text {
   flex: 1;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-size: 14px;
 }
 
@@ -434,7 +432,7 @@ onMounted(() => {
   background: none;
   border: none;
   font-size: 18px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
   cursor: pointer;
   transition: color 0.2s ease;
   padding: 4px 8px;
@@ -442,8 +440,8 @@ onMounted(() => {
 }
 
 .error-close:hover {
-  color: #1d1d1f;
-  background: #f5f5f7;
+  color: var(--theme-text-1);
+  background: var(--theme-bg-surface-2);
 }
 
 /* 成功提示框 */
@@ -451,11 +449,11 @@ onMounted(() => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #ffffff;
-  border-left: 4px solid #34c759;
+  background: var(--theme-bg-elevated);
+  border-left: 4px solid var(--theme-success);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--theme-shadow-md);
   z-index: 1000;
   animation: slideIn 0.3s ease-out;
 }
@@ -472,7 +470,7 @@ onMounted(() => {
 
 .success-text {
   flex: 1;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-size: 14px;
 }
 
@@ -480,7 +478,7 @@ onMounted(() => {
   background: none;
   border: none;
   font-size: 18px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
   cursor: pointer;
   transition: color 0.2s ease;
   padding: 4px 8px;
@@ -488,8 +486,8 @@ onMounted(() => {
 }
 
 .success-close:hover {
-  color: #1d1d1f;
-  background: #f5f5f7;
+  color: var(--theme-text-1);
+  background: var(--theme-bg-surface-2);
 }
 
 /* 动画效果 */
@@ -511,7 +509,7 @@ onMounted(() => {
     max-width: none;
     padding: 32px 24px;
     border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-md);
   }
 
   .login {

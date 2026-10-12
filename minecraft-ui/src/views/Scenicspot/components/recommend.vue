@@ -188,7 +188,7 @@ onMounted(loadRecommendations)
 .recommendation {
     padding: 0 15px;
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 /* 头部样式 */
@@ -207,7 +207,7 @@ onMounted(loadRecommendations)
 .header h1 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #cc43ee, #3791c9);
+    background: var(--theme-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -221,11 +221,11 @@ onMounted(loadRecommendations)
     width: calc(100% - 10px);
     height: 240px;
     z-index: 2;
-    background: rgba(255, 255, 255, .95);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(24px);
     border-radius: 10px;
     overflow: hidden;
-    outline: 2px solid white;
+    outline: 2px solid var(--theme-border);
 }
 
 .blob {
@@ -278,16 +278,16 @@ onMounted(loadRecommendations)
     flex-direction: row;
     flex-wrap: wrap;
     gap: 12px;
-    background: #fff;
+    background: var(--theme-bg-surface);
     padding: 18px;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     margin-top: 20px;
 }
 
 .search-bar input {
     padding: 12px 16px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--theme-border);
     border-radius: 8px;
     font-size: 15px;
     transition: all 0.3s ease;
@@ -295,13 +295,13 @@ onMounted(loadRecommendations)
 
 .search-bar input:focus {
     outline: none;
-    border-color: #4361ee;
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-ring);
 }
 
 .search-bar button {
-    background: linear-gradient(135deg, #4361ee, #3a0ca3);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 8px;
     padding: 12px;
@@ -312,9 +312,9 @@ onMounted(loadRecommendations)
 }
 
 .search-bar button:hover {
-    background: linear-gradient(135deg, #3a0ca3, #4361ee);
+    background: var(--theme-gradient);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 特色推荐样式 */
@@ -327,10 +327,10 @@ onMounted(loadRecommendations)
 
 .feature {
     position: relative;
-    background: #fff;
+    background: var(--theme-bg-surface);
     padding: 20px 20px 20px 24px;
     border-radius: 14px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
     overflow: hidden;
 }
@@ -342,14 +342,14 @@ onMounted(loadRecommendations)
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #4361ee, transparent);
+    background: linear-gradient(90deg, var(--theme-primary), transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .feature:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 24px rgba(67, 97, 238, 0.14);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .feature:hover::before {
@@ -365,18 +365,18 @@ onMounted(loadRecommendations)
     margin-bottom: 12px;
     font-size: 22px;
     font-style: normal;
-    background: rgba(67, 97, 238, 0.08);
+    background: var(--theme-primary-soft);
     border-radius: 12px;
 }
 
 .feature h2 {
-    color: #4361ee;
+    color: var(--theme-primary);
     margin-bottom: 8px;
     font-size: 18px;
 }
 
 .feature p {
-    color: #666;
+    color: var(--theme-text-2);
     line-height: 1.6;
     font-size: 14px;
 }
@@ -393,7 +393,7 @@ onMounted(loadRecommendations)
 
 .types h2 {
     font-size: 1.8rem;
-    color: #333;
+    color: var(--theme-text-1);
     position: relative;
 }
 
@@ -404,7 +404,7 @@ onMounted(loadRecommendations)
     left: 0;
     width: 50px;
     height: 3px;
-    background: #4361ee;
+    background: var(--theme-primary);
     border-radius: 2px;
 }
 
@@ -416,8 +416,8 @@ onMounted(loadRecommendations)
 
 .type-tabs button {
     padding: 8px 16px;
-    background: #fff;
-    border: 1px solid #e0e0e0;
+    background: var(--theme-bg-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
@@ -425,14 +425,14 @@ onMounted(loadRecommendations)
 }
 
 .type-tabs button:hover {
-    background: #f5f5f5;
+    background: var(--theme-bg-hover);
 }
 
 .type-tabs button.active {
-    background: linear-gradient(135deg, #4361ee, #3a0ca3);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 景点列表 */
@@ -443,17 +443,17 @@ onMounted(loadRecommendations)
 }
 
 .item {
-    background: #fff;
+    background: var(--theme-bg-surface);
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .item:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(67, 97, 238, 0.16);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .image {
@@ -492,11 +492,11 @@ onMounted(loadRecommendations)
 .info h3 {
     font-size: 18px;
     margin-bottom: 6px;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 .location {
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 14px;
     margin-bottom: 10px;
 }
@@ -509,8 +509,8 @@ onMounted(loadRecommendations)
 }
 
 .tags span {
-    background: rgba(67, 97, 238, 0.07);
-    color: #4361ee;
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 12px;
@@ -524,19 +524,19 @@ onMounted(loadRecommendations)
 }
 
 .price {
-    color: #4361ee;
+    color: var(--theme-primary);
     font-weight: 600;
     font-size: 16px;
 }
 
 .free {
-    color: #00a854;
+    color: var(--theme-success);
     font-weight: 600;
     font-size: 16px;
 }
 
 .rating {
-    color: #ffb400;
+    color: var(--theme-warning);
     font-weight: 600;
 }
 
@@ -544,8 +544,8 @@ onMounted(loadRecommendations)
     position: absolute;
     top: 12px;
     left: 12px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    color: white;
+    background: linear-gradient(135deg, var(--theme-danger), var(--theme-warning));
+    color: var(--theme-primary-text);
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
@@ -555,7 +555,7 @@ onMounted(loadRecommendations)
 .empty-tip {
     grid-column: 1 / -1;
     text-align: center;
-    color: #999;
+    color: var(--theme-text-3);
     padding: 60px 0;
     font-size: 15px;
 }

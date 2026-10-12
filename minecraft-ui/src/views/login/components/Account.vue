@@ -64,25 +64,23 @@ defineEmits(['confirm']);
 .card {
   overflow: hidden;
   position: relative;
-  background-color: #ffffff;
+  background-color: var(--theme-bg-surface);
   text-align: left;
   border-radius: 0.5rem;
   max-width: 400px;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .header {
   padding: 1.25rem 1rem 1rem 1rem;
-  background-color: #ffffff;
+  background-color: var(--theme-bg-surface);
 }
 
 .image {
   display: flex;
   margin-left: auto;
   margin-right: auto;
-  background-color: #dbeafe;
+  background-color: var(--theme-primary-soft);
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
@@ -92,7 +90,7 @@ defineEmits(['confirm']);
 }
 
 .image svg {
-  color: #2563eb;
+  color: var(--theme-primary);
   width: 1.5rem;
   height: 1.5rem;
 }
@@ -103,7 +101,7 @@ defineEmits(['confirm']);
 }
 
 .title {
-  color: #111827;
+  color: var(--theme-text-1);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.5rem;
@@ -111,7 +109,7 @@ defineEmits(['confirm']);
 
 .message {
   margin-top: 0.5rem;
-  color: #6b7280;
+  color: var(--theme-text-2);
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
@@ -119,7 +117,7 @@ defineEmits(['confirm']);
 .account-info {
   margin: 1rem 0;
   padding: 1rem;
-  background-color: #f3f4f6;
+  background-color: var(--theme-bg-surface-2);
   border-radius: 0.375rem;
   display: flex;
   align-items: center;
@@ -127,14 +125,14 @@ defineEmits(['confirm']);
 }
 
 .account-label {
-  color: #374151;
+  color: var(--theme-text-2);
   font-size: 0.875rem;
   font-weight: 500;
   margin-right: 0.5rem;
 }
 
 .account-value {
-  color: #ff0606;
+  color: var(--theme-highlight);
   font-size: 1rem;
   font-weight: 600;
   font-family: 'Courier New', monospace;
@@ -142,14 +140,14 @@ defineEmits(['confirm']);
 
 .actions {
   margin: 0.75rem 1rem;
-  background-color: #f9fafb;
+  background-color: var(--theme-bg-surface-2);
 }
 
 .confirm {
   display: inline-flex;
   padding: 0.5rem 1rem;
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 500;
@@ -158,15 +156,15 @@ defineEmits(['confirm']);
   border-radius: 0.375rem;
   border-width: 1px;
   border-color: transparent;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-sm);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .confirm:hover {
-  background-color: #1d4ed8;
+  background-color: var(--theme-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-md);
 }
 
 </style>

@@ -224,7 +224,7 @@ const formatDate = (dateString) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--theme-overlay);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -235,7 +235,7 @@ const formatDate = (dateString) => {
 }
 
 .modal-content {
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 28px;
   max-width: 800px;
   width: 100%;
@@ -266,10 +266,10 @@ const formatDate = (dateString) => {
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid #f5f5f7;
+  border-bottom: 1px solid var(--theme-hairline);
   position: sticky;
   top: 0;
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   z-index: 10;
 }
 
@@ -277,11 +277,11 @@ const formatDate = (dateString) => {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .close-button {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border: none;
   width: 36px;
   height: 36px;
@@ -290,12 +290,12 @@ const formatDate = (dateString) => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   transition: all 0.2s;
 }
 
 .close-button:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .modal-body {
@@ -305,13 +305,13 @@ const formatDate = (dateString) => {
 .loading {
   text-align: center;
   padding: 80px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .error {
   text-align: center;
   padding: 80px;
-  color: #ff4757;
+  color: var(--theme-danger);
 }
 
 .detail-content {
@@ -346,19 +346,19 @@ const formatDate = (dateString) => {
   font-size: 24px;
   font-weight: 700;
   margin: 0;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .detail-price {
   font-size: 28px;
   font-weight: 700;
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 .price-unit {
   font-size: 16px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .detail-meta {
@@ -366,14 +366,14 @@ const formatDate = (dateString) => {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin-bottom: 20px;
 }
 
 .detail-text {
   font-size: 16px;
   line-height: 1.7;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .detail-section {
@@ -383,14 +383,14 @@ const formatDate = (dateString) => {
 .detail-section .section-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 12px;
 }
 
 .detail-section p {
   font-size: 14px;
   line-height: 1.6;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0;
 }
 
@@ -402,7 +402,7 @@ const formatDate = (dateString) => {
 }
 
 .grid-item {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   padding: 16px;
   border-radius: 12px;
 }
@@ -410,14 +410,14 @@ const formatDate = (dateString) => {
 .grid-label {
   display: block;
   font-size: 12px;
-  color: #86868b;
+  color: var(--theme-text-3);
   font-weight: 500;
   margin-bottom: 6px;
 }
 
 .grid-value {
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 

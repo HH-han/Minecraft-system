@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   padding: 20px 0;
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  color: #606266;
+  color: var(--theme-text-2);
 }
 
 .paging-info {
@@ -15,7 +15,7 @@
 
 .paging-total {
   font-weight: bold;
-  color: #409EFF;
+  color: var(--theme-primary);
 }
 
 .paging-size-selector {
@@ -26,17 +26,17 @@
 .paging-size-select {
   width: 80px;
   height: 32px;
-  border: 1px solid #DCDFE6;
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
   padding: 0 10px;
   margin-left: 10px;
   outline: none;
-  color: #606266;
+  color: var(--theme-text-2);
   transition: border-color 0.3s;
 }
 
 .paging-size-select:focus {
-  border-color: #409EFF;
+  border-color: var(--theme-primary);
 }
 
 .paging-pages {
@@ -52,7 +52,7 @@
   line-height: 32px;
   margin: 0 4px;
   text-align: center;
-  border: 1px solid #DCDFE6;
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s;
@@ -60,21 +60,21 @@
 }
 
 .paging-item:hover:not(.disabled):not(.active):not(.paging-ellipsis) {
-  color: #409EFF;
-  border-color: #409EFF;
+  color: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .paging-item.active {
-  background-color: #409EFF;
-  color: white;
-  border-color: #409EFF;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
+  border-color: var(--theme-primary);
   font-weight: bold;
 }
 
 .paging-item.disabled {
-  color: #C0C4CC;
+  color: var(--theme-text-3);
   cursor: not-allowed;
-  background-color: #F5F7FA;
+  background-color: var(--theme-bg-surface-2);
 }
 
 .paging-prev,
@@ -100,7 +100,7 @@
 .paging-jumper-input {
   width: 50px;
   height: 32px;
-  border: 1px solid #DCDFE6;
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
   text-align: center;
   margin: 0 8px;
@@ -109,5 +109,5 @@
 }
 
 .paging-jumper-input:focus {
-  border-color: #409EFF;
+  border-color: var(--theme-primary);
 }

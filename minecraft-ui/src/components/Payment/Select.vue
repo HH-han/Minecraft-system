@@ -545,7 +545,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   animation: fadeIn 0.3s ease;
@@ -563,10 +563,10 @@ onUnmounted(() => {
   width: 90%;
   max-height: 85vh;
   overflow-y: auto;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 28px;
-  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
   animation: slideUp 0.4s ease;
   /* 隐藏滚动条（Firefox / IE & 旧 Edge） */
   scrollbar-width: none;
@@ -601,24 +601,24 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border: none;
   border-radius: 50%;
   font-size: 1.5rem;
   line-height: 1;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 10;
 }
 
 .close-btn:hover {
-  background: #e8e8ed;
-  color: #1d1d1f;
+  background: var(--theme-bg-active);
+  color: var(--theme-text-1);
 }
 
 .close-btn:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -637,7 +637,7 @@ onUnmounted(() => {
   aspect-ratio: 16 / 9;
   border-radius: 20px;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   flex-shrink: 0;
 }
 
@@ -666,7 +666,7 @@ onUnmounted(() => {
   font-size: 1.75rem; /* 28px 卡片标题 */
   font-weight: 600;
   line-height: 1.2;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.01em;
 }
@@ -674,14 +674,14 @@ onUnmounted(() => {
 .product-id {
   font-size: 0.875rem; /* 14px 辅助文字 */
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 0 1.5rem 0;
 }
 
 .product-price {
   font-size: 1.75rem; /* 28px */
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 1.5rem;
   letter-spacing: -0.01em;
 }
@@ -690,7 +690,7 @@ onUnmounted(() => {
   font-size: 1.0625rem; /* 17px 正文 */
   font-weight: 400;
   line-height: 1.5;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 0 2rem 0;
   min-height: 4rem;
   flex: 1;
@@ -709,8 +709,8 @@ onUnmounted(() => {
 }
 
 .commodity-badge {
-  background: rgba(41, 151, 255, 0.12);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 980px;
   font-size: 0.75rem;
@@ -721,7 +721,7 @@ onUnmounted(() => {
 .stock-hint {
   font-size: 0.875rem;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin-left: 0.5rem;
 }
 
@@ -747,7 +747,7 @@ onUnmounted(() => {
   border: 2px solid transparent;
   border-radius: 12px;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -764,8 +764,8 @@ onUnmounted(() => {
 }
 
 .gallery-thumb.active {
-  border-color: #2997ff;
-  box-shadow: 0 4px 12px -4px rgba(41, 151, 255, 0.5);
+  border-color: var(--theme-primary);
+  box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--theme-primary) 50%, transparent);
 }
 
 /* ===== 商品信息（菜系/套餐/类型/包装/库存/产地） ===== */
@@ -779,20 +779,20 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 12px;
   padding: 0.625rem 0.875rem;
 }
 
 .spec-label {
   font-size: 0.75rem;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .spec-value {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 /* ===== 评分（酒店/景点） ===== */
@@ -804,8 +804,8 @@ onUnmounted(() => {
 }
 
 .modal-rating .rating {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   padding: 0.25rem 0.75rem;
   border-radius: 980px;
   font-weight: 600;
@@ -813,13 +813,13 @@ onUnmounted(() => {
 }
 
 .modal-rating .rating-text {
-  color: #2997ff;
+  color: var(--theme-primary);
   font-weight: 600;
   font-size: 0.9375rem;
 }
 
 .modal-rating .review-count {
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 0.875rem;
 }
 
@@ -828,7 +828,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 0.9375rem;
 }
 
@@ -844,12 +844,12 @@ onUnmounted(() => {
 .section-title {
   font-size: 1.125rem; /* 18px */
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 0.5rem 0;
 }
 
 .section-text {
-  color: #6e6e73;
+  color: var(--theme-text-2);
   line-height: 1.5;
   font-size: 0.9375rem;
   margin: 0;
@@ -863,16 +863,16 @@ onUnmounted(() => {
 }
 
 .tag {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   padding: 0.25rem 0.75rem;
   border-radius: 980px;
   font-size: 0.75rem;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .tag-blue {
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 /* ===== 房型/门票列表 ===== */
@@ -890,7 +890,7 @@ onUnmounted(() => {
 }
 
 .sub-list::-webkit-scrollbar-thumb {
-  background: #d2d2d6;
+  background: var(--theme-scrollbar-thumb);
   border-radius: 2px;
 }
 
@@ -899,7 +899,7 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 0.875rem 1rem;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 14px;
 }
 
@@ -911,13 +911,13 @@ onUnmounted(() => {
 .sub-info h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 0.25rem 0;
 }
 
 .sub-desc {
   font-size: 0.8125rem;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 0 0.375rem 0;
   line-height: 1.4;
 }
@@ -925,7 +925,7 @@ onUnmounted(() => {
 .sub-price {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-left: 1rem;
   white-space: nowrap;
 }
@@ -937,7 +937,7 @@ onUnmounted(() => {
   gap: 1.5rem;
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border-strong);
 }
 
 .stat-item {
@@ -948,13 +948,13 @@ onUnmounted(() => {
 
 .stat-label {
   font-size: 0.8125rem;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .stat-value {
   font-size: 1rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 /* ===== 操作按钮（胶囊形 CTA） ===== */
@@ -979,30 +979,30 @@ onUnmounted(() => {
 
 /* 次要按钮：浅灰底深色字 */
 .btn-secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
 }
 
 .btn-secondary:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-active);
   transform: scale(1.01);
-  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 
 /* 主按钮：蓝色强调色 */
 .btn-primary {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .btn-primary:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
   transform: scale(1.01);
-  box-shadow: 0 8px 20px -8px rgba(41, 151, 255, 0.5);
+  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--theme-primary) 50%, transparent);
 }
 
 .btn:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 

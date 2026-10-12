@@ -213,7 +213,7 @@ const toggleFavorite = (id) => {
 .section-title {
   font-size: 48px;
   font-weight: 700;
-  color: #000000;
+  color: var(--theme-text-1);
   margin: 0;
   letter-spacing: -0.02em;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
@@ -222,7 +222,7 @@ const toggleFavorite = (id) => {
 .section-subtitle {
   display: block;
   font-size: 18px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin-top: 8px;
   font-weight: 400;
 }
@@ -234,7 +234,7 @@ const toggleFavorite = (id) => {
   gap: 12px;
   min-height: 128px;
   padding: 14px 20px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 24px;
   margin-bottom: 48px;
 }
@@ -248,7 +248,7 @@ const toggleFavorite = (id) => {
 .filter-label {
   font-size: 14px;
   font-weight: 500;
-  color: #86868b;
+  color: var(--theme-text-3);
   min-width: 48px;
 }
 
@@ -260,26 +260,26 @@ const toggleFavorite = (id) => {
 
 .category-btn {
   padding: 12px 24px;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border: none;
   border-radius: 24px;
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .category-btn:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
   transform: translateY(-1px);
 }
 
 .category-btn.active {
-  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .recommendations-grid {
@@ -300,23 +300,23 @@ const toggleFavorite = (id) => {
   align-items: center;
   gap: 10px;
   padding: 14px 40px;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 980px;
   font-size: 15px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .expand-btn:hover {
-  background: #f5f5f7;
-  border-color: #007aff;
-  color: #007aff;
+  background: var(--theme-bg-surface-2);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.12);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .expand-btn:active {
@@ -334,10 +334,10 @@ const toggleFavorite = (id) => {
 }
 
 .card {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 32px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--theme-shadow-md);
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
   cursor: pointer;
   opacity: 0;
@@ -349,7 +349,7 @@ const toggleFavorite = (id) => {
 
 .card:hover {
   transform: translateY(-8px) scale(1.01);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 /* 展开时新增卡片使用更轻量的淡入动画 */
@@ -409,12 +409,12 @@ const toggleFavorite = (id) => {
   top: 20px;
   left: 20px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -424,11 +424,11 @@ const toggleFavorite = (id) => {
   top: 20px;
   right: 20px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+  background: var(--theme-success);
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--theme-primary-text);
 }
 
 .card-content {
@@ -441,7 +441,7 @@ const toggleFavorite = (id) => {
 .card-title {
   font-size: 24px;
   font-weight: 600;
-  color: #000000;
+  color: var(--theme-text-1);
   margin: 0 0 12px;
   line-height: 1.25;
   min-height: 60px;
@@ -454,7 +454,7 @@ const toggleFavorite = (id) => {
 
 .card-description {
   font-size: 16px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 0 20px;
   line-height: 1.6;
   min-height: 52px;
@@ -473,13 +473,13 @@ const toggleFavorite = (id) => {
 
 .card-location {
   font-size: 14px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .card-price {
   font-size: 20px;
   font-weight: 600;
-  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+  background: var(--theme-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -494,8 +494,8 @@ const toggleFavorite = (id) => {
 
 .primary-cta {
   padding: 14px 24px;
-  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
-  color: #ffffff;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 16px;
   font-size: 15px;
@@ -506,12 +506,12 @@ const toggleFavorite = (id) => {
   justify-content: center;
   gap: 8px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .primary-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .cta-arrow {
@@ -528,8 +528,8 @@ const toggleFavorite = (id) => {
   width: 48px;
   height: 48px;
   padding: 0;
-  background: #f5f5f7;
-  color: #86868b;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-3);
   border: none;
   border-radius: 16px;
   cursor: pointer;
@@ -540,8 +540,8 @@ const toggleFavorite = (id) => {
 }
 
 .secondary-cta:hover {
-  background: #e8e8ed;
-  color: #ff3b30;
+  background: var(--theme-bg-hover);
+  color: var(--theme-danger);
   transform: scale(1.05);
 }
 
@@ -561,7 +561,7 @@ const toggleFavorite = (id) => {
   align-items: center;
   justify-content: center;
   padding: 80px 0;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 32px;
   margin-top: 40px;
 }
@@ -569,13 +569,13 @@ const toggleFavorite = (id) => {
 .empty-icon {
   width: 64px;
   height: 64px;
-  color: #c7c7cc;
+  color: var(--theme-text-3);
   margin-bottom: 20px;
 }
 
 .empty-text {
   font-size: 16px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 @media (max-width: 768px) {

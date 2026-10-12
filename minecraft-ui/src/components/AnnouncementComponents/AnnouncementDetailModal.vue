@@ -112,8 +112,8 @@ function formatTime(time) {
 .ann-modal__top {
   padding: 1px 6px;
   border-radius: 4px;
-  background: linear-gradient(135deg, #f97316, #ef4444);
-  color: #fff;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   font-size: 12px;
   line-height: 18px;
 }
@@ -121,19 +121,19 @@ function formatTime(time) {
   margin: 10px 0 8px;
   font-size: 19px;
   line-height: 1.4;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 .ann-modal__meta {
   display: flex;
   gap: 14px;
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 .ann-modal__body {
   max-height: 52vh;
   overflow-y: auto;
   line-height: 1.9;
-  color: #333;
+  color: var(--theme-text-1);
   font-size: 14px;
   word-break: break-word;
 }
@@ -146,7 +146,7 @@ function formatTime(time) {
 }
 .ann-modal__body :deep(td),
 .ann-modal__body :deep(th) {
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--theme-border);
   padding: 4px 8px;
 }
 </style>
@@ -157,6 +157,6 @@ function formatTime(time) {
 }
 .ann-detail-dialog .el-dialog__header {
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 </style>

@@ -245,7 +245,7 @@ onUnmounted(() => {
 <style scoped>
 .food-carousel {
   --carousel-aspect-ratio: v-bind('aspectRatio');
-  --primary-color: #4f46e5;
+  --primary-color: var(--theme-primary);
   --text-color: #ffffff;
   --bg-overlay: rgba(0, 0, 0, 0.4);
   --nav-bg: rgba(255, 255, 255, 0.15);
@@ -259,7 +259,7 @@ onUnmounted(() => {
   max-height: 100vh;
   aspect-ratio: var(--carousel-aspect-ratio);
   overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .carousel-viewport {
@@ -444,7 +444,7 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   height: 100%;
-  background: linear-gradient(90deg, #3a7bd5, #00d2ff);
+  background: var(--theme-gradient);
   animation: progress var(--duration, 5s) linear forwards;
   border-radius: 0 0 8px 8px;
 }

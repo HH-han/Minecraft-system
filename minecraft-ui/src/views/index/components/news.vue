@@ -149,12 +149,12 @@ onMounted(() => {
   font-weight: 700;
   margin: 0 0 8px;
   letter-spacing: -0.03em;
-  color: var(--wi-txt-1, #f6f7fb);
+  color: var(--wi-txt-1, var(--theme-text-1));
 }
 
 .section-description {
   font-size: 14px;
-  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
+  color: var(--wi-txt-2, var(--theme-text-2));
   margin: 0;
 }
 
@@ -174,8 +174,8 @@ onMounted(() => {
   flex-direction: column;
   transform: translateY(30px);
   animation: fadeInUp 0.6s ease-out forwards;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
-  border: 1px solid var(--wi-hairline, rgba(255, 255, 255, 0.09));
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--wi-hairline, var(--theme-hairline));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
@@ -190,15 +190,15 @@ onMounted(() => {
   inset: 0 0 auto 0;
   height: 1px;
   z-index: 2;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, var(--theme-border-strong), transparent);
   opacity: 0.7;
   pointer-events: none;
 }
 
 .news-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(120, 180, 255, 0.34);
-  box-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(120, 180, 255, 0.12);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-lg), 0 0 0 1px var(--theme-primary-soft);
 }
 
 /* 展开时新增卡片使用更轻量的淡入动画 */
@@ -237,7 +237,7 @@ onMounted(() => {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 45%, rgba(5, 6, 10, 0.55) 100%);
+  background: linear-gradient(180deg, transparent 45%, var(--theme-bg-glass) 100%);
   pointer-events: none;
 }
 
@@ -262,9 +262,9 @@ onMounted(() => {
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  color: var(--wi-txt-1, #f6f7fb);
-  background: rgba(10, 12, 18, 0.66);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--wi-txt-1, var(--theme-text-1));
+  background: var(--theme-bg-glass-strong);
+  border: 1px solid var(--theme-border);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -281,7 +281,7 @@ onMounted(() => {
   font-weight: 600;
   line-height: 1.4;
   margin: 0 0 10px;
-  color: var(--wi-txt-1, #f6f7fb);
+  color: var(--wi-txt-1, var(--theme-text-1));
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -291,7 +291,7 @@ onMounted(() => {
 .card-description {
   font-size: 13.5px;
   line-height: 1.65;
-  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
+  color: var(--wi-txt-2, var(--theme-text-2));
   margin: 0 0 16px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -306,7 +306,7 @@ onMounted(() => {
   gap: 12px;
   margin-top: auto;
   padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .author {
@@ -314,7 +314,7 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   font-size: 12.5px;
-  color: var(--wi-txt-3, rgba(236, 238, 245, 0.42));
+  color: var(--wi-txt-3, var(--theme-text-3));
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
@@ -333,7 +333,7 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: var(--wi-txt-3, rgba(236, 238, 245, 0.42));
+  color: var(--wi-txt-3, var(--theme-text-3));
 }
 
 .expand-actions {
@@ -350,18 +350,18 @@ onMounted(() => {
   border-radius: 980px;
   font-size: 14.5px;
   font-weight: 500;
-  color: var(--wi-txt-1, #f6f7fb);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--wi-hairline-2, rgba(255, 255, 255, 0.16));
+  color: var(--wi-txt-1, var(--theme-text-1));
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--wi-hairline-2, var(--theme-border-strong));
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .expand-btn:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.11);
-  border-color: rgba(120, 180, 255, 0.5);
-  box-shadow: 0 16px 34px -18px rgba(93, 140, 255, 0.9);
+  background: var(--theme-primary-soft);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .expand-btn:active {
@@ -381,13 +381,13 @@ onMounted(() => {
 .loading {
   text-align: center;
   padding: 60px 0;
-  color: var(--wi-txt-2, rgba(236, 238, 245, 0.66));
+  color: var(--wi-txt-2, var(--theme-text-2));
 }
 
 .error {
   text-align: center;
   padding: 60px 0;
-  color: #ff9b9b;
+  color: var(--theme-danger);
 }
 
 @media (max-width: 768px) {
@@ -402,47 +402,5 @@ onMounted(() => {
   .expand-actions {
     margin-top: 28px;
   }
-}
-
-/* ================= 亮色主题 ================= */
-html[data-theme="light"] .news-card {
-  background: linear-gradient(160deg, #ffffff, #f7f9fd);
-  border-color: var(--wi-hairline, rgba(15, 23, 42, 0.1));
-  box-shadow: 0 18px 44px -32px rgba(15, 23, 42, 0.28);
-}
-
-html[data-theme="light"] .news-card::before {
-  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.1), transparent);
-}
-
-html[data-theme="light"] .news-card:hover {
-  border-color: rgba(11, 116, 229, 0.36);
-  box-shadow: 0 28px 60px -30px rgba(15, 23, 42, 0.32), 0 0 0 1px rgba(11, 116, 229, 0.12);
-}
-
-html[data-theme="light"] .card-image-wrapper::after {
-  background: linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.85) 100%);
-}
-
-html[data-theme="light"] .category-tag {
-  color: #0f172a;
-  background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(15, 23, 42, 0.12);
-}
-
-html[data-theme="light"] .card-meta {
-  border-top-color: rgba(15, 23, 42, 0.08);
-}
-
-html[data-theme="light"] .expand-btn {
-  color: var(--wi-txt-1, #101828);
-  background: #ffffff;
-  border-color: var(--wi-hairline-2, rgba(15, 23, 42, 0.18));
-  box-shadow: 0 10px 26px -18px rgba(15, 23, 42, 0.3);
-}
-
-html[data-theme="light"] .expand-btn:hover {
-  background: #eef4ff;
-  border-color: rgba(11, 116, 229, 0.5);
 }
 </style>

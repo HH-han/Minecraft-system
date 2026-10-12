@@ -135,12 +135,7 @@ const getTypeLabel = (type) => {
 <style scoped>
 .home-page {
   min-height: 100vh;
-  background: #ffffff;
-}
-
-/* 暗色主题下页面外壳同步为深色，避免滚动露白 */
-html[data-theme="dark"] .home-page {
-  background: #05060a;
+  background: var(--theme-bg-app);
 }
 
 .main-content {

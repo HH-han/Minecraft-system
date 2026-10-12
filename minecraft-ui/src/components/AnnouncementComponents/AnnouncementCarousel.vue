@@ -140,19 +140,19 @@ function goDetail(id) {
    主题变量随 html[data-theme] 切换（light / dark / game）
    ============================================================ */
 .announcement-carousel {
-  --ann-bg: rgba(255, 255, 255, 0.78);
-  --ann-border: rgba(255, 255, 255, 0.55);
-  --ann-shadow: 0 18px 44px -26px rgba(15, 23, 42, 0.4);
-  --ann-title: #1d1d1f;
-  --ann-text: #5b6472;
-  --ann-muted: #8a94a6;
-  --ann-accent: #2997ff;
-  --ann-thumb: rgba(15, 23, 42, 0.06);
-  --ann-track: rgba(15, 23, 42, 0.14);
-  --ann-nav-bg: rgba(255, 255, 255, 0.86);
-  --ann-nav-border: rgba(15, 23, 42, 0.1);
-  --ann-nav-color: #1d1d1f;
-  --ann-warn: #e08b1a;
+  --ann-bg: var(--theme-bg-glass);
+  --ann-border: var(--theme-border);
+  --ann-shadow: var(--theme-shadow-lg);
+  --ann-title: var(--theme-text-1);
+  --ann-text: var(--theme-text-2);
+  --ann-muted: var(--theme-text-3);
+  --ann-accent: var(--theme-primary);
+  --ann-thumb: var(--theme-bg-muted);
+  --ann-track: var(--theme-bg-active);
+  --ann-nav-bg: var(--theme-bg-glass-strong);
+  --ann-nav-border: var(--theme-border);
+  --ann-nav-color: var(--theme-text-1);
+  --ann-warn: var(--theme-warning);
 
   position: relative;
   margin: 12px auto;
@@ -208,7 +208,7 @@ function goDetail(id) {
   overflow: hidden;
   border-radius: 12px;
   background: var(--ann-thumb);
-  box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .ann-media img {
@@ -255,33 +255,33 @@ function goDetail(id) {
 }
 
 .ann-tag.is-type-1 {
-  --ann-tag: #2f86ff;
+  --ann-tag: var(--theme-info);
 }
 
 .ann-tag.is-type-2 {
-  --ann-tag: #f0a020;
+  --ann-tag: var(--theme-warning);
 }
 
 .ann-tag.is-type-3 {
-  --ann-tag: #ff5d5d;
+  --ann-tag: var(--theme-danger);
 }
 
 .ann-tag.is-type-4 {
-  --ann-tag: #24bd85;
+  --ann-tag: var(--theme-success);
 }
 
 .ann-tag.is-important {
-  --ann-tag: #f0a020;
+  --ann-tag: var(--theme-warning);
 }
 
 .ann-tag.is-urgent {
-  --ann-tag: #ff5d5d;
+  --ann-tag: var(--theme-danger);
 }
 
 .ann-tag.is-top {
   border-color: transparent;
-  background: linear-gradient(135deg, #f97316, #ef4444);
-  color: #fff;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   font-weight: 500;
 }
 
@@ -289,8 +289,8 @@ function goDetail(id) {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ff4d4f;
-  box-shadow: 0 0 0 3px color-mix(in srgb, #ff4d4f 20%, transparent);
+  background: var(--theme-danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-danger) 20%, transparent);
 }
 
 /* ---------- 文案 ---------- */
@@ -402,7 +402,7 @@ function goDetail(id) {
   border: 1px solid var(--ann-nav-border);
   background: var(--ann-nav-bg);
   color: var(--ann-nav-color);
-  box-shadow: 0 8px 20px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--theme-shadow-md);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   transition: background 0.25s ease, transform 0.25s ease;
@@ -411,40 +411,6 @@ function goDetail(id) {
 .announcement-carousel :deep(.el-carousel__container .el-carousel__arrow:hover) {
   background: var(--ann-nav-bg);
   transform: scale(1.08);
-}
-
-/* ---------- 暗色主题 ---------- */
-html[data-theme="dark"] .announcement-carousel {
-  --ann-bg: rgba(22, 24, 31, 0.72);
-  --ann-border: rgba(255, 255, 255, 0.1);
-  --ann-shadow: 0 22px 48px -26px rgba(0, 0, 0, 0.8);
-  --ann-title: #f6f7fb;
-  --ann-text: rgba(236, 238, 245, 0.66);
-  --ann-muted: rgba(236, 238, 245, 0.42);
-  --ann-accent: #4da3ff;
-  --ann-thumb: rgba(255, 255, 255, 0.06);
-  --ann-track: rgba(255, 255, 255, 0.18);
-  --ann-nav-bg: rgba(255, 255, 255, 0.08);
-  --ann-nav-border: rgba(255, 255, 255, 0.16);
-  --ann-nav-color: #f6f7fb;
-  --ann-warn: #f0b95e;
-}
-
-/* ---------- 游戏主题（暗色底 + 绿色强调） ---------- */
-html[data-theme="game"] .announcement-carousel {
-  --ann-bg: rgba(15, 23, 42, 0.78);
-  --ann-border: rgba(148, 163, 184, 0.22);
-  --ann-shadow: 0 22px 48px -26px rgba(0, 0, 0, 0.85);
-  --ann-title: #f8fafc;
-  --ann-text: #cbd5e1;
-  --ann-muted: #94a3b8;
-  --ann-accent: #4ade80;
-  --ann-thumb: rgba(148, 163, 184, 0.12);
-  --ann-track: rgba(148, 163, 184, 0.28);
-  --ann-nav-bg: rgba(51, 65, 85, 0.7);
-  --ann-nav-border: rgba(148, 163, 184, 0.28);
-  --ann-nav-color: #f8fafc;
-  --ann-warn: #fbbf24;
 }
 
 /* ---------- 响应式 ---------- */

@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <Teleport to="body">
-    <div ref="overlayRef" v-show="visible" class="nav-overlay" :class="mapTheme === 'dark' ? 'is-dark' : 'is-light'">
+    <div ref="overlayRef" v-show="visible" class="nav-overlay">
       <!-- 全屏底图 -->
       <div ref="mapElRef" class="nav-map"></div>
 
@@ -379,10 +379,10 @@
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="I.ruler"></svg>
           <span class="chip-text">测距</span>
         </button>
-        <button class="tool-chip" type="button" @click="toggleMapTheme" :title="mapTheme === 'dark' ? '切换到白天模式' : '切换到夜间模式'">
-          <svg v-if="mapTheme === 'dark'" class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="I.sun"></svg>
+        <button class="tool-chip" type="button" @click="toggleMapTheme" :title="isDark ? '切换到白天模式' : '切换到夜间模式'">
+          <svg v-if="isDark" class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="I.sun"></svg>
           <svg v-else class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="I.moon"></svg>
-          <span class="chip-text">{{ mapTheme === 'dark' ? '白天' : '夜间' }}</span>
+          <span class="chip-text">{{ isDark ? '白天' : '夜间' }}</span>
         </button>
         <button class="tool-chip tool-close" title="返回 3D 地球" type="button" @click="$emit('close')">
           <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" v-html="I.x"></svg>
@@ -421,6 +421,7 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import { AMAP_KEY, AMAP_VERSION, AMAP_PLUGINS } from '../config.js'
 import { amapRest } from '../services/amapRest.js'
 import ServicePanel from './ServicePanel.vue'
+import { useThemeStore } from '@/stores/themeStore'
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
@@ -531,8 +532,9 @@ const showOnGlobe = ref(true)
 const startInputRef = ref(null)
 const endInputRef = ref(null)
 
-/** 地图主题（dark / light），底图样式与悬浮面板主题同步切换 */
-const mapTheme = ref(localStorage.getItem('amap-nav-theme') || 'light')
+/** 全局主题 store：底图样式与悬浮面板明暗统一跟随全局主题（light/dark/game） */
+const themeStore = useThemeStore()
+const isDark = computed(() => themeStore.isDark)
 
 /** 右上工具与右下控件状态 */
 const trafficOn = ref(false)
@@ -731,6 +733,11 @@ onBeforeUnmount(() => {
   mapRef.value = null
 })
 
+/** 全局主题变化时同步高德底图明暗样式（地图实例就绪后生效） */
+watch(isDark, dark => {
+  map?.setMapStyle(dark ? 'amap://styles/dark' : 'amap://styles/normal')
+})
+
 /* ---------- 打开面板（由父组件触发） ---------- */
 watch(() => props.visible, v => {
   visible.value = v
@@ -768,7 +775,7 @@ async function ensureAMap() {
     map = new AMap.Map(mapElRef.value, {
       zoom: 12,
       center: mapCenter,
-      mapStyle: mapTheme.value === 'dark' ? 'amap://styles/dark' : 'amap://styles/normal',
+      mapStyle: isDark.value ? 'amap://styles/dark' : 'amap://styles/normal',
       viewMode: '3D',
       pitch: 45
     })
@@ -1404,10 +1411,9 @@ function favToRoute(f) {
 
 /* ================= 右上工具条 ================= */
 
+/** 右上「白天/夜间」按钮：直接切换全局主题（light / dark），底图随 watch 同步 */
 function toggleMapTheme() {
-  mapTheme.value = mapTheme.value === 'dark' ? 'light' : 'dark'
-  localStorage.setItem('amap-nav-theme', mapTheme.value)
-  map?.setMapStyle(mapTheme.value === 'dark' ? 'amap://styles/dark' : 'amap://styles/normal')
+  themeStore.setTheme(isDark.value ? 'light' : 'dark')
 }
 
 function toggleTraffic() {
@@ -1492,7 +1498,7 @@ function fmtDuration(s) {
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: #f7f8fa;
+  background: var(--theme-bg-app);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -1519,8 +1525,8 @@ function fmtDuration(s) {
   align-items: center;
   justify-content: center;
   gap: 14px;
-  background: #f7f8fa;
-  color: #4e5969;
+  background: var(--theme-bg-app);
+  color: var(--theme-text-2);
   font-size: 13px;
 }
 
@@ -1534,8 +1540,8 @@ function fmtDuration(s) {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(22, 119, 255, 0.18);
-  border-top-color: #1677ff;
+  border: 3px solid var(--theme-primary-soft);
+  border-top-color: var(--theme-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -1558,9 +1564,9 @@ function fmtDuration(s) {
   flex-direction: column;
   gap: 10px;
   padding: 12px;
-  background: #fff;
+  background: var(--theme-bg-elevated);
   border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(29, 33, 41, 0.12);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .side-card::-webkit-scrollbar {
@@ -1573,7 +1579,7 @@ function fmtDuration(s) {
   align-items: center;
   gap: 4px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #f0f1f3;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .search-input {
@@ -1583,12 +1589,12 @@ function fmtDuration(s) {
   outline: none;
   background: transparent;
   font-size: 14px;
-  color: #1d2129;
+  color: var(--theme-text-1);
   font-family: inherit;
 }
 
 .search-input::placeholder {
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .sb-btn {
@@ -1601,22 +1607,22 @@ function fmtDuration(s) {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #4e5969;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .sb-btn:hover {
-  background: #f2f3f5;
-  color: #1d2129;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .sb-btn.sb-route {
-  color: #1677ff;
+  color: var(--theme-primary);
 }
 
 .sb-btn.sb-route:hover {
-  background: #e8f3ff;
+  background: var(--theme-primary-soft);
 }
 
 /* ---------- 分类宫格 ---------- */
@@ -1645,7 +1651,7 @@ function fmtDuration(s) {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--theme-primary-text);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -1656,24 +1662,24 @@ function fmtDuration(s) {
 
 .cat:hover .cat-icon {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(29, 33, 41, 0.18);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .cat-name {
   font-size: 12px;
-  color: #1d2129;
+  color: var(--theme-text-1);
   line-height: 1;
 }
 
 .cat:hover .cat-name {
-  color: #1677ff;
+  color: var(--theme-primary);
 }
 
 /* ---------- 回家 / 去单位 / 收藏夹 ---------- */
 .quick-row {
   display: flex;
   align-items: center;
-  border-top: 1px solid #f0f1f3;
+  border-top: 1px solid var(--theme-border);
   padding-top: 10px;
 }
 
@@ -1687,7 +1693,7 @@ function fmtDuration(s) {
   background: transparent;
   padding: 6px 0;
   font-size: 13px;
-  color: #1d2129;
+  color: var(--theme-text-1);
   cursor: pointer;
   border-radius: 8px;
   font-family: inherit;
@@ -1697,26 +1703,26 @@ function fmtDuration(s) {
 .quick .ic {
   width: 16px;
   height: 16px;
-  color: #4e5969;
+  color: var(--theme-text-2);
 }
 
 .quick:hover {
-  background: #f7f8fa;
+  background: var(--theme-bg-hover);
 }
 
 .quick:hover .ic {
-  color: #1677ff;
+  color: var(--theme-primary);
 }
 
 .quick em {
   font-style: normal;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .quick-sep {
   width: 1px;
   height: 14px;
-  background: #e5e6eb;
+  background: var(--theme-border);
   flex-shrink: 0;
 }
 
@@ -1725,10 +1731,10 @@ function fmtDuration(s) {
   margin: -4px 0 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid #f0f1f3;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(29, 33, 41, 0.08);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .tip-row {
@@ -1737,7 +1743,7 @@ function fmtDuration(s) {
   gap: 8px;
   padding: 9px 12px;
   border: none;
-  background: #fff;
+  background: var(--theme-bg-elevated);
   cursor: pointer;
   text-align: left;
   font-family: inherit;
@@ -1745,17 +1751,17 @@ function fmtDuration(s) {
 }
 
 .tip-row + .tip-row {
-  border-top: 1px solid #f7f8fa;
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .tip-row:hover {
-  background: #f7f8fa;
+  background: var(--theme-bg-hover);
 }
 
 .tip-pin {
   width: 14px;
   height: 14px;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .tip-name {
@@ -1765,13 +1771,13 @@ function fmtDuration(s) {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
-  color: #1d2129;
+  color: var(--theme-text-1);
 }
 
 .tip-district {
   flex-shrink: 0;
   font-size: 11.5px;
-  color: #86909c;
+  color: var(--theme-text-3);
   max-width: 40%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1801,7 +1807,7 @@ function fmtDuration(s) {
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: #4e5969;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -1812,12 +1818,12 @@ function fmtDuration(s) {
 }
 
 .mode-tab:hover {
-  background: #f2f3f5;
+  background: var(--theme-bg-hover);
 }
 
 .mode-tab.is-active {
-  background: #e8f3ff;
-  color: #1677ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .head-close {
@@ -1830,14 +1836,14 @@ function fmtDuration(s) {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #4e5969;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .head-close:hover {
-  background: #f2f3f5;
-  color: #1d2129;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .head-back {
@@ -1850,14 +1856,14 @@ function fmtDuration(s) {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #4e5969;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .head-back:hover {
-  background: #f2f3f5;
-  color: #1d2129;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 /* ---------- 起终点输入卡 ---------- */
@@ -1865,7 +1871,7 @@ function fmtDuration(s) {
   display: flex;
   gap: 10px;
   padding: 8px 12px;
-  background: #f2f3f5;
+  background: var(--theme-bg-surface-2);
   border-radius: 12px;
 }
 
@@ -1884,7 +1890,7 @@ function fmtDuration(s) {
 }
 
 .route-line + .route-line {
-  border-top: 1px solid #e5e6eb;
+  border-top: 1px solid var(--theme-border);
 }
 
 .dot {
@@ -1894,9 +1900,9 @@ function fmtDuration(s) {
   flex-shrink: 0;
 }
 
-.dot-start { background: #00b578; }
-.dot-end { background: #f5484d; }
-.dot-via { background: #86909c; }
+.dot-start { background: var(--theme-success); }
+.dot-end { background: var(--theme-danger); }
+.dot-via { background: var(--theme-text-3); }
 
 .route-line input {
   flex: 1;
@@ -1905,12 +1911,12 @@ function fmtDuration(s) {
   outline: none;
   background: transparent;
   font-size: 13.5px;
-  color: #1d2129;
+  color: var(--theme-text-1);
   font-family: inherit;
 }
 
 .route-line input::placeholder {
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .line-act {
@@ -1923,7 +1929,7 @@ function fmtDuration(s) {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #86909c;
+  color: var(--theme-text-3);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -1934,8 +1940,8 @@ function fmtDuration(s) {
 }
 
 .line-act:hover {
-  background: #e5e6eb;
-  color: #f5484d;
+  background: var(--theme-bg-hover);
+  color: var(--theme-danger);
 }
 
 .route-side {
@@ -1944,7 +1950,7 @@ function fmtDuration(s) {
   justify-content: center;
   gap: 6px;
   padding-left: 10px;
-  border-left: 1px solid #e5e6eb;
+  border-left: 1px solid var(--theme-border);
   flex-shrink: 0;
 }
 
@@ -1957,7 +1963,7 @@ function fmtDuration(s) {
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #4e5969;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -1968,8 +1974,8 @@ function fmtDuration(s) {
 }
 
 .side-act:hover {
-  background: #e5e6eb;
-  color: #1677ff;
+  background: var(--theme-bg-hover);
+  color: var(--theme-primary);
 }
 
 /* ---------- 策略选择 ---------- */
@@ -1989,10 +1995,10 @@ function fmtDuration(s) {
   gap: 8px;
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #e5e6eb;
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  background: #fff;
-  color: #1d2129;
+  background: var(--theme-bg-elevated);
+  color: var(--theme-text-1);
   font-size: 12.5px;
   font-family: inherit;
   text-align: left;
@@ -2003,7 +2009,7 @@ function fmtDuration(s) {
 
 .policy-select:hover,
 .policy-picker.is-open .policy-select {
-  border-color: #1677ff;
+  border-color: var(--theme-primary);
 }
 
 .policy-label {
@@ -2015,7 +2021,7 @@ function fmtDuration(s) {
 .policy-arrow {
   width: 14px;
   height: 14px;
-  color: #86909c;
+  color: var(--theme-text-3);
   transition: transform 0.18s ease;
 }
 
@@ -2031,9 +2037,9 @@ function fmtDuration(s) {
   z-index: 30;
   padding: 6px;
   border-radius: 12px;
-  border: 1px solid #f0f1f3;
-  background: #fff;
-  box-shadow: 0 8px 24px rgba(29, 33, 41, 0.14);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .policy-opt {
@@ -2043,7 +2049,7 @@ function fmtDuration(s) {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #1d2129;
+  color: var(--theme-text-1);
   font-size: 12.5px;
   font-family: inherit;
   text-align: left;
@@ -2052,12 +2058,12 @@ function fmtDuration(s) {
 }
 
 .policy-opt:hover {
-  background: #f2f3f5;
+  background: var(--theme-bg-hover);
 }
 
 .policy-opt.is-active {
-  background: #e8f3ff;
-  color: #1677ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-weight: 600;
 }
 
@@ -2066,8 +2072,8 @@ function fmtDuration(s) {
   padding: 11px 0;
   border: none;
   border-radius: 10px;
-  background: #1677ff;
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
@@ -2076,7 +2082,7 @@ function fmtDuration(s) {
 }
 
 .plan-btn:hover:not(:disabled) {
-  background: #0e5fd8;
+  background: var(--theme-primary-hover);
 }
 
 .plan-btn:active:not(:disabled) {
@@ -2092,9 +2098,9 @@ function fmtDuration(s) {
   margin: 0;
   padding: 8px 12px;
   border-radius: 10px;
-  background: #e8f7ee;
-  border: 1px solid rgba(0, 181, 120, 0.3);
-  color: #00875a;
+  background: var(--theme-success-soft);
+  border: 1px solid var(--theme-success);
+  color: var(--theme-success);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -2103,9 +2109,9 @@ function fmtDuration(s) {
   margin: 0;
   padding: 10px 12px;
   border-radius: 10px;
-  background: #ffece8;
-  border: 1px solid rgba(245, 72, 77, 0.3);
-  color: #cb2634;
+  background: var(--theme-danger-soft);
+  border: 1px solid var(--theme-danger);
+  color: var(--theme-danger);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -2114,8 +2120,8 @@ function fmtDuration(s) {
 .route-result {
   padding: 12px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f0f7ff, #e8f3ff);
-  border: 1px solid #d6e8ff;
+  background: var(--theme-primary-soft);
+  border: 1px solid var(--theme-border);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2131,21 +2137,21 @@ function fmtDuration(s) {
 .rr-time {
   font-size: 20px;
   font-weight: 700;
-  color: #1677ff;
+  color: var(--theme-primary);
 }
 
 .rr-dist {
   font-size: 13px;
-  color: #4e5969;
+  color: var(--theme-text-2);
 }
 
 .rr-mode {
   margin-left: auto;
   font-size: 11px;
   font-weight: 600;
-  color: #1677ff;
-  background: #fff;
-  border: 1px solid #d6e8ff;
+  color: var(--theme-primary);
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 999px;
   padding: 2px 10px;
 }
@@ -2155,13 +2161,13 @@ function fmtDuration(s) {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #4e5969;
+  color: var(--theme-text-2);
   cursor: pointer;
   user-select: none;
 }
 
 .globe-sync input {
-  accent-color: #1677ff;
+  accent-color: var(--theme-primary);
 }
 
 .steps {
@@ -2174,7 +2180,7 @@ function fmtDuration(s) {
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: #86909c;
+  color: var(--theme-text-3);
   padding: 2px 4px;
 }
 
@@ -2189,7 +2195,7 @@ function fmtDuration(s) {
 }
 
 .step-item:hover {
-  background: #f7f8fa;
+  background: var(--theme-bg-hover);
 }
 
 .step-index {
@@ -2197,8 +2203,8 @@ function fmtDuration(s) {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #e8f3ff;
-  color: #1677ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 10.5px;
   font-weight: 700;
   display: flex;
@@ -2210,19 +2216,19 @@ function fmtDuration(s) {
 .step-text {
   flex: 1;
   font-size: 12.5px;
-  color: #1d2129;
+  color: var(--theme-text-1);
   line-height: 1.5;
 }
 
 .step-text em {
   font-style: normal;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .step-distance {
   flex-shrink: 0;
   font-size: 11px;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 /* ---------- 历史记录 ---------- */
@@ -2236,7 +2242,7 @@ function fmtDuration(s) {
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: #86909c;
+  color: var(--theme-text-3);
   padding: 2px 4px 4px;
 }
 
@@ -2255,13 +2261,13 @@ function fmtDuration(s) {
 }
 
 .his-item:hover {
-  background: #f7f8fa;
+  background: var(--theme-bg-hover);
 }
 
 .his-clock {
   width: 16px;
   height: 16px;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .his-text {
@@ -2271,7 +2277,7 @@ function fmtDuration(s) {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
-  color: #1d2129;
+  color: var(--theme-text-1);
 }
 
 /* ---------- 结果 / 收藏列表 ---------- */
@@ -2290,7 +2296,7 @@ function fmtDuration(s) {
   white-space: nowrap;
   font-size: 14px;
   font-weight: 600;
-  color: #1d2129;
+  color: var(--theme-text-1);
 }
 
 .state-tip {
@@ -2298,7 +2304,7 @@ function fmtDuration(s) {
   padding: 20px 0;
   text-align: center;
   font-size: 12.5px;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .poi-list {
@@ -2318,7 +2324,7 @@ function fmtDuration(s) {
 }
 
 .poi-row:hover {
-  background: #f7f8fa;
+  background: var(--theme-bg-hover);
 }
 
 .poi-main {
@@ -2329,7 +2335,7 @@ function fmtDuration(s) {
 .poi-name {
   font-size: 13px;
   font-weight: 600;
-  color: #1d2129;
+  color: var(--theme-text-1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2339,13 +2345,13 @@ function fmtDuration(s) {
   font-style: normal;
   font-weight: 400;
   font-size: 11px;
-  color: #00b578;
+  color: var(--theme-success);
 }
 
 .poi-addr {
   margin-top: 2px;
   font-size: 11.5px;
-  color: #86909c;
+  color: var(--theme-text-3);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2361,7 +2367,7 @@ function fmtDuration(s) {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #86909c;
+  color: var(--theme-text-3);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -2372,21 +2378,21 @@ function fmtDuration(s) {
 }
 
 .poi-act:hover {
-  background: #fff7e6;
-  color: #f7ba1e;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 
 .poi-act.is-fav {
-  color: #f7ba1e;
+  color: var(--theme-warning);
 }
 
 .poi-go {
   flex-shrink: 0;
   padding: 4px 10px;
-  border: 1px solid #1677ff;
+  border: 1px solid var(--theme-primary);
   border-radius: 999px;
-  background: #fff;
-  color: #1677ff;
+  background: var(--theme-bg-elevated);
+  color: var(--theme-primary);
   font-size: 11.5px;
   font-weight: 600;
   font-family: inherit;
@@ -2395,8 +2401,8 @@ function fmtDuration(s) {
 }
 
 .poi-go:hover {
-  background: #1677ff;
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 /* ================= 天气徽章 ================= */
@@ -2412,9 +2418,9 @@ function fmtDuration(s) {
   padding: 0 12px;
   border: none;
   border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(29, 33, 41, 0.1);
-  color: #1d2129;
+  background: var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-sm);
+  color: var(--theme-text-1);
   font-size: 13px;
   font-family: inherit;
   cursor: pointer;
@@ -2423,7 +2429,7 @@ function fmtDuration(s) {
 .weather-chip .ic {
   width: 14px;
   height: 14px;
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .weather-city {
@@ -2434,7 +2440,7 @@ function fmtDuration(s) {
   width: 1px;
   height: 14px;
   margin: 0 4px;
-  background: #e5e6eb;
+  background: var(--theme-border);
 }
 
 .weather-pop {
@@ -2443,9 +2449,9 @@ function fmtDuration(s) {
   left: 0;
   min-width: 200px;
   padding: 10px 14px;
-  background: #fff;
+  background: var(--theme-bg-elevated);
   border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(29, 33, 41, 0.14);
+  box-shadow: var(--theme-shadow-lg);
   cursor: default;
 }
 
@@ -2459,11 +2465,11 @@ function fmtDuration(s) {
 }
 
 .wp-row span {
-  color: #86909c;
+  color: var(--theme-text-3);
 }
 
 .wp-row b {
-  color: #1d2129;
+  color: var(--theme-text-1);
   font-weight: 600;
 }
 
@@ -2486,9 +2492,9 @@ function fmtDuration(s) {
   padding: 0 12px;
   border: none;
   border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(29, 33, 41, 0.1);
-  color: #1d2129;
+  background: var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-sm);
+  color: var(--theme-text-1);
   font-size: 13px;
   font-family: inherit;
   cursor: pointer;
@@ -2501,12 +2507,12 @@ function fmtDuration(s) {
 }
 
 .tool-chip:hover {
-  color: #1677ff;
+  color: var(--theme-primary);
 }
 
 .tool-chip.is-on {
-  background: #e8f3ff;
-  color: #1677ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .tool-close {
@@ -2524,9 +2530,9 @@ function fmtDuration(s) {
   width: 36px;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--theme-bg-elevated);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(29, 33, 41, 0.12);
+  box-shadow: var(--theme-shadow-md);
   overflow: hidden;
 }
 
@@ -2536,17 +2542,17 @@ function fmtDuration(s) {
   align-items: center;
   justify-content: center;
   border: none;
-  border-bottom: 1px solid #f0f1f3;
-  background: #fff;
-  color: #1d2129;
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-bg-elevated);
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
   font-family: inherit;
 }
 
 .ctl-btn:hover {
-  background: #f7f8fa;
-  color: #1677ff;
+  background: var(--theme-bg-hover);
+  color: var(--theme-primary);
 }
 
 .ctl-btn.ctl-last {
@@ -2571,7 +2577,7 @@ function fmtDuration(s) {
   bottom: 8px;
   z-index: 15;
   font-size: 10.5px;
-  color: rgba(29, 33, 41, 0.45);
+  color: var(--theme-text-3);
   pointer-events: none;
   user-select: none;
 }
@@ -2584,10 +2590,10 @@ function fmtDuration(s) {
   z-index: 40;
   padding: 9px 18px;
   border-radius: 999px;
-  background: rgba(29, 33, 41, 0.92);
-  color: #fff;
+  background: var(--theme-text-1);
+  color: var(--theme-bg-app);
   font-size: 13px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--theme-shadow-lg);
   max-width: 80vw;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2600,391 +2606,17 @@ function fmtDuration(s) {
   display: inline-block;
   padding: 3px 9px;
   border-radius: 8px;
-  background: rgba(22, 119, 255, 0.92);
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 :global(.nav-pin-label.is-center) {
-  background: rgba(245, 72, 77, 0.95);
-}
-
-/* ================= 夜间主题（跟随底图 mapTheme） ================= */
-/* 配色对齐 ServicePanel 基础深色样式：面板 #1c1c1e、文字 #f5f5f7、强调 #0a84ff */
-.is-dark.nav-overlay {
-  background: #131417;
-}
-
-.is-dark .map-loading,
-.is-dark .map-error {
-  background: #131417;
-  color: #aeb7c4;
-}
-
-/* ---------- 左上主卡片 ---------- */
-.is-dark .side-card {
-  background: #1c1c1e;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
-}
-
-.is-dark .search-box {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
-.is-dark .search-input {
-  color: #f5f5f7;
-}
-
-.is-dark .search-input::placeholder,
-.is-dark .route-line input::placeholder {
-  color: #86868b;
-}
-
-.is-dark .sb-btn,
-.is-dark .head-close,
-.is-dark .head-back,
-.is-dark .mode-tab {
-  color: #aeb7c4;
-}
-
-.is-dark .sb-btn:hover,
-.is-dark .head-close:hover,
-.is-dark .head-back:hover,
-.is-dark .mode-tab:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f5f7;
-}
-
-.is-dark .sb-btn.sb-route {
-  color: #0a84ff;
-}
-
-.is-dark .sb-btn.sb-route:hover {
-  background: rgba(10, 132, 255, 0.16);
-}
-
-.is-dark .cat-name {
-  color: #f5f5f7;
-}
-
-.is-dark .cat:hover .cat-name {
-  color: #0a84ff;
-}
-
-.is-dark .quick-row {
-  border-top-color: rgba(255, 255, 255, 0.1);
-}
-
-.is-dark .quick {
-  color: #f5f5f7;
-}
-
-.is-dark .quick .ic {
-  color: #aeb7c4;
-}
-
-.is-dark .quick:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .quick:hover .ic {
-  color: #0a84ff;
-}
-
-.is-dark .quick em {
-  color: #86868b;
-}
-
-.is-dark .quick-sep {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-/* ---------- 联想下拉 ---------- */
-.is-dark .tips-pop {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-}
-
-.is-dark .tip-row {
-  background: #1c1c1e;
-}
-
-.is-dark .tip-row + .tip-row {
-  border-top-color: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .tip-row:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .tip-pin,
-.is-dark .tip-district {
-  color: #86868b;
-}
-
-.is-dark .tip-name {
-  color: #f5f5f7;
-}
-
-/* ---------- 路线面板 ---------- */
-.is-dark .mode-tab.is-active {
-  background: rgba(10, 132, 255, 0.18);
-  color: #0a84ff;
-}
-
-.is-dark .route-card {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .route-line + .route-line {
-  border-top-color: rgba(255, 255, 255, 0.08);
-}
-
-.is-dark .route-line input {
-  color: #f5f5f7;
-}
-
-.is-dark .line-act {
-  color: #86868b;
-}
-
-.is-dark .line-act:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.is-dark .route-side {
-  border-left-color: rgba(255, 255, 255, 0.08);
-}
-
-.is-dark .side-act {
-  color: #aeb7c4;
-}
-
-.is-dark .side-act:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #0a84ff;
-}
-
-.is-dark .policy-select {
-  border-color: rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  color: #f5f5f7;
-}
-
-.is-dark .policy-select:hover,
-.is-dark .policy-picker.is-open .policy-select {
-  border-color: #0a84ff;
-}
-
-.is-dark .policy-arrow {
-  color: #86868b;
-}
-
-.is-dark .policy-pop {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: #1c1c1e;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.is-dark .policy-opt {
-  color: #f5f5f7;
-}
-
-.is-dark .policy-opt:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .policy-opt.is-active {
-  background: rgba(10, 132, 255, 0.18);
-  color: #0a84ff;
-}
-
-.is-dark .plan-btn {
-  background: #0a84ff;
-}
-
-.is-dark .plan-btn:hover:not(:disabled) {
-  background: #0071e3;
-}
-
-.is-dark .set-hint {
-  background: rgba(48, 209, 88, 0.12);
-  border-color: rgba(48, 209, 88, 0.35);
-  color: #7ee2a0;
-}
-
-.is-dark .nav-error {
-  background: rgba(255, 69, 58, 0.14);
-  border-color: rgba(255, 69, 58, 0.35);
-  color: #ff9f9a;
-}
-
-/* ---------- 路线结果 ---------- */
-.is-dark .route-result {
-  background: linear-gradient(135deg, rgba(10, 132, 255, 0.14), rgba(10, 132, 255, 0.07));
-  border-color: rgba(10, 132, 255, 0.3);
-}
-
-.is-dark .rr-time {
-  color: #0a84ff;
-}
-
-.is-dark .rr-dist,
-.is-dark .globe-sync {
-  color: #aeb7c4;
-}
-
-.is-dark .rr-mode {
-  background: transparent;
-  border-color: rgba(10, 132, 255, 0.4);
-  color: #0a84ff;
-}
-
-.is-dark .steps-header,
-.is-dark .step-text em,
-.is-dark .step-distance {
-  color: #86868b;
-}
-
-.is-dark .step-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .step-index {
-  background: rgba(10, 132, 255, 0.18);
-  color: #0a84ff;
-}
-
-.is-dark .step-text {
-  color: #f5f5f7;
-}
-
-/* ---------- 历史 / 结果 / 收藏列表 ---------- */
-.is-dark .his-title {
-  color: #86868b;
-}
-
-.is-dark .his-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .his-clock {
-  color: #86868b;
-}
-
-.is-dark .his-text {
-  color: #f5f5f7;
-}
-
-.is-dark .panel-title {
-  color: #f5f5f7;
-}
-
-.is-dark .state-tip {
-  color: #86868b;
-}
-
-.is-dark .poi-row:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.is-dark .poi-name {
-  color: #f5f5f7;
-}
-
-.is-dark .poi-addr {
-  color: #86868b;
-}
-
-.is-dark .poi-act {
-  color: #86868b;
-}
-
-.is-dark .poi-act:hover {
-  background: rgba(255, 214, 10, 0.14);
-  color: #ffd60a;
-}
-
-.is-dark .poi-act.is-fav {
-  color: #ffd60a;
-}
-
-.is-dark .poi-go {
-  background: transparent;
-  color: #0a84ff;
-}
-
-.is-dark .poi-go:hover {
-  background: #0a84ff;
-  color: #fff;
-}
-
-/* ---------- 天气徽章 ---------- */
-.is-dark .weather-chip {
-  background: #1c1c1e;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-  color: #f5f5f7;
-}
-
-.is-dark .weather-chip .ic {
-  color: #86868b;
-}
-
-.is-dark .weather-split {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.is-dark .weather-pop {
-  background: #1c1c1e;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
-}
-
-.is-dark .wp-row span {
-  color: #86868b;
-}
-
-.is-dark .wp-row b {
-  color: #f5f5f7;
-}
-
-/* ---------- 右上工具条 / 右下控件 ---------- */
-.is-dark .tool-chip {
-  background: #1c1c1e;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-  color: #f5f5f7;
-}
-
-.is-dark .tool-chip:hover {
-  color: #0a84ff;
-}
-
-.is-dark .tool-chip.is-on {
-  background: rgba(10, 132, 255, 0.2);
-  color: #0a84ff;
-}
-
-.is-dark .ctl-stack {
-  background: #1c1c1e;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.is-dark .ctl-btn {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-  background: #1c1c1e;
-  color: #f5f5f7;
-}
-
-.is-dark .ctl-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #0a84ff;
-}
-
-.is-dark .map-attribution {
-  color: rgba(255, 255, 255, 0.45);
+  background: var(--theme-danger);
 }
 
 /* ================= 响应式 ================= */

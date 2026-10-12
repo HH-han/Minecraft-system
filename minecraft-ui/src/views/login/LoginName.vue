@@ -738,8 +738,8 @@ onMounted(() => {
 
 .left-section {
   width: 50%;
-  background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   padding: 60px;
   display: flex;
   flex-direction: column;
@@ -756,7 +756,7 @@ onMounted(() => {
   right: -100px;
   width: 400px;
   height: 400px;
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--theme-primary-text) 10%, transparent);
   border-radius: 50%;
   animation: floating 6s ease-in-out infinite;
 }
@@ -843,7 +843,7 @@ onMounted(() => {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--theme-primary-text) 20%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -855,7 +855,7 @@ onMounted(() => {
 
 .right-section {
   width: 50%;
-  background: white;
+  background: var(--theme-bg-elevated);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -871,7 +871,7 @@ onMounted(() => {
   left: -100px;
   width: 400px;
   height: 400px;
-  background: rgba(52, 144, 222, 0.05);
+  background: color-mix(in srgb, var(--theme-primary) 6%, transparent);
   border-radius: 50%;
   animation: floating 8s ease-in-out infinite reverse;
 }
@@ -902,7 +902,7 @@ onMounted(() => {
 
 .login-form h3,
 .register-form h3 {
-  color: #3490de;
+  color: var(--theme-primary);
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -915,19 +915,19 @@ onMounted(() => {
 .register-form h2 {
   font-size: 28px;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--theme-text-1);
   animation: slideInUp 0.8s ease-out 0.4s both;
 }
 
 .welcome-message {
   font-size: 16px;
-  color: #666;
+  color: var(--theme-text-2);
   display: flex;
   animation: slideInUp 0.8s ease-out 0.6s both;
 }
 
 .form-subtitle {
-  color: #666;
+  color: var(--theme-text-2);
   margin-bottom: 40px;
   font-size: 14px;
   animation: slideInUp 0.8s ease-out 0.6s both;
@@ -944,7 +944,7 @@ onMounted(() => {
 .user-icon svg {
   width: 32px;
   height: 32px;
-  fill: #3490de;
+  fill: var(--theme-primary);
 }
 
 /* 头像显示样式 */
@@ -960,8 +960,8 @@ onMounted(() => {
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #3490de;
-  box-shadow: 0 4px 12px rgba(52, 144, 222, 0.3);
+  border: 3px solid var(--theme-primary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 30%, transparent);
   animation: scaleIn 0.8s ease-out 1s both;
 }
 
@@ -988,19 +988,19 @@ onMounted(() => {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: #f0f2f5;
+  background-color: var(--theme-bg-surface-2);
   background-size: cover;
   background-position: center;
   position: relative;
   cursor: pointer;
-  border: 4px solid #fff;
-  box-shadow: 0 5px 15px rgba(52, 144, 222, 0.2);
+  border: 4px solid var(--theme-bg-elevated);
+  box-shadow: 0 5px 15px color-mix(in srgb, var(--theme-primary) 20%, transparent);
   transition: all 0.3s ease;
 }
 
 .registered-avatar-preview:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(52, 144, 222, 0.3);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary) 30%, transparent);
 }
 
 .registered-avatar-upload-label {
@@ -1009,7 +1009,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--theme-overlay);
   color: white;
   border-radius: 50%;
   opacity: 0;
@@ -1046,7 +1046,7 @@ onMounted(() => {
 
 .userlogin-userIcon {
   position: absolute;
-  fill: #3490de;
+  fill: var(--theme-primary);
   width: 16px;
   height: 16px;
   top: -23px;
@@ -1059,7 +1059,7 @@ onMounted(() => {
   position: absolute;
   top: -25px;
   left: 5px;
-  color: rgb(83, 83, 83);
+  color: var(--theme-text-2);
   font-size: 14px;
   font-weight: 500;
   font-family: Whitney, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -1072,16 +1072,21 @@ onMounted(() => {
 #userlogin-passwordField,
 #userlogin-usernameField {
   width: 100%;
-  border: 2px solid rgb(186, 186, 186);
+  border: 2px solid var(--theme-border);
   background-color: transparent;
   border-radius: 15px;
   padding: 10px 15px;
-  color: rgb(96, 96, 96);
+  color: var(--theme-text-1);
   font-weight: 500;
   outline: none;
-  caret-color: rgb(78, 164, 255);
+  caret-color: var(--theme-primary);
   transition-duration: .3s;
   font-family: Whitney, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+#userlogin-passwordField::placeholder,
+#userlogin-usernameField::placeholder {
+  color: var(--theme-text-3);
 }
 
 /* 密码 */
@@ -1099,7 +1104,7 @@ onMounted(() => {
 
 #userlogin-passwordField:focus,
 #userlogin-passwordField:valid {
-  background-color: #f7f7f7;
+  background-color: var(--theme-bg-surface-2);
   transition-duration: .3s;
 }
 
@@ -1118,7 +1123,7 @@ onMounted(() => {
 
 #userlogin-usernameField:focus,
 #userlogin-usernameField:valid {
-  background-color: #f7f7f7;
+  background-color: var(--theme-bg-surface-2);
   transition-duration: .3s;
 }
 
@@ -1131,7 +1136,7 @@ onMounted(() => {
 .other-login-title {
   text-align: center;
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-bottom: 20px;
   position: relative;
 }
@@ -1143,7 +1148,7 @@ onMounted(() => {
   top: 50%;
   width: 30%;
   height: 1px;
-  background-color: #ddd;
+  background-color: var(--theme-border);
 }
 
 .other-login-title::before {
@@ -1170,7 +1175,7 @@ onMounted(() => {
   border: none;
   border-radius: 50%;
   background: none;
-  color: #333;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 10px;
@@ -1196,7 +1201,7 @@ onMounted(() => {
 }
 
 .qq-login {
-  color: #000000;
+  color: var(--theme-text-1);
 }
 
 .phone-login {
@@ -1238,7 +1243,7 @@ onMounted(() => {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #333;
+  color: var(--theme-text-1);
   font-weight: 500;
   transition: all 0.3s ease;
 }
@@ -1246,7 +1251,7 @@ onMounted(() => {
 .input-animation {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -1256,18 +1261,18 @@ onMounted(() => {
 
 .input-animation::placeholder {
   transition: all 0.3s ease;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .input-animation:focus {
   outline: none;
-  border-color: #3490de;
-  box-shadow: 0 0 0 3px rgba(52, 144, 222, 0.1);
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px var(--theme-primary-soft);
   transform: translateY(-2px);
 }
 
 .input-animation:focus::placeholder {
-  color: #3490de;
+  color: var(--theme-primary);
   transform: translateY(-25px);
   font-size: 12px;
   opacity: 0.8;
@@ -1276,8 +1281,8 @@ onMounted(() => {
 .submit-btn {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 10px;
   font-size: 16px;
@@ -1307,7 +1312,7 @@ onMounted(() => {
 
 .submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 144, 222, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 30%, transparent);
 }
 
 .agreement-row {
@@ -1323,7 +1328,7 @@ onMounted(() => {
   appearance: none;
   width: 16px;
   height: 16px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--theme-border);
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1331,14 +1336,14 @@ onMounted(() => {
 }
 
 .agreement-checkbox:checked {
-  background-color: #3490de;
-  border-color: #3490de;
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .agreement-checkbox:checked::after {
   content: '✓';
   position: absolute;
-  color: white;
+  color: var(--theme-primary-text);
   font-size: 11px;
   top: 50%;
   left: 50%;
@@ -1347,18 +1352,18 @@ onMounted(() => {
 
 .agreement-text {
   font-size: 13px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 .agreement-link {
   font-size: 13px;
-  color: #3490de;
+  color: var(--theme-primary);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .agreement-link:hover {
-  color: #1e6bb8;
+  color: var(--theme-primary-hover);
   text-decoration: underline;
 }
 
@@ -1372,7 +1377,7 @@ onMounted(() => {
 .form-footer button {
   background: none;
   border: none;
-  color: #3490de;
+  color: var(--theme-primary);
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
@@ -1380,6 +1385,10 @@ onMounted(() => {
   cursor: pointer;
   font-family: inherit;
   font-size: 14px;
+}
+
+.form-footer button:hover {
+  color: var(--theme-primary-hover);
 }
 
 /* 注册表单样式 */
@@ -1401,30 +1410,30 @@ onMounted(() => {
   font-size: 16px;
   width: 100%;
   border: none;
-  border-bottom: 2px solid #e0e5ec;
+  border-bottom: 2px solid var(--theme-border);
   padding: 10px 0;
   background-color: transparent;
-  color: #3a4a6d;
+  color: var(--theme-text-1);
   transition: all 0.3s ease;
 }
 
 .registered-css-input-field:focus {
   outline: none;
-  border-bottom-color: #3490de;
+  border-bottom-color: var(--theme-primary);
 }
 
 .registered-css-input-field:focus+.registered-css-input-label,
 .registered-css-input-field:not(:placeholder-shown)+.registered-css-input-label {
   transform: translateY(-25px);
   font-size: 14px;
-  color: #3490de;
+  color: var(--theme-primary);
 }
 
 .registered-css-input-label {
   position: absolute;
   top: 10px;
   left: 0;
-  color: #a3a9c3;
+  color: var(--theme-text-3);
   transition: all 0.3s ease;
   pointer-events: none;
 }
@@ -1435,7 +1444,7 @@ onMounted(() => {
   left: 0;
   height: 2px;
   width: 0;
-  background-color: #3490de;
+  background-color: var(--theme-primary);
   transition: all 0.4s ease;
 }
 
@@ -1454,7 +1463,7 @@ onMounted(() => {
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #e0e5ec;
+  border: 2px solid var(--theme-border);
   border-radius: 4px;
   margin-right: 10px;
   position: relative;
@@ -1463,14 +1472,14 @@ onMounted(() => {
 }
 
 .registered-css-a-container input[type="checkbox"]:checked {
-  background-color: #3490de;
-  border-color: #3490de;
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .registered-css-a-container input[type="checkbox"]:checked::after {
   content: '✓';
   position: absolute;
-  color: white;
+  color: var(--theme-primary-text);
   font-size: 12px;
   top: 50%;
   left: 50%;
@@ -1478,14 +1487,14 @@ onMounted(() => {
 }
 
 .agreement-a4 {
-  color: #3490de;
+  color: var(--theme-primary);
   text-decoration: none;
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 .agreement-a4:hover {
-  color: #1e6bb8;
+  color: var(--theme-primary-hover);
   text-decoration: underline;
 }
 
@@ -1496,8 +1505,8 @@ onMounted(() => {
 }
 
 .registered-css-input-registered {
-  background: linear-gradient(135deg, #3490de 0%, #1e6bb8 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   padding: 12px 30px;
   font-size: 16px;
@@ -1506,14 +1515,14 @@ onMounted(() => {
   width: 100%;
   font-weight: 600;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(52, 144, 222, 0.4);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-primary) 40%, transparent);
   transition: all 0.3s ease;
   margin-bottom: 15px;
 }
 
 .registered-css-input-registered:hover {
   transform: translateY(-3px);
-  box-shadow: 0 7px 20px rgba(52, 144, 222, 0.6);
+  box-shadow: 0 7px 20px color-mix(in srgb, var(--theme-primary) 55%, transparent);
 }
 
 .registered-css-input-registered:active {
@@ -1711,17 +1720,17 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3490de;
-  background: rgba(52, 144, 222, 0.1);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
   border-radius: 50%;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .loginpage-qr-link:hover {
-  background: rgba(52, 144, 222, 0.2);
+  background: color-mix(in srgb, var(--theme-primary) 20%, transparent);
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(52, 144, 222, 0.2);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 20%, transparent);
 }
 
 .loginpage-qr-icon svg {
@@ -1736,7 +1745,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--theme-overlay);
   color: #ffffff;
   display: flex;
   justify-content: center;
@@ -1811,7 +1820,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--theme-overlay);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -1822,9 +1831,9 @@ onMounted(() => {
 }
 
 .blur-modal-content {
-  background: white;
+  background: var(--theme-bg-elevated);
   border-radius: 15px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-md);
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
@@ -1832,153 +1841,8 @@ onMounted(() => {
   animation: slideIn 0.3s ease-in-out;
 }
 
-/* ================= 暗色主题 ================= */
 /* 让主题切换开关浮于子页面弹层之上，保证邮箱/手机/找回密码页也能切换主题 */
 :global(.theme-switch-login) {
   z-index: 1200;
-}
-
-html[data-theme="dark"] .left-section {
-  background: linear-gradient(135deg, #1b4f86 0%, #0e2f52 100%);
-}
-
-html[data-theme="dark"] .left-section::before {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-html[data-theme="dark"] .right-section {
-  background: #1b1e2b;
-}
-
-html[data-theme="dark"] .right-section::before {
-  background: rgba(78, 161, 240, 0.08);
-}
-
-html[data-theme="dark"] .login-form h3,
-html[data-theme="dark"] .register-form h3 {
-  color: #4ea1f0;
-}
-
-html[data-theme="dark"] .login-form h2,
-html[data-theme="dark"] .register-form h2 {
-  color: #f5f5f7;
-}
-
-html[data-theme="dark"] .welcome-message,
-html[data-theme="dark"] .form-subtitle {
-  color: #a1a1a6;
-}
-
-html[data-theme="dark"] .user-icon svg,
-html[data-theme="dark"] .userlogin-userIcon {
-  fill: #4ea1f0;
-}
-
-html[data-theme="dark"] .loginpage-avatar {
-  border-color: #4ea1f0;
-  box-shadow: 0 4px 12px rgba(78, 161, 240, 0.35);
-}
-
-html[data-theme="dark"] .registered-avatar-preview {
-  background-color: #2f3448;
-  border-color: #3d4360;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-}
-
-html[data-theme="dark"] .userlogin-usernameLabel {
-  color: #a1a1a6;
-}
-
-html[data-theme="dark"] #userlogin-passwordField,
-html[data-theme="dark"] #userlogin-usernameField {
-  border-color: #3d4360;
-  color: #f5f5f7;
-}
-
-html[data-theme="dark"] #userlogin-passwordField::placeholder,
-html[data-theme="dark"] #userlogin-usernameField::placeholder {
-  color: #7f869e;
-}
-
-html[data-theme="dark"] #userlogin-passwordField:focus,
-html[data-theme="dark"] #userlogin-passwordField:valid,
-html[data-theme="dark"] #userlogin-usernameField:focus,
-html[data-theme="dark"] #userlogin-usernameField:valid {
-  background-color: #262a3a;
-}
-
-html[data-theme="dark"] .other-login-title {
-  color: #8e8e93;
-}
-
-html[data-theme="dark"] .other-login-title::before,
-html[data-theme="dark"] .other-login-title::after {
-  background-color: #3d4360;
-}
-
-html[data-theme="dark"] .other-login-btn {
-  color: #e5e5ea;
-}
-
-html[data-theme="dark"] .qq-login {
-  color: #f5f5f7;
-}
-
-html[data-theme="dark"] .agreement-checkbox,
-html[data-theme="dark"] .registered-css-a-container input[type="checkbox"] {
-  border-color: #525a78;
-}
-
-html[data-theme="dark"] .agreement-text {
-  color: #a1a1a6;
-}
-
-html[data-theme="dark"] .agreement-link,
-html[data-theme="dark"] .agreement-a4,
-html[data-theme="dark"] .form-footer button {
-  color: #4ea1f0;
-}
-
-html[data-theme="dark"] .agreement-link:hover,
-html[data-theme="dark"] .agreement-a4:hover,
-html[data-theme="dark"] .form-footer button:hover {
-  color: #7cb8f5;
-}
-
-html[data-theme="dark"] .registered-css-input-field {
-  border-bottom-color: #3d4360;
-  color: #f5f5f7;
-}
-
-html[data-theme="dark"] .registered-css-input-field:focus {
-  border-bottom-color: #4ea1f0;
-}
-
-html[data-theme="dark"] .registered-css-input-label {
-  color: #7f869e;
-}
-
-html[data-theme="dark"] .registered-css-input-field:focus + .registered-css-input-label,
-html[data-theme="dark"] .registered-css-input-field:not(:placeholder-shown) + .registered-css-input-label {
-  color: #4ea1f0;
-}
-
-html[data-theme="dark"] .registered-css-input-highlight {
-  background-color: #4ea1f0;
-}
-
-html[data-theme="dark"] .loginpage-qr-link {
-  color: #4ea1f0;
-  background: rgba(78, 161, 240, 0.15);
-}
-
-html[data-theme="dark"] .submit-btn,
-html[data-theme="dark"] .registered-css-input-registered {
-  background: linear-gradient(135deg, #3f8fe0 0%, #1f6bb0 100%);
-}
-
-html[data-theme="dark"] .blur-modal-content {
-  background: #1b1e2b;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 </style>

@@ -249,7 +249,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,7 +258,7 @@ onUnmounted(() => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--theme-bg-elevated);
   border-radius: 20px;
   padding: 30px;
   width: 90%;
@@ -286,18 +286,18 @@ onUnmounted(() => {
   width: 36px;
   height: 36px;
   border: none;
-  background: #f5f5f5;
+  background: var(--theme-bg-surface-2);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #666;
+  color: var(--theme-text-2);
   transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-  background: #eee;
+  background: var(--theme-bg-active);
   transform: rotate(90deg);
 }
 
@@ -330,17 +330,17 @@ onUnmounted(() => {
   margin: 0 0 8px;
   font-size: 22px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .modal-header p {
   margin: 0;
   font-size: 14px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .qr-container {
-  background: #fafafa;
+  background: var(--theme-bg-surface-2);
   border-radius: 16px;
   padding: 20px;
   position: relative;
@@ -363,7 +363,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .qr-svg {
@@ -379,7 +379,7 @@ onUnmounted(() => {
 
 .qr-text {
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .qr-scan-line {
@@ -416,7 +416,7 @@ onUnmounted(() => {
 .tip-icon {
   width: 20px;
   height: 20px;
-  color: #4facfe;
+  color: var(--theme-primary);
 }
 
 .tip-icon svg {
@@ -427,7 +427,7 @@ onUnmounted(() => {
 .qr-tips p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 .platform-info {
@@ -435,8 +435,8 @@ onUnmounted(() => {
   justify-content: space-around;
   margin-top: 20px;
   padding: 15px 0;
-  border-top: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid var(--theme-hairline);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .info-item {
@@ -446,13 +446,13 @@ onUnmounted(() => {
 .info-label {
   display: block;
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
   margin-bottom: 4px;
 }
 
 .info-value {
   font-size: 13px;
-  color: #333;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
@@ -460,7 +460,7 @@ onUnmounted(() => {
   text-align: center;
   margin-top: 20px;
   font-size: 13px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .countdown-num {
@@ -474,7 +474,7 @@ onUnmounted(() => {
   padding: 12px;
   border: 1px solid;
   border-radius: 25px;
-  background: white;
+  background: var(--theme-bg-surface);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -485,7 +485,7 @@ onUnmounted(() => {
 }
 
 .refresh-btn:hover {
-  background: rgba(79, 172, 254, 0.05);
+  background: var(--theme-bg-hover);
 }
 
 .refresh-btn svg {

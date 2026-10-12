@@ -102,11 +102,11 @@ defineExpose({
   transform: translate(-50%, -50%);
   z-index: 9999;
   width: 350px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+  background: var(--theme-bg-elevated);
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-lg);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--theme-border);
   backdrop-filter: blur(10px);
 }
 
@@ -120,22 +120,22 @@ defineExpose({
 .success-icon {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--theme-gradient);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 15px;
   flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--theme-primary) 30%, transparent);
   animation: pulse 2s infinite;
 }
 
 .checkmark {
   width: 24px;
   height: 24px;
-  fill: white;
-  stroke: white;
+  fill: var(--theme-primary-text);
+  stroke: var(--theme-primary-text);
   stroke-width: 2;
   animation: checkmark 0.6s ease;
 }
@@ -146,7 +146,7 @@ defineExpose({
 
 .success-title {
   margin: 0;
-  color: #2c3e50;
+  color: var(--theme-text-1);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 5px;
@@ -154,7 +154,7 @@ defineExpose({
 
 .success-message {
   margin: 0;
-  color: #7f8c8d;
+  color: var(--theme-text-2);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -164,20 +164,20 @@ defineExpose({
   bottom: 0;
   left: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--theme-gradient);
   border-radius: 0 0 0 12px;
   transition: width 0.1s linear;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(79, 172, 254, 0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-primary) 40%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(79, 172, 254, 0);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--theme-primary) 0%, transparent);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(79, 172, 254, 0);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-primary) 0%, transparent);
   }
 }
 

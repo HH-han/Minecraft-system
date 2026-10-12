@@ -4,7 +4,7 @@
             <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M5.1716 8.00003L1.08582 3.91424L3.91424 1.08582L8.00003 5.1716L12.0858 1.08582L14.9142 3.91424L10.8285 8.00003L14.9142 12.0858L12.0858 14.9142L8.00003 10.8285L3.91424 14.9142L1.08582 12.0858L5.1716 8.00003Z"
-                    fill="#FFFFFF"></path>
+                    fill="currentColor"></path>
             </svg>
         </button>
     </div>
@@ -31,30 +31,30 @@ const closethePage = () => {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    color: #ffffff;
-    border: 5px solid #fff;
+    color: var(--theme-text-inverse);
+    border: 5px solid var(--theme-bg-surface);
     transition: all 0.3s ease;
     cursor: pointer;
     outline: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .close-btn:active {
     transform: scale(0.95);
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .close-btn:hover {
     transform: scale(0.95);
-    box-shadow: 0 0 15px rgb(255, 0, 0);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--theme-danger) 60%, transparent);
 }
 
 .close-btn-red {
-    background-color: #f73a45;
-    box-shadow: 0px 0px 5px #f73a45;
+    background-color: var(--theme-danger);
+    box-shadow: 0 0 5px color-mix(in srgb, var(--theme-danger) 60%, transparent);
 }
 
 .close-btn-red svg {

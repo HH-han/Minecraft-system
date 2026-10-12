@@ -303,31 +303,31 @@ onMounted(() => {
     min-height: 128px;
     margin-bottom: 48px;
     padding: 12px;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 24px;
 }
 
 .tab-btn {
     padding: 18px 32px;
-    background: #ffffff;
+    background: var(--theme-bg-surface);
     border: none;
     border-radius: 24px;
     font-size: 15px;
     font-weight: 500;
-    color: #0c0c0c;
+    color: var(--theme-text-1);
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
 }
 
 .tab-btn:hover {
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
-    color: #ffffff;
-    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .content-section {
@@ -354,7 +354,7 @@ onMounted(() => {
 .section-title {
     font-size: 48px;
     font-weight: 700;
-    color: #000000;
+    color: var(--theme-text-1);
     margin: 0;
     letter-spacing: -0.02em;
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
@@ -363,7 +363,7 @@ onMounted(() => {
 .section-subtitle {
     display: block;
     font-size: 18px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin-top: 8px;
     font-weight: 400;
 }
@@ -375,10 +375,10 @@ onMounted(() => {
 }
 
 .card {
-    background: #ffffff;
+    background: var(--theme-bg-surface);
     border-radius: 32px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--theme-shadow-md);
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.5s ease;
     cursor: pointer;
     opacity: 0;
@@ -389,7 +389,7 @@ onMounted(() => {
 
 .card:hover {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 /* 展开时新增卡片使用更轻量的淡入动画 */
@@ -419,23 +419,23 @@ onMounted(() => {
     align-items: center;
     gap: 10px;
     padding: 14px 40px;
-    background: #ffffff;
-    border: 1px solid #d2d2d6;
+    background: var(--theme-bg-surface);
+    border: 1px solid var(--theme-border);
     border-radius: 980px;
     font-size: 15px;
     font-weight: 500;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .expand-btn:hover {
-    background: #f5f5f7;
-    border-color: #007aff;
-    color: #007aff;
+    background: var(--theme-bg-surface-2);
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.12);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .expand-btn:active {
@@ -486,12 +486,12 @@ onMounted(() => {
     top: 20px;
     right: 20px;
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     letter-spacing: 0.05em;
     text-transform: uppercase;
     opacity: 0;
@@ -514,7 +514,7 @@ onMounted(() => {
 .card-title {
     font-size: 24px;
     font-weight: 600;
-    color: #000000;
+    color: var(--theme-text-1);
     margin: 0 0 12px;
     line-height: 1.25;
     min-height: 60px;
@@ -527,7 +527,7 @@ onMounted(() => {
 
 .card-description {
     font-size: 16px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin: 0 0 20px;
     line-height: 1.6;
     min-height: 52px;
@@ -546,7 +546,7 @@ onMounted(() => {
 
 .card-location {
     font-size: 14px;
-    color: #86868b;
+    color: var(--theme-text-3);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -555,7 +555,7 @@ onMounted(() => {
 .card-price {
     font-size: 20px;
     font-weight: 600;
-    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+    background: var(--theme-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -570,8 +570,8 @@ onMounted(() => {
 
 .primary-cta {
     padding: 14px 24px;
-    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
-    color: #ffffff;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 16px;
     font-size: 15px;
@@ -582,12 +582,12 @@ onMounted(() => {
     justify-content: center;
     gap: 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .primary-cta:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .primary-cta:active {
@@ -608,8 +608,8 @@ onMounted(() => {
     width: 48px;
     height: 48px;
     padding: 0;
-    background: #f5f5f7;
-    color: #86868b;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-3);
     border: none;
     border-radius: 16px;
     cursor: pointer;
@@ -620,8 +620,8 @@ onMounted(() => {
 }
 
 .secondary-cta:hover {
-    background: #e8e8ed;
-    color: #ff3b30;
+    background: var(--theme-bg-hover);
+    color: var(--theme-danger);
     transform: scale(1.05);
 }
 
@@ -641,15 +641,15 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     padding: 80px 0;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 32px;
 }
 
 .loading-spinner {
     width: 48px;
     height: 48px;
-    border: 3px solid #e8e8ed;
-    border-top-color: #007aff;
+    border: 3px solid var(--theme-border);
+    border-top-color: var(--theme-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -663,7 +663,7 @@ onMounted(() => {
 .loading-text {
     margin-top: 20px;
     font-size: 16px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 .error-state {
@@ -672,20 +672,20 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     padding: 60px 0;
-    background: #fef2f2;
+    background: var(--theme-danger-soft);
     border-radius: 32px;
 }
 
 .error-text {
     font-size: 16px;
-    color: #ff3b30;
+    color: var(--theme-danger);
     margin-bottom: 16px;
 }
 
 .retry-btn {
     padding: 12px 32px;
-    background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
-    color: #ffffff;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 20px;
     font-size: 15px;
@@ -696,7 +696,7 @@ onMounted(() => {
 
 .retry-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+    box-shadow: var(--theme-shadow-md);
 }
 
 @media (max-width: 768px) {

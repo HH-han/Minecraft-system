@@ -66,16 +66,16 @@ onUnmounted(() => {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-bg-glass);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text-1);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .tooltip {
@@ -84,14 +84,14 @@ onUnmounted(() => {
     right: 0;
     margin-bottom: 10px;
     padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
+    background: var(--theme-bg-elevated);
+    color: var(--theme-text-1);
     border-radius: 6px;
     font-size: 12px;
     white-space: nowrap;
     z-index: 1000;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-border);
 }
 
 .tooltip::after {
@@ -101,13 +101,13 @@ onUnmounted(() => {
     right: 20px;
     border-width: 5px;
     border-style: solid;
-    border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+    border-color: var(--theme-bg-elevated) transparent transparent transparent;
 }
 
 .back-to-top:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-bg-hover);
     transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .back-to-top:active {

@@ -217,9 +217,9 @@ const snapToEdge = () => {
     top: 0;
     width: 50px;
     height: 50px;
-    background: #2196F3;
+    background: var(--theme-primary);
     cursor: move;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-md);
     transition:
         transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28),
         border-radius 0.3s ease,
@@ -228,8 +228,8 @@ const snapToEdge = () => {
 }
 
 .floating-button.dragging {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    background: #42A5F5;
+    box-shadow: var(--theme-shadow-lg);
+    background: var(--theme-primary-hover);
 }
 
 .no-select {
@@ -269,9 +269,9 @@ const snapToEdge = () => {
     position: fixed;
     left: 5px;
     top: 55px;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--theme-bg-glass);
     backdrop-filter: blur(10px);
-    color: white;
+    color: var(--theme-text-1);
     padding: 10px 5px;
     border-radius: 20px;
     white-space: nowrap;
@@ -281,7 +281,7 @@ const snapToEdge = () => {
     flex-direction: column;
     gap: 5px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-border);
 }
 
 .button-container {
@@ -299,27 +299,27 @@ const snapToEdge = () => {
     height: 35px;
     border-radius: 50%;
     border: none;
-    background-color: #fff;
-    color: #000;
+    background-color: var(--theme-bg-surface);
+    color: var(--theme-text-1);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .floating-button-show button:hover {
-    background-color: #f5f5f5;
+    background-color: var(--theme-bg-surface-2);
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-md);
 }
 .floating-button-show.left::before {
     right: 100%;
-    border-right-color: rgba(0, 0, 0, 0.8);
+    border-right-color: var(--theme-border-strong);
 }
 
 .floating-button-show.right::before {
     left: 100%;
-    border-left-color: rgba(0, 0, 0, 0.8);
+    border-left-color: var(--theme-border-strong);
 }
 
 /* 跟随动画 */
@@ -336,7 +336,7 @@ const snapToEdge = () => {
 .floating-button-prompt {
     width: 100%;
     min-width: 100px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: var(--theme-bg-glass);
     backdrop-filter: blur(5px);
     border-radius: 5px;
     padding: 6px 12px;
@@ -351,7 +351,7 @@ const snapToEdge = () => {
     z-index: 1001;
     left: 50px;
     backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-border);
 }
 
 /* 箭头共用样式 */
@@ -368,7 +368,7 @@ const snapToEdge = () => {
   right: 100%;
   top: 50%;
   transform: translateY(-50%);
-  border-right-color: rgba(0, 0, 0, 0.3);
+  border-right-color: var(--theme-bg-glass);
   border-left: none;
 }
 
@@ -377,7 +377,7 @@ const snapToEdge = () => {
   left: 100%;
   top: 50%;
   transform: translateY(-50%);
-  border-left-color: rgba(0, 0, 0, 0.3);
+  border-left-color: var(--theme-bg-glass);
   border-right: none;
 }
 

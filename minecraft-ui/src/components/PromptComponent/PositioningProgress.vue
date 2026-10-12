@@ -39,10 +39,10 @@ defineExpose({
   top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--theme-bg-glass-strong);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-md);
   z-index: 1000;
 }
 
@@ -57,8 +57,8 @@ defineExpose({
 }
 
 .close-button-map {
-  background-color: #54a4ff;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -67,6 +67,6 @@ defineExpose({
 }
 
 .close-button-map:hover {
-  background-color: #34495e;
+  background-color: var(--theme-primary-hover);
 }
 </style>

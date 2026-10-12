@@ -35,10 +35,10 @@
 .error-message-box {
   width: 300px;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: var(--theme-bg-elevated);
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(255, 52, 52, 0.499);
-  border: 1px solid #ff4d4f;
+  box-shadow: 0 4px 8px color-mix(in srgb, var(--theme-danger) 50%, transparent);
+  border: 1px solid var(--theme-danger);
   position: fixed;
   top: 10%;
   left: 50%;
@@ -55,19 +55,19 @@
 .error-message-title {
   font-size: 18px;
   font-weight: bold;
-  color: #ff4d4f;
+  color: var(--theme-danger);
   margin-bottom: 10px;
 }
 
 .error-message-text {
   font-size: 16px;
-  color: #333333;
+  color: var(--theme-text-1);
   margin-bottom: 20px;
 }
 
 .error-message-close {
-  background-color: #ff4d4f;
-  color: #ffffff;
+  background-color: var(--theme-danger);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 5px;
   padding: 10px 50px;
@@ -76,7 +76,7 @@
 }
 
 .error-message-close:hover {
-  background-color: #e60000;
+  background-color: color-mix(in srgb, var(--theme-danger) 80%, #000);
 }
 @media (max-width: 768px) {
   .error-message-box {

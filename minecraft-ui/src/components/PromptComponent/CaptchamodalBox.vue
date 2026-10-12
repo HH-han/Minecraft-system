@@ -50,7 +50,7 @@ const handleSubmit = (e) => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--theme-overlay);
     backdrop-filter: blur(10px);
     z-index: 1000;
 }
@@ -61,7 +61,7 @@ const handleSubmit = (e) => {
     flex-direction: column;
     justify-content: space-around;
     width: 400px;
-    background-color: rgba(255, 255, 255);
+    background-color: var(--theme-bg-elevated);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 20px;
@@ -70,11 +70,11 @@ const handleSubmit = (e) => {
 .captcha-title {
     font-size: 20px;
     font-weight: bold;
-    color: black
+    color: var(--theme-text-1)
 }
 
 .captcha-message {
-    color: #a3a3a3;
+    color: var(--theme-text-3);
     font-size: 14px;
     margin-top: 4px;
     text-align: center
@@ -90,12 +90,12 @@ const handleSubmit = (e) => {
     border-radius: 5px;
     text-align: center;
     border: none;
-    border-bottom: 1.5px solid #d2d2d2;
+    border-bottom: 1.5px solid var(--theme-border);
     margin: 0 10px;
 }
 
 .captcha-inputs input:focus {
-    border-bottom: 1.5px solid royalblue;
+    border-bottom: 1.5px solid var(--theme-primary);
     outline: none;
 }
 
@@ -104,8 +104,8 @@ const handleSubmit = (e) => {
     padding: 12px 16px;
     border-radius: 8px;
     border: none;
-    background-color: royalblue;
-    color: white;
+    background-color: var(--theme-primary);
+    color: var(--theme-primary-text);
     cursor: pointer;
     align-self: end;
 }

@@ -53,7 +53,7 @@ watch(() => props.isPaymentModalVisible, (newValue) => {
 }
 
 .payment-content {
-  background: white;
+  background: var(--theme-bg-elevated);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -61,8 +61,8 @@ watch(() => props.isPaymentModalVisible, (newValue) => {
 }
 
 button {
-  background: #3FA05C;
-  color: white;
+  background: var(--theme-success);
+  color: var(--theme-primary-text);
   border: none;
   padding: 10px 20px;
   border-radius: 4px;

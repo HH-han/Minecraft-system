@@ -459,19 +459,20 @@ onBeforeUnmount(() => {
    暗色电影感设计系统（局部作用域变量）
    ============================================================ */
 .website-introduction {
-    --wi-surface: rgba(255, 255, 255, 0.045);
-    --wi-hairline: rgba(255, 255, 255, 0.09);
-    --wi-hairline-2: rgba(255, 255, 255, 0.16);
-    --wi-txt-1: #f6f7fb;
-    --wi-txt-2: rgba(236, 238, 245, 0.66);
-    --wi-txt-3: rgba(236, 238, 245, 0.42);
-    --wi-azure: #4da3ff;
-    --wi-violet: #8b6cff;
-    --wi-mint: #37e0a0;
-    --wi-accent: linear-gradient(120deg, #6cc4ff 0%, #8b6cff 58%, #ff8f5e 118%);
+    /* 私有设计变量统一别名到全局主题令牌 */
+    --wi-surface: var(--theme-bg-surface);
+    --wi-hairline: var(--theme-hairline);
+    --wi-hairline-2: var(--theme-border-strong);
+    --wi-txt-1: var(--theme-text-1);
+    --wi-txt-2: var(--theme-text-2);
+    --wi-txt-3: var(--theme-text-3);
+    --wi-azure: var(--theme-primary);
+    --wi-violet: var(--theme-accent-2);
+    --wi-mint: var(--theme-accent-3);
+    --wi-accent: var(--theme-gradient);
     --wi-radius-lg: 32px;
     --wi-ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --wi-shadow: 0 34px 70px -28px rgba(0, 0, 0, 0.9);
+    --wi-shadow: var(--theme-shadow-lg);
 
     position: relative;
     isolation: isolate;
@@ -484,7 +485,7 @@ onBeforeUnmount(() => {
     background:
         radial-gradient(1200px 620px at 10% -8%, rgba(77, 163, 255, 0.16), transparent 62%),
         radial-gradient(900px 540px at 90% 4%, rgba(139, 108, 255, 0.14), transparent 64%),
-        linear-gradient(180deg, #05060a 0%, #0a0c12 46%, #05060a 100%);
+        var(--theme-bg-app);
 }
 
 /* ============ 氛围层 ============ */
@@ -533,8 +534,8 @@ onBeforeUnmount(() => {
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        linear-gradient(var(--theme-hairline) 1px, transparent 1px),
+        linear-gradient(90deg, var(--theme-hairline) 1px, transparent 1px);
     background-size: 68px 68px;
     -webkit-mask-image: radial-gradient(115% 78% at 50% 32%, #000 12%, transparent 72%);
     mask-image: radial-gradient(115% 78% at 50% 32%, #000 12%, transparent 72%);
@@ -558,7 +559,7 @@ onBeforeUnmount(() => {
 .cine-vignette {
     position: absolute;
     inset: 0;
-    background: radial-gradient(125% 82% at 50% 38%, transparent 38%, rgba(0, 0, 0, 0.6) 100%);
+    background: radial-gradient(125% 82% at 50% 38%, transparent 38%, var(--theme-overlay) 100%);
 }
 
 /* ============ Hero 主视觉 ============ */
@@ -598,7 +599,7 @@ onBeforeUnmount(() => {
     height: 6px;
     border-radius: 50%;
     background: var(--wi-azure);
-    box-shadow: 0 0 12px 3px rgba(77, 163, 255, 0.8);
+    box-shadow: 0 0 12px 3px var(--theme-primary-soft);
     animation: wi-pulse 2.6s ease-in-out infinite;
 }
 
@@ -654,14 +655,14 @@ onBeforeUnmount(() => {
 }
 
 .cta-primary {
-    color: #fff;
-    background: linear-gradient(120deg, #4da3ff 0%, #8b6cff 100%);
-    box-shadow: 0 20px 44px -16px rgba(93, 140, 255, 0.75);
+    color: var(--theme-primary-text);
+    background: var(--theme-gradient);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .cta-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 26px 54px -16px rgba(93, 140, 255, 0.9);
+    box-shadow: var(--theme-shadow-lg);
     filter: brightness(1.07);
 }
 
@@ -675,8 +676,8 @@ onBeforeUnmount(() => {
 
 .cta-secondary:hover {
     transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.11);
-    border-color: rgba(255, 255, 255, 0.28);
+    background: var(--theme-bg-hover);
+    border-color: var(--theme-border-strong);
 }
 
 .cta-arrow {
@@ -729,7 +730,7 @@ onBeforeUnmount(() => {
 .orbit--2 {
     width: 74%;
     height: 74%;
-    border-color: rgba(140, 180, 255, 0.24);
+    border-color: var(--theme-primary-soft);
     animation: wi-spin 32s linear infinite reverse;
 }
 
@@ -737,7 +738,7 @@ onBeforeUnmount(() => {
     width: 50%;
     height: 50%;
     border-style: dashed;
-    border-color: rgba(255, 255, 255, 0.14);
+    border-color: var(--theme-border);
     animation: wi-spin 64s linear infinite;
 }
 
@@ -752,12 +753,12 @@ onBeforeUnmount(() => {
     margin-left: -3.5px;
     border-radius: 50%;
     background: var(--wi-azure);
-    box-shadow: 0 0 16px 4px rgba(77, 163, 255, 0.9);
+    box-shadow: 0 0 16px 4px var(--theme-primary-soft);
 }
 
 .orbit--2::after {
     background: var(--wi-violet);
-    box-shadow: 0 0 16px 4px rgba(139, 108, 255, 0.85);
+    box-shadow: 0 0 16px 4px var(--theme-primary-soft);
 }
 
 .orb {
@@ -773,8 +774,8 @@ onBeforeUnmount(() => {
 .star {
     position: absolute;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 7px 1.5px rgba(160, 200, 255, 0.8);
+    background: var(--theme-primary);
+    box-shadow: 0 0 7px 1.5px var(--theme-primary-soft);
     animation: wi-twinkle 3s ease-in-out infinite;
 }
 
@@ -811,7 +812,7 @@ onBeforeUnmount(() => {
     transform: translateY(-50%);
     width: 1px;
     height: 46px;
-    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(180deg, transparent, var(--theme-border-strong), transparent);
 }
 
 .stat-number {
@@ -839,7 +840,7 @@ onBeforeUnmount(() => {
     width: 1px;
     height: 54px;
     margin: 46px auto 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), transparent);
+    background: linear-gradient(180deg, var(--theme-border-strong), transparent);
 }
 
 .scroll-cue i {
@@ -851,7 +852,7 @@ onBeforeUnmount(() => {
     margin-left: -2.5px;
     border-radius: 50%;
     background: var(--wi-azure);
-    box-shadow: 0 0 10px 2px rgba(77, 163, 255, 0.85);
+    box-shadow: 0 0 10px 2px var(--theme-primary-soft);
     animation: wi-cue 2.2s ease-in-out infinite;
 }
 
@@ -972,7 +973,7 @@ onBeforeUnmount(() => {
     position: absolute;
     inset: 0 0 auto 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+    background: linear-gradient(90deg, transparent, var(--theme-border-strong), transparent);
     opacity: 0.7;
 }
 
@@ -990,7 +991,7 @@ onBeforeUnmount(() => {
     overflow: hidden;
     padding: 40px 32px;
     border-radius: var(--wi-radius-lg);
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -999,8 +1000,8 @@ onBeforeUnmount(() => {
 
 .about-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(120, 180, 255, 0.34);
-    box-shadow: var(--wi-shadow), 0 0 0 1px rgba(120, 180, 255, 0.12);
+    border-color: var(--theme-primary);
+    box-shadow: var(--wi-shadow), 0 0 0 1px var(--theme-primary-soft);
 }
 
 .card-index {
@@ -1011,7 +1012,7 @@ onBeforeUnmount(() => {
     font-weight: 600;
     letter-spacing: 0.2em;
     font-variant-numeric: tabular-nums;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--theme-text-3);
 }
 
 .about-card-icon {
@@ -1022,15 +1023,15 @@ onBeforeUnmount(() => {
     align-items: center;
     justify-content: center;
     border-radius: 20px;
-    background: radial-gradient(circle at 30% 24%, rgba(77, 163, 255, 0.42), rgba(255, 255, 255, 0.04) 72%);
-    border: 1px solid rgba(160, 200, 255, 0.26);
-    box-shadow: 0 14px 34px -14px rgba(77, 163, 255, 0.7);
+    background: radial-gradient(circle at 30% 24%, var(--theme-primary-soft), var(--theme-bg-surface) 72%);
+    border: 1px solid var(--theme-border);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .about-card-icon svg {
     width: 27px;
     height: 27px;
-    color: #d2e7ff;
+    color: var(--theme-primary);
 }
 
 .about-card-title {
@@ -1061,7 +1062,7 @@ onBeforeUnmount(() => {
     position: relative;
     padding: 36px 28px;
     border-radius: 28px;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -1070,8 +1071,8 @@ onBeforeUnmount(() => {
 
 .feature-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(120, 180, 255, 0.34);
-    box-shadow: var(--wi-shadow), 0 0 0 1px rgba(120, 180, 255, 0.12);
+    border-color: var(--theme-primary);
+    box-shadow: var(--wi-shadow), 0 0 0 1px var(--theme-primary-soft);
 }
 
 .feature-icon-wrapper {
@@ -1082,8 +1083,8 @@ onBeforeUnmount(() => {
     align-items: center;
     justify-content: center;
     border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--theme-border);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .feature-icon-img {
@@ -1118,7 +1119,7 @@ onBeforeUnmount(() => {
     gap: 10px;
     padding: 7px 0;
     font-size: 14px;
-    color: rgba(236, 238, 245, 0.82);
+    color: var(--theme-text-2);
 }
 
 .check-icon {
@@ -1142,7 +1143,7 @@ onBeforeUnmount(() => {
     background:
         radial-gradient(ellipse 46% 92% at 14% 12%, rgba(77, 163, 255, 0.26), transparent 62%),
         radial-gradient(ellipse 44% 86% at 88% 88%, rgba(139, 108, 255, 0.22), transparent 62%),
-        linear-gradient(180deg, #07080e 0%, #010103 100%);
+        var(--theme-bg-app);
 }
 
 .strip-aura {
@@ -1198,8 +1199,8 @@ onBeforeUnmount(() => {
     padding: 15px 34px;
     border: none;
     border-radius: 980px;
-    background: #fff;
-    color: #08090f;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     font-size: 15.5px;
     font-weight: 600;
     cursor: pointer;
@@ -1208,7 +1209,7 @@ onBeforeUnmount(() => {
 
 .strip-cta:hover {
     transform: translateY(-2px);
-    box-shadow: 0 20px 46px -14px rgba(255, 255, 255, 0.42);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 /* ============ 技术架构 ============ */
@@ -1224,7 +1225,7 @@ onBeforeUnmount(() => {
     position: relative;
     padding: 32px 28px;
     border-radius: 28px;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -1233,8 +1234,8 @@ onBeforeUnmount(() => {
 
 .tech-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(120, 180, 255, 0.34);
-    box-shadow: var(--wi-shadow), 0 0 0 1px rgba(120, 180, 255, 0.12);
+    border-color: var(--theme-primary);
+    box-shadow: var(--wi-shadow), 0 0 0 1px var(--theme-primary-soft);
 }
 
 .tech-card-header {
@@ -1251,21 +1252,21 @@ onBeforeUnmount(() => {
 }
 
 .tech-badge.backend {
-    background: rgba(77, 163, 255, 0.16);
-    border: 1px solid rgba(77, 163, 255, 0.34);
-    color: #9ccbff;
+    background: var(--theme-info-soft);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-info);
 }
 
 .tech-badge.frontend {
-    background: rgba(55, 224, 160, 0.14);
-    border: 1px solid rgba(55, 224, 160, 0.32);
-    color: #86ecc4;
+    background: var(--theme-success-soft);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-success);
 }
 
 .tech-badge.database {
-    background: rgba(255, 196, 84, 0.14);
-    border: 1px solid rgba(255, 196, 84, 0.32);
-    color: #ffd894;
+    background: var(--theme-warning-soft);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-warning);
 }
 
 .tech-list {
@@ -1280,7 +1281,7 @@ onBeforeUnmount(() => {
     justify-content: space-between;
     gap: 14px;
     padding: 14px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--theme-hairline);
 }
 
 .tech-list li:last-child {
@@ -1342,8 +1343,8 @@ onBeforeUnmount(() => {
     height: 12px;
     border-radius: 50%;
     background: var(--wi-azure);
-    border: 3px solid #0a0c12;
-    box-shadow: 0 0 0 4px rgba(77, 163, 255, 0.14), 0 0 24px 5px rgba(77, 163, 255, 0.5);
+    border: 3px solid var(--theme-bg-app);
+    box-shadow: 0 0 0 4px var(--theme-primary-soft), 0 0 24px 5px var(--theme-primary-soft);
     animation: wi-pulse 3.4s ease-in-out infinite;
 }
 
@@ -1357,7 +1358,7 @@ onBeforeUnmount(() => {
     overflow: hidden;
     padding: 26px 28px;
     border-radius: 26px;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -1366,7 +1367,7 @@ onBeforeUnmount(() => {
 
 .timeline-content:hover {
     transform: translateY(-5px);
-    border-color: rgba(120, 180, 255, 0.32);
+    border-color: var(--theme-primary);
     box-shadow: var(--wi-shadow);
 }
 
@@ -1375,12 +1376,12 @@ onBeforeUnmount(() => {
     margin-bottom: 12px;
     padding: 5px 14px;
     border-radius: 980px;
-    background: rgba(77, 163, 255, 0.14);
-    border: 1px solid rgba(77, 163, 255, 0.3);
+    background: var(--theme-primary-soft);
+    border: 1px solid var(--theme-primary);
     font-size: 12.5px;
     font-weight: 600;
     letter-spacing: 0.05em;
-    color: #9ccbff;
+    color: var(--theme-primary);
 }
 
 .timeline-title {
@@ -1402,7 +1403,7 @@ onBeforeUnmount(() => {
     position: relative;
     z-index: 1;
     padding: 96px 22px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid var(--theme-hairline);
 }
 
 .stats-grid {
@@ -1419,7 +1420,7 @@ onBeforeUnmount(() => {
     padding: 32px 24px;
     text-align: center;
     border-radius: 28px;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -1428,7 +1429,7 @@ onBeforeUnmount(() => {
 
 .stat-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(120, 180, 255, 0.32);
+    border-color: var(--theme-primary);
     box-shadow: var(--wi-shadow);
 }
 
@@ -1481,8 +1482,8 @@ onBeforeUnmount(() => {
 .website-introduction :deep(.stage-body--recommend .card) {
     height: 312px;
     border: 1px solid var(--wi-hairline-2);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: 0 26px 60px -26px rgba(0, 0, 0, 0.95);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 /* .front / .back 为绝对定位，需以 .content 为参照系；
@@ -1492,8 +1493,8 @@ onBeforeUnmount(() => {
 }
 
 .website-introduction :deep(.stage-body--recommend .card:hover) {
-    border-color: rgba(120, 180, 255, 0.45);
-    box-shadow: 0 32px 70px -24px rgba(77, 163, 255, 0.4);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 .website-introduction :deep(.stage-body--recommend .front-content .title) {
@@ -1552,7 +1553,7 @@ onBeforeUnmount(() => {
     padding: 11px 22px;
     font-size: 13.5px;
     color: var(--wi-txt-2);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     border-radius: 980px;
     box-shadow: none;
@@ -1566,31 +1567,31 @@ onBeforeUnmount(() => {
 .website-introduction :deep(.stage-body--listing .category-btn:hover),
 .website-introduction :deep(.stage-body--listing .tab-btn:hover) {
     color: var(--wi-txt-1);
-    background: rgba(255, 255, 255, 0.11);
+    background: var(--theme-primary-soft);
     transform: translateY(-1px);
 }
 
 .website-introduction :deep(.stage-body--listing .category-btn.active),
 .website-introduction :deep(.stage-body--listing .tab-btn.active) {
-    color: #fff;
+    color: var(--theme-primary-text);
     border-color: transparent;
-    background: linear-gradient(120deg, #4da3ff 0%, #8b6cff 100%);
-    box-shadow: 0 12px 30px -12px rgba(93, 140, 255, 0.85);
+    background: var(--theme-gradient);
+    box-shadow: var(--theme-shadow-md);
 }
 
 /* 内容卡片改为玻璃底 */
 .website-introduction :deep(.stage-body--listing .card) {
     border-radius: 28px;
     border: 1px solid var(--wi-hairline);
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022));
-    box-shadow: 0 24px 56px -30px rgba(0, 0, 0, 0.9);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-lg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
 }
 
 .website-introduction :deep(.stage-body--listing .card:hover) {
-    border-color: rgba(120, 180, 255, 0.34);
-    box-shadow: 0 34px 70px -26px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(120, 180, 255, 0.14);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-lg), 0 0 0 1px var(--theme-primary-soft);
 }
 
 .website-introduction :deep(.stage-body--listing .card-title) {
@@ -1615,33 +1616,33 @@ onBeforeUnmount(() => {
 .website-introduction :deep(.stage-body--listing .primary-cta),
 .website-introduction :deep(.stage-body--listing .retry-btn) {
     border-radius: 16px;
-    background: linear-gradient(120deg, #4da3ff 0%, #8b6cff 100%);
-    box-shadow: 0 14px 34px -16px rgba(93, 140, 255, 0.9);
+    background: var(--theme-gradient);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .website-introduction :deep(.stage-body--listing .secondary-cta) {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-bg-surface);
     border: 1px solid var(--wi-hairline);
     color: var(--wi-txt-2);
 }
 
 .website-introduction :deep(.stage-body--listing .secondary-cta:hover) {
-    background: rgba(255, 92, 91, 0.16);
-    color: #ff7a7a;
+    background: var(--theme-danger-soft);
+    color: var(--theme-danger);
 }
 
 .website-introduction :deep(.stage-body--listing .expand-btn) {
     color: var(--wi-txt-1);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-bg-surface);
     border-color: var(--wi-hairline-2);
     box-shadow: none;
 }
 
 .website-introduction :deep(.stage-body--listing .expand-btn:hover) {
     color: var(--wi-txt-1);
-    background: rgba(255, 255, 255, 0.11);
-    border-color: rgba(120, 180, 255, 0.5);
-    box-shadow: 0 16px 34px -18px rgba(93, 140, 255, 0.9);
+    background: var(--theme-primary-soft);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-md);
 }
 
 /* 空态 / 加载 / 错误 */
@@ -1653,7 +1654,7 @@ onBeforeUnmount(() => {
 }
 
 .website-introduction :deep(.stage-body--listing .empty-icon) {
-    color: rgba(255, 255, 255, 0.22);
+    color: var(--theme-text-3);
 }
 
 .website-introduction :deep(.stage-body--listing .empty-text),
@@ -1662,18 +1663,18 @@ onBeforeUnmount(() => {
 }
 
 .website-introduction :deep(.stage-body--listing .loading-spinner) {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--theme-border);
     border-top-color: var(--wi-azure);
 }
 
 .website-introduction :deep(.stage-body--listing .error-state) {
-    background: rgba(255, 92, 91, 0.1);
-    border: 1px solid rgba(255, 92, 91, 0.28);
+    background: var(--theme-danger-soft);
+    border: 1px solid var(--theme-danger);
     border-radius: 28px;
 }
 
 .website-introduction :deep(.stage-body--listing .error-text) {
-    color: #ff9b9b;
+    color: var(--theme-danger);
 }
 
 /* ============================================================
@@ -1824,7 +1825,7 @@ onBeforeUnmount(() => {
         width: 56px;
         height: 1px;
         transform: translateX(-50%);
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        background: linear-gradient(90deg, transparent, var(--theme-border-strong), transparent);
     }
 
     .intro-section {
@@ -1933,273 +1934,5 @@ onBeforeUnmount(() => {
     .strip-cta {
         transition: none !important;
     }
-}
-
-/* ============================================================
-   亮色主题（html[data-theme="light"]）
-   深色为设计基底，此处整体覆盖为亮色
-   ============================================================ */
-html[data-theme="light"] .website-introduction {
-    --wi-surface: rgba(15, 23, 42, 0.035);
-    --wi-hairline: rgba(15, 23, 42, 0.1);
-    --wi-hairline-2: rgba(15, 23, 42, 0.18);
-    --wi-txt-1: #101828;
-    --wi-txt-2: rgba(16, 24, 40, 0.66);
-    --wi-txt-3: rgba(16, 24, 40, 0.45);
-    --wi-azure: #0b74e5;
-    --wi-violet: #6a48ff;
-    --wi-mint: #0f9d68;
-    --wi-accent: linear-gradient(120deg, #0b74e5 0%, #6a48ff 58%, #e2542a 118%);
-    --wi-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.32);
-
-    color: var(--wi-txt-1);
-    background:
-        radial-gradient(1200px 620px at 10% -8%, rgba(77, 163, 255, 0.16), transparent 62%),
-        radial-gradient(900px 540px at 90% 4%, rgba(139, 108, 255, 0.12), transparent 64%),
-        linear-gradient(180deg, #ffffff 0%, #f4f7fd 46%, #ffffff 100%);
-}
-
-/* 氛围层：网格 / 暗角 / 颗粒转为浅色倾向 */
-html[data-theme="light"] .website-introduction .cine-grid {
-    background-image:
-        linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
-}
-
-html[data-theme="light"] .website-introduction .cine-vignette {
-    background: radial-gradient(125% 82% at 50% 38%, transparent 50%, rgba(15, 23, 42, 0.08) 100%);
-}
-
-html[data-theme="light"] .website-introduction .cine-grain {
-    opacity: 0.035;
-}
-
-/* Hero */
-html[data-theme="light"] .website-introduction .cta-secondary {
-    color: var(--wi-txt-1);
-    background: #ffffff;
-    border-color: rgba(15, 23, 42, 0.14);
-    box-shadow: 0 14px 34px -22px rgba(15, 23, 42, 0.3);
-}
-
-html[data-theme="light"] .website-introduction .cta-secondary:hover {
-    background: #f2f6fd;
-    border-color: rgba(11, 116, 229, 0.4);
-}
-
-html[data-theme="light"] .website-introduction .orb {
-    background: radial-gradient(circle at 32% 28%, #ffffff 0%, rgba(77, 163, 255, 0.42) 44%, rgba(198, 220, 255, 0.92) 76%);
-    box-shadow:
-        inset 0 0 70px rgba(120, 180, 255, 0.35),
-        0 34px 96px -22px rgba(77, 163, 255, 0.45);
-}
-
-html[data-theme="light"] .website-introduction .orbit--2 {
-    border-color: rgba(11, 116, 229, 0.24);
-}
-
-html[data-theme="light"] .website-introduction .orbit--3 {
-    border-color: rgba(15, 23, 42, 0.16);
-}
-
-html[data-theme="light"] .website-introduction .star {
-    background: rgba(11, 116, 229, 0.55);
-    box-shadow: 0 0 7px 1.5px rgba(11, 116, 229, 0.35);
-}
-
-html[data-theme="light"] .website-introduction .hero-stats {
-    background: rgba(255, 255, 255, 0.72);
-    border-color: rgba(15, 23, 42, 0.08);
-    box-shadow: 0 22px 50px -32px rgba(15, 23, 42, 0.3);
-}
-
-html[data-theme="light"] .website-introduction .stat-item + .stat-item::before {
-    background: linear-gradient(180deg, transparent, rgba(15, 23, 42, 0.16), transparent);
-}
-
-html[data-theme="light"] .website-introduction .scroll-cue {
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.28), transparent);
-}
-
-/* 卡片通用：玻璃高光 + 底色 + 边框 + 阴影 */
-html[data-theme="light"] .website-introduction .about-card::before,
-html[data-theme="light"] .website-introduction .feature-card::before,
-html[data-theme="light"] .website-introduction .tech-card::before,
-html[data-theme="light"] .website-introduction .timeline-content::before,
-html[data-theme="light"] .website-introduction .stat-card::before {
-    background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.1), transparent);
-}
-
-html[data-theme="light"] .website-introduction .about-card,
-html[data-theme="light"] .website-introduction .feature-card,
-html[data-theme="light"] .website-introduction .tech-card,
-html[data-theme="light"] .website-introduction .timeline-content,
-html[data-theme="light"] .website-introduction .stat-card {
-    background: linear-gradient(160deg, #ffffff, #f7f9fd);
-    border-color: var(--wi-hairline);
-    box-shadow: 0 18px 44px -32px rgba(15, 23, 42, 0.28);
-}
-
-html[data-theme="light"] .website-introduction .about-card:hover,
-html[data-theme="light"] .website-introduction .feature-card:hover,
-html[data-theme="light"] .website-introduction .tech-card:hover,
-html[data-theme="light"] .website-introduction .timeline-content:hover,
-html[data-theme="light"] .website-introduction .stat-card:hover {
-    border-color: rgba(11, 116, 229, 0.36);
-    box-shadow: var(--wi-shadow), 0 0 0 1px rgba(11, 116, 229, 0.12);
-}
-
-/* 关于本站 */
-html[data-theme="light"] .website-introduction .card-index {
-    color: rgba(15, 23, 42, 0.24);
-}
-
-html[data-theme="light"] .website-introduction .about-card-icon {
-    background: radial-gradient(circle at 30% 24%, rgba(77, 163, 255, 0.28), rgba(77, 163, 255, 0.06) 72%);
-    border-color: rgba(11, 116, 229, 0.25);
-    box-shadow: 0 14px 34px -16px rgba(11, 116, 229, 0.45);
-}
-
-html[data-theme="light"] .website-introduction .about-card-icon svg {
-    color: #0b74e5;
-}
-
-/* 核心功能 */
-html[data-theme="light"] .website-introduction .feature-icon-wrapper {
-    border-color: rgba(15, 23, 42, 0.08);
-    box-shadow: 0 16px 32px -20px rgba(15, 23, 42, 0.28);
-}
-
-html[data-theme="light"] .website-introduction .feature-list li {
-    color: rgba(16, 24, 40, 0.82);
-}
-
-/* 全宽特色条：亮色下改为浅色带，文字与按钮同步 */
-html[data-theme="light"] .website-introduction .feature-strip {
-    border-color: var(--wi-hairline);
-    box-shadow: 0 30px 60px -42px rgba(15, 23, 42, 0.32);
-    background:
-        radial-gradient(ellipse 46% 92% at 14% 12%, rgba(77, 163, 255, 0.16), transparent 62%),
-        radial-gradient(ellipse 44% 86% at 88% 88%, rgba(139, 108, 255, 0.14), transparent 62%),
-        linear-gradient(180deg, #eef4ff 0%, #f7faff 100%);
-}
-
-html[data-theme="light"] .website-introduction .strip-aura {
-    background: radial-gradient(ellipse at center, rgba(255, 143, 94, 0.12), transparent 68%);
-}
-
-html[data-theme="light"] .website-introduction .cine-grain--strip {
-    opacity: 0.025;
-}
-
-/* 标题 / 描述 / eyebrow 基础样式已使用 --wi-* 变量，随主题自动翻转 */
-html[data-theme="light"] .website-introduction .strip-cta {
-    color: #ffffff;
-    background: linear-gradient(120deg, #0b74e5 0%, #6a48ff 100%);
-    box-shadow: 0 18px 40px -18px rgba(11, 116, 229, 0.7);
-}
-
-html[data-theme="light"] .website-introduction .strip-cta:hover {
-    box-shadow: 0 24px 50px -18px rgba(11, 116, 229, 0.85);
-    filter: brightness(1.05);
-}
-
-/* 技术架构 */
-html[data-theme="light"] .website-introduction .tech-list li {
-    border-bottom-color: rgba(15, 23, 42, 0.08);
-}
-
-html[data-theme="light"] .website-introduction .tech-badge.backend {
-    color: #0b63c5;
-}
-
-html[data-theme="light"] .website-introduction .tech-badge.frontend {
-    color: #0c8a5c;
-}
-
-html[data-theme="light"] .website-introduction .tech-badge.database {
-    color: #a9741a;
-}
-
-/* 发展历程 */
-html[data-theme="light"] .website-introduction .timeline-item::after,
-html[data-theme="light"] .website-introduction .timeline-item--right::after {
-    border-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(11, 116, 229, 0.14), 0 0 24px 5px rgba(11, 116, 229, 0.4);
-}
-
-html[data-theme="light"] .website-introduction .timeline-date {
-    color: #0b63c5;
-}
-
-/* 数据统计 */
-html[data-theme="light"] .website-introduction .stats-section {
-    border-top-color: rgba(15, 23, 42, 0.08);
-}
-
-/* —— 子组件（:deep）亮色覆盖 —— */
-html[data-theme="light"] .website-introduction :deep(.stage-body--recommend .card) {
-    border-color: rgba(15, 23, 42, 0.1);
-    background: #ffffff;
-    box-shadow: 0 22px 50px -30px rgba(15, 23, 42, 0.3);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--recommend .card:hover) {
-    border-color: rgba(11, 116, 229, 0.42);
-    box-shadow: 0 28px 60px -28px rgba(11, 116, 229, 0.35);
-}
-
-/* 仅覆盖未选中态，避免盖过 .active 的品牌渐变（否则白底白字） */
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .category-btn:not(.active)),
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .tab-btn:not(.active)) {
-    background: #ffffff;
-    border-color: rgba(15, 23, 42, 0.1);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .category-btn:not(.active):hover),
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .tab-btn:not(.active):hover) {
-    background: #eef4ff;
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .card) {
-    border-color: rgba(15, 23, 42, 0.1);
-    background: linear-gradient(160deg, #ffffff, #f7f9fd);
-    box-shadow: 0 20px 46px -32px rgba(15, 23, 42, 0.28);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .card:hover) {
-    border-color: rgba(11, 116, 229, 0.36);
-    box-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.32), 0 0 0 1px rgba(11, 116, 229, 0.12);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .secondary-cta) {
-    background: rgba(15, 23, 42, 0.04);
-    border-color: rgba(15, 23, 42, 0.12);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .secondary-cta:hover) {
-    background: rgba(255, 92, 91, 0.14);
-    color: #e04343;
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .expand-btn) {
-    color: var(--wi-txt-1);
-    background: #ffffff;
-    border-color: var(--wi-hairline-2);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .expand-btn:hover) {
-    color: var(--wi-txt-1);
-    background: #eef4ff;
-    border-color: rgba(11, 116, 229, 0.5);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .empty-icon) {
-    color: rgba(15, 23, 42, 0.22);
-}
-
-html[data-theme="light"] .website-introduction :deep(.stage-body--listing .loading-spinner) {
-    border-color: rgba(15, 23, 42, 0.12);
-    border-top-color: var(--wi-azure);
 }
 </style>

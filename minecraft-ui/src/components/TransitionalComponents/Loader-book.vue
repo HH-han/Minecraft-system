@@ -46,7 +46,7 @@ export default {
 .loader {
   --background: linear-gradient(135deg, #23C4F8, #275EFE);
   --shadow: rgba(39, 94, 254, 0.28);
-  --text: #6C7486;
+  --text: var(--theme-text-2);
   --page: rgba(255, 255, 255, 0.36);
   --page-fold: rgba(255, 255, 255, 0.52);
   --duration: 3s;

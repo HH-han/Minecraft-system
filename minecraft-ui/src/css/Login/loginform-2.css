@@ -34,8 +34,8 @@
 .adminlogin button {
     border: none;
     border-radius: 20px;
-    background-color: rgb(122, 217, 235);
-    color: rgb(0, 0, 0);
+    background-color: var(--theme-primary-soft);
+    color: var(--theme-text-1);
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -61,7 +61,7 @@
 
 .phone {
     text-decoration: none;
-    color: brown;
+    color: var(--theme-text-2);
     font-size: 20px;
     background: none;
     border: 0;
@@ -70,7 +70,7 @@
 
 .newuser {
     text-decoration: none;
-    color: deepskyblue;
+    color: var(--theme-primary);
     font-size: 20px;
     border: 0;
     background: none;
@@ -87,13 +87,13 @@
     top: 85%;
     /* 距离图片顶部 10px */
     left: 10%;
-    background-color: rgba(208, 208, 208, 0.8);
+    background-color: var(--theme-bg-glass);
     /* 半透明白色背景 */
     padding: 10px;
     /* 内边距 */
     border-radius: 10px;
     /* 圆角 */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     /* 阴影 */
     z-index: 10;
     /* 确保在图片上方 */

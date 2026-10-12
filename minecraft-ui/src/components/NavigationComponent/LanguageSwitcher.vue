@@ -85,24 +85,24 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--theme-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #334155;
+  background: var(--theme-bg-glass-strong);
+  color: var(--theme-text-1);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.5px;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
   transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, color 0.25s ease;
 }
 
 .ls-trigger:hover {
-  background: #ffffff;
-  border-color: rgba(0, 162, 255, 0.4);
-  color: #00a2ff;
-  box-shadow: 0 4px 14px rgba(0, 162, 255, 0.18);
+  background: var(--theme-bg-surface);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-md);
   transform: translateY(-1px);
 }
 
@@ -111,10 +111,10 @@ onBeforeUnmount(() => {
 }
 
 .ls-trigger.is-open {
-  background: #ffffff;
-  border-color: rgba(0, 162, 255, 0.5);
-  color: #00a2ff;
-  box-shadow: 0 4px 14px rgba(0, 162, 255, 0.2);
+  background: var(--theme-bg-surface);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-md);
 }
 
 /* 地球图标：品牌蓝，hover 时旋转，呼应「全球语言」语义 */
@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
   width: 17px;
   height: 17px;
   flex-shrink: 0;
-  color: #00a2ff;
+  color: var(--theme-primary);
   transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -157,12 +157,12 @@ onBeforeUnmount(() => {
   padding: 6px;
   min-width: 148px;
   list-style: none;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--theme-border);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-lg);
   transform-origin: top right;
 }
 
@@ -174,21 +174,21 @@ onBeforeUnmount(() => {
   border-radius: 9px;
   font-size: 13px;
   letter-spacing: 0.5px;
-  color: #303133;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .ls-item:hover {
-  background: rgba(0, 162, 255, 0.1);
-  color: #00a2ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 /* 当前语言高亮 */
 .ls-item.is-active {
-  color: #00a2ff;
+  color: var(--theme-primary);
   font-weight: 600;
-  background: rgba(0, 162, 255, 0.12);
+  background: var(--theme-primary-soft);
 }
 
 /* 勾选标记：未选中项保留占位对齐 */

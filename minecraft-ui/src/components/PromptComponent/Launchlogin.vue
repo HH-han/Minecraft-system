@@ -48,7 +48,7 @@ const handleCancel = () => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--theme-overlay);
     backdrop-filter: blur(20px);
     display: flex;
     justify-content: center;
@@ -68,15 +68,12 @@ const handleCancel = () => {
 
 /* 弹窗内容 */
 .modal-content {
-    background: #ffffff;
+    background: var(--theme-bg-elevated);
     border-radius: 24px;
     padding: 40px;
     max-width: 420px;
     width: 90%;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.15),
-        0 8px 24px rgba(0, 0, 0, 0.1),
-        0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,12 +107,12 @@ const handleCancel = () => {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ff3b30 0%, #ff9500 100%);
+    background: linear-gradient(135deg, var(--theme-danger) 0%, var(--theme-warning) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    box-shadow: 0 8px 24px rgba(255, 59, 48, 0.3);
+    color: var(--theme-text-inverse);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-danger) 30%, transparent);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -126,7 +123,7 @@ const handleCancel = () => {
 
 .icon-circle:hover {
     transform: scale(1.05);
-    box-shadow: 0 12px 32px rgba(255, 59, 48, 0.4);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--theme-danger) 40%, transparent);
 }
 
 /* 文字内容 */
@@ -140,7 +137,7 @@ const handleCancel = () => {
 .title {
     font-size: 24px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
     letter-spacing: -0.01em;
 }
@@ -148,7 +145,7 @@ const handleCancel = () => {
 .description {
     font-size: 14px;
     line-height: 1.5;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin: 0;
 }
 
@@ -195,30 +192,30 @@ const handleCancel = () => {
 
 /* 次要按钮 */
 .btn-secondary {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-1);
 }
 
 .btn-secondary:hover {
-    background: #e8e8ed;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: var(--theme-bg-active);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 主要按钮 */
 .btn-primary {
-    background: #ff3b30;
-    color: white;
+    background: var(--theme-danger);
+    color: var(--theme-text-inverse);
 }
 
 .btn-primary:hover {
-    background: #d62c24;
+    background: color-mix(in srgb, var(--theme-danger) 86%, #000);
     box-shadow: 
-        0 6px 20px rgba(255, 59, 48, 0.3),
-        0 2px 8px rgba(255, 59, 48, 0.2);
+        0 6px 20px color-mix(in srgb, var(--theme-danger) 30%, transparent),
+        0 2px 8px color-mix(in srgb, var(--theme-danger) 20%, transparent);
 }
 
 .btn-primary:active {
-    background: #b02619;
+    background: color-mix(in srgb, var(--theme-danger) 74%, #000);
 }
 
 /* 响应式设计 */
@@ -255,30 +252,6 @@ const handleCancel = () => {
     .icon-circle svg {
         width: 24px;
         height: 24px;
-    }
-}
-
-/* 深色模式适配 */
-@media (prefers-color-scheme: dark) {
-    .modal-content {
-        background: #1d1d1f;
-    }
-    
-    .title {
-        color: #ffffff;
-    }
-    
-    .description {
-        color: #a1a1a6;
-    }
-    
-    .btn-secondary {
-        background: #3a3a3c;
-        color: #ffffff;
-    }
-    
-    .btn-secondary:hover {
-        background: #4a4a4c;
     }
 }
 </style>

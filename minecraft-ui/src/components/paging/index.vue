@@ -154,20 +154,20 @@ const goLast = () => {
     justify-content: center;
     width: 36px;
     height: 36px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--theme-border);
     border-radius: 8px;
-    background: white;
-    color: #666;
+    background: var(--theme-bg-surface);
+    color: var(--theme-text-2);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 14px;
 }
 
 .pagination-btn:hover:not(.is-disabled) {
-    border-color: #e74c3c;
-    color: #e74c3c;
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.15);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 15%, transparent);
 }
 
 .pagination-btn.is-disabled {
@@ -183,10 +183,10 @@ const goLast = () => {
 .pagination-num {
     min-width: 36px;
     height: 36px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--theme-border);
     border-radius: 8px;
-    background: white;
-    color: #666;
+    background: var(--theme-bg-surface);
+    color: var(--theme-text-2);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 14px;
@@ -197,29 +197,29 @@ const goLast = () => {
 }
 
 .pagination-num:hover:not(.is-active) {
-    border-color: #e74c3c;
-    color: #e74c3c;
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.15);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-primary) 15%, transparent);
 }
 
 .pagination-num.is-active {
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    border-color: #e74c3c;
-    color: white;
-    box-shadow: 0 4px 16px rgba(231, 76, 60, 0.3);
+    background: var(--theme-gradient);
+    border-color: var(--theme-primary);
+    color: var(--theme-primary-text);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-primary) 30%, transparent);
     transform: translateY(-2px);
 }
 
 .pagination-ellipsis {
-    color: #999;
+    color: var(--theme-text-3);
     font-size: 14px;
     padding: 0 4px;
 }
 
 .pagination-info {
     margin-left: 12px;
-    color: #999;
+    color: var(--theme-text-3);
     font-size: 14px;
 }
 </style>

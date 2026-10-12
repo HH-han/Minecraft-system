@@ -1,16 +1,10 @@
 :root {
-	--primary-bg: #4e54c8;
-	/* 日间背景 */
-	--bubble-color: rgba(255, 255, 255, 0.3);
-	/* 日间气泡 */
+	--primary-bg: var(--theme-bg-app);
+	/* 页面背景（随主题令牌切换） */
+	--bubble-color: var(--theme-bg-glass);
+	/* 气泡色（随主题令牌切换） */
 }
 
-[data-theme="dark"] {
-	--primary-bg: #1D1F2C;
-	/* 夜间背景 */
-	--bubble-color: rgba(255, 255, 255, 0.1);
-	/* 夜间气泡 */
-}
 .theme-switch-login{
   position: fixed;
   top: 25px;

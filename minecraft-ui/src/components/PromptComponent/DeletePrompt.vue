@@ -133,10 +133,10 @@ onMounted(() => {
   min-width: 52rem;
   max-height: 100%;
   height: 30rem;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--theme-bg-glass);
   backdrop-filter: blur(5px);
   border-radius: 1rem;
-  box-shadow: 0px 10px 5px -3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .Confirm-Header {
@@ -144,7 +144,7 @@ onMounted(() => {
   align-items: center;
   position: relative;
   margin: 1rem;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+  border-bottom: solid 1px var(--theme-border);
   white-space: nowrap;
 }
 
@@ -163,27 +163,27 @@ onMounted(() => {
 }
 
 .Confirm-Header-Button_Close {
-  background-color: #a43;
+  background-color: var(--theme-danger);
 }
 
 .Confirm-Header-Button_Close:hover {
-  background-color: #c85a48;
+  background-color: color-mix(in srgb, var(--theme-danger) 85%, #fff);
 }
 
 .Confirm-Header-Button_Maximize {
-  background-color: #cb3;
+  background-color: var(--theme-warning);
 }
 
 .Confirm-Header-Button_Maximize:hover {
-  background-color: #d6c95c;
+  background-color: color-mix(in srgb, var(--theme-warning) 85%, #fff);
 }
 
 .Confirm-Header-Button_Minimize {
-  background-color: #6a4;
+  background-color: var(--theme-success);
 }
 
 .Confirm-Header-Button_Minimize:hover {
-  background-color: #81c061;
+  background-color: color-mix(in srgb, var(--theme-success) 85%, #fff);
 }
 
 .Confirm-Header-Title {
@@ -217,7 +217,7 @@ onMounted(() => {
 .Confirm-Body-Button,
 .Confirm-Body-Button:link,
 .Confirm-Body-Button:visited {
-  color: #fff;
+  color: var(--theme-text-inverse);
   border-radius: 1rem;
   text-decoration: none;
   padding: 1rem 2rem;
@@ -229,19 +229,19 @@ onMounted(() => {
 }
 
 .Confirm-Body-Button_Delete {
-  background-color: #a43;
+  background-color: var(--theme-danger);
 }
 
 .Confirm-Body-Button_Delete:hover {
-  background-color: #c85a48;
+  background-color: color-mix(in srgb, var(--theme-danger) 85%, #fff);
 }
 
 .Confirm-Body-Button_Cancel {
-  background-color: #6a4;
+  background-color: var(--theme-success);
 }
 
 .Confirm-Body-Button_Cancel:hover {
-  background-color: #81c061;
+  background-color: color-mix(in srgb, var(--theme-success) 85%, #fff);
 }
 
 .Boi {

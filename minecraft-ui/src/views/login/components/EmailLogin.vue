@@ -202,24 +202,23 @@ onUnmounted(() => {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* 亮色主题令牌 */
-  --card-bg: #ffffff;
-  --card-fg: #1d1d1f;
-  --card-muted: #6e6e73;
-  --card-border: #d2d2d6;
-  --field-bg: #ffffff;
-  --accent: #0071e3;
-  --accent-hover: #0077ed;
-  --accent-active: #006edc;
-  --accent-ring: rgba(0, 113, 227, 0.16);
-  --card-glow: rgba(0, 113, 227, 0.08);
+  /* 主题令牌别名（随全局主题自动切换） */
+  --card-bg: var(--theme-bg-surface);
+  --card-fg: var(--theme-text-1);
+  --card-muted: var(--theme-text-2);
+  --card-border: var(--theme-border);
+  --field-bg: var(--theme-bg-surface);
+  --accent: var(--theme-primary);
+  --accent-hover: var(--theme-primary-hover);
+  --accent-active: var(--theme-primary-hover);
+  --accent-ring: var(--theme-primary-soft);
+  --card-glow: var(--theme-primary-soft);
 
   background:
     radial-gradient(220px 220px at 100% 0%, var(--card-glow), transparent 70%),
     var(--card-bg);
   color: var(--card-fg);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.10),
-              0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   animation: login-card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -229,7 +228,7 @@ onUnmounted(() => {
   position: absolute;
   inset: 0 0 auto 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--accent), #5a9bff);
+  background: var(--theme-gradient);
 }
 
 @keyframes login-card-in {
@@ -261,7 +260,7 @@ onUnmounted(() => {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .login-brand-name {
@@ -316,7 +315,7 @@ onUnmounted(() => {
 }
 
 .login-input::placeholder {
-  color: #a1a1a6;
+  color: var(--theme-text-3);
 }
 
 .login-input:focus {
@@ -344,7 +343,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 12px;
   background: var(--accent);
-  color: #ffffff;
+  color: var(--theme-primary-text);
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
@@ -375,7 +374,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 980px;
   background: var(--accent);
-  color: #ffffff;
+  color: var(--theme-primary-text);
   font-size: 17px;
   font-weight: 500;
   font-family: inherit;
@@ -447,26 +446,6 @@ onUnmounted(() => {
   opacity: 0.75;
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-
-/* ================= 暗色主题 ================= */
-html[data-theme="dark"] .login-card {
-  --card-bg: #1c1c1e;
-  --card-fg: #f5f5f7;
-  --card-muted: #98989d;
-  --card-border: #3a3a3c;
-  --field-bg: #2c2c2e;
-  --accent: #0a84ff;
-  --accent-hover: #3395ff;
-  --accent-active: #0071e3;
-  --accent-ring: rgba(10, 132, 255, 0.28);
-  --card-glow: rgba(10, 132, 255, 0.10);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55),
-              0 2px 8px rgba(0, 0, 0, 0.35);
-}
-
-html[data-theme="dark"] .login-input::placeholder {
-  color: #6e6e73;
 }
 
 /* 响应式 */

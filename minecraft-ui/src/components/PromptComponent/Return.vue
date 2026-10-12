@@ -64,9 +64,9 @@ const goBack = () => {
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  background: linear-gradient(120deg, #0062ff 0%, #00a2ff 45%, #00d4ff 100%);
-  border: 3px solid #ffffff;
-  box-shadow: 0 5px 0 #0b4bb8, 0 10px 22px rgba(0, 98, 255, 0.35);
+  background: var(--theme-gradient);
+  border: 3px solid var(--theme-bg-surface);
+  box-shadow: 0 5px 0 color-mix(in srgb, var(--theme-primary) 65%, #000), 0 10px 22px color-mix(in srgb, var(--theme-primary) 35%, transparent);
   transition: box-shadow 0.25s ease;
 }
 
@@ -87,9 +87,9 @@ const goBack = () => {
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: #ffffff;
+  color: var(--theme-primary-text);
   flex-shrink: 0;
-  filter: drop-shadow(0 1px 1px rgba(0, 40, 120, 0.45));
+  filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--theme-primary) 55%, #000));
 }
 
 .return-btn__icon svg {
@@ -98,7 +98,7 @@ const goBack = () => {
 }
 
 .return-btn__label {
-  color: #ffffff;
+  color: var(--theme-primary-text);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -119,7 +119,7 @@ const goBack = () => {
 }
 
 .return-btn:hover .return-btn__base {
-  box-shadow: 0 8px 0 #0b4bb8, 0 16px 30px rgba(0, 98, 255, 0.45);
+  box-shadow: 0 8px 0 color-mix(in srgb, var(--theme-primary) 65%, #000), 0 16px 30px color-mix(in srgb, var(--theme-primary) 45%, transparent);
 }
 
 .return-btn:hover .return-btn__label {
@@ -145,12 +145,12 @@ const goBack = () => {
 }
 
 .return-btn:active .return-btn__base {
-  box-shadow: 0 2px 0 #0b4bb8, 0 6px 14px rgba(0, 98, 255, 0.35);
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--theme-primary) 65%, #000), 0 6px 14px color-mix(in srgb, var(--theme-primary) 35%, transparent);
 }
 
 /* 键盘可达性 */
 .return-btn:focus-visible .return-btn__base {
-  outline: 3px solid rgba(0, 162, 255, 0.55);
+  outline: 3px solid color-mix(in srgb, var(--theme-primary) 55%, transparent);
   outline-offset: 3px;
 }
 

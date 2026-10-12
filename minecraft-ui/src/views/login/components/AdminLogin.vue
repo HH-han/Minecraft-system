@@ -153,7 +153,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f2f5;
+  background-color: var(--theme-bg-app);
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -165,9 +165,9 @@ onMounted(() => {
   z-index: 2;
   width: 100%;
   max-width: 420px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--theme-bg-glass-strong);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  box-shadow: var(--theme-shadow-lg);
   backdrop-filter: blur(8px);
   padding: 40px;
   margin: 20px;
@@ -175,7 +175,7 @@ onMounted(() => {
 }
 
 .admin-login-form-container:hover {
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 /* 头部样式 */
@@ -187,9 +187,9 @@ onMounted(() => {
 .admin-login-title {
   font-size: 28px;
   font-weight: 700;
-  color: #2c3e50;
+  color: var(--theme-text-1);
   margin-bottom: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--theme-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   /* 新增标准属性 */
@@ -198,7 +198,7 @@ onMounted(() => {
 
 .admin-login-subtitle {
   font-size: 14px;
-  color: #7f8c8d;
+  color: var(--theme-text-2);
 }
 
 /* 表单样式 */
@@ -212,7 +212,7 @@ onMounted(() => {
   display: flex;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #2c3e50;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
@@ -220,16 +220,17 @@ onMounted(() => {
   width: 100%;
   padding: 12px 15px;
   font-size: 14px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   transition: all 0.3s ease;
 }
 
 .admin-login-input:focus {
-  border-color: #667eea;
+  border-color: var(--theme-primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 20%, transparent);
 }
 
 .admin-login-focus-border {
@@ -238,7 +239,7 @@ onMounted(() => {
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--theme-gradient);
   transition: width 0.3s ease;
 }
 
@@ -259,7 +260,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: #7f8c8d;
+  color: var(--theme-text-2);
 }
 
 .admin-login-remember input {
@@ -274,14 +275,14 @@ onMounted(() => {
   width: 16px;
   height: 16px;
   margin-right: 8px;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
 }
 
 .admin-login-remember input:checked~.admin-login-checkmark {
-  background-color: #667eea;
-  border-color: #667eea;
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .admin-login-checkmark:after {
@@ -292,7 +293,7 @@ onMounted(() => {
   top: 2px;
   width: 4px;
   height: 8px;
-  border: solid white;
+  border: solid var(--theme-primary-text);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -302,13 +303,13 @@ onMounted(() => {
 }
 
 .admin-login-forgot {
-  color: #667eea;
+  color: var(--theme-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .admin-login-forgot:hover {
-  color: #764ba2;
+  color: var(--theme-primary-hover);
 }
 
 /* 按钮样式 */
@@ -317,8 +318,8 @@ onMounted(() => {
   padding: 14px;
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: var(--theme-primary-text);
+  background: var(--theme-gradient);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -328,8 +329,9 @@ onMounted(() => {
 }
 
 .admin-login-button:hover {
-  background: linear-gradient(135deg, #5a6fd1 0%, #6a4092 100%);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  background: var(--theme-gradient);
+  filter: brightness(1.06);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-primary) 40%, transparent);
 }
 
 .admin-login-button-text {
@@ -344,9 +346,9 @@ onMounted(() => {
   transform: translate(-50%, -50%);
   width: 20px;
   height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid color-mix(in srgb, var(--theme-primary-text) 30%, transparent);
   border-radius: 50%;
-  border-top-color: #fff;
+  border-top-color: var(--theme-primary-text);
   animation: admin-login-spin 1s ease-in-out infinite;
   z-index: 2;
 }
@@ -365,6 +367,6 @@ onMounted(() => {
 
 .admin-login-copyright {
   font-size: 12px;
-  color: #bdc3c7;
+  color: var(--theme-text-3);
 }
 </style>

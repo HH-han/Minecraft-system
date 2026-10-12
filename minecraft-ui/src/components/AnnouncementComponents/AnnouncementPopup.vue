@@ -103,11 +103,11 @@ function formatTime(time) {
 }
 .popup-time {
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 .popup-body {
   line-height: 1.8;
-  color: #333;
+  color: var(--theme-text-1);
   max-height: 50vh;
   overflow-y: auto;
   word-break: break-word;
@@ -121,12 +121,12 @@ function formatTime(time) {
 <style>
 /* 弹窗玻璃拟态（非 scoped 以作用于 el-dialog） */
 .glass-dialog {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: var(--theme-bg-glass-strong) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-lg);
 }
 @media (max-width: 767px) {
   .glass-dialog {

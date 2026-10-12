@@ -82,18 +82,18 @@ function goDetail(id) {
 }
 .top-card {
   pointer-events: auto;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--theme-border);
   border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.18);
+  box-shadow: var(--theme-shadow-md);
   padding: 14px 18px;
   cursor: pointer;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 .top-card:hover {
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.28);
+  box-shadow: var(--theme-shadow-lg);
   transform: translateY(-2px);
 }
 .card-head {
@@ -106,23 +106,23 @@ function goDetail(id) {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #f56c6c;
+  background: var(--theme-danger);
 }
 .close-btn {
   margin-left: auto;
-  color: #999;
+  color: var(--theme-text-3);
   font-size: 16px;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 .close-btn:hover {
-  color: #666;
+  color: var(--theme-text-2);
 }
 .card-title {
   margin: 0 0 4px;
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -131,8 +131,8 @@ function goDetail(id) {
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 400;
-  color: #e6a23c;
-  border: 1px solid #e6a23c;
+  color: var(--theme-warning);
+  border: 1px solid var(--theme-warning);
   border-radius: 4px;
   padding: 0 4px;
   line-height: 16px;
@@ -140,7 +140,7 @@ function goDetail(id) {
 .card-summary {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: var(--theme-text-2);
   line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;

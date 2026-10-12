@@ -113,9 +113,9 @@ onMounted(() => {
 }
 
 .QRCode-card {
-  background: white;
+  background: var(--theme-bg-surface);
   border-radius: 16px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-md);
   width: 100%;
   min-width: 400px;
   overflow: hidden;
@@ -125,7 +125,7 @@ onMounted(() => {
 
 .QRCode-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .QRCode-form {
@@ -139,7 +139,7 @@ onMounted(() => {
 .QRCode-title {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
   margin-bottom: 30px;
   position: relative;
 }
@@ -152,7 +152,7 @@ onMounted(() => {
   transform: translateX(-50%);
   width: 50px;
   height: 3px;
-  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--theme-gradient);
   border-radius: 3px;
 }
 
@@ -167,10 +167,10 @@ onMounted(() => {
   height: 200px;
   margin: 0 auto 15px;
   border-radius: 12px;
-  background: white;
+  background: var(--theme-bg-surface);
   position: relative;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-sm);
+  border: 1px solid var(--theme-hairline);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,15 +183,15 @@ onMounted(() => {
 
 @keyframes QRCode-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(79, 172, 254, 0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-primary) 40%, transparent);
   }
 
   70% {
-    box-shadow: 0 0 0 10px rgba(79, 172, 254, 0);
+    box-shadow: 0 0 0 10px transparent;
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(79, 172, 254, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
@@ -204,7 +204,7 @@ onMounted(() => {
 
 .QRCode-hint {
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-top: 10px;
 }
 
@@ -215,13 +215,13 @@ onMounted(() => {
   right: -15px;
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--theme-gradient);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
   transition: all 0.3s ease;
   z-index: 2;
 }
@@ -233,7 +233,7 @@ onMounted(() => {
 .QRCode-refresh svg {
   width: 20px;
   height: 20px;
-  fill: white;
+  fill: var(--theme-primary-text);
 }
 
 /* 加载状态 */
@@ -243,7 +243,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--theme-bg-glass-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,8 +253,8 @@ onMounted(() => {
 .QRCode-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(79, 172, 254, 0.2);
-  border-top: 4px solid #4facfe;
+  border: 4px solid color-mix(in srgb, var(--theme-primary) 20%, transparent);
+  border-top: 4px solid var(--theme-primary);
   border-radius: 50%;
   animation: QRCode-spin 1s linear infinite;
 }
@@ -285,8 +285,8 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 12px 0;
-  background: white;
-  border: 1px solid #eee;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -294,12 +294,12 @@ onMounted(() => {
 
 .QRCode-platform-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .QRCode-platform-active {
-  border-color: #4facfe;
-  background: rgba(79, 172, 254, 0.05);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .QRCode-platform-icon {
@@ -311,7 +311,7 @@ onMounted(() => {
 
 .QRCode-platform-name {
   font-size: 12px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 /* 返回按钮 */
@@ -322,18 +322,18 @@ onMounted(() => {
   width: 100%;
   padding: 12px;
   background: transparent;
-  border: 1px solid #ddd;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
-  color: #666;
+  color: var(--theme-text-2);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .QRCode-back-btn:hover {
-  background: #f9f9f9;
-  border-color: #4facfe;
-  color: #4facfe;
+  background: var(--theme-bg-surface-2);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
 }
 
 .QRCode-back-icon {

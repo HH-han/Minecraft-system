@@ -34,10 +34,10 @@ const closeAlert = () => {
   top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--theme-bg-glass-strong);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-md);
   z-index: 1000;
 }
 
@@ -52,8 +52,8 @@ const closeAlert = () => {
 }
 
 .close-button-tips {
-  background-color: #2c3e50;
-  color: white;
+  background-color: var(--theme-text-1);
+  color: var(--theme-text-inverse);
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -62,6 +62,6 @@ const closeAlert = () => {
 }
 
 .close-button-tips:hover {
-  background-color: #34495e;
+  background-color: var(--theme-text-2);
 }
 </style>

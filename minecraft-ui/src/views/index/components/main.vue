@@ -118,16 +118,16 @@ onBeforeUnmount(() => {
    这里定义的 --wi-* 设计变量同时供 news.vue / safetytips.vue 继承使用
    ============================================================ */
 .home-main {
-  --wi-surface: rgba(255, 255, 255, 0.045);
-  --wi-hairline: rgba(255, 255, 255, 0.09);
-  --wi-hairline-2: rgba(255, 255, 255, 0.16);
-  --wi-txt-1: #f6f7fb;
-  --wi-txt-2: rgba(236, 238, 245, 0.66);
-  --wi-txt-3: rgba(236, 238, 245, 0.42);
-  --wi-azure: #4da3ff;
-  --wi-violet: #8b6cff;
-  --wi-mint: #37e0a0;
-  --wi-accent: linear-gradient(120deg, #6cc4ff 0%, #8b6cff 58%, #ff8f5e 118%);
+  --wi-surface: var(--theme-bg-surface);
+  --wi-hairline: var(--theme-hairline);
+  --wi-hairline-2: var(--theme-border-strong);
+  --wi-txt-1: var(--theme-text-1);
+  --wi-txt-2: var(--theme-text-2);
+  --wi-txt-3: var(--theme-text-3);
+  --wi-azure: var(--theme-primary);
+  --wi-violet: var(--theme-accent-2);
+  --wi-mint: var(--theme-accent-3);
+  --wi-accent: var(--theme-gradient);
   --wi-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   position: relative;
@@ -135,35 +135,11 @@ onBeforeUnmount(() => {
   min-height: 100vh;
   color: var(--wi-txt-1);
   font-family: 'SF Pro Display', 'SF Pro', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #05060a;
+  background-color: var(--theme-bg-app);
   background-image:
     radial-gradient(1100px 560px at 50% -10%, rgba(77, 163, 255, 0.1), transparent 62%),
     radial-gradient(900px 500px at 92% 24%, rgba(139, 108, 255, 0.08), transparent 66%);
   scroll-behavior: smooth;
-}
-
-/* ============================================================
-   亮色主题（html[data-theme="light"]）
-   深色为设计基底，此处覆盖为亮色；--wi-* 会随继承传给
-   news.vue / safetytips.vue 等子组件
-   ============================================================ */
-html[data-theme="light"] .home-main {
-  --wi-surface: rgba(15, 23, 42, 0.035);
-  --wi-hairline: rgba(15, 23, 42, 0.1);
-  --wi-hairline-2: rgba(15, 23, 42, 0.18);
-  --wi-txt-1: #101828;
-  --wi-txt-2: rgba(16, 24, 40, 0.66);
-  --wi-txt-3: rgba(16, 24, 40, 0.45);
-  --wi-azure: #0b74e5;
-  --wi-violet: #6a48ff;
-  --wi-mint: #0f9d68;
-  --wi-accent: linear-gradient(120deg, #0b74e5 0%, #6a48ff 58%, #e2542a 118%);
-
-  color: var(--wi-txt-1);
-  background-color: #f4f6fb;
-  background-image:
-    radial-gradient(1100px 560px at 50% -10%, rgba(77, 163, 255, 0.16), transparent 62%),
-    radial-gradient(900px 500px at 92% 24%, rgba(139, 108, 255, 0.12), transparent 66%);
 }
 
 /* 主视觉 Hero */

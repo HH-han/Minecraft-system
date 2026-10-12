@@ -13,11 +13,11 @@
                 </div>
                 <div style="display: flex; gap: 0.8rem; margin-top: 0.3rem; flex-wrap: wrap;">
                     <span
-                        style="background: rgba(30,144,255,0.06); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid rgba(64,164,255,0.1); font-size:0.75rem; color:#aac6ed;"><i
-                            class="fas fa-check-circle" style="color: #4a9eff;"></i> 品质保证</span>
+                        style="background: var(--theme-primary-soft); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid var(--theme-border); font-size:0.75rem; color:var(--theme-text-2);"><i
+                            class="fas fa-check-circle" style="color: var(--theme-primary);"></i> 品质保证</span>
                     <span
-                        style="background: rgba(30,144,255,0.06); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid rgba(64,164,255,0.1); font-size:0.75rem; color:#aac6ed;"><i
-                            class="fas fa-shield-alt" style="color: #4a9eff;"></i> 安心出行</span>
+                        style="background: var(--theme-primary-soft); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid var(--theme-border); font-size:0.75rem; color:var(--theme-text-2);"><i
+                            class="fas fa-shield-alt" style="color: var(--theme-primary);"></i> 安心出行</span>
                 </div>
             </div>
 
@@ -52,12 +52,12 @@
             <!-- 订阅 -->
             <div class="newsletter-col">
                 <h4 class="footer-title"><i class="fas fa-paper-plane"></i> 特惠订阅</h4>
-                <p><i class="fas fa-gem" style="color: #4a9eff; margin-right: 6px;"></i> 获取独家旅行灵感 & 早鸟折扣</p>
+                <p><i class="fas fa-gem" style="color: var(--theme-primary); margin-right: 6px;"></i> 获取独家旅行灵感 & 早鸟折扣</p>
                 <div class="newsletter-input-group">
                     <input type="email" placeholder="你的邮箱地址" aria-label="邮箱订阅">
                     <button><i class="fas fa-arrow-right"></i> 订阅</button>
                 </div>
-                <p style="font-size:0.7rem; color:#6d8fb0; margin-top: 0.2rem;">
+                <p style="font-size:0.7rem; color:var(--theme-text-3); margin-top: 0.2rem;">
                     <i class="fas fa-lock" style="margin-right: 4px;"></i> 你的信息受保护，可随时退订
                 </p>
             </div>
@@ -65,7 +65,7 @@
 
         <!-- 版权 -->
         <div class="footer-bottom">
-            <span>© 2026 <strong style="color: #b8d6ff;">博览旅行</strong> · 探索无限</span>
+            <span>© 2026 <strong style="color: var(--theme-text-1);">博览旅行</strong> · 探索无限</span>
             <div class="legal">
                 <a href="#">隐私政策</a>
                 <a href="#">使用条款</a>
@@ -84,10 +84,10 @@ export default {
 /* ===== 页脚主容器：深邃蓝色调，无动画 ===== */
 .footer-wrapper {
     position: relative;
-    background: linear-gradient(160deg, #0b1a2f 0%, #0f2847 45%, #0b1f3b 100%);
-    color: #d4e6ff;
+    background: var(--theme-bg-app);
+    color: var(--theme-text-1);
     padding: 3rem 2rem 1.8rem;
-    border-top: 2px solid rgba(64, 164, 255, 0.25);
+    border-top: 2px solid var(--theme-border);
     backdrop-filter: blur(2px);
     overflow: hidden;
 }
@@ -119,15 +119,15 @@ export default {
     font-size: 2.4rem;
     font-weight: 700;
     letter-spacing: 2px;
-    color: #c6e2ff;
-    text-shadow: 0 0 12px rgba(30, 144, 255, 0.3);
+    color: var(--theme-text-1);
+    text-shadow: 0 0 12px var(--theme-primary-soft);
     transition: transform 0.2s ease;
 }
 
 .logo i {
     font-size: 2.8rem;
-    color: #4a9eff;
-    filter: drop-shadow(0 0 8px rgba(30, 144, 255, 0.4));
+    color: var(--theme-primary);
+    filter: drop-shadow(0 0 8px var(--theme-primary-soft));
 }
 
 .logo:hover {
@@ -137,19 +137,19 @@ export default {
 .brand-desc {
     font-size: 0.95rem;
     line-height: 1.6;
-    color: #9bbce0;
+    color: var(--theme-text-2);
     max-width: 260px;
     letter-spacing: 0.3px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--theme-bg-glass);
     padding: 0.5rem 0.8rem;
-    border-left: 3px solid #3b82f6;
+    border-left: 3px solid var(--theme-primary);
     border-radius: 0 8px 8px 0;
     backdrop-filter: blur(2px);
-    box-shadow: 0 0 12px rgba(30, 144, 255, 0.05);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .brand-desc i {
-    color: #4a9eff;
+    color: var(--theme-primary);
     margin-right: 6px;
 }
 
@@ -159,18 +159,18 @@ export default {
     font-weight: 600;
     letter-spacing: 1.5px;
     margin-bottom: 1.4rem;
-    color: #d4eaff;
+    color: var(--theme-text-1);
     position: relative;
     display: inline-block;
     text-transform: uppercase;
-    border-bottom: 2px solid rgba(64, 164, 255, 0.25);
+    border-bottom: 2px solid var(--theme-border);
     padding-bottom: 6px;
 }
 
 .footer-title i {
-    color: #4a9eff;
+    color: var(--theme-primary);
     margin-right: 8px;
-    filter: drop-shadow(0 0 6px rgba(30, 144, 255, 0.2));
+    filter: drop-shadow(0 0 6px var(--theme-primary-soft));
 }
 
 /* 链接列表 */
@@ -183,7 +183,7 @@ export default {
 }
 
 .footer-links li a {
-    color: #b8d2f2;
+    color: var(--theme-text-2);
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 400;
@@ -197,30 +197,30 @@ export default {
 
 .footer-links li a i {
     width: 20px;
-    color: #4a9eff;
+    color: var(--theme-primary);
     transition: transform 0.2s ease, color 0.2s ease;
     font-size: 0.9rem;
 }
 
 .footer-links li a:hover {
-    color: #ffffff;
+    color: var(--theme-text-1);
     transform: translateX(5px);
-    border-bottom-color: rgba(64, 164, 255, 0.2);
+    border-bottom-color: var(--theme-border);
 }
 
 .footer-links li a:hover i {
     transform: translateX(3px) scale(1.05);
-    color: #6aafff;
+    color: var(--theme-primary-hover);
 }
 
 /* 联系列 图标微调 */
 .contact-col .footer-links li a i {
     width: 24px;
-    color: #5b9eff;
+    color: var(--theme-primary);
 }
 
 .contact-col .footer-links li a:hover i {
-    color: #7fc8ff;
+    color: var(--theme-primary-hover);
 }
 
 /* 社交图标 ———— 蓝色玻璃态 */
@@ -238,22 +238,22 @@ export default {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(30, 144, 255, 0.06);
+    background: var(--theme-primary-soft);
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(64, 164, 255, 0.2);
-    color: #b0d2ff;
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text-2);
     font-size: 1.6rem;
     transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.2);
-    box-shadow: 0 4px 12px rgba(0, 20, 50, 0.3);
+    box-shadow: var(--theme-shadow-md);
     text-decoration: none;
 }
 
 .social-icons a:hover {
     transform: translateY(-4px) scale(1.05);
-    background: rgba(30, 144, 255, 0.15);
-    border-color: #4a9eff;
-    color: #d4ecff;
-    box-shadow: 0 0 20px rgba(30, 144, 255, 0.2);
+    background: var(--theme-primary-soft);
+    border-color: var(--theme-primary);
+    color: var(--theme-text-1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 /* 订阅区域 */
@@ -264,7 +264,7 @@ export default {
 }
 
 .newsletter-col p {
-    color: #9bbce0;
+    color: var(--theme-text-2);
     font-size: 0.9rem;
     line-height: 1.5;
     margin-bottom: 0.5rem;
@@ -272,18 +272,18 @@ export default {
 
 .newsletter-input-group {
     display: flex;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-bg-glass);
     border-radius: 40px;
-    border: 1px solid rgba(64, 164, 255, 0.15);
+    border: 1px solid var(--theme-border);
     backdrop-filter: blur(4px);
     overflow: hidden;
     transition: all 0.25s ease;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .newsletter-input-group:focus-within {
-    border-color: #4a9eff;
-    box-shadow: 0 0 20px rgba(30, 144, 255, 0.1);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-ring);
 }
 
 .newsletter-input-group input {
@@ -292,22 +292,22 @@ export default {
     border: none;
     padding: 0.8rem 1.2rem;
     font-size: 0.9rem;
-    color: #e6f0ff;
+    color: var(--theme-text-1);
     outline: none;
     min-width: 80px;
 }
 
 .newsletter-input-group input::placeholder {
-    color: #7b9fc9;
+    color: var(--theme-text-3);
     font-weight: 300;
     letter-spacing: 0.3px;
 }
 
 .newsletter-input-group button {
-    background: linear-gradient(145deg, #1a5fb0, #0e3f7a);
+    background: var(--theme-gradient);
     border: none;
     padding: 0.8rem 1.6rem;
-    color: #f0f7ff;
+    color: var(--theme-primary-text);
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
@@ -316,17 +316,17 @@ export default {
     align-items: center;
     gap: 8px;
     letter-spacing: 0.5px;
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-left: 1px solid var(--theme-hairline);
 }
 
 .newsletter-input-group button i {
     font-size: 1rem;
-    color: #8fcbff;
+    color: var(--theme-primary-text);
 }
 
 .newsletter-input-group button:hover {
-    background: linear-gradient(145deg, #2a70c0, #1a4f8a);
-    box-shadow: 0 0 18px rgba(30, 144, 255, 0.15);
+    background: var(--theme-gradient);
+    box-shadow: var(--theme-shadow-md);
 }
 
 /* 底部版权 */
@@ -335,30 +335,30 @@ export default {
     z-index: 2;
     margin-top: 2.5rem;
     padding-top: 1.8rem;
-    border-top: 1px solid rgba(100, 180, 255, 0.08);
+    border-top: 1px solid var(--theme-hairline);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
     font-size: 0.8rem;
-    color: #7a9fc9;
+    color: var(--theme-text-3);
 }
 
 .footer-bottom .legal a {
-    color: #7a9fc9;
+    color: var(--theme-text-3);
     text-decoration: none;
     margin-left: 1.5rem;
     transition: color 0.2s;
 }
 
 .footer-bottom .legal a:hover {
-    color: #8fcbff;
+    color: var(--theme-primary);
     text-decoration: underline;
 }
 
 .footer-bottom .heart {
-    color: #4a9eff;
+    color: var(--theme-primary);
     margin: 0 4px;
     display: inline-block;
 }
@@ -380,7 +380,7 @@ export default {
         max-width: 100%;
         text-align: center;
         border-left: none;
-        border-bottom: 2px solid #3b82f6;
+        border-bottom: 2px solid var(--theme-primary);
         border-radius: 0;
         padding: 0.5rem 1rem;
     }
@@ -416,7 +416,7 @@ export default {
         width: 100%;
         justify-content: center;
         border-left: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-top: 1px solid var(--theme-hairline);
         border-radius: 0 0 30px 30px;
     }
 
@@ -433,98 +433,5 @@ export default {
     font-size: 2rem;
     justify-content: center;
   }
-}
-
-/* ===== 亮色主题（html[data-theme="light"]） ===== */
-html[data-theme="light"] .footer-wrapper {
-  background: linear-gradient(160deg, #f2f6fc 0%, #e8f0fb 45%, #eef4fd 100%);
-  color: #1e3a5f;
-  border-top-color: rgba(64, 164, 255, 0.35);
-}
-
-html[data-theme="light"] .footer-wrapper .logo {
-  color: #14304f;
-  text-shadow: none;
-}
-
-html[data-theme="light"] .footer-wrapper .brand-desc {
-  color: #466084;
-  background: rgba(30, 144, 255, 0.05);
-  box-shadow: 0 0 12px rgba(30, 144, 255, 0.06);
-}
-
-html[data-theme="light"] .footer-wrapper .brand-col span[style] {
-  color: #3b6ea5 !important;
-}
-
-html[data-theme="light"] .footer-wrapper .footer-title {
-  color: #14304f;
-  border-bottom-color: rgba(64, 164, 255, 0.35);
-}
-
-html[data-theme="light"] .footer-wrapper .footer-links li a {
-  color: #33587f;
-}
-
-html[data-theme="light"] .footer-wrapper .footer-links li a:hover {
-  color: #0b63c5;
-  border-bottom-color: rgba(64, 164, 255, 0.35);
-}
-
-html[data-theme="light"] .footer-wrapper .social-icons a {
-  background: rgba(30, 144, 255, 0.08);
-  border-color: rgba(64, 164, 255, 0.3);
-  color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(30, 144, 255, 0.12);
-}
-
-html[data-theme="light"] .footer-wrapper .social-icons a:hover {
-  background: rgba(30, 144, 255, 0.16);
-  border-color: #2a7fd4;
-  color: #0b63c5;
-}
-
-html[data-theme="light"] .footer-wrapper .newsletter-col p {
-  color: #466084;
-}
-
-html[data-theme="light"] .footer-wrapper .newsletter-input-group {
-  background: #ffffff;
-  border-color: rgba(64, 164, 255, 0.25);
-  box-shadow: 0 0 15px rgba(30, 144, 255, 0.08);
-}
-
-html[data-theme="light"] .footer-wrapper .newsletter-input-group input {
-  color: #14304f;
-}
-
-html[data-theme="light"] .footer-wrapper .newsletter-input-group input::placeholder {
-  color: #7b9fc9;
-}
-
-html[data-theme="light"] .footer-wrapper .newsletter-input-group button {
-  background: linear-gradient(145deg, #2a7fd4, #135ba6);
-  color: #ffffff;
-}
-
-html[data-theme="light"] .footer-wrapper .newsletter-input-group button i {
-  color: #dbeaff;
-}
-
-html[data-theme="light"] .footer-wrapper .footer-bottom {
-  color: #5d7a99;
-  border-top-color: rgba(64, 164, 255, 0.2);
-}
-
-html[data-theme="light"] .footer-wrapper .footer-bottom .legal a {
-  color: #5d7a99;
-}
-
-html[data-theme="light"] .footer-wrapper .footer-bottom .legal a:hover {
-  color: #0b63c5;
-}
-
-html[data-theme="light"] .footer-wrapper .footer-bottom strong {
-  color: #14304f !important;
 }
 </style>

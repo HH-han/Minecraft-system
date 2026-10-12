@@ -1,5 +1,5 @@
 <template>
-  <div class="maps-page" :class="{ 'is-dark': isDark }">
+  <div class="maps-page">
     <div class="page-header">
       <h1 class="page-title">
         <span class="title-icon">🌍</span>
@@ -43,7 +43,6 @@
     </div>
     <InfoPanel
       :visible="infoPanelVisible"
-      :is-dark="isDark"
       :continent="selectedContinent"
       :country="selectedCountry"
       :is-hover="false"
@@ -52,7 +51,6 @@
     />
     <TooltipOverlay
       :visible="!!hoveredMarker"
-      :is-dark="isDark"
       :marker="hoveredMarker"
       :mouse-x="mouseX"
       :mouse-y="mouseY"
@@ -67,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onUnmounted } from 'vue'
 import GlobeCanvas from './components/GlobeCanvas.vue'
 import ControlPanel from './components/ControlPanel.vue'
 import InfoPanel from './components/InfoPanel.vue'
@@ -75,9 +73,12 @@ import TooltipOverlay from './components/TooltipOverlay.vue'
 import NavigationPanel from './components/NavigationPanel.vue'
 import { DEFAULT_LAYERS, VIEW_PRESETS } from './config.js'
 import { getCountriesByContinent } from './data/countries.js'
+import { useThemeStore } from '@/stores/themeStore'
 
 const globeRef = ref(null)
-const isDark = ref(false)
+/** 明暗状态统一取自全局主题（light/dark/game），不再维护模块私有主题 */
+const themeStore = useThemeStore()
+const isDark = computed(() => themeStore.isDark)
 const autoRotate = ref(true)
 const navOpen = ref(false)
 /** 导航面板打开时的初始标签：nav=路线导航 / services=服务工具箱 */
@@ -114,9 +115,9 @@ function handlePresetView(preset) {
 
 /* ---------- 主题 / 旋转 / 缩放 ---------- */
 
+/** 页面主题按钮：在亮色 / 暗色之间切换全局主题 */
 function toggleTheme() {
-  isDark.value = !isDark.value
-  localStorage.setItem('globe-theme', isDark.value ? 'dark' : 'light')
+  themeStore.setTheme(isDark.value ? 'light' : 'dark')
 }
 
 function toggleAutoRotate() {
@@ -208,11 +209,6 @@ function onRouteChange(route) {
   }
 }
 
-onMounted(() => {
-  const savedTheme = localStorage.getItem('globe-theme')
-  if (savedTheme) isDark.value = savedTheme === 'dark'
-})
-
 onUnmounted(() => {
   if (navOpen.value) globeRef.value?.resumeAnimation()
 })
@@ -224,16 +220,12 @@ onUnmounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.98);
+  background-color: var(--theme-bg-app);
   overflow: hidden;
   transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.maps-page.is-dark {
-  background: #000000;
 }
 
 .page-header {
@@ -250,16 +242,12 @@ onUnmounted(() => {
   font-weight: 700;
   letter-spacing: -0.5px;
   line-height: 1.08;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   transition: color 0.5s ease;
-}
-
-.maps-page.is-dark .page-title {
-  color: #f5f5f7;
 }
 
 .title-icon {
@@ -278,14 +266,10 @@ onUnmounted(() => {
   margin: 8px 0 0;
   font-size: 15px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   letter-spacing: -0.2px;
   line-height: 1.38;
   transition: color 0.5s ease;
-}
-
-.maps-page.is-dark .page-subtitle {
-  color: #86868b;
 }
 
 .globe-wrapper {
@@ -304,19 +288,13 @@ onUnmounted(() => {
   gap: 8px;
   z-index: 5;
   padding: 6px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--theme-bg-glass);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-radius: 980px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
   transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-}
-
-.maps-page.is-dark .bottom-hint {
-  background: rgba(29, 29, 31, 0.72);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .hint-item {
@@ -327,21 +305,13 @@ onUnmounted(() => {
   border-radius: 980px;
   font-size: 13px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1;
   transition: background 0.2s ease, color 0.5s ease;
 }
 
-.maps-page.is-dark .hint-item {
-  color: #f5f5f7;
-}
-
 .hint-item:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.maps-page.is-dark .hint-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-hover);
 }
 
 .hint-icon {

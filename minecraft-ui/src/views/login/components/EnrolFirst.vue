@@ -199,9 +199,9 @@ const handleRegister = async () => {
 }
 
 .registered-css-card {
-  background: white;
+  background: var(--theme-bg-elevated);
   border-radius: 15px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-lg);
   width: 450px;
   max-width: 450px;
   padding: 40px;
@@ -209,12 +209,12 @@ const handleRegister = async () => {
 }
 
 .registered-css-card:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .registered-css-h1 {
   font-size: 28px;
-  color: #3a4a6d;
+  color: var(--theme-text-1);
   text-align: center;
   margin-bottom: 30px;
   font-weight: 600;
@@ -238,19 +238,19 @@ const handleRegister = async () => {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #f0f2f5;
+  background-color: var(--theme-bg-surface-2);
   background-size: cover;
   background-position: center;
   position: relative;
   cursor: pointer;
-  border: 4px solid #fff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 4px solid var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-sm);
   transition: all 0.3s ease;
 }
 
 .registered-avatar-preview:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .registered-avatar-upload-label {
@@ -259,7 +259,7 @@ const handleRegister = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--theme-overlay);
   color: white;
   border-radius: 50%;
   opacity: 0;
@@ -295,30 +295,30 @@ const handleRegister = async () => {
   font-size: 16px;
   width: 100%;
   border: none;
-  border-bottom: 2px solid #e0e5ec;
+  border-bottom: 2px solid var(--theme-border);
   padding: 10px 0;
   background-color: transparent;
-  color: #3a4a6d;
+  color: var(--theme-text-1);
   transition: all 0.3s ease;
 }
 
 .registered-css-input-field:focus {
   outline: none;
-  border-bottom-color: #667eea;
+  border-bottom-color: var(--theme-primary);
 }
 
 .registered-css-input-field:focus+.registered-css-input-label,
 .registered-css-input-field:not(:placeholder-shown)+.registered-css-input-label {
   transform: translateY(-25px);
   font-size: 14px;
-  color: #667eea;
+  color: var(--theme-primary);
 }
 
 .registered-css-input-label {
   position: absolute;
   top: 10px;
   left: 0;
-  color: #a3a9c3;
+  color: var(--theme-text-3);
   transition: all 0.3s ease;
   pointer-events: none;
 }
@@ -329,7 +329,7 @@ const handleRegister = async () => {
   left: 0;
   height: 2px;
   width: 0;
-  background-color: #667eea;
+  background-color: var(--theme-primary);
   transition: all 0.4s ease;
 }
 
@@ -347,7 +347,7 @@ const handleRegister = async () => {
   appearance: none;
   width: 18px;
   height: 18px;
-  border: 2px solid #e0e5ec;
+  border: 2px solid var(--theme-border);
   border-radius: 4px;
   margin-right: 10px;
   position: relative;
@@ -356,14 +356,14 @@ const handleRegister = async () => {
 }
 
 .registered-css-a-container input[type="checkbox"]:checked {
-  background-color: #667eea;
-  border-color: #667eea;
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 .registered-css-a-container input[type="checkbox"]:checked::after {
   content: '✓';
   position: absolute;
-  color: white;
+  color: var(--theme-primary-text);
   font-size: 12px;
   top: 50%;
   left: 50%;
@@ -371,20 +371,20 @@ const handleRegister = async () => {
 }
 
 .agreement-a4 {
-  color: #667eea;
+  color: var(--theme-primary);
   text-decoration: none;
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 .agreement-a4:hover {
-  color: #764ba2;
+  color: var(--theme-primary-hover);
   text-decoration: underline;
 }
 
 .registered-css-input-registered {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   padding: 12px 30px;
   font-size: 16px;
@@ -393,14 +393,14 @@ const handleRegister = async () => {
   width: 100%;
   font-weight: 600;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-primary) 40%, transparent);
   transition: all 0.3s ease;
   margin-bottom: 15px;
 }
 
 .registered-css-input-registered:hover {
   transform: translateY(-3px);
-  box-shadow: 0 7px 20px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 7px 20px color-mix(in srgb, var(--theme-primary) 55%, transparent);
 }
 
 .registered-css-input-registered:active {
@@ -409,8 +409,8 @@ const handleRegister = async () => {
 
 .go-back-login-a2 {
   background: transparent;
-  color: #667eea;
-  border: 2px solid #e0e5ec;
+  color: var(--theme-primary);
+  border: 2px solid var(--theme-border);
   padding: 10px 30px;
   font-size: 14px;
   border-radius: 30px;
@@ -421,8 +421,8 @@ const handleRegister = async () => {
 }
 
 .go-back-login-a2:hover {
-  border-color: #667eea;
-  background-color: rgba(102, 126, 234, 0.1);
+  border-color: var(--theme-primary);
+  background-color: var(--theme-primary-soft);
   transform: translateY(-2px);
 }
 

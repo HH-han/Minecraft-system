@@ -3,7 +3,6 @@
     <div
       v-if="visible && marker"
       class="tooltip-overlay"
-      :class="{ 'is-dark': isDark }"
       :style="tooltipStyle"
     >
       <div class="tooltip-dot" :style="dotStyle"></div>
@@ -21,10 +20,6 @@ import { computed } from 'vue'
 
 const props = defineProps({
   visible: {
-    type: Boolean,
-    default: false
-  },
-  isDark: {
     type: Boolean,
     default: false
   },
@@ -70,26 +65,16 @@ const dotStyle = computed(() => {
   align-items: center;
   gap: 10px;
   padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-radius: 10px;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.1),
-    0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-md);
   pointer-events: none;
   transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--theme-border);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-}
-
-.tooltip-overlay.is-dark {
-  background: rgba(28, 28, 30, 0.92);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.35),
-    0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .tooltip-dot {
@@ -108,37 +93,25 @@ const dotStyle = computed(() => {
 .tooltip-type {
   font-size: 10px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   line-height: 1;
 }
 
-.tooltip-overlay.is-dark .tooltip-type {
-  color: #86868b;
-}
-
 .tooltip-name {
   font-size: 13px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.3;
   letter-spacing: -0.1px;
-}
-
-.tooltip-overlay.is-dark .tooltip-name {
-  color: #f5f5f7;
 }
 
 .tooltip-name-en {
   font-size: 11px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   line-height: 1.2;
-}
-
-.tooltip-overlay.is-dark .tooltip-name-en {
-  color: #86868b;
 }
 
 .tooltip-fade-enter-active,

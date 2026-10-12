@@ -126,7 +126,7 @@ const handleClose = () => {
 
 <style scoped>
 .policy-container {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 20px;
   max-width: 800px;
   max-height: 85vh;
@@ -139,25 +139,25 @@ const handleClose = () => {
   text-align: center;
   margin-bottom: 40px;
   padding-bottom: 24px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .policy-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 12px 0;
   letter-spacing: -0.02em;
 }
 
 .last-updated {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0;
 }
 
 .policy-content {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.6;
 }
 
@@ -172,14 +172,14 @@ const handleClose = () => {
 .policy-section h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 16px 0;
   letter-spacing: -0.01em;
 }
 
 .policy-section p {
   font-size: 15px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 12px 0;
   line-height: 1.7;
 }
@@ -191,7 +191,7 @@ const handleClose = () => {
 
 .policy-section li {
   font-size: 15px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 8px;
   line-height: 1.6;
 }
@@ -202,7 +202,7 @@ const handleClose = () => {
 
 .policy-section li strong {
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .contact-list {
@@ -217,14 +217,14 @@ const handleClose = () => {
 .policy-footer {
   margin-top: 40px;
   padding-top: 24px;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border);
   display: flex;
   justify-content: center;
 }
 
 .close-btn {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   padding: 12px 32px;
   border-radius: 24px;
@@ -235,7 +235,7 @@ const handleClose = () => {
 }
 
 .close-btn:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .policy-container::-webkit-scrollbar {
@@ -243,16 +243,16 @@ const handleClose = () => {
 }
 
 .policy-container::-webkit-scrollbar-track {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 4px;
 }
 
 .policy-container::-webkit-scrollbar-thumb {
-  background: #d2d2d6;
+  background: var(--theme-scrollbar-thumb);
   border-radius: 4px;
 }
 
 .policy-container::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a6;
+  background: var(--theme-scrollbar-thumb-hover);
 }
 </style>

@@ -79,7 +79,7 @@ const handleSubmit = async () => {
 <style scoped>
 /* 添加错误信息样式 */
 .error-message {
-  color: #ff4444;
+  color: var(--theme-danger);
   font-size: 14px;
   margin-top: 8px;
   text-align: left;
@@ -87,7 +87,8 @@ const handleSubmit = async () => {
 
 /* 禁用按钮时的样式 */
 .card-btn_forgotPassword:disabled {
-  background-color: #cccccc;
+  background-color: var(--theme-bg-active);
+  background-image: none;
   cursor: not-allowed;
 }
 
@@ -118,11 +119,11 @@ const handleSubmit = async () => {
 .ForgotPassword-content_forgotPassword button {
   width: 100%;
   height: 40px;
-  background-color: #007bff;
+  background-color: var(--theme-primary);
   border: none;
   text-align: center;
   border-radius: 5px;
-  color: #fff;
+  color: var(--theme-primary-text);
   cursor: pointer;
 }
 
@@ -130,12 +131,10 @@ const handleSubmit = async () => {
   width: 300px;
   height: 400px;
   position: relative;
-  background-color: rgb(255, 255, 255);
-  border-bottom: 3px solid #4c6bff;
+  background-color: var(--theme-bg-surface);
+  border-bottom: 3px solid var(--theme-primary);
   overflow: hidden;
-  -webkit-box-shadow: 0px 12px 65px -39px rgba(0, 0, 0, 1);
-  -moz-box-shadow: 0px 12px 65px -39px rgba(0, 0, 0, 1);
-  box-shadow: 0px 12px 65px -39px rgba(0, 0, 0, 1);
+  box-shadow: var(--theme-shadow-lg);
   border-radius: 15px;
 }
 
@@ -154,7 +153,7 @@ const handleSubmit = async () => {
   width: 50%;
   left: -20%;
   top: -20%;
-  fill: rgb(244, 244, 244);
+  fill: var(--theme-bg-surface-2);
   transition: all 0.5s;
 }
 
@@ -170,14 +169,14 @@ const handleSubmit = async () => {
   justify-content: space-around;
   padding: 25px;
   box-sizing: border-box;
-  color: rgb(30, 30, 30);
+  color: var(--theme-text-1);
   gap: 3px;
 }
 
 .heading_forgotPassword {
   font-size: 1.4em;
   font-weight: 700;
-  color: rgb(30, 30, 30);
+  color: var(--theme-text-1);
   margin: 5px 0;
 }
 
@@ -186,13 +185,13 @@ const handleSubmit = async () => {
   font-size: 0.9em;
   font-weight: 600;
   margin: 5px 0;
-  color: rgb(30, 30, 30);
+  color: var(--theme-text-1);
 }
 
 .sub-sub-heading_forgotPassword {
   margin: 5px 0;
   font-size: 0.7em;
-  color: rgb(128, 128, 128);
+  color: var(--theme-text-3);
 }
 
 .form_forgotPassword {
@@ -208,10 +207,15 @@ const handleSubmit = async () => {
   height: 25px;
   margin-top: 20px;
   border: none;
-  border-bottom: 1px solid #c0c7ec;
+  border-bottom: 1px solid var(--theme-border);
   outline: none;
   font-size: 0.7em;
   background-color: transparent;
+  color: var(--theme-text-1);
+}
+
+.Phone_forgotPassword::placeholder {
+  color: var(--theme-text-3);
 }
 
 .card-btn_forgotPassword {
@@ -219,8 +223,8 @@ const handleSubmit = async () => {
   height: 30px;
   width: 80%;
   border: none;
-  background: linear-gradient(60deg, #4c6bff, #8196ff);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border-radius: 30px;
   cursor: pointer;
 }
@@ -229,53 +233,6 @@ const handleSubmit = async () => {
   left: 0%;
   top: 0%;
   transform: rotate(180deg) scale(9);
-  fill: #c0c7ec;
-}
-
-/* ================= 暗色主题 ================= */
-html[data-theme="dark"] .card_forgotPassword {
-  background-color: #20222e;
-  border-bottom-color: #6d8bff;
-  box-shadow: 0 12px 65px -39px rgba(0, 0, 0, 1);
-}
-
-html[data-theme="dark"] .BG svg {
-  fill: #2a2d3d;
-}
-
-html[data-theme="dark"] .card_forgotPassword:hover .BG svg {
-  fill: #3a4a7d;
-}
-
-html[data-theme="dark"] .content_forgotPassword,
-html[data-theme="dark"] .heading_forgotPassword,
-html[data-theme="dark"] .sub-heading_forgotPassword {
-  color: #f5f5f7;
-}
-
-html[data-theme="dark"] .sub-sub-heading_forgotPassword {
-  color: #8e8e93;
-}
-
-html[data-theme="dark"] .Phone_forgotPassword {
-  border-bottom-color: #3d4360;
-  color: #f5f5f7;
-}
-
-html[data-theme="dark"] .Phone_forgotPassword::placeholder {
-  color: #7f869e;
-}
-
-html[data-theme="dark"] .card-btn_forgotPassword {
-  background: linear-gradient(60deg, #5b7cff, #8fa3ff);
-}
-
-html[data-theme="dark"] .card-btn_forgotPassword:disabled {
-  background-color: #3a3f55;
-  background-image: none;
-}
-
-html[data-theme="dark"] .error-message {
-  color: #ff6b6b;
+  fill: var(--theme-primary-soft);
 }
 </style>

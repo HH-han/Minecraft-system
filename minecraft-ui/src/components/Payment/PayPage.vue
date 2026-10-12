@@ -118,7 +118,7 @@
       <!-- 支付安全提示 -->
       <div class="security-tips">
         <div class="security-icon">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="#3498db">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
         </div>
@@ -369,24 +369,24 @@ const closeModal = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  color: #abd5ff;
+  color: var(--theme-text-2);
 }
 
 .glass-card {
   width: 100%;
   max-width: 500px;
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--theme-shadow-md);
+  border: 1px solid var(--theme-border);
   transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .order-header {
@@ -395,7 +395,7 @@ const closeModal = () => {
 }
 
 .order-header h1 {
-  color: #1e2c3b;
+  color: var(--theme-text-1);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 15px;
@@ -403,7 +403,7 @@ const closeModal = () => {
 
 .divider {
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, var(--theme-border), transparent);
   margin: 0 auto;
   width: 80%;
 }
@@ -416,7 +416,7 @@ const closeModal = () => {
   display: flex;
   justify-content: space-between;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .detail-item.highlight {
@@ -425,18 +425,18 @@ const closeModal = () => {
 }
 
 .detail-item.highlight .detail-value {
-  color: #3498db;
+  color: var(--theme-primary);
   font-weight: 600;
   font-size: 18px;
 }
 
 .detail-label {
-  color: #b5c1c2;
+  color: var(--theme-text-3);
   font-weight: 500;
 }
 
 .detail-value {
-  color: #25476a;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
@@ -445,7 +445,7 @@ const closeModal = () => {
 }
 
 .payment-section h2 {
-  color: #1e2c3b;
+  color: var(--theme-text-1);
   font-size: 20px;
   margin-bottom: 15px;
   text-align: center;
@@ -459,8 +459,8 @@ const closeModal = () => {
 }
 
 .PayPage_center:hover {
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  border: 2px dashed rgb(107, 176, 255);
+  box-shadow: var(--theme-shadow-md);
+  border: 2px dashed var(--theme-primary);
 }
 
 .payment-option {
@@ -480,14 +480,14 @@ const closeModal = () => {
 
 .payment-name {
   font-weight: 600;
-  color: #1e2c3b;
+  color: var(--theme-text-1);
   display: block;
   margin-bottom: 4px;
 }
 
 .payment-desc {
   font-size: 12px;
-  color: #7f8c8d;
+  color: var(--theme-text-2);
   display: block;
 }
 
@@ -495,7 +495,7 @@ const closeModal = () => {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(52, 152, 219, 0.1);
+  background: var(--theme-primary-soft);
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -503,6 +503,7 @@ const closeModal = () => {
 
 .security-icon {
   flex-shrink: 0;
+  color: var(--theme-primary);
 }
 
 .security-text {
@@ -512,13 +513,13 @@ const closeModal = () => {
 .security-text p {
   margin: 5px 0;
   font-size: 14px;
-  color: #2c3e50;
+  color: var(--theme-text-1);
 }
 
 .PayPage_title {
-  background: rgba(195, 195, 195, 0.5);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-md);
   border-radius: 10px 10px 0px 0px;
 }
 
@@ -547,15 +548,11 @@ const closeModal = () => {
   left: 0;
   height: 2em;
   width: 2em;
-  background: linear-gradient(145deg,
-      #ececec,
-      #c8c8c8);
+  background: var(--theme-bg-surface-2);
   /* Soft light 3D effect */
   border-radius: 12px;
   /* Rounded square */
-  box-shadow:
-    0 4px 10px rgba(0, 0, 0, 0.2),
-    inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
   /* 3D shadow */
   transition:
     background-color 0.4s ease,
@@ -566,11 +563,11 @@ const closeModal = () => {
 
 /* 勾选后，添加鲜艳的渐变背景  */
 .container-pay input:checked~.checkmark-pay {
-  background: linear-gradient(45deg, #42e695, #3bb2b8);
+  background: var(--theme-success);
   transform: scale(1.1);
   box-shadow:
-    0 0px 20px rgba(66, 230, 149, 0.6),
-    inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+    0 0px 20px color-mix(in srgb, var(--theme-success) 60%, transparent),
+    var(--theme-shadow-sm);
 }
 
 /* 复选标记本身  */
@@ -580,7 +577,7 @@ const closeModal = () => {
   display: none;
   width: 0.5em;
   height: 1em;
-  border: solid white;
+  border: solid var(--theme-primary-text);
   border-width: 0 0.2em 0.2em 0;
   transform: rotate(45deg);
   left: 0.65em;
@@ -648,8 +645,8 @@ const closeModal = () => {
 /* 悬浮时，让它感觉与发光的边界互动  */
 .container-pay:hover .checkmark-pay {
   box-shadow:
-    0 0 15px rgba(255, 255, 255, 0.7),
-    0 4px 10px rgba(0, 0, 0, 0.2);
+    0 0 15px color-mix(in srgb, var(--theme-primary) 40%, transparent),
+    var(--theme-shadow-sm);
 }
 
 /* 支付按钮样式 */
@@ -658,18 +655,18 @@ const closeModal = () => {
   padding: 15px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-primary) 30%, transparent);
 }
 
 .pay-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--theme-primary) 40%, transparent);
 }
 
 .pay-button:active {
@@ -683,7 +680,7 @@ const closeModal = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--theme-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -692,7 +689,7 @@ const closeModal = () => {
 }
 
 .alert-content {
-  background: white;
+  background: var(--theme-bg-elevated);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -701,8 +698,8 @@ const closeModal = () => {
 }
 
 .custom-alert button {
-  background: #3FA05C;
-  color: white;
+  background: var(--theme-success);
+  color: var(--theme-primary-text);
   border: none;
   padding: 10px 20px;
   border-radius: 4px;

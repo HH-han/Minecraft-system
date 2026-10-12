@@ -9,7 +9,7 @@
   font-size: 20px;
   width: 100%;
   border: none;
-  border-bottom: 2px solid #38dde3;
+  border-bottom: 2px solid var(--theme-primary);
   padding: 5px 0;
   background-color: transparent;
   outline: none;
@@ -19,7 +19,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  color: #ffffff;
+  color: var(--theme-text-2);
   transition: all 0.3s ease;
   pointer-events: none;
 }
@@ -28,7 +28,7 @@
 .input-container-3 input:valid~.label {
   top: -20px;
   font-size: 16px;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .input-container-3 .underline {
@@ -36,7 +36,7 @@
   left: 0;
   height: 2px;
   width: 100%;
-  background-color: #333;
+  background-color: var(--theme-text-1);
   transform: scaleX(0);
   transition: all 0.3s ease;
 }
@@ -51,10 +51,10 @@
 .btn-conteiner {
   display: flex;
   justify-content: center;
-  --color-text: #ffffff;
-  --color-background: #1389ff;
-  --color-outline: #ff145b80;
-  --color-shadow: #00000080;
+  --color-text: var(--theme-primary-text);
+  --color-background: var(--theme-primary);
+  --color-outline: var(--theme-primary-soft);
+  --color-shadow: var(--theme-shadow-md);
 }
 
 .btn-content {
@@ -127,7 +127,7 @@
 }
 
 .error-message {
-  color: red;
+  color: var(--theme-danger);
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -135,7 +135,7 @@
 /* SVG animations */
 @keyframes color_anim {
   0% {
-    fill: white;
+    fill: var(--theme-primary-text);
   }
 
   50% {
@@ -143,7 +143,7 @@
   }
 
   100% {
-    fill: white;
+    fill: var(--theme-primary-text);
   }
 }
 

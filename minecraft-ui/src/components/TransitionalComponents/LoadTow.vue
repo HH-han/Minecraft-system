@@ -369,7 +369,7 @@ onUnmounted(() => {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background: rgba(0, 0, 0, 0.3);
+	background: var(--theme-overlay);
 	backdrop-filter: blur(10px);
 	z-index: 20;
 	opacity: 0;

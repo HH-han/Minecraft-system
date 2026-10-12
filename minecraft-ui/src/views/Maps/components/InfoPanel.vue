@@ -6,7 +6,7 @@
           <div
             v-if="visible"
             class="info-panel"
-            :class="{ 'is-dark': isDark, 'is-country': isCountry, 'is-hover': isHover }"
+            :class="{ 'is-country': isCountry, 'is-hover': isHover }"
             @click.stop
           >
             <button v-if="!isHover" class="close-btn" @click="$emit('close')">
@@ -147,10 +147,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  isDark: {
-    type: Boolean,
-    default: false
-  },
   isHover: {
     type: Boolean,
     default: false
@@ -187,7 +183,7 @@ function handleMaskClick() {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -200,12 +196,11 @@ function handleMaskClick() {
 .info-panel {
   width: 380px;
   max-height: 85vh;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: saturate(180%) blur(30px);
   -webkit-backdrop-filter: saturate(180%) blur(30px);
   border-radius: 18px;
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--theme-shadow-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -214,23 +209,9 @@ function handleMaskClick() {
   -webkit-font-smoothing: antialiased;
 }
 
-.info-panel.is-dark {
-  background: rgba(28, 28, 30, 0.92);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
 .info-panel.is-hover {
-  border: 1px solid rgba(0, 122, 255, 0.2);
-  box-shadow:
-    0 8px 30px rgba(0, 122, 255, 0.08),
-    0 20px 60px rgba(0, 0, 0, 0.15);
-}
-
-.info-panel.is-dark.is-hover {
-  border-color: rgba(10, 132, 255, 0.25);
-  box-shadow:
-    0 8px 30px rgba(10, 132, 255, 0.12),
-    0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--theme-primary);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .hover-badge {
@@ -238,18 +219,13 @@ function handleMaskClick() {
   top: 16px;
   right: 16px;
   padding: 4px 12px;
-  background: rgba(0, 122, 255, 0.12);
+  background: var(--theme-primary-soft);
   border-radius: 980px;
   font-size: 11px;
   font-weight: 600;
-  color: #007aff;
+  color: var(--theme-primary);
   letter-spacing: 0.3px;
   z-index: 10;
-}
-
-.is-dark .hover-badge {
-  background: rgba(10, 132, 255, 0.2);
-  color: #0a84ff;
 }
 
 .info-panel-mask.hover-mode {
@@ -270,9 +246,9 @@ function handleMaskClick() {
   width: 30px;
   height: 30px;
   border: none;
-  background: rgba(120, 120, 128, 0.12);
+  background: var(--theme-bg-active);
   border-radius: 50%;
-  color: #86868b;
+  color: var(--theme-text-3);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -281,14 +257,9 @@ function handleMaskClick() {
   z-index: 10;
 }
 
-.is-dark .close-btn {
-  background: rgba(255, 255, 255, 0.1);
-  color: #98989d;
-}
-
 .close-btn:hover {
-  background: rgba(255, 59, 48, 0.15);
-  color: #ff3b30;
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
   transform: rotate(90deg);
 }
 
@@ -302,11 +273,7 @@ function handleMaskClick() {
   display: flex;
   align-items: center;
   gap: 14px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.is-dark .panel-header {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .continent-header {
@@ -322,31 +289,23 @@ function handleMaskClick() {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .panel-title {
   margin: 0;
   font-size: 22px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.3px;
   line-height: 1.2;
-}
-
-.is-dark .panel-title {
-  color: #f5f5f7;
 }
 
 .panel-subtitle {
   margin: 4px 0 0;
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   letter-spacing: 0.2px;
-}
-
-.is-dark .panel-subtitle {
-  color: #86868b;
 }
 
 .panel-content {
@@ -367,13 +326,9 @@ function handleMaskClick() {
   align-items: flex-start;
   gap: 10px;
   padding: 12px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 12px;
   transition: background 0.2s ease;
-}
-
-.is-dark .info-item {
-  background: rgba(255, 255, 255, 0.06);
 }
 
 .info-icon {
@@ -391,36 +346,24 @@ function handleMaskClick() {
 
 .info-label {
   font-size: 11px;
-  color: #6e6e73;
+  color: var(--theme-text-3);
   letter-spacing: 0.2px;
-}
-
-.is-dark .info-label {
-  color: #86868b;
 }
 
 .info-value {
   font-size: 13px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   word-break: break-word;
   line-height: 1.3;
-}
-
-.is-dark .info-value {
-  color: #f5f5f7;
 }
 
 .section-title {
   margin: 0 0 12px;
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.1px;
-}
-
-.is-dark .section-title {
-  color: #f5f5f7;
 }
 
 .culture-section {
@@ -431,11 +374,7 @@ function handleMaskClick() {
   margin: 0;
   font-size: 13px;
   line-height: 1.7;
-  color: #1d1d1f;
-}
-
-.is-dark .culture-text {
-  color: #f5f5f7;
+  color: var(--theme-text-1);
 }
 
 .highlights-section {
@@ -450,17 +389,12 @@ function handleMaskClick() {
 
 .highlight-tag {
   padding: 6px 14px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 980px;
   font-size: 12px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   transition: background 0.2s ease;
-}
-
-.is-dark .highlight-tag {
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f5f7;
 }
 
 .country-list {
@@ -479,37 +413,29 @@ function handleMaskClick() {
 }
 
 .country-item:hover {
-  background: #f5f5f7;
-}
-
-.is-dark .country-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--theme-bg-hover);
 }
 
 .country-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #007aff;
+  background: var(--theme-primary);
   flex-shrink: 0;
 }
 
 .country-name {
   font-size: 13px;
   font-weight: 500;
-  color: #1d1d1f;
-}
-
-.is-dark .country-name {
-  color: #f5f5f7;
+  color: var(--theme-text-1);
 }
 
 .explore-btn {
   width: 100%;
   padding: 12px;
   border: none;
-  background: #007aff;
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
@@ -525,12 +451,12 @@ function handleMaskClick() {
 }
 
 .explore-btn:hover {
-  background: #0071e3;
+  background: var(--theme-primary-hover);
 }
 
 .explore-btn:active {
   transform: scale(0.98);
-  background: #006edc;
+  background: var(--theme-primary-hover);
 }
 
 .explore-btn svg {

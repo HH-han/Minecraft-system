@@ -1,5 +1,5 @@
 <template>
-  <div class="control-root" :class="{ 'is-dark': isDark }">
+  <div class="control-root">
     <!-- 左侧：图层 / 视角 / 导航面板 -->
     <button class="panel-toggle" :class="{ 'is-open': panelOpen }" @click="panelOpen = !panelOpen" title="图层控制">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -151,6 +151,7 @@ import { computed, reactive, ref } from 'vue'
 import { VIEW_PRESETS, LAYER_GROUPS, SCENE_PRESETS } from '../config.js'
 
 const props = defineProps({
+  /** 明暗状态（来自全局主题），仅用于主题按钮的图标/文案判断 */
   isDark: { type: Boolean, default: false },
   autoRotate: { type: Boolean, default: true },
   zoomLevel: { type: Number, default: 1 },
@@ -203,22 +204,16 @@ const zoomLevelPercent = computed(() => {
   flex-direction: column;
   gap: 12px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--theme-bg-glass);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .layer-panel::-webkit-scrollbar {
   display: none;
-}
-
-.is-dark .layer-panel {
-  background: rgba(29, 29, 31, 0.78);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .panel-section {
@@ -232,11 +227,7 @@ const zoomLevelPercent = computed(() => {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: #86868b;
-}
-
-.is-dark .section-title {
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .layer-list {
@@ -260,26 +251,18 @@ const zoomLevelPercent = computed(() => {
   border-radius: 8px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: background 0.18s ease;
 }
 
-.is-dark .group-header {
-  color: #f5f5f7;
-}
-
 .group-header:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.is-dark .group-header:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--theme-bg-hover);
 }
 
 .chev {
   font-size: 11px;
-  color: #86868b;
+  color: var(--theme-text-3);
   transition: transform 0.2s ease;
 }
 
@@ -296,10 +279,10 @@ const zoomLevelPercent = computed(() => {
 
 .scene-chip {
   padding: 9px 10px;
-  border: 1px solid rgba(10, 132, 255, 0.25);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  background: rgba(10, 132, 255, 0.08);
-  color: #1d1d1f;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 13px;
   font-weight: 600;
   text-align: left;
@@ -308,18 +291,9 @@ const zoomLevelPercent = computed(() => {
 }
 
 .scene-chip:hover {
-  background: rgba(10, 132, 255, 0.18);
+  background: var(--theme-primary-soft);
+  filter: brightness(1.06);
   transform: translateY(-1px);
-}
-
-.is-dark .scene-chip {
-  color: #6db8ff;
-  background: rgba(10, 132, 255, 0.14);
-  border-color: rgba(10, 132, 255, 0.35);
-}
-
-.is-dark .scene-chip:hover {
-  background: rgba(10, 132, 255, 0.28);
 }
 
 .layer-row {
@@ -334,11 +308,7 @@ const zoomLevelPercent = computed(() => {
 }
 
 .layer-row:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.is-dark .layer-row:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--theme-bg-hover);
 }
 
 .layer-info {
@@ -351,16 +321,12 @@ const zoomLevelPercent = computed(() => {
 .layer-name {
   font-size: 13px;
   font-weight: 600;
-  color: #1d1d1f;
-}
-
-.is-dark .layer-name {
-  color: #f5f5f7;
+  color: var(--theme-text-1);
 }
 
 .layer-desc {
   font-size: 11px;
-  color: #86868b;
+  color: var(--theme-text-3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -373,7 +339,7 @@ const zoomLevelPercent = computed(() => {
   height: 22px;
   border: none;
   border-radius: 11px;
-  background: rgba(120, 120, 128, 0.28);
+  background: var(--theme-border-strong);
   position: relative;
   cursor: pointer;
   transition: background 0.18s ease;
@@ -381,7 +347,7 @@ const zoomLevelPercent = computed(() => {
 }
 
 .switch.is-on {
-  background: #34c759;
+  background: var(--theme-success);
 }
 
 .switch-thumb {
@@ -411,8 +377,8 @@ const zoomLevelPercent = computed(() => {
   padding: 7px 0;
   font-size: 12px;
   font-weight: 500;
-  color: #1d1d1f;
-  background: rgba(0, 0, 0, 0.04);
+  color: var(--theme-text-1);
+  background: var(--theme-bg-muted);
   border: 1px solid transparent;
   border-radius: 9px;
   cursor: pointer;
@@ -420,18 +386,8 @@ const zoomLevelPercent = computed(() => {
 }
 
 .preset-chip:hover {
-  background: rgba(0, 122, 255, 0.12);
-  color: #007aff;
-}
-
-.is-dark .preset-chip {
-  color: #f5f5f7;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.is-dark .preset-chip:hover {
-  background: rgba(10, 132, 255, 0.25);
-  color: #6db8ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 /* 导航按钮 */
@@ -445,16 +401,16 @@ const zoomLevelPercent = computed(() => {
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, #0a84ff, #0055d4);
+  color: var(--theme-primary-text);
+  background: var(--theme-gradient);
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(10, 132, 255, 0.35);
+  box-shadow: var(--theme-shadow-md);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .nav-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(10, 132, 255, 0.45);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .nav-btn:active {
@@ -462,12 +418,12 @@ const zoomLevelPercent = computed(() => {
 }
 
 .nav-btn.svc-btn {
-  background: linear-gradient(135deg, #30d158, #1a8f3c);
-  box-shadow: 0 4px 14px rgba(48, 209, 88, 0.3);
+  color: var(--theme-text-inverse);
+  background: var(--theme-success);
 }
 
 .nav-btn.svc-btn:hover {
-  box-shadow: 0 6px 18px rgba(48, 209, 88, 0.42);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .nav-btn svg {
@@ -485,14 +441,14 @@ const zoomLevelPercent = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--theme-bg-glass);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--theme-shadow-sm);
   transition: opacity 0.2s ease;
   z-index: 1;
 }
@@ -500,12 +456,6 @@ const zoomLevelPercent = computed(() => {
 .panel-toggle.is-open {
   opacity: 0;
   pointer-events: none;
-}
-
-.is-dark .panel-toggle {
-  background: rgba(29, 29, 31, 0.78);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #f5f5f7;
 }
 
 .panel-toggle svg {
@@ -540,18 +490,12 @@ const zoomLevelPercent = computed(() => {
   flex-direction: column;
   gap: 2px;
   padding: 6px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--theme-bg-glass);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-}
-
-.is-dark .control-group {
-  background: rgba(29, 29, 31, 0.72);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .control-btn {
@@ -563,21 +507,13 @@ const zoomLevelPercent = computed(() => {
   background: transparent;
   border: none;
   border-radius: 8px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.is-dark .control-btn {
-  color: #f5f5f7;
-}
-
 .control-btn:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.is-dark .control-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--theme-bg-hover);
 }
 
 .control-btn:active {
@@ -590,23 +526,14 @@ const zoomLevelPercent = computed(() => {
 }
 
 .control-btn.is-active {
-  background: rgba(0, 122, 255, 0.12);
-  color: #007aff;
-}
-
-.is-dark .control-btn.is-active {
-  background: rgba(10, 132, 255, 0.2);
-  color: #0a84ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .control-divider {
   height: 1px;
-  background: rgba(0, 0, 0, 0.06);
+  background: var(--theme-border);
   margin: 4px 0;
-}
-
-.is-dark .control-divider {
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .zoom-info {
@@ -620,25 +547,17 @@ const zoomLevelPercent = computed(() => {
 .zoom-label {
   font-size: 10px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   letter-spacing: 0.3px;
-}
-
-.is-dark .zoom-label {
-  color: #86868b;
 }
 
 .zoom-bar {
   width: 4px;
   height: 60px;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--theme-bg-active);
   border-radius: 2px;
   overflow: hidden;
   position: relative;
-}
-
-.is-dark .zoom-bar {
-  background: rgba(255, 255, 255, 0.12);
 }
 
 .zoom-fill {
@@ -646,7 +565,7 @@ const zoomLevelPercent = computed(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, #007aff, #5ac8fa);
+  background: var(--theme-primary);
   border-radius: 2px;
   transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

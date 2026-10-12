@@ -471,7 +471,7 @@ const roads = computed(() => result.value?.roads || [])
   margin: 0;
   font-size: 11.5px;
   line-height: 1.5;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .svc-select {
@@ -481,10 +481,10 @@ const roads = computed(() => result.value?.roads || [])
   gap: 8px;
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #f5f5f7;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   font-size: 13px;
   font-family: inherit;
   text-align: left;
@@ -493,7 +493,7 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .svc-select:focus {
-  border-color: #0a84ff;
+  border-color: var(--theme-primary);
 }
 
 /* ---------- 自定义下拉（隐藏滚动条，随明暗主题切换） ---------- */
@@ -519,7 +519,7 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .svc-picker.is-open .svc-select {
-  border-color: #0a84ff;
+  border-color: var(--theme-primary);
 }
 
 .svc-picker-pop {
@@ -533,9 +533,9 @@ const roads = computed(() => result.value?.roads || [])
   scrollbar-width: none; /* Firefox 隐藏滚动条 */
   padding: 6px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #1c1c1e;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 /* Chrome / Edge / Safari 隐藏滚动条（保留滚动能力） */
@@ -548,7 +548,7 @@ const roads = computed(() => result.value?.roads || [])
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .svc-picker-opt {
@@ -558,7 +558,7 @@ const roads = computed(() => result.value?.roads || [])
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
   font-size: 12.5px;
   font-family: inherit;
   text-align: left;
@@ -567,26 +567,26 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .svc-picker-opt:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--theme-bg-hover);
 }
 
 .svc-picker-opt.is-active {
-  background: #0a84ff;
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 /* ---------- 工具头 ---------- */
 .tool-head h3 {
   margin: 2px 0 4px;
   font-size: 15px;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
 }
 
 .tool-head p {
   margin: 0;
   font-size: 12px;
   line-height: 1.5;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 /* ---------- 表单 ---------- */
@@ -596,8 +596,8 @@ const roads = computed(() => result.value?.roads || [])
   gap: 10px;
   padding: 12px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
 }
 
 .field {
@@ -610,11 +610,11 @@ const roads = computed(() => result.value?.roads || [])
 .field label {
   font-size: 11.5px;
   font-weight: 600;
-  color: #aeb7c4;
+  color: var(--theme-text-2);
 }
 
 .field label i {
-  color: #ff453a;
+  color: var(--theme-danger);
   font-style: normal;
   margin-left: 2px;
 }
@@ -623,10 +623,10 @@ const roads = computed(() => result.value?.roads || [])
 .field textarea,
 .field select {
   padding: 8px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--theme-border);
   border-radius: 9px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #f5f5f7;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   font-size: 12.5px;
   font-family: inherit;
   outline: none;
@@ -641,23 +641,23 @@ const roads = computed(() => result.value?.roads || [])
 .field input:focus,
 .field textarea:focus,
 .field select:focus {
-  border-color: #0a84ff;
+  border-color: var(--theme-primary);
 }
 
 .field input::placeholder,
 .field textarea::placeholder {
-  color: #6e6e73;
+  color: var(--theme-text-3);
 }
 
 .field select option {
-  background: #1c1c1e;
-  color: #f5f5f7;
+  background: var(--theme-bg-elevated);
+  color: var(--theme-text-1);
 }
 
 .field-hint {
   margin: 0;
   font-size: 10.5px;
-  color: #6e6e73;
+  color: var(--theme-text-3);
   line-height: 1.4;
 }
 
@@ -671,8 +671,8 @@ const roads = computed(() => result.value?.roads || [])
   padding: 10px 0;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #0a84ff, #0055d4);
-  color: #fff;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -686,17 +686,17 @@ const roads = computed(() => result.value?.roads || [])
 
 .ghost-btn {
   padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
   background: transparent;
-  color: #d1d1d6;
+  color: var(--theme-text-2);
   font-size: 12.5px;
   cursor: pointer;
   transition: background 0.18s ease;
 }
 
 .ghost-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-hover);
 }
 
 .ghost-btn.small {
@@ -710,9 +710,9 @@ const roads = computed(() => result.value?.roads || [])
   margin: 0;
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(255, 69, 58, 0.14);
-  border: 1px solid rgba(255, 69, 58, 0.3);
-  color: #ff9f9a;
+  background: var(--theme-danger-soft);
+  border: 1px solid var(--theme-danger);
+  color: var(--theme-danger);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -732,14 +732,14 @@ const roads = computed(() => result.value?.roads || [])
 .result-head h4 {
   margin: 0;
   font-size: 12px;
-  color: #8ea8c9;
+  color: var(--theme-text-3);
   letter-spacing: 1px;
 }
 
 .result-meta {
   margin: 0;
   font-size: 11.5px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .sub-head {
@@ -747,7 +747,7 @@ const roads = computed(() => result.value?.roads || [])
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .raw-json {
@@ -756,9 +756,9 @@ const roads = computed(() => result.value?.roads || [])
   max-height: 320px;
   overflow: auto;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #a5d6ff;
+  background: var(--theme-bg-app);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-primary);
   font-size: 11px;
   line-height: 1.5;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
@@ -775,20 +775,20 @@ const roads = computed(() => result.value?.roads || [])
 .poi-card {
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   cursor: pointer;
   transition: background 0.18s ease;
 }
 
 .poi-card:hover {
-  background: rgba(10, 132, 255, 0.12);
+  background: var(--theme-primary-soft);
 }
 
 .poi-name {
   font-size: 13px;
   font-weight: 600;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -801,8 +801,8 @@ const roads = computed(() => result.value?.roads || [])
   font-weight: 500;
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(48, 209, 88, 0.18);
-  color: #7ee2a0;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .poi-rows {
@@ -811,13 +811,13 @@ const roads = computed(() => result.value?.roads || [])
   gap: 3px 10px;
   margin-top: 4px;
   font-size: 11.5px;
-  color: #aeb7c4;
+  color: var(--theme-text-2);
 }
 
 .poi-loc {
   margin-top: 5px;
   font-size: 10.5px;
-  color: #6db8ff;
+  color: var(--theme-primary);
   font-family: 'SF Mono', Menlo, Consolas, monospace;
 }
 
@@ -825,9 +825,9 @@ const roads = computed(() => result.value?.roads || [])
 .regeo-hero {
   padding: 12px;
   border-radius: 10px;
-  background: rgba(10, 132, 255, 0.14);
-  border: 1px solid rgba(10, 132, 255, 0.35);
-  color: #f5f5f7;
+  background: var(--theme-primary-soft);
+  border: 1px solid var(--theme-primary);
+  color: var(--theme-text-1);
   font-size: 13.5px;
   font-weight: 600;
   line-height: 1.5;
@@ -845,19 +845,19 @@ const roads = computed(() => result.value?.roads || [])
   gap: 2px;
   padding: 8px 10px;
   border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   min-width: 0;
 }
 
 .kv span {
   font-size: 10.5px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .kv b {
   font-size: 12px;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
   word-break: break-all;
 }
 
@@ -874,13 +874,13 @@ const roads = computed(() => result.value?.roads || [])
   gap: 8px;
   padding: 7px 10px;
   border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--theme-bg-surface);
   cursor: pointer;
   transition: background 0.18s ease;
 }
 
 .coord-item:hover {
-  background: rgba(10, 132, 255, 0.12);
+  background: var(--theme-primary-soft);
 }
 
 .coord-idx {
@@ -888,8 +888,8 @@ const roads = computed(() => result.value?.roads || [])
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: rgba(10, 132, 255, 0.25);
-  color: #6db8ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 10px;
   font-weight: 700;
   display: flex;
@@ -901,12 +901,12 @@ const roads = computed(() => result.value?.roads || [])
   flex: 1;
   font-family: 'SF Mono', Menlo, Consolas, monospace;
   font-size: 11.5px;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
 }
 
 .coord-copy {
   font-size: 10.5px;
-  color: #6db8ff;
+  color: var(--theme-primary);
 }
 
 /* 输入提示 */
@@ -917,26 +917,26 @@ const roads = computed(() => result.value?.roads || [])
   gap: 10px;
   padding: 8px 12px;
   border-radius: 9px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   cursor: pointer;
   transition: background 0.18s ease;
 }
 
 .tip-item:hover {
-  background: rgba(10, 132, 255, 0.12);
+  background: var(--theme-primary-soft);
 }
 
 .tip-name {
   font-size: 12.5px;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
 .tip-meta {
   flex-shrink: 0;
   font-size: 10.5px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 /* 行政区划 */
@@ -958,45 +958,45 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .district-item:hover {
-  background: rgba(10, 132, 255, 0.12);
+  background: var(--theme-primary-soft);
 }
 
 .district-label {
   font-size: 12.5px;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
 }
 
 .district-meta {
   flex-shrink: 0;
   font-size: 10.5px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 /* 天气 */
 .weather-card {
   padding: 12px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   margin-bottom: 8px;
 }
 
 .weather-city {
   font-size: 11.5px;
-  color: #8ea8c9;
+  color: var(--theme-text-3);
   margin-bottom: 4px;
 }
 
 .weather-main {
   font-size: 16px;
   font-weight: 700;
-  color: #6db8ff;
+  color: var(--theme-primary);
   margin-bottom: 4px;
 }
 
 .weather-meta {
   font-size: 11.5px;
-  color: #aeb7c4;
+  color: var(--theme-text-2);
   line-height: 1.5;
 }
 
@@ -1014,8 +1014,8 @@ const roads = computed(() => result.value?.roads || [])
   flex: 1;
   padding: 9px 10px;
   border-radius: 10px;
-  background: rgba(10, 132, 255, 0.12);
-  border: 1px solid rgba(10, 132, 255, 0.28);
+  background: var(--theme-primary-soft);
+  border: 1px solid var(--theme-primary);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1023,12 +1023,12 @@ const roads = computed(() => result.value?.roads || [])
 
 .summary-item span {
   font-size: 10.5px;
-  color: #8ea8c9;
+  color: var(--theme-text-3);
 }
 
 .summary-item b {
   font-size: 13px;
-  color: #6db8ff;
+  color: var(--theme-primary);
 }
 
 .steps-list {
@@ -1048,7 +1048,7 @@ const roads = computed(() => result.value?.roads || [])
 }
 
 .step-item:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--theme-bg-hover);
 }
 
 .step-index {
@@ -1056,8 +1056,8 @@ const roads = computed(() => result.value?.roads || [])
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: rgba(10, 132, 255, 0.25);
-  color: #6db8ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 10px;
   font-weight: 700;
   display: flex;
@@ -1069,33 +1069,33 @@ const roads = computed(() => result.value?.roads || [])
 .step-text {
   flex: 1;
   font-size: 11.5px;
-  color: #e5e5ea;
+  color: var(--theme-text-2);
   line-height: 1.45;
 }
 
 .step-text em {
   font-style: normal;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 .step-distance {
   flex-shrink: 0;
   font-size: 10.5px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 /* 交通态势 */
 .traffic-eval {
   padding: 12px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
 }
 
 .traffic-desc {
   font-size: 12.5px;
   font-weight: 600;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
   margin-bottom: 10px;
   line-height: 1.5;
 }
@@ -1116,14 +1116,14 @@ const roads = computed(() => result.value?.roads || [])
   flex-shrink: 0;
   width: 42px;
   font-size: 11px;
-  color: #aeb7c4;
+  color: var(--theme-text-2);
 }
 
 .bar-track {
   flex: 1;
   height: 7px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-hover);
   overflow: hidden;
 }
 
@@ -1138,7 +1138,7 @@ const roads = computed(() => result.value?.roads || [])
   width: 36px;
   text-align: right;
   font-size: 10.5px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 .road-list {
@@ -1153,7 +1153,7 @@ const roads = computed(() => result.value?.roads || [])
   gap: 8px;
   padding: 6px 10px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--theme-bg-surface);
   font-size: 11.5px;
 }
 
@@ -1163,18 +1163,18 @@ const roads = computed(() => result.value?.roads || [])
   border-radius: 999px;
   font-size: 10px;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.08);
-  color: #d1d1d6;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-2);
 }
 
-.road-status.st-1 { background: rgba(48, 209, 88, 0.2); color: #7ee2a0; }
-.road-status.st-2 { background: rgba(255, 214, 10, 0.2); color: #ffe066; }
-.road-status.st-3 { background: rgba(255, 69, 58, 0.22); color: #ff9f9a; }
-.road-status.st-4 { background: rgba(255, 45, 85, 0.3); color: #ff7b92; }
+.road-status.st-1 { background: var(--theme-success-soft); color: var(--theme-success); }
+.road-status.st-2 { background: var(--theme-warning-soft); color: var(--theme-warning); }
+.road-status.st-3 { background: var(--theme-danger-soft); color: var(--theme-danger); }
+.road-status.st-4 { background: var(--theme-danger-soft); color: var(--theme-danger); }
 
 .road-name {
   flex: 1;
-  color: #f5f5f7;
+  color: var(--theme-text-1);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1184,7 +1184,7 @@ const roads = computed(() => result.value?.roads || [])
 .road-speed {
   flex-shrink: 0;
   font-size: 10.5px;
-  color: #8e8e93;
+  color: var(--theme-text-3);
 }
 
 /* 静态地图 */
@@ -1194,20 +1194,20 @@ const roads = computed(() => result.value?.roads || [])
   gap: 8px;
   padding: 10px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
 }
 
 .staticmap-box img {
   display: block;
   width: 100%;
   border-radius: 8px;
-  background: #1c1c1e;
+  background: var(--theme-bg-elevated);
 }
 
 .staticmap-link {
   font-size: 11.5px;
-  color: #6db8ff;
+  color: var(--theme-primary);
   text-decoration: none;
 }
 
@@ -1224,246 +1224,18 @@ const roads = computed(() => result.value?.roads || [])
   z-index: 2100;
   padding: 10px 20px;
   border-radius: 999px;
-  background: rgba(28, 28, 30, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #f5f5f7;
+  background: var(--theme-text-1);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-bg-app);
   font-size: 13px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--theme-shadow-lg);
   max-width: 80vw;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* ---------- 浅色主题（跟随 NavigationPanel 根节点的 .is-light 祖先类） ---------- */
-.is-light .svc-select {
-  border-color: rgba(0, 0, 0, 0.14);
-  background: #fff;
-  color: #1d1d1f;
-}
-
-.is-light .svc-picker-pop {
-  border-color: rgba(0, 0, 0, 0.1);
-  background: #fff;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
-}
-
-.is-light .svc-picker-opt {
-  color: #1d1d1f;
-}
-
-.is-light .svc-picker-opt:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.is-light .svc-picker-opt.is-active {
-  background: #0a84ff;
-  color: #fff;
-}
-
-.is-light .tool-head h3 {
-  color: #1d1d1f;
-}
-
-.is-light .tool-form {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .field label {
-  color: #6e6e73;
-}
-
-.is-light .field input,
-.is-light .field textarea,
-.is-light .field select {
-  border-color: rgba(0, 0, 0, 0.14);
-  background: #fff;
-  color: #1d1d1f;
-}
-
-.is-light .field select option {
-  background: #fff;
-  color: #1d1d1f;
-}
-
-.is-light .ghost-btn {
-  border-color: rgba(0, 0, 0, 0.14);
-  color: #3a3a3c;
-}
-
-.is-light .ghost-btn:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.is-light .svc-error {
-  background: rgba(255, 69, 58, 0.08);
-  border-color: rgba(255, 69, 58, 0.25);
-  color: #d70015;
-}
-
-.is-light .result-head h4 {
-  color: #58719b;
-}
-
-.is-light .poi-card {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .poi-name {
-  color: #1d1d1f;
-}
-
-.is-light .poi-distance {
-  color: #248a3d;
-}
-
-.is-light .poi-rows {
-  color: #6e6e73;
-}
-
-.is-light .poi-loc {
-  color: #0066cc;
-}
-
-.is-light .regeo-hero {
-  color: #1d1d1f;
-}
-
-.is-light .kv {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .kv b {
-  color: #1d1d1f;
-}
-
-.is-light .coord-item {
-  background: rgba(0, 0, 0, 0.035);
-}
-
-.is-light .coord-idx {
-  color: #0066cc;
-}
-
-.is-light .coord-val {
-  color: #1d1d1f;
-}
-
-.is-light .coord-copy {
-  color: #0066cc;
-}
-
-.is-light .tip-item {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .tip-name {
-  color: #1d1d1f;
-}
-
-.is-light .district-label {
-  color: #1d1d1f;
-}
-
-.is-light .weather-card {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .weather-city {
-  color: #58719b;
-}
-
-.is-light .weather-main {
-  color: #0066cc;
-}
-
-.is-light .weather-meta {
-  color: #6e6e73;
-}
-
-.is-light .summary-item span {
-  color: #58719b;
-}
-
-.is-light .summary-item b {
-  color: #0066cc;
-}
-
-.is-light .step-item:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.is-light .step-index {
-  color: #0066cc;
-}
-
-.is-light .step-text {
-  color: #1d1d1f;
-}
-
-.is-light .traffic-eval {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .traffic-desc {
-  color: #1d1d1f;
-}
-
-.is-light .bar-track {
-  background: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .bar-label {
-  color: #6e6e73;
-}
-
-.is-light .road-item {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-.is-light .road-status {
-  background: rgba(0, 0, 0, 0.08);
-  color: #3a3a3c;
-}
-
-.is-light .road-status.st-1 {
-  background: rgba(48, 209, 88, 0.18);
-  color: #248a3d;
-}
-
-.is-light .road-status.st-2 {
-  background: rgba(255, 214, 10, 0.25);
-  color: #936b00;
-}
-
-.is-light .road-status.st-3 {
-  background: rgba(255, 69, 58, 0.12);
-  color: #d70015;
-}
-
-.is-light .road-status.st-4 {
-  background: rgba(255, 45, 85, 0.15);
-  color: #c81e4e;
-}
-
-.is-light .road-name {
-  color: #1d1d1f;
-}
-
-.is-light .staticmap-box {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-.is-light .staticmap-link {
-  color: #0066cc;
-}
+/* ---------- 结果 / 收藏 / 列表样式统一由全局主题令牌驱动 ---------- */
 </style>
 
 <style>
@@ -1471,12 +1243,12 @@ const roads = computed(() => result.value?.roads || [])
 .svc-pin-label {
   padding: 3px 9px;
   border-radius: 8px;
-  background: rgba(10, 132, 255, 0.92);
-  color: #fff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--theme-shadow-md);
 }
 </style>

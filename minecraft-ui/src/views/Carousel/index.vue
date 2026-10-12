@@ -205,22 +205,18 @@ watch(searchKeyword, () => {
   height: 58px;
   padding: 0 6px 0 22px;
   border-radius: 16px;
-  background: rgba(10, 10, 12, 0.86);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 18px 44px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  background: var(--theme-bg-glass-strong);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-md);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   backdrop-filter: blur(14px) saturate(1.4);
   transition: border-color 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
 }
 
 .hero-search__bar.is-active {
-  background: rgba(14, 14, 17, 0.94);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow:
-    0 22px 54px rgba(0, 0, 0, 0.5),
-    0 0 0 4px rgba(255, 255, 255, 0.06);
+  background: var(--theme-bg-glass-strong);
+  border-color: var(--theme-border-strong);
+  box-shadow: var(--theme-shadow-lg), var(--theme-ring);
 }
 
 .hero-search__input {
@@ -231,13 +227,13 @@ watch(searchKeyword, () => {
   border: 0;
   outline: none;
   background: transparent;
-  color: #f7f8fa;
+  color: var(--theme-text-1);
   font-size: 16px;
   letter-spacing: 0.01em;
 }
 
 .hero-search__input::placeholder {
-  color: rgba(255, 255, 255, 0.42);
+  color: var(--theme-text-3);
 }
 
 .hero-search__input:focus {
@@ -249,12 +245,12 @@ watch(searchKeyword, () => {
   flex: none;
   width: 1px;
   height: 26px;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--theme-hairline);
   transition: background 0.28s ease;
 }
 
 .hero-search__bar.is-active .hero-search__divider {
-  background: rgba(255, 255, 255, 0.24);
+  background: var(--theme-border);
 }
 
 .hero-search__submit {
@@ -268,7 +264,7 @@ watch(searchKeyword, () => {
   border: 0;
   border-radius: 12px;
   background: transparent;
-  color: #fbfbfd;
+  color: var(--theme-text-1);
   font: inherit;
   font-size: 16px;
   font-weight: 500;
@@ -287,7 +283,7 @@ watch(searchKeyword, () => {
 }
 
 .hero-search__submit:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: var(--theme-bg-hover);
 }
 
 .hero-search__submit:active {
@@ -295,7 +291,7 @@ watch(searchKeyword, () => {
 }
 
 .hero-search__submit:focus-visible {
-  outline: 1px solid rgba(255, 255, 255, 0.45);
+  outline: 1px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -312,9 +308,9 @@ watch(searchKeyword, () => {
   overflow-y: auto;
   list-style: none;
   border-radius: 14px;
-  background: rgba(38, 38, 43, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.55);
+  background: var(--theme-bg-glass-strong);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-lg);
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
 }
@@ -325,14 +321,14 @@ watch(searchKeyword, () => {
 
 .hero-search__panel::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--theme-scrollbar-thumb);
 }
 
 .hero-search__item {
   display: flex;
   align-items: center;
   padding: 11px 22px;
-  color: rgba(245, 245, 247, 0.86);
+  color: var(--theme-text-2);
   font-size: 16px;
   line-height: 1.5;
   cursor: pointer;
@@ -343,13 +339,13 @@ watch(searchKeyword, () => {
 
 .hero-search__item.is-active,
 .hero-search__item:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 /* 命中关键词 */
 .hero-search__hl {
-  color: #ff4d6d;
+  color: var(--theme-highlight);
   font-style: normal;
   font-weight: 500;
 }
@@ -377,80 +373,12 @@ watch(searchKeyword, () => {
   transform: translateY(-8px) scale(0.985);
 }
 
-/* ---------- 亮色主题 ---------- */
-html[data-theme="light"] .hero-search__bar {
-  background: rgba(242, 244, 249, 0.96);
-  border-color: rgba(15, 23, 42, 0.12);
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
-}
-
-html[data-theme="light"] .hero-search__bar.is-active {
-  border-color: rgba(15, 23, 42, 0.28);
-  box-shadow:
-    0 18px 46px rgba(15, 23, 42, 0.18),
-    0 0 0 4px rgba(15, 23, 42, 0.05);
-}
-
-html[data-theme="light"] .hero-search__input {
-  color: #101828;
-}
-
-html[data-theme="light"] .hero-search__input::placeholder {
-  color: rgba(16, 24, 40, 0.4);
-}
-
-html[data-theme="light"] .hero-search__divider {
-  background: rgba(15, 23, 42, 0.14);
-}
-
-html[data-theme="light"] .hero-search__submit {
-  color: #101828;
-}
-
-html[data-theme="light"] .hero-search__submit:hover {
-  background: rgba(15, 23, 42, 0.06);
-}
-
-html[data-theme="light"] .hero-search__panel {
-  background: rgba(255, 255, 255, 0.99);
-  border-color: rgba(15, 23, 42, 0.1);
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
-}
-
-html[data-theme="light"] .hero-search__item {
-  color: rgba(16, 24, 40, 0.86);
-}
-
-html[data-theme="light"] .hero-search__item.is-active,
-html[data-theme="light"] .hero-search__item:hover {
-  background: rgba(15, 23, 42, 0.05);
-  color: #101828;
-}
-
-/* ---------- Hero 文案卡片（样式来源于 HomeViews.css，此处按主题覆盖） ---------- */
+/* ---------- Hero 文案卡片（样式来源于 HomeViews.css，此处仅补过渡） ---------- */
 .homeview-hero-content,
 .homeview-hero-title,
 .homeview-hero-subtitle {
   transition: background 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease,
     color 0.32s ease, text-shadow 0.32s ease;
-}
-
-html[data-theme="light"] .homeview-hero-content {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(18px);
-  border-color: rgba(15, 23, 42, 0.1);
-  box-shadow: 0 24px 60px -30px rgba(15, 23, 42, 0.45);
-  color: var(--wi-txt-1, #101828);
-}
-
-html[data-theme="light"] .homeview-hero-title {
-  color: var(--wi-txt-1, #101828);
-  text-shadow: none;
-}
-
-html[data-theme="light"] .homeview-hero-subtitle {
-  color: var(--wi-txt-2, rgba(16, 24, 40, 0.66));
-  text-shadow: none;
 }
 
 /* ---------- 响应式 ---------- */

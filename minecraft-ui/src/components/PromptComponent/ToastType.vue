@@ -9,10 +9,10 @@
         p-id="4411">
         <path
           d="M839.28946946 914.1990408a71.89307854 71.89307854 0 0 1-52.48697483-22.52314629l-654.5789389-654.47838914c-29.96382854-29.96382854-29.96382854-77.42331536 0-104.87339988 30.06437829-30.06437829 77.42331536-30.06437829 104.97394964 0l654.5789389 651.96464513c29.96382854 29.96382854 29.96382854 77.42331536 0 104.97394964a69.58043406 69.58043406 0 0 1-52.48697481 24.93634054z"
-          fill="#d81e06" p-id="4412"></path>
+          fill="var(--theme-danger)" p-id="4412"></path>
         <path
           d="M184.71053054 914.1990408a71.89307854 71.89307854 0 0 1-52.38642505-22.52314629c-30.06437829-29.96382854-30.06437829-77.42331536 0-104.87339988l651.96464513-654.5789389c29.96382854-29.96382854 77.42331536-29.96382854 104.97394964 0 29.96382854 30.06437829 29.96382854 77.42331536 0 104.97394964l-652.06519489 654.5789389a71.89307854 71.89307854 0 0 1-52.48697483 22.42259653z"
-          fill="#d81e06" p-id="4413"></path>
+          fill="var(--theme-danger)" p-id="4413"></path>
       </svg>
     </button>
     <div class="progress-bar"></div>
@@ -53,32 +53,32 @@ button {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .success-btn {
-  background: linear-gradient(to right, #4CAF50, #8BC34A);
-  color: white;
+  background: var(--theme-success);
+  color: var(--theme-primary-text);
 }
 
 .error-btn {
-  background: linear-gradient(to right, #F44336, #FF9800);
-  color: white;
+  background: var(--theme-danger);
+  color: var(--theme-primary-text);
 }
 
 .warning-btn {
-  background: linear-gradient(to right, #FFC107, #FFEB3B);
-  color: #333;
+  background: var(--theme-warning);
+  color: var(--theme-text-1);
 }
 
 .info-btn {
-  background: linear-gradient(to right, #2196F3, #03A9F4);
-  color: white;
+  background: var(--theme-info);
+  color: var(--theme-primary-text);
 }
 
 .custom-toast {
@@ -90,8 +90,8 @@ button:hover {
   right: 20px;
   padding: 16px 20px;
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.442);
-  background-color: rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-lg);
+  background-color: var(--theme-bg-glass);
   backdrop-filter: blur(10px);
   transform: translateX(100%);
   opacity: 0;
@@ -131,23 +131,23 @@ button:hover {
 }
 
 .success .toast-icon {
-  background: #4CAF50;
-  color: white;
+  background: var(--theme-success);
+  color: var(--theme-primary-text);
 }
 
 .error .toast-icon {
-  background: #F44336;
-  color: white;
+  background: var(--theme-danger);
+  color: var(--theme-primary-text);
 }
 
 .warning .toast-icon {
-  background: #FFC107;
-  color: #333;
+  background: var(--theme-warning);
+  color: var(--theme-text-1);
 }
 
 .info .toast-icon {
-  background: #2196F3;
-  color: white;
+  background: var(--theme-info);
+  color: var(--theme-primary-text);
 }
 
 .toast-content {
@@ -162,7 +162,7 @@ button:hover {
   border: none;
   font-size: 18px;
   cursor: pointer;
-  color: #999;
+  color: var(--theme-text-3);
   margin-left: 10px;
   padding: 0;
   width: 25px;
@@ -175,8 +175,8 @@ button:hover {
 }
 
 .toast-close:hover {
-  background: #f5f5f5;
-  color: #666;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 
 .toast-close svg {
@@ -194,19 +194,19 @@ button:hover {
 }
 
 .success .progress-bar {
-  background: #4CAF50;
+  background: var(--theme-success);
 }
 
 .error .progress-bar {
-  background: #F44336;
+  background: var(--theme-danger);
 }
 
 .warning .progress-bar {
-  background: #FFC107;
+  background: var(--theme-warning);
 }
 
 .info .progress-bar {
-  background: #2196F3;
+  background: var(--theme-info);
 }
 
 @keyframes progress {
@@ -220,14 +220,14 @@ button:hover {
 }
 
 .code-sample {
-  background: #2d2d2d;
-  color: #f8f8f2;
+  background: var(--theme-text-1);
+  color: var(--theme-text-inverse);
   border-radius: 12px;
   padding: 20px;
   margin-top: 30px;
   text-align: left;
   overflow-x: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 pre {

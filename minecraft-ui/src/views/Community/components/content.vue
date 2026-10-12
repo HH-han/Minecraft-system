@@ -458,13 +458,13 @@ onMounted(() => {
 .content-header h2 {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .create-post-btn {
   padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -474,7 +474,7 @@ onMounted(() => {
 }
 
 .create-post-btn:hover {
-  background-color: #45a049;
+  background-color: var(--theme-primary-hover);
 }
 
 /* 加载状态 */
@@ -489,8 +489,8 @@ onMounted(() => {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  border: 4px solid var(--theme-bg-surface-2);
+  border-top: 4px solid var(--theme-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 10px;
@@ -510,14 +510,14 @@ onMounted(() => {
 .error-state {
   text-align: center;
   padding: 40px 0;
-  color: #e74c3c;
+  color: var(--theme-danger);
 }
 
 .retry-btn {
   margin-top: 10px;
   padding: 8px 16px;
-  background-color: #3498db;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -530,9 +530,9 @@ onMounted(() => {
 }
 
 .post-card {
-  background-color: white;
+  background-color: var(--theme-bg-surface);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
   padding: 20px;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -540,7 +540,7 @@ onMounted(() => {
 
 .post-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .post-header {
@@ -556,8 +556,8 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #3498db;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -581,21 +581,21 @@ onMounted(() => {
   justify-content: center;
   font-size: 16px;
   font-weight: 600;
-  color: white;
-  background-color: #3498db;
+  color: var(--theme-primary-text);
+  background-color: var(--theme-primary);
 }
 
 .author-info h3 {
   margin: 0 0 4px 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .post-time {
   margin: 0;
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .post-content {
@@ -606,13 +606,13 @@ onMounted(() => {
   margin: 0 0 10px 0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .post-text {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   line-height: 1.5;
 }
 
@@ -629,7 +629,7 @@ onMounted(() => {
 
 .stat-item {
   font-size: 14px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .stat-item svg {
@@ -647,16 +647,16 @@ onMounted(() => {
 .tag {
   padding: 4px 12px;
   font-size: 12px;
-  background-color: #f0f0f0;
+  background-color: var(--theme-bg-surface-2);
   border-radius: 12px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 /* 空状态 */
 .empty-state {
   text-align: center;
   padding: 60px 0;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 /* 分页 */
@@ -670,7 +670,7 @@ onMounted(() => {
 
 .page-btn {
   padding: 8px 16px;
-  background-color: #f0f0f0;
+  background-color: var(--theme-bg-surface-2);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -678,7 +678,7 @@ onMounted(() => {
 }
 
 .page-btn:hover:not(:disabled) {
-  background-color: #e0e0e0;
+  background-color: var(--theme-bg-hover);
 }
 
 .page-btn:disabled {
@@ -688,7 +688,7 @@ onMounted(() => {
 
 .page-info {
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 /* 模态框 */
@@ -698,7 +698,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -706,11 +706,11 @@ onMounted(() => {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--theme-bg-elevated);
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
 }
 
 .modal-header {
@@ -718,7 +718,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .modal-header h3 {
@@ -732,7 +732,7 @@ onMounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .modal-body {
@@ -748,14 +748,14 @@ onMounted(() => {
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
@@ -774,7 +774,7 @@ onMounted(() => {
 
 .cancel-btn {
   padding: 10px 20px;
-  background-color: #f0f0f0;
+  background-color: var(--theme-bg-surface-2);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -783,8 +783,8 @@ onMounted(() => {
 
 .submit-btn {
   padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -793,7 +793,7 @@ onMounted(() => {
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--theme-primary-hover);
 }
 
 .submit-btn:disabled {

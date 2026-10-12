@@ -57,17 +57,17 @@
   padding: 20px;
 }
 .card-client {
-  background: #2cb5a0;
+  background: var(--theme-primary);
   width: 13rem;
   padding-top: 25px;
   padding-bottom: 25px;
   padding-left: 20px;
   padding-right: 20px;
-  border: 4px solid #7cdacc;
-  box-shadow: 0 6px 10px rgba(207, 212, 222, 1);
+  border: 4px solid color-mix(in srgb, var(--theme-primary) 55%, var(--theme-bg-surface));
+  box-shadow: var(--theme-shadow-md);
   border-radius: 10px;
   text-align: center;
-  color: #fff;
+  color: var(--theme-primary-text);
   font-family: "Poppins", sans-serif;
   transition: all 0.3s ease;
 }
@@ -81,7 +81,7 @@
   object-fit: cover;
   width: 5rem;
   height: 5rem;
-  border: 4px solid #7cdacc;
+  border: 4px solid color-mix(in srgb, var(--theme-primary) 55%, var(--theme-bg-surface));
   border-radius: 999px;
   display: flex;
   justify-content: center;
@@ -113,7 +113,7 @@
   width: 100%;
   height: 2px;
   margin: 20px 0;
-  background: #7cdacc;
+  background: color-mix(in srgb, var(--theme-primary) 55%, var(--theme-bg-surface));
 }
 
 .social-media a {
@@ -134,7 +134,8 @@
 
 /*-- Tooltip Social Media --*/
 .tooltip-social {
-  background: #262626;
+  background: var(--theme-text-1);
+  color: var(--theme-text-inverse);
   display: block;
   position: absolute;
   bottom: 0;
@@ -162,7 +163,7 @@
 }
 
 .social-media a .tooltip-social:after {
-  border-top-color: #262626;
+  border-top-color: var(--theme-text-1);
 }
 
 .social-media a:hover .tooltip-social {

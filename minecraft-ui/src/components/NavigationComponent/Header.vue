@@ -533,13 +533,13 @@ onMounted(() => {
   height: 44px;
   border-radius: 12px;
   object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--theme-shadow-sm), 0 0 0 1px var(--theme-border);
   transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.35s ease;
 }
 
 .logo:hover img {
   transform: scale(1.06) rotate(-3deg);
-  box-shadow: 0 6px 16px rgba(0, 162, 255, 0.28), 0 0 0 1px rgba(0, 162, 255, 0.2);
+  box-shadow: var(--theme-shadow-md), 0 0 0 1px var(--theme-primary-soft);
 }
 
 /* 品牌文字：品牌蓝渐变 + hover 光泽扫过 */
@@ -548,7 +548,7 @@ onMounted(() => {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: 2px;
-  background: linear-gradient(120deg, #0062ff 0%, #00a2ff 45%, #00d4ff 100%);
+  background: var(--theme-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -584,17 +584,17 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   padding: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--theme-border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: var(--theme-bg-glass-strong);
+  box-shadow: var(--theme-shadow-sm);
   cursor: pointer;
   flex-shrink: 0;
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .mobile-menu-btn:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+  box-shadow: var(--theme-shadow-md);
   transform: translateY(-1px);
 }
 
@@ -603,13 +603,13 @@ onMounted(() => {
   width: 20px;
   height: 2px;
   border-radius: 2px;
-  background: #334155;
+  background: var(--theme-text-1);
   transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
 }
 
 /* 展开时变为 X，并高亮为品牌蓝 */
 .mobile-menu-btn.is-open span {
-  background: #00a2ff;
+  background: var(--theme-primary);
 }
 
 .mobile-menu-btn.is-open span:nth-child(1) {
@@ -681,12 +681,12 @@ onMounted(() => {
     width: 300px;
     max-width: calc(100vw - 32px);
     padding: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--theme-border);
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.98);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--theme-shadow-lg);
     max-height: calc(100vh - 100px);
     overflow-y: auto;
   }
@@ -697,7 +697,7 @@ onMounted(() => {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 2px;
-    color: #94a3b8;
+    color: var(--theme-text-3);
   }
 
   /* 菜单项：图标盒 + 文字 + 右箭头，进入时逐项滑入 */
@@ -711,7 +711,7 @@ onMounted(() => {
     border: none;
     border-radius: 12px;
     background: transparent;
-    color: #334155;
+    color: var(--theme-text-1);
     font-size: 14px;
     font-weight: 500;
     text-align: left;
@@ -741,8 +741,8 @@ onMounted(() => {
     height: 34px;
     flex-shrink: 0;
     border-radius: 10px;
-    background: rgba(0, 162, 255, 0.08);
-    color: #00a2ff;
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
     transition: background 0.2s ease, color 0.2s ease;
   }
 
@@ -759,24 +759,24 @@ onMounted(() => {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
-    color: #cbd5e1;
+    color: var(--theme-text-3);
     transition: transform 0.2s ease, color 0.2s ease;
   }
 
   .mobile-nav-item:hover {
-    background: rgba(0, 162, 255, 0.06);
-    color: #00a2ff;
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
   }
 
   .mobile-nav-item:hover .mobile-nav-chevron {
     transform: translateX(3px);
-    color: #00a2ff;
+    color: var(--theme-primary);
   }
 
   /* 当前路由：左侧指示条 + 渐变高亮 */
   .mobile-nav-item.nav-item-active {
-    background: linear-gradient(90deg, rgba(0, 162, 255, 0.14), rgba(0, 212, 255, 0.06));
-    color: #00a2ff;
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
     font-weight: 600;
   }
 
@@ -788,22 +788,22 @@ onMounted(() => {
     bottom: 8px;
     width: 3px;
     border-radius: 3px;
-    background: linear-gradient(to bottom, #00a2ff, #00d4ff);
+    background: var(--theme-gradient);
   }
 
   .mobile-nav-item.nav-item-active .mobile-nav-iconbox {
-    background: #00a2ff;
-    color: #fff;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
   }
 
   .mobile-nav-item.nav-item-active .mobile-nav-chevron {
-    color: #00a2ff;
+    color: var(--theme-primary);
   }
 
   .mobile-nav-divider {
     height: 1px;
     margin: 8px 12px;
-    background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.08), transparent);
+    background: linear-gradient(to right, transparent, var(--theme-hairline), transparent);
   }
 }
 
@@ -854,11 +854,5 @@ onMounted(() => {
     padding: 8px 10px;
     font-size: 12px;
   }
-}
-
-/* 暗色主题下导航栏改为深色玻璃，保持与页面一致 */
-html[data-theme="dark"] .navbar-background {
-  background-color: rgba(10, 12, 18, 0.55);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 </style>

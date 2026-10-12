@@ -224,91 +224,35 @@ defineExpose({
    主题变量随 html[data-theme] 切换（light / dark / game）
    ============================================================ */
 .search-box {
-  /* 亮色主题（默认） */
-  --sb-bg: rgba(255, 255, 255, 0.88);
-  --sb-bg-focus: rgba(255, 255, 255, 0.99);
-  --sb-border: rgba(15, 23, 42, 0.1);
-  --sb-border-focus: rgba(15, 23, 42, 0.26);
-  --sb-shadow: 0 12px 30px -16px rgba(15, 23, 42, 0.28);
-  --sb-shadow-focus: 0 16px 36px -18px rgba(15, 23, 42, 0.36), 0 0 0 4px rgba(15, 23, 42, 0.07);
-  --sb-hairline: transparent; /* 亮色底无高光可加，交由描边与投影表达层次 */
-  --sb-text: #0f172a;
-  --sb-placeholder: rgba(15, 23, 42, 0.42);
-  --sb-divider: rgba(15, 23, 42, 0.12);
-  --sb-action: #0f172a;
-  --sb-action-hover: rgba(15, 23, 42, 0.06);
-  --sb-action-ring: rgba(15, 23, 42, 0.45);
-  --sb-clear-bg: rgba(15, 23, 42, 0.08);
-  --sb-clear-bg-hover: rgba(15, 23, 42, 0.18);
-  --sb-clear-icon: rgba(15, 23, 42, 0.7);
-  --sb-panel-bg: rgba(255, 255, 255, 0.99);
-  --sb-panel-border: rgba(15, 23, 42, 0.1);
-  --sb-panel-shadow: 0 26px 56px -22px rgba(15, 23, 42, 0.35);
-  --sb-item-text: rgba(16, 24, 40, 0.86);
-  --sb-item-hover-bg: rgba(15, 23, 42, 0.05);
-  --sb-item-hover-text: #101828;
-  --sb-scrollbar: rgba(15, 23, 42, 0.18);
-  --sb-hl: #e8385a;
+  /* 私有变量统一别名到全局主题令牌，随 html[data-theme] 自动切换 */
+  --sb-bg: var(--theme-bg-glass);
+  --sb-bg-focus: var(--theme-bg-glass-strong);
+  --sb-border: var(--theme-border);
+  --sb-border-focus: var(--theme-border-strong);
+  --sb-shadow: var(--theme-shadow-md);
+  --sb-shadow-focus: var(--theme-shadow-lg);
+  --sb-hairline: linear-gradient(90deg, transparent, var(--theme-border), transparent);
+  --sb-text: var(--theme-text-1);
+  --sb-placeholder: var(--theme-text-3);
+  --sb-divider: var(--theme-hairline);
+  --sb-action: var(--theme-text-1);
+  --sb-action-hover: var(--theme-bg-hover);
+  --sb-action-ring: var(--theme-border-strong);
+  --sb-clear-bg: var(--theme-bg-hover);
+  --sb-clear-bg-hover: var(--theme-bg-active);
+  --sb-clear-icon: var(--theme-text-2);
+  --sb-panel-bg: var(--theme-bg-glass-strong);
+  --sb-panel-border: var(--theme-border);
+  --sb-panel-shadow: var(--theme-shadow-lg);
+  --sb-item-text: var(--theme-text-2);
+  --sb-item-hover-bg: var(--theme-bg-hover);
+  --sb-item-hover-text: var(--theme-text-1);
+  --sb-scrollbar: var(--theme-scrollbar-thumb);
+  --sb-hl: var(--theme-highlight);
 
   display: flex;
   justify-content: center;
   padding: 26px 20px;
-}
-
-/* 暗色主题：参考图的深色命令栏 */
-html[data-theme="dark"] .search-box {
-  --sb-bg: rgba(12, 12, 15, 0.94);
-  --sb-bg-focus: rgba(16, 16, 19, 0.98);
-  --sb-border: rgba(255, 255, 255, 0.14);
-  --sb-border-focus: rgba(255, 255, 255, 0.3);
-  --sb-shadow: 0 16px 38px -20px rgba(0, 0, 0, 0.7);
-  --sb-shadow-focus: 0 20px 44px -20px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(255, 255, 255, 0.07);
-  --sb-hairline: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
-  --sb-text: #f7f8fa;
-  --sb-placeholder: rgba(255, 255, 255, 0.42);
-  --sb-divider: rgba(255, 255, 255, 0.14);
-  --sb-action: #fbfbfd;
-  --sb-action-hover: rgba(255, 255, 255, 0.09);
-  --sb-action-ring: rgba(255, 255, 255, 0.45);
-  --sb-clear-bg: rgba(255, 255, 255, 0.1);
-  --sb-clear-bg-hover: rgba(255, 255, 255, 0.22);
-  --sb-clear-icon: rgba(255, 255, 255, 0.72);
-  --sb-panel-bg: rgba(38, 38, 43, 0.98);
-  --sb-panel-border: rgba(255, 255, 255, 0.08);
-  --sb-panel-shadow: 0 26px 60px -18px rgba(0, 0, 0, 0.7);
-  --sb-item-text: rgba(245, 245, 247, 0.86);
-  --sb-item-hover-bg: rgba(255, 255, 255, 0.07);
-  --sb-item-hover-text: #ffffff;
-  --sb-scrollbar: rgba(255, 255, 255, 0.18);
-  --sb-hl: #ff4d6d;
-}
-
-/* 游戏主题：暗色石板底 + 绿色强调 */
-html[data-theme="game"] .search-box {
-  --sb-bg: rgba(15, 23, 42, 0.94);
-  --sb-bg-focus: rgba(15, 23, 42, 0.98);
-  --sb-border: rgba(148, 163, 184, 0.24);
-  --sb-border-focus: rgba(74, 222, 128, 0.45);
-  --sb-shadow: 0 16px 38px -20px rgba(0, 0, 0, 0.75);
-  --sb-shadow-focus: 0 20px 44px -20px rgba(0, 0, 0, 0.85), 0 0 0 4px rgba(74, 222, 128, 0.16);
-  --sb-hairline: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.38), transparent);
-  --sb-text: #f8fafc;
-  --sb-placeholder: rgba(203, 213, 225, 0.5);
-  --sb-divider: rgba(148, 163, 184, 0.26);
-  --sb-action: #f8fafc;
-  --sb-action-hover: rgba(148, 163, 184, 0.16);
-  --sb-action-ring: rgba(74, 222, 128, 0.6);
-  --sb-clear-bg: rgba(148, 163, 184, 0.16);
-  --sb-clear-bg-hover: rgba(148, 163, 184, 0.28);
-  --sb-clear-icon: rgba(226, 232, 240, 0.78);
-  --sb-panel-bg: rgba(30, 41, 59, 0.98);
-  --sb-panel-border: rgba(148, 163, 184, 0.16);
-  --sb-panel-shadow: 0 26px 60px -18px rgba(0, 0, 0, 0.75);
-  --sb-item-text: #cbd5e1;
-  --sb-item-hover-bg: rgba(148, 163, 184, 0.14);
-  --sb-item-hover-text: #f8fafc;
-  --sb-scrollbar: rgba(148, 163, 184, 0.3);
-  --sb-hl: #4ade80;
 }
 
 .search-shell {
