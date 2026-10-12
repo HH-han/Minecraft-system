@@ -172,7 +172,7 @@ defineEmits([
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
@@ -196,7 +196,7 @@ defineEmits([
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-lg);
   animation: slideUp var(--transition-normal);
 }
 
@@ -256,7 +256,7 @@ defineEmits([
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--theme-bg-hover);
   color: var(--color-text);
 }
 
@@ -299,7 +299,7 @@ defineEmits([
 
 .detail-tab:hover {
   color: var(--color-text);
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--theme-bg-hover);
 }
 
 .detail-tab.active {

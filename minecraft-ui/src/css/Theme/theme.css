@@ -34,6 +34,7 @@
   --theme-radius-lg: 18px;
   --theme-radius-xl: 24px;
   --theme-radius-pill: 999px;
+  --ts-radius: 14px;
 
   /* 动效 */
   --theme-duration-fast: 0.18s;

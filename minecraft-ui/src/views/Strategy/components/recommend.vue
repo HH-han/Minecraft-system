@@ -257,7 +257,7 @@ onMounted(() => {
 .raiders-app-container {
     font-family: 'Noto Sans SC', sans-serif;
     min-height: 100vh;
-    color: #333;
+    color: var(--theme-text-1);
     margin: 0 auto;
     animation: fadeInUp 1s ease-out;
 }
@@ -283,7 +283,7 @@ onMounted(() => {
 
 .raiders-header p {
     font-size: 1.2rem;
-    color: #7f8c8d;
+    color: var(--theme-text-2);
     max-width: 600px;
     margin: 0 auto 30px;
     line-height: 1.6;
@@ -291,7 +291,7 @@ onMounted(() => {
 
 .raiders-divider {
     height: 3px;
-    background: linear-gradient(to right, transparent, #3498db, transparent);
+    background: linear-gradient(to right, transparent, var(--theme-primary), transparent);
     width: 80%;
     margin: 20px auto 40px;
     border-radius: 50%;
@@ -307,7 +307,7 @@ onMounted(() => {
 .raiders-search-box {
     display: flex;
     height: 70px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow-lg);
     border-radius: 50px;
     overflow: hidden;
 }
@@ -318,18 +318,18 @@ onMounted(() => {
     padding: 0 30px;
     font-size: 1.2rem;
     outline: none;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--theme-bg-surface);
 }
 
 .raiders-search-box input::placeholder {
-    color: #95a5a6;
+    color: var(--theme-text-3);
 }
 
 .raiders-search-box button {
-    background: linear-gradient(45deg, #3498db, #2ecc71);
+    background: var(--theme-gradient);
     border: none;
     padding: 0 40px;
-    color: white;
+    color: var(--theme-primary-text);
     font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
@@ -338,7 +338,7 @@ onMounted(() => {
 }
 
 .raiders-search-box button:hover {
-    background: linear-gradient(45deg, #2980b9, #27ae60);
+    background: var(--theme-gradient);
     transform: translateY(-2px);
 }
 
@@ -351,19 +351,19 @@ onMounted(() => {
 }
 
 .raiders-search-tips span {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background: var(--theme-bg-glass);
+    box-shadow: var(--theme-shadow-sm);
     padding: 8px 20px;
     border-radius: 30px;
     font-size: 0.95rem;
-    color: #2c3e50;
+    color: var(--theme-text-1);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .raiders-search-tips span:hover {
-    background: #3498db;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     transform: translateY(-2px);
 }
 
@@ -376,7 +376,7 @@ onMounted(() => {
 }
 
 .raiders-location-btn {
-    background: white;
+    background: var(--theme-bg-surface);
     border: none;
     padding: 15px 40px;
     font-size: 1.2rem;
@@ -384,7 +384,7 @@ onMounted(() => {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     position: relative;
     overflow: hidden;
     z-index: 1;
@@ -397,7 +397,7 @@ onMounted(() => {
     left: 0;
     width: 0%;
     height: 100%;
-    background: linear-gradient(45deg, #3498db, #2ecc71);
+    background: var(--theme-gradient);
     transition: width 0.5s ease;
     z-index: -1;
 }
@@ -407,14 +407,14 @@ onMounted(() => {
 }
 
 .raiders-location-btn:hover {
-    color: white;
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+    color: var(--theme-primary-text);
+    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary) 40%, transparent);
 }
 
 .raiders-location-btn.raiders-active {
-    background: linear-gradient(45deg, #3498db, #2ecc71);
-    color: white;
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
+    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary) 40%, transparent);
 }
 
 .raiders-location-btn.raiders-active::before {
@@ -431,17 +431,17 @@ onMounted(() => {
 }
 
 .raiders-travel-card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(64, 64, 64, 0.429);
+    box-shadow: var(--theme-shadow-md);
     transition: all 0.4s ease;
     position: relative;
 }
 
 .raiders-travel-card:hover {
     transform: translateY(-15px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 .raiders-card-image {
@@ -456,8 +456,8 @@ onMounted(() => {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(231, 76, 60, 0.9);
-    color: white;
+    background: color-mix(in srgb, var(--theme-highlight) 90%, transparent);
+    color: var(--theme-primary-text);
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -472,7 +472,7 @@ onMounted(() => {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 15px;
-    color: #2c3e50;
+    color: var(--theme-text-1);
 }
 
 .raiders-card-info {
@@ -487,21 +487,21 @@ onMounted(() => {
     border-radius: 50%;
     background-size: cover;
     margin-right: 15px;
-    border: 3px solid #3498db;
+    border: 3px solid var(--theme-primary);
 }
 
 .raiders-card-stats {
-    color: #7f8c8d;
+    color: var(--theme-text-2);
     font-size: 0.95rem;
 }
 
 .raiders-card-stats strong {
-    color: #e74c3c;
+    color: var(--theme-highlight);
     font-weight: 700;
 }
 
 .raiders-card-description {
-    color: #7f8c8d;
+    color: var(--theme-text-2);
     line-height: 1.6;
     margin-bottom: 25px;
     font-size: 1.05rem;
@@ -516,21 +516,21 @@ onMounted(() => {
 .raiders-card-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #e74c3c;
+    color: var(--theme-highlight);
 }
 
 .raiders-card-price span {
     font-size: 1rem;
-    color: #95a5a6;
+    color: var(--theme-text-3);
     font-weight: normal;
 }
 
 .raiders-join-btn {
-    background: linear-gradient(45deg, #3498db, #2ecc71);
+    background: var(--theme-gradient);
     border: none;
     padding: 12px 30px;
     border-radius: 50px;
-    color: white;
+    color: var(--theme-primary-text);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -539,9 +539,9 @@ onMounted(() => {
 }
 
 .raiders-join-btn:hover {
-    background: linear-gradient(45deg, #2980b9, #27ae60);
+    background: var(--theme-gradient);
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 5px 15px color-mix(in srgb, var(--theme-primary) 40%, transparent);
 }
 
 /* 模态框样式 */
@@ -551,7 +551,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--theme-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -568,12 +568,12 @@ onMounted(() => {
 }
 
 .raiders-modal-container {
-    background: white;
+    background: var(--theme-bg-elevated);
     width: 90%;
     max-width: 900px;
     border-radius: 25px;
     overflow: hidden;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow-lg);
     transform: translateY(50px);
     transition: transform 0.5s ease;
 }
@@ -618,7 +618,7 @@ onMounted(() => {
 }
 
 .raiders-modal-close:hover {
-    background: rgba(231, 76, 60, 0.8);
+    background: color-mix(in srgb, var(--theme-highlight) 80%, transparent);
     transform: rotate(90deg);
 }
 
@@ -642,24 +642,24 @@ onMounted(() => {
 .raiders-info-icon {
     width: 60px;
     height: 60px;
-    background: #f8f9fa;
+    background: var(--theme-bg-surface-2);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 20px;
     font-size: 1.5rem;
-    color: #3498db;
+    color: var(--theme-primary);
 }
 
 .raiders-info-content h3 {
     font-size: 1.4rem;
     margin-bottom: 5px;
-    color: #2c3e50;
+    color: var(--theme-text-1);
 }
 
 .raiders-info-content p {
-    color: #7f8c8d;
+    color: var(--theme-text-2);
     line-height: 1.6;
     max-width: 350px;
 }
@@ -667,9 +667,9 @@ onMounted(() => {
 .raiders-members-section h2 {
     font-size: 1.6rem;
     margin-bottom: 25px;
-    color: #2c3e50;
+    color: var(--theme-text-1);
     padding-bottom: 15px;
-    border-bottom: 2px solid #f1f2f6;
+    border-bottom: 2px solid var(--theme-border);
 }
 
 .raiders-members-grid {
@@ -688,39 +688,39 @@ onMounted(() => {
     border-radius: 50%;
     background-size: cover;
     margin: 0 auto 15px;
-    border: 3px solid #3498db;
+    border: 3px solid var(--theme-primary);
 }
 
 .raiders-member-name {
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--theme-text-1);
 }
 
 .raiders-action-section {
-    background: #f8f9fa;
+    background: var(--theme-bg-surface-2);
     padding: 30px;
     text-align: center;
     border-radius: 0 0 25px 25px;
 }
 
 .raiders-confirm-btn {
-    background: linear-gradient(45deg, #e74c3c, #e67e22);
+    background: linear-gradient(45deg, var(--theme-highlight), var(--theme-warning));
     border: none;
     padding: 16px 50px;
     border-radius: 50px;
-    color: white;
+    color: var(--theme-primary-text);
     font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 1px;
-    box-shadow: 0 5px 20px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 5px 20px color-mix(in srgb, var(--theme-highlight) 30%, transparent);
 }
 
 .raiders-confirm-btn:hover {
-    background: linear-gradient(45deg, #c0392b, #d35400);
+    background: linear-gradient(45deg, var(--theme-highlight), var(--theme-warning));
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-highlight) 40%, transparent);
 }
 
 /* 响应式设计 */

@@ -68,7 +68,7 @@ function handleSubmit() {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
@@ -92,7 +92,7 @@ function handleSubmit() {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-lg);
   animation: slideUp var(--transition-normal);
 }
 
@@ -137,7 +137,7 @@ function handleSubmit() {
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--theme-bg-hover);
   color: var(--color-text);
 }
 
@@ -170,7 +170,7 @@ function handleSubmit() {
 
 .modal-footer .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .modal-footer .btn-primary:hover {
@@ -187,7 +187,7 @@ function handleSubmit() {
 }
 
 .modal-footer .btn-secondary:hover {
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
 }
 
 .modal-footer .btn-secondary:active {
@@ -223,7 +223,7 @@ function handleSubmit() {
 .form-group textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.1);
+  box-shadow: var(--theme-ring);
 }
 
 .form-group input::placeholder,

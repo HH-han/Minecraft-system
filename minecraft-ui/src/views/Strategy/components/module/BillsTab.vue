@@ -59,7 +59,7 @@ defineEmits(['add', 'settlement'])
   align-items: center;
   gap: var(--spacing-4);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .tab-actions button:hover {
@@ -76,7 +76,7 @@ defineEmits(['add', 'settlement'])
 }
 
 .tab-actions .btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .bill-list {
@@ -96,7 +96,7 @@ defineEmits(['add', 'settlement'])
 }
 
 .bill-item:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .bill-info {

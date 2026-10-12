@@ -275,7 +275,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
 .time-separator {
   text-align: center;
   font-size: 12px;
-  color: #a6a6a6;
+  color: var(--theme-text-3);
   margin: 14px 0 12px;
   user-select: none;
 }
@@ -310,7 +310,7 @@ defineExpose({ scrollToBottom, currentUserInfo })
 
 .message-bubble {
   position: relative;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   padding: 9px 12px;
   border-radius: 8px;
   margin: 0 10px;

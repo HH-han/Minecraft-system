@@ -487,16 +487,16 @@ function viewDetail(itemId) {
 }
 
 .souvenir-card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .souvenir-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .souvenir-image {
@@ -520,8 +520,8 @@ function viewDetail(itemId) {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -533,21 +533,21 @@ function viewDetail(itemId) {
     right: 10px;
     width: 30px;
     height: 30px;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--theme-bg-glass-strong);
     border: none;
     border-radius: 50%;
     font-size: 16px;
-    color: #ccc;
+    color: var(--theme-text-3);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .favorite-btn.favorited {
-    color: #ff6b6b;
+    color: var(--theme-highlight);
 }
 
 .favorite-btn:hover {
-    background: white;
+    background: var(--theme-bg-surface);
     transform: scale(1.1);
 }
 
@@ -564,7 +564,7 @@ function viewDetail(itemId) {
 }
 
 .origin {
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 13px;
     margin-bottom: 10px;
 }
@@ -578,12 +578,12 @@ function viewDetail(itemId) {
 .price {
     font-size: 18px;
     font-weight: bold;
-    color: #ff6b6b;
+    color: var(--theme-highlight);
 }
 
 .original-price {
     font-size: 13px;
-    color: #999;
+    color: var(--theme-text-3);
     text-decoration: line-through;
     margin-left: 8px;
 }
@@ -596,7 +596,7 @@ function viewDetail(itemId) {
 }
 
 .stars {
-    color: #ffb400;
+    color: var(--theme-warning);
     letter-spacing: 2px;
     margin-right: 5px;
 }
@@ -606,14 +606,14 @@ function viewDetail(itemId) {
 }
 
 .sales {
-    color: #666;
+    color: var(--theme-text-2);
 }
 
 .add-to-cart {
     width: 100%;
     padding: 10px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 6px;
     font-size: 14px;
@@ -622,7 +622,7 @@ function viewDetail(itemId) {
 }
 
 .add-to-cart:hover {
-    background: #ff5252;
+    background: color-mix(in srgb, var(--theme-highlight) 86%, #000);
 }
 
 /* 推荐区 */
@@ -634,7 +634,7 @@ function viewDetail(itemId) {
     font-size: 1.5rem;
     margin-bottom: 20px;
     padding-left: 10px;
-    border-left: 4px solid #ff6b6b;
+    border-left: 4px solid var(--theme-highlight);
 }
 
 .recommendation-grid {
@@ -644,18 +644,18 @@ function viewDetail(itemId) {
 }
 
 .recommend-item {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 10px;
     padding: 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .recommend-item:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .recommend-item img {
@@ -674,7 +674,7 @@ function viewDetail(itemId) {
 }
 
 .rec-price {
-    color: #ff6b6b;
+    color: var(--theme-highlight);
     font-weight: bold;
     font-size: 16px;
 }

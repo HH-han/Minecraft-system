@@ -120,7 +120,7 @@ const closeSelectModal = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,7 @@ const closeSelectModal = () => {
 }
 
 .detail-content {
-  background: white;
+  background: var(--theme-bg-surface);
   border-radius: 15px;
   max-width: 800px;
   width: 90%;
@@ -163,12 +163,12 @@ const closeSelectModal = () => {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: var(--theme-text-2);
   transition: color 0.3s;
 }
 
 .detail-close:hover {
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .detail-image {
@@ -182,14 +182,14 @@ const closeSelectModal = () => {
 }
 
 .detail-desc {
-  color: #666;
+  color: var(--theme-text-2);
   line-height: 1.6;
   margin: 20px 0;
 }
 
 .detail-stats {
-  background: #f8f8f8;
-  box-shadow: 0 0 20px rgba(38, 38, 38, 0.252);
+  background: var(--theme-bg-surface-2);
+  box-shadow: var(--theme-shadow-md);
   padding: 15px;
   border-radius: 8px;
   margin: 20px 0;
@@ -197,7 +197,7 @@ const closeSelectModal = () => {
 
 .detail-stats p {
   margin: 10px 0;
-  color: #444;
+  color: var(--theme-text-2);
 }
 
 .detail-actions {
@@ -218,20 +218,20 @@ const closeSelectModal = () => {
 }
 
 .detail-cart {
-  background: #3498db;
-  color: white;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .detail-buy {
-  background: #e74c3c;
-  color: white;
+  background: var(--theme-danger);
+  color: var(--theme-text-inverse);
 }
 
 .detail-cart:hover {
-  background: #2980b9;
+  background: var(--theme-primary-hover);
 }
 
 .detail-buy:hover {
-  background: #c0392b;
+  background: color-mix(in srgb, var(--theme-danger) 85%, black);
 }
 </style>

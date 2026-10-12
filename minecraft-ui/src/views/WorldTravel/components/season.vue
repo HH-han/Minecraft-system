@@ -228,7 +228,7 @@ watch(currentMonth, (newMonth) => {
     font-size: 32px;
     font-weight: 600;
     margin-bottom: 40px;
-    color: #333;
+    color: var(--theme-text-1);
     position: relative;
     padding-bottom: 15px;
 }
@@ -241,7 +241,7 @@ watch(currentMonth, (newMonth) => {
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+    background: var(--theme-gradient);
 }
 
 .month-tabs {
@@ -257,7 +257,7 @@ watch(currentMonth, (newMonth) => {
     padding: 8px 20px;
     font-size: 16px;
     font-weight: 500;
-    color: #666;
+    color: var(--theme-text-2);
     background: none;
     border: none;
     cursor: pointer;
@@ -266,12 +266,12 @@ watch(currentMonth, (newMonth) => {
 }
 
 .month-tab:hover {
-    color: #ff6b6b;
-    background: rgba(255, 107, 107, 0.1);
+    color: var(--theme-primary);
+    background: var(--theme-primary-soft);
 }
 
 .month-tab.active {
-    color: #ff6b6b;
+    color: var(--theme-primary);
     font-weight: 600;
 }
 
@@ -282,7 +282,7 @@ watch(currentMonth, (newMonth) => {
     transform: translateX(-50%) scaleX(0);
     width: 50%;
     height: 2px;
-    background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+    background: var(--theme-gradient);
     transition: transform 0.3s ease;
 }
 
@@ -303,8 +303,8 @@ watch(currentMonth, (newMonth) => {
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #ff6b6b;
+    border: 4px solid var(--theme-bg-surface-2);
+    border-top: 4px solid var(--theme-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
@@ -316,7 +316,7 @@ watch(currentMonth, (newMonth) => {
 }
 
 .loading-state p {
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 16px;
     margin: 0;
 }
@@ -337,15 +337,15 @@ watch(currentMonth, (newMonth) => {
 }
 
 .error-state p {
-    color: #ff6b6b;
+    color: var(--theme-danger);
     font-size: 16px;
     margin-bottom: 20px;
 }
 
 .retry-button {
     padding: 10px 24px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 6px;
     font-size: 14px;
@@ -354,7 +354,7 @@ watch(currentMonth, (newMonth) => {
 }
 
 .retry-button:hover {
-    background: #ff5252;
+    background: var(--theme-primary-hover);
 }
 
 /* 空状态样式 */
@@ -362,7 +362,7 @@ watch(currentMonth, (newMonth) => {
     grid-column: 1 / -1;
     text-align: center;
     padding: 60px 20px;
-    color: #999;
+    color: var(--theme-text-3);
     font-size: 16px;
 }
 
@@ -376,14 +376,14 @@ watch(currentMonth, (newMonth) => {
 .destination-card {
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white;
+    background: var(--theme-bg-surface);
 }
 
 .destination-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .image-wrapper {
@@ -421,13 +421,13 @@ watch(currentMonth, (newMonth) => {
     margin: 0 0 10px;
     font-size: 20px;
     font-weight: 600;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 .destination-desc {
     margin: 0 0 15px;
     font-size: 14px;
-    color: #666;
+    color: var(--theme-text-2);
     line-height: 1.5;
 }
 
@@ -440,9 +440,9 @@ watch(currentMonth, (newMonth) => {
 .tag {
     padding: 4px 12px;
     font-size: 12px;
-    background: #f3f3f3;
+    background: var(--theme-bg-surface-2);
     border-radius: 20px;
-    color: #666;
+    color: var(--theme-text-2);
 }
 
 .card-overlay-indicator {
@@ -450,11 +450,11 @@ watch(currentMonth, (newMonth) => {
     bottom: 16px;
     right: 16px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--theme-bg-glass-strong);
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
-    color: #2997ff;
+    color: var(--theme-primary);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -472,7 +472,7 @@ watch(currentMonth, (newMonth) => {
 .detail-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--theme-overlay);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -493,16 +493,15 @@ watch(currentMonth, (newMonth) => {
     width: 100%;
     max-width: 980px;
     max-height: 90vh;
-    background: #ffffff;
+    background: var(--theme-bg-elevated);
     border-radius: 24px;
-    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.25),
-                0 10px 20px -10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-lg);
     overflow: hidden;
     display: flex;
     flex-direction: row;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
                  "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     animation: modal-pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -518,8 +517,8 @@ watch(currentMonth, (newMonth) => {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.08);
-    color: #1d1d1f;
+    background: var(--theme-bg-muted);
+    color: var(--theme-text-1);
     border: none;
     font-size: 20px;
     line-height: 1;
@@ -532,14 +531,14 @@ watch(currentMonth, (newMonth) => {
 }
 
 .detail-close-btn:hover {
-    background: rgba(0, 0, 0, 0.16);
+    background: var(--theme-bg-active);
     transform: scale(1.05);
 }
 
 .detail-image-container {
     flex: 1 1 50%;
     min-height: 420px;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -572,7 +571,7 @@ watch(currentMonth, (newMonth) => {
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.01em;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
 }
 
@@ -580,7 +579,7 @@ watch(currentMonth, (newMonth) => {
     font-size: 17px;
     font-weight: 400;
     line-height: 1.47;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
 }
 
@@ -589,14 +588,14 @@ watch(currentMonth, (newMonth) => {
     flex-direction: column;
     gap: 8px;
     padding: 16px;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 12px;
 }
 
 .section-label {
     font-size: 12px;
     font-weight: 500;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     letter-spacing: 0.02em;
     margin: 0;
     text-transform: uppercase;
@@ -606,7 +605,7 @@ watch(currentMonth, (newMonth) => {
     font-size: 15px;
     font-weight: 400;
     line-height: 1.5;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
 }
 
@@ -620,15 +619,15 @@ watch(currentMonth, (newMonth) => {
     padding: 6px 14px;
     font-size: 13px;
     font-weight: 500;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 20px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     transition: all 0.2s ease;
 }
 
 .detail-tag:hover {
-    background: #e8e8ed;
-    color: #1d1d1f;
+    background: var(--theme-bg-hover);
+    color: var(--theme-text-1);
 }
 
 .detail-actions {
@@ -643,8 +642,8 @@ watch(currentMonth, (newMonth) => {
     align-items: center;
     justify-content: center;
     padding: 12px 28px;
-    background: #000000;
-    color: #ffffff;
+    background: var(--theme-text-1);
+    color: var(--theme-text-inverse);
     border: none;
     border-radius: 40px;
     font-size: 14px;
@@ -655,21 +654,21 @@ watch(currentMonth, (newMonth) => {
 }
 
 .btn-primary:hover {
-    background: #1d1d1f;
+    background: var(--theme-text-2);
     transform: translateY(-1px);
 }
 
 .btn-link {
     font-size: 16px;
     font-weight: 400;
-    color: #2997ff;
+    color: var(--theme-primary);
     text-decoration: none;
     cursor: pointer;
     transition: color 0.2s ease;
 }
 
 .btn-link:hover {
-    color: #0066cc;
+    color: var(--theme-primary-hover);
     text-decoration: underline;
     text-underline-offset: 4px;
 }

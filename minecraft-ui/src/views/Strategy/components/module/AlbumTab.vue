@@ -77,7 +77,7 @@ function handleUpload(event) {
   align-items: center;
   gap: var(--spacing-4);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .tab-actions button:hover {

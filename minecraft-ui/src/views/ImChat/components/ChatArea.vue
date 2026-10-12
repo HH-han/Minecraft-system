@@ -122,8 +122,8 @@ defineExpose({ messageListRef })
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6e6e73;
-  background: #f5f5f5;
+  color: var(--theme-text-2);
+  background: var(--theme-bg-surface-2);
 }
 
 .empty-chat .svg-icon {
@@ -141,7 +141,7 @@ defineExpose({ messageListRef })
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #f5f5f5;
+  background: var(--theme-bg-surface-2);
 }
 
 .chat-header {
@@ -150,8 +150,8 @@ defineExpose({ messageListRef })
   align-items: center;
   height: 56px;
   padding: 0 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #ededed;
+  background: var(--theme-bg-surface);
+  border-bottom: 1px solid var(--theme-hairline);
   flex-shrink: 0;
 }
 
@@ -180,7 +180,7 @@ defineExpose({ messageListRef })
 .header-text h3 {
   font-size: 15px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -189,12 +189,12 @@ defineExpose({ messageListRef })
 
 .online-status {
   font-size: 12px;
-  color: #9a9aa0;
+  color: var(--theme-text-3);
   flex-shrink: 0;
 }
 
 .online-status.online {
-  color: #34c759;
+  color: var(--theme-success);
 }
 
 .header-actions {
@@ -210,7 +210,7 @@ defineExpose({ messageListRef })
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #4a4a4f;
+  color: var(--theme-text-2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -219,8 +219,8 @@ defineExpose({ messageListRef })
 }
 
 .action-btn:hover {
-  background: #f0f0f2;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 /* ===== 返回按钮：仅移动端显示 ===== */
@@ -234,14 +234,14 @@ defineExpose({ messageListRef })
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease;
 }
 
 .back-btn:hover {
-  background: #f0f0f2;
+  background: var(--theme-bg-hover);
 }
 
 /* ===== 响应式适配 ===== */

@@ -54,7 +54,7 @@ defineEmits(['update:activeTab'])
 
 .tab-item:hover {
   color: var(--color-text);
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--theme-bg-hover);
 }
 
 .tab-item.active {

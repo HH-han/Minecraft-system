@@ -125,8 +125,8 @@ const OrderDetails = (productId) => {
 /* 卡片容器 */
 .card-souvenir {
     height: 380px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-md);
     display: flex;
     border-radius: 16px;
     margin: 2rem auto;
@@ -138,7 +138,7 @@ const OrderDetails = (productId) => {
 
 .card-souvenir:hover {
     transform: translateY(-5px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 /* 图片容器 */
@@ -188,7 +188,7 @@ const OrderDetails = (productId) => {
 
 .title {
     font-size: 1.8rem;
-    color: #2d3436;
+    color: var(--theme-text-1);
     margin-bottom: 1.2rem;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -202,13 +202,13 @@ const OrderDetails = (productId) => {
     left: 0;
     width: 50px;
     height: 3px;
-    background: #ff6b6b;
+    background: var(--theme-primary);
     border-radius: 2px;
 }
 
 .description {
     font-size: 1rem;
-    color: #636e72;
+    color: var(--theme-text-2);
     line-height: 1.8;
     margin-bottom: 1.5rem;
 }
@@ -222,7 +222,7 @@ const OrderDetails = (productId) => {
 }
 
 .card-price {
-    color: #e74c3c;
+    color: var(--theme-danger);
     font-size: 1.2em;
     font-weight: bold;
 }
@@ -239,8 +239,8 @@ const OrderDetails = (productId) => {
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #e74c3c;
+    border: 4px solid var(--theme-bg-surface-2);
+    border-top: 4px solid var(--theme-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -257,7 +257,7 @@ const OrderDetails = (productId) => {
     align-items: center;
     justify-content: center;
     padding: 40px;
-    color: #e74c3c;
+    color: var(--theme-danger);
 }
 
 /* 空状态 */
@@ -266,7 +266,7 @@ const OrderDetails = (productId) => {
     justify-content: center;
     align-items: center;
     padding: 40px;
-    color: #636e72;
+    color: var(--theme-text-2);
     grid-column: 1 / -1;
 }
 </style>

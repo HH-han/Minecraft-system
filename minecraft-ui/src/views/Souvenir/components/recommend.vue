@@ -255,7 +255,7 @@ onMounted(loadRecommendations)
 .container {
     padding: 0 15px;
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 /* 顶部区域 */
@@ -274,7 +274,7 @@ onMounted(loadRecommendations)
 .header h1 {
     font-size: 2.2rem;
     margin-bottom: 10px;
-    background: linear-gradient(135deg, #ff6b6b, #ff9a44);
+    background: var(--theme-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -288,11 +288,11 @@ onMounted(loadRecommendations)
     width: calc(100% - 10px);
     height: 240px;
     z-index: 2;
-    background: rgba(255, 255, 255, .95);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(24px);
     border-radius: 10px;
     overflow: hidden;
-    outline: 2px solid white;
+    outline: 2px solid var(--theme-border);
 }
 
 .blob {
@@ -341,7 +341,7 @@ onMounted(loadRecommendations)
 
 .subtitle {
     font-size: 1.1rem;
-    color: #555;
+    color: var(--theme-text-2);
     margin-bottom: 25px;
 }
 
@@ -363,18 +363,18 @@ onMounted(loadRecommendations)
     border-radius: 30px 0 0 30px;
     font-size: 16px;
     outline: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     transition: box-shadow 0.3s ease;
 }
 
 .search-bar input:focus {
-    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.35);
+    box-shadow: var(--theme-ring);
 }
 
 .search-bar button {
     padding: 0 25px;
-    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 0 30px 30px 0;
     font-size: 16px;
@@ -382,14 +382,14 @@ onMounted(loadRecommendations)
     cursor: pointer;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .search-bar button:hover {
-    background: linear-gradient(135deg, #ff5252, #ff7b45);
+    background: var(--theme-gradient);
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .search-icon {
@@ -405,8 +405,8 @@ onMounted(loadRecommendations)
 
 .region-filter button {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.7);
-    color: #333;
+    background: var(--theme-bg-glass);
+    color: var(--theme-text-1);
     border: none;
     border-radius: 20px;
     font-size: 14px;
@@ -415,8 +415,8 @@ onMounted(loadRecommendations)
 }
 
 .region-filter button.active {
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     font-weight: 600;
 }
 
@@ -428,9 +428,9 @@ onMounted(loadRecommendations)
     gap: 8px;
     margin-bottom: 30px;
     padding: 15px 10px;
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .category-item {
@@ -444,14 +444,14 @@ onMounted(loadRecommendations)
 }
 
 .category-item:hover {
-    background: #fff0f0;
+    background: var(--theme-primary-soft);
 }
 
 .category-item.active {
-    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .category-icon {
@@ -473,9 +473,9 @@ onMounted(loadRecommendations)
 .sort-options select {
     padding: 8px 14px;
     border-radius: 8px;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--theme-border);
     margin-left: 10px;
-    background: white;
+    background: var(--theme-bg-surface);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -483,8 +483,8 @@ onMounted(loadRecommendations)
 
 .sort-options select:focus {
     outline: none;
-    border-color: #ff6b6b;
-    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-ring);
 }
 
 .grid {
@@ -496,23 +496,23 @@ onMounted(loadRecommendations)
 .empty-tip {
     grid-column: 1 / -1;
     text-align: center;
-    color: #999;
+    color: var(--theme-text-3);
     padding: 60px 0;
     font-size: 15px;
 }
 
 .card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(255, 107, 107, 0.16);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .image {
@@ -536,8 +536,8 @@ onMounted(loadRecommendations)
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -559,17 +559,17 @@ onMounted(loadRecommendations)
     border: none;
     border-radius: 50%;
     font-size: 16px;
-    color: #ccc;
+    color: var(--theme-text-3);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .favorite-btn.favorited {
-    color: #ff6b6b;
+    color: var(--theme-primary);
 }
 
 .favorite-btn:hover {
-    background: white;
+    background: var(--theme-bg-surface);
     transform: scale(1.1);
 }
 
@@ -586,7 +586,7 @@ onMounted(loadRecommendations)
 }
 
 .origin {
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 13px;
     margin-bottom: 10px;
 }
@@ -600,12 +600,12 @@ onMounted(loadRecommendations)
 .price {
     font-size: 18px;
     font-weight: bold;
-    color: #ff6b6b;
+    color: var(--theme-primary);
 }
 
 .original-price {
     font-size: 13px;
-    color: #999;
+    color: var(--theme-text-3);
     text-decoration: line-through;
     margin-left: 8px;
 }
@@ -618,7 +618,7 @@ onMounted(loadRecommendations)
 }
 
 .stars {
-    color: #ffb400;
+    color: var(--theme-warning);
     letter-spacing: 2px;
     margin-right: 5px;
 }
@@ -628,14 +628,14 @@ onMounted(loadRecommendations)
 }
 
 .sales {
-    color: #666;
+    color: var(--theme-text-2);
 }
 
 .add-to-cart {
     width: 100%;
     padding: 10px;
-    background: linear-gradient(135deg, #ff6b6b, #ff8f5c);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 999px;
     font-size: 14px;
@@ -645,8 +645,8 @@ onMounted(loadRecommendations)
 }
 
 .add-to-cart:hover {
-    background: linear-gradient(135deg, #ff5252, #ff7b45);
-    box-shadow: 0 6px 14px rgba(255, 107, 107, 0.35);
+    background: var(--theme-gradient);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 推荐区 */
@@ -658,7 +658,7 @@ onMounted(loadRecommendations)
     font-size: 1.5rem;
     margin-bottom: 20px;
     padding-left: 10px;
-    border-left: 4px solid #ff6b6b;
+    border-left: 4px solid var(--theme-primary);
 }
 
 .recommendation-grid {
@@ -668,18 +668,18 @@ onMounted(loadRecommendations)
 }
 
 .recommend-item {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 10px;
     padding: 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .recommend-item:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .recommend-item img {
@@ -699,7 +699,7 @@ onMounted(loadRecommendations)
 }
 
 .rec-price {
-    color: #ff6b6b;
+    color: var(--theme-primary);
     font-weight: bold;
     font-size: 16px;
 }

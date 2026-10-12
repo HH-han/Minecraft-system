@@ -5,11 +5,55 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="全局主题切换">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Community/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Community/components/content.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Points/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Points/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/css/Theme/theme.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/css/Theme/theme.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Food/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Food/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Forum/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Forum/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Forum/components/recommend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Forum/components/recommend.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/ChatArea.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/ChatArea.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/ChatInput.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/ChatInput.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Logistics/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Logistics/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/OfficialWebsite/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/OfficialWebsite/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/Community/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/Community/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/components/accountsettings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/components/accountsettings.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/PersonalCenter/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Recommend/components/main.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Recommend/components/main.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Souvenir/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Souvenir/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Souvenir/components/recommend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Souvenir/components/recommend.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/AddBillModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/AddBillModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/AddTripModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/AddTripModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/AlbumTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/AlbumTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/BillsTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/BillsTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/CreateGroupModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/CreateGroupModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/CreatePollModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/CreatePollModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/DiaryTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/DiaryTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/ExploreGroups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/ExploreGroups.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/GroupDetailModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/GroupDetailModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/HeroSection.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/HeroSection.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/InviteMembersModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/InviteMembersModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/MembersTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/MembersTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/MyGroups.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/MyGroups.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/Notifications.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/Notifications.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/PollTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/PollTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/PostsTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/PostsTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/TabNavigation.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/TabNavigation.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/TripPlanTab.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/module/TripPlanTab.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/recommend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Strategy/components/recommend.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Ticket/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Ticket/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Ticket/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Ticket/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Travel/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Travel/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Travel/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Travel/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/characteristics.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/characteristics.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/content.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/content.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/destination.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/destination.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/season.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/WorldTravel/components/season.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/product/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/product/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,14 +227,6 @@
       <workItem from="1788358793152" duration="7905000" />
       <workItem from="1790931344912" duration="4005000" />
       <workItem from="1791041472791" duration="1532000" />
-    </task>
-    <task id="LOCAL-00104" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1783695399320</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1783695399320</updated>
     </task>
     <task id="LOCAL-00105" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -576,7 +612,15 @@
       <option name="project" value="LOCAL" />
       <updated>1791822450410</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary="全局主题切换">
+      <option name="closed" value="true" />
+      <created>1791822708485</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1791822708485</updated>
+    </task>
+    <option name="localTasksCounter" value="154" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

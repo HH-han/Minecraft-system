@@ -192,12 +192,12 @@ function stripHtml(html) {
   padding: 24px 16px 60px;
 }
 .glass-card {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--theme-bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--theme-border);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  box-shadow: var(--theme-shadow-md);
   transition: all 0.3s ease;
 }
 
@@ -220,10 +220,10 @@ function stripHtml(html) {
   place-items: center;
   border-radius: 16px;
   color: #fff;
-  background: linear-gradient(135deg, #0a84ff, #5e5ce6);
+  background: var(--theme-gradient);
   box-shadow:
-    0 8px 20px rgba(10, 132, 255, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 8px 20px color-mix(in srgb, var(--theme-primary) 35%, transparent),
+    inset 0 1px 0 var(--theme-bg-glass);
 }
 .hero-text {
   flex: 1;
@@ -234,12 +234,12 @@ function stripHtml(html) {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 .page-subtitle {
   margin: 0;
   font-size: 13px;
-  color: #86868b;
+  color: var(--theme-text-2);
 }
 .unread-chip {
   flex-shrink: 0;
@@ -250,15 +250,15 @@ function stripHtml(html) {
   border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
-  color: #ff3b30;
-  background: rgba(255, 59, 48, 0.08);
-  border: 1px solid rgba(255, 59, 48, 0.22);
+  color: var(--theme-danger);
+  background: var(--theme-danger-soft);
+  border: 1px solid color-mix(in srgb, var(--theme-danger) 22%, transparent);
 }
 .unread-chip .chip-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ff3b30;
+  background: var(--theme-danger);
   animation: pulse 1.8s ease-out infinite;
 }
 .pop-enter-active {
@@ -284,10 +284,10 @@ function stripHtml(html) {
   padding: 4px;
   overflow-x: auto;
   scrollbar-width: none;
-  background: rgba(120, 120, 128, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: var(--theme-bg-muted);
+  border: 1px solid var(--theme-border);
   border-radius: 999px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 1px 3px var(--theme-hairline);
 }
 .filter-bar :deep(.el-radio-group)::-webkit-scrollbar {
   display: none;
@@ -298,17 +298,17 @@ function stripHtml(html) {
   background: transparent;
   padding: 7px 18px;
   font-size: 13px;
-  color: #666;
+  color: var(--theme-text-2);
   white-space: nowrap;
   transition: all 0.25s ease;
 }
 .filter-bar :deep(.el-radio-button__inner:hover) {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 .filter-bar :deep(.el-radio-button__original-radio:checked + .el-radio-button__inner) {
-  color: #fff;
-  background: linear-gradient(135deg, #2c2c2e, #1d1d1f);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
+  color: var(--theme-primary-text);
+  background: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm) !important;
 }
 
 /* ==================== 公告卡片 ==================== */
@@ -328,20 +328,20 @@ function stripHtml(html) {
 }
 /* 类型强调色 */
 .type-1 {
-  --accent: #0a84ff;
-  --accent-soft: rgba(10, 132, 255, 0.1);
+  --accent: var(--theme-primary);
+  --accent-soft: var(--theme-primary-soft);
 }
 .type-2 {
-  --accent: #ff9500;
-  --accent-soft: rgba(255, 149, 0, 0.12);
+  --accent: var(--theme-warning);
+  --accent-soft: var(--theme-warning-soft);
 }
 .type-3 {
-  --accent: #ff3b30;
-  --accent-soft: rgba(255, 59, 48, 0.1);
+  --accent: var(--theme-danger);
+  --accent-soft: var(--theme-danger-soft);
 }
 .type-4 {
-  --accent: #34c759;
-  --accent-soft: rgba(52, 199, 89, 0.12);
+  --accent: var(--theme-success);
+  --accent-soft: var(--theme-success-soft);
 }
 /* 悬停时右上角浮现类型色光晕 */
 .announcement-item::before {
@@ -368,9 +368,9 @@ function stripHtml(html) {
   transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .announcement-item:hover {
-  box-shadow: 0 16px 44px rgba(31, 38, 135, 0.22);
+  box-shadow: var(--theme-shadow-md);
   transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.65);
+  border-color: var(--theme-border-strong);
 }
 .announcement-item:hover::before {
   opacity: 1;
@@ -393,8 +393,8 @@ function stripHtml(html) {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--accent, #8e8e93);
-  background: var(--accent-soft, rgba(142, 142, 147, 0.12));
+  color: var(--accent, var(--theme-text-2));
+  background: var(--accent-soft, var(--theme-bg-muted));
 }
 .type-chip .chip-dot {
   width: 6px;
@@ -408,20 +408,20 @@ function stripHtml(html) {
   font-size: 12px;
 }
 .level-2 {
-  color: #d97706;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--theme-warning);
+  background: var(--theme-warning-soft);
+  border: 1px solid color-mix(in srgb, var(--theme-warning) 30%, transparent);
 }
 .level-3 {
-  color: #dc2626;
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.32);
+  color: var(--theme-danger);
+  background: var(--theme-danger-soft);
+  border: 1px solid color-mix(in srgb, var(--theme-danger) 32%, transparent);
 }
 .unread-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #f56c6c;
+  background: var(--theme-danger);
   margin-left: auto;
   animation: pulse 1.8s ease-out infinite;
 }
@@ -429,7 +429,7 @@ function stripHtml(html) {
   margin: 0 0 8px;
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   transition: color 0.25s ease;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -444,12 +444,12 @@ function stripHtml(html) {
   margin-right: 6px;
   padding: 1px 7px;
   border-radius: 5px;
-  background: linear-gradient(135deg, #f97316, #ef4444);
-  color: #fff;
+  background: linear-gradient(135deg, var(--theme-warning), var(--theme-danger));
+  color: var(--theme-primary-text);
   font-size: 12px;
   font-weight: normal;
   vertical-align: 2px;
-  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--theme-danger) 30%, transparent);
 }
 .item-summary {
   margin: 0 0 14px;

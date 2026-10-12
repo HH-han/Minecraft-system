@@ -299,7 +299,7 @@ onMounted(() => {
     font-size: 32px;
     font-weight: 700;
     letter-spacing: -0.01em;
-    background: linear-gradient(90deg, #1d1d1f, #4a90d9);
+    background: linear-gradient(90deg, var(--theme-text-1), var(--theme-primary));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -308,7 +308,7 @@ onMounted(() => {
 .page-subtitle {
     margin: 0;
     font-size: 15px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 /* ============ 加载 / 错误 ============ */
@@ -319,14 +319,14 @@ onMounted(() => {
     align-items: center;
     text-align: center;
     padding: 72px 20px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #e8e8ed;
-    border-top-color: #2997ff;
+    border: 3px solid var(--theme-border);
+    border-top-color: var(--theme-primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 16px;
@@ -349,8 +349,8 @@ onMounted(() => {
 
 .btn.retry {
     padding: 12px 28px;
-    background: #2997ff;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 40px;
     font-size: 14px;
@@ -360,7 +360,7 @@ onMounted(() => {
 }
 
 .btn.retry:hover {
-    background: #0066cc;
+    background: var(--theme-primary-hover);
     transform: translateY(-2px);
 }
 
@@ -375,10 +375,10 @@ onMounted(() => {
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #ffffff;
+    background: var(--theme-bg-surface);
     border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
     overflow: hidden;
@@ -392,30 +392,30 @@ onMounted(() => {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #2997ff, #6bc1ff);
+    background: var(--theme-primary);
 }
 
 .ticket-card.type-train::before {
-    background: linear-gradient(90deg, #2997ff, #6bc1ff);
+    background: var(--theme-primary);
 }
 
 .ticket-card.type-flight::before,
 .ticket-card.type-air::before {
-    background: linear-gradient(90deg, #7c5cff, #a78bfa);
+    background: var(--theme-accent-2);
 }
 
 .ticket-card.type-bus::before {
-    background: linear-gradient(90deg, #34c77b, #7ee2a8);
+    background: var(--theme-success);
 }
 
 .ticket-card.type-ship::before,
 .ticket-card.type-boat::before {
-    background: linear-gradient(90deg, #ff9f0a, #ffd60a);
+    background: var(--theme-warning);
 }
 
 .ticket-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 20px 40px -16px rgba(0, 0, 0, 0.16);
+    box-shadow: var(--theme-shadow-md);
 }
 
 /* ---- 头部 ---- */
@@ -432,14 +432,14 @@ onMounted(() => {
     gap: 6px;
     font-size: 15px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .type-icon {
     display: inline-flex;
     width: 20px;
     height: 20px;
-    color: #2997ff;
+    color: var(--theme-primary);
 }
 
 .type-icon :deep(svg) {
@@ -449,16 +449,16 @@ onMounted(() => {
 
 .ticket-card.type-flight .type-icon,
 .ticket-card.type-air .type-icon {
-    color: #7c5cff;
+    color: var(--theme-accent-2);
 }
 
 .ticket-card.type-bus .type-icon {
-    color: #34c77b;
+    color: var(--theme-success);
 }
 
 .ticket-card.type-ship .type-icon,
 .ticket-card.type-boat .type-icon {
-    color: #ff9f0a;
+    color: var(--theme-warning);
 }
 
 .ticket-status {
@@ -479,18 +479,18 @@ onMounted(() => {
 }
 
 .status-available {
-    background: rgba(52, 199, 123, 0.12);
-    color: #1e9e5a;
+    background: var(--theme-success-soft);
+    color: var(--theme-success);
 }
 
 .status-pending {
-    background: rgba(255, 159, 10, 0.12);
-    color: #d18a00;
+    background: var(--theme-warning-soft);
+    color: var(--theme-warning);
 }
 
 .status-soldout {
-    background: rgba(255, 69, 58, 0.12);
-    color: #d32f2f;
+    background: var(--theme-danger-soft);
+    color: var(--theme-danger);
 }
 
 /* ---- 路线 ---- */
@@ -516,7 +516,7 @@ onMounted(() => {
 .route-point .city {
     font-size: 24px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     letter-spacing: -0.01em;
     line-height: 1.2;
 }
@@ -524,13 +524,13 @@ onMounted(() => {
 .route-point .time {
     font-size: 15px;
     font-weight: 600;
-    color: #2997ff;
+    color: var(--theme-primary);
     font-variant-numeric: tabular-nums;
 }
 
 .point-label {
     font-size: 11px;
-    color: #aeaeb2;
+    color: var(--theme-text-3);
 }
 
 .route-mid {
@@ -546,8 +546,8 @@ onMounted(() => {
 .duration {
     font-size: 12px;
     font-weight: 600;
-    color: #6e6e73;
-    background: #f5f5f7;
+    color: var(--theme-text-2);
+    background: var(--theme-bg-surface-2);
     padding: 2px 10px;
     border-radius: 40px;
     white-space: nowrap;
@@ -557,12 +557,12 @@ onMounted(() => {
     width: 100%;
     max-width: 110px;
     height: 10px;
-    color: #c7c7cc;
+    color: var(--theme-text-3);
 }
 
 .duration-label {
     font-size: 11px;
-    color: #aeaeb2;
+    color: var(--theme-text-3);
 }
 
 /* ---- 信息条 ---- */
@@ -571,7 +571,7 @@ onMounted(() => {
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     padding: 14px 16px;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 14px;
     margin-bottom: 18px;
 }
@@ -585,21 +585,21 @@ onMounted(() => {
 
 .info-item .label {
     font-size: 11px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     white-space: nowrap;
 }
 
 .info-item .value {
     font-size: 14px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .value.stock-low {
-    color: #d18a00;
+    color: var(--theme-warning);
 }
 
 /* ---- 底部 ---- */
@@ -619,13 +619,13 @@ onMounted(() => {
 .price-symbol {
     font-size: 15px;
     font-weight: 600;
-    color: #ff5a3c;
+    color: var(--theme-danger);
 }
 
 .price {
     font-size: 30px;
     font-weight: 700;
-    color: #ff5a3c;
+    color: var(--theme-danger);
     letter-spacing: -0.02em;
     line-height: 1;
     font-variant-numeric: tabular-nums;
@@ -633,30 +633,31 @@ onMounted(() => {
 
 .price-unit {
     font-size: 12px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin-left: 2px;
 }
 
 .btn-book {
     padding: 10px 22px;
-    background: linear-gradient(135deg, #2997ff, #0066cc);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 40px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-    box-shadow: 0 4px 12px rgba(41, 151, 255, 0.25);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .btn-book:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(41, 151, 255, 0.35);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .btn-book:disabled {
-    background: #d2d2d6;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-3);
     box-shadow: none;
     cursor: not-allowed;
 }
@@ -668,7 +669,7 @@ onMounted(() => {
     align-items: center;
     text-align: center;
     padding: 72px 20px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 .empty-icon {
@@ -680,7 +681,7 @@ onMounted(() => {
 .empty-state h3 {
     margin: 0 0 6px;
     font-size: 18px;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .empty-state p {
@@ -695,7 +696,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.45);
+    background: var(--theme-overlay);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
@@ -726,14 +727,14 @@ onMounted(() => {
 }
 
 .modal-content {
-    background: white;
+    background: var(--theme-bg-elevated);
     border-radius: 24px;
     max-width: 560px;
     width: 100%;
     max-height: 85vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 .close-btn {
@@ -745,18 +746,18 @@ onMounted(() => {
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     z-index: 10;
     transition: background 0.2s, color 0.2s;
 }
 
 .close-btn:hover {
-    background: #e8e8ed;
-    color: #1d1d1f;
+    background: var(--theme-bg-hover);
+    color: var(--theme-text-1);
 }
 
 .close-btn svg {
@@ -793,7 +794,7 @@ onMounted(() => {
     justify-content: space-between;
     gap: 12px;
     padding: 26px 24px;
-    background: linear-gradient(135deg, rgba(41, 151, 255, 0.06), rgba(108, 193, 255, 0.1));
+    background: var(--theme-primary-soft);
     border-radius: 16px;
     margin-bottom: 24px;
 }
@@ -812,14 +813,14 @@ onMounted(() => {
 .city-name {
     font-size: 26px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     letter-spacing: -0.01em;
 }
 
 .time-info {
     font-size: 13px;
     font-weight: 500;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     font-variant-numeric: tabular-nums;
 }
 
@@ -835,8 +836,8 @@ onMounted(() => {
 .duration-pill {
     font-size: 12px;
     font-weight: 600;
-    color: #2997ff;
-    background: rgba(41, 151, 255, 0.1);
+    color: var(--theme-primary);
+    background: var(--theme-primary-soft);
     padding: 3px 12px;
     border-radius: 40px;
     white-space: nowrap;
@@ -846,7 +847,7 @@ onMounted(() => {
     width: 100%;
     max-width: 160px;
     height: 20px;
-    color: #2997ff;
+    color: var(--theme-primary);
 }
 
 /* 详情行 */
@@ -859,7 +860,7 @@ onMounted(() => {
     justify-content: space-between;
     align-items: center;
     padding: 13px 0;
-    border-bottom: 1px solid #f5f5f7;
+    border-bottom: 1px solid var(--theme-hairline);
 }
 
 .detail-row:last-child {
@@ -867,12 +868,12 @@ onMounted(() => {
 }
 
 .detail-label {
-    color: #6e6e73;
+    color: var(--theme-text-2);
     font-size: 14px;
 }
 
 .detail-value {
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     font-size: 15px;
     font-weight: 600;
 }
@@ -880,7 +881,7 @@ onMounted(() => {
 .price-highlight {
     font-size: 24px;
     font-weight: 700;
-    color: #ff5a3c;
+    color: var(--theme-danger);
     letter-spacing: -0.01em;
 }
 
@@ -902,23 +903,23 @@ onMounted(() => {
 }
 
 .modal-actions .btn.secondary {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-1);
 }
 
 .modal-actions .btn.secondary:hover {
-    background: #e8e8ed;
+    background: var(--theme-bg-hover);
 }
 
 .modal-actions .btn.primary {
-    background: linear-gradient(135deg, #2997ff, #0066cc);
-    color: white;
-    box-shadow: 0 4px 12px rgba(41, 151, 255, 0.3);
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .modal-actions .btn.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(41, 151, 255, 0.4);
+    box-shadow: var(--theme-shadow-md);
 }
 
 /* ============ 响应式 ============ */

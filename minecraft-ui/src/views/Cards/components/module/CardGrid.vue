@@ -157,14 +157,14 @@ function tagNames(card) {
 .travel-card:hover {
   transform: scale(1.01);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(0, 0, 0, 0.04);
+  border-color: var(--theme-hairline);
 }
 
 .card-image {
   position: relative;
   height: 200px;
   overflow: hidden;
-  background: #e8e8ed;
+  background: var(--theme-bg-surface-2);
 }
 
 .card-image img {
@@ -184,7 +184,7 @@ function tagNames(card) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+  background: linear-gradient(135deg, var(--theme-bg-surface-2) 0%, var(--theme-bg-hover) 100%);
 }
 
 .image-placeholder span {
@@ -196,7 +196,7 @@ function tagNames(card) {
   position: absolute;
   top: var(--spacing-12);
   left: var(--spacing-12);
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--theme-bg-glass-strong);
   backdrop-filter: blur(10px);
   color: var(--color-text);
   padding: var(--spacing-4) var(--spacing-12);

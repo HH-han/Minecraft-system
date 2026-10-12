@@ -233,7 +233,7 @@ function getRoleName(role) {
 .group-card:hover {
   transform: scale(1.01);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(0, 0, 0, 0.04);
+  border-color: var(--theme-hairline);
 }
 
 .card-image {
@@ -266,12 +266,12 @@ function getRoleName(role) {
 
 .status-badge.active {
   background: var(--color-success);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .status-badge.ended {
   background: var(--color-text-secondary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .card-content {
@@ -332,7 +332,7 @@ function getRoleName(role) {
 
 .role-tag.admin {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .role-tag.member {

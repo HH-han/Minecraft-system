@@ -351,7 +351,7 @@ onMounted(() => {
 <style scoped>
 .destination-list-container {
     padding: 1rem 1rem 2rem;
-    color: #2d3436;
+    color: var(--theme-text-1);
 }
 
 /* 页头 */
@@ -368,12 +368,12 @@ onMounted(() => {
 
 .page-subtitle {
     margin: 0;
-    color: #636e72;
+    color: var(--theme-text-2);
     font-size: 14px;
 }
 
 .page-subtitle b {
-    color: #4a6bff;
+    color: var(--theme-primary);
 }
 
 /* 筛选工具栏 */
@@ -387,9 +387,9 @@ onMounted(() => {
     gap: 14px;
     padding: 14px 0;
     margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--theme-hairline);
 }
 
 .search-box {
@@ -409,19 +409,19 @@ onMounted(() => {
 .search-input {
     width: 100%;
     padding: 10px 36px 10px 36px;
-    border: 1.5px solid #e2e6ee;
+    border: 1.5px solid var(--theme-border);
     border-radius: 999px;
-    background: #f7f8fc;
+    background: var(--theme-bg-surface-2);
     font-size: 14px;
-    color: #2d3436;
+    color: var(--theme-text-1);
     outline: none;
     transition: all 0.25s ease;
 }
 
 .search-input:focus {
-    border-color: #4a6bff;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(74, 107, 255, 0.12);
+    border-color: var(--theme-primary);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-ring);
 }
 
 .search-clear {
@@ -431,15 +431,15 @@ onMounted(() => {
     height: 20px;
     border: none;
     border-radius: 50%;
-    background: #dfe3ec;
-    color: #636e72;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-2);
     font-size: 13px;
     line-height: 1;
     cursor: pointer;
 }
 
 .search-clear:hover {
-    background: #cdd3e0;
+    background: var(--theme-bg-hover);
 }
 
 .tabs {
@@ -456,8 +456,8 @@ onMounted(() => {
     padding: 8px 18px;
     font-size: 14px;
     font-weight: 600;
-    color: #636e72;
-    background: #f3f5fa;
+    color: var(--theme-text-2);
+    background: var(--theme-bg-surface-2);
     border: 1.5px solid transparent;
     border-radius: 999px;
     cursor: pointer;
@@ -465,14 +465,14 @@ onMounted(() => {
 }
 
 .tab-button:hover {
-    color: #4a6bff;
-    border-color: rgba(74, 107, 255, 0.35);
+    color: var(--theme-primary);
+    border-color: color-mix(in srgb, var(--theme-primary) 35%, transparent);
 }
 
 .tab-button.active {
-    color: #ffffff;
-    background: linear-gradient(135deg, #4a6bff, #6c5ce7);
-    box-shadow: 0 6px 16px rgba(74, 107, 255, 0.32);
+    color: var(--theme-primary-text);
+    background: var(--theme-gradient);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .tab-count {
@@ -480,13 +480,13 @@ onMounted(() => {
     font-weight: 500;
     padding: 1px 8px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.55);
+    background: var(--theme-bg-glass);
     color: inherit;
 }
 
 .tab-button:not(.active) .tab-count {
-    background: #e6eaf4;
-    color: #636e72;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-2);
 }
 
 /* 大洲分组 */
@@ -514,13 +514,13 @@ onMounted(() => {
     width: 5px;
     height: 20px;
     border-radius: 3px;
-    background: linear-gradient(180deg, #4a6bff, #6c5ce7);
+    background: var(--theme-gradient);
 }
 
 .continent-count {
     font-size: 13px;
     font-weight: 500;
-    color: #636e72;
+    color: var(--theme-text-2);
 }
 
 /* 国家卡片：瀑布流布局，按列填充不留空白 */
@@ -530,11 +530,11 @@ onMounted(() => {
 }
 
 .region-card {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    background: var(--theme-bg-surface);
+    border: 1px solid var(--theme-hairline);
     border-radius: 16px;
     padding: 18px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
     break-inside: avoid;
     margin-bottom: 20px;
@@ -542,7 +542,7 @@ onMounted(() => {
 
 .region-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 14px 30px rgba(74, 107, 255, 0.14);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .region-header {
@@ -551,7 +551,7 @@ onMounted(() => {
     gap: 12px;
     padding-bottom: 14px;
     margin-bottom: 14px;
-    border-bottom: 1px dashed #e6eaf4;
+    border-bottom: 1px dashed var(--theme-hairline);
 }
 
 .region-flag {
@@ -567,20 +567,20 @@ onMounted(() => {
 .region-title {
     margin: 0;
     font-size: 18px;
-    color: #4a6bff;
+    color: var(--theme-primary);
 }
 
 .region-en {
     margin: 2px 0 0;
     font-size: 12px;
-    color: #9aa1b2;
+    color: var(--theme-text-3);
 }
 
 .region-badge {
     flex-shrink: 0;
     font-size: 12px;
-    color: #4a6bff;
-    background: rgba(74, 107, 255, 0.1);
+    color: var(--theme-primary);
+    background: var(--theme-primary-soft);
     padding: 3px 10px;
     border-radius: 999px;
 }
@@ -600,15 +600,15 @@ onMounted(() => {
     padding: 14px;
     border-radius: 12px;
     cursor: pointer;
-    background: #f8f9fd;
-    border: 1px solid #edf0f8;
+    background: var(--theme-bg-surface-2);
+    border: 1px solid var(--theme-hairline);
     transition: all 0.25s ease;
 }
 
 .city-item:hover {
-    border-color: rgba(74, 107, 255, 0.4);
-    background: #ffffff;
-    box-shadow: 0 6px 16px rgba(74, 107, 255, 0.1);
+    border-color: color-mix(in srgb, var(--theme-primary) 40%, transparent);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-sm);
     transform: translateY(-2px);
 }
 
@@ -623,18 +623,18 @@ onMounted(() => {
     margin: 0;
     font-size: 16px;
     font-weight: 700;
-    color: #2d3436;
+    color: var(--theme-text-1);
 }
 
 .city-en {
     font-size: 12px;
-    color: #9aa1b2;
+    color: var(--theme-text-3);
 }
 
 .capital-tag {
     font-size: 11px;
-    color: #b8860b;
-    background: rgba(255, 193, 7, 0.16);
+    color: var(--theme-warning);
+    background: var(--theme-warning-soft);
     padding: 1px 7px;
     border-radius: 999px;
     font-weight: 600;
@@ -643,7 +643,7 @@ onMounted(() => {
 .city-famous {
     margin: 8px 0 0;
     font-size: 12px;
-    color: #4a6bff;
+    color: var(--theme-primary);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -659,22 +659,22 @@ onMounted(() => {
 
 .meta-chip {
     font-size: 11px;
-    color: #636e72;
-    background: #eef1f8;
+    color: var(--theme-text-2);
+    background: var(--theme-bg-surface-2);
     padding: 2px 8px;
     border-radius: 999px;
 }
 
 .meta-chip.season {
-    color: #0f9d58;
-    background: rgba(15, 157, 88, 0.1);
+    color: var(--theme-success);
+    background: var(--theme-success-soft);
 }
 
 .city-description {
     margin: 10px 0 0;
     font-size: 13px;
     line-height: 1.55;
-    color: #636e72;
+    color: var(--theme-text-2);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -694,7 +694,7 @@ onMounted(() => {
 
 .map-link {
     font-size: 12px;
-    color: #4a6bff;
+    color: var(--theme-primary);
     text-decoration: none;
 }
 
@@ -704,7 +704,7 @@ onMounted(() => {
 
 .expand-hint {
     font-size: 11px;
-    color: #b3b9c9;
+    color: var(--theme-text-3);
 }
 
 /* 加载状态样式 */
@@ -720,8 +720,8 @@ onMounted(() => {
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #4a6bff;
+    border: 4px solid var(--theme-bg-surface-2);
+    border-top: 4px solid var(--theme-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
@@ -738,7 +738,7 @@ onMounted(() => {
 
 .loading-state p {
     margin: 0;
-    color: #636e72;
+    color: var(--theme-text-2);
     font-size: 16px;
 }
 
@@ -759,19 +759,19 @@ onMounted(() => {
 
 .error-state h3 {
     margin: 0 0 8px;
-    color: #e74c3c;
+    color: var(--theme-danger);
 }
 
 .error-state p {
     margin: 0 0 20px;
-    color: #636e72;
+    color: var(--theme-text-2);
     max-width: 400px;
 }
 
 .retry-button {
     padding: 10px 24px;
-    background: linear-gradient(135deg, #4a6bff, #6c5ce7);
-    color: white;
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -782,7 +782,7 @@ onMounted(() => {
 
 .retry-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(74, 107, 255, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 /* 空状态样式 */
@@ -803,12 +803,12 @@ onMounted(() => {
 
 .empty-state h3 {
     margin: 0 0 8px;
-    color: #2d3436;
+    color: var(--theme-text-1);
 }
 
 .empty-state p {
     margin: 0;
-    color: #636e72;
+    color: var(--theme-text-2);
 }
 
 /* 过渡动画 */

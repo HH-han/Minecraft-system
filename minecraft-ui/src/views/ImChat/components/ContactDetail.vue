@@ -184,8 +184,8 @@ const onEditFriendRemark = () => {
 .contact-detail {
   width: 320px;
   height: 100%;
-  background: #ffffff;
-  border-left: 1px solid #d2d2d6;
+  background: var(--theme-bg-surface);
+  border-left: 1px solid var(--theme-border);
   display: flex;
   flex-direction: column;
   font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -194,13 +194,13 @@ const onEditFriendRemark = () => {
 .contact-detail-empty {
   width: 320px;
   height: 100%;
-  background: #ffffff;
-  border-left: 1px solid #d2d2d6;
+  background: var(--theme-bg-surface);
+  border-left: 1px solid var(--theme-border);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -219,7 +219,7 @@ const onEditFriendRemark = () => {
   display: flex;
   justify-content: flex-end;
   padding: 16px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .close-btn {
@@ -227,7 +227,7 @@ const onEditFriendRemark = () => {
   height: 32px;
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   border-radius: 12px;
   display: flex;
@@ -237,8 +237,8 @@ const onEditFriendRemark = () => {
 }
 
 .close-btn:hover {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .detail-content {
@@ -252,7 +252,7 @@ const onEditFriendRemark = () => {
   flex-direction: column;
   align-items: center;
   padding: 24px 0;
-  border-bottom: 1px solid #f5f5f7;
+  border-bottom: 1px solid var(--theme-hairline);
   margin-bottom: 24px;
 }
 
@@ -262,7 +262,7 @@ const onEditFriendRemark = () => {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .name-section {
@@ -274,7 +274,7 @@ const onEditFriendRemark = () => {
 .detail-name {
   font-size: 20px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
   letter-spacing: -0.2px;
 }
@@ -284,7 +284,7 @@ const onEditFriendRemark = () => {
   height: 32px;
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   border-radius: 12px;
   display: flex;
@@ -294,25 +294,27 @@ const onEditFriendRemark = () => {
 }
 
 .edit-remark-btn:hover {
-  color: #2997ff;
-  background: #f5f5f7;
+  color: var(--theme-primary);
+  background: var(--theme-bg-hover);
 }
 
 .remark-input {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   font-size: 14px;
   margin-top: 12px;
   outline: none;
   box-sizing: border-box;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   transition: 0.2s ease;
 }
 
 .remark-input:focus {
-  border-color: #2997ff;
+  border-color: var(--theme-primary);
 }
 
 .info-section {
@@ -324,17 +326,17 @@ const onEditFriendRemark = () => {
   justify-content: space-between;
   align-items: center;
   padding: 14px 0;
-  border-bottom: 1px solid #f5f5f7;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .info-label {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .info-value {
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -346,14 +348,14 @@ const onEditFriendRemark = () => {
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 12px;
-  background: #f5f5f7;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   font-weight: 500;
 }
 
 .status-badge.online {
-  background: #e8f5e9;
-  color: #34c759;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .action-section {
@@ -379,34 +381,34 @@ const onEditFriendRemark = () => {
 }
 
 .action-btn.primary {
-  background: #1d1d1f;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 40px;
 }
 
 .action-btn.primary:hover {
-  background: #000000;
+  background: var(--theme-primary-hover);
   transform: scale(1.02);
 }
 
 .action-btn.secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
 }
 
 .action-btn.secondary:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
   transform: scale(1.02);
 }
 
 .action-btn.danger {
-  background: #ffffff;
-  color: #ff3b30;
-  border: 1px solid #ff3b30;
+  background: var(--theme-bg-surface);
+  color: var(--theme-danger);
+  border: 1px solid var(--theme-danger);
 }
 
 .action-btn.danger:hover {
-  background: #fff5f5;
+  background: var(--theme-danger-soft);
   transform: scale(1.02);
 }
 </style>

@@ -193,12 +193,12 @@ onMounted(fetchPackages)
 
 <style scoped>
 .lg-page {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-ink-3: #9a9aa0;
-  --tn-accent: #2997ff;
-  --tn-accent-2: #5e5ce6;
-  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-ink-3: var(--theme-text-3);
+  --tn-accent: var(--theme-primary);
+  --tn-accent-2: var(--theme-accent-2);
+  --tn-line: var(--theme-hairline);
   --tn-font: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   position: relative;
@@ -217,9 +217,9 @@ onMounted(fetchPackages)
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(900px 460px at 8% -10%, rgba(41, 151, 255, 0.1), transparent 60%),
-    radial-gradient(760px 420px at 100% 0%, rgba(94, 92, 230, 0.09), transparent 58%),
-    #f5f5f7;
+    radial-gradient(900px 460px at 8% -10%, color-mix(in srgb, var(--theme-primary) 10%, transparent), transparent 60%),
+    radial-gradient(760px 420px at 100% 0%, color-mix(in srgb, var(--theme-accent-2) 9%, transparent), transparent 58%),
+    var(--theme-bg-app);
 }
 
 /* Hero */
@@ -271,9 +271,9 @@ onMounted(fetchPackages)
 .lg-card {
   padding: 22px 24px;
   border-radius: 22px;
-  background: #fff;
+  background: var(--theme-bg-surface);
   border: 1px solid var(--tn-line);
-  box-shadow: 0 20px 50px -30px rgba(20, 40, 80, 0.35);
+  box-shadow: var(--theme-shadow-lg);
   animation: lg-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -304,8 +304,8 @@ onMounted(fetchPackages)
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f6;
-  color: #b9bcc4;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-3);
 }
 
 .lg-card__name {
@@ -333,20 +333,20 @@ onMounted(fetchPackages)
 }
 
 .lg-status--idle {
-  background: #f0f2f6;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 .lg-status--active {
-  background: rgba(41, 151, 255, 0.12);
-  color: #0473e2;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 .lg-status--done {
-  background: rgba(52, 199, 89, 0.14);
-  color: #1f9d4d;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 .lg-status--danger {
-  background: rgba(255, 59, 48, 0.12);
-  color: #d92c24;
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
 }
 
 /* Meta */
@@ -357,8 +357,8 @@ onMounted(fetchPackages)
   margin-top: 16px;
   padding: 12px 16px;
   border-radius: 16px;
-  background: linear-gradient(180deg, #f7f8fb, #eef1f6);
-  border: 1px solid rgba(20, 30, 60, 0.05);
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
 }
 
 .lg-meta {
@@ -388,8 +388,8 @@ onMounted(fetchPackages)
 .lg-copy {
   padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(41, 151, 255, 0.35);
-  background: rgba(41, 151, 255, 0.08);
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 35%, transparent);
+  background: var(--theme-primary-soft);
   color: var(--tn-accent);
   font-size: 12px;
   font-weight: 600;
@@ -400,7 +400,7 @@ onMounted(fetchPackages)
 
 .lg-copy:hover {
   background: var(--tn-accent);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 /* Timeline */
@@ -441,7 +441,7 @@ onMounted(fetchPackages)
   font-size: 13px;
   color: var(--tn-ink-3);
   border-radius: 14px;
-  background: #f7f8fb;
+  background: var(--theme-bg-surface-2);
 }
 
 /* Actions */

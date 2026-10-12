@@ -1173,7 +1173,7 @@ const formatDate = (dateString) => {
   user-select: none;
 }
 .btn:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 .btn:disabled {
@@ -1182,26 +1182,26 @@ const formatDate = (dateString) => {
 }
 
 .btn-secondary {
-  background: #ffffff;
-  color: #1d1d1f;
-  border-color: #d2d2d6;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  border-color: var(--theme-border);
 }
 .btn-secondary:hover:not(:disabled) {
-  background: #f5f5f7;
-  border-color: #b5b5ba;
+  background: var(--theme-bg-hover);
+  border-color: var(--theme-border-strong);
 }
 
 .btn-primary {
-  background: #2997ff;                              /* Apple 强调色 */
-  color: #ffffff;
-  border-color: #2997ff;
-  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.25);
+  background: var(--theme-primary);                              /* Apple 强调色 */
+  color: var(--theme-primary-text);
+  border-color: var(--theme-primary);
+  box-shadow: 0 4px 12px var(--theme-primary-soft);
 }
 .btn-primary:hover:not(:disabled) {
-  background: #0066cc;                              /* Apple 悬停加深 */
-  border-color: #0066cc;
+  background: var(--theme-primary-hover);                              /* Apple 悬停加深 */
+  border-color: var(--theme-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+  box-shadow: var(--theme-shadow-md);
 }
 .btn-primary:active:not(:disabled) {
   transform: translateY(0);
@@ -1212,14 +1212,14 @@ const formatDate = (dateString) => {
   display: inline-block;
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-top-color: #ffffff;
+  border: 2px solid color-mix(in srgb, var(--theme-primary-text) 50%, transparent);
+  border-top-color: var(--theme-primary-text);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 .btn-secondary .btn-spinner {
-  border-color: rgba(29, 29, 31, 0.3);
-  border-top-color: #1d1d1f;
+  border-color: color-mix(in srgb, var(--theme-text-1) 30%, transparent);
+  border-top-color: var(--theme-text-1);
 }
 @keyframes spin {
   to { transform: rotate(360deg); }

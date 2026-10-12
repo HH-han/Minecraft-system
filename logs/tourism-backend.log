@@ -1531,3 +1531,10 @@ This generated password is for development use only. Your security configuration
 2026-10-13 00:26:30.357 [http-nio-8080-exec-7] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.WorldCharacteristicsController
 2026-10-13 00:26:30.461 [http-nio-8080-exec-5] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.MonthlyRecommendationController
 2026-10-13 00:26:40.221 [http-nio-8080-exec-4] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.ClientRecommendationController
+2026-10-13 00:29:25.068 [http-nio-8080-exec-4] WARN  o.s.c.LocalVariableTableParameterNameDiscoverer - Using deprecated '-debug' fallback for parameter name resolution. Compile the affected code with '-parameters' instead or avoid its introspection: com.minecraft.controller.AttractionController
+2026-10-13 00:30:00.070 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=STO1112223334445
+2026-10-13 00:30:00.073 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=1
+2026-10-13 00:30:00.080 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=EMS2026101169605921
+2026-10-13 00:30:00.090 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=ZTO5556667778889
+2026-10-13 00:30:00.097 [rec-schedule-1] DEBUG c.m.logistics.Kuaidi100Provider - [快递100] queryTrack 骨架调用 trackingNo=YTO9876543210987
+2026-10-13 00:30:00.118 [rec-schedule-1] DEBUG c.m.logistics.KuaidiniaoProvider - [快递鸟] queryTrack 骨架调用 trackingNo=DBL4445556667778

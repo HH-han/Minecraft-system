@@ -391,7 +391,7 @@ onMounted(() => {
 .section-title {
     font-size: 28px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
 }
 
@@ -400,8 +400,8 @@ onMounted(() => {
     align-items: center;
     gap: 8px;
     padding: 12px 24px;
-    background: #2997ff;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 12px;
     font-size: 15px;
@@ -416,9 +416,9 @@ onMounted(() => {
 }
 
 .btn-create:hover {
-    background: #0066cc;
+    background: var(--theme-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(41, 151, 255, 0.3);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .loading, .error-state {
@@ -429,8 +429,8 @@ onMounted(() => {
 .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #f5f5f7;
-    border-top-color: #2997ff;
+    border: 3px solid var(--theme-bg-surface-2);
+    border-top-color: var(--theme-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 20px;
@@ -443,8 +443,8 @@ onMounted(() => {
 .error-state .btn {
     margin-top: 16px;
     padding: 12px 24px;
-    background: #2997ff;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -457,7 +457,7 @@ onMounted(() => {
 }
 
 .travel-card {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 24px;
     padding: 28px 24px;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -466,7 +466,7 @@ onMounted(() => {
 
 .travel-card:hover {
     transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .card-header {
@@ -479,7 +479,7 @@ onMounted(() => {
 .card-title {
     font-size: 20px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
     flex: 1;
     padding-right: 12px;
@@ -494,23 +494,23 @@ onMounted(() => {
 }
 
 .status-active {
-    background: #d1fae5;
-    color: #065f46;
+    background: var(--theme-success-soft);
+    color: var(--theme-success);
 }
 
 .status-pending {
-    background: #fef3c7;
-    color: #92400e;
+    background: var(--theme-warning-soft);
+    color: var(--theme-warning);
 }
 
 .status-completed {
-    background: #e5e5e7;
-    color: #6e6e73;
+    background: var(--theme-bg-active);
+    color: var(--theme-text-2);
 }
 
 .card-description {
     font-size: 15px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     line-height: 1.5;
     margin-bottom: 20px;
     display: -webkit-box;
@@ -530,7 +530,7 @@ onMounted(() => {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 .meta-icon {
@@ -545,7 +545,7 @@ onMounted(() => {
 
 .empty-state p {
     font-size: 18px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 .empty-hint {
@@ -559,7 +559,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: var(--theme-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -573,7 +573,7 @@ onMounted(() => {
 }
 
 .modal-content {
-    background: white;
+    background: var(--theme-bg-elevated);
     border-radius: 24px;
     max-width: 640px;
     width: 90%;
@@ -602,12 +602,12 @@ onMounted(() => {
     border: none;
     font-size: 28px;
     cursor: pointer;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     z-index: 10;
 }
 
 .close-btn:hover {
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .modal-body {
@@ -624,7 +624,7 @@ onMounted(() => {
 .modal-header h2 {
     font-size: 28px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0;
 }
 
@@ -636,7 +636,7 @@ onMounted(() => {
 }
 
 .modal-info {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 24px;
@@ -654,14 +654,14 @@ onMounted(() => {
 
 .info-label {
     font-size: 12px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin-bottom: 4px;
 }
 
 .info-value {
     font-size: 15px;
     font-weight: 500;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .modal-description {
@@ -672,13 +672,13 @@ onMounted(() => {
 .modal-content-detail h3 {
     font-size: 18px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin-bottom: 12px;
 }
 
 .modal-description p {
     font-size: 15px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     line-height: 1.6;
 }
 
@@ -688,7 +688,7 @@ onMounted(() => {
 
 .content-text {
     font-size: 15px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     line-height: 1.6;
     white-space: pre-wrap;
 }
@@ -710,30 +710,30 @@ onMounted(() => {
 }
 
 .modal-actions .btn.secondary {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-1);
 }
 
 .modal-actions .btn.secondary:hover {
-    background: #e5e5e7;
+    background: var(--theme-bg-hover);
 }
 
 .modal-actions .btn.primary {
-    background: #2997ff;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
 }
 
 .modal-actions .btn.primary:hover {
-    background: #0066cc;
+    background: var(--theme-primary-hover);
 }
 
 .modal-actions .btn.danger {
-    background: #ef4444;
-    color: white;
+    background: var(--theme-danger);
+    color: var(--theme-text-inverse);
 }
 
 .modal-actions .btn.danger:hover {
-    background: #dc2626;
+    background: color-mix(in srgb, var(--theme-danger) 85%, black);
 }
 
 @media (max-width: 768px) {
@@ -777,24 +777,24 @@ onMounted(() => {
 .form-item label {
     font-size: 14px;
     font-weight: 500;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .form-item input,
 .form-item textarea {
     padding: 12px 16px;
-    border: 1px solid #d2d2d6;
+    border: 1px solid var(--theme-border-strong);
     border-radius: 12px;
     font-size: 15px;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-item input:focus,
 .form-item textarea:focus {
     outline: none;
-    border-color: #2997ff;
-    box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.15);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-ring);
 }
 
 .form-item textarea {
@@ -826,25 +826,25 @@ onMounted(() => {
 }
 
 .form-actions .btn.secondary {
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-1);
 }
 
 .form-actions .btn.secondary:hover {
-    background: #e5e5e7;
+    background: var(--theme-bg-hover);
 }
 
 .form-actions .btn.primary {
-    background: #2997ff;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
 }
 
 .form-actions .btn.primary:hover:not(:disabled) {
-    background: #0066cc;
+    background: var(--theme-primary-hover);
 }
 
 .form-actions .btn.primary:disabled {
-    background: #a0cfff;
+    background: var(--theme-primary-soft);
     cursor: not-allowed;
 }
 </style>

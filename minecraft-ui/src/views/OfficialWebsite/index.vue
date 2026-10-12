@@ -142,7 +142,7 @@
         <div class="cta-bg-glow"></div>
         <div class="container">
             <div class="reveal">
-                <span class="section-label" style="color: rgba(255,255,255,0.4);">— 启程</span>
+                <span class="section-label" style="color: var(--theme-text-3);">— 启程</span>
                 <h2 v-if="cta">{{ cta.title }}</h2>
                 <p v-if="cta && cta.description">{{ cta.description }}</p>
                 <button v-if="cta && cta.btnText" class="btn-cta">{{ cta.btnText }} <i class="fas fa-arrow-right"></i></button>
@@ -389,14 +389,14 @@ onUnmounted(() => {
 }
 
 :root {
-    --color-bg: #f5f5f7;
-    --color-bg-dark: #1d1d1f;
-    --color-text: #1d1d1f;
-    --color-text-light: #86868b;
-    --color-text-white: #f5f5f7;
-    --color-accent: #0071e3;
-    --color-accent-hover: #0077ed;
-    --color-border: #d2d2d7;
+    --color-bg: var(--theme-bg-app);
+    --color-bg-dark: var(--theme-bg-elevated);
+    --color-text: var(--theme-text-1);
+    --color-text-light: var(--theme-text-2);
+    --color-text-white: var(--theme-text-1);
+    --color-accent: var(--theme-primary);
+    --color-accent-hover: var(--theme-primary-hover);
+    --color-border: var(--theme-border);
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --nav-height: 64px;
     --section-spacing: 140px;
@@ -453,10 +453,10 @@ a {
 }
 
 .navbar.scrolled {
-    background: rgba(245, 245, 247, 0.82);
+    background: var(--theme-bg-glass-strong);
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 0 var(--theme-hairline);
 }
 
 .navbar .logo {
@@ -515,7 +515,7 @@ a {
     padding: 8px 20px;
     border-radius: 980px;
     background: var(--color-accent);
-    color: #fff;
+    color: var(--theme-primary-text);
     border: none;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
@@ -630,18 +630,18 @@ a {
     font-size: 17px;
     font-weight: 500;
     border-radius: 980px;
-    background: #fff;
-    color: var(--color-text);
+    background: var(--theme-bg-surface);
+    color: var(--theme-text-1);
     border: none;
     cursor: pointer;
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 .hero .hero-content .btn-hero:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 .hero .hero-content .btn-hero i {
@@ -752,7 +752,7 @@ section {
 
 /* ========== 目的地 ========== */
 .destinations {
-    background: #fff;
+    background: var(--theme-bg-surface);
 }
 
 .destinations-grid {
@@ -765,8 +765,8 @@ section {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    background: #fff;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-sm);
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     cursor: pointer;
@@ -775,14 +775,14 @@ section {
 
 .dest-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .dest-card .card-image {
     position: relative;
     padding-top: 75%;
     overflow: hidden;
-    background: #f0f0f2;
+    background: var(--theme-bg-surface-2);
 }
 
 .dest-card .card-image img {
@@ -869,8 +869,8 @@ section {
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-sm);
     font-size: 28px;
     color: var(--color-accent);
     margin-bottom: 20px;
@@ -878,7 +878,7 @@ section {
 }
 
 .exp-item:hover .exp-icon {
-    box-shadow: 0 8px 32px rgba(0, 113, 227, 0.12);
+    box-shadow: var(--theme-shadow-md);
     transform: scale(1.04);
 }
 
@@ -900,7 +900,7 @@ section {
 
 /* ========== 故事 ========== */
 .stories {
-    background: #fff;
+    background: var(--theme-bg-surface);
 }
 
 .stories-grid {
@@ -919,18 +919,18 @@ section {
 
 .story-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .story-card .stars {
-    color: #d2d2d7;
+    color: var(--theme-text-3);
     font-size: 14px;
     letter-spacing: 2px;
     margin-bottom: 14px;
 }
 
 .story-card .stars .star-active {
-    color: #f5b342;
+    color: var(--theme-warning);
 }
 
 .story-card blockquote {
@@ -953,7 +953,7 @@ section {
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    background: #d2d2d7;
+    background: var(--theme-border-strong);
 }
 
 .story-card .story-author .avatar img {
@@ -976,7 +976,7 @@ section {
 /* ========== 新增: 叙事章节 ========== */
 .narrative {
     background: var(--color-bg-dark);
-    color: #fff;
+    color: var(--theme-text-1);
 }
 
 .narrative .container {
@@ -996,7 +996,7 @@ section {
     position: relative;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 .narrative .narrative-media img {
@@ -1012,15 +1012,15 @@ section {
 }
 
 .narrative .narrative-text .section-label {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-3);
 }
 
 .narrative .narrative-text .section-title {
-    color: #fff;
+    color: var(--theme-text-1);
 }
 
 .narrative .narrative-text .section-subtitle {
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--theme-text-2);
     max-width: 100%;
 }
 
@@ -1028,7 +1028,7 @@ section {
     margin-top: 24px;
     font-size: 17px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-2);
     line-height: 1.8;
     border-left: 3px solid var(--color-accent);
     padding-left: 24px;
@@ -1036,7 +1036,7 @@ section {
 
 /* ========== 新增: 沉浸式引用 ========== */
 .immersion {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+    background: var(--theme-bg-surface-2);
     position: relative;
     overflow: hidden;
 }
@@ -1132,7 +1132,7 @@ section {
 /* ========== CTA ========== */
 .cta-section {
     background: var(--color-bg-dark);
-    color: #fff;
+    color: var(--theme-text-1);
     padding: 100px 0;
     text-align: center;
     position: relative;
@@ -1145,7 +1145,7 @@ section {
     transform: translateX(-50%);
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, rgba(0, 113, 227, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--theme-primary) 8%, transparent) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -1164,7 +1164,7 @@ section {
 .cta-section p {
     font-size: clamp(16px, 1.2vw, 20px);
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-2);
     max-width: 480px;
     margin: 0 auto 36px;
 }
@@ -1178,7 +1178,7 @@ section {
     font-weight: 500;
     border-radius: 980px;
     background: var(--color-accent);
-    color: #fff;
+    color: var(--theme-primary-text);
     border: none;
     cursor: pointer;
     transition: background 0.3s, transform 0.3s;
@@ -1191,8 +1191,8 @@ section {
 
 /* ========== 页脚 ========== */
 .footer {
-    background: #1d1d1f;
-    color: #fff;
+    background: var(--theme-bg-elevated);
+    color: var(--theme-text-1);
     padding: 80px 0 40px;
 }
 
@@ -1227,7 +1227,7 @@ section {
 
 .footer-brand p {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-3);
     font-weight: 300;
     line-height: 1.8;
 }
@@ -1237,7 +1237,7 @@ section {
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-3);
     margin-bottom: 20px;
 }
 
@@ -1252,12 +1252,12 @@ section {
 .footer-col ul li a {
     font-size: 14px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-2);
     transition: color 0.3s;
 }
 
 .footer-col ul li a:hover {
-    color: #fff;
+    color: var(--theme-text-1);
 }
 
 .footer-bottom {
@@ -1265,9 +1265,9 @@ section {
     align-items: center;
     justify-content: space-between;
     padding-top: 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-hairline);
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-3);
 }
 
 .footer-bottom .socials {
@@ -1282,7 +1282,7 @@ section {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-bg-surface-2);
     font-size: 14px;
     transition: background 0.3s, transform 0.3s;
 }
@@ -1327,13 +1327,13 @@ section {
         top: var(--nav-height);
         left: 0;
         right: 0;
-        background: rgba(245, 245, 247, 0.98);
+        background: var(--theme-bg-glass-strong);
         backdrop-filter: saturate(180%) blur(20px);
         -webkit-backdrop-filter: saturate(180%) blur(20px);
         flex-direction: column;
         padding: 20px 0;
         gap: 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        box-shadow: var(--theme-shadow-sm);
         transform: translateY(-120%);
         transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
@@ -1351,7 +1351,7 @@ section {
     }
 
     .navbar.scrolled .nav-links {
-        background: rgba(245, 245, 247, 0.98);
+        background: var(--theme-bg-glass-strong);
     }
 
     .narrative .container {

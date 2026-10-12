@@ -360,7 +360,7 @@ onMounted(() => {
 .thumbnail-item {
   width: 80px;
   height: 80px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--theme-border);
   border-radius: 4px;
   cursor: pointer;
   overflow: hidden;
@@ -368,7 +368,7 @@ onMounted(() => {
 }
 
 .thumbnail-item.active {
-  border-color: #ff6700;
+  border-color: var(--theme-primary);
 }
 
 .thumbnail-item img {
@@ -386,7 +386,7 @@ onMounted(() => {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .product-price {
@@ -397,19 +397,19 @@ onMounted(() => {
 
 .price-label {
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 .price-value {
   font-size: 28px;
   font-weight: 600;
-  color: #ff6700;
+  color: var(--theme-primary);
   margin-right: 10px;
 }
 
 .original-price {
   font-size: 14px;
-  color: #999;
+  color: var(--theme-text-3);
   text-decoration: line-through;
 }
 
@@ -418,13 +418,13 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #fff3e0;
+  background-color: var(--theme-primary-soft);
   border-radius: 4px;
 }
 
 .promotion-tag {
-  background-color: #ff6700;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 2px;
@@ -433,7 +433,7 @@ onMounted(() => {
 
 .promotion-content {
   font-size: 14px;
-  color: #ff6700;
+  color: var(--theme-primary);
 }
 
 /* 商品选项 */
@@ -450,7 +450,7 @@ onMounted(() => {
 .option-label {
   width: 80px;
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-right: 10px;
   padding-top: 5px;
 }
@@ -464,7 +464,7 @@ onMounted(() => {
 
 .option-value {
   padding: 8px 16px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -472,13 +472,13 @@ onMounted(() => {
 }
 
 .option-value:hover {
-  border-color: #ff6700;
+  border-color: var(--theme-primary);
 }
 
 .option-value.active {
-  border-color: #ff6700;
-  background-color: #fff3e0;
-  color: #ff6700;
+  border-color: var(--theme-primary);
+  background-color: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 /* 数量控制 */
@@ -491,14 +491,14 @@ onMounted(() => {
 .quantity-label {
   width: 80px;
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
   margin-right: 10px;
 }
 
 .quantity-control {
   display: flex;
   align-items: center;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--theme-border);
   border-radius: 4px;
 }
 
@@ -506,13 +506,13 @@ onMounted(() => {
   width: 30px;
   height: 30px;
   border: none;
-  background-color: #f5f5f5;
+  background-color: var(--theme-bg-surface-2);
   cursor: pointer;
   font-size: 16px;
 }
 
 .quantity-btn:disabled {
-  color: #ccc;
+  color: var(--theme-text-3);
   cursor: not-allowed;
 }
 
@@ -535,9 +535,9 @@ onMounted(() => {
   align-items: center;
   gap: 5px;
   padding: 12px 30px;
-  border: 1px solid #ff6700;
-  background-color: #fff;
-  color: #ff6700;
+  border: 1px solid var(--theme-primary);
+  background-color: var(--theme-bg-surface);
+  color: var(--theme-primary);
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
@@ -545,14 +545,14 @@ onMounted(() => {
 }
 
 .add-to-cart-btn:hover {
-  background-color: #fff3e0;
+  background-color: var(--theme-primary-soft);
 }
 
 .buy-now-btn {
   padding: 12px 30px;
   border: none;
-  background-color: #ff6700;
-  color: white;
+  background-color: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
@@ -560,36 +560,36 @@ onMounted(() => {
 }
 
 .buy-now-btn:hover {
-  background-color: #e05a00;
+  background-color: var(--theme-primary-hover);
 }
 
 /* 标签页 */
 .product-tabs {
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--theme-hairline);
   margin-top: 40px;
 }
 
 .tab-header {
   display: flex;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .tab-item {
   padding: 15px 30px;
   cursor: pointer;
   font-size: 16px;
-  color: #666;
+  color: var(--theme-text-2);
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
 }
 
 .tab-item:hover {
-  color: #ff6700;
+  color: var(--theme-primary);
 }
 
 .tab-item.active {
-  color: #ff6700;
-  border-bottom-color: #ff6700;
+  color: var(--theme-primary);
+  border-bottom-color: var(--theme-primary);
 }
 
 .tab-panel {
@@ -605,7 +605,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 .detail-images {
@@ -622,14 +622,14 @@ onMounted(() => {
 .detail-item p {
   font-size: 14px;
   line-height: 1.6;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 /* 用户评价 */
 .review-summary {
   margin-bottom: 30px;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--theme-bg-surface-2);
   border-radius: 8px;
 }
 
@@ -641,14 +641,14 @@ onMounted(() => {
 
 .rating-label {
   font-size: 16px;
-  color: #333;
+  color: var(--theme-text-1);
   margin-right: 10px;
 }
 
 .rating-value {
   font-size: 24px;
   font-weight: 600;
-  color: #ff6700;
+  color: var(--theme-primary);
   margin-right: 10px;
 }
 
@@ -671,13 +671,13 @@ onMounted(() => {
 .rating-level {
   width: 40px;
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 .rating-bar {
   flex: 1;
   height: 8px;
-  background-color: #e0e0e0;
+  background-color: var(--theme-border);
   border-radius: 4px;
   margin: 0 10px;
   overflow: hidden;
@@ -685,14 +685,14 @@ onMounted(() => {
 
 .rating-fill {
   height: 100%;
-  background-color: #ff6700;
+  background-color: var(--theme-primary);
   border-radius: 4px;
 }
 
 .rating-count {
   width: 60px;
   font-size: 14px;
-  color: #999;
+  color: var(--theme-text-3);
   text-align: right;
 }
 
@@ -704,7 +704,7 @@ onMounted(() => {
 
 .review-item {
   padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .review-header {
@@ -716,7 +716,7 @@ onMounted(() => {
 .reviewer-name {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--theme-text-1);
   margin-right: 10px;
 }
 
@@ -728,13 +728,13 @@ onMounted(() => {
 
 .review-date {
   font-size: 12px;
-  color: #999;
+  color: var(--theme-text-3);
 }
 
 .review-content {
   font-size: 14px;
   line-height: 1.6;
-  color: #666;
+  color: var(--theme-text-2);
   margin-bottom: 10px;
 }
 
@@ -760,19 +760,19 @@ onMounted(() => {
 .spec-item {
   display: flex;
   padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .spec-name {
   width: 120px;
   font-size: 14px;
-  color: #666;
+  color: var(--theme-text-2);
 }
 
 .spec-value {
   flex: 1;
   font-size: 14px;
-  color: #333;
+  color: var(--theme-text-1);
 }
 
 /* 响应式设计 */

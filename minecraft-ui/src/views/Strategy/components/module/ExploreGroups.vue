@@ -121,13 +121,13 @@ defineEmits(['update:activeFilter', 'detail', 'join'])
 }
 
 .filter-btn:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: var(--theme-bg-hover);
   color: var(--color-text);
 }
 
 .filter-btn.active {
   background: var(--color-text);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .empty-state {
@@ -170,7 +170,7 @@ defineEmits(['update:activeFilter', 'detail', 'join'])
 .group-card:hover {
   transform: scale(1.01);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(0, 0, 0, 0.04);
+  border-color: var(--theme-hairline);
 }
 
 .card-image {
@@ -255,7 +255,7 @@ defineEmits(['update:activeFilter', 'detail', 'join'])
 
 .join-btn {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
   border: none;
   padding: var(--spacing-6) var(--spacing-16);
   border-radius: var(--radius-full);

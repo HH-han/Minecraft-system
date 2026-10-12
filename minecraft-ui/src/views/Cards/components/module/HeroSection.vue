@@ -38,7 +38,7 @@ defineEmits(['create', 'browse'])
   transform: translateX(-50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(41, 151, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--theme-primary-soft) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -86,7 +86,7 @@ defineEmits(['create', 'browse'])
 
 .hero-actions .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .hero-actions .btn-primary:hover {
@@ -103,7 +103,7 @@ defineEmits(['create', 'browse'])
 }
 
 .hero-actions .btn-secondary:hover {
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
 }
 
 .hero-actions .btn-secondary:active {

@@ -81,7 +81,7 @@ const onSubmit = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -91,10 +91,10 @@ const onSubmit = () => {
 
 .modal-content {
   width: 400px;
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
@@ -103,14 +103,14 @@ const onSubmit = () => {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 17px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.01em;
 }
 
@@ -118,9 +118,9 @@ const onSubmit = () => {
   width: 32px;
   height: 32px;
   border: none;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 50%;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -129,8 +129,8 @@ const onSubmit = () => {
 }
 
 .close-btn:hover {
-  background: #e8e8ed;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .modal-body {
@@ -148,7 +148,7 @@ const onSubmit = () => {
 .form-group label {
   display: block;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -157,11 +157,11 @@ const onSubmit = () => {
   width: 100%;
   height: 44px;
   padding: 0 14px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   font-size: 14px;
-  color: #1d1d1f;
-  background: #ffffff;
+  color: var(--theme-text-1);
+  background: var(--theme-bg-surface);
   outline: none;
   box-sizing: border-box;
   transition: 0.2s ease;
@@ -169,12 +169,12 @@ const onSubmit = () => {
 }
 
 .form-input::placeholder {
-  color: #6e6e73;
+  color: var(--theme-text-3);
 }
 
 .form-input:focus {
-  border-color: #2997ff;
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .modal-footer {
@@ -195,22 +195,22 @@ const onSubmit = () => {
 }
 
 .btn-secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   border-radius: 12px;
 }
 
 .btn-secondary:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .btn-primary {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 40px;
 }
 
 .btn-primary:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 </style>

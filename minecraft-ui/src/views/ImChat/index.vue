@@ -1193,9 +1193,9 @@ watch(selectedContact, () => {
   height: 100vh;
   height: 100dvh; /* 移动端浏览器工具栏适配 */
   overflow: hidden; /* 内部各自滚动，禁止整页滚动 */
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -1206,15 +1206,15 @@ watch(selectedContact, () => {
 
 :global(body) {
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #1d1d1f;
-  background: #f5f5f7;
+  color: var(--theme-text-1);
+  background: var(--theme-bg-app);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .im-container :deep(*) {
   scrollbar-width: thin;
-  scrollbar-color: #d2d2d6 transparent;
+  scrollbar-color: var(--theme-scrollbar-thumb) transparent;
 }
 
 .im-container :deep(*::-webkit-scrollbar) {
@@ -1227,22 +1227,22 @@ watch(selectedContact, () => {
 }
 
 .im-container :deep(*::-webkit-scrollbar-thumb) {
-  background: #d2d2d6;
+  background: var(--theme-scrollbar-thumb);
   border-radius: 3px;
 }
 
 .im-container :deep(*::-webkit-scrollbar-thumb:hover) {
-  background: #a1a1a6;
+  background: var(--theme-scrollbar-thumb-hover);
 }
 
 .im-container :deep(a) {
-  color: #2997ff;
+  color: var(--theme-primary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .im-container :deep(a:hover) {
-  color: #0066cc;
+  color: var(--theme-primary-hover);
 }
 
 .im-container :deep(button) {
@@ -1254,57 +1254,57 @@ watch(selectedContact, () => {
 .im-container :deep(input),
 .im-container :deep(textarea) {
   font-family: inherit;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .im-container :deep(input:focus),
 .im-container :deep(textarea:focus) {
   outline: none;
-  border-color: #2997ff;
+  border-color: var(--theme-primary);
 }
 
 .im-container :deep(.text-primary) {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .im-container :deep(.text-secondary) {
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .im-container :deep(.accent) {
-  color: #2997ff;
+  color: var(--theme-primary);
   transition: color 0.2s ease;
 }
 
 .im-container :deep(.accent:hover) {
-  color: #0066cc;
+  color: var(--theme-primary-hover);
 }
 
 .im-container :deep(.accent-bg) {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   transition: background 0.2s ease;
 }
 
 .im-container :deep(.accent-bg:hover) {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .im-container :deep(.divider) {
   border: none;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border);
 }
 
 .im-container :deep(.card) {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-sm);
   transition: box-shadow 0.2s ease;
 }
 
 .im-container :deep(.card:hover) {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .im-container :deep(.list-item) {
@@ -1312,11 +1312,11 @@ watch(selectedContact, () => {
 }
 
 .im-container :deep(.list-item:hover) {
-  background-color: #f5f5f7;
+  background-color: var(--theme-bg-hover);
 }
 
 .im-container :deep(.list-item.active) {
-  background-color: rgba(41, 151, 255, 0.08);
+  background-color: var(--theme-primary-soft);
 }
 
 /* ================= 响应式适配 ================= */

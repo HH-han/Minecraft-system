@@ -90,7 +90,7 @@ const loadRecommendList = async () => {
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.02em;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin: 0 0 20px;
 }
 
@@ -117,11 +117,11 @@ const loadRecommendList = async () => {
     overflow: visible;
     width: 100%;
     height: 300px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-bg-glass);
     backdrop-filter: blur(10px);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--theme-border);
+    box-shadow: var(--theme-shadow-md);
     cursor: pointer;
     transition: all 0.3s ease;
     overflow: hidden;
@@ -133,13 +133,13 @@ const loadRecommendList = async () => {
     height: 100%;
     transform-style: preserve-3d;
     transition: transform 300ms;
-    box-shadow: 0px 0px 10px 1px #000000ee;
+    box-shadow: var(--theme-shadow-lg);
     border-radius: 5px;
 }
 
 .front,
 .back {
-    background-color: #151515;
+    background-color: var(--theme-bg-elevated);
     position: absolute;
     width: 100%;
     height: 100%;
@@ -172,7 +172,7 @@ const loadRecommendList = async () => {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: #151515;
+    background-color: var(--theme-bg-elevated);
     border-radius: 5px;
     color: white;
     overflow: hidden;

@@ -143,7 +143,7 @@ function getNotificationIcon(type) {
 }
 
 .notification-item.unread {
-  background: rgba(41, 151, 255, 0.05);
+  background: var(--theme-primary-soft);
 }
 
 .notification-item:hover {
@@ -177,7 +177,7 @@ function getNotificationIcon(type) {
 
 .read-btn {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
   border: none;
   width: 28px;
   height: 28px;

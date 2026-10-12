@@ -61,7 +61,7 @@ defineEmits(['generate', 'export'])
   align-items: center;
   gap: var(--spacing-4);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .tab-actions button:hover {
@@ -78,7 +78,7 @@ defineEmits(['generate', 'export'])
 }
 
 .tab-actions .btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .diary-content h3 {

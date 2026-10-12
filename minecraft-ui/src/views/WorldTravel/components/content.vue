@@ -467,7 +467,7 @@ const forceUpdate = () => {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.28em;
-  color: #0ea5e9;
+  color: var(--theme-primary);
   margin-bottom: 10px;
 }
 
@@ -475,7 +475,7 @@ const forceUpdate = () => {
   position: relative;
   text-align: left;
   font-size: clamp(1.75rem, 3.2vw, 2.5rem);
-  color: #0f172a;
+  color: var(--theme-text-1);
   margin: 0 0 8px;
   letter-spacing: -0.01em;
 }
@@ -487,12 +487,12 @@ const forceUpdate = () => {
   height: 4px;
   margin-top: 12px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+  background: var(--theme-gradient);
 }
 
 .explore-subtitle {
   margin: 0;
-  color: #64748b;
+  color: var(--theme-text-2);
   font-size: 15px;
 }
 
@@ -501,9 +501,9 @@ const forceUpdate = () => {
   border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
-  color: #0369a1;
-  background: rgba(14, 165, 233, 0.08);
-  border: 1px solid rgba(14, 165, 233, 0.2);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 22%, transparent);
   white-space: nowrap;
 }
 
@@ -516,9 +516,9 @@ const forceUpdate = () => {
   gap: 16px;
   padding: 16px;
   border-radius: 16px;
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-hairline);
+  box-shadow: var(--theme-shadow-sm);
   margin-bottom: 32px;
 }
 
@@ -534,29 +534,29 @@ const forceUpdate = () => {
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: var(--theme-text-3);
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
   padding: 11px 40px 11px 42px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--theme-border);
   border-radius: 999px;
   font-size: 14px;
-  background: #f8fafc;
+  background: var(--theme-bg-surface-2);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: var(--theme-text-3);
 }
 
 .search-input:focus {
   outline: none;
-  background: #ffffff;
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+  background: var(--theme-bg-surface);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .search-clear {
@@ -568,8 +568,8 @@ const forceUpdate = () => {
   height: 22px;
   border: none;
   border-radius: 50%;
-  background: #e2e8f0;
-  color: #64748b;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   font-size: 14px;
   line-height: 1;
   cursor: pointer;
@@ -580,8 +580,8 @@ const forceUpdate = () => {
 }
 
 .search-clear:hover {
-  background: #cbd5e1;
-  color: #0f172a;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 /* ========== 分类标签 ========== */
@@ -599,39 +599,39 @@ const forceUpdate = () => {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #475569;
-  background: #f1f5f9;
+  color: var(--theme-text-2);
+  background: var(--theme-bg-surface-2);
   border: 1px solid transparent;
   transition: all 0.2s ease;
   user-select: none;
 }
 
 .category-tabs span:hover {
-  color: #0ea5e9;
-  background: rgba(14, 165, 233, 0.08);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .category-tabs span.active {
-  background: #0ea5e9;
-  color: #ffffff;
-  border-color: #0ea5e9;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 /* ========== 卡片 ========== */
 .destination-card {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--theme-hairline);
+  box-shadow: var(--theme-shadow-sm);
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .destination-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .image-container {
@@ -688,7 +688,7 @@ const forceUpdate = () => {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--theme-text-1);
   letter-spacing: -0.01em;
 }
 
@@ -701,20 +701,20 @@ const forceUpdate = () => {
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  color: #cbd5e1;
-  background: #f1f5f9;
+  color: var(--theme-text-3);
+  background: var(--theme-bg-surface-2);
   transition: all 0.25s ease;
 }
 
 .destination-card:hover .card-arrow {
-  color: #ffffff;
-  background: #0ea5e9;
+  color: var(--theme-primary-text);
+  background: var(--theme-primary);
   transform: translateX(2px);
 }
 
 .destination-description {
   margin: 8px 0 14px;
-  color: #64748b;
+  color: var(--theme-text-2);
   font-size: 14px;
   line-height: 1.6;
   display: -webkit-box;
@@ -741,9 +741,9 @@ const forceUpdate = () => {
   padding: 5px 12px;
   border-radius: 999px;
   font-size: 13px;
-  color: #0369a1;
-  background: rgba(14, 165, 233, 0.08);
-  border: 1px solid rgba(14, 165, 233, 0.18);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 22%, transparent);
   transition: background 0.2s ease;
 }
 
@@ -766,21 +766,21 @@ const forceUpdate = () => {
   margin: 0 0 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #334155;
+  color: var(--theme-text-1);
 }
 
 .no-results-hint {
   margin: 0 0 24px;
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--theme-text-3);
 }
 
 .no-results-reset {
   padding: 10px 24px;
   border: none;
   border-radius: 999px;
-  background: #0ea5e9;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -788,7 +788,7 @@ const forceUpdate = () => {
 }
 
 .no-results-reset:hover {
-  background: #0284c7;
+  background: var(--theme-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -834,7 +834,7 @@ const forceUpdate = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--theme-bg-glass-strong);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -845,8 +845,8 @@ const forceUpdate = () => {
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border: 5px solid var(--theme-bg-surface-2);
+  border-top: 5px solid var(--theme-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -864,20 +864,20 @@ const forceUpdate = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--theme-bg-glass-strong);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  color: #e74c3c;
+  color: var(--theme-danger);
 }
 
 .retry-btn {
   margin-top: 20px;
   padding: 10px 20px;
-  background: #3498db;
-  color: white;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -885,7 +885,7 @@ const forceUpdate = () => {
 }
 
 .retry-btn:hover {
-  background: #2980b9;
+  background: var(--theme-primary-hover);
 }
 
 /* 确保主内容区域在加载和错误状态时隐藏 */
@@ -902,7 +902,7 @@ const forceUpdate = () => {
 .destination-detail {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--theme-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -922,16 +922,15 @@ const forceUpdate = () => {
   position: relative;
   width: 100%;
   max-width: 980px;
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.25),
-              0 10px 20px -10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-lg);
   overflow: hidden;
   display: flex;
   flex-direction: row;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
                "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   animation: detail-pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -947,8 +946,8 @@ const forceUpdate = () => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.08);
-  color: #1d1d1f;
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-1);
   border: none;
   line-height: 1;
   cursor: pointer;
@@ -960,15 +959,15 @@ const forceUpdate = () => {
 }
 
 .destination-detail-close:hover {
-  background: rgb(255, 0, 0);
-  color: #ffffff;
+  background: var(--theme-danger);
+  color: var(--theme-text-inverse);
   transform: scale(1.05);
 }
 
 .destination-detail-image-wrapper {
   flex: 1 1 50%;
   min-height: 420px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1000,7 +999,7 @@ const forceUpdate = () => {
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
 }
 
@@ -1008,7 +1007,7 @@ const forceUpdate = () => {
   font-size: 17px;
   font-weight: 400;
   line-height: 1.47;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
 }
 
@@ -1016,7 +1015,7 @@ const forceUpdate = () => {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.4;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0;
 }
 
@@ -1025,7 +1024,7 @@ const forceUpdate = () => {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 16px;
   padding: 16px;
 }
@@ -1040,14 +1039,14 @@ const forceUpdate = () => {
 .stat-label {
   font-size: 12px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   letter-spacing: 0.02em;
 }
 
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .destination-detail-actions {
@@ -1062,8 +1061,8 @@ const forceUpdate = () => {
   align-items: center;
   justify-content: center;
   padding: 12px 28px;
-  background: #000000;
-  color: #ffffff;
+  background: var(--theme-text-1);
+  color: var(--theme-text-inverse);
   border: none;
   border-radius: 40px;
   font-size: 14px;
@@ -1074,21 +1073,21 @@ const forceUpdate = () => {
 }
 
 .btn.btn-primary:hover {
-  background: #1d1d1f;
+  background: var(--theme-text-2);
   transform: translateY(-1px);
 }
 
 .btn-link {
   font-size: 16px;
   font-weight: 400;
-  color: #2997ff;
+  color: var(--theme-primary);
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .btn-link:hover {
-  color: #0066cc;
+  color: var(--theme-primary-hover);
   text-decoration: underline;
   text-underline-offset: 4px;
 }

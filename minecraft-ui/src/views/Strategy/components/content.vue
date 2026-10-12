@@ -583,19 +583,19 @@ function handleNotification(item) {
 
 <style scoped>
 .group-container {
-  --color-text: #1d1d1f;
-  --color-text-secondary: #6e6e73;
-  --color-text-dark-bg: #ffffff;
-  --color-text-secondary-dark-bg: #a1a1a6;
-  --color-primary: #2997ff;
-  --color-primary-hover: #0066cc;
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f5f5f7;
-  --color-bg-dark: #000000;
-  --color-border: #d2d2d6;
-  --color-success: #34c759;
-  --color-danger: #ff3b30;
-  --color-warning: #ffd60a;
+  --color-text: var(--theme-text-1);
+  --color-text-secondary: var(--theme-text-2);
+  --color-text-dark-bg: var(--theme-text-inverse);
+  --color-text-secondary-dark-bg: var(--theme-text-3);
+  --color-primary: var(--theme-primary);
+  --color-primary-hover: var(--theme-primary-hover);
+  --color-bg: var(--theme-bg-surface);
+  --color-bg-secondary: var(--theme-bg-surface-2);
+  --color-bg-dark: var(--theme-bg-app);
+  --color-border: var(--theme-border);
+  --color-success: var(--theme-success);
+  --color-danger: var(--theme-danger);
+  --color-warning: var(--theme-warning);
 
   --font-family: 'SF Pro Display', 'SF Pro', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
@@ -621,9 +621,9 @@ function handleNotification(item) {
   --radius-xl: 28px;
   --radius-full: 980px;
 
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+  --shadow-sm: var(--theme-shadow-sm);
+  --shadow-md: var(--theme-shadow-md);
+  --shadow-lg: var(--theme-shadow-lg);
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
@@ -637,7 +637,7 @@ function handleNotification(item) {
 
 .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
   border: none;
   padding: var(--spacing-12) var(--spacing-28);
   border-radius: var(--radius-full);
@@ -680,7 +680,7 @@ function handleNotification(item) {
 }
 
 .btn-secondary:hover {
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
 }
 
 .btn-secondary:active {

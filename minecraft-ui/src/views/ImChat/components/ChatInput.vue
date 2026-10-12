@@ -170,23 +170,23 @@ const handleSend = () => {
 <style scoped>
 .chat-input-area {
   padding: 10px 16px 14px;
-  background: #ffffff;
-  border-top: 1px solid #ededed;
+  background: var(--theme-bg-surface);
+  border-top: 1px solid var(--theme-hairline);
   position: relative;
   flex-shrink: 0;
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .input-box {
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   overflow: hidden;
   transition: border-color 0.2s ease;
 }
 
 .input-box:focus-within {
-  border-color: #c8c8cc;
+  border-color: var(--theme-border-strong);
 }
 
 .input-box .message-input {
@@ -202,7 +202,7 @@ const handleSend = () => {
   overflow-y: auto;
   font-size: 14px;
   line-height: 1.5;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -213,7 +213,7 @@ const handleSend = () => {
 }
 
 .input-box .message-input::placeholder {
-  color: #b0b0b5;
+  color: var(--theme-text-3);
 }
 
 .input-toolbar {
@@ -235,7 +235,7 @@ const handleSend = () => {
   border: none;
   background: transparent;
   border-radius: 6px;
-  color: #6a6a6f;
+  color: var(--theme-text-2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -245,8 +245,8 @@ const handleSend = () => {
 }
 
 .tool-btn:hover {
-  background: #f0f0f2;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .send-btn {
@@ -255,20 +255,20 @@ const handleSend = () => {
   border: none;
   border-radius: 6px;
   font-size: 13.5px;
-  color: #ffffff;
-  background: #2997ff;
+  color: var(--theme-primary-text);
+  background: var(--theme-primary);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.15s ease;
 }
 
 .send-btn:hover:not(:disabled) {
-  background: #2997ff;
+  background: var(--theme-primary-hover);
 }
 
 .send-btn:disabled {
-  background: #f0f0f2;
-  color: #b8b8bd;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-3);
   cursor: not-allowed;
 }
 

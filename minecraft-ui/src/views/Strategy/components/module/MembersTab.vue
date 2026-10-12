@@ -79,7 +79,7 @@ function getRoleName(role) {
   align-items: center;
   gap: var(--spacing-4);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .tab-actions button:hover {
@@ -107,7 +107,7 @@ function getRoleName(role) {
 }
 
 .member-item:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .avatar {
@@ -115,7 +115,7 @@ function getRoleName(role) {
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(0, 0, 0, 0.04);
+  border: 2px solid var(--theme-hairline);
 }
 
 .member-info {
@@ -149,7 +149,7 @@ function getRoleName(role) {
 
 .role-badge.admin {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .role-badge.member {
@@ -169,6 +169,6 @@ function getRoleName(role) {
 }
 
 .member-actions button:hover {
-  background: rgba(255, 59, 48, 0.1);
+  background: var(--theme-danger-soft);
 }
 </style>

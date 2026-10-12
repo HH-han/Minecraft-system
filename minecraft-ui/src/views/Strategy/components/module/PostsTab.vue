@@ -102,7 +102,7 @@ function handleCreate() {
 .post-create textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.1);
+  box-shadow: var(--theme-ring);
 }
 
 .post-create textarea::placeholder {
@@ -129,7 +129,7 @@ function handleCreate() {
 }
 
 .post-item:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .post-header {
@@ -144,7 +144,7 @@ function handleCreate() {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(0, 0, 0, 0.04);
+  border: 2px solid var(--theme-hairline);
 }
 
 .post-author {
@@ -175,7 +175,7 @@ function handleCreate() {
 }
 
 .post-menu button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--theme-bg-hover);
   color: var(--color-text);
 }
 
@@ -205,7 +205,7 @@ function handleCreate() {
 }
 
 .post-footer button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--theme-bg-hover);
   color: var(--color-text);
 }
 

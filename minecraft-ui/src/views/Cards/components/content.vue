@@ -282,14 +282,14 @@ async function handleDelete(card) {
 
 <style scoped>
 .cards-container {
-  --color-text: #1d1d1f;
-  --color-text-secondary: #6e6e73;
-  --color-primary: #2997ff;
-  --color-primary-hover: #0066cc;
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f5f5f7;
-  --color-border: #d2d2d7;
-  --color-danger: #ff3b30;
+  --color-text: var(--theme-text-1);
+  --color-text-secondary: var(--theme-text-2);
+  --color-primary: var(--theme-primary);
+  --color-primary-hover: var(--theme-primary-hover);
+  --color-bg: var(--theme-bg-surface);
+  --color-bg-secondary: var(--theme-bg-surface-2);
+  --color-border: var(--theme-border);
+  --color-danger: var(--theme-danger);
 
   --font-family: 'SF Pro Display', 'SF Pro', 'PingFang SC', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -313,7 +313,7 @@ async function handleDelete(card) {
   --radius-xl: 28px;
   --radius-full: 980px;
 
-  --shadow-lg: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: var(--theme-shadow-lg);
 
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
@@ -353,7 +353,7 @@ async function handleDelete(card) {
 
 .tab-item:hover {
   color: var(--color-text);
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--theme-bg-hover);
 }
 
 .tab-item.active {
@@ -401,13 +401,13 @@ async function handleDelete(card) {
 
 .search-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+  box-shadow: var(--theme-ring);
 }
 
 .search-btn {
   border: none;
   background: var(--color-text);
-  color: #fff;
+  color: var(--theme-text-inverse);
   padding: var(--spacing-10) var(--spacing-28);
   border-radius: var(--radius-full);
   font-size: 15px;
@@ -418,7 +418,7 @@ async function handleDelete(card) {
 }
 
 .search-btn:hover {
-  background: #000;
+  background: var(--theme-text-2);
   transform: scale(1.02);
 }
 

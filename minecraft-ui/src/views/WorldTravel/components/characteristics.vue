@@ -195,11 +195,11 @@ onMounted(loadData);
 
 <style scoped>
 .world-characteristics {
-    --world-accent: #0d9488;
-    --world-hairline: rgba(148, 163, 184, 0.18);
-    --world-title: #0f172a;
-    --world-text: #64748b;
-    --world-muted: #94a3b8;
+    --world-accent: var(--theme-primary);
+    --world-hairline: var(--theme-hairline);
+    --world-title: var(--theme-text-1);
+    --world-text: var(--theme-text-2);
+    --world-muted: var(--theme-text-3);
 
     padding: 48px 24px;
     color: var(--world-title);
@@ -238,7 +238,7 @@ onMounted(loadData);
     margin: 14px auto 0;
     border-radius: 2px;
     background: linear-gradient(90deg, var(--world-accent),
-            color-mix(in srgb, var(--world-accent) 55%, #ffffff));
+            color-mix(in srgb, var(--world-accent) 55%, var(--theme-bg-surface)));
 }
 
 .world-subtitle {
@@ -267,8 +267,8 @@ onMounted(loadData);
     padding: 9px 20px;
     border: 1.5px solid transparent;
     border-radius: 999px;
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-2);
     font-size: 14px;
     font-weight: 500;
     font-family: inherit;
@@ -282,10 +282,10 @@ onMounted(loadData);
 }
 
 .world-filter.is-active {
-    color: #ffffff;
+    color: var(--theme-primary-text);
     border-color: transparent;
     background: linear-gradient(135deg, var(--world-accent),
-            color-mix(in srgb, var(--world-accent) 62%, #ffffff));
+            color-mix(in srgb, var(--world-accent) 62%, var(--theme-bg-surface)));
     box-shadow: 0 8px 20px -10px color-mix(in srgb, var(--world-accent) 85%, transparent);
 }
 
@@ -315,15 +315,15 @@ onMounted(loadData);
     overflow: hidden;
     border: 1px solid var(--world-hairline);
     border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-sm);
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .world-card:hover {
     transform: translateY(-6px);
     border-color: color-mix(in srgb, var(--wc-accent) 45%, transparent);
-    box-shadow: 0 20px 40px -18px rgba(15, 23, 42, 0.28);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 /* 图片区 */
@@ -331,7 +331,7 @@ onMounted(loadData);
     position: relative;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: #eef2f7;
+    background: var(--theme-bg-surface-2);
 }
 
 .world-card-media::after {
@@ -406,8 +406,8 @@ onMounted(loadData);
 .world-tag {
     padding: 3px 10px;
     border-radius: 6px;
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-2);
     font-size: 12px;
 }
 
@@ -433,7 +433,7 @@ onMounted(loadData);
     display: flex;
     gap: 12px;
     padding: 9px 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    border-bottom: 1px solid var(--theme-hairline);
 }
 
 .world-fact:last-child {
@@ -457,7 +457,7 @@ onMounted(loadData);
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    color: #475569;
+    color: var(--theme-text-2);
     font-size: 13px;
     line-height: 1.6;
 }
@@ -469,14 +469,14 @@ onMounted(loadData);
 
 .skeleton-block {
     aspect-ratio: 16 / 10;
-    background: #eef2f7;
+    background: var(--theme-bg-surface-2);
 }
 
 .skeleton-line {
     display: block;
     height: 12px;
     border-radius: 6px;
-    background: #eef2f7;
+    background: var(--theme-bg-surface-2);
 }
 
 .skeleton-line--sm {
@@ -501,7 +501,7 @@ onMounted(loadData);
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    background: linear-gradient(90deg, transparent, var(--theme-bg-glass-strong), transparent);
     animation: world-shimmer 1.4s ease-in-out infinite;
 }
 
@@ -527,7 +527,7 @@ onMounted(loadData);
 
 .world-empty-title {
     margin: 0 0 8px;
-    color: #334155;
+    color: var(--theme-text-1);
     font-size: 18px;
     font-weight: 600;
 }
@@ -543,7 +543,7 @@ onMounted(loadData);
     border: none;
     border-radius: 999px;
     background: var(--world-accent);
-    color: #ffffff;
+    color: var(--theme-primary-text);
     font-size: 14px;
     font-weight: 600;
     font-family: inherit;

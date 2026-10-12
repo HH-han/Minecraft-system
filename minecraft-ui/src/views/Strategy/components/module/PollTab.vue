@@ -65,7 +65,7 @@ defineEmits(['create', 'vote'])
   align-items: center;
   gap: var(--spacing-4);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .tab-actions button:hover {
@@ -110,12 +110,12 @@ defineEmits(['create', 'vote'])
 
 .poll-status.active {
   background: var(--color-success);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .poll-status.ended {
   background: var(--color-text-secondary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .poll-options {
@@ -137,16 +137,16 @@ defineEmits(['create', 'vote'])
 
 .poll-option:hover {
   border-color: var(--color-primary);
-  background: rgba(41, 151, 255, 0.03);
+  background: var(--theme-primary-soft);
 }
 
 .poll-option.selected {
   border-color: var(--color-primary);
-  background: rgba(41, 151, 255, 0.1);
+  background: var(--theme-primary-soft);
 }
 
 .poll-option.winner {
-  background: rgba(52, 199, 89, 0.1);
+  background: var(--theme-success-soft);
   border-color: var(--color-success);
 }
 

@@ -299,14 +299,14 @@ function viewDetail(itemId) {
     margin: 0px 30px;
     padding: 0 15px;
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 /* 顶部区域 */
 .souvenir-header {
     text-align: center;
     padding: 30px 0;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    background: linear-gradient(135deg, var(--theme-bg-surface-2) 0%, var(--theme-bg-muted) 100%);
     border-radius: 0 0 20px 20px;
     margin-bottom: 30px;
 }
@@ -314,12 +314,12 @@ function viewDetail(itemId) {
 .souvenir-header h1 {
     font-size: 2.2rem;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--theme-text-1);
 }
 
 .subtitle {
     font-size: 1.1rem;
-    color: #555;
+    color: var(--theme-text-2);
     margin-bottom: 25px;
 }
 
@@ -341,13 +341,14 @@ function viewDetail(itemId) {
     border-radius: 30px 0 0 30px;
     font-size: 16px;
     outline: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .search-bar button {
     padding: 0 25px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 0 30px 30px 0;
     font-size: 16px;
@@ -355,12 +356,12 @@ function viewDetail(itemId) {
     cursor: pointer;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .search-bar button:hover {
-    background: #ff5252;
+    background: color-mix(in srgb, var(--theme-highlight) 86%, #000);
 }
 
 .search-icon {
@@ -376,8 +377,8 @@ function viewDetail(itemId) {
 
 .region-filter button {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.7);
-    color: #333;
+    background: var(--theme-bg-glass);
+    color: var(--theme-text-1);
     border: none;
     border-radius: 20px;
     font-size: 14px;
@@ -386,8 +387,8 @@ function viewDetail(itemId) {
 }
 
 .region-filter button.active {
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     font-weight: 600;
 }
 
@@ -397,9 +398,9 @@ function viewDetail(itemId) {
     justify-content: space-around;
     margin-bottom: 30px;
     padding: 15px 0;
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .category-item {
@@ -413,12 +414,12 @@ function viewDetail(itemId) {
 }
 
 .category-item:hover {
-    background: #f8f8f8;
+    background: var(--theme-bg-hover);
 }
 
 .category-item.active {
-    background: #fff0f0;
-    color: #ff6b6b;
+    background: color-mix(in srgb, var(--theme-highlight) 12%, transparent);
+    color: var(--theme-highlight);
 }
 
 .category-icon {
@@ -440,7 +441,9 @@ function viewDetail(itemId) {
 .sort-options select {
     padding: 8px 12px;
     border-radius: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--theme-border);
+    background: var(--theme-bg-surface);
+    color: var(--theme-text-1);
     margin-left: 10px;
 }
 
@@ -451,16 +454,16 @@ function viewDetail(itemId) {
 }
 
 .souvenir-card {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow-sm);
     transition: all 0.3s ease;
 }
 
 .souvenir-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .souvenir-image {
@@ -484,8 +487,8 @@ function viewDetail(itemId) {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -497,21 +500,21 @@ function viewDetail(itemId) {
     right: 10px;
     width: 30px;
     height: 30px;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--theme-bg-glass-strong);
     border: none;
     border-radius: 50%;
     font-size: 16px;
-    color: #ccc;
+    color: var(--theme-text-3);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .favorite-btn.favorited {
-    color: #ff6b6b;
+    color: var(--theme-highlight);
 }
 
 .favorite-btn:hover {
-    background: white;
+    background: var(--theme-bg-surface);
     transform: scale(1.1);
 }
 
@@ -528,7 +531,7 @@ function viewDetail(itemId) {
 }
 
 .origin {
-    color: #666;
+    color: var(--theme-text-2);
     font-size: 13px;
     margin-bottom: 10px;
 }
@@ -542,12 +545,12 @@ function viewDetail(itemId) {
 .price {
     font-size: 18px;
     font-weight: bold;
-    color: #ff6b6b;
+    color: var(--theme-highlight);
 }
 
 .original-price {
     font-size: 13px;
-    color: #999;
+    color: var(--theme-text-3);
     text-decoration: line-through;
     margin-left: 8px;
 }
@@ -560,7 +563,7 @@ function viewDetail(itemId) {
 }
 
 .stars {
-    color: #ffb400;
+    color: var(--theme-warning);
     letter-spacing: 2px;
     margin-right: 5px;
 }
@@ -570,14 +573,14 @@ function viewDetail(itemId) {
 }
 
 .sales {
-    color: #666;
+    color: var(--theme-text-2);
 }
 
 .add-to-cart {
     width: 100%;
     padding: 10px;
-    background: #ff6b6b;
-    color: white;
+    background: var(--theme-highlight);
+    color: var(--theme-primary-text);
     border: none;
     border-radius: 6px;
     font-size: 14px;
@@ -586,7 +589,7 @@ function viewDetail(itemId) {
 }
 
 .add-to-cart:hover {
-    background: #ff5252;
+    background: color-mix(in srgb, var(--theme-highlight) 86%, #000);
 }
 
 /* 推荐区 */
@@ -598,7 +601,7 @@ function viewDetail(itemId) {
     font-size: 1.5rem;
     margin-bottom: 20px;
     padding-left: 10px;
-    border-left: 4px solid #ff6b6b;
+    border-left: 4px solid var(--theme-highlight);
 }
 
 .recommendation-grid {
@@ -608,18 +611,18 @@ function viewDetail(itemId) {
 }
 
 .recommend-item {
-    background: white;
+    background: var(--theme-bg-surface);
     border-radius: 10px;
     padding: 15px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .recommend-item:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .recommend-item img {
@@ -638,7 +641,7 @@ function viewDetail(itemId) {
 }
 
 .rec-price {
-    color: #ff6b6b;
+    color: var(--theme-highlight);
     font-weight: bold;
     font-size: 16px;
 }

@@ -66,7 +66,7 @@ defineEmits(['add', 'generate', 'delete'])
   align-items: center;
   gap: var(--spacing-4);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .tab-actions button:hover {
@@ -83,7 +83,7 @@ defineEmits(['add', 'generate', 'delete'])
 }
 
 .tab-actions .btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .trip-timeline {
@@ -145,7 +145,7 @@ defineEmits(['add', 'generate', 'delete'])
 }
 
 .trip-item:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--theme-bg-hover);
 }
 
 .trip-item::before {
@@ -198,7 +198,7 @@ defineEmits(['add', 'generate', 'delete'])
 }
 
 .trip-item .delete-btn:hover {
-  background: rgba(255, 59, 48, 0.1);
+  background: var(--theme-danger-soft);
   color: var(--color-danger);
 }
 

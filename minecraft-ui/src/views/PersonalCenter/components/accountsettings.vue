@@ -182,7 +182,7 @@ const cancelChanges = () => {
     background: rgba(230, 247, 255, 0.15);
     backdrop-filter: blur(15px);
     border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-lg);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -375,7 +375,7 @@ const cancelChanges = () => {
 }
 
 input:checked+.accountsettings-slider {
-    background-color: rgba(0, 136, 204, 0.5);
+    background-color: var(--theme-primary-soft);
 }
 
 input:checked+.accountsettings-slider:before {
@@ -412,14 +412,14 @@ input:checked+.accountsettings-slider:before {
 
 .accountsettings-button-save {
     margin-left: 10px;
-    background: rgba(0, 119, 182, 0.7);
+    background: var(--theme-primary);
     color: white;
 }
 
 .accountsettings-button-save:hover {
-    background: rgba(0, 119, 182, 0.9);
+    background: var(--theme-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .accountsettings-button:active {
