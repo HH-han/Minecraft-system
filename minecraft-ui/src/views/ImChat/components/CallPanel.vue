@@ -446,7 +446,7 @@ defineExpose({
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -457,9 +457,9 @@ defineExpose({
 
 .call-window {
   width: 420px;
-  background: #1d1d1f;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
   overflow: hidden;
 }
 
@@ -474,8 +474,8 @@ defineExpose({
   margin: 0 auto 20px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
+  border: 3px solid var(--theme-border);
+  background: var(--theme-bg-surface-2);
 }
 
 .caller-avatar {
@@ -486,7 +486,7 @@ defineExpose({
 
 .caller-name {
   font-size: 20px;
-  color: #ffffff;
+  color: var(--theme-text-1);
   margin: 0 0 8px 0;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -494,14 +494,14 @@ defineExpose({
 
 .call-status {
   font-size: 14px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0;
   font-weight: 400;
 }
 
 .call-timer {
   font-size: 16px;
-  color: #2997ff;
+  color: var(--theme-primary);
   margin-top: 12px;
   font-weight: 600;
   font-family: 'SF Mono', monospace;
@@ -538,7 +538,7 @@ defineExpose({
   width: 88px;
   height: 66px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--theme-border);
   object-fit: cover;
 }
 
@@ -558,7 +558,7 @@ defineExpose({
 .wave-bar {
   width: 4px;
   height: 12px;
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--theme-border-strong);
   border-radius: 2px;
   transition: height 0.1s ease;
 }
@@ -591,19 +591,19 @@ defineExpose({
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--theme-bg-hover);
   border: none;
   border-radius: 50%;
   width: 68px;
   height: 68px;
-  color: #ffffff;
+  color: var(--theme-text-1);
   cursor: pointer;
   transition: 0.2s ease;
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-bg-active);
   transform: scale(1.05);
 }
 
@@ -619,55 +619,55 @@ defineExpose({
   position: absolute;
   bottom: -22px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--theme-text-3);
   white-space: nowrap;
   font-weight: 400;
 }
 
 .mic-btn {
-  color: #ffffff;
+  color: var(--theme-text-1);
   position: relative;
 }
 
 .mic-btn.disabled {
-  color: #ff453a;
+  color: var(--theme-danger);
 }
 
 .accept-btn {
-  background: #30d158;
+  background: var(--theme-success);
   color: #1d1d1f;
   position: relative;
 }
 
 .accept-btn:hover {
-  background: #34c759;
+  background: var(--theme-success);
 }
 
 .hangup-btn {
-  background: #ff453a;
-  color: #ffffff;
+  background: var(--theme-danger);
+  color: var(--theme-primary-text);
   position: relative;
 }
 
 .hangup-btn:hover {
-  background: #e03a30;
+  background: var(--theme-danger);
 }
 
 .video-btn {
-  color: #ffffff;
+  color: var(--theme-text-1);
   position: relative;
 }
 
 .video-btn.disabled {
-  color: #ff453a;
+  color: var(--theme-danger);
 }
 
 .speaker-btn {
-  color: #ffffff;
+  color: var(--theme-text-1);
   position: relative;
 }
 
 .speaker-btn.disabled {
-  color: #30d158;
+  color: var(--theme-success);
 }
 </style>

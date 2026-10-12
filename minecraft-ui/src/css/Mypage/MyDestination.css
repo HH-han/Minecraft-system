@@ -76,26 +76,26 @@
 
 .mydestination-input-wrapper input:focus {
   outline: none;
-  box-shadow: 0 4px 16px rgba(0, 119, 255, 0.2);
-  border-color: rgba(0, 119, 255, 0.3);
+  box-shadow: var(--theme-ring);
+  border-color: color-mix(in srgb, var(--theme-primary) 30%, transparent);
 }
 
 .mydestination-input-wrapper button {
   padding: 0 2rem;
-  background: linear-gradient(135deg, #0066ff, #00a3ff);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .mydestination-input-wrapper button:hover {
-  background: linear-gradient(135deg, #0052cc, #0088cc);
+  background: var(--theme-gradient);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.3);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .mydestination-input-wrapper button:active {
@@ -107,7 +107,7 @@
 }
 
 .mydestination-span-wrapper span {
-  color: #555;
+  color: var(--theme-text-2);
   font-size: 0.9rem;
   position: relative;
   padding: 0 10px;
@@ -120,7 +120,7 @@
   top: 50%;
   width: 30px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1));
+  background: linear-gradient(90deg, transparent, var(--theme-border));
 }
 
 .mydestination-span-wrapper span::before {
@@ -129,7 +129,7 @@
 
 .mydestination-span-wrapper span::after {
   right: -30px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
+  background: linear-gradient(90deg, var(--theme-border), transparent);
 }
 
 /* 响应式设计 */
@@ -156,7 +156,7 @@
   height: 100vh;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--theme-shadow-lg);
   transform-style: preserve-3d;
   perspective: 1000px;
 }
@@ -391,7 +391,7 @@
 .page-title {
   text-align: center;
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--theme-text-1);
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -409,7 +409,7 @@
 .search-input {
   width: 100%;
   padding: 0.6rem 3.5rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--theme-border);
   border-radius: 35px;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -417,8 +417,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .search-icon {
@@ -426,7 +426,7 @@
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #95a5a6;
+  color: var(--theme-text-3);
 }
 
 .category-tabs {
@@ -441,15 +441,15 @@
   border-radius: 25px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #f5f5f5;
-  color: #666;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 
 .category-tabs span.active {
-  background: #3498db;
-  color: white;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   transform: scale(1.05);
-  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .destination-list {
@@ -459,10 +459,10 @@
 }
 
 .destination-card {
-  background: white;
+  background: var(--theme-bg-surface);
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--theme-shadow-sm);
   transition: transform 0.3s ease;
 }
 
@@ -506,13 +506,13 @@
 }
 
 .destination-name {
-  color: #000000;
+  color: var(--theme-text-1);
   margin-bottom: 1rem;
   font-size: 1.4rem;
 }
 
 .destination-description {
-  color: #646464;
+  color: var(--theme-text-2);
 }
 
 .city-list {
@@ -523,20 +523,20 @@
 
 .city-item {
   padding: 0.5rem 0;
-  color: #000000;
+  color: var(--theme-text-1);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .city-item i {
-  color: #3498db;
+  color: var(--theme-primary);
 }
 
 .no-results {
   text-align: center;
   padding: 4rem;
-  color: #95a5a6;
+  color: var(--theme-text-3);
 }
 
 .no-results img {
@@ -557,8 +557,8 @@
   height: 40px;
   border: none;
   border-radius: 50%;
-  background: #3498db;
-  color: white;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -567,17 +567,17 @@
 }
 
 .pagination-button:disabled {
-  background: #bdc3c7;
+  background: var(--theme-bg-active);
   cursor: not-allowed;
 }
 
 .pagination-button:hover:not(:disabled) {
-  background: #2980b9;
+  background: var(--theme-primary-hover);
   transform: scale(1.1);
 }
 
 .page-indicator {
-  color: #7f8c8d;
+  color: var(--theme-text-2);
   font-weight: 500;
 }
 
@@ -607,7 +607,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--theme-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -620,9 +620,9 @@
   position: relative;
   max-width: 800px;
   margin: 2rem auto;
-  background: white;
+  background: var(--theme-bg-elevated);
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
   overflow: hidden;
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
   animation: fadeIn 0.3s ease-out;
@@ -645,8 +645,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #1080E7, #7EBEFB);
-  color: white;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
 }
 
 .destination-detail-header-top h3 {
@@ -658,7 +658,7 @@
 .destination-detail-close {
   background: none;
   border: none;
-  color: white;
+  color: var(--theme-primary-text);
   font-size: 2rem;
   cursor: pointer;
   transition: transform 0.2s;
@@ -674,7 +674,7 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 @media (min-width: 768px) {
@@ -710,7 +710,7 @@
 .destination-detail-info-background {
   padding: 1.5rem;
   width: 100%;
-  background: #f9f9ff;
+  background: var(--theme-bg-surface-2);
 }
 
 @media (min-width: 768px) {
@@ -722,7 +722,7 @@
 
 .destination-detail-name {
   margin-top: 0;
-  color: #2c3e50;
+  color: var(--theme-text-1);
   font-size: 1.8rem;
   font-weight: 700;
   position: relative;
@@ -736,7 +736,7 @@
   left: 0;
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, #6e8efb, #a777e3);
+  background: var(--theme-gradient);
 }
 
 .destination-detail-description,
@@ -745,14 +745,14 @@
 .destination-detail-ww,
 .destination-detail-xx {
   margin: 1rem 0;
-  color: #555;
+  color: var(--theme-text-2);
   line-height: 1.6;
   font-size: 1rem;
 }
 
 .destination-detail-price {
   font-size: 1.4rem;
-  color: #e74c3c;
+  color: var(--theme-danger);
   font-weight: 600;
 }
 

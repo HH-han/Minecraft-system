@@ -51,7 +51,7 @@ const goHome = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f5f5f7 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--theme-bg-surface-2) 0%, var(--theme-bg-app) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -75,7 +75,7 @@ const goHome = () => {
 .circle-1 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, var(--theme-accent-2) 0%, color-mix(in srgb, var(--theme-accent-2) 60%, var(--theme-bg-app)) 100%);
   top: -100px;
   right: -100px;
   animation-delay: 0s;
@@ -84,7 +84,7 @@ const goHome = () => {
 .circle-2 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--theme-accent-2) 0%, color-mix(in srgb, var(--theme-accent-2) 60%, var(--theme-bg-app)) 100%);
   bottom: -50px;
   left: -50px;
   animation-delay: -2s;
@@ -93,7 +93,7 @@ const goHome = () => {
 .circle-3 {
   width: 200px;
   height: 200px;
-  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--theme-accent-2) 0%, color-mix(in srgb, var(--theme-accent-2) 60%, var(--theme-bg-app)) 100%);
   top: 50%;
   left: 10%;
   animation-delay: -4s;
@@ -128,7 +128,7 @@ const goHome = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6366f1;
+  color: var(--theme-accent-2);
   animation: iconAppear 0.8s ease-out;
 }
 
@@ -215,7 +215,7 @@ const goHome = () => {
   font-size: 120px;
   font-weight: 300;
   letter-spacing: -0.02em;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 16px;
   line-height: 1.05;
 }
@@ -223,14 +223,14 @@ const goHome = () => {
 .error-headline {
   font-size: 28px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0 0 12px;
   letter-spacing: 0.004em;
 }
 
 .error-message {
   font-size: 17px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 0 40px;
   line-height: 1.47;
   max-width: 400px;
@@ -245,8 +245,8 @@ const goHome = () => {
 
 .cta-primary {
   padding: 12px 28px;
-  background: #0071e3;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   text-decoration: none;
   border-radius: 20px;
   font-size: 17px;
@@ -255,9 +255,9 @@ const goHome = () => {
 }
 
 .cta-primary:hover {
-  background: #0077ed;
+  background: var(--theme-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+  box-shadow: var(--theme-ring);
 }
 
 .cta-primary:active {
@@ -267,7 +267,7 @@ const goHome = () => {
 .cta-secondary {
   padding: 12px 28px;
   background: transparent;
-  color: #0071e3;
+  color: var(--theme-primary);
   text-decoration: none;
   border-radius: 20px;
   font-size: 17px;

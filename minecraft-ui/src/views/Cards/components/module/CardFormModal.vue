@@ -209,7 +209,7 @@ function handleSubmit() {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -233,7 +233,7 @@ function handleSubmit() {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--theme-shadow-lg);
   animation: modalIn var(--transition-normal);
 }
 
@@ -271,7 +271,7 @@ function handleSubmit() {
 }
 
 .close-btn:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--theme-bg-active);
   color: var(--color-text);
 }
 
@@ -313,7 +313,7 @@ function handleSubmit() {
 .form-group input:focus,
 .form-group textarea:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+  box-shadow: var(--theme-ring);
 }
 
 .form-group textarea {
@@ -396,7 +396,7 @@ function handleSubmit() {
   border: none;
   border-radius: 50%;
   background: var(--color-danger);
-  color: #fff;
+  color: var(--theme-text-inverse);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -430,7 +430,7 @@ function handleSubmit() {
 
 .btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--theme-primary-text);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -452,7 +452,7 @@ function handleSubmit() {
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--theme-bg-active);
 }
 
 @media (max-width: 767px) {

@@ -647,7 +647,7 @@ const goBack = () => {
 
 <style scoped>
 body {
-  background-color: #fff;
+  background-color: var(--theme-bg-app);
   /*   background: radial-gradient(at 50% -20%, #908392, #0d060e) fixed; */
 }
 

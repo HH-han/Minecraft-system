@@ -120,7 +120,7 @@ const currentYear = new Date().getFullYear();
 .intro-hero {
     text-align: center;
     padding: 60px 20px;
-    background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--theme-bg-surface-2) 0%, var(--theme-bg-surface) 100%);
     border-radius: 28px;
     margin-bottom: 60px;
 }
@@ -128,14 +128,14 @@ const currentYear = new Date().getFullYear();
 .hero-title {
     font-size: 56px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     letter-spacing: -0.02em;
     margin-bottom: 12px;
 }
 
 .hero-subtitle {
     font-size: 28px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     font-weight: 400;
 }
 
@@ -146,13 +146,13 @@ const currentYear = new Date().getFullYear();
 .section-title {
     font-size: 32px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     text-align: center;
     margin-bottom: 40px;
 }
 
 .section-card {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 28px;
     padding: 48px 40px;
 }
@@ -160,14 +160,14 @@ const currentYear = new Date().getFullYear();
 .card-title {
     font-size: 28px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin-bottom: 20px;
 }
 
 .card-text {
     font-size: 17px;
     line-height: 1.6;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin-bottom: 16px;
 }
 
@@ -182,7 +182,7 @@ const currentYear = new Date().getFullYear();
 }
 
 .feature-card {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 24px;
     padding: 32px 28px;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -190,19 +190,19 @@ const currentYear = new Date().getFullYear();
 
 .feature-card:hover {
     transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .feature-card h3 {
     font-size: 20px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin-bottom: 12px;
 }
 
 .feature-card p {
     font-size: 15px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     line-height: 1.5;
 }
 
@@ -213,7 +213,7 @@ const currentYear = new Date().getFullYear();
 }
 
 .tech-card {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 24px;
     padding: 28px 24px;
 }
@@ -231,18 +231,18 @@ const currentYear = new Date().getFullYear();
 }
 
 .tech-badge.backend {
-    background: #dbeafe;
-    color: #1e40af;
+    background: var(--theme-info-soft);
+    color: var(--theme-info);
 }
 
 .tech-badge.frontend {
-    background: #d1fae5;
-    color: #065f46;
+    background: var(--theme-success-soft);
+    color: var(--theme-success);
 }
 
 .tech-badge.database {
-    background: #fef3c7;
-    color: #92400e;
+    background: var(--theme-warning-soft);
+    color: var(--theme-warning);
 }
 
 .tech-list {
@@ -254,8 +254,8 @@ const currentYear = new Date().getFullYear();
 .tech-list li {
     padding: 10px 0;
     font-size: 15px;
-    color: #6e6e73;
-    border-bottom: 1px solid #e5e5e7;
+    color: var(--theme-text-2);
+    border-bottom: 1px solid var(--theme-border);
 }
 
 .tech-list li:last-child {
@@ -272,8 +272,8 @@ const currentYear = new Date().getFullYear();
     gap: 8px;
     margin-top: 24px;
     padding: 14px 32px;
-    background: #2997ff;
-    color: white;
+    background: var(--theme-primary);
+    color: var(--theme-primary-text);
     border-radius: 24px;
     font-size: 16px;
     font-weight: 500;
@@ -282,7 +282,7 @@ const currentYear = new Date().getFullYear();
 }
 
 .contact-link:hover {
-    background: #0066cc;
+    background: var(--theme-primary-hover);
     transform: translateY(-2px);
 }
 
@@ -294,12 +294,12 @@ const currentYear = new Date().getFullYear();
 .intro-footer {
     text-align: center;
     padding: 40px 20px;
-    border-top: 1px solid #f5f5f7;
+    border-top: 1px solid var(--theme-hairline);
 }
 
 .copyright {
     font-size: 13px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin-bottom: 16px;
 }
 
@@ -311,7 +311,7 @@ const currentYear = new Date().getFullYear();
 
 .legal-links a {
     font-size: 13px;
-    color: #2997ff;
+    color: var(--theme-primary);
     text-decoration: none;
 }
 

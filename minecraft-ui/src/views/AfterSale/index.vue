@@ -127,8 +127,8 @@ const statusKey = (status) => {
 const formatTime = (v) => (v ? String(v).replace('T', ' ') : '-')
 
 const headerStyle = () => ({
-  background: '#f7f8fb',
-  color: '#6e6e73',
+  background: 'var(--theme-bg-surface-2)',
+  color: 'var(--theme-text-2)',
   fontWeight: '600',
   fontSize: '13px'
 })
@@ -187,12 +187,12 @@ onMounted(fetchList)
 
 <style scoped>
 .as-page {
-  --tn-ink: #1d1d1f;
-  --tn-ink-2: #6e6e73;
-  --tn-ink-3: #9a9aa0;
-  --tn-accent: #2997ff;
-  --tn-accent-2: #5e5ce6;
-  --tn-line: rgba(20, 30, 60, 0.08);
+  --tn-ink: var(--theme-text-1);
+  --tn-ink-2: var(--theme-text-2);
+  --tn-ink-3: var(--theme-text-3);
+  --tn-accent: var(--theme-primary);
+  --tn-accent-2: var(--theme-accent-2);
+  --tn-line: var(--theme-hairline);
   --tn-font: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   position: relative;
@@ -211,9 +211,9 @@ onMounted(fetchList)
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(1000px 500px at 6% -10%, rgba(41, 151, 255, 0.1), transparent 60%),
-    radial-gradient(800px 440px at 100% 0%, rgba(94, 92, 230, 0.09), transparent 58%),
-    #f5f5f7;
+    radial-gradient(1000px 500px at 6% -10%, color-mix(in srgb, var(--theme-primary) 10%, transparent), transparent 60%),
+    radial-gradient(800px 440px at 100% 0%, color-mix(in srgb, var(--theme-accent-2) 9%, transparent), transparent 58%),
+    var(--theme-bg-app);
 }
 
 /* Hero */
@@ -261,20 +261,20 @@ onMounted(fetchList)
   position: relative;
   padding: 8px 8px 16px;
   border-radius: 22px;
-  background: #fff;
+  background: var(--theme-bg-surface);
   border: 1px solid var(--tn-line);
-  box-shadow: 0 20px 50px -30px rgba(20, 40, 80, 0.35);
+  box-shadow: var(--theme-shadow-lg);
   animation: as-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 
 .as-card :deep(.el-table) {
   border-radius: 16px;
-  --el-table-border-color: rgba(20, 30, 60, 0.06);
-  --el-table-row-hover-bg-color: rgba(41, 151, 255, 0.05);
+  --el-table-border-color: var(--theme-hairline);
+  --el-table-row-hover-bg-color: var(--theme-primary-soft);
 }
 
 .as-card :deep(.el-table th.el-table__cell) {
-  border-bottom: 1px solid rgba(20, 30, 60, 0.06);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .as-card :deep(.el-table__inner-wrapper::before) {
@@ -309,24 +309,24 @@ onMounted(fetchList)
 }
 
 .as-chip--type {
-  background: rgba(94, 92, 230, 0.1);
-  color: #5e5ce6;
+  background: color-mix(in srgb, var(--theme-accent-2) 10%, transparent);
+  color: var(--theme-accent-2);
 }
 .as-chip--idle {
-  background: #f0f2f6;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
 }
 .as-chip--active {
-  background: rgba(41, 151, 255, 0.12);
-  color: #0473e2;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 .as-chip--warn {
-  background: rgba(255, 159, 10, 0.14);
-  color: #b26a00;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 .as-chip--done {
-  background: rgba(52, 199, 89, 0.14);
-  color: #1f9d4d;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 /* Empty */

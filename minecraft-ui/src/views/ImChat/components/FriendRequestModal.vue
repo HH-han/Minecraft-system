@@ -145,7 +145,7 @@ const onClose = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -156,12 +156,12 @@ const onClose = () => {
 .modal-content {
   width: 420px;
   max-height: 80vh;
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
@@ -170,14 +170,14 @@ const onClose = () => {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 17px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.01em;
 }
 
@@ -185,9 +185,9 @@ const onClose = () => {
   width: 32px;
   height: 32px;
   border: none;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 50%;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -196,8 +196,8 @@ const onClose = () => {
 }
 
 .close-btn:hover {
-  background: #e8e8ed;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .modal-body {
@@ -209,14 +209,14 @@ const onClose = () => {
 .loading {
   text-align: center;
   padding: 40px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 14px;
 }
 
 .no-requests {
   text-align: center;
   padding: 40px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .no-requests p {
@@ -232,13 +232,13 @@ const onClose = () => {
 
 .request-item {
   padding: 14px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 16px;
   transition: 0.2s ease;
 }
 
 .request-item:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .request-info {
@@ -251,7 +251,7 @@ const onClose = () => {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #d2d2d6;
+  background: var(--theme-bg-surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,13 +273,13 @@ const onClose = () => {
 .name {
   font-size: 14px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 4px;
 }
 
 .message {
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -288,7 +288,7 @@ const onClose = () => {
 
 .time {
   font-size: 12px;
-  color: #86868b;
+  color: var(--theme-text-3);
 }
 
 .actions {
@@ -311,22 +311,22 @@ const onClose = () => {
 }
 
 .btn-accept {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 40px;
 }
 
 .btn-accept:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .btn-reject {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   border-radius: 12px;
 }
 
 .btn-reject:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 </style>

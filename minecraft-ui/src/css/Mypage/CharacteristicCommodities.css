@@ -15,8 +15,8 @@
 .cc-card {
     width: 450px;
     height: 380px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-shadow-md);
     display: flex;
     border-radius: 16px;
     margin: 2rem auto;
@@ -28,7 +28,7 @@
 
 .cc-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow-lg);
 }
 
 /* 图片容器 */
@@ -78,7 +78,7 @@
 
 .cc-title {
     font-size: 1.8rem;
-    color: #2d3436;
+    color: var(--theme-text-1);
     margin-bottom: 1.2rem;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -92,13 +92,13 @@
     left: 0;
     width: 50px;
     height: 3px;
-    background: #ff6b6b;
+    background: var(--theme-primary);
     border-radius: 2px;
 }
 
 .cc-description {
     font-size: 1rem;
-    color: #636e72;
+    color: var(--theme-text-2);
     line-height: 1.8;
     margin-bottom: 1.5rem;
 }
@@ -110,7 +110,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.278);
+    background: var(--theme-overlay);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -120,9 +120,9 @@
 }
 
 .cc-enlarged-image {
-    background: white;
+    background: var(--theme-bg-elevated);
     border-radius: 20px;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow-lg);
     overflow: hidden;
     width: 800px;
     animation: scaleUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -149,7 +149,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-bottom: 3px solid #eee;
+    border-bottom: 3px solid var(--theme-hairline);
 }
 
 .cc-image-overlay {
@@ -187,18 +187,18 @@
 }
 
 .cc-price-label {
-    color: #636e72;
+    color: var(--theme-text-2);
     font-size: 1rem;
 }
 
 .cc-price {
-    color: #ff1500;
+    color: var(--theme-danger);
     font-size: 2rem;
     font-weight: 700;
 }
 
 .cc-discount {
-    color: #ff6b6b;
+    color: var(--theme-primary);
     font-size: 0.9rem;
     font-weight: 500;
 }
@@ -217,25 +217,25 @@
 }
 
 .cc-btn-primary {
-    background: linear-gradient(135deg, #ff6b6b, #ff8787);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .cc-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .cc-btn-secondary {
-    background: linear-gradient(135deg, #4b8ff4, #4ea3e0);
-    color: white;
-    box-shadow: 0 4px 12px rgba(75, 75, 75, 0.3);
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .cc-btn-secondary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(75, 75, 75, 0.4);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .cc-icon {

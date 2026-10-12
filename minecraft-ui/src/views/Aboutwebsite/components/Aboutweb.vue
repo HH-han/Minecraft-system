@@ -130,7 +130,7 @@
 .about-hero {
     text-align: center;
     padding: 60px 20px;
-    background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    background: linear-gradient(180deg, var(--theme-bg-surface-2) 0%, var(--theme-bg-surface) 100%);
     border-radius: 28px;
     margin-bottom: 60px;
 }
@@ -138,14 +138,14 @@
 .hero-title {
     font-size: 56px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     letter-spacing: -0.02em;
     margin-bottom: 12px;
 }
 
 .hero-subtitle {
     font-size: 28px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     font-weight: 400;
 }
 
@@ -156,13 +156,13 @@
 .section-title {
     font-size: 32px;
     font-weight: 700;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     text-align: center;
     margin-bottom: 40px;
 }
 
 .section-card {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 28px;
     padding: 48px 40px;
 }
@@ -170,14 +170,14 @@
 .card-title {
     font-size: 28px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin-bottom: 20px;
 }
 
 .card-text {
     font-size: 17px;
     line-height: 1.6;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     margin-bottom: 16px;
 }
 
@@ -192,7 +192,7 @@
 }
 
 .feature-card {
-    background: #f5f5f7;
+    background: var(--theme-bg-surface-2);
     border-radius: 24px;
     padding: 32px 28px;
     text-align: center;
@@ -201,14 +201,14 @@
 
 .feature-card:hover {
     transform: scale(1.01);
-    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+    box-shadow: var(--theme-shadow-md);
 }
 
 .feature-icon {
     width: 64px;
     height: 64px;
     margin: 0 auto 20px;
-    background: #ffffff;
+    background: var(--theme-bg-surface);
     border-radius: 20px;
     display: flex;
     align-items: center;
@@ -218,19 +218,19 @@
 .feature-icon svg {
     width: 32px;
     height: 32px;
-    color: #2997ff;
+    color: var(--theme-primary);
 }
 
 .feature-card h3 {
     font-size: 20px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
     margin-bottom: 8px;
 }
 
 .feature-card p {
     font-size: 15px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
     line-height: 1.5;
 }
 
@@ -253,17 +253,17 @@
 
 .tech-label {
     font-size: 14px;
-    color: #6e6e73;
+    color: var(--theme-text-2);
 }
 
 .tech-value {
     font-size: 18px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: var(--theme-text-1);
 }
 
 .stats-section {
-    background: #000000;
+    background: var(--theme-bg-elevated);
     border-radius: 28px;
     padding: 48px 40px;
 }
@@ -284,12 +284,12 @@
 .stat-value {
     font-size: 48px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--theme-text-1);
 }
 
 .stat-label {
     font-size: 14px;
-    color: #a1a1a6;
+    color: var(--theme-text-3);
 }
 
 @media (max-width: 768px) {

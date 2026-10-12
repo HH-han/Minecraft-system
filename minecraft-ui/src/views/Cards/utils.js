@@ -72,10 +72,10 @@ export function formatTime(value) {
  */
 export function statusMeta(status) {
   if (Number(status) === 0) {
-    return { key: 'deleted', text: '已删除', color: '#6e6e73', bg: 'rgba(110,110,115,0.12)' }
+    return { key: 'deleted', text: '已删除', color: 'var(--theme-text-2)', bg: 'var(--theme-bg-surface-2)' }
   }
   if (Number(status) === 2) {
-    return { key: 'reviewing', text: '审核中', color: '#b25000', bg: 'rgba(255,159,10,0.16)' }
+    return { key: 'reviewing', text: '审核中', color: 'var(--theme-warning)', bg: 'var(--theme-warning-soft)' }
   }
-  return { key: 'normal', text: '正常', color: '#1d7d3f', bg: 'rgba(52,199,89,0.16)' }
+  return { key: 'normal', text: '正常', color: 'var(--theme-success)', bg: 'var(--theme-success-soft)' }
 }

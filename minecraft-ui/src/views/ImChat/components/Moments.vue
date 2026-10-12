@@ -752,11 +752,11 @@ onUnmounted(() => {
   flex: 1;
   min-width: 0;
   height: 100%;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   overflow-y: auto;
   position: relative;
   font-family: Inter, 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -765,7 +765,7 @@ onUnmounted(() => {
 }
 
 .moments-pane::-webkit-scrollbar-thumb {
-  background: #d2d2d6;
+  background: var(--theme-scrollbar-thumb);
   border-radius: 3px;
 }
 
@@ -904,7 +904,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 70px 0;
-  color: #a1a1a6;
+  color: var(--theme-text-3);
   font-size: 14px;
 }
 
@@ -917,7 +917,7 @@ onUnmounted(() => {
   display: flex;
   gap: 12px;
   padding: 14px 0;
-  border-bottom: 1px solid #f0f0f2;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .moment-avatar {
@@ -937,14 +937,14 @@ onUnmounted(() => {
   margin: 0 0 6px;
   font-size: 15px;
   font-weight: 600;
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 .moment-content {
   margin: 0 0 10px;
   font-size: 15px;
   line-height: 1.6;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -977,7 +977,7 @@ onUnmounted(() => {
   object-fit: cover;
   border-radius: 4px;
   cursor: zoom-in;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   transition: opacity 0.2s ease;
 }
 
@@ -989,7 +989,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #a1a1a6;
+  color: var(--theme-text-3);
   font-size: 12px;
 }
 
@@ -997,14 +997,14 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 .moment-action {
   margin-left: auto;
   border: none;
-  background: #f5f5f7;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   cursor: pointer;
   padding: 3px 10px;
   border-radius: 6px;
@@ -1012,8 +1012,8 @@ onUnmounted(() => {
 }
 
 .moment-action:hover {
-  background: #e8e8ed;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 /* 操作气泡 */
@@ -1031,25 +1031,25 @@ onUnmounted(() => {
   padding: 5px 14px;
   border: none;
   border-radius: 8px;
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   font-size: 13px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .action-item:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .action-item.danger {
-  color: #ff3b30;
+  color: var(--theme-danger);
 }
 
 /* 互动面板 */
 .interaction-panel {
   margin-top: 8px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 8px;
   padding: 8px 12px;
 }
@@ -1070,72 +1070,72 @@ onUnmounted(() => {
 }
 
 .like-icon.filled {
-  fill: #2997ff;
-  stroke: #2997ff;
+  fill: var(--theme-primary);
+  stroke: var(--theme-primary);
   margin-top: 2px;
 }
 
 .like-names {
   font-size: 13px;
-  color: #2997ff;
+  color: var(--theme-primary);
   line-height: 1.5;
   word-break: break-word;
 }
 
 .comment-list {
-  border-top: 1px solid #e5e5ea;
+  border-top: 1px solid var(--theme-border);
   padding-top: 6px;
 }
 
 .comment-item {
   font-size: 13px;
   line-height: 1.6;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   word-break: break-word;
 }
 
 .comment-user {
-  color: #2997ff;
+  color: var(--theme-primary);
   font-weight: 500;
   cursor: pointer;
 }
 
 .comment-reply,
 .comment-sep {
-  color: #6e6e73;
+  color: var(--theme-text-2);
   margin: 0 2px;
 }
 
 .comment-text {
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .comment-delete {
   border: none;
   background: transparent;
-  color: #a1a1a6;
+  color: var(--theme-text-3);
   font-size: 12px;
   cursor: pointer;
   margin-left: 6px;
 }
 
 .comment-delete:hover {
-  color: #ff3b30;
+  color: var(--theme-danger);
 }
 
 .comment-editor {
   position: relative;
   margin-top: 8px;
   padding: 10px 12px 8px;
-  border: 1px solid #c7daeb;
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .comment-editor:focus-within {
-  border-color: #2997ff;
-  box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.08);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .comment-textarea {
@@ -1147,7 +1147,7 @@ onUnmounted(() => {
   border: none;
   font-size: 14px;
   line-height: 1.6;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-family: inherit;
   background: transparent;
   outline: none;
@@ -1155,7 +1155,7 @@ onUnmounted(() => {
 }
 
 .comment-textarea::placeholder {
-  color: #b0b0b5;
+  color: var(--theme-text-3);
 }
 
 .comment-toolbar {
@@ -1175,14 +1175,14 @@ onUnmounted(() => {
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #5f6368;
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .tool-btn:hover {
-  background: #f2f2f5;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .comment-send {
@@ -1192,8 +1192,8 @@ onUnmounted(() => {
   margin-left: 6px;
   border: none;
   border-radius: 6px;
-  background: #f0f0f2;
-  color: #b0b0b5;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-3);
   font-size: 14px;
   font-family: inherit;
   cursor: not-allowed;
@@ -1201,13 +1201,13 @@ onUnmounted(() => {
 }
 
 .comment-send.is-active {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   cursor: pointer;
 }
 
 .comment-send.is-active:hover {
-  background: #1986ec;
+  background: var(--theme-primary-hover);
 }
 
 .comment-emoji-panel {

@@ -18,7 +18,7 @@
         <span class="theme-text-2">…</span>
         <button class="theme-button theme-button--primary">…</button>
    5) 页面自定义的局部主题变量请一律「别名」到本文件令牌，禁止再写各主题三套值：
-        --sb-bg: var(--theme-bg-glass);   /* 而不是在 dark/game 里各写一遍 */
+        --sb-bg: var(--theme-bg-glass);   （而不是在 dark/game 里各写一遍）
    6) Element Plus 深色由 html.dark 触发，本文件末尾已把 EP 变量桥接到令牌
    7) 扩展新主题：在「主题令牌」区按 html[data-theme="xxx"] 复制一份即可，
       未覆盖的令牌会自动继承亮色默认值
@@ -34,7 +34,6 @@
   --theme-radius-lg: 18px;
   --theme-radius-xl: 24px;
   --theme-radius-pill: 999px;
-  --ts-radius: 14px;
 
   /* 动效 */
   --theme-duration-fast: 0.18s;

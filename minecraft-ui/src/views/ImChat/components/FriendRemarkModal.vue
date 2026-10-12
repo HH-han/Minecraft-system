@@ -96,7 +96,7 @@ const handleConfirm = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--theme-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -106,12 +106,12 @@ const handleConfirm = () => {
 
 .modal-content {
   width: 400px;
-  background: #ffffff;
+  background: var(--theme-bg-elevated);
   border-radius: 24px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
@@ -120,13 +120,13 @@ const handleConfirm = () => {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #d2d2d6;
+  border-bottom: 1px solid var(--theme-border);
 }
 
 .modal-title {
   font-size: 17px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -135,8 +135,8 @@ const handleConfirm = () => {
   width: 32px;
   height: 32px;
   border: none;
-  background: #f5f5f7;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   cursor: pointer;
   border-radius: 50%;
   display: flex;
@@ -146,8 +146,8 @@ const handleConfirm = () => {
 }
 
 .close-btn:hover {
-  background: #e8e8ed;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .modal-body {
@@ -165,7 +165,7 @@ const handleConfirm = () => {
 .form-label {
   display: block;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -186,31 +186,31 @@ const handleConfirm = () => {
 
 .friend-name {
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-weight: 500;
 }
 
 .form-input {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   outline: none;
   box-sizing: border-box;
   transition: 0.2s ease;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   font-family: Inter, 'PingFang SC', -apple-system, sans-serif;
 }
 
 .form-input::placeholder {
-  color: #6e6e73;
+  color: var(--theme-text-3);
 }
 
 .form-input:focus {
-  border-color: #2997ff;
-  box-shadow: 0 0 0 4px rgba(41, 151, 255, 0.15);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .modal-footer {
@@ -218,7 +218,7 @@ const handleConfirm = () => {
   justify-content: flex-end;
   gap: 12px;
   padding: 16px 24px 24px;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border);
 }
 
 .btn {
@@ -232,23 +232,23 @@ const handleConfirm = () => {
 }
 
 .btn-cancel {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   border-radius: 12px;
 }
 
 .btn-cancel:hover {
-  background: #e8e8ed;
+  background: var(--theme-bg-hover);
 }
 
 .btn-confirm {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border-radius: 40px;
 }
 
 .btn-confirm:hover:not(:disabled) {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .btn-confirm:disabled {

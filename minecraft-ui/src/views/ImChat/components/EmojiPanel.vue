@@ -260,10 +260,10 @@ defineExpose({
   bottom: 100%;
   left: 20px;
   right: 20px;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 24px;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08), 0 -4px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-lg);
   padding: 16px;
   margin-bottom: 12px;
   max-height: 400px;
@@ -279,7 +279,7 @@ defineExpose({
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #f5f5f7;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .emoji-tabs {
@@ -291,7 +291,7 @@ defineExpose({
   padding: 6px 16px;
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 14px;
   cursor: pointer;
   border-radius: 16px;
@@ -301,13 +301,13 @@ defineExpose({
 }
 
 .tab-btn.active {
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
 }
 
 .tab-btn:hover:not(.active) {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .emoji-content {
@@ -321,7 +321,7 @@ defineExpose({
   display: flex;
   gap: 6px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #f5f5f7;
+  border-bottom: 1px solid var(--theme-hairline);
   overflow-x: auto;
   margin-bottom: 10px;
 }
@@ -334,7 +334,7 @@ defineExpose({
   padding: 4px 12px;
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 12px;
   cursor: pointer;
   border-radius: 12px;
@@ -345,13 +345,13 @@ defineExpose({
 }
 
 .category-btn.active {
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .category-btn:hover:not(.active) {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .emoji-grid {
@@ -368,7 +368,7 @@ defineExpose({
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid #f5f5f7;
+  border: 1px solid var(--theme-hairline);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -376,27 +376,27 @@ defineExpose({
 }
 
 .emoji-item:hover {
-  border-color: #2997ff;
-  background: #f5f5f7;
+  border-color: var(--theme-primary);
+  background: var(--theme-bg-hover);
 }
 
 .emoji-item.upload-item {
-  border: 2px dashed #d2d2d6;
-  background: #f5f5f7;
+  border: 2px dashed var(--theme-border);
+  background: var(--theme-bg-surface-2);
 }
 
 .emoji-item.upload-item:hover {
-  border-color: #2997ff;
-  background: rgba(41, 151, 255, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .upload-icon {
-  color: #6e6e73;
+  color: var(--theme-text-2);
   transition: 0.2s ease;
 }
 
 .emoji-item.upload-item:hover .upload-icon {
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 .emoji-unicode {
@@ -412,7 +412,7 @@ defineExpose({
 .empty-emoji {
   grid-column: 2 / -1;
   text-align: center;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   padding: 20px;
 }
 
@@ -427,10 +427,10 @@ defineExpose({
 
 .context-menu {
   position: fixed;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--theme-shadow-md);
   padding: 6px;
   z-index: 1000;
 }
@@ -441,7 +441,7 @@ defineExpose({
   padding: 8px 12px;
   border: none;
   background: transparent;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   font-size: 14px;
   cursor: pointer;
   text-align: left;
@@ -451,7 +451,7 @@ defineExpose({
 }
 
 .context-menu-item:hover {
-  background: #f5f5f7;
-  color: #ff453a;
+  background: var(--theme-bg-hover);
+  color: var(--theme-danger);
 }
 </style>
