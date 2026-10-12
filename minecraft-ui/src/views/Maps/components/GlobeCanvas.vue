@@ -563,15 +563,15 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 10, 24, 0.92);
+  background: var(--theme-bg-elevated);
   z-index: 100;
 }
 
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 3px solid rgba(100, 150, 255, 0.2);
-  border-top-color: #4a9eff;
+  border: 3px solid var(--theme-border-strong);
+  border-top-color: var(--theme-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -582,7 +582,7 @@ defineExpose({
 
 .loading-text {
   margin-top: 20px;
-  color: #dfe9f7;
+  color: var(--theme-text-1);
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -590,7 +590,7 @@ defineExpose({
 
 .loading-sub {
   margin-top: 8px;
-  color: #8fa5c5;
+  color: var(--theme-text-3);
   font-size: 12px;
   letter-spacing: 1px;
 }
@@ -604,7 +604,7 @@ defineExpose({
   justify-content: center;
   padding: 40px;
   text-align: center;
-  background: rgba(8, 10, 24, 0.95);
+  background: var(--theme-bg-elevated);
   z-index: 100;
 }
 
@@ -614,13 +614,13 @@ defineExpose({
 }
 
 .error-title {
-  color: #ff6b6b;
+  color: var(--theme-danger);
   font-size: 22px;
   margin: 0 0 12px 0;
 }
 
 .error-message {
-  color: #c0c8d8;
+  color: var(--theme-text-2);
   font-size: 14px;
   margin: 0 0 10px 0;
   max-width: 420px;
@@ -628,7 +628,7 @@ defineExpose({
 }
 
 .error-hint {
-  color: #7d8aa5;
+  color: var(--theme-text-3);
   font-size: 13px;
   margin: 0;
 }

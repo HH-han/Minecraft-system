@@ -472,6 +472,7 @@ const currentTabTitle = computed(() => {
     chat: '博览通讯',
     contacts: '通讯录',
     discover: '发现',
+    favorites: '收藏',
     me: '我'
   }
   return titles[currentTab.value] || '博览通讯'
@@ -482,6 +483,7 @@ const searchPlaceholder = computed(() => {
     chat: '搜索好友或群组...',
     contacts: '搜索好友...',
     discover: '搜索...',
+    favorites: '收藏...',
     me: '搜索...'
   }
   return placeholders[currentTab.value] || '搜索...'
@@ -825,6 +827,7 @@ onUnmounted(() => {
   background: var(--theme-bg-surface);
   display: flex;
   overflow: hidden;
+  transition: width var(--theme-duration) var(--theme-ease);
   font-family: Inter, "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 

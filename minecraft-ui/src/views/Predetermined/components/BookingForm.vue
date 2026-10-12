@@ -119,7 +119,7 @@ const submitBooking = () => {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   padding: 32px;
   border-radius: 24px;
   border: none;
@@ -130,7 +130,7 @@ const submitBooking = () => {
   margin: 0 0 28px;
   font-size: 20px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.2;
 }
 
@@ -144,7 +144,7 @@ const submitBooking = () => {
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -155,26 +155,26 @@ const submitBooking = () => {
   max-width: 100%;
   height: 44px;
   padding: 0 16px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border-strong);
   border-radius: 12px;
   font-size: 16px;
-  background: #ffffff;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input::placeholder {
-  color: #a1a1a6;
+  color: var(--theme-text-3);
 }
 
 .form-group input:hover {
-  border-color: #c7c7cc;
+  border-color: var(--theme-border-strong);
 }
 
 .form-group input:focus {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
-  border-color: #2997ff;
+  border-color: var(--theme-primary);
 }
 
 /* 特殊要求 textarea */
@@ -183,30 +183,30 @@ const submitBooking = () => {
   width: 100%;
   max-width: 100%;
   padding: 14px 16px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border-strong);
   border-radius: 16px;
   font-size: 16px;
   line-height: 1.5;
   resize: vertical;
   min-height: 104px;
-  background: #ffffff;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   font-family: inherit;
 }
 
 .special-request textarea::placeholder {
-  color: #a1a1a6;
+  color: var(--theme-text-3);
 }
 
 .special-request textarea:hover {
-  border-color: #c7c7cc;
+  border-color: var(--theme-border-strong);
 }
 
 .special-request textarea:focus {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
-  border-color: #2997ff;
+  border-color: var(--theme-primary);
 }
 
 /* 价格汇总 */
@@ -214,7 +214,7 @@ const submitBooking = () => {
   box-sizing: border-box;
   margin: 28px 0;
   padding: 24px 0 0;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border-strong);
   border-radius: 0;
   background: none;
   border-left: none;
@@ -228,7 +228,7 @@ const submitBooking = () => {
   align-items: baseline;
   margin-bottom: 12px;
   font-size: 15px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.4;
 }
 
@@ -236,9 +236,9 @@ const submitBooking = () => {
   font-weight: 600;
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #d2d2d6;
+  border-top: 1px solid var(--theme-border-strong);
   border-top-style: dashed;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   margin-bottom: 0;
 }
 
@@ -246,7 +246,7 @@ const submitBooking = () => {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.1;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 /* 提交按钮：胶囊蓝色 CTA */
@@ -255,8 +255,8 @@ const submitBooking = () => {
   width: 100%;
   height: 48px;
   padding: 0 28px;
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 40px;
   cursor: pointer;
@@ -269,7 +269,7 @@ const submitBooking = () => {
 }
 
 .submit-btn:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .submit-btn:active {
@@ -277,7 +277,7 @@ const submitBooking = () => {
 }
 
 .submit-btn:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 3px;
 }
 

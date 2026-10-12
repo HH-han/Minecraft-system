@@ -100,7 +100,7 @@ watch(() => props.initialTourists, (newTourists) => {
   margin: 0 0 16px;
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.3;
   display: flex;
   align-items: center;
@@ -110,18 +110,18 @@ watch(() => props.initialTourists, (newTourists) => {
 .ticket-count {
   font-size: 13px;
   font-weight: 400;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .tourist-form {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   padding: 20px 24px;
   border-radius: 20px;
   margin-bottom: 12px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border-strong);
   box-shadow: none;
 }
 
@@ -132,7 +132,7 @@ watch(() => props.initialTourists, (newTourists) => {
 .tourist-index {
   font-size: 12px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -160,7 +160,7 @@ watch(() => props.initialTourists, (newTourists) => {
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -171,28 +171,28 @@ watch(() => props.initialTourists, (newTourists) => {
   max-width: 100%;
   height: 44px;
   padding: 0 16px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border-strong);
   border-radius: 12px;
   font-size: 16px;
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .form-group input::placeholder {
-  color: #a1a1a6;
+  color: var(--theme-text-3);
 }
 
 .form-group input:hover {
-  border-color: #c7c7cc;
-  background: #ffffff;
+  border-color: var(--theme-border-strong);
+  background: var(--theme-bg-surface);
 }
 
 .form-group input:focus {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
-  border-color: #2997ff;
-  background: #ffffff;
+  border-color: var(--theme-primary);
+  background: var(--theme-bg-surface);
 }
 
 /* 响应式：手机 - 表单字段堆叠单列 */

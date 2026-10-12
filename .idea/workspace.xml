@@ -5,37 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="全局主题切换">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Minecraft-system3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/BrowseHotel.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/BrowseHotel.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/CharacteristicCommodities.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/CharacteristicCommodities.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/FoodRecommendation.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/FoodRecommendation.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/MyDestination.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/css/Mypage/MyDestination.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/css/Theme/theme.css" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/css/Theme/theme.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/Aboutweb.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/Aboutweb.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/PrivacyPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/PrivacyPolicy.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/TermsOfService.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/TermsOfService.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/WebsiteIntroduction.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Aboutwebsite/components/WebsiteIntroduction.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/components/module/CardFormModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/components/module/CardFormModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/401.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/401.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/403.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/403.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/404.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/404.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/500.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/500.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/502.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/502.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/503.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/503.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/504.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/504.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/CallPanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/CallPanel.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/EmojiPanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/EmojiPanel.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/Favorites.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/Favorites.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/FriendRemarkModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/FriendRemarkModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/FriendRequestModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/FriendRequestModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/GroupEditModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/GroupEditModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/InviteFriendModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/InviteFriendModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/Sidebar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/Sidebar.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,23 +181,7 @@
       <workItem from="1788358793152" duration="7905000" />
       <workItem from="1790931344912" duration="4005000" />
       <workItem from="1791041472791" duration="1532000" />
-      <workItem from="1791823790067" duration="111000" />
-    </task>
-    <task id="LOCAL-00107" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785038514574</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1785038514574</updated>
-    </task>
-    <task id="LOCAL-00108" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785039696670</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
-      <option name="project" value="LOCAL" />
-      <updated>1785039696670</updated>
+      <workItem from="1791823790067" duration="744000" />
     </task>
     <task id="LOCAL-00109" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -604,7 +559,23 @@
       <option name="project" value="LOCAL" />
       <updated>1791823504371</updated>
     </task>
-    <option name="localTasksCounter" value="156" />
+    <task id="LOCAL-00156" summary="全局主题切换">
+      <option name="closed" value="true" />
+      <created>1791823923028</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1791823923029</updated>
+    </task>
+    <task id="LOCAL-00157" summary="全局主题切换">
+      <option name="closed" value="true" />
+      <created>1791824664410</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1791824664410</updated>
+    </task>
+    <option name="localTasksCounter" value="158" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

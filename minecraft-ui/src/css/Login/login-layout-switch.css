@@ -1,0 +1,147 @@
+/* ============================================================================
+   登录页布局切换开关（components/LoginComponent/LoginLayoutSwitching.vue 专用）
+   ----------------------------------------------------------------------------
+   三态分段控件：图文在左 / 表单居中 / 图文在右。
+   视觉语言与 css/Switchthemes/theme-switch.css 保持一致：
+   · 选中态：实心「主题主色」滑块 + 反色图标，当前布局一目了然
+   · 悬停态：非选中分段浮起浅底、图标放大
+   配色 / 圆角 / 动效全部「别名」到全局主题令牌，随 light / dark / game 自动变化。
+   ============================================================================ */
+
+.layout-switch {
+  /* —— 局部令牌 · 尺寸 —— */
+  --ls-item: 28px;              /* 单格尺寸（同时决定滑块宽高与位移步长） */
+  --ls-pad: 3px;                /* 容器内边距 */
+  --ls-icon: 17px;              /* 图标尺寸 */
+
+  /* —— 局部令牌 · 颜色（别名到全局令牌）—— */
+  --ls-accent: var(--theme-primary);                /* 主色：滑块底 / 焦点环 */
+  --ls-accent-contrast: var(--theme-primary-text);  /* 选中图标反色 */
+  --ls-bg: var(--theme-bg-glass-strong);            /* 容器玻璃底 */
+  --ls-border: var(--theme-border);                 /* 容器描边 */
+  --ls-text: var(--theme-text-3);                   /* 未选中图标 */
+  --ls-text-hover: var(--theme-text-1);             /* 悬停图标 */
+  --ls-hover-bg: var(--theme-bg-hover);             /* 悬停浅底 */
+
+  /* —— 局部令牌 · 形状与效果 —— */
+  --ls-radius: var(--theme-radius-pill);
+  --ls-shadow: var(--theme-shadow-sm);
+  --ls-glow: 0 2px 10px -2px color-mix(in srgb, var(--ls-accent) 60%, transparent);
+  --ls-blur: var(--theme-blur);
+
+  /* —— 局部令牌 · 动效 —— */
+  --ls-speed: var(--theme-duration);
+  --ls-ease: var(--theme-ease);
+  --ls-hover-scale: 1.1;        /* 悬停图标放大倍率 */
+  --ls-active-stroke: 2.4;      /* 选中图标描边加重 */
+
+  /* —— 局部令牌 · 状态（由组件内联覆盖）—— */
+  --ls-index: 0;                /* 当前选中分段索引 */
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: var(--ls-pad);
+  border: 1px solid var(--ls-border);
+  border-radius: var(--ls-radius);
+  background: var(--ls-bg);
+  box-shadow: var(--ls-shadow);
+  -webkit-backdrop-filter: blur(var(--ls-blur));
+  backdrop-filter: blur(var(--ls-blur));
+  transition:
+    border-color var(--ls-speed) var(--ls-ease),
+    background var(--ls-speed) var(--ls-ease),
+    box-shadow var(--ls-speed) var(--ls-ease);
+}
+
+/* 选中滑块：实心主题主色 + 同色光晕，宽度等于单格、按索引平移 */
+.layout-switch__thumb {
+  position: absolute;
+  top: var(--ls-pad);
+  left: var(--ls-pad);
+  width: var(--ls-item);
+  height: var(--ls-item);
+  border-radius: var(--ls-radius);
+  background: var(--ls-accent);
+  box-shadow: var(--ls-glow);
+  transform: translateX(calc(var(--ls-index) * var(--ls-item)));
+  transition:
+    transform var(--ls-speed) var(--ls-ease),
+    background var(--ls-speed) var(--ls-ease),
+    box-shadow var(--ls-speed) var(--ls-ease);
+}
+
+/* 分段按钮 */
+.layout-switch__option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ls-item);
+  height: var(--ls-item);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ls-radius);
+  background: transparent;
+  color: var(--ls-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--ls-speed) var(--ls-ease),
+    background-color var(--ls-speed) var(--ls-ease);
+}
+
+.layout-switch__option:hover {
+  color: var(--ls-text-hover);
+}
+
+/* 非选中分段：悬停浮起浅底 */
+.layout-switch__option:not(.is-active):hover {
+  background: var(--ls-hover-bg);
+}
+
+/* 选中分段：图标取反色，衬在实心滑块上 */
+.layout-switch__option.is-active {
+  color: var(--ls-accent-contrast);
+}
+
+.layout-switch__option:focus-visible {
+  outline: 2px solid var(--ls-accent);
+  outline-offset: 2px;
+}
+
+.layout-switch__icon {
+  width: var(--ls-icon);
+  height: var(--ls-icon);
+  transition: transform var(--ls-speed) var(--ls-ease);
+}
+
+.layout-switch__option:hover .layout-switch__icon {
+  transform: scale(var(--ls-hover-scale));
+}
+
+/* 选中图标加重，强化「当前」观感 */
+.layout-switch__option.is-active .layout-switch__icon {
+  stroke-width: var(--ls-active-stroke);
+}
+
+/* 小屏收窄，避免与标题、二维码入口抢空间 */
+@media (max-width: 576px) {
+  .layout-switch {
+    --ls-item: 26px;
+    --ls-pad: 2px;
+  }
+}
+
+/* 无障碍：尊重系统动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+
+  .layout-switch,
+  .layout-switch__thumb,
+  .layout-switch__option,
+  .layout-switch__icon {
+    transition: none;
+  }
+}

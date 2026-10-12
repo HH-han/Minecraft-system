@@ -1,17 +1,28 @@
 <template>
     <div class="accountsettings-container">
-        <!-- 模糊背景 -->
-        <div class="accountsettings-background">
-            <img src="@/assets/scenery/scenery-2.webp" alt="background" />
+        <!-- 环境光背景 -->
+        <div class="accountsettings-aurora" aria-hidden="true">
+            <span class="accountsettings-blob accountsettings-blob--1"></span>
+            <span class="accountsettings-blob accountsettings-blob--2"></span>
+            <span class="accountsettings-grid"></span>
         </div>
 
         <!-- 主内容区域 -->
         <div class="accountsettings-content">
-            <h1 class="accountsettings-title">账户设置</h1>
+            <header class="accountsettings-header">
+                <span class="accountsettings-header-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </span>
+                <div>
+                    <h1 class="accountsettings-title">账户设置</h1>
+                    <p class="accountsettings-subtitle">管理你的账号资料与通知偏好</p>
+                </div>
+            </header>
 
             <!-- 头像上传区域 -->
             <div class="accountsettings-avatar-container">
-                <div class="accountsettings-avatar-wrapper" @click="triggerFileInput">
+                <div class="accountsettings-avatar-wrapper" role="button" tabindex="0" aria-label="上传照片"
+                    @click="triggerFileInput" @keydown.enter="triggerFileInput">
                     <img v-if="avatarPreview" :src="avatarPreview" class="accountsettings-avatar" alt="用户头像" />
                     <div v-else class="accountsettings-avatar-placeholder">
                         <i class="fas fa-user"></i>
@@ -23,6 +34,7 @@
                 </div>
                 <input type="file" ref="fileInput" @change="handleAvatarUpload" accept="image/*"
                     style="display: none;" />
+                <p class="accountsettings-avatar-tip">支持 JPG / PNG，建议 1:1 正方形图片</p>
             </div>
 
             <!-- 表单区域 -->
@@ -60,7 +72,7 @@
                     <div class="accountsettings-toggle-group">
                         <div v-for="(pref, index) in notificationPrefs" :key="index"
                             class="accountsettings-toggle-item">
-                            <span>{{ pref.label }}</span>
+                            <span class="accountsettings-toggle-label">{{ pref.label }}</span>
                             <label class="accountsettings-switch">
                                 <input type="checkbox" v-model="pref.value" @change="toggleNotification(pref)" />
                                 <span class="accountsettings-slider"></span>
@@ -144,141 +156,200 @@ const cancelChanges = () => {
 </script>
 
 <style scoped>
-/* 基础样式 */
+/* ========== 页面外壳 ========== */
 .accountsettings-container {
     position: relative;
-    width: 100%;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    padding: 40px 24px;
+    background: var(--theme-bg-app);
+    color: var(--theme-text-1);
     overflow: hidden;
-    color: white;
 }
 
-/* 模糊背景 */
-.accountsettings-background {
+.accountsettings-aurora {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
 }
 
-.accountsettings-background img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: blur(10px) brightness(0.8);
+.accountsettings-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
 }
 
-/* 主内容区域 */
+.accountsettings-blob--1 {
+    width: 420px;
+    height: 420px;
+    top: -160px;
+    left: -120px;
+    background: var(--theme-primary-soft);
+}
+
+.accountsettings-blob--2 {
+    width: 360px;
+    height: 360px;
+    bottom: -160px;
+    right: -120px;
+    background: color-mix(in srgb, var(--theme-accent-2) 22%, transparent);
+}
+
+.accountsettings-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(to right, var(--theme-hairline) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--theme-hairline) 1px, transparent 1px);
+    background-size: 58px 58px;
+    -webkit-mask-image: radial-gradient(ellipse 78% 58% at 50% 0%, #000 18%, transparent 76%);
+    mask-image: radial-gradient(ellipse 78% 58% at 50% 0%, #000 18%, transparent 76%);
+    opacity: 0.6;
+}
+
+/* ========== 主卡片 ========== */
 .accountsettings-content {
-    width: 90%;
-    max-width: 400px;
-    padding: 30px;
-    background: rgba(230, 247, 255, 0.15);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    padding: 30px 32px 32px;
+    border-radius: var(--theme-radius-xl);
+    background: var(--theme-bg-surface);
+    border: 1px solid var(--theme-border);
     box-shadow: var(--theme-shadow-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.accountsettings-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--theme-hairline);
+}
+
+.accountsettings-header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--theme-radius-md);
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
+    font-size: 18px;
 }
 
 .accountsettings-title {
-    text-align: center;
-    margin-bottom: 30px;
-    font-weight: 600;
-    font-size: 24px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--theme-text-1);
 }
 
-/* 头像区域 */
+.accountsettings-subtitle {
+    margin: 3px 0 0;
+    font-size: 13px;
+    color: var(--theme-text-3);
+}
+
+/* ========== 头像区域 ========== */
 .accountsettings-avatar-container {
     display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 26px 0 28px;
 }
 
 .accountsettings-avatar-wrapper {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
     position: relative;
+    width: 104px;
+    height: 104px;
+    border-radius: 28px;
+    border: 2px dashed var(--theme-border-strong);
+    background: var(--theme-bg-surface-2);
     cursor: pointer;
-    border: 2px dashed rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
     overflow: hidden;
+    transition: transform var(--theme-duration) var(--theme-ease),
+        border-color var(--theme-duration) var(--theme-ease);
 }
 
 .accountsettings-avatar-wrapper:hover {
-    transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-3px);
+    border-color: var(--theme-primary);
+    border-style: solid;
+}
+
+.accountsettings-avatar-wrapper:focus-visible {
+    outline: none;
+    box-shadow: var(--theme-ring);
 }
 
 .accountsettings-avatar {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
 }
 
 .accountsettings-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-}
-
-.accountsettings-avatar-placeholder i {
     font-size: 40px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-3);
 }
 
 .accountsettings-avatar-hover {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: var(--theme-overlay);
+    color: #fff;
+    font-size: 20px;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 50%;
+    transition: opacity var(--theme-duration) var(--theme-ease);
 }
 
 .accountsettings-avatar-wrapper:hover .accountsettings-avatar-hover {
     opacity: 1;
 }
 
-.accountsettings-avatar-hover i {
-    font-size: 20px;
-    margin-bottom: 5px;
-}
-
 .accountsettings-avatar-hover span {
     font-size: 12px;
+    letter-spacing: 0.04em;
 }
 
-/* 表单样式 */
+.accountsettings-avatar-tip {
+    margin: 0;
+    font-size: 12px;
+    color: var(--theme-text-3);
+}
+
+/* ========== 表单样式 ========== */
 .accountsettings-form-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .accountsettings-label {
     display: block;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    opacity: 0.9;
+    color: var(--theme-text-2);
 }
 
 .accountsettings-input-container {
@@ -290,58 +361,79 @@ const cancelChanges = () => {
 .accountsettings-input-icon {
     position: absolute;
     left: 15px;
-    font-size: 16px;
-    opacity: 0.8;
+    font-size: 15px;
+    color: var(--theme-text-3);
+    pointer-events: none;
+    transition: color var(--theme-duration) var(--theme-ease);
+}
+
+.accountsettings-input-container:focus-within .accountsettings-input-icon {
+    color: var(--theme-primary);
 }
 
 .accountsettings-input {
     width: 100%;
-    padding: 12px 15px 12px 40px;
-    background: rgba(240, 240, 240, 0.2);
-    /* 浅灰色半透明 */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    color: white;
+    box-sizing: border-box;
+    padding: 12px 16px 12px 42px;
+    border: 1.5px solid var(--theme-border);
+    border-radius: var(--theme-radius-md);
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-1);
+    font: inherit;
     font-size: 14px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+    transition: border-color var(--theme-duration) var(--theme-ease),
+        box-shadow var(--theme-duration) var(--theme-ease),
+        background-color var(--theme-duration) var(--theme-ease);
+}
+
+.accountsettings-input::placeholder {
+    color: var(--theme-text-3);
+}
+
+.accountsettings-input:hover {
+    border-color: var(--theme-border-strong);
 }
 
 .accountsettings-input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+    border-color: var(--theme-primary);
+    background: var(--theme-bg-surface);
+    box-shadow: var(--theme-ring);
 }
 
-.accountsettings-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-/* 通知偏好切换 */
+/* ========== 通知偏好 ========== */
 .accountsettings-toggle-group {
-    background: rgba(240, 240, 240, 0.15);
-    border-radius: 10px;
-    padding: 10px;
-    backdrop-filter: blur(5px);
+    padding: 4px 16px;
+    border-radius: var(--theme-radius-md);
+    background: var(--theme-bg-surface-2);
+    border: 1px solid var(--theme-border);
 }
 
 .accountsettings-toggle-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--theme-hairline);
 }
 
 .accountsettings-toggle-item:last-child {
     border-bottom: none;
 }
 
+.accountsettings-toggle-label {
+    font-size: 14px;
+    color: var(--theme-text-1);
+}
+
+/* 开关 */
 .accountsettings-switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 24px;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 26px;
 }
 
 .accountsettings-switch input {
@@ -352,77 +444,109 @@ const cancelChanges = () => {
 
 .accountsettings-slider {
     position: absolute;
+    inset: 0;
+    border-radius: var(--theme-radius-pill);
+    background: var(--theme-bg-active);
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    transition: .4s;
-    border-radius: 24px;
+    transition: background-color var(--theme-duration) var(--theme-ease);
 }
 
-.accountsettings-slider:before {
-    position: absolute;
+.accountsettings-slider::before {
     content: "";
-    height: 20px;
+    position: absolute;
+    top: 3px;
+    left: 3px;
     width: 20px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: .4s;
+    height: 20px;
     border-radius: 50%;
+    background: var(--theme-bg-elevated);
+    box-shadow: var(--theme-shadow-sm);
+    transition: transform var(--theme-duration) var(--theme-ease);
 }
 
-input:checked+.accountsettings-slider {
-    background-color: var(--theme-primary-soft);
+input:checked + .accountsettings-slider {
+    background: var(--theme-primary);
 }
 
-input:checked+.accountsettings-slider:before {
-    transform: translateX(26px);
+input:checked + .accountsettings-slider::before {
+    transform: translateX(22px);
 }
 
-/* 按钮样式 */
+input:focus-visible + .accountsettings-slider {
+    box-shadow: var(--theme-ring);
+}
+
+/* ========== 按钮样式 ========== */
 .accountsettings-button-group {
     display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
+    gap: 12px;
+    margin-top: 26px;
 }
 
 .accountsettings-button {
     flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
+    padding: 13px 20px;
+    border: 1px solid transparent;
+    border-radius: var(--theme-radius-pill);
+    font: inherit;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color var(--theme-duration) var(--theme-ease),
+        border-color var(--theme-duration) var(--theme-ease),
+        transform var(--theme-duration) var(--theme-ease),
+        box-shadow var(--theme-duration) var(--theme-ease);
 }
 
-.accountsettings-button-cancel {
-    margin-right: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-.accountsettings-button-cancel:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.accountsettings-button-save {
-    margin-left: 10px;
-    background: var(--theme-primary);
-    color: white;
-}
-
-.accountsettings-button-save:hover {
-    background: var(--theme-primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--theme-shadow-md);
+.accountsettings-button:focus-visible {
+    outline: none;
+    box-shadow: var(--theme-ring);
 }
 
 .accountsettings-button:active {
     transform: translateY(1px);
+}
+
+.accountsettings-button-cancel {
+    background: var(--theme-bg-surface-2);
+    border-color: var(--theme-border);
+    color: var(--theme-text-1);
+}
+
+.accountsettings-button-cancel:hover {
+    background: var(--theme-bg-hover);
+    border-color: var(--theme-border-strong);
+}
+
+.accountsettings-button-save {
+    background: var(--theme-gradient);
+    color: var(--theme-primary-text);
+    box-shadow: var(--theme-shadow-sm);
+}
+
+.accountsettings-button-save:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow: var(--theme-shadow-md);
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 520px) {
+    .accountsettings-container {
+        padding: 16px 14px;
+        align-items: flex-start;
+    }
+
+    .accountsettings-content {
+        padding: 24px 20px 26px;
+    }
+
+    .accountsettings-title {
+        font-size: 19px;
+    }
+
+    .accountsettings-avatar-container {
+        margin: 20px 0 22px;
+    }
 }
 </style>

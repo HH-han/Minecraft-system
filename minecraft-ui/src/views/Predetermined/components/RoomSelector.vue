@@ -73,7 +73,7 @@ const selectRoom = (room) => {
   margin: 0 0 20px;
   font-size: 18px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.3;
 }
 
@@ -84,7 +84,7 @@ const selectRoom = (room) => {
   gap: 24px;
   padding: 24px;
   box-sizing: border-box;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 24px;
   margin-bottom: 12px;
   border: 1.5px solid transparent;
@@ -94,13 +94,13 @@ const selectRoom = (room) => {
 
 .room-option:hover {
   transform: scale(1.005);
-  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 
 .room-option.selected {
-  background: #ffffff;
-  border-color: #2997ff;
-  box-shadow: 0 8px 24px -12px rgba(41, 151, 255, 0.3);
+  background: var(--theme-bg-surface);
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .room-info {
@@ -112,13 +112,13 @@ const selectRoom = (room) => {
   margin: 0 0 6px;
   font-size: 18px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.3;
 }
 
 .room-desc {
   margin: 0 0 12px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 14px;
   line-height: 1.4;
 }
@@ -130,9 +130,9 @@ const selectRoom = (room) => {
 }
 
 .facility {
-  background: #ffffff;
-  color: #1d1d1f;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 40px;
   padding: 5px 14px;
   font-size: 12px;
@@ -156,20 +156,20 @@ const selectRoom = (room) => {
 .price-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.1;
 }
 
 .price-unit {
   font-size: 13px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 .book-btn {
   min-width: 88px;
   padding: 8px 20px;
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   border: none;
   border-radius: 40px;
   font-size: 14px;
@@ -181,26 +181,26 @@ const selectRoom = (room) => {
 }
 
 .book-btn:hover {
-  background: #0066cc;
+  background: var(--theme-primary-hover);
 }
 
 .book-btn.active {
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
 .book-btn:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
 .empty-hint {
   padding: 40px 16px;
   text-align: center;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 14px;
   border-radius: 24px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 /* ===== 滚动容器：固定高度 + 内部滚动 + 隐藏滚动条（参考 Recall 639323 两层结构） ===== */

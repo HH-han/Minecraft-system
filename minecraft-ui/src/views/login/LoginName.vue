@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" :class="`layout-${loginLayout}`">
     <!-- 左侧介绍区域 -->
     <div class="left-section" :class="{ 'register-mode': isRegister }">
       <div class="logo">博览旅行</div>
@@ -295,6 +295,10 @@
   <div>
     <Login_background />
   </div>
+  <!-- 登录页布局切换：表单在左 / 居中卡片(原始) / 表单在右 -->
+  <div class="layout-switch-login">
+    <LoginLayoutSwitching v-model="loginLayout" />
+  </div>
   <!-- 成功提示框 -->
   <div>
     <LoginSucceeded v-if="showSucceeded" :username="loggedInUsername" :message="successMessage"
@@ -342,11 +346,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { login, register } from '@/api/auth.js';
 import { getUserByAccount } from '@/api/user.js';
 import Login_background from '@/components/LoginComponent/Login_background.vue';
+import LoginLayoutSwitching from '@/components/LoginComponent/LoginLayoutSwitching.vue';
 import LoginSucceeded from '@/components/PromptComponent/LoginSucceeded.vue';
 import ErrorMessage from '@/components/PromptComponent/ErrorMessage.vue';
 import QRcodeLogin from '@/views/login/components/QRcodeLogin.vue'
@@ -358,6 +363,18 @@ import { useAuthStore } from '@/stores/auth.js'
 
 // 登录-注册切换
 const isRegister = ref(false);
+
+// 登录页布局切换（panel-left 表单在左 / panel-center 居中卡片(原始) / panel-right 表单在右）
+const LOGIN_LAYOUTS = ['panel-left', 'panel-center', 'panel-right'];
+const LOGIN_LAYOUT_KEY = 'loginLayout';
+const readLoginLayout = () => {
+  const saved = localStorage.getItem(LOGIN_LAYOUT_KEY);
+  return LOGIN_LAYOUTS.includes(saved) ? saved : 'panel-center';
+};
+const loginLayout = ref(readLoginLayout());
+watch(loginLayout, (value) => {
+  localStorage.setItem(LOGIN_LAYOUT_KEY, value);
+});
 
 // 模糊背景模态框状态
 const isModalVisible = ref(false);
@@ -1844,5 +1861,83 @@ onMounted(() => {
 /* 让主题切换开关浮于子页面弹层之上，保证邮箱/手机/找回密码页也能切换主题 */
 :global(.theme-switch-login) {
   z-index: 1200;
+}
+
+/* ============================================================
+   登录页布局切换
+   · 居中卡片（panel-center）：登录页原始布局，居中 1000px 卡片
+   · 表单在左（panel-left）：全屏贴边，表单贴左边、图文铺满右侧
+   · 表单在右（panel-right）：全屏贴边，图文铺满左侧、表单贴右边
+   贴边布局用 order 交换两栏，避免与移动端 column 断点冲突
+   ============================================================ */
+.layout-switch-login {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  z-index: 1000;
+}
+
+/* —— 贴边全屏：容器铺满视口，取消居中卡片的最大宽高与圆角 —— */
+.layout-panel-left,
+.layout-panel-right {
+  top: 0;
+  left: 0;
+  transform: none;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  max-height: none;
+  border-radius: 0;
+}
+
+/* 表单区贴边：约占四成宽（380~520px），图文区吃满剩余空间 */
+.layout-panel-left .right-section,
+.layout-panel-right .right-section {
+  flex: 0 0 40%;
+  min-width: 380px;
+  max-width: 520px;
+  padding: 48px 40px;
+}
+
+.layout-panel-left .left-section,
+.layout-panel-right .left-section {
+  flex: 1 1 0%;
+  width: auto;
+}
+
+/* 表单在左：表单区排到前面（贴左边），图文区落到右侧 */
+.layout-panel-left .right-section {
+  order: 1;
+}
+
+.layout-panel-left .left-section {
+  order: 2;
+}
+
+/* —— 窄屏统一回退为居中卡片，避免贴边全屏在移动端被挤压 —— */
+@media (max-width: 768px) {
+
+  .layout-panel-left,
+  .layout-panel-right {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 1000px;
+    max-height: 600px;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  .layout-panel-left .left-section,
+  .layout-panel-left .right-section,
+  .layout-panel-right .left-section,
+  .layout-panel-right .right-section {
+    flex: 0 0 auto;
+    order: 0;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding: 40px;
+  }
 }
 </style>

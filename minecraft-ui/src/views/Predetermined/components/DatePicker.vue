@@ -386,8 +386,8 @@ watch(() => props.dateFields, () => {
   height: 56px;
   padding: 8px 12px;
   box-sizing: border-box;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border-strong);
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
@@ -396,14 +396,14 @@ watch(() => props.dateFields, () => {
 }
 
 .dp-trigger:hover {
-  border-color: #c7c7cc;
+  border-color: var(--theme-border-strong);
 }
 
 .dp-trigger:focus-visible,
 .dp-trigger.is-open {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
-  border-color: #2997ff;
+  border-color: var(--theme-primary);
 }
 
 .dp-cell {
@@ -419,7 +419,7 @@ watch(() => props.dateFields, () => {
 .dp-label {
   font-size: 11px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -427,7 +427,7 @@ watch(() => props.dateFields, () => {
 .dp-value {
   font-size: 16px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
@@ -435,7 +435,7 @@ watch(() => props.dateFields, () => {
 }
 
 .dp-value.is-placeholder {
-  color: #aeaeb2;
+  color: var(--theme-text-3);
   font-weight: 400;
 }
 
@@ -445,7 +445,7 @@ watch(() => props.dateFields, () => {
   justify-content: center;
   align-self: center;
   width: 56px;
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 .dp-divider svg {
@@ -459,8 +459,8 @@ watch(() => props.dateFields, () => {
   justify-content: center;
   min-width: 36px;
   padding: 2px 8px;
-  background: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 12px;
   font-weight: 600;
   border-radius: 40px;
@@ -474,10 +474,10 @@ watch(() => props.dateFields, () => {
   left: 0;
   right: 0;
   z-index: 100;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 16px 40px -12px rgba(0, 0, 0, 0.18);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-hairline);
+  border-radius: 20px;
+  box-shadow: var(--theme-shadow-lg);
   padding: 16px;
   box-sizing: border-box;
   animation: dp-fade-in 0.18s ease;
@@ -498,7 +498,7 @@ watch(() => props.dateFields, () => {
 .dp-panel-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
 }
 
 .dp-nav-btn {
@@ -509,15 +509,15 @@ watch(() => props.dateFields, () => {
   height: 32px;
   border: none;
   border-radius: 10px;
-  background: #f5f5f7;
-  color: #6e6e73;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .dp-nav-btn:hover:not(:disabled) {
-  background: #ebebef;
-  color: #1d1d1f;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .dp-nav-btn:disabled {
@@ -540,7 +540,7 @@ watch(() => props.dateFields, () => {
   text-align: center;
   font-size: 12px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   padding: 6px 0;
 }
 
@@ -572,75 +572,75 @@ watch(() => props.dateFields, () => {
 }
 
 .dp-day.is-disabled {
-  color: #c7c7cc;
+  color: var(--theme-text-3);
   cursor: not-allowed;
 }
 
 .dp-day-num {
   font-size: 14px;
   font-weight: 500;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.5;
 }
 
 .dp-day.is-disabled .dp-day-num {
-  color: #c7c7cc;
+  color: var(--theme-text-3);
 }
 
 .dp-day:not(.is-disabled):not(.is-start):not(.is-end):hover {
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 
 /* 今天 */
 .dp-day.is-today .dp-day-num {
-  color: #2997ff;
+  color: var(--theme-primary);
   font-weight: 600;
 }
 
 /* 范围内 */
 .dp-day.in-range {
-  background: rgba(41, 151, 255, 0.08);
+  background: var(--theme-primary-soft);
   border-radius: 0;
 }
 
 /* 开始/结束（圆角只留外侧，胶囊连接效果） */
 .dp-day.is-start {
-  background: #2997ff;
+  background: var(--theme-primary);
   border-radius: 10px 0 0 10px;
 }
 
 .dp-day.is-end {
-  background: #2997ff;
+  background: var(--theme-primary);
   border-radius: 0 10px 10px 0;
 }
 
 /* 单选（景点）或首尾同格 */
 .dp-day.is-start.is-end,
 .dp-day.is-single-selected {
-  background: #2997ff;
+  background: var(--theme-primary);
   border-radius: 10px;
 }
 
 .dp-day.is-start .dp-day-num,
 .dp-day.is-end .dp-day-num {
-  color: #ffffff;
+  color: var(--theme-primary-text);
   font-weight: 600;
 }
 
 .dp-day-hint {
   font-size: 10px;
   line-height: 1.4;
-  color: #2997ff;
+  color: var(--theme-primary);
   white-space: nowrap;
 }
 
 .dp-day.is-start .dp-day-hint,
 .dp-day.is-end .dp-day-hint {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--theme-primary-text);
 }
 
 .dp-day.in-range .dp-day-hint {
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 
 /* ============ 底部 ============ */
@@ -650,16 +650,16 @@ watch(() => props.dateFields, () => {
   gap: 8px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #f2f2f4;
+  border-top: 1px solid var(--theme-hairline);
   flex-wrap: wrap;
 }
 
 .dp-quick-btn {
   padding: 5px 12px;
-  border: 1px solid #d2d2d6;
+  border: 1px solid var(--theme-border-strong);
   border-radius: 40px;
-  background: #ffffff;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -667,15 +667,15 @@ watch(() => props.dateFields, () => {
 }
 
 .dp-quick-btn:hover {
-  border-color: #2997ff;
-  color: #2997ff;
-  background: rgba(41, 151, 255, 0.06);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .dp-footer-tip {
   margin-left: auto;
   font-size: 12px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
 }
 
 /* ============ 响应式 ============ */

@@ -1,10 +1,1 @@
-2026-10-03 23:40:07.615 [http-nio-8080-exec-8] INFO  c.m.controller.UserController - 文件保存成功: 67f4e957-bb08-4c7b-b42b-477c5945b8b6.jpghttp://localhost:8080/upload/
-2026-10-03 23:48:28.004 [http-nio-8080-exec-7] INFO  c.m.controller.UserController - 文件保存成功: adc008cb-157b-49c6-bcfc-a01cf9b21deb.webphttp://localhost:8080/upload/
-2026-10-03 23:48:33.697 [http-nio-8080-exec-5] INFO  c.m.controller.UserController - 文件保存成功: d0b35fd7-f309-4652-83dd-980549187934.jpghttp://localhost:8080/upload/
-2026-10-03 23:48:41.929 [http-nio-8080-exec-3] INFO  c.m.controller.UserController - 文件保存成功: 15210738-a315-4b29-b91f-147962a6899d.webphttp://localhost:8080/upload/
-2026-10-03 23:48:48.392 [http-nio-8080-exec-5] INFO  c.m.controller.UserController - 文件保存成功: 747299c5-14e0-41e6-9204-17fd944b90f3.webphttp://localhost:8080/upload/
-2026-10-03 23:50:04.856 [http-nio-8080-exec-5] INFO  c.m.controller.UserController - 文件保存成功: 1498eff1-6af1-4ac2-b3f1-1e7cc7b570e9.jpghttp://localhost:8080/upload/
-2026-10-03 23:50:16.625 [http-nio-8080-exec-6] INFO  c.m.controller.UserController - 文件保存成功: 845a8192-4307-4bd7-8e0c-0276d46c8f19.jpghttp://localhost:8080/upload/
-2026-10-03 23:50:27.153 [http-nio-8080-exec-8] ERROR c.m.controller.UserController - 图片大小不能超过2MB
-2026-10-03 23:50:34.751 [http-nio-8080-exec-4] INFO  c.m.controller.UserController - 文件保存成功: 7a31b1d0-9508-42e9-b866-12342f154c68.jpghttp://localhost:8080/upload/
-2026-10-03 23:50:45.391 [http-nio-8080-exec-2] INFO  c.m.controller.UserController - 文件保存成功: 53298a9a-6c8c-430d-af6d-f0bbbc78b8e2.jpghttp://localhost:8080/upload/
+2026-10-13 01:44:32.698 [http-nio-8080-exec-6] INFO  c.m.controller.UserController - 文件保存成功: 05324688-4ccb-45ad-aa2f-687bd9c1762a.jpghttp://localhost:8080/upload/

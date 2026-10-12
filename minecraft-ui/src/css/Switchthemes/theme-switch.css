@@ -1,14 +1,26 @@
 /* ============================================================================
    主题切换开关（components/ThemeComponents/ThemeSwitching.vue 专用）
    ----------------------------------------------------------------------------
-   三态分段控件：亮色 / 暗色 / 游戏。
+   三态分段控件：亮色 / 暗色 / 游戏；右侧并列「内置主题配色」按钮（仅亮色可用）。
    · 选中态：实心「主题主色」滑块 + 反色图标，当前主题一目了然
    · 悬停态：非选中分段浮起浅底、图标放大
    配色 / 圆角 / 动效全部「别名」到 css/Theme/theme.css 的全局令牌，
    不写死任何颜色，随 light / dark / game 自动变化（主色：亮色天蓝、暗色蓝、游戏绿）。
+   内置主题色板的令牌见 css/Theme/theme.css 4.1 节。
    ============================================================================ */
 
-.theme-switch {
+/* 组件外壳：分段控件 + 色板按钮左右并列（色板面板以此为定位基准） */
+.theme-switch-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+/* 局部令牌：分段控件与色板按钮共用 */
+.theme-switch,
+.theme-switch__palette {
   /* —— 局部令牌 · 尺寸 —— */
   --ts-item: 28px;              /* 单格尺寸（同时决定滑块宽高与位移步长） */
   --ts-pad: 3px;                /* 容器内边距 */
@@ -37,7 +49,10 @@
 
   /* —— 局部令牌 · 状态（由组件内联覆盖）—— */
   --ts-index: 0;                /* 当前选中分段索引 */
+}
 
+/* 分段控件容器 */
+.theme-switch {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -127,9 +142,209 @@
   stroke-width: var(--ts-active-stroke);
 }
 
+/* ============================================================
+   内置主题配色按钮（仅亮色主题可用，与分段控件同款玻璃质感）
+   ============================================================ */
+.theme-switch__palette {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: calc(var(--ts-item) + var(--ts-pad) * 2);
+  height: calc(var(--ts-item) + var(--ts-pad) * 2);
+  padding: 0;
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius);
+  background: var(--ts-bg);
+  color: var(--ts-text);
+  box-shadow: var(--ts-shadow);
+  -webkit-backdrop-filter: blur(var(--ts-blur));
+  backdrop-filter: blur(var(--ts-blur));
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--ts-speed) var(--ts-ease),
+    border-color var(--ts-speed) var(--ts-ease),
+    background-color var(--ts-speed) var(--ts-ease),
+    box-shadow var(--ts-speed) var(--ts-ease);
+}
+
+.theme-switch__palette:hover:not(:disabled) {
+  color: var(--ts-text-hover);
+  border-color: color-mix(in srgb, var(--ts-accent) 42%, var(--ts-border));
+}
+
+.theme-switch__palette.is-open {
+  border-color: var(--ts-accent);
+  color: var(--ts-accent);
+  box-shadow: var(--ts-glow);
+}
+
+.theme-switch__palette:focus-visible {
+  outline: 2px solid var(--ts-accent);
+  outline-offset: 2px;
+}
+
+/* 非亮色主题：按钮保留占位但不可用，避免切换主题时布局跳动 */
+.theme-switch__palette:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.theme-switch__palette:hover .theme-switch__icon {
+  transform: scale(var(--ts-hover-scale));
+}
+
+/* ============================================================
+   内置主题色板面板
+   ============================================================ */
+.theme-palette {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 900;
+  width: 264px;
+  padding: 14px 12px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-elevated);
+  box-shadow: var(--theme-shadow-lg);
+  transform-origin: top right;
+  animation: theme-palette-in var(--theme-duration) var(--theme-ease) both;
+}
+
+@keyframes theme-palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.theme-palette__title {
+  margin: 0 0 10px;
+  padding-left: 4px;
+  color: var(--theme-text-3);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.theme-palette__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.theme-palette__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: var(--theme-radius-md);
+  background: transparent;
+  color: var(--theme-text-2);
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--theme-duration) var(--theme-ease);
+}
+
+.theme-palette__item:hover {
+  background: var(--theme-bg-hover);
+}
+
+.theme-palette__item:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: -2px;
+}
+
+/* 自定义项：覆盖一个透明取色器，点击任意位置即可唤出系统取色器 */
+.theme-palette__item--custom {
+  position: relative;
+}
+
+.theme-palette__picker {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.theme-palette__dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--tp-dot);
+  transition: box-shadow var(--theme-duration) var(--theme-ease);
+}
+
+/* 自定义色点：外圈彩虹环 + 内圈当前自定义色 */
+.theme-palette__dot--custom {
+  background: conic-gradient(from 180deg,
+      #ff4d4f, #faad14, #52c41a, #13c2c2, #1677ff, #722ed1, #eb2f96, #ff4d4f);
+}
+
+.theme-palette__dot--custom::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--tp-dot);
+}
+
+/* 选中：外环呼应当前色板主色 */
+.theme-palette__item.is-active .theme-palette__dot {
+  box-shadow:
+    0 0 0 2px var(--theme-bg-elevated),
+    0 0 0 4px var(--tp-dot);
+}
+
+.theme-palette__check {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  color: #ffffff;
+  opacity: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+  transition: opacity var(--theme-duration) var(--theme-ease);
+}
+
+.theme-palette__item.is-active .theme-palette__check {
+  opacity: 1;
+}
+
+.theme-palette__name {
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.theme-palette__item.is-active .theme-palette__name {
+  color: var(--theme-primary);
+  font-weight: 600;
+}
+
 /* 小屏收窄，给导航操作区让位 */
 @media (max-width: 576px) {
-  .theme-switch {
+  .theme-switch,
+  .theme-switch__palette {
     --ts-item: 26px;
     --ts-pad: 2px;
   }
@@ -141,7 +356,12 @@
   .theme-switch,
   .theme-switch__thumb,
   .theme-switch__option,
-  .theme-switch__icon {
+  .theme-switch__icon,
+  .theme-switch__palette,
+  .theme-palette,
+  .theme-palette__dot,
+  .theme-palette__check {
     transition: none;
+    animation: none;
   }
 }

@@ -1,123 +1,138 @@
 <template>
-  <div class="profile-container">
-    <!-- 玻璃拟态背景装饰 -->
-    <div class="bg-decoration">
-      <div class="glass-orb orb1"></div>
-      <div class="glass-orb orb2"></div>
-      <div class="glass-orb orb3"></div>
+  <div class="pc-page">
+    <!-- 环境光背景 -->
+    <div class="pc-aurora" aria-hidden="true">
+      <span class="pc-aurora__blob pc-aurora__blob--1"></span>
+      <span class="pc-aurora__blob pc-aurora__blob--2"></span>
+      <span class="pc-aurora__blob pc-aurora__blob--3"></span>
+      <span class="pc-grid"></span>
     </div>
 
-    <!-- 主要内容卡片 -->
-    <div class="profile-card" v-loading="loading" element-loading-text="加载中...">
-      <!-- 头部区域：头像 + 基本信息 -->
-      <div class="profile-header">
-        <div class="avatar-section">
-          <!-- 头像上传区域 -->
-          <div class="avatar-container">
-            <div class="avatar-wrapper" @click="triggerFileInput">
-              <img v-if="avatarPreview" :src="avatarPreview" class="avatar" alt="用户头像" />
-              <div v-else class="avatar-placeholder">
-                <i class="fas fa-user"></i>
-              </div>
-              <div class="avatar-hover">
+    <div class="pc-shell" v-loading="loading" element-loading-text="加载中...">
+      <!-- 个人名片 -->
+      <section class="pc-hero theme-transition">
+        <div class="pc-hero__cover">
+          <span class="pc-hero__cover-pattern"></span>
+          <div class="pc-hero__actions">
+            <el-button type="primary" :icon="Edit" round @click="openEditModal">修改信息</el-button>
+            <el-button :icon="Lock" round @click="openPasswordModal">更改密码</el-button>
+          </div>
+        </div>
+
+        <div class="pc-hero__body">
+          <div class="pc-avatar-wrap">
+            <div class="pc-avatar" role="button" tabindex="0" aria-label="上传照片" @click="triggerFileInput"
+              @keydown.enter="triggerFileInput">
+              <img v-if="avatarPreview" :src="avatarPreview" alt="用户头像" />
+              <span v-else class="pc-avatar__ph"><i class="fas fa-user"></i></span>
+              <span class="pc-avatar__hover">
                 <i class="fas fa-camera"></i>
-                <span>上传照片</span>
-              </div>
+                <em>更换头像</em>
+              </span>
             </div>
             <input type="file" ref="fileInput" @change="handleAvatarUpload" accept="image/*" style="display: none;" />
           </div>
-          <div class="account-badge">
-            <span class="account-label">账号</span>
-            <span class="account-value">{{ userInfo.account }}</span>
-          </div>
-        </div>
-        <div class="header-info">
-          <h1 class="user-name">{{ userInfo.username }}</h1>
-          <div class="user-meta">
-            <span class="meta-item" v-if="userInfo.email">
-              <svg class="icon" viewBox="0 0 24 24" width="18" height="18">
-                <path
-                  d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
-                  fill="currentColor" />
-              </svg>
-              {{ userInfo.email }}
-            </span>
-            <span class="meta-item" v-if="userInfo.phone">
-              <svg class="icon" viewBox="0 0 24 24" width="18" height="18">
-                <path
-                  d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
-                  fill="currentColor" />
-              </svg>
-              {{ userInfo.phone }}
-            </span>
-          </div>
-          <div class="action-buttons">
-            <el-button type="primary" :icon="Edit" @click="openEditModal" round>修改信息</el-button>
-            <el-button :icon="Lock" @click="openPasswordModal" round>更改密码</el-button>
-            <el-button type="success" @click="goToPoints" round>积分商城</el-button>
-            <el-button type="warning" :icon="Van" @click="goToLogistics" round>物流详情</el-button>
-            <el-button type="info" :icon="RefreshLeft" @click="goToAfterSale" round>售后服务</el-button>
-          </div>
-        </div>
-      </div>
 
-      <!-- 详细信息网格 -->
-      <div class="info-grid">
-        <div class="info-item" v-if="userInfo.gender !== null">
-          <span class="item-label">性别</span>
-          <span class="item-value">{{ userInfo.gender === "1" ? '男' : userInfo.gender === "0" ? '女' : '未设置' }}</span>
+          <div class="pc-hero__info">
+            <div class="pc-hero__name-row">
+              <h1 class="pc-hero__name">{{ userInfo.username || '未设置用户名' }}</h1>
+              <span class="pc-chip pc-chip--online" v-if="userInfo.online !== undefined">
+                <span class="pc-dot" :class="{ 'is-on': userInfo.online === 0 }"></span>
+                {{ userInfo.online === 0 ? '当前在线' : '离线' }}
+              </span>
+            </div>
+            <p class="pc-hero__sub" v-if="userInfo.nickname">{{ userInfo.nickname }}</p>
+            <div class="pc-hero__meta">
+              <span class="pc-chip" v-if="userInfo.account">
+                <i class="fas fa-at"></i>{{ userInfo.account }}
+              </span>
+              <span class="pc-chip" v-if="userInfo.email">
+                <i class="fas fa-envelope"></i>{{ userInfo.email }}
+              </span>
+              <span class="pc-chip" v-if="userInfo.phone">
+                <i class="fas fa-phone-alt"></i>{{ userInfo.phone }}
+              </span>
+            </div>
+          </div>
         </div>
-        <div class="info-item" v-if="userInfo.age">
-          <span class="item-label">年龄</span>
-          <span class="item-value">{{ userInfo.age }}岁</span>
-        </div>
-        <div class="info-item" v-if="userInfo.occupation">
-          <span class="item-label">职业</span>
-          <span class="item-value">{{ userInfo.occupation }}</span>
-        </div>
-        <div class="info-item" v-if="userInfo.nickname">
-          <span class="item-label">昵称</span>
-          <span class="item-value bio-value">{{ userInfo.nickname }}</span>
-        </div>
-        <div class="info-item" v-if="userInfo.hobbies">
-          <span class="item-label">爱好</span>
-          <span class="item-value">{{ userInfo.hobbies }}</span>
-        </div>
-        <div class="info-item" v-if="userInfo.bio">
-          <span class="item-label">个人简介</span>
-          <span class="item-value bio-value">{{ userInfo.bio }}</span>
-        </div>
-        <div class="info-item" v-if="userInfo.experience">
-          <span class="item-label">经验</span>
-          <span class="item-value bio-value">{{ userInfo.experience }}</span>
-        </div>
-        <div class="info-item" v-if="userInfo.signature">
-          <span class="item-label">签名</span>
-          <span class="item-value bio-value">{{ userInfo.signature }}</span>
-        </div>
-        <div class="info-item">
-          <span class="item-label">账号状态</span>
-          <span class="item-value">
-            <el-tag :type="userInfo.status === 1 ? 'success' : 'danger'" size="small" effect="light">
-              {{ userInfo.status === 1 ? '正常' : '禁用' }}
-            </el-tag>
+      </section>
+
+      <!-- 数据概览 -->
+      <section class="pc-stats">
+        <article v-for="item in statCards" :key="item.key" class="pc-stat theme-transition" :class="`tone-${item.tone}`">
+          <span class="pc-stat__icon"><i :class="item.icon"></i></span>
+          <span class="pc-stat__label">{{ item.label }}</span>
+          <strong class="pc-stat__value">{{ item.value }}</strong>
+        </article>
+      </section>
+
+      <!-- 快捷入口 -->
+      <section class="pc-entries">
+        <button v-for="entry in quickEntries" :key="entry.title" type="button" class="pc-entry theme-transition"
+          @click="entry.action">
+          <span class="pc-entry__icon"><i :class="entry.icon"></i></span>
+          <span class="pc-entry__text">
+            <strong>{{ entry.title }}</strong>
+            <em>{{ entry.desc }}</em>
           </span>
-        </div>
-        <div class="info-item">
-          <span class="item-label">注册时间</span>
-          <span class="item-value">{{ formatDate(userInfo.createTime) }}</span>
-        </div>
-        <div class="info-item" v-if="userInfo.updateTime">
-          <span class="item-label">最后更新</span>
-          <span class="item-value">{{ formatDate(userInfo.updateTime) }}</span>
-        </div>
-      </div>
+          <i class="fas fa-chevron-right pc-entry__arrow"></i>
+        </button>
+      </section>
 
-      <!-- 在线状态 (根据online字段) -->
-      <div class="online-status" v-if="userInfo.online !== undefined">
-        <span class="status-dot" :class="{ 'online': userInfo.online === 0 }"></span>
-        <span>{{ userInfo.online === 0 ? '当前在线' : '离线' }}</span>
-      </div>
+      <!-- 资料详情 -->
+      <section class="pc-details">
+        <article v-if="hasBasicInfo" class="pc-panel theme-transition">
+          <header class="pc-panel__head">
+            <span class="pc-panel__icon"><i class="fas fa-id-card"></i></span>
+            <div>
+              <h2>基本信息</h2>
+              <p>你的基础个人资料</p>
+            </div>
+          </header>
+          <div class="pc-rows">
+            <div class="pc-row" v-if="userInfo.gender !== null">
+              <span class="pc-row__k">性别</span>
+              <span class="pc-row__v">{{ genderText }}</span>
+            </div>
+            <div class="pc-row" v-if="userInfo.age">
+              <span class="pc-row__k">年龄</span>
+              <span class="pc-row__v">{{ userInfo.age }} 岁</span>
+            </div>
+            <div class="pc-row" v-if="userInfo.occupation">
+              <span class="pc-row__k">职业</span>
+              <span class="pc-row__v">{{ userInfo.occupation }}</span>
+            </div>
+            <div class="pc-row" v-if="userInfo.hobbies">
+              <span class="pc-row__k">爱好</span>
+              <span class="pc-row__v">{{ userInfo.hobbies }}</span>
+            </div>
+          </div>
+        </article>
+
+        <article v-if="hasAboutInfo" class="pc-panel theme-transition">
+          <header class="pc-panel__head">
+            <span class="pc-panel__icon pc-panel__icon--alt"><i class="fas fa-feather-alt"></i></span>
+            <div>
+              <h2>关于我</h2>
+              <p>让别人更了解你</p>
+            </div>
+          </header>
+          <div class="pc-rows">
+            <div class="pc-row pc-row--block" v-if="userInfo.signature">
+              <span class="pc-row__k">个性签名</span>
+              <span class="pc-row__v">{{ userInfo.signature }}</span>
+            </div>
+            <div class="pc-row pc-row--block" v-if="userInfo.bio">
+              <span class="pc-row__k">个人简介</span>
+              <span class="pc-row__v">{{ userInfo.bio }}</span>
+            </div>
+            <div class="pc-row pc-row--block" v-if="userInfo.experience">
+              <span class="pc-row__k">经验</span>
+              <span class="pc-row__v">{{ userInfo.experience }}</span>
+            </div>
+          </div>
+        </article>
+      </section>
     </div>
 
     <!-- 修改信息模态框 (Apple 风格玻璃拟态) -->
@@ -270,7 +285,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { Edit, Lock, RefreshLeft, Van } from '@element-plus/icons-vue';
+import { Edit, Lock } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
 import { getUserPoints } from '@/api/points';
@@ -348,6 +363,34 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
+// 性别文案
+const genderText = computed(() => {
+  if (userInfo.value.gender === 1 || userInfo.value.gender === '1') return '男';
+  if (userInfo.value.gender === 0 || userInfo.value.gender === '0') return '女';
+  return '未设置';
+});
+
+// 分区是否有内容
+const hasBasicInfo = computed(() =>
+  userInfo.value.gender !== null ||
+  !!userInfo.value.age ||
+  !!userInfo.value.occupation ||
+  !!userInfo.value.hobbies
+);
+const hasAboutInfo = computed(() =>
+  !!userInfo.value.signature ||
+  !!userInfo.value.bio ||
+  !!userInfo.value.experience
+);
+
+// 顶部数据概览
+const statCards = computed(() => [
+  { key: 'points', label: '积分余额', value: userPoints.value ?? 0, icon: 'fas fa-coins', tone: 'gold' },
+  { key: 'status', label: '账号状态', value: userInfo.value.status === 1 ? '正常' : '禁用', icon: 'fas fa-shield-alt', tone: 'green' },
+  { key: 'createTime', label: '注册时间', value: formatDay(userInfo.value.createTime) || '—', icon: 'fas fa-calendar-plus', tone: 'blue' },
+  { key: 'updateTime', label: '最近更新', value: formatDay(userInfo.value.updateTime) || '—', icon: 'fas fa-clock', tone: 'violet' }
+]);
+
 // 初始化获取用户信息
 const onEscKey = (e) => {
   if (e.key !== 'Escape') return;
@@ -418,6 +461,13 @@ const goToLogistics = () => {
 const goToAfterSale = () => {
   router.push('/aftersale');
 };
+
+// 快捷入口
+const quickEntries = [
+  { title: '积分商城', desc: '用积分兑换心仪好物', icon: 'fas fa-gift', action: goToPoints },
+  { title: '物流详情', desc: '查看订单配送进度', icon: 'fas fa-truck', action: goToLogistics },
+  { title: '售后服务', desc: '退换维修一站处理', icon: 'fas fa-headset', action: goToAfterSale }
+];
 
 // 处理头像上传
 const handleAvatarUpload = async (event) => {
@@ -591,340 +641,536 @@ const handleUpdatePassword = async () => {
   }
 };
 
-// 格式化日期
-const formatDate = (dateString) => {
+// 格式化日期（用于概览卡片）
+const formatDay = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return date.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
 };
 </script>
 
 <style scoped>
-/* 全局容器 */
-.profile-container {
-  min-height: 100vh;
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ========== 页面外壳 ========== */
+.pc-page {
   position: relative;
-  background: var(--theme-gradient);
+  min-height: 100vh;
+  padding: 40px 24px 64px;
+  background: var(--theme-bg-app);
+  color: var(--theme-text-1);
   overflow: hidden;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-/* 玻璃背景装饰 */
-.bg-decoration {
+/* 环境光装饰 */
+.pc-aurora {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 0;
+  pointer-events: none;
 }
 
-.glass-orb {
+.pc-aurora__blob {
   position: absolute;
   border-radius: 50%;
-  background: var(--theme-bg-glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--theme-border);
-  box-shadow: var(--theme-shadow-md);
+  filter: blur(80px);
+  opacity: 0.55;
 }
 
-.orb1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  right: -100px;
-  background: radial-gradient(circle at 30% 30%, var(--theme-bg-glass-strong), var(--theme-bg-glass));
+.pc-aurora__blob--1 {
+  width: 460px;
+  height: 460px;
+  top: -180px;
+  right: -120px;
+  background: var(--theme-primary-soft);
 }
 
-.orb2 {
+.pc-aurora__blob--2 {
+  width: 380px;
+  height: 380px;
+  bottom: -160px;
+  left: -140px;
+  background: color-mix(in srgb, var(--theme-accent-2) 22%, transparent);
+}
+
+.pc-aurora__blob--3 {
   width: 300px;
   height: 300px;
-  bottom: -50px;
-  left: -50px;
-  background: radial-gradient(circle at 70% 70%, var(--theme-bg-glass-strong), var(--theme-bg-glass));
+  top: 42%;
+  left: 58%;
+  background: color-mix(in srgb, var(--theme-accent-3) 16%, transparent);
 }
 
-.orb3 {
-  width: 200px;
-  height: 200px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 50% 50%, var(--theme-bg-glass), transparent);
-  filter: blur(20px);
+.pc-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--theme-hairline) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--theme-hairline) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(ellipse 78% 58% at 50% 0%, #000 18%, transparent 76%);
+  mask-image: radial-gradient(ellipse 78% 58% at 50% 0%, #000 18%, transparent 76%);
+  opacity: 0.6;
 }
 
-/* 主卡片 — 玻璃拟态 */
-.profile-card {
+.pc-shell {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 900px;
-  background: var(--theme-bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 40px;
-  border: 1px solid var(--theme-border-strong);
-  box-shadow: var(--theme-shadow-lg);
-  padding: 2.5rem;
-  color: var(--theme-text-1);
-  transition: transform 0.3s ease;
-}
-
-.profile-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--theme-shadow-lg);
-}
-
-/* 头部区域 */
-.profile-header {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-}
-
-.avatar-section {
+  max-width: 1120px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  gap: 20px;
 }
 
-.avatar-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-
-.avatar-wrapper {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+/* ========== 个人名片 ========== */
+.pc-hero {
   position: relative;
-  cursor: pointer;
-  border: 2px dashed var(--theme-border-strong);
-  transition: all 0.3s ease;
+  border-radius: var(--theme-radius-xl);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-md);
   overflow: hidden;
 }
 
-.avatar-wrapper:hover {
-  transform: scale(1.05);
-  border-color: var(--theme-primary);
+.pc-hero__cover {
+  position: relative;
+  height: 140px;
+  background: var(--theme-gradient);
+  overflow: hidden;
 }
 
-.avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.avatar-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--theme-bg-glass);
-  border-radius: 50%;
-}
-
-.avatar-placeholder i {
-  font-size: 40px;
-  color: var(--theme-text-2);
-}
-
-.avatar-hover {
+.pc-hero__cover-pattern {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--theme-overlay);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 50%;
-}
-
-.avatar-wrapper:hover .avatar-hover {
-  opacity: 1;
-}
-
-.avatar-hover i {
-  font-size: 20px;
-  margin-bottom: 5px;
-}
-
-.avatar-hover span {
-  font-size: 12px;
-}
-
-.account-badge {
-  background: var(--theme-bg-glass);
-  backdrop-filter: blur(4px);
-  padding: 0.4rem 1rem;
-  border-radius: 40px;
-  border: 1px solid var(--theme-border-strong);
-  font-size: 0.85rem;
-  display: flex;
-  gap: 0.3rem;
-}
-
-.account-label {
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 18% 130%, rgba(255, 255, 255, 0.42), transparent 58%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.16) 0 2px, transparent 2px 14px);
   opacity: 0.7;
 }
 
-.account-value {
+.pc-hero__actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+.pc-hero__actions :deep(.el-button) {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.38) !important;
+  color: #fff !important;
+  font-weight: 500;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background-color var(--theme-duration) var(--theme-ease),
+    transform var(--theme-duration) var(--theme-ease);
+}
+
+.pc-hero__actions :deep(.el-button:hover) {
+  background: rgba(255, 255, 255, 0.32) !important;
+  transform: translateY(-1px);
+}
+
+.pc-hero__body {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+  padding: 0 28px 26px;
+}
+
+.pc-avatar-wrap {
+  flex: 0 0 auto;
+  margin-top: -54px;
+}
+
+.pc-avatar {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  border-radius: 30px;
+  border: 4px solid var(--theme-bg-surface);
+  background: var(--theme-bg-surface-2);
+  box-shadow: var(--theme-shadow-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease);
+}
+
+.pc-avatar:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--theme-shadow-lg);
+}
+
+.pc-avatar:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring), var(--theme-shadow-md);
+}
+
+.pc-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pc-avatar__ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 42px;
+  color: var(--theme-text-3);
+}
+
+.pc-avatar__hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--theme-overlay);
+  color: #fff;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity var(--theme-duration) var(--theme-ease);
+}
+
+.pc-avatar__hover em {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.pc-avatar:hover .pc-avatar__hover {
+  opacity: 1;
+}
+
+.pc-hero__info {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 2px;
+}
+
+.pc-hero__name-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pc-hero__name {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--theme-text-1);
+}
+
+.pc-hero__sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--theme-text-2);
+}
+
+.pc-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* 胶囊标签 */
+.pc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.pc-chip i {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.pc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--theme-text-3);
+}
+
+.pc-dot.is-on {
+  background: var(--theme-success);
+  box-shadow: 0 0 0 3px var(--theme-success-soft);
+}
+
+/* ========== 数据概览 ========== */
+.pc-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
+  transition: transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease);
+}
+
+.pc-stat:hover {
+  transform: translateY(-3px);
+  border-color: var(--theme-border-strong);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.pc-stat__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+  border-radius: var(--theme-radius-sm);
+  font-size: 16px;
+}
+
+.pc-stat__label {
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-text-3);
+}
+
+.pc-stat__value {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-1);
+}
+
+.tone-gold .pc-stat__icon {
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+}
+
+.tone-green .pc-stat__icon {
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
+}
+
+.tone-blue .pc-stat__icon {
+  background: var(--theme-info-soft);
+  color: var(--theme-info);
+}
+
+.tone-violet .pc-stat__icon {
+  background: color-mix(in srgb, var(--theme-accent-2) 16%, transparent);
+  color: var(--theme-accent-2);
+}
+
+/* ========== 快捷入口 ========== */
+.pc-entries {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pc-entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
+  color: var(--theme-text-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease);
+}
+
+.pc-entry:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--theme-primary) 45%, transparent);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.pc-entry:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+.pc-entry__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--theme-radius-md);
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 18px;
+}
+
+.pc-entry__text {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pc-entry__text strong {
+  font-size: 15px;
   font-weight: 600;
 }
 
-.header-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.pc-entry__text em {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--theme-text-2);
 }
 
-.user-name {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  color: var(--theme-text-1);
-  text-shadow: 0 2px 4px var(--theme-bg-glass);
+.pc-entry__arrow {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--theme-text-3);
+  transition: transform var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease);
 }
 
-.user-meta {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.2rem;
+.pc-entry:hover .pc-entry__arrow {
+  color: var(--theme-primary);
+  transform: translateX(3px);
 }
 
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--theme-bg-glass);
-  padding: 0.4rem 1rem;
-  border-radius: 40px;
+/* ========== 资料详情 ========== */
+.pc-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.pc-panel {
+  padding: 22px 24px 10px;
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
   border: 1px solid var(--theme-border);
-  font-size: 0.9rem;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* 按钮自定义 — 保持玻璃感 */
-:deep(.el-button) {
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--theme-border-strong) !important;
-  background: var(--theme-bg-glass) !important;
-  color: var(--theme-text-1) !important;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-:deep(.el-button:hover) {
-  background: var(--theme-bg-glass-strong) !important;
-  border-color: var(--theme-border-strong) !important;
-  transform: translateY(-2px);
   box-shadow: var(--theme-shadow-sm);
 }
 
-:deep(.el-button--primary) {
-  background: var(--theme-primary-soft) !important;
-  border-color: var(--theme-primary) !important;
-  color: var(--theme-primary) !important;
+.pc-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
-:deep(.el-button--primary:hover) {
-  background: var(--theme-primary) !important;
-  color: var(--theme-primary-text) !important;
+.pc-panel__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--theme-radius-sm);
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 16px;
 }
 
-/* 信息网格 */
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+.pc-panel__icon--alt {
+  background: color-mix(in srgb, var(--theme-accent-3) 16%, transparent);
+  color: var(--theme-accent-3);
 }
 
-.info-item {
-  background: var(--theme-bg-glass);
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--theme-border);
-  border-radius: 24px;
-  padding: 1rem 1.2rem;
-  transition: all 0.2s;
+.pc-panel__head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text-1);
 }
 
-.info-item:hover {
-  background: var(--theme-bg-glass-strong);
-  border-color: var(--theme-border-strong);
+.pc-panel__head p {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
 }
 
-.item-label {
-  display: block;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.6;
-  margin-bottom: 0.4rem;
+.pc-rows {
+  display: flex;
+  flex-direction: column;
 }
 
-.item-value {
-  font-size: 1.1rem;
+.pc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px dashed var(--theme-hairline);
+}
+
+.pc-row:last-child {
+  border-bottom: none;
+}
+
+.pc-row__k {
+  flex: 0 0 84px;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--theme-text-3);
+}
+
+.pc-row__v {
+  flex: 1;
+  min-width: 0;
+  font-size: 14.5px;
   font-weight: 500;
+  line-height: 1.6;
   color: var(--theme-text-1);
   word-break: break-word;
 }
 
-.bio-value {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  opacity: 0.9;
+.pc-row--block {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
 }
 
-/* 在线状态 */
-.online-status {
-  margin-top: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: flex-end;
-  font-size: 0.9rem;
-  background: var(--theme-bg-glass);
-  padding: 0.5rem 1.5rem;
-  border-radius: 40px;
-  float: right;
-  border: 1px solid var(--theme-border);
+.pc-row--block .pc-row__k {
+  flex: none;
 }
 
-.status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--theme-text-3);
-  transition: background 0.3s;
-}
-
-.status-dot.online {
-  background: var(--theme-success);
-  box-shadow: 0 0 8px var(--theme-success);
+.pc-row--block .pc-row__v {
+  font-weight: 400;
+  color: var(--theme-text-2);
 }
 
 /* ========== 模态框 (Apple 风格玻璃拟态) ========== */
@@ -1225,37 +1471,87 @@ const formatDate = (dateString) => {
   to { transform: rotate(360deg); }
 }
 
-/* 响应式 */
+/* ========== 响应式 ========== */
+@media (max-width: 900px) {
+  .pc-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-entries {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
-  .profile-container {
-    padding: 1rem;
+  .pc-page {
+    padding: 18px 14px 48px;
   }
 
-  .profile-card {
-    padding: 1.5rem;
+  .pc-shell {
+    gap: 14px;
   }
 
-  .profile-header {
+  .pc-hero__cover {
+    height: 116px;
+  }
+
+  .pc-hero__actions {
+    top: 12px;
+    right: 12px;
+    gap: 8px;
+  }
+
+  .pc-hero__actions :deep(.el-button) {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .pc-hero__body {
     flex-direction: column;
     align-items: center;
+    padding: 0 18px 22px;
     text-align: center;
   }
 
-  .user-meta {
+  .pc-hero__name-row {
     justify-content: center;
   }
 
-  .action-buttons {
+  .pc-hero__name {
+    font-size: 24px;
+  }
+
+  .pc-hero__meta {
     justify-content: center;
   }
 
-  .info-grid {
-    grid-template-columns: 1fr;
+  .pc-stats {
+    gap: 12px;
   }
 
-  .online-status {
-    float: none;
-    justify-content: center;
+  .pc-stat {
+    padding: 14px 16px;
+  }
+
+  .pc-stat__value {
+    font-size: 17px;
+  }
+
+  .pc-entry {
+    padding: 14px 16px;
+  }
+
+  .pc-panel {
+    padding: 18px 18px 6px;
+  }
+
+  .pc-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pc-row__k {
+    flex: none;
   }
 
   /* 模态框移动端适配 */

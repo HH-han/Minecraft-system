@@ -1,8 +1,12 @@
 :root {
 	--primary-bg: var(--theme-bg-app);
 	/* 页面背景（随主题令牌切换） */
-	--bubble-color: var(--theme-bg-glass);
+	--bubble-color: color-mix(in srgb, var(--theme-text-inverse) 30%, transparent);
 	/* 气泡色（随主题令牌切换） */
+	--login-bg-gradient: linear-gradient(120deg,
+			color-mix(in srgb, var(--theme-primary) 70%, var(--theme-bg-app)),
+			color-mix(in srgb, var(--theme-accent-2) 70%, var(--theme-bg-app)));
+	/* 登录页背景渐变（由主题主色 + 强调色派生，切换主题自动生效） */
 }
 
 .theme-switch-login{
@@ -13,7 +17,8 @@
 }
 .area-login {
 	background-color: var(--primary-bg);
-	background: -webkit-linear-gradient(to left, #2efbb7, #4e54c8);
+	background: var(--login-bg-gradient);
+	transition: background-color var(--theme-duration-slow) var(--theme-ease);
 }
 
 .circles-login li {
@@ -45,7 +50,6 @@
 	list-style: none;
 	width: 20px;
 	height: 20px;
-	background: rgba(255, 255, 255, 0.3);
 	animation: animate 25s linear infinite;
 	bottom: -150px;
 }

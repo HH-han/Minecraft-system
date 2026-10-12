@@ -1,14 +1,6 @@
 <template>
-    <header>
-        
-    </header>
     <!-- 个人中心主内容区域 -->
-    <main>
-        <Content />
-    </main>
-    <footer>
-    
-    </footer>
+    <Content />
 </template>
 <script setup>
 import Content from './content.vue';

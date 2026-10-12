@@ -117,11 +117,26 @@
       @close="showCallPanel = false"
       @call-ended="handleCallEnded"
     />
+
+    <Profile
+      v-model:visible="showProfile"
+      :user-info="profileUserInfo"
+      @updated="handleProfileUpdated"
+    />
+
+    <Settings
+      v-model:visible="showSettings"
+      :user-name="currentUserName"
+      :user-avatar="currentUserAvatar"
+      :account="currentUserAccount"
+      @logout="handleLogout"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { sendMessage as apiSendMessage, sendSingleMessage, sendGroupMessage, getChatHistory, getSingleChatHistory, getGroupChatHistory, markAsRead, sendFriendRequest, getFriendList, getFriendInfoList, getPendingFriendRequests, acceptFriendRequest, rejectFriendRequest, getGroupsByUserId, inviteFriendsToGroup, updateGroup, updateFriendRemark } from '@/api/chat'
 import { getUserByAccount } from '@/api/user'
@@ -140,13 +155,17 @@ import FriendRemarkModal from './components/FriendRemarkModal.vue'
 import CallPanel from './components/CallPanel.vue'
 import Moments from './components/Moments.vue'
 import Favorites from './components/Favorites.vue'
+import Profile from './components/Profile.vue'
+import Settings from './components/Settings.vue'
 import { initiateVoiceCall, initiateVideoCall } from '@/api/call'
 
 const authStore = useAuthStore()
+const router = useRouter()
 
 const currentUserId = ref(null)
 const currentUserName = ref('用户')
 const currentUserAvatar = ref('')
+const currentUserAccount = ref('')
 
 const activeTab = ref('friends')
 const selectedContact = ref(null)
@@ -168,6 +187,14 @@ const showFriendRemarkModal = ref(false)
 const editFriend = ref(null)
 const showMoments = ref(false)
 const showFavorites = ref(false)
+const showProfile = ref(false)
+const showSettings = ref(false)
+
+const profileUserInfo = computed(() => ({
+  ...(authStore.userInfo || {}),
+  username: currentUserName.value,
+  avatar: currentUserAvatar.value
+}))
 
 const chatAreaRef = ref(null)
 
@@ -910,8 +937,29 @@ const handleNavChange = (tab) => {
 }
 
 const handleUserProfile = () => {
-  console.log('[ImChat] 查看个人信息')
-  // 打开个人信息弹窗
+  showSettings.value = false
+  showProfile.value = true
+}
+
+const handleProfileUpdated = (data) => {
+  if (!data) return
+  const patch = {}
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== undefined) patch[key] = data[key]
+  })
+  if (patch.nickname) currentUserName.value = patch.nickname
+  if (patch.avatar) currentUserAvatar.value = patch.avatar
+  authStore.updateUserInfo(patch)
+}
+
+const handleLogout = async () => {
+  showSettings.value = false
+  try {
+    await authStore.logout()
+  } catch (error) {
+    console.error('[ImChat] 退出登录失败:', error)
+  }
+  router.push('/login')
 }
 
 const handleViewGroups = () => {
@@ -960,8 +1008,8 @@ const handleFavorites = () => {
 }
 
 const handleSettings = () => {
-  console.log('[ImChat] 设置')
-  // 打开设置
+  showProfile.value = false
+  showSettings.value = true
 }
 
 const handleOpenDetail = (contact) => {
@@ -1159,6 +1207,7 @@ onMounted(async () => {
     currentUserId.value = userId || authStore.userInfo?.id || null
     currentUserName.value = userInfo.username || '用户'
     currentUserAvatar.value = userInfo.avatar || ''
+    currentUserAccount.value = userInfo.account || ''
     console.log('[ImChat] onMounted - currentUserId set to:', currentUserId.value)
   } else {
     console.warn('[ImChat] onMounted - No user info found')
@@ -1198,6 +1247,15 @@ watch(selectedContact, () => {
   color: var(--theme-text-1);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 收藏页打开时：保留最左侧图标导航栏，仅收起右侧列表面板，收藏页占据其余空间 */
+.im-container.favorites-open :deep(.im-sidebar) {
+  width: 64px;
+}
+
+.im-container.favorites-open :deep(.sidebar-right) {
+  display: none;
 }
 
 :global(html) {
@@ -1330,6 +1388,11 @@ watch(selectedContact, () => {
   .im-container :deep(.sidebar-left) {
     width: 56px;
     padding: 12px 0;
+  }
+
+  /* 收藏页下侧栏收窄至导航竖栏宽度 */
+  .im-container.favorites-open :deep(.im-sidebar) {
+    width: 56px;
   }
 
   .im-container :deep(.contact-detail),

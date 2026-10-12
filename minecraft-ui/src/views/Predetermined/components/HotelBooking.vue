@@ -322,9 +322,9 @@ const submitBooking = async (bookingData) => {
 
 /* ===== Card Shell（与景点一致：Apple 多层浅阴影，删除1px border） ===== */
 .card-shell {
-  background: #ffffff;
+  background: var(--theme-bg-surface);
   border-radius: 28px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--theme-shadow-sm);
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -343,7 +343,7 @@ const submitBooking = async (bookingData) => {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
 }
 .hero-image img {
   position: absolute;
@@ -368,16 +368,16 @@ const submitBooking = async (bookingData) => {
   aspect-ratio: 1 / 1;
   border-radius: 14px;
   overflow: hidden;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   cursor: default;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .thumb:hover {
   transform: scale(1.005);
-  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--theme-shadow-md);
 }
 .thumb:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 .thumb img {
@@ -409,7 +409,7 @@ const submitBooking = async (bookingData) => {
   font-size: 32px;
   line-height: 1.2;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.01em;
 }
 
@@ -424,8 +424,8 @@ const submitBooking = async (bookingData) => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #2997ff;
-  color: #ffffff;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
   padding: 4px 14px;
   border-radius: 40px;
   font-size: 13px;
@@ -433,12 +433,12 @@ const submitBooking = async (bookingData) => {
   letter-spacing: 0.01em;
 }
 .rating-text {
-  color: #2997ff;
+  color: var(--theme-primary);
   font-weight: 600;
   font-size: 14px;
 }
 .meta-subtle {
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 14px;
 }
 
@@ -447,7 +447,7 @@ const submitBooking = async (bookingData) => {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -456,7 +456,7 @@ const submitBooking = async (bookingData) => {
   width: 18px;
   height: 18px;
   margin-top: 2px;
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 .meta-text {
   flex: 1;
@@ -471,13 +471,13 @@ const submitBooking = async (bookingData) => {
   padding: 16px 0;
 }
 .tag-group--facilities {
-  border-top: 1px solid #f2f2f4;
-  border-bottom: 1px solid #f2f2f4;
+  border-top: 1px solid var(--theme-hairline);
+  border-bottom: 1px solid var(--theme-hairline);
 }
 .tag-label {
   font-size: 12px;
   font-weight: 600;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   text-transform: uppercase;
   letter-spacing: 0.03em; /* 与景点一致 0.03，Apple 大写字母间距 */
 }
@@ -490,8 +490,8 @@ const submitBooking = async (bookingData) => {
   display: inline-flex;
   align-items: center;
   padding: 5px 14px;
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
   font-size: 12px;
   border-radius: 40px;
   line-height: 1.4;
@@ -499,7 +499,7 @@ const submitBooking = async (bookingData) => {
   transition: background 0.2s ease;
 }
 .tag-chip:hover {
-  background: #ebebef;
+  background: var(--theme-bg-hover);
 }
 
 /* --- Stats Grid (3 cols，浅灰卡片 横排，与景点完全一致) --- */
@@ -514,7 +514,7 @@ const submitBooking = async (bookingData) => {
   align-items: center;  /* 与景点：row 横排 左icon右内容 */
   gap: 12px;
   padding: 16px;
-  background: #f5f5f7;
+  background: var(--theme-bg-surface-2);
   border-radius: 16px;
   box-sizing: border-box;
   min-width: 0;
@@ -523,7 +523,7 @@ const submitBooking = async (bookingData) => {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  color: #2997ff;
+  color: var(--theme-primary);
 }
 .stat-content {
   display: flex;
@@ -534,7 +534,7 @@ const submitBooking = async (bookingData) => {
 .stat-value {
   font-size: 18px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.2;
 }
 .price-font {
@@ -542,7 +542,7 @@ const submitBooking = async (bookingData) => {
 }
 .stat-label {
   font-size: 12px;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   line-height: 1.3;
 }
 
@@ -558,7 +558,7 @@ const submitBooking = async (bookingData) => {
   font-size: 22px;
   line-height: 1.3;
   font-weight: 700;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   letter-spacing: -0.005em;
 }
 
@@ -571,7 +571,7 @@ const submitBooking = async (bookingData) => {
   margin-bottom: 8px;
   font-size: 12px;
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
@@ -581,20 +581,20 @@ const submitBooking = async (bookingData) => {
   width: 140px;
   height: 40px;
   border-radius: 40px;
-  background: #ffffff;
-  border: 1px solid #d2d2d6;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border-strong);
   overflow: hidden;
   transition: border-color 0.2s ease;
 }
 .stepper:hover {
-  border-color: #c7c7cc;
+  border-color: var(--theme-border-strong);
 }
 .stepper-btn {
   width: 44px;
   height: 40px;
   border: none;
   background: transparent;
-  color: #6e6e73;
+  color: var(--theme-text-2);
   font-size: 20px;
   font-weight: 400;
   cursor: pointer;
@@ -603,8 +603,8 @@ const submitBooking = async (bookingData) => {
   flex-shrink: 0;
 }
 .stepper-btn:hover:not(:disabled) {
-  color: #2997ff;
-  background: rgba(41, 151, 255, 0.06);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 .stepper-btn:disabled {
   opacity: 0.3;
@@ -615,12 +615,12 @@ const submitBooking = async (bookingData) => {
   text-align: center;
   font-size: 15px;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1;
   user-select: none;
 }
 .stepper-btn:focus-visible {
-  outline: 2px solid #2997ff;
+  outline: 2px solid var(--theme-primary);
   outline-offset: -2px;
 }
 
@@ -630,7 +630,7 @@ const submitBooking = async (bookingData) => {
   align-items: center;
   padding: 10px 0;
   font-size: 14px;
-  color: #1d1d1f;
+  color: var(--theme-text-1);
   line-height: 1.5;
   gap: 12px;
 }

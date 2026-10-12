@@ -578,52 +578,94 @@ onMounted(() => {
 <style scoped>
 /* 主容器 */
 .community-management {
+  position: relative;
+  min-height: 100vh;
+  padding: 40px 22px 64px;
+  background: var(--theme-bg-app);
+  color: var(--theme-text-1);
+  overflow-x: hidden;
+}
+
+/* 环境光背景 */
+.community-management::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 88% -6%, var(--theme-primary-soft), transparent 46%),
+    radial-gradient(circle at 4% 104%, color-mix(in srgb, var(--theme-accent-2) 20%, transparent), transparent 44%);
+}
+
+/* 内容轨道（限宽居中，浮于背景之上） */
+.community-management > .page-header,
+.community-management > .loading-state,
+.community-management > .empty-state,
+.community-management > .posts-grid,
+.community-management > .pagination {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 22px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* 页面标题 */
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 40px;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.header-content {
+  min-width: 0;
 }
 
 .header-content h1 {
-  font-size: 48px;
+  font-size: 34px;
   font-weight: 700;
   color: var(--theme-text-1);
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   letter-spacing: -0.02em;
 }
 
 .subtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: var(--theme-text-2);
   margin: 0;
 }
 
 /* 创建按钮 */
 .create-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
   background: var(--theme-primary);
   color: var(--theme-primary-text);
   border: none;
-  border-radius: 40px;
+  border-radius: var(--theme-radius-pill);
+  font: inherit;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
+  box-shadow: 0 6px 18px var(--theme-primary-soft);
+  transition: background-color var(--theme-duration) var(--theme-ease),
+    transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease);
 }
 
 .create-btn:hover {
   background: var(--theme-primary-hover);
-  transform: scale(1.02);
+  transform: translateY(-1px);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.create-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
 }
 
 .create-btn svg {
@@ -705,15 +747,21 @@ onMounted(() => {
 
 /* 帖子卡片 */
 .post-card {
+  display: flex;
+  flex-direction: column;
   background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--theme-shadow-sm);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease);
 }
 
 .post-card:hover {
-  transform: scale(1.01);
+  transform: translateY(-4px);
+  border-color: var(--theme-border-strong);
   box-shadow: var(--theme-shadow-md);
 }
 
@@ -832,6 +880,9 @@ onMounted(() => {
 }
 
 .post-images.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--theme-text-3);
 }
 
@@ -842,7 +893,8 @@ onMounted(() => {
 
 /* 帖子内容 */
 .post-content {
-  padding: 24px;
+  flex: 1;
+  padding: 22px 24px;
 }
 
 .post-title {
@@ -884,6 +936,7 @@ onMounted(() => {
 .post-actions {
   display: flex;
   gap: 8px;
+  margin-top: auto;
   padding: 0 24px 24px;
 }
 
@@ -896,15 +949,19 @@ onMounted(() => {
   padding: 10px 16px;
   background: var(--theme-bg-surface-2);
   color: var(--theme-text-1);
-  border: none;
+  border: 1px solid var(--theme-border);
   border-radius: 12px;
+  font: inherit;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease);
 }
 
 .action-btn:hover {
   background: var(--theme-bg-hover);
+  border-color: var(--theme-border-strong);
 }
 
 .action-btn svg {
@@ -913,12 +970,14 @@ onMounted(() => {
 }
 
 .action-btn.danger {
-  background: var(--theme-danger);
-  color: white;
+  background: var(--theme-danger-soft);
+  border-color: transparent;
+  color: var(--theme-danger);
 }
 
 .action-btn.danger:hover {
-  background: color-mix(in srgb, var(--theme-danger) 85%, #000);
+  background: var(--theme-danger);
+  color: #fff;
 }
 
 /* 分页 */
@@ -932,17 +991,20 @@ onMounted(() => {
 
 .page-btn {
   padding: 8px 16px;
-  background: var(--theme-bg-surface-2);
-  border: none;
-  border-radius: 8px;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-pill);
+  font: inherit;
   font-size: 14px;
   color: var(--theme-text-1);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease);
 }
 
 .page-btn:hover:not(:disabled) {
   background: var(--theme-bg-hover);
+  border-color: var(--theme-border-strong);
 }
 
 .page-btn:disabled {
@@ -963,11 +1025,13 @@ onMounted(() => {
   justify-content: center;
   background: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--theme-radius-pill);
+  font: inherit;
   font-size: 14px;
   color: var(--theme-text-1);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease);
 }
 
 .page-number:hover {
@@ -987,6 +1051,8 @@ onMounted(() => {
   right: 0;
   bottom: 0;
   background: var(--theme-overlay);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -996,7 +1062,9 @@ onMounted(() => {
 
 .modal-content {
   background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 24px;
+  box-shadow: var(--theme-shadow-lg);
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
@@ -1216,7 +1284,9 @@ onMounted(() => {
 /* 确认对话框 */
 .confirm-dialog {
   background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
   border-radius: 24px;
+  box-shadow: var(--theme-shadow-lg);
   padding: 32px;
   text-align: center;
   max-width: 400px;
@@ -1265,7 +1335,12 @@ onMounted(() => {
   }
   
   .header-content h1 {
-    font-size: 32px;
+    font-size: 26px;
+  }
+
+  .create-btn {
+    width: 100%;
+    justify-content: center;
   }
   
   .posts-grid {
