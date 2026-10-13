@@ -1,9 +1,12 @@
 package com.minecraft.config;
 
+import com.minecraft.handler.DataChangeBroadcastInterceptor;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,7 +19,16 @@ import java.nio.file.Paths;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final DataChangeBroadcastInterceptor dataChangeBroadcastInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 写操作成功后广播数据变更事件，驱动客户端自动刷新
+        registry.addInterceptor(dataChangeBroadcastInterceptor).addPathPatterns("/api/**");
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

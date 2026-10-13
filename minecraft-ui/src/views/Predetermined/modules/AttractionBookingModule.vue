@@ -25,6 +25,7 @@ import AttractionBooking from '../components/AttractionBooking.vue'
 import { useBookingStore } from '@/stores/bookingStore.js'
 import { getAttractionDetail } from '@/api/attraction.js'
 import { getTicketBookingDetail } from '@/api/booking.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const bookingStore = useBookingStore()
 const route = useRoute()
@@ -89,6 +90,9 @@ const loadData = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadData)
 
 const debouncedLoadData = () => {
   if (loadTimer) {

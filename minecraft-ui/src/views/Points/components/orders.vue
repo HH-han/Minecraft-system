@@ -72,6 +72,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { getExchangeOrders } from '@/api/points';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const router = useRouter();
 
@@ -99,6 +100,9 @@ const getOrders = async () => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(getOrders);
 
 // 物流状态标签类型（后端回填 statusDesc / shippingStatus）
 const getShippingType = (row) => {

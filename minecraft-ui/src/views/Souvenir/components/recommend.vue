@@ -99,6 +99,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getClientRecommendations } from '@/api/clientRecommendation'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 // 搜索相关
 const searchQuery = ref('')
@@ -149,6 +150,9 @@ async function loadRecommendations() {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadRecommendations)
 
 // 判断商品是否属于某分类
 function matchCategory(item, categoryId) {

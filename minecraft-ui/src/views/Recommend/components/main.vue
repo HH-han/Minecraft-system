@@ -55,6 +55,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getRecommendList } from '@/api/recommend'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const recommendList = ref([])
 
@@ -72,6 +73,9 @@ const loadRecommendList = async () => {
         console.error('Failed to load recommend list:', error)
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadRecommendList)
 </script>
 <style scoped>
 .recommend-container {

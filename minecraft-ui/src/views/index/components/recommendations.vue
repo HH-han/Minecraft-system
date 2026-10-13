@@ -108,6 +108,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { getHotRecommendations } from '@/api/homeRecommendations'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['open-recommendation-detail'])
 
@@ -161,6 +162,9 @@ const loadHotRecommendations = async () => {
     console.error('Failed to load hot recommendations:', error)
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadHotRecommendations)
 
 const filterByCategory = (categoryId) => {
   selectedCategory.value = categoryId

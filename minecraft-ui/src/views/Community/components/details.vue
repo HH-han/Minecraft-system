@@ -256,6 +256,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getPostDetail } from '@/api/community';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const route = useRoute();
 const router = useRouter();
@@ -329,6 +330,9 @@ const fetchPostDetail = async () => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchPostDetail);
 
 // 解析图片字符串，支持JSON数组和逗号分隔两种格式
 const parseImages = (imagesStr) => {

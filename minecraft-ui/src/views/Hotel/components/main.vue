@@ -35,6 +35,7 @@ import Content from './content.vue';
 import BottomPage from '@/components/DisplayBox/BottomPage.vue';
 import carouselApi from '@/api/carousel.js';
 import { getHotelList } from '@/api/hotel.js';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 轮播图数据
 const mediaList = ref({ images: [] });
@@ -66,6 +67,9 @@ const fetchcarousel = async () => {
   }
 };
 
+// 数据变更后自动刷新
+useAutoRefresh(fetchcarousel);
+
 // 获取酒店数据
 const fetchHotels = async (page = 1) => {
   loading.value = true;
@@ -82,6 +86,9 @@ const fetchHotels = async (page = 1) => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchHotels);
 
 // 分页切换
 const handlePageChange = (page) => {

@@ -83,6 +83,7 @@ import { ChatDotRound, EditPen, Picture, Pointer, Star, View } from '@element-pl
 import { useRouter } from 'vue-router'
 import { deleteNote, getMyNotes } from '@/api/travelNote'
 import { useAuthStore } from '@/stores/auth'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -130,6 +131,9 @@ async function fetchNotes() {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchNotes)
 
 function handleTabChange() {
   query.pageNum = 1

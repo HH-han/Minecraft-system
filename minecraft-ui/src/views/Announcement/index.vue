@@ -95,6 +95,7 @@ import { Bell, View } from '@element-plus/icons-vue'
 import { getAnnouncementList } from '@/api/announcement'
 import { useAnnouncementStore } from '@/stores/announcementStore'
 import AnnouncementDetailModal from '@/components/AnnouncementComponents/AnnouncementDetailModal.vue'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const TYPE_OPTIONS = [
   { value: 1, label: '系统公告' },
@@ -142,6 +143,9 @@ async function fetchList() {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchList)
 
 function handleFilter() {
   page.value = 1

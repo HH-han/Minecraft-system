@@ -1,6 +1,38 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+import { useRefreshStore } from '@/stores/refreshStore'
+
+/**
+ * 写操作成功后自动通知「刷新总线」，驱动当前页面重新拉取数据
+ * （解决「用户自己发起请求后仍要手动刷新」的问题；服务端 SSE 广播负责其他端/其他人的改动）
+ *
+ * 以下写操作不触发刷新：登录/验证码/上传/监控/日志等无关请求，以及浏览量/已读/曝光类高频写操作
+ */
+const NO_REFRESH_PREFIXES = [
+  '/auth',
+  '/captcha',
+  '/upload',
+  '/realtime',
+  '/server-monitor',
+  '/cache',
+  '/token',
+  '/online-users',
+  '/operation-logs',
+  '/system-logs',
+  '/login-log',
+  '/recommendations/exposure',
+  '/ai/trip'
+]
+
+const NO_REFRESH_CONTAINS = ['/read', '/exposure', '/view', '/typing', '/heartbeat']
+
+const shouldNotifyRefresh = (url = '') => {
+  const path = String(url)
+  if (NO_REFRESH_PREFIXES.some((prefix) => path.startsWith(prefix))) return false
+  if (NO_REFRESH_CONTAINS.some((keyword) => path.includes(keyword))) return false
+  return true
+}
 
 /**
  * 请求去重：
@@ -118,6 +150,19 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   (response) => {
+    // 写操作成功后通知刷新总线：让页面自动重新拉取数据
+    const method = String(response.config?.method || 'get').toLowerCase()
+    const body = response.data
+    const bizOk = !body || body.code === undefined || body.code === 200
+    if (bizOk && ['post', 'put', 'patch', 'delete'].includes(method)) {
+      try {
+        if (shouldNotifyRefresh(response.config?.url)) {
+          useRefreshStore().notify()
+        }
+      } catch {
+        // Pinia 尚未就绪（如应用初始化阶段）时忽略
+      }
+    }
     // 直接返回响应数据，由调用方处理
     return response.data
   },

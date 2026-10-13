@@ -140,6 +140,7 @@ import { useRouter } from 'vue-router'
 import { getCartList, updateCart, deleteFromCart } from '@/api/cart.js'
 import { createOrder } from '@/api/order.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['checkout'])
 const router = useRouter()
@@ -385,6 +386,9 @@ const fetchCartData = async () => {
     cartItems.value = [] // 失败时也设置为空数组
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchCartData)
 
 // 支付成功后移除已支付的购物车条目
 // 仅在收到 PayPage 支付成功消息且存在待处理条目时执行，避免误删

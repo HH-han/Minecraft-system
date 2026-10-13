@@ -88,6 +88,7 @@ import { ref, reactive, onMounted, computed } from 'vue';
 import { getRecommendHotels } from '@/api/hotel.js';
 import { getRecommendFoods } from '@/api/food.js';
 import { getHotAttractions } from '@/api/attraction.js';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const emit = defineEmits(['open-detail']);
 
@@ -255,6 +256,10 @@ const fetchFoods = async () => {
         loading.value.food = false;
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchHotels);
+useAutoRefresh(fetchFoods);
 
 const fetchAttractions = async () => {
     loading.value.attraction = true;

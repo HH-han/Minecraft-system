@@ -184,6 +184,7 @@ import {
   deleteHotelBooking
 } from '@/api/booking.js'
 import { createOrder } from '@/api/order.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['checkout'])
 const router = useRouter()
@@ -373,6 +374,9 @@ const fetchBookings = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchBookings)
 
 // 结算：为每项预订创建订单，触发支付流程
 const checkout = async () => {

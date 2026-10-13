@@ -281,6 +281,7 @@ import Content from './content.vue';
 import Recommend from '@/views/Recommend/index.vue';
 import Icon from './Icon.vue';
 import websiteIntroductionApi from '@/api/websiteIntroduction';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 声明向上转发的详情事件，避免监听器穿透到根 DOM 元素
 defineEmits(['open-detail', 'open-recommendation-detail']);
@@ -377,6 +378,9 @@ const loadData = async () => {
         console.warn('加载网站介绍页数据失败:', e);
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(loadData);
 
 // 滚动到指定区块
 const scrollToSection = (id) => {

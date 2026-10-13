@@ -73,6 +73,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getHotNews } from '@/api/news.js';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const emit = defineEmits(['open-news-detail']);
 
@@ -116,6 +117,9 @@ const fetchNews = async () => {
         loading.value = false;
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchNews);
 
 const getCoverImage = (coverImage) => {
     if (!coverImage || coverImage.includes('via.placeholder.com')) {

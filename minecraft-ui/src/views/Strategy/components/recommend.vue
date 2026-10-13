@@ -147,6 +147,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { getGroupList } from '@/api/group';
 import carouselApi from '@/api/carousel'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 // 搜索关键词
 const searchKeyword = ref('');
@@ -170,6 +171,10 @@ const fetchcarousel = async () => {
     console.error('获取轮播图数据失败：', error)
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchcarousel)
+
 const currentSlide = ref(0);
 
 // 卡片数据
@@ -204,6 +209,9 @@ const fetchCards = async () => {
         travelCards.value = [];
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchCards)
 
 // 当前地点类型
 const currentLocation = ref('domestic');

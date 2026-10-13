@@ -204,6 +204,7 @@ import {
   getPostList,
   createPost as createPostApi
 } from '@/api/community';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const router = useRouter();
 
@@ -260,6 +261,9 @@ const fetchPosts = async () => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchPosts);
 
 // 切换页码
 const changePage = (page) => {

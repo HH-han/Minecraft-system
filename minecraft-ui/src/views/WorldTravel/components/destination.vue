@@ -158,6 +158,7 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import citiesApi from '@/api/cities.js';
 import countriesApi from '@/api/countries.js';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 大洲编号 -> 名称（对应 continents 表 1-6）
 const CONTINENT_NAMES = {
@@ -252,6 +253,9 @@ const fetchDestinationData = async () => {
         loading.value = false;
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchDestinationData)
 
 // 大洲 -> 国家 -> 城市 三级分组（首都优先）
 const continentGroups = computed(() => {

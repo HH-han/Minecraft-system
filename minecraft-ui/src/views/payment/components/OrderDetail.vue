@@ -156,6 +156,7 @@ import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
 import { getOrderDetail, cancelOrder } from '@/api/order.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['pay'])
 const router = useRouter()
@@ -382,6 +383,9 @@ const fetchProductData = async () => {
     await setDefaultOrderData()
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchProductData)
 
 // 无订单编号时，根据商品详情构建订单数据
 const setDefaultOrderData = async () => {

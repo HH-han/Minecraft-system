@@ -35,6 +35,7 @@ import Content from './content.vue';
 import BottomPage from '@/components/DisplayBox/BottomPage.vue';
 import carouselApi from '@/api/carousel.js';
 import { getAttractionList } from '@/api/attraction.js';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 轮播图数据
 const mediaList = ref({ images: [] });
@@ -66,6 +67,9 @@ const fetchcarousel = async () => {
   }
 };
 
+// 数据变更后自动刷新
+useAutoRefresh(fetchcarousel);
+
 // 获取景点数据
 const fetchAttractions = async (page = 1) => {
   loading.value = true;
@@ -82,6 +86,9 @@ const fetchAttractions = async (page = 1) => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchAttractions);
 
 // 分页切换
 const handlePageChange = (page) => {

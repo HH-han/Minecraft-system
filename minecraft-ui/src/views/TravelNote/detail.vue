@@ -227,6 +227,7 @@ import {
   unlikeNote
 } from '@/api/travelNote'
 import { useAuthStore } from '@/stores/auth'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const route = useRoute()
 const router = useRouter()
@@ -264,7 +265,7 @@ const bizTypeLabel = (type) => BIZ_TYPES[type] || '相关'
 
 const safeContent = computed(() => note.value?.content || '')
 
-onMounted(async () => {
+const loadNote = async () => {
   try {
     const res = await getNoteDetail(noteId)
     if (res.code === 200) {
@@ -276,7 +277,12 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
-})
+}
+
+onMounted(loadNote)
+
+// 数据变更后自动刷新
+useAutoRefresh(loadNote)
 
 async function fetchComments() {
   commentsLoading.value = true

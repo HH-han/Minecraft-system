@@ -95,6 +95,7 @@ import {
   getWorldCharacteristicsByCategory
 } from '@/api/worldcharacteristics';
 import Paging from '@/components/paging/index.vue';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const DEFAULT_ACCENT = '#0d9488';
 // src 下的静态资源需经打包器解析，直接写 /assets/... 会 404
@@ -148,6 +149,9 @@ const loadData = async () => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(loadData)
 
 // 按分类过滤
 const filterByCategory = async (category) => {

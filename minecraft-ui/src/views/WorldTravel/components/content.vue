@@ -214,6 +214,7 @@ import Destination from './destination.vue';
 import Seasonal from './season.vue';
 import Paging from '@/components/paging/index.vue'
 import countriesApi from '@/api/countries.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 // 响应式数据
 const mediaList = ref({
@@ -408,6 +409,9 @@ const fetchCountries = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchCountries)
 
 // 根据continentId获取大洲名称
 const getContinentName = (continentId) => {

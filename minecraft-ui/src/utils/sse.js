@@ -1,30 +1,56 @@
 import { ElNotification } from 'element-plus'
+import { useRefreshStore } from '@/stores/refreshStore'
 
+/**
+ * 统一实时推送客户端（SSE 长连接）
+ * <p>
+ * 单条连接同时承载两类事件：
+ * - data-change：服务端有写操作（新增/修改/删除）后广播，驱动页面自动刷新
+ * - announcement：系统公告实时推送
+ * <p>
+ * 匿名也允许连接（公共页面无需登录即可实时刷新），token 可选用于标识身份。
+ * 断线 10s 后自动重连。
+ */
 let eventSource = null
 let reconnectTimer = null
 
-/**
- * 初始化公告 SSE 实时推送（登录后调用）
- * 断线 10s 后自动重连
- */
-export function initAnnouncementSse(onAnnouncement) {
-  const token = localStorage.getItem('token')
-  if (!token) return
-  if (eventSource) eventSource.close()
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer)
-    reconnectTimer = null
-  }
-
+function buildUrl() {
   const base = import.meta.env.VITE_API_BASE_URL || ''
-  eventSource = new EventSource(
-    `${base}/api/announcements/sse?token=${encodeURIComponent(token)}`
-  )
+  const token = localStorage.getItem('token')
+  const query = token ? `?token=${encodeURIComponent(token)}` : ''
+  return `${base}/api/realtime/sse${query}`
+}
 
+/**
+ * 初始化实时推送
+ * @param {Object} [handlers]
+ * @param {(announcement:any)=>void} [handlers.onAnnouncement] 收到新公告时回调
+ * @param {(event:any)=>void} [handlers.onDataChange] 收到数据变更时回调
+ */
+export function initRealtimeSse(handlers = {}) {
+  if (typeof EventSource === 'undefined') return
+
+  // 避免重复连接
+  closeRealtimeSse()
+
+  eventSource = new EventSource(buildUrl())
+
+  // 数据变更 → 通知刷新总线，页面自动重新拉取
+  eventSource.addEventListener('data-change', (e) => {
+    try {
+      const payload = JSON.parse(e.data)
+      useRefreshStore().notify(payload)
+      handlers.onDataChange && handlers.onDataChange(payload)
+    } catch (err) {
+      console.warn('SSE 数据变更解析失败:', err)
+    }
+  })
+
+  // 新公告推送
   eventSource.addEventListener('announcement', (e) => {
     try {
       const ann = JSON.parse(e.data)
-      onAnnouncement && onAnnouncement(ann)
+      handlers.onAnnouncement && handlers.onAnnouncement(ann)
       ElNotification({
         title: ann.title,
         message: ann.summary || '有新公告',
@@ -32,17 +58,21 @@ export function initAnnouncementSse(onAnnouncement) {
         duration: 5000
       })
     } catch (err) {
-      console.warn('SSE 消息解析失败:', err)
+      console.warn('SSE 公告解析失败:', err)
     }
   })
 
   eventSource.onerror = () => {
-    closeAnnouncementSse()
-    reconnectTimer = setTimeout(() => initAnnouncementSse(onAnnouncement), 10000)
+    closeRealtimeSse()
+    reconnectTimer = setTimeout(() => initRealtimeSse(handlers), 10000)
   }
 }
 
-export function closeAnnouncementSse() {
+export function closeRealtimeSse() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer)
+    reconnectTimer = null
+  }
   if (eventSource) {
     eventSource.close()
     eventSource = null

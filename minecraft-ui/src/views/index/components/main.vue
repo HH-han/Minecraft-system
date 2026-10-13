@@ -48,6 +48,7 @@ import Carousel from '@/views/Carousel/index.vue';
 import carouselApi from '@/api/carousel.js';
 import WebsiteIntroduction from './WebsiteIntroduction.vue';
 import AnnouncementCarousel from '@/components/AnnouncementComponents/AnnouncementCarousel.vue';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 defineEmits(['open-detail', 'open-news-detail', 'open-safety-detail', 'open-recommendation-detail']);
 
@@ -73,6 +74,9 @@ const fetchcarousel = async () => {
     console.error('获取轮播图数据失败：', error)
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchcarousel);
 
 // 滚动入场观察器（与 WebsiteIntroduction 保持一致的表现）
 let revealObserver = null;

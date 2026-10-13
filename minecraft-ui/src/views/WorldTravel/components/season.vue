@@ -101,6 +101,7 @@ import {
   getAllMonths,
   getRecommendationsByMonth
 } from '@/api/monthlyRecommendations'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const currentMonth = ref('一月')
 const loading = ref(false)
@@ -175,6 +176,9 @@ const fetchRecommendations = async (month) => {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchRecommendations)
 
 // 加载所有月份
 const loadMonths = async () => {

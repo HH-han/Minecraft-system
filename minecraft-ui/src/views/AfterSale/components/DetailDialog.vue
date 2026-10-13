@@ -127,6 +127,7 @@ import {
   sendAfterSaleMessage,
   submitReturn
 } from '@/api/afterSale.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -186,6 +187,9 @@ const fetchDetail = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchDetail)
 
 watch(
   () => props.modelValue,

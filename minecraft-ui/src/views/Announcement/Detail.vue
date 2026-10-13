@@ -36,6 +36,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getAnnouncementDetail } from '@/api/announcement'
 import { useAnnouncementStore } from '@/stores/announcementStore'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,7 +44,7 @@ const store = useAnnouncementStore()
 const loading = ref(true)
 const detail = ref(null)
 
-onMounted(async () => {
+const loadDetail = async () => {
   try {
     const res = await getAnnouncementDetail(route.params.id)
     if (res.code === 200) {
@@ -56,7 +57,12 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
-})
+}
+
+onMounted(loadDetail)
+
+// 数据变更后自动刷新
+useAutoRefresh(loadDetail)
 
 function goBack() {
   router.push('/announcement')

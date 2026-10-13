@@ -181,6 +181,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import officialwebsiteApi from '@/api/officialwebsite';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
@@ -351,6 +352,9 @@ const fetchHomeData = async () => {
     }
 };
 
+// 数据变更后自动刷新
+useAutoRefresh(fetchHomeData);
+
 const fetchNavigation = async () => {
     try {
         const response = await officialwebsiteApi.getNavigation();
@@ -361,6 +365,9 @@ const fetchNavigation = async () => {
         console.error('获取导航数据失败:', error);
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchNavigation);
 
 onMounted(() => {
     window.addEventListener('scroll', updateScroll, { passive: true });

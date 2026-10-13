@@ -2,57 +2,38 @@ package com.minecraft.service.impl;
 
 import com.minecraft.dto.response.AnnouncementVO;
 import com.minecraft.service.AnnouncementSseService;
-import lombok.extern.slf4j.Slf4j;
+import com.minecraft.service.RealtimeSseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * 公告 SSE 推送实现
- * 每个登录用户保留一个长连接，连接断开/超时自动清理
+ * <p>
+ * 复用 {@link RealtimeSseService} 的统一长连接（/api/realtime/sse），
+ * 公告以 {@code announcement} 事件名广播，避免同一客户端维护多条 SSE 连接。
  */
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class AnnouncementSseServiceImpl implements AnnouncementSseService {
 
-    /** 30 分钟超时，前端会自动重连 */
-    private static final long SSE_TIMEOUT = 30 * 60 * 1000L;
+    /** 公告事件名，与前端 sse.js 中监听的事件名保持一致 */
+    private static final String EVENT_ANNOUNCEMENT = "announcement";
 
-    private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final RealtimeSseService realtimeSseService;
 
     @Override
     public SseEmitter subscribe(Long userId) {
-        SseEmitter emitter = new SseEmitter(SSE_TIMEOUT);
-        emitters.put(userId, emitter);
-        emitter.onCompletion(() -> emitters.remove(userId));
-        emitter.onTimeout(() -> emitters.remove(userId));
-        emitter.onError(e -> emitters.remove(userId));
-        // 立即发送一条 open 事件，触发浏览器 EventSource onopen
-        try {
-            emitter.send(SseEmitter.event().name("open").data("connected"));
-        } catch (IOException e) {
-            emitters.remove(userId);
-        }
-        return emitter;
+        return realtimeSseService.subscribe();
     }
 
     @Override
     public void broadcast(AnnouncementVO vo) {
-        emitters.forEach((uid, emitter) -> {
-            try {
-                emitter.send(SseEmitter.event().name("announcement").data(vo));
-            } catch (IOException e) {
-                emitters.remove(uid);
-                log.error("[公告] SSE 推送失败 userId={}", uid);
-            }
-        });
+        realtimeSseService.broadcast(EVENT_ANNOUNCEMENT, vo);
     }
 
     @Override
     public int connectionCount() {
-        return emitters.size();
+        return realtimeSseService.connectionCount();
     }
 }

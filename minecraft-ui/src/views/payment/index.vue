@@ -105,6 +105,7 @@ import ProductTypeSelector from './components/ProductTypeSelector.vue'
 import HistoricalOrders from './components/HistoricalOrders.vue'
 import Predetermined from './components/Predetermined.vue'
 import { getFoodDetail } from '@/api/food.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const store = useAuthStore()
 
@@ -263,6 +264,9 @@ const fetchProductData = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchProductData)
 
 // 组件挂载时获取商品数据
 onMounted(() => {

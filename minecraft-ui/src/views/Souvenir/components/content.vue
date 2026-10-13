@@ -47,6 +47,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getProductList } from '@/api/product.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 import Select from '@/components/Payment/Select.vue'
 import Paging from '@/components/paging/index.vue'
 
@@ -78,6 +79,9 @@ const fetchProducts = async (page = 1) => {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchProducts)
 
 // 分页切换
 const handlePageChange = (page) => {

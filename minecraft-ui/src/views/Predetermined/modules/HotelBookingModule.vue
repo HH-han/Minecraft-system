@@ -24,6 +24,7 @@ import HotelBooking from '../components/HotelBooking.vue'
 import { useBookingStore } from '@/stores/bookingStore.js'
 import { getHotelDetail } from '@/api/hotel.js'
 import { getHotelBookingDetail } from '@/api/booking.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 
 const bookingStore = useBookingStore()
@@ -91,6 +92,9 @@ const loadData = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadData)
 
 const debouncedLoadData = () => {
   if (loadTimer) {

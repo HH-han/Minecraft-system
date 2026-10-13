@@ -190,6 +190,7 @@ import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getTravelPlanList, createTravelPlan, updateTravelPlan, deleteTravelPlan } from '@/api/travel.js'
 import Paging from '@/components/paging/index.vue'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const travelPlans = ref([])
 const loading = ref(false)
@@ -238,6 +239,9 @@ const fetchTravelPlans = async (page = 1) => {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchTravelPlans)
 
 // 分页切换
 const handlePageChange = (page) => {

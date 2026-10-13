@@ -26,6 +26,7 @@ import Recommend from './recommend.vue';
 import Content from './content.vue';
 import BottomPage from '@/components/DisplayBox/BottomPage.vue'
 import carouselApi from '@/api/carousel.js';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 轮播图数据
 const mediaList = ref({ images: [] });
@@ -47,6 +48,9 @@ const fetchcarousel = async () => {
     console.error('获取轮播图数据失败：', error)
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchcarousel)
 
 // 初始化
 onMounted(() => {

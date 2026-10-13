@@ -119,6 +119,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { createNote, getNoteDetail, updateNote } from '@/api/travelNote'
 import { uploadFile } from '@/api/upload'
 import { useAuthStore } from '@/stores/auth'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const route = useRoute()
 const router = useRouter()
@@ -196,6 +197,9 @@ async function loadForEdit() {
     editorRef.value.innerHTML = d.contentType === 1 ? d.content || '' : ''
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadForEdit)
 
 // ---------- 上传 ----------
 function beforeUpload(file) {

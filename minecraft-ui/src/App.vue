@@ -35,22 +35,24 @@ import AnnouncementPopup from '@/components/AnnouncementComponents/AnnouncementP
 import AnnouncementTopCard from '@/components/AnnouncementComponents/AnnouncementTopCard.vue';
 import MouseStyle from '@/views/MouseStyle/index.vue'
 import { useAnnouncementStore } from '@/stores/announcementStore'
-import { initAnnouncementSse, closeAnnouncementSse } from '@/utils/sse'
+import { initRealtimeSse, closeRealtimeSse } from '@/utils/sse'
 import { elementLocale } from '@/locales'
 
 const isLoading = ref(true)
 const deviceDetectsRef = ref()
 const isMobile = ref(false)
 
-// 公告模块：拉取展示数据 + 初始化 SSE 推送
+// 公告模块：拉取展示数据 + 初始化统一实时推送（数据变更 + 公告）
 const announcementStore = useAnnouncementStore()
 onMounted(() => {
   announcementStore.fetchActive()
   announcementStore.fetchUnread()
-  initAnnouncementSse((ann) => announcementStore.pushRealtime(ann))
+  initRealtimeSse({
+    onAnnouncement: (ann) => announcementStore.pushRealtime(ann)
+  })
 })
 onUnmounted(() => {
-  closeAnnouncementSse()
+  closeRealtimeSse()
 })
 
 onMounted(() => {

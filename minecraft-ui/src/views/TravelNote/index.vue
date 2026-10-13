@@ -88,6 +88,7 @@ import { useRouter } from 'vue-router'
 import NoteCard from './components/NoteCard.vue'
 import { getHotTags, getNotePage } from '@/api/travelNote'
 import { useAuthStore } from '@/stores/auth'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -131,12 +132,18 @@ async function fetchNotes() {
   }
 }
 
+// 数据变更后自动刷新
+useAutoRefresh(fetchNotes)
+
 async function fetchHotTags() {
   const res = await getHotTags(12)
   if (res.code === 200) {
     hotTags.value = res.data || []
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchHotTags)
 
 function resetAndFetch() {
   query.pageNum = 1

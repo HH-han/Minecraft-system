@@ -177,6 +177,7 @@
 import { ref, onMounted } from 'vue'
 import { getTicketList } from '@/api/ticket.js'
 import Paging from '@/components/paging/index.vue'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const tickets = ref([])
 const loading = ref(false)
@@ -203,6 +204,9 @@ const fetchTickets = async (page = 1) => {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchTickets)
 
 // 分页切换
 const handlePageChange = (page) => {

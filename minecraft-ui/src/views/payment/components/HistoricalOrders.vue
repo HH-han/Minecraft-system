@@ -119,6 +119,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getOrderList, cancelOrder, deleteOrder } from '@/api/order.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const router = useRouter()
 const emit = defineEmits(['view-detail', 'pay'])
@@ -195,6 +196,9 @@ const fetchOrders = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchOrders)
 
 // 获取订单状态文本
 const getStatusText = (status) => {

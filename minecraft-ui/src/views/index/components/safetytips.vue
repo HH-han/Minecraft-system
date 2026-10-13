@@ -56,6 +56,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import safetyTipsApi from '@/api/safetytips';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const emit = defineEmits(['open-safety-detail']);
 
@@ -88,6 +89,9 @@ const fetchSafetyTips = async () => {
         console.error('获取安全知识提示失败:', error);
     }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchSafetyTips);
 
 const openTipDetail = (tip) => {
     emit('open-safety-detail', tip);

@@ -11,15 +11,36 @@
       <p class="as-dialog-tip">请如实填写售后信息，商家将尽快为您处理</p>
 
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
-        <div class="as-grid">
-          <el-form-item label="订单ID" prop="orderId">
-            <el-input
-              v-model.number="form.orderId"
-              :disabled="!!orderId"
-              placeholder="请输入订单ID"
-            />
-          </el-form-item>
+        <el-form-item label="选择订单" prop="orderId">
+          <el-select
+            v-model="form.orderId"
+            :disabled="!!orderId"
+            :loading="ordersLoading"
+            filterable
+            placeholder="请选择要申请售后的订单"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="o in orders"
+              :key="o.id"
+              :value="o.id"
+              :label="orderLabel(o)"
+              :disabled="!canApply(o)"
+            >
+              <div class="as-order-opt">
+                <span class="as-order-opt__name">{{ o.itemName || '订单' }}</span>
+                <span class="as-order-opt__meta">
+                  {{ o.orderNo }} · ¥{{ o.amount }} · {{ orderStatusText(o) }}
+                </span>
+              </div>
+            </el-option>
+            <template #empty>
+              <p class="as-order-opt__empty">暂无可申请售后的订单</p>
+            </template>
+          </el-select>
+        </el-form-item>
 
+        <div class="as-grid">
           <el-form-item label="售后类型" prop="type">
             <el-select v-model="form.type" placeholder="请选择" style="width: 100%">
               <el-option label="仅退款" :value="1" />
@@ -27,16 +48,16 @@
               <el-option label="换货" :value="3" />
             </el-select>
           </el-form-item>
-        </div>
 
-        <el-form-item label="退款金额">
-          <el-input-number
-            v-model="form.refundAmount"
-            :min="0"
-            :precision="2"
-            style="width: 100%"
-          />
-        </el-form-item>
+          <el-form-item label="退款金额">
+            <el-input-number
+              v-model="form.refundAmount"
+              :min="0"
+              :precision="2"
+              style="width: 100%"
+            />
+          </el-form-item>
+        </div>
 
         <el-form-item label="问题描述" prop="reason">
           <el-input

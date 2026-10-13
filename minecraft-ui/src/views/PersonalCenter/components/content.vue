@@ -289,6 +289,7 @@ import { Edit, Lock } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
 import { getUserPoints } from '@/api/points';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 用户信息 (根据后端返回完整字段)
 const userInfo = ref({
@@ -446,6 +447,10 @@ const fetchUserPoints = async () => {
     console.error('获取用户积分失败:', error);
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchUserInfo);
+useAutoRefresh(fetchUserPoints);
 
 // 跳转到积分商城
 const goToPoints = () => {

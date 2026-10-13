@@ -69,6 +69,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getClientRecommendations } from '@/api/clientRecommendation'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 // 当前选中的景点类型
 const activeAttractionType = ref('all')
@@ -142,6 +143,9 @@ async function loadRecommendations() {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadRecommendations)
 
 // 根据类型筛选景点
 const filteredAttractions = computed(() => {

@@ -100,6 +100,7 @@ import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Refresh } from '@element-plus/icons-vue'
 import { cancelAfterSale, getAfterSalePage } from '@/api/afterSale.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 import ApplyDialog from './components/ApplyDialog.vue'
 import DetailDialog from './components/DetailDialog.vue'
 
@@ -156,6 +157,9 @@ const handlePageChange = (p) => {
   pageNum.value = p
   fetchList()
 }
+
+// 数据变更（本地操作 / 管理员后台改动 / 其他用户操作）后自动刷新列表
+useAutoRefresh(fetchList)
 
 const openApply = () => {
   applyOrderId.value = route.query.orderId

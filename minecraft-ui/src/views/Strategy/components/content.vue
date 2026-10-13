@@ -114,6 +114,7 @@ import * as notificationApi from '@/api/groupNotification'
 import * as aiTripApi from '@/api/aiTrip'
 import * as pollApi from '@/api/groupPoll'
 import * as diaryApi from '@/api/travelDiary'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 import HeroSection from './module/HeroSection.vue'
 import TabNavigation from './module/TabNavigation.vue'
@@ -210,6 +211,9 @@ async function fetchMyGroups() {
   }
 }
 
+// 数据变更后自动刷新
+useAutoRefresh(fetchMyGroups)
+
 async function searchGroups() {
   if (!searchKeyword.value) {
     fetchMyGroups()
@@ -249,6 +253,9 @@ async function fetchNotifications() {
     console.error('获取通知失败:', error)
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchNotifications)
 
 async function handleCreateGroup(form) {
   try {

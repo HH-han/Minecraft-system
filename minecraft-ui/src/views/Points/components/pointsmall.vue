@@ -73,6 +73,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getUserPoints as apiGetUserPoints, getProducts as apiGetProducts, exchangeProduct as apiExchangeProduct } from '@/api/points';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const userPoints = ref(0);
 const products = ref([]);
@@ -120,6 +121,10 @@ const getProducts = async () => {
     products.value = [];
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(getUserPoints);
+useAutoRefresh(getProducts);
 
 // 打开兑换弹窗，回填上次填写的收货信息
 const openExchange = (product) => {

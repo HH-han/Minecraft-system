@@ -106,6 +106,7 @@ import {
   getTrack,
   subscribeLogistics
 } from '@/api/logistics.js'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const route = useRoute()
 const router = useRouter()
@@ -169,6 +170,9 @@ const fetchPackages = async () => {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchPackages)
 
 const handleConfirm = async (pkg) => {
   try {

@@ -90,6 +90,7 @@ import HeroSection from './module/HeroSection.vue'
 import CardGrid from './module/CardGrid.vue'
 import CardDetailModal from './module/CardDetailModal.vue'
 import CardFormModal from './module/CardFormModal.vue'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -184,6 +185,9 @@ async function fetchCards(reset = false) {
     loading.value = false
   }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchCards)
 
 function loadMore() {
   if (pageNum.value >= pages.value) return

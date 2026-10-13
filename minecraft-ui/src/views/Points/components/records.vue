@@ -42,6 +42,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getPointsRecords } from '@/api/points';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 后端返回全量数组（无分页），allRecords 保存完整数据，pagedRecords 做前端分页
 const allRecords = ref([]);
@@ -65,6 +66,9 @@ const getRecords = async () => {
     allRecords.value = [];
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(getRecords);
 
 // 类型映射：后端使用字符串枚举 INCOME / EXCHANGE（兼容旧的数字类型）
 const TYPE_MAP = {

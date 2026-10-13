@@ -281,6 +281,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getMyPosts, createPost, updatePost, deletePost as deletePostApi } from '@/api/community';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const posts = ref([]);
 const loading = ref(false);
@@ -355,6 +356,9 @@ const fetchPosts = async () => {
     loading.value = false;
   }
 };
+
+// 数据变更后自动刷新
+useAutoRefresh(fetchPosts);
 
 // 获取帖子图片
 const getPostImages = (imagesStr) => {

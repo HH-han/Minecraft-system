@@ -64,6 +64,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getClientRecommendations } from '@/api/clientRecommendation';
+import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 const search = ref({
     destination: '',
@@ -138,6 +139,9 @@ async function loadRecommendations() {
         loading.value = false
     }
 }
+
+// 数据变更后自动刷新
+useAutoRefresh(loadRecommendations);
 
 // 识别酒店主题
 function getHotelTheme(hotel) {
