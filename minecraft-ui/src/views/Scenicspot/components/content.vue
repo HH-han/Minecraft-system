@@ -1,5 +1,6 @@
 <template>
-  <div v-if="loading" class="loading">
+  <!-- 仅首屏/跳页加载时替换列表；下滑追加加载时保留列表，避免页面高度塌缩导致滚动位置回到顶部 -->
+  <div v-if="loading && !appending" class="loading">
     <div class="loading-spinner"></div>
     <p>加载中...</p>
   </div>
@@ -46,6 +47,7 @@
     :total-pages="totalPages" 
     :current-page="currentPage" 
     @update:current-page="$emit('update:currentPage', $event)" 
+    @load-more="$emit('loadMore', $event)"
   />
 
   <!-- 景点详情模态框 -->
@@ -65,6 +67,11 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  // 下滑追加加载中：列表保持挂载，仅底部提示加载
+  appending: {
+    type: Boolean,
+    default: false
+  },
   error: {
     type: String,
     default: ''
@@ -79,7 +86,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['retry', 'update:currentPage'])
+const emit = defineEmits(['retry', 'update:currentPage', 'loadMore'])
 
 const showModal = ref(false)
 const selectedAttractionId = ref('')

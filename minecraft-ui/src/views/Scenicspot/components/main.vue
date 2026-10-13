@@ -14,11 +14,13 @@
             <Content 
                 :attractions="attractions" 
                 :loading="loading" 
+                :appending="appending"
                 :error="error"
                 :total-pages="totalPages"
                 :current-page="currentPage"
                 @retry="fetchAttractions"
                 @update:current-page="handlePageChange"
+                @load-more="handleLoadMore"
             />
         </main>
         <footer>
@@ -43,6 +45,8 @@ const mediaList = ref({ images: [] });
 // 景点数据
 const attractions = ref([]);
 const loading = ref(false);
+// 下滑追加加载中：列表保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false);
 const error = ref('');
 
 // 分页数据
@@ -70,30 +74,39 @@ const fetchcarousel = async () => {
 // 数据变更后自动刷新
 useAutoRefresh(fetchcarousel);
 
-// 获取景点数据
-const fetchAttractions = async (page = 1) => {
+// 获取景点数据（append=true 时在已有数据之后追加，不重置）
+const fetchAttractions = async (page = 1, { append = false } = {}) => {
+  appending.value = append;
   loading.value = true;
   error.value = '';
   
   try {
     const response = await getAttractionList({ pageNum: page, pageSize: pageSize.value });
-    attractions.value = response.data?.records || [];
+    const records = response.data?.records || [];
+    attractions.value = append ? [...attractions.value, ...records] : records;
     totalPages.value = response.data?.pages || 0;
   } catch (err) {
     error.value = err.message || '获取数据失败';
     console.error('获取景点数据失败:', err);
   } finally {
     loading.value = false;
+    appending.value = false;
   }
 };
 
 // 数据变更后自动刷新
 useAutoRefresh(fetchAttractions);
 
-// 分页切换
+// 分页切换（点击页码/上下页：跳页并替换数据）
 const handlePageChange = (page) => {
   currentPage.value = page;
   fetchAttractions(page);
+};
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+  currentPage.value = page;
+  fetchAttractions(page, { append: true });
 };
 
 // 初始化

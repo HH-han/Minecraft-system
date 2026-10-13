@@ -78,10 +78,12 @@
                 </div>
             </div>
 
+            <!-- 数据为本地分页（已全量加载），无需下滑自动加载下一页 -->
             <Paging 
                 v-if="totalPages > 0"
                 :total-pages="totalPages" 
                 :current-page="currentPage" 
+                :auto-load="false"
                 @update:current-page="handlePageChange" 
             />
         </main>

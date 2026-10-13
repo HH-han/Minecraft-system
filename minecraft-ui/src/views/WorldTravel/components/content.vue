@@ -10,8 +10,8 @@
       <p>分类数量: {{ categories.length }}</p>
     </div>
     
-    <!-- 加载状态 -->
-    <div v-if="loading" class="loading-overlay">
+    <!-- 加载状态（仅首屏/跳页替换内容；下滑追加加载时保留内容，避免滚动位置回到顶部） -->
+    <div v-if="loading && !appending" class="loading-overlay">
       <div class="loading-spinner"></div>
       <p>加载中...</p>
     </div>
@@ -48,7 +48,7 @@
       </div>
     </header>
     
-    <main v-if="!loading && !error" class="destination-page">
+    <main v-if="(!loading || appending) && !error" class="destination-page">
       <!-- 目的地导航区域 -->
       <div>
         <Destination />
@@ -237,6 +237,8 @@ const pageSize = ref(10)
 const destinationList = ref([])
 const countries = ref([])
 const loading = ref(false)
+// 下滑追加加载中：内容保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false)
 const error = ref('')
 
 // 搜索函数
@@ -319,6 +321,7 @@ const handleImageError = (event) => {
 
 // 获取国家数据（append=true 时在已有数据之后追加，不重置）
 const fetchCountries = async (page = currentPage.value, { append = false } = {}) => {
+  appending.value = append
   loading.value = true
   error.value = ''
   
@@ -422,6 +425,7 @@ const fetchCountries = async (page = currentPage.value, { append = false } = {})
     }
   } finally {
     loading.value = false
+    appending.value = false
   }
 }
 

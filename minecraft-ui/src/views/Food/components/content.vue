@@ -1,5 +1,6 @@
 <template>
-  <div v-if="loading" class="loading">
+  <!-- 仅首屏/跳页加载时替换列表；下滑追加加载时保留列表，避免页面高度塌缩导致滚动位置回到顶部 -->
+  <div v-if="loading && !appending" class="loading">
     <div class="loading-spinner"></div>
     <p>加载中...</p>
   </div>
@@ -63,6 +64,8 @@ import Paging from '@/components/paging/index.vue'
 // 响应式数据
 const foods = ref([])
 const loading = ref(false)
+// 下滑追加加载中：列表保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false)
 const error = ref('')
 const showSelectModal = ref(false)
 const selectedFoodId = ref('')
@@ -74,6 +77,7 @@ const pageSize = ref(10)
 
 // 获取美食数据（append=true 时在已有数据之后追加，不重置）
 const fetchFoods = async (page = 1, { append = false } = {}) => {
+  appending.value = append
   loading.value = true
   error.value = ''
 
@@ -87,6 +91,7 @@ const fetchFoods = async (page = 1, { append = false } = {}) => {
     console.error('获取美食数据失败:', err)
   } finally {
     loading.value = false
+    appending.value = false
   }
 }
 

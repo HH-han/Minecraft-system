@@ -14,6 +14,7 @@
             <Content 
                 :hotels="hotels" 
                 :loading="loading" 
+                :appending="appending"
                 :error="error"
                 :total-pages="totalPages"
                 :current-page="currentPage"
@@ -44,6 +45,8 @@ const mediaList = ref({ images: [] });
 // 酒店数据
 const hotels = ref([]);
 const loading = ref(false);
+// 下滑追加加载中：列表保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false);
 const error = ref('');
 
 // 分页数据
@@ -73,6 +76,7 @@ useAutoRefresh(fetchcarousel);
 
 // 获取酒店数据（append=true 时在已有数据之后追加，不重置）
 const fetchHotels = async (page = 1, { append = false } = {}) => {
+  appending.value = append;
   loading.value = true;
   error.value = '';
   
@@ -86,6 +90,7 @@ const fetchHotels = async (page = 1, { append = false } = {}) => {
     console.error('获取酒店数据失败:', err);
   } finally {
     loading.value = false;
+    appending.value = false;
   }
 };
 

@@ -136,14 +136,22 @@ const props = defineProps({
 
 const emit = defineEmits(['update:currentPage', 'loadMore'])
 
+// 加载动画最短展示时长（ms）：请求返回过快时也保证动画完整播完，避免一闪而过
+const MIN_LOADING_MS = 400
+
 const rootRef = ref(null)
 const nearBottom = ref(false)
 const pending = ref(false)
+// 是否处于「最短展示期」内：数据已到，但加载动画仍需完整播完
+const holding = ref(false)
+
+let loadingStartedAt = 0
+let holdTimer = null
 
 // 是否还有下一页
 const hasNext = computed(() => props.currentPage < props.totalPages)
-// 加载态（父组件 loading 或本地等待翻页结果）
-const isLoading = computed(() => props.loading || pending.value)
+// 加载态（父组件 loading / 本地等待翻页结果 / 最短展示期）
+const isLoading = computed(() => props.loading || pending.value || holding.value)
 
 // 页码序列（超出 7 页时用省略号收缩，贴近首尾时自动补足相邻页）
 const pages = computed(() => {
@@ -276,6 +284,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     clearTimeout(pendingTimer)
+    clearTimeout(holdTimer)
     window.removeEventListener('scroll', handleScrollOrResize)
     window.removeEventListener('resize', handleScrollOrResize)
     window.removeEventListener('wheel', handleWheel)
@@ -298,6 +307,27 @@ watch(
     () => {
         accumulated = 0
         requestAnimationFrame(updateNearBottom)
+    }
+)
+
+// 加载动画补时：数据返回过快时，保持加载态到最短时长后再收起
+watch(
+    () => props.loading || pending.value,
+    (loading) => {
+        clearTimeout(holdTimer)
+        if (loading) {
+            loadingStartedAt = Date.now()
+            holding.value = true
+            return
+        }
+        const remain = MIN_LOADING_MS - (Date.now() - loadingStartedAt)
+        if (remain <= 0) {
+            holding.value = false
+            return
+        }
+        holdTimer = window.setTimeout(() => {
+            holding.value = false
+        }, remain)
     }
 )
 </script>
@@ -325,6 +355,8 @@ watch(
 
 /* 继续下滑 / 加载中 提示 */
 .pager__hint {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -341,6 +373,27 @@ watch(
     color: var(--theme-primary);
     background: var(--theme-primary-soft);
     border-color: transparent;
+}
+
+/* 加载中：流光从左向右扫过，强化「正在加载」的动感 */
+.pager__hint.is-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg,
+            transparent,
+            color-mix(in srgb, var(--theme-primary) 22%, transparent),
+            transparent);
+    transform: translateX(-100%);
+    animation: hint-sweep 1.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes hint-sweep {
+    to {
+        transform: translateX(100%);
+    }
 }
 
 .pager__chevron {

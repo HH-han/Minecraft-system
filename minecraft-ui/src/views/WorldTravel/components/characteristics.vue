@@ -19,8 +19,8 @@
             <span v-if="!loading && locations.length" class="world-count">共 {{ locations.length }} 处</span>
         </div>
 
-        <!-- 加载骨架 -->
-        <div v-if="loading" class="world-grid" aria-busy="true" aria-label="加载中">
+        <!-- 加载骨架（仅首屏/跳页替换列表；下滑追加加载时保留卡片，避免滚动位置回到顶部） -->
+        <div v-if="loading && !appending" class="world-grid" aria-busy="true" aria-label="加载中">
             <div v-for="index in 3" :key="index" class="world-card is-skeleton">
                 <div class="skeleton-block"></div>
                 <div class="world-card-body">
@@ -114,6 +114,8 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = ref(0);
 const loading = ref(false);
+// 下滑追加加载中：卡片保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false);
 
 // 分割标签
 const splitTags = (tags) => {
@@ -139,6 +141,7 @@ const resolveTotalPages = (pages, total) => {
 
 // 加载数据（append=true 时在已有数据之后追加，不重置）
 const loadData = async (page = currentPage.value, { append = false } = {}) => {
+  appending.value = append;
   loading.value = true;
   try {
     const response = await getWorldCharacteristicsPage(page, pageSize.value);
@@ -156,6 +159,7 @@ const loadData = async (page = currentPage.value, { append = false } = {}) => {
     }
   } finally {
     loading.value = false;
+    appending.value = false;
   }
 };
 

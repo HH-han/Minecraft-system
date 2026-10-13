@@ -10,7 +10,8 @@
                 新增计划
             </button>
         </div>
-        <div v-if="loading" class="loading">
+        <!-- 仅首屏/跳页加载时替换列表；下滑追加加载时保留列表，避免页面高度塌缩导致滚动位置回到顶部 -->
+        <div v-if="loading && !appending" class="loading">
             <div class="loading-spinner"></div>
             <p>加载中...</p>
         </div>
@@ -196,6 +197,8 @@ import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const travelPlans = ref([])
 const loading = ref(false)
+// 下滑追加加载中：列表保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false)
 const error = ref('')
 const showModal = ref(false)
 const selectedPlan = ref(null)
@@ -228,6 +231,7 @@ const editForm = ref({
 })
 
 const fetchTravelPlans = async (page = 1, { append = false } = {}) => {
+    appending.value = append
     loading.value = true
     error.value = ''
     try {
@@ -240,6 +244,7 @@ const fetchTravelPlans = async (page = 1, { append = false } = {}) => {
         console.error('获取旅行计划数据失败:', err)
     } finally {
         loading.value = false
+        appending.value = false
     }
 }
 
