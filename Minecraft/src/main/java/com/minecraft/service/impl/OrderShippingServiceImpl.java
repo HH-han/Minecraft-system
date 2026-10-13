@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -125,6 +126,16 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
     public List<OrderShippingVO> listByOrder(Long orderId) {
         LambdaQueryWrapper<OrderShipping> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OrderShipping::getOrderId, orderId).orderByDesc(OrderShipping::getCreateTime);
+        return list(wrapper).stream().map(this::toVO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderShippingVO> listByUser(Long userId) {
+        if (userId == null) {
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<OrderShipping> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderShipping::getUserId, userId).orderByDesc(OrderShipping::getCreateTime);
         return list(wrapper).stream().map(this::toVO).collect(Collectors.toList());
     }
 

@@ -27,6 +27,9 @@ public interface OrderShippingService extends IService<OrderShipping> {
     /** 查询订单下所有包裹 */
     List<OrderShippingVO> listByOrder(Long orderId);
 
+    /** 查询当前用户全部包裹 */
+    List<OrderShippingVO> listByUser(Long userId);
+
     /** 发货单详情（含轨迹） */
     OrderShippingVO detail(Long shippingId);
 

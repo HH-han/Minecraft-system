@@ -101,6 +101,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Back, Box, Location } from '@element-plus/icons-vue'
 import {
   confirmReceive,
+  getMyShipping,
   getOrderShipping,
   getTrack,
   subscribeLogistics
@@ -146,7 +147,9 @@ const fetchPackages = async () => {
     } else if (trackingNo) {
       packages.value = [{ id: 0, trackingNo, status: null, statusDesc: '运输中' }]
     } else {
-      packages.value = []
+      // 未指定订单时展示当前用户全部包裹
+      const res = await getMyShipping()
+      packages.value = res?.data ?? []
     }
 
     await Promise.all(

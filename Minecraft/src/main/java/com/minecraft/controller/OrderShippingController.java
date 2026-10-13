@@ -31,6 +31,12 @@ public class OrderShippingController {
         return ApiResponse.success(orderShippingService.listByOrder(orderId));
     }
 
+    @Operation(summary = "查询当前用户全部包裹")
+    @GetMapping("/my")
+    public ApiResponse<List<OrderShippingVO>> listMine() {
+        return ApiResponse.success(orderShippingService.listByUser(SecurityUtils.getCurrentUserId()));
+    }
+
     @Operation(summary = "查询运单轨迹")
     @GetMapping("/track/{trackingNo}")
     public ApiResponse<List<LogisticsTrackDTO>> track(@PathVariable String trackingNo,

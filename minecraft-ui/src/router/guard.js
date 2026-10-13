@@ -51,9 +51,9 @@ function setupCommonGuard(router) {
   router.afterEach((to) => {
     loadedPaths.add(to.path);
 
-    // 拼接文档标题：页面标题 · 站点名
+    // 拼接文档标题：站点名 · 页面标题
     document.title = to.meta.title
-      ? `${to.meta.title} · ${APP_TITLE}`
+      ? `${APP_TITLE} · ${to.meta.title}`
       : APP_TITLE;
 
     // 导航成功后清除 chunk 加载失败的刷新标记，保证下次失败仍可自动刷新

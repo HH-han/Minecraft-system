@@ -9,6 +9,11 @@ export const getOrderShipping = (orderId) => {
   return request.get(`/logistics/order/${orderId}`)
 }
 
+// 查询当前用户全部包裹
+export const getMyShipping = () => {
+  return request.get('/logistics/my')
+}
+
 // 查询运单轨迹
 export const getTrack = (trackingNo, phone) => {
   return request.get(`/logistics/track/${trackingNo}`, { params: { phone } })

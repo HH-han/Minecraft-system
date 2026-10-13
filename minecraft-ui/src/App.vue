@@ -21,7 +21,7 @@
       <!-- 置顶公告悬浮卡片（用户未关闭时常驻页面最顶层） -->
       <AnnouncementTopCard />
       <!-- 自定义光标 -->
-      <MouseStyle />
+      <!-- <MouseStyle /> -->
     </div>
   </el-config-provider>
 </template>
