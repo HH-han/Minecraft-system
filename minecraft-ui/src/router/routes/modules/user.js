@@ -77,4 +77,10 @@ export default [
     component: () => import('@/views/AfterSale/index.vue'),
     meta: { title: '售后服务', requiresAuth: true },
   },
+  {
+    path: '/myreport',
+    name: 'MyReport',
+    component: () => import('@/views/MyReport/index.vue'),
+    meta: { title: '我的举报', requiresAuth: true },
+  },
 ];

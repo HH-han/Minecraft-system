@@ -12,6 +12,7 @@ import com.minecraft.service.TravelNoteService;
 import com.minecraft.utils.SecurityUtils;
 import com.minecraft.vo.TravelNoteCommentVO;
 import com.minecraft.vo.TravelNoteDetailVO;
+import com.minecraft.vo.TravelNoteReportVO;
 import com.minecraft.vo.TravelNoteVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -179,6 +180,16 @@ public class TravelNoteController {
         }
         interactionService.report(id, userId, body == null ? null : body.getReason());
         return ApiResponse.success("举报成功，感谢您的反馈", null);
+    }
+
+    @Operation(summary = "我的举报记录")
+    @GetMapping("/report/mine")
+    public ApiResponse<PageResponse<TravelNoteReportVO>> myReports(PageRequest request) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        if (userId == null) {
+            return ApiResponse.error("用户未登录");
+        }
+        return ApiResponse.success(travelNoteService.myReports(userId, request));
     }
 
     @Operation(summary = "一键复制为出行计划")

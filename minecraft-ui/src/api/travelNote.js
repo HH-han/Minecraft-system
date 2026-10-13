@@ -67,6 +67,11 @@ export const reportNote = (id, reason) => {
   return request.post(`/travel-note/${id}/report`, { reason })
 }
 
+// 我的举报记录分页
+export const getMyReports = (params) => {
+  return request.get('/travel-note/report/mine', { params })
+}
+
 // 一键复制为出行计划
 export const copyNoteToPlan = (id) => {
   return request.post(`/travel-note/${id}/copy-to-plan`)

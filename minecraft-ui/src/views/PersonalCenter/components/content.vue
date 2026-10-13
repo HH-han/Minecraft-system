@@ -467,11 +467,17 @@ const goToAfterSale = () => {
   router.push('/aftersale');
 };
 
+// 跳转到我的举报
+const goToMyReport = () => {
+  router.push('/myreport');
+};
+
 // 快捷入口
 const quickEntries = [
   { title: '积分商城', desc: '用积分兑换心仪好物', icon: 'fas fa-gift', action: goToPoints },
   { title: '物流详情', desc: '查看订单配送进度', icon: 'fas fa-truck', action: goToLogistics },
-  { title: '售后服务', desc: '退换维修一站处理', icon: 'fas fa-headset', action: goToAfterSale }
+  { title: '售后服务', desc: '退换维修一站处理', icon: 'fas fa-headset', action: goToAfterSale },
+  { title: '我的举报', desc: '查看举报记录与进度', icon: 'fas fa-flag', action: goToMyReport }
 ];
 
 // 处理头像上传
@@ -996,7 +1002,7 @@ const formatDay = (dateString) => {
 /* ========== 快捷入口 ========== */
 .pc-entries {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
   gap: 16px;
 }
 

@@ -455,6 +455,27 @@ public class TravelNoteServiceImpl extends ServiceImpl<TravelNoteMapper, TravelN
     }
 
     @Override
+    public PageResponse<TravelNoteReportVO> myReports(Long userId, PageRequest request) {
+        Page<TravelNoteReport> page = new Page<>(request.getPageNum(), request.getPageSize());
+        LambdaQueryWrapper<TravelNoteReport> wrapper = new LambdaQueryWrapper<TravelNoteReport>()
+                .eq(TravelNoteReport::getReporterId, userId)
+                .orderByDesc(TravelNoteReport::getCreateTime);
+        Page<TravelNoteReport> result = reportMapper.selectPage(page, wrapper);
+
+        List<TravelNoteReportVO> voList = result.getRecords().stream().map(r -> {
+            TravelNoteReportVO vo = new TravelNoteReportVO();
+            BeanUtils.copyProperties(r, vo);
+            TravelNote note = getById(r.getNoteId());
+            if (note != null) {
+                vo.setNoteTitle(note.getTitle());
+            }
+            return vo;
+        }).collect(Collectors.toList());
+
+        return new PageResponse<>(voList, result.getTotal(), request.getPageNum(), request.getPageSize());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void handleReport(Long reportId, Integer status, Long adminId) {
         TravelNoteReport report = reportMapper.selectById(reportId);

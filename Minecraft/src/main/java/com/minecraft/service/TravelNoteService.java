@@ -37,6 +37,9 @@ public interface TravelNoteService extends IService<TravelNote> {
     /** 一键复制为出行计划，返回 planId */
     Long copyToPlan(Long noteId, Long userId);
 
+    /** 我的举报记录分页 */
+    PageResponse<TravelNoteReportVO> myReports(Long userId, PageRequest request);
+
     // ==================== 管理端 ====================
 
     PageResponse<TravelNoteVO> adminPage(Integer status, String keyword, PageRequest request);
