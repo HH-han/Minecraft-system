@@ -200,7 +200,9 @@
         v-if="totalPages > 0"
         :total-pages="totalPages" 
         :current-page="currentPage" 
+        :loading="loading"
         @update:current-page="handlePageChange" 
+        @load-more="handleLoadMore"
       />
       </section>
     </main>
@@ -292,8 +294,14 @@ const closeDetail = () => {
 const handlePageChange = (page) => {
   if (page !== currentPage.value) {
     currentPage.value = page
-    fetchCountries()
+    fetchCountries(page)
   }
+}
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+  currentPage.value = page
+  fetchCountries(page, { append: true })
 }
 
 // 跳转到订单详情页
@@ -309,14 +317,14 @@ const handleImageError = (event) => {
   event.target.src = defaultImage.value
 }
 
-// 获取国家数据
-const fetchCountries = async () => {
+// 获取国家数据（append=true 时在已有数据之后追加，不重置）
+const fetchCountries = async (page = currentPage.value, { append = false } = {}) => {
   loading.value = true
   error.value = ''
   
   try {
     // 使用真实API获取数据，传递分页参数
-    const backendResponse = await countriesApi.getCountriesList(currentPage.value, pageSize.value)
+    const backendResponse = await countriesApi.getCountriesList(page, pageSize.value)
     
     // 安全检查：确保backendResponse存在
     if (!backendResponse) {
@@ -370,9 +378,14 @@ const fetchCountries = async () => {
       }
     }).filter(Boolean) // 过滤掉null值
     
-    // 确保数据正确赋值 - 使用展开运算符创建新数组
-    countries.value = [...formattedCountries]
-    paginatedDestinations.value = [...formattedCountries]
+    // 确保数据正确赋值：追加时拼接在已有数据之后，否则整体替换
+    if (append) {
+      countries.value = [...countries.value, ...formattedCountries]
+      paginatedDestinations.value = [...paginatedDestinations.value, ...formattedCountries]
+    } else {
+      countries.value = [...formattedCountries]
+      paginatedDestinations.value = [...formattedCountries]
+    }
     
     // 计算总页数
     if (backendResponse.pages) {
@@ -383,12 +396,12 @@ const fetchCountries = async () => {
       totalPages.value = 1
     }
     
-    // 提取分类
-    const uniqueCategories = [...new Set(formattedCountries.map(c => c.category))]
+    // 提取分类（基于合并后的完整列表）
+    const uniqueCategories = [...new Set(countries.value.map(c => c.category))]
     categories.value = uniqueCategories
     
-    // 设置热门目的地
-    if (formattedCountries.length > 0) {
+    // 设置热门目的地（仅首屏设置）
+    if (!append && formattedCountries.length > 0) {
       destinationName.value = formattedCountries.slice(0, 3).map(c => c.name).join(', ')
     }
     
@@ -401,10 +414,12 @@ const fetchCountries = async () => {
     console.error('获取国家数据失败:', err)
     error.value = err.message || '获取数据失败'
     
-    // 使用fallback数据
-    countries.value = []
-    paginatedDestinations.value = []
-    categories.value = []
+    // 使用fallback数据（追加失败时保留已有数据）
+    if (!append) {
+      countries.value = []
+      paginatedDestinations.value = []
+      categories.value = []
+    }
   } finally {
     loading.value = false
   }

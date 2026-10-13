@@ -134,7 +134,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['update:currentPage'])
+const emit = defineEmits(['update:currentPage', 'loadMore'])
 
 const rootRef = ref(null)
 const nearBottom = ref(false)
@@ -223,7 +223,8 @@ const triggerLoadMore = () => {
     if (!canTrigger()) return
     pending.value = true
     lockUntil = Date.now() + 800
-    emit('update:currentPage', props.currentPage + 1)
+    // 下滑加载只通知追加，不改变页码事件；由父组件在已有数据之后追加新数据
+    emit('loadMore', props.currentPage + 1)
     // 兜底：父组件未同步更新 currentPage 时也解除本地加载态
     clearTimeout(pendingTimer)
     pendingTimer = window.setTimeout(() => {

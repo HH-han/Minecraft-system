@@ -45,7 +45,9 @@
     v-if="totalPages > 0"
     :total-pages="totalPages" 
     :current-page="currentPage" 
+    :loading="loading"
     @update:current-page="$emit('update:currentPage', $event)" 
+    @load-more="$emit('loadMore', $event)"
   />
 
   <!-- 酒店详情模态框 -->
@@ -79,7 +81,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['retry', 'update:currentPage'])
+const emit = defineEmits(['retry', 'update:currentPage', 'loadMore'])
 
 const showModal = ref(false)
 const selectedHotelId = ref('')

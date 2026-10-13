@@ -83,7 +83,13 @@
 
         <!-- 分页（仅全部数据分页，分类结果为完整列表） -->
         <div v-if="activeCategory === '全部' && totalPages > 1" class="world-paging">
-            <Paging :total-pages="totalPages" :current-page="currentPage" @update:current-page="handleCurrentChange" />
+            <Paging
+                :total-pages="totalPages"
+                :current-page="currentPage"
+                :loading="loading"
+                @update:current-page="handleCurrentChange"
+                @load-more="handleLoadMore"
+            />
         </div>
     </section>
 </template>
@@ -131,20 +137,23 @@ const resolveTotalPages = (pages, total) => {
   return Number(pages) || Math.ceil((Number(total) || 0) / pageSize.value) || 0;
 };
 
-// 加载数据
-const loadData = async () => {
+// 加载数据（append=true 时在已有数据之后追加，不重置）
+const loadData = async (page = currentPage.value, { append = false } = {}) => {
   loading.value = true;
   try {
-    const response = await getWorldCharacteristicsPage(currentPage.value, pageSize.value);
+    const response = await getWorldCharacteristicsPage(page, pageSize.value);
     if (response.code === 200) {
       const data = response.data || {};
-      locations.value = normalize(data.records);
+      const records = normalize(data.records);
+      locations.value = append ? [...locations.value, ...records] : records;
       totalPages.value = resolveTotalPages(data.pages, data.total);
     }
   } catch (error) {
     console.error('加载世界特色地点失败:', error);
-    locations.value = [];
-    totalPages.value = 0;
+    if (!append) {
+      locations.value = [];
+      totalPages.value = 0;
+    }
   } finally {
     loading.value = false;
   }
@@ -184,7 +193,13 @@ const filterByCategory = async (category) => {
 
 const handleCurrentChange = (current) => {
   currentPage.value = current;
-  loadData();
+  loadData(current);
+};
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+  currentPage.value = page;
+  loadData(page, { append: true });
 };
 
 // 图片加载失败时回退到默认图

@@ -33,7 +33,9 @@
         v-if="totalPages > 0"
         :total-pages="totalPages" 
         :current-page="currentPage" 
+        :loading="loading"
         @update:current-page="handlePageChange" 
+        @load-more="handleLoadMore"
     />
     
     <!-- 商品详情模态框 -->
@@ -63,14 +65,15 @@ const currentPage = ref(1)
 const totalPages = ref(0)
 const pageSize = ref(10)
 
-// 获取商品数据
-const fetchProducts = async (page = 1) => {
+// 获取商品数据（append=true 时在已有数据之后追加，不重置）
+const fetchProducts = async (page = 1, { append = false } = {}) => {
     loading.value = true
     error.value = ''
     
     try {
         const response = await getProductList({ pageNum: page, pageSize: pageSize.value })
-        products.value = response.data?.records || []
+        const records = response.data?.records || []
+        products.value = append ? [...products.value, ...records] : records
         totalPages.value = response.data?.pages || 0
     } catch (err) {
         error.value = err.message || '获取数据失败'
@@ -83,10 +86,16 @@ const fetchProducts = async (page = 1) => {
 // 数据变更后自动刷新
 useAutoRefresh(fetchProducts)
 
-// 分页切换
+// 分页切换（点击页码/上下页：跳页并替换数据）
 const handlePageChange = (page) => {
     currentPage.value = page
     fetchProducts(page)
+}
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+    currentPage.value = page
+    fetchProducts(page, { append: true })
 }
 
 // 组件挂载时获取数据

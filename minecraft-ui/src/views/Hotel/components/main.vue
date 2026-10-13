@@ -19,6 +19,7 @@
                 :current-page="currentPage"
                 @retry="fetchHotels"
                 @update:current-page="handlePageChange"
+                @load-more="handleLoadMore"
             />
         </main>
         <footer>
@@ -70,14 +71,15 @@ const fetchcarousel = async () => {
 // 数据变更后自动刷新
 useAutoRefresh(fetchcarousel);
 
-// 获取酒店数据
-const fetchHotels = async (page = 1) => {
+// 获取酒店数据（append=true 时在已有数据之后追加，不重置）
+const fetchHotels = async (page = 1, { append = false } = {}) => {
   loading.value = true;
   error.value = '';
   
   try {
     const response = await getHotelList({ pageNum: page, pageSize: pageSize.value });
-    hotels.value = response.data?.records || [];
+    const records = response.data?.records || [];
+    hotels.value = append ? [...hotels.value, ...records] : records;
     totalPages.value = response.data?.pages || 0;
   } catch (err) {
     error.value = err.message || '获取数据失败';
@@ -90,10 +92,16 @@ const fetchHotels = async (page = 1) => {
 // 数据变更后自动刷新
 useAutoRefresh(fetchHotels);
 
-// 分页切换
+// 分页切换（点击页码/上下页：跳页并替换数据）
 const handlePageChange = (page) => {
   currentPage.value = page;
   fetchHotels(page);
+};
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+  currentPage.value = page;
+  fetchHotels(page, { append: true });
 };
 
 // 初始化

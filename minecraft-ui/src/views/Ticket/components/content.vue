@@ -99,8 +99,8 @@
             </div>
 
             <!-- 分页 -->
-            <Paging v-if="totalPages > 1" :total-pages="totalPages" :current-page="currentPage"
-                @update:current-page="handlePageChange" />
+            <Paging v-if="totalPages > 1" :total-pages="totalPages" :current-page="currentPage" :loading="loading"
+                @update:current-page="handlePageChange" @load-more="handleLoadMore" />
         </template>
 
         <!-- 详情弹窗 -->
@@ -190,12 +190,13 @@ const currentPage = ref(1)
 const totalPages = ref(0)
 const pageSize = ref(10)
 
-const fetchTickets = async (page = 1) => {
+const fetchTickets = async (page = 1, { append = false } = {}) => {
     loading.value = true
     error.value = ''
     try {
         const response = await getTicketList({ pageNum: page, pageSize: pageSize.value })
-        tickets.value = response.data?.records || []
+        const records = response.data?.records || []
+        tickets.value = append ? [...tickets.value, ...records] : records
         totalPages.value = response.data?.pages || 0
     } catch (err) {
         error.value = err.message || '获取数据失败'
@@ -208,10 +209,16 @@ const fetchTickets = async (page = 1) => {
 // 数据变更后自动刷新
 useAutoRefresh(fetchTickets)
 
-// 分页切换
+// 分页切换（点击页码/上下页：跳页并替换数据）
 const handlePageChange = (page) => {
     currentPage.value = page
     fetchTickets(page)
+}
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+    currentPage.value = page
+    fetchTickets(page, { append: true })
 }
 
 /* ============ 类型映射（train/flight/bus/ship → 中文 + 图标） ============ */
