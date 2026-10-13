@@ -1,33 +1,53 @@
 <template>
   <div class="points-container">
     <h2 class="points-title">积分商城</h2>
+
     <div class="user-points">
-      <span class="points-label">我的积分：</span>
-      <span class="points-value">{{ userPoints }}</span>
-    </div>
-    
-    <div class="product-list">
-      <div v-for="product in products" :key="product.id" class="product-item">
-        <img :src="product.imageUrl" alt="商品图片" class="product-image">
-        <h3 class="product-name">{{ product.name }}</h3>
-        <p class="product-description">{{ product.description }}</p>
-        <div class="product-price">
-          <span class="price-label">积分价格：</span>
-          <span class="price-value">{{ product.pointsPrice }}</span>
-        </div>
-        <div class="product-stock">
-          <span class="stock-label">库存：</span>
-          <span class="stock-value">{{ product.stock }}</span>
-        </div>
-        <el-button 
-          type="primary" 
-          @click="openExchange(product)"
-          :disabled="userPoints < product.pointsPrice || product.stock <= 0"
-          class="exchange-button"
-        >
-          立即兑换
-        </el-button>
+      <span class="points-icon"><el-icon :size="22"><GoldMedal /></el-icon></span>
+      <div class="points-meta">
+        <span class="points-label">我的积分</span>
+        <span class="points-value">{{ userPoints }}</span>
       </div>
+      <span class="points-hint">攒积分，兑好物</span>
+    </div>
+
+    <div v-if="products.length" class="product-list">
+      <article
+        v-for="product in products"
+        :key="product.id"
+        class="product-item"
+        :class="{ 'is-out': product.stock <= 0 }"
+      >
+        <div class="product-media">
+          <img :src="product.imageUrl" alt="商品图片" class="product-image">
+          <span class="product-badge">
+            <el-icon><GoldMedal /></el-icon>
+            <span class="price-value">{{ product.pointsPrice }}</span>
+          </span>
+          <span v-if="product.stock <= 0" class="product-soldout">已售罄</span>
+        </div>
+        <div class="product-body">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-description">{{ product.description }}</p>
+          <div class="product-meta">
+            <span class="product-stock">库存 {{ product.stock }}</span>
+          </div>
+          <el-button
+            type="primary"
+            @click="openExchange(product)"
+            :disabled="userPoints < product.pointsPrice || product.stock <= 0"
+            class="exchange-button"
+          >
+            立即兑换
+          </el-button>
+        </div>
+      </article>
+    </div>
+
+    <div v-else class="product-empty">
+      <div class="product-empty__icon"><el-icon :size="34"><GoldMedal /></el-icon></div>
+      <p class="product-empty__title">暂无可兑换商品</p>
+      <p class="product-empty__desc">商城正在补货中，稍后再来看看吧</p>
     </div>
 
     <!-- 收货信息填写：兑换后需通过物流发货，故需收集收件人信息 -->
@@ -72,6 +92,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import { GoldMedal } from '@element-plus/icons-vue';
 import { getUserPoints as apiGetUserPoints, getProducts as apiGetProducts, exchangeProduct as apiExchangeProduct } from '@/api/points';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
@@ -190,107 +211,245 @@ onMounted(() => {
 }
 
 .points-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-hairline);
   color: var(--theme-text-1);
 }
 
+/* 我的积分条 */
 .user-points {
-  background-color: var(--theme-bg-surface-2);
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: right;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  margin-bottom: 22px;
+  overflow: hidden;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--theme-warning) 16%, transparent), transparent 66%),
+    var(--theme-bg-surface-2);
+  border: 1px solid color-mix(in srgb, var(--theme-warning) 28%, transparent);
+}
+
+.points-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 62%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+  box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--theme-warning) 80%, transparent);
+}
+
+.points-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .points-label {
-  font-size: 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--theme-text-2);
-  margin-right: 10px;
 }
 
 .points-value {
-  font-size: 20px;
-  font-weight: bold;
-  color: var(--theme-primary);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-warning);
 }
 
+.points-hint {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
+}
+
+/* 商品网格 */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 
 .product-item {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--theme-border);
-  border-radius: 8px;
-  padding: 15px;
-  transition: all 0.3s;
+  border-radius: 16px;
+  overflow: hidden;
   background-color: var(--theme-bg-surface);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease;
 }
 
 .product-item:hover {
-  box-shadow: var(--theme-shadow-sm);
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--theme-warning) 50%, transparent);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.product-media {
+  position: relative;
+  overflow: hidden;
 }
 
 .product-image {
+  display: block;
   width: 100%;
-  height: 200px;
+  height: 190px;
   object-fit: cover;
-  border-radius: 4px;
-  margin-bottom: 15px;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-item:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 62%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.product-badge .price-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.product-soldout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: color-mix(in srgb, var(--theme-text-1) 55%, transparent);
+}
+
+.product-item.is-out .product-image {
+  filter: grayscale(0.6);
+}
+
+.product-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px 16px 18px;
 }
 
 .product-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
   color: var(--theme-text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-description {
-  font-size: 14px;
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--theme-text-2);
-  margin-bottom: 15px;
-  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.product-price {
-  margin-bottom: 10px;
-}
-
-.price-label {
-  font-size: 14px;
-  color: var(--theme-text-2);
-  margin-right: 10px;
-}
-
-.price-value {
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--theme-danger);
+.product-meta {
+  display: flex;
+  align-items: center;
+  margin: 14px 0;
+  padding-top: 14px;
+  border-top: 1px dashed var(--theme-hairline);
 }
 
 .product-stock {
-  margin-bottom: 15px;
-}
-
-.stock-label {
-  font-size: 14px;
-  color: var(--theme-text-2);
-  margin-right: 10px;
-}
-
-.stock-value {
-  font-size: 14px;
-  color: var(--theme-success);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--theme-text-3);
 }
 
 .exchange-button {
   width: 100%;
-  margin-top: 10px;
+  margin-top: auto;
+  border: none;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 68%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+}
+
+.exchange-button:not(.is-disabled):hover,
+.exchange-button:not(.is-disabled):focus {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 84%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+}
+
+/* 空状态 */
+.product-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 64px 20px;
+  text-align: center;
+}
+
+.product-empty__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  color: var(--theme-warning);
+  background: var(--theme-warning-soft);
+}
+
+.product-empty__title {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--theme-text-1);
+}
+
+.product-empty__desc {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--theme-text-2);
 }
 
 /* 兑换弹窗中的商品摘要 */
@@ -300,15 +459,17 @@ onMounted(() => {
   gap: 12px;
   padding: 12px;
   margin-bottom: 18px;
-  border-radius: 10px;
-  background: var(--theme-warning-soft);
-  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--theme-warning) 12%, transparent), transparent 70%),
+    var(--theme-bg-surface-2);
+  border: 1px solid color-mix(in srgb, var(--theme-warning) 24%, transparent);
 }
 
 .exchange-summary__img {
   width: 52px;
   height: 52px;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
   background: var(--theme-bg-surface);

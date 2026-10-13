@@ -1,15 +1,22 @@
 <template>
   <el-dialog
     :model-value="modelValue"
-    title="申请售后"
     width="560px"
     align-center
     class="as-dialog"
     @update:model-value="handleVisible"
   >
-    <div class="as-dialog-body">
-      <p class="as-dialog-tip">请如实填写售后信息，商家将尽快为您处理</p>
+    <template #header>
+      <div class="as-dialog-head">
+        <span class="as-dialog-head__badge"><el-icon :size="18"><Service /></el-icon></span>
+        <div class="as-dialog-head__text">
+          <h3 class="as-dialog-head__title">申请售后</h3>
+          <p class="as-dialog-head__sub">请如实填写售后信息，商家将尽快为您处理</p>
+        </div>
+      </div>
+    </template>
 
+    <div class="as-dialog-body">
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
         <el-form-item label="选择订单" prop="orderId">
           <el-select
@@ -95,6 +102,7 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Service } from '@element-plus/icons-vue'
 import { applyAfterSale } from '@/api/afterSale.js'
 import { uploadFile } from '@/api/upload.js'
 
@@ -193,13 +201,41 @@ const submit = async () => {
   color: var(--tn-ink);
 }
 
-.as-dialog-tip {
-  margin: 0 0 18px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 13px;
+/* 自定义弹窗头部 */
+.as-dialog-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.as-dialog-head__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
   color: var(--theme-primary);
   background: var(--theme-primary-soft);
+}
+
+.as-dialog-head__text {
+  min-width: 0;
+}
+
+.as-dialog-head__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-1);
+}
+
+.as-dialog-head__sub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
 }
 
 .as-grid {
@@ -258,15 +294,30 @@ const submit = async () => {
 /* dialog 外壳（teleport 到 body，需全局作用域） */
 .as-dialog .el-dialog,
 .as-dialog.el-dialog {
+  position: relative;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--theme-shadow-lg);
 }
 
+.as-dialog .el-dialog::before,
+.as-dialog.el-dialog::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--theme-gradient);
+  opacity: 0.9;
+  z-index: 1;
+}
+
 .as-dialog .el-dialog__header,
 .as-dialog.el-dialog .el-dialog__header {
-  padding: 22px 24px 6px;
+  padding: 22px 24px 16px;
   margin: 0;
+  border-bottom: 1px solid var(--theme-hairline);
 }
 
 .as-dialog .el-dialog__title,
@@ -277,13 +328,19 @@ const submit = async () => {
   color: var(--theme-text-1);
 }
 
+.as-dialog .el-dialog__headerbtn {
+  top: 18px;
+  right: 18px;
+}
+
 .as-dialog .el-dialog__body,
 .as-dialog.el-dialog .el-dialog__body {
-  padding: 12px 24px 4px;
+  padding: 20px 24px 4px;
 }
 
 .as-dialog .el-dialog__footer,
 .as-dialog.el-dialog .el-dialog__footer {
-  padding: 12px 24px 22px;
+  padding: 16px 24px 22px;
+  border-top: 1px solid var(--theme-hairline);
 }
 </style>

@@ -225,17 +225,29 @@ onMounted(fetchList)
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 22px;
   animation: as-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .as-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 8px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.24em;
   color: var(--tn-accent);
+}
+
+.as-hero__eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--theme-gradient);
 }
 
 .as-hero__title {
@@ -263,12 +275,24 @@ onMounted(fetchList)
 /* Card */
 .as-card {
   position: relative;
-  padding: 8px 8px 16px;
+  padding: 10px 10px 14px;
   border-radius: 22px;
   background: var(--theme-bg-surface);
   border: 1px solid var(--tn-line);
   box-shadow: var(--theme-shadow-lg);
+  overflow: hidden;
   animation: as-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.as-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--theme-gradient);
+  opacity: 0.9;
 }
 
 .as-card :deep(.el-table) {
@@ -279,6 +303,10 @@ onMounted(fetchList)
 
 .as-card :deep(.el-table th.el-table__cell) {
   border-bottom: 1px solid var(--theme-hairline);
+}
+
+.as-card :deep(.el-table__row) {
+  transition: background-color 0.2s ease;
 }
 
 .as-card :deep(.el-table__inner-wrapper::before) {

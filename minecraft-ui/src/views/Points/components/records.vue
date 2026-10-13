@@ -1,27 +1,42 @@
 <template>
   <div class="records-container">
     <h2 class="records-title">积分记录</h2>
-    
+
     <el-table :data="pagedRecords" style="width: 100%" class="records-table">
       <el-table-column prop="id" label="记录ID" width="100">
-      </el-table-column>
-      <el-table-column prop="type" label="类型" width="120">
         <template #default="scope">
-          <span :class="getTypeClass(scope.row.type)">{{ getTypeName(scope.row.type) }}</span>
+          <span class="records-id">#{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="points" label="积分变动" width="120">
+      <el-table-column prop="type" label="类型" width="130">
         <template #default="scope">
-          <span :class="getPointsClass(scope.row)">{{ formatPoints(scope.row) }}</span>
+          <span class="type-chip" :class="getTypeClass(scope.row.type)">
+            <i class="type-dot"></i>{{ getTypeName(scope.row.type) }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="points" label="积分变动" width="130">
+        <template #default="scope">
+          <span class="points-change" :class="getPointsClass(scope.row)">{{ formatPoints(scope.row) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注" min-width="200">
-      </el-table-column>
-      <el-table-column prop="createTime" label="时间" width="180">
         <template #default="scope">
-          {{ formatDate(scope.row.createTime) }}
+          <span class="records-remark">{{ scope.row.remark || '—' }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="createTime" label="时间" width="190">
+        <template #default="scope">
+          <span class="records-time">{{ formatDate(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <template #empty>
+        <div class="records-empty">
+          <div class="records-empty__icon">✦</div>
+          <p class="records-empty__title">暂无积分记录</p>
+          <p class="records-empty__desc">获取或消耗积分后，记录会显示在这里</p>
+        </div>
+      </template>
     </el-table>
     
     <div class="pagination-container">
@@ -136,10 +151,15 @@ onMounted(() => {
 }
 
 .records-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--theme-hairline);
   color: var(--theme-text-1);
 }
 
@@ -147,29 +167,114 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 
+.records-table :deep(.el-table__header th.el-table__cell) {
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.records-table :deep(.el-table__row) {
+  font-size: 13.5px;
+}
+
+.records-table :deep(td.el-table__cell),
+.records-table :deep(th.el-table__cell) {
+  border-bottom-color: var(--theme-hairline);
+}
+
+.records-table :deep(.el-table__inner-wrapper::before) {
+  display: none;
+}
+
+.records-id {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--theme-text-3);
+}
+
+.records-remark {
+  color: var(--theme-text-2);
+}
+
+.records-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-text-3);
+}
+
+/* 类型胶囊 */
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.type-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .type-earn {
+  background: var(--theme-success-soft);
   color: var(--theme-success);
-  font-weight: bold;
 }
 
 .type-exchange {
+  background: var(--theme-warning-soft);
   color: var(--theme-warning);
-  font-weight: bold;
 }
 
 .type-expire {
+  background: var(--theme-bg-surface-2);
   color: var(--theme-text-3);
-  font-weight: bold;
+}
+
+/* 积分变动 */
+.points-change {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 .points-earn {
   color: var(--theme-success);
-  font-weight: bold;
 }
 
 .points-deduct {
   color: var(--theme-danger);
-  font-weight: bold;
+}
+
+/* 空状态 */
+.records-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 48px 20px;
+}
+
+.records-empty__icon {
+  font-size: 32px;
+  color: var(--theme-primary);
+  opacity: 0.5;
+}
+
+.records-empty__title {
+  margin: 6px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--theme-text-1);
+}
+
+.records-empty__desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--theme-text-2);
 }
 
 .pagination-container {

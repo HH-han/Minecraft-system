@@ -23,7 +23,12 @@
     <!-- 列表 -->
     <div v-loading="loading" class="my-report__list">
       <template v-if="reports.length">
-        <div v-for="item in reports" :key="item.id" class="my-report__item">
+        <div
+          v-for="item in reports"
+          :key="item.id"
+          class="my-report__item"
+          :class="`is-${statusType(item.status)}`"
+        >
           <div class="my-report__icon">
             <el-icon :size="20"><Flag /></el-icon>
           </div>
@@ -41,7 +46,7 @@
         </div>
       </template>
       <div v-else-if="!loading" class="my-report__empty">
-        <div class="my-report__empty-icon">⚑</div>
+        <div class="my-report__empty-icon"><el-icon :size="42"><Flag /></el-icon></div>
         <p class="my-report__empty-title">暂无举报记录</p>
         <p class="my-report__empty-desc">发现违规内容时，可在笔记详情页发起举报</p>
         <el-button type="primary" round @click="router.push('/travel-note')">浏览笔记</el-button>
@@ -237,6 +242,7 @@ function formatTime(value) {
 }
 
 .my-report__item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -245,11 +251,35 @@ function formatTime(value) {
   background: var(--theme-bg-surface);
   border: 1px solid var(--mr-line);
   box-shadow: var(--theme-shadow-sm);
+  overflow: hidden;
   transition:
     transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.3s ease;
   animation: mr-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 左侧状态色条 */
+.my-report__item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--theme-text-3);
+}
+
+.my-report__item.is-warning::before {
+  background: var(--theme-warning);
+}
+
+.my-report__item.is-success::before {
+  background: var(--theme-success);
+}
+
+.my-report__item.is-info::before {
+  background: var(--theme-text-3);
 }
 
 .my-report__item:hover {
@@ -317,9 +347,15 @@ function formatTime(value) {
 }
 
 .my-report__empty-icon {
-  font-size: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 4px;
+  border-radius: 50%;
   color: var(--mr-accent);
-  opacity: 0.5;
+  background: var(--theme-primary-soft);
 }
 
 .my-report__empty-title {

@@ -88,50 +88,67 @@ const handleMenuSelect = (key) => {
 
 <style scoped>
 .points-main-container {
+  position: relative;
   display: flex;
   min-height: 100vh;
   background-color: var(--theme-bg-surface-2);
 }
 
+/* 环境光背景 */
+.points-main-container::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 460px at 4% -6%, var(--theme-primary-soft), transparent 60%),
+    radial-gradient(760px 420px at 100% 0%, color-mix(in srgb, var(--theme-accent-2) 9%, transparent), transparent 58%);
+}
+
 /* 侧边栏 */
 .points-sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background-color: var(--theme-bg-surface);
-  border-right: 1px solid var(--theme-hairline);
   position: sticky;
   top: 0;
   align-self: flex-start;
+  z-index: 2;
+  width: 244px;
   height: 100vh;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  background: color-mix(in srgb, var(--theme-bg-surface) 86%, transparent);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-right: 1px solid var(--theme-hairline);
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 22px 20px;
+  padding: 24px 20px;
   border-bottom: 1px solid var(--theme-hairline);
 }
 
 .brand-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   color: #fff;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 72%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
-  box-shadow: var(--theme-shadow-sm);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 68%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--theme-warning) 75%, transparent);
   flex-shrink: 0;
 }
 
 .brand-title {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--theme-text-1);
   margin: 0;
   line-height: 1.3;
@@ -139,49 +156,60 @@ const handleMenuSelect = (key) => {
 
 .brand-subtitle {
   font-size: 10px;
-  letter-spacing: 1px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   color: var(--theme-text-3);
-  margin: 2px 0 0;
+  margin: 3px 0 0;
 }
 
 .sidebar-menu {
   border-right: none;
-  padding: 12px;
+  padding: 14px 12px;
   flex: 1;
+  background: transparent;
 }
 
 .sidebar-menu :deep(.el-menu-item) {
   height: 46px;
   line-height: 46px;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 6px;
   color: var(--theme-text-2);
   font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .sidebar-menu :deep(.el-menu-item .el-icon) {
   font-size: 17px;
+  margin-right: 10px;
 }
 
 .sidebar-menu :deep(.el-menu-item:hover) {
   background-color: var(--theme-bg-hover);
-  color: var(--theme-warning);
+  color: var(--theme-text-1);
 }
 
 .sidebar-menu :deep(.el-menu-item.is-active) {
   color: #fff;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 72%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
-  box-shadow: var(--theme-shadow-sm);
+  font-weight: 600;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 68%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
+  box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--theme-warning) 85%, transparent);
 }
 
 /* 内容区 */
 .points-content {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-width: 0;
-  padding: 24px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 24px 56px;
 }
 
-/* 统一子页面容器为白色卡片，去除子组件自带的居中和双重内边距 */
+/* 统一子页面容器为卡片，去除子组件自带的居中和双重内边距 */
 .points-content :deep(.points-container),
 .points-content :deep(.records-container),
 .points-content :deep(.orders-container) {
@@ -189,71 +217,37 @@ const handleMenuSelect = (key) => {
   margin: 0;
   padding: 24px;
   background-color: var(--theme-bg-surface);
-  border-radius: 12px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 20px;
   box-shadow: var(--theme-shadow-sm);
+  animation: points-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* 统一子页面标题：左对齐 + 分隔线 */
+/* 统一子页面标题：左对齐 + 强调竖条 + 分隔线 */
 .points-content :deep(.points-title),
 .points-content :deep(.records-title),
 .points-content :deep(.orders-title) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   text-align: left;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--theme-text-1);
   margin: 0 0 20px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--theme-hairline);
 }
 
-/* 积分商城：我的积分条 */
-.points-content :deep(.user-points) {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  background: var(--theme-warning-soft);
-  border: 1px solid var(--theme-border);
-  border-radius: 10px;
-  padding: 14px 20px;
-  margin-bottom: 20px;
-}
-
-.points-content :deep(.points-label) {
-  margin-right: 0;
-}
-
-.points-content :deep(.points-value) {
-  color: var(--theme-warning);
-  font-size: 22px;
-}
-
-/* 商品卡片悬停效果 */
-.points-content :deep(.product-item) {
-  border-radius: 12px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.points-content :deep(.product-item:hover) {
-  transform: translateY(-4px);
-  border-color: var(--theme-warning);
-  box-shadow: var(--theme-shadow-md);
-}
-
-.points-content :deep(.price-value) {
-  color: var(--theme-warning);
-}
-
-/* 兑换按钮与主题色统一 */
-.points-content :deep(.exchange-button.el-button--primary) {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 72%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
-  border: none;
-}
-
-.points-content :deep(.exchange-button.el-button--primary:hover),
-.points-content :deep(.exchange-button.el-button--primary:focus) {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-warning) 88%, var(--theme-bg-app)) 0%, var(--theme-warning) 100%);
-  opacity: 0.92;
+.points-content :deep(.points-title::before),
+.points-content :deep(.records-title::before),
+.points-content :deep(.orders-title::before) {
+  content: '';
+  width: 5px;
+  height: 20px;
+  border-radius: 3px;
+  background: var(--theme-gradient);
 }
 
 /* 页面切换淡入淡出 */
@@ -267,14 +261,26 @@ const handleMenuSelect = (key) => {
   opacity: 0;
 }
 
+@keyframes points-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* 响应式设计 */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .points-main-container {
     flex-direction: column;
   }
 
   .points-sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
     width: 100%;
     height: auto;
     border-right: none;
@@ -288,6 +294,7 @@ const handleMenuSelect = (key) => {
   .brand-icon {
     width: 36px;
     height: 36px;
+    border-radius: 11px;
     font-size: 18px;
   }
 
@@ -300,6 +307,12 @@ const handleMenuSelect = (key) => {
     flex-direction: row;
     overflow-x: auto;
     padding: 8px 12px;
+    flex: none;
+    scrollbar-width: none;
+  }
+
+  .sidebar-menu::-webkit-scrollbar {
+    display: none;
   }
 
   .sidebar-menu :deep(.el-menu-item) {
@@ -311,13 +324,14 @@ const handleMenuSelect = (key) => {
   }
 
   .points-content {
-    padding: 12px;
+    padding: 16px 14px 48px;
   }
 
   .points-content :deep(.points-container),
   .points-content :deep(.records-container),
   .points-content :deep(.orders-container) {
     padding: 16px;
+    border-radius: 16px;
   }
 }
 </style>

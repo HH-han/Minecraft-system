@@ -137,99 +137,158 @@
 
     <!-- 修改信息模态框 (Apple 风格玻璃拟态) -->
     <div v-if="showEditModal" class="modal-overlay" @click.self="">
-      <div class="modal-dialog modal-edit" role="dialog" aria-modal="true">
-        <div class="modal-header">
-          <h3 class="modal-title">修改个人信息</h3>
+      <div class="modal-dialog modal-edit" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+        <header class="modal-header">
+          <div class="modal-heading">
+            <span class="modal-heading__badge"><i class="fas fa-user-pen"></i></span>
+            <div class="modal-heading__text">
+              <h3 id="edit-modal-title" class="modal-title">修改个人信息</h3>
+              <p class="modal-subtitle">完善资料，让别人更了解你</p>
+            </div>
+          </div>
           <button class="modal-close" type="button" aria-label="关闭" @click="closeEditModal">
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
             </svg>
           </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-list">
-            <div class="form-item">
-              <label class="form-label">用户名</label>
-              <input class="form-input" type="text" v-model="editForm.username" placeholder="请输入用户名" />
+        </header>
+        <div class="modal-body theme-scrollbar">
+          <!-- 账号信息 -->
+          <section class="form-section">
+            <div class="form-section__head">
+              <i class="fas fa-id-card"></i>
+              <span>账号信息</span>
             </div>
-            <div class="form-item">
-              <label class="form-label">昵称</label>
-              <input class="form-input" type="text" v-model="editForm.nickname" placeholder="请输入昵称" />
-            </div>
-            <div class="form-item">
-              <label class="form-label">邮箱</label>
-              <input class="form-input" type="email" v-model="editForm.email" placeholder="请输入邮箱" />
-            </div>
-            <div class="form-item">
-              <label class="form-label">手机号</label>
-              <input class="form-input" type="tel" v-model="editForm.phone" placeholder="请输入手机号" />
-            </div>
-            <div class="form-item">
-              <label class="form-label">性别</label>
-              <div class="form-select-wrap">
-                <select class="form-input form-select" v-model="editForm.gender">
-                  <option :value="null" value="">请选择</option>
-                  <option :value="1" value="1">男</option>
-                  <option :value="0" value="0">女</option>
-                </select>
-                <svg class="select-chevron" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                  <path d="M7 10l5 5 5-5z" fill="currentColor"/>
-                </svg>
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label" for="edit-username">用户名</label>
+                <div class="form-control">
+                  <i class="fas fa-user control-icon"></i>
+                  <input id="edit-username" class="form-input" type="text" v-model="editForm.username" placeholder="请输入用户名" />
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-label" for="edit-nickname">昵称</label>
+                <div class="form-control">
+                  <i class="fas fa-id-badge control-icon"></i>
+                  <input id="edit-nickname" class="form-input" type="text" v-model="editForm.nickname" placeholder="请输入昵称" />
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-label" for="edit-email">邮箱</label>
+                <div class="form-control">
+                  <i class="fas fa-envelope control-icon"></i>
+                  <input id="edit-email" class="form-input" type="email" v-model="editForm.email" placeholder="请输入邮箱" />
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-label" for="edit-phone">手机号</label>
+                <div class="form-control">
+                  <i class="fas fa-phone-alt control-icon"></i>
+                  <input id="edit-phone" class="form-input" type="tel" v-model="editForm.phone" placeholder="请输入手机号" />
+                </div>
               </div>
             </div>
-            <div class="form-item">
-              <label class="form-label">年龄</label>
-              <input class="form-input" type="number" min="1" max="120" v-model.number="editForm.age" placeholder="请输入年龄" />
+          </section>
+
+          <!-- 个人资料 -->
+          <section class="form-section">
+            <div class="form-section__head">
+              <i class="fas fa-user-circle"></i>
+              <span>个人资料</span>
             </div>
-            <div class="form-item">
-              <label class="form-label">职业</label>
-              <input class="form-input" type="text" v-model="editForm.occupation" placeholder="请输入职业" />
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">性别</label>
+                <div class="segmented" role="radiogroup" aria-label="性别">
+                  <button type="button" class="segmented__item" :class="{ 'is-active': genderOption === 'secret' }" @click="editForm.gender = null">保密</button>
+                  <button type="button" class="segmented__item" :class="{ 'is-active': genderOption === 'male' }" @click="editForm.gender = 1">男</button>
+                  <button type="button" class="segmented__item" :class="{ 'is-active': genderOption === 'female' }" @click="editForm.gender = 0">女</button>
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-label" for="edit-age">年龄</label>
+                <div class="form-control">
+                  <i class="fas fa-birthday-cake control-icon"></i>
+                  <input id="edit-age" class="form-input" type="number" min="1" max="120" v-model.number="editForm.age" placeholder="请输入年龄" />
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-label" for="edit-occupation">职业</label>
+                <div class="form-control">
+                  <i class="fas fa-briefcase control-icon"></i>
+                  <input id="edit-occupation" class="form-input" type="text" v-model="editForm.occupation" placeholder="请输入职业" />
+                </div>
+              </div>
+              <div class="form-item">
+                <label class="form-label" for="edit-hobbies">爱好</label>
+                <div class="form-control">
+                  <i class="fas fa-heart control-icon"></i>
+                  <input id="edit-hobbies" class="form-input" type="text" v-model="editForm.hobbies" placeholder="请输入爱好" />
+                </div>
+              </div>
             </div>
-            <div class="form-item">
-              <label class="form-label">爱好</label>
-              <input class="form-input" type="text" v-model="editForm.hobbies" placeholder="请输入爱好" />
+          </section>
+
+          <!-- 关于我 -->
+          <section class="form-section">
+            <div class="form-section__head">
+              <i class="fas fa-feather-alt"></i>
+              <span>关于我</span>
             </div>
-            <div class="form-item form-item--block">
-              <label class="form-label">个人简介</label>
-              <textarea class="form-input form-textarea" rows="3" v-model="editForm.bio" placeholder="介绍一下自己"></textarea>
+            <div class="form-grid">
+              <div class="form-item form-item--block">
+                <label class="form-label" for="edit-bio">个人简介</label>
+                <textarea id="edit-bio" class="form-input form-textarea" rows="3" v-model="editForm.bio" placeholder="介绍一下自己"></textarea>
+              </div>
+              <div class="form-item form-item--block">
+                <label class="form-label" for="edit-signature">个性签名</label>
+                <div class="form-control">
+                  <i class="fas fa-pen-nib control-icon"></i>
+                  <input id="edit-signature" class="form-input" type="text" v-model="editForm.signature" placeholder="请输入签名" />
+                </div>
+              </div>
+              <div class="form-item form-item--block">
+                <label class="form-label" for="edit-experience">经验</label>
+                <textarea id="edit-experience" class="form-input form-textarea" rows="3" v-model="editForm.experience" placeholder="请输入经验"></textarea>
+              </div>
             </div>
-            <div class="form-item">
-              <label class="form-label">签名</label>
-              <input class="form-input" type="text" v-model="editForm.signature" placeholder="请输入签名" />
-            </div>
-            <div class="form-item form-item--block">
-              <label class="form-label">经验</label>
-              <textarea class="form-input form-textarea" rows="3" v-model="editForm.experience" placeholder="请输入经验"></textarea>
-            </div>
-          </div>
+          </section>
         </div>
-        <div class="modal-footer">
+        <footer class="modal-footer">
           <button class="btn btn-secondary" type="button" @click="closeEditModal">取消</button>
           <button class="btn btn-primary" type="button" :disabled="loading" @click="handleUpdateUserInfo">
             <span v-if="loading" class="btn-spinner" aria-hidden="true"></span>
             {{ loading ? '保存中…' : '保存修改' }}
           </button>
-        </div>
+        </footer>
       </div>
     </div>
 
     <!-- 更改密码模态框 (Apple 风格玻璃拟态) -->
     <div v-if="showPasswordModal" class="modal-overlay" @click.self="">
-      <div class="modal-dialog modal-password" role="dialog" aria-modal="true">
-        <div class="modal-header">
-          <h3 class="modal-title">更改密码</h3>
+      <div class="modal-dialog modal-password" role="dialog" aria-modal="true" aria-labelledby="pwd-modal-title">
+        <header class="modal-header">
+          <div class="modal-heading">
+            <span class="modal-heading__badge modal-heading__badge--lock"><i class="fas fa-shield-halved"></i></span>
+            <div class="modal-heading__text">
+              <h3 id="pwd-modal-title" class="modal-title">更改密码</h3>
+              <p class="modal-subtitle">定期更换密码，保障账号安全</p>
+            </div>
+          </div>
           <button class="modal-close" type="button" aria-label="关闭" @click="closePasswordModal">
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
             </svg>
           </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-list">
+        </header>
+        <div class="modal-body theme-scrollbar">
+          <div class="form-grid">
             <div class="form-item form-item--block">
-              <label class="form-label">原密码</label>
-              <div class="form-input-wrap">
-                <input class="form-input" :type="showOldPwd ? 'text' : 'password'" v-model="passwordForm.oldPassword" placeholder="请输入原密码" />
+              <label class="form-label" for="pwd-old">原密码</label>
+              <div class="form-control form-control--pwd">
+                <i class="fas fa-lock control-icon"></i>
+                <input id="pwd-old" class="form-input" :type="showOldPwd ? 'text' : 'password'" v-model="passwordForm.oldPassword" placeholder="请输入原密码" />
                 <button type="button" class="pwd-toggle" :aria-label="showOldPwd ? '隐藏密码' : '显示密码'" @click="showOldPwd = !showOldPwd">
                   <svg v-if="showOldPwd" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
@@ -241,9 +300,10 @@
               </div>
             </div>
             <div class="form-item form-item--block">
-              <label class="form-label">新密码</label>
-              <div class="form-input-wrap">
-                <input class="form-input" :type="showNewPwd ? 'text' : 'password'" v-model="passwordForm.newPassword" placeholder="请输入新密码" />
+              <label class="form-label" for="pwd-new">新密码</label>
+              <div class="form-control form-control--pwd">
+                <i class="fas fa-key control-icon"></i>
+                <input id="pwd-new" class="form-input" :type="showNewPwd ? 'text' : 'password'" v-model="passwordForm.newPassword" placeholder="请输入新密码" />
                 <button type="button" class="pwd-toggle" :aria-label="showNewPwd ? '隐藏密码' : '显示密码'" @click="showNewPwd = !showNewPwd">
                   <svg v-if="showNewPwd" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
@@ -255,9 +315,10 @@
               </div>
             </div>
             <div class="form-item form-item--block">
-              <label class="form-label">确认密码</label>
-              <div class="form-input-wrap">
-                <input class="form-input" :type="showConfirmPwd ? 'text' : 'password'" v-model="passwordForm.confirmPassword" placeholder="请再次输入新密码" />
+              <label class="form-label" for="pwd-confirm">确认密码</label>
+              <div class="form-control form-control--pwd">
+                <i class="fas fa-lock control-icon"></i>
+                <input id="pwd-confirm" class="form-input" :type="showConfirmPwd ? 'text' : 'password'" v-model="passwordForm.confirmPassword" placeholder="请再次输入新密码" />
                 <button type="button" class="pwd-toggle" :aria-label="showConfirmPwd ? '隐藏密码' : '显示密码'" @click="showConfirmPwd = !showConfirmPwd">
                   <svg v-if="showConfirmPwd" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
@@ -270,13 +331,13 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer">
+        <footer class="modal-footer">
           <button class="btn btn-secondary" type="button" @click="closePasswordModal">取消</button>
           <button class="btn btn-primary" type="button" :disabled="passwordLoading" @click="handleUpdatePassword">
             <span v-if="passwordLoading" class="btn-spinner" aria-hidden="true"></span>
             {{ passwordLoading ? '更改中…' : '确认更改' }}
           </button>
-        </div>
+        </footer>
       </div>
     </div>
   </div>
@@ -369,6 +430,14 @@ const genderText = computed(() => {
   if (userInfo.value.gender === 1 || userInfo.value.gender === '1') return '男';
   if (userInfo.value.gender === 0 || userInfo.value.gender === '0') return '女';
   return '未设置';
+});
+
+// 性别分段控件选中项
+const genderOption = computed(() => {
+  const g = editForm.value.gender;
+  if (g === 1 || g === '1') return 'male';
+  if (g === 0 || g === '0') return 'female';
+  return 'secret';
 });
 
 // 分区是否有内容
@@ -1221,8 +1290,22 @@ const formatDay = (dateString) => {
     0 0 0 0.5px var(--theme-hairline);
   overflow: hidden;
   color: var(--theme-text-1);                        /* Apple 主文本色 */
-  font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'SF Pro Display', sans-serif;
+  font-family: system-ui, -apple-system, 'PingFang SC', 'SF Pro Display', 'Microsoft YaHei', sans-serif;
   animation: modal-pop 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 顶部渐变强调线 */
+.modal-dialog::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--theme-gradient);
+  opacity: 0.9;
+  z-index: 2;
+  pointer-events: none;
 }
 
 @keyframes modal-pop {
@@ -1230,32 +1313,69 @@ const formatDay = (dateString) => {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.modal-edit      { max-width: 560px; }
-.modal-password  { max-width: 440px; }
+.modal-edit      { max-width: 620px; }
+.modal-password  { max-width: 460px; }
 
 /* --- 头部 --- */
 .modal-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding: 20px 24px 16px;
+  gap: 16px;
+  padding: 22px 24px 18px;
   border-bottom: 1px solid var(--theme-border);                /* Apple 分割线色 */
   flex-shrink: 0;
 }
 
+.modal-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.modal-heading__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 16px;
+}
+
+.modal-heading__badge--lock {
+  background: color-mix(in srgb, var(--theme-accent-3) 16%, transparent);
+  color: var(--theme-accent-3);
+}
+
+.modal-heading__text {
+  min-width: 0;
+}
+
 .modal-title {
   margin: 0;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 600;                                 /* Apple H3 600~700 */
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--theme-text-1);
   letter-spacing: -0.01em;
+}
+
+.modal-subtitle {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
 }
 
 .modal-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   width: 32px;
   height: 32px;
   border: none;
@@ -1276,15 +1396,45 @@ const formatDay = (dateString) => {
 
 /* --- 主体 --- */
 .modal-body {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 22px 24px 24px;
   overflow-y: auto;
   flex: 1 1 auto;
 }
 
-/* --- 表单 (Apple 风格) --- */
-.form-list {
+/* --- 表单分区 --- */
+.form-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--theme-text-3);
+}
+.form-section__head i {
+  font-size: 12px;
+  color: var(--theme-primary);
+}
+.form-section__head::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--theme-hairline);
+}
+
+/* --- 表单网格 (Apple 风格) --- */
+.form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 20px;                                   /* 8px 网格基准 */
 }
 .form-item--block {
@@ -1293,15 +1443,35 @@ const formatDay = (dateString) => {
 
 .form-label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   font-size: 13px;
   font-weight: 500;
   color: var(--theme-text-2);                                   /* Apple 次要文本: 标签 */
   letter-spacing: 0.01em;
 }
 
-.form-input-wrap {
+/* 输入容器（承载前置图标 / 后置按钮） */
+.form-control {
   position: relative;
+}
+
+.form-control .control-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--theme-text-3);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.form-control > .control-icon + .form-input {
+  padding-left: 40px;
+}
+
+.form-control:focus-within .control-icon {
+  color: var(--theme-primary);
 }
 
 .form-input {
@@ -1313,7 +1483,7 @@ const formatDay = (dateString) => {
   line-height: 1.4;
   font-family: inherit;
   color: var(--theme-text-1);                                   /* 输入主文本 */
-  background: var(--theme-bg-surface);                              /* 白色输入底 */
+  background: var(--theme-bg-surface-2);                        /* 填充式输入底 */
   border: 1px solid var(--theme-border);                        /* Apple 边框 */
   border-radius: 12px;                              /* 输入圆角, 与 Apple 表单匹配 */
   outline: none;
@@ -1333,14 +1503,15 @@ const formatDay = (dateString) => {
 .form-input:focus {
   border-color: var(--theme-primary);                            /* Apple 强调色 */
   box-shadow: var(--theme-ring);  /* 蓝色焦点光晕 */
-  background: var(--theme-bg-surface);
 }
 
-/* textarea 高度微调 */
+/* textarea */
 .form-textarea {
-  min-height: 80px;
+  min-height: 84px;
+  padding: 11px 14px;
   resize: vertical;
   font: inherit;
+  line-height: 1.55;
 }
 
 /* 原生数字输入去箭头 (视觉统一) */
@@ -1353,38 +1524,62 @@ const formatDay = (dateString) => {
   -moz-appearance: textfield;
 }
 
-/* --- 下拉选择 --- */
-.form-select-wrap {
-  position: relative;
+/* --- 性别分段控件 --- */
+.segmented {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-border);
 }
-.form-select {
-  padding-right: 36px;                              /* 给 chevron 留位 */
-  cursor: pointer;
-}
-.form-select-wrap .select-chevron {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
+.segmented__item {
+  flex: 1;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
   color: var(--theme-text-2);
-  pointer-events: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.segmented__item:hover {
+  color: var(--theme-text-1);
+  background: var(--theme-bg-hover);
+}
+.segmented__item.is-active {
+  background: var(--theme-bg-surface);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+.segmented__item:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
 }
 
 /* --- 密码显示按钮 --- */
+.form-control--pwd > .form-input {
+  padding-right: 48px;
+}
+
 .pwd-toggle {
   position: absolute;
   top: 50%;
   right: 8px;
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 10px;
+  border-radius: 9px;
   background: transparent;
-  color: var(--theme-text-2);
+  color: var(--theme-text-3);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
@@ -1403,7 +1598,7 @@ const formatDay = (dateString) => {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  padding: 16px 24px 20px;
+  padding: 16px 24px;
   border-top: 1px solid var(--theme-border);
   flex-shrink: 0;
   background: var(--theme-bg-surface-2);
@@ -1579,11 +1774,12 @@ const formatDay = (dateString) => {
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .modal-header  { padding: 16px 20px 12px; }
-  .modal-body    { padding: 16px 20px; }
-  .modal-footer  { padding: 12px 20px 16px; gap: 8px; }
-  .modal-title   { font-size: 18px; }
-  .form-list     { grid-template-columns: 1fr; gap: 12px; }
+  .modal-header  { padding: 18px 20px 14px; }
+  .modal-heading__badge { width: 38px; height: 38px; border-radius: 12px; font-size: 15px; }
+  .modal-body    { padding: 18px 20px; gap: 18px; }
+  .modal-footer  { padding: 12px 20px; gap: 8px; }
+  .modal-title   { font-size: 16px; }
+  .form-grid     { grid-template-columns: 1fr; gap: 14px; }
   .btn           { min-width: 92px; padding: 11px 20px; font-size: 14px; }
 }
 </style>
