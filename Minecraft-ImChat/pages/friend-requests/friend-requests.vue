@@ -1,286 +1,258 @@
 <template>
-  <view class="friend-requests-page">
+  <view class="friend-requests">
+    <CustomNavBar
+      :show-back="true"
+      title="新的朋友"
+      title-align="center"
+      @back="goBack"
+    />
+
     <scroll-view
-      class="request-list"
+      class="friend-requests__body"
       scroll-y
+      :show-scrollbar="false"
       :refresher-enabled="true"
       :refresher-triggered="isRefreshing"
       @refresherrefresh="onRefresh"
     >
-      <view
-        v-for="(request, index) in requests"
-        :key="request.id"
-        :style="{ animationDelay: `${index * 0.05}s` }"
-        class="request-item fade-in"
-      >
-        <image
-          class="request-avatar"
-          :src="request.avatar || defaultAvatar"
-          mode="aspectFill"
-        />
-        <view class="request-info">
-          <view class="request-header">
-            <text class="request-name">{{ request.username }}</text>
-            <text class="request-time">{{ formatTime(request.createTime) }}</text>
-          </view>
-          <text class="request-message">{{ request.message || '请求添加你为好友' }}</text>
-          <view class="request-actions">
-            <view class="action-btn decline" @click="handleRequest(request, 'reject')">
-              <text>拒绝</text>
+      <view v-if="requests.length" class="group">
+        <view
+          v-for="request in requests"
+          :key="request.id"
+          class="req"
+        >
+          <UiAvatar shape="square" :size="96" :src="request.avatar" :name="nameOf(request)" />
+          <view class="req__body">
+            <view class="req__top">
+              <text class="req__name">{{ nameOf(request) }}</text>
+              <text class="req__time">{{ formatRelativeTime(request.createTime) }}</text>
             </view>
-            <view class="action-btn accept" @click="handleRequest(request, 'accept')">
-              <text>同意</text>
+            <text class="req__msg">{{ messageOf(request) }}</text>
+          </view>
+          <view class="req__actions">
+            <view class="btn btn--accept" hover-class="btn--hover" hover-stay-time="60" @click="handleRequest(request, 'accept')">
+              <text>接受</text>
+            </view>
+            <view class="btn btn--reject" hover-class="btn--reject-hover" hover-stay-time="60" @click="handleRequest(request, 'reject')">
+              <text>拒绝</text>
             </view>
           </view>
         </view>
       </view>
 
-      <view v-if="requests.length === 0 && !isLoading" class="empty-state">
-        <text class="empty-icon">📭</text>
-        <text class="empty-text">暂无好友申请</text>
-      </view>
+      <UiEmpty
+        v-else-if="!isLoading"
+        icon="👤"
+        text="暂无好友申请"
+      />
+
+      <view class="friend-requests__safe"></view>
     </scroll-view>
   </view>
 </template>
 
 <script>
+import CustomNavBar from '../../components/CustomNavBar.vue'
+import UiAvatar from '../../components/Avatar.vue'
+import UiEmpty from '../../components/EmptyState.vue'
 import {
   getPendingFriendRequests,
   acceptFriendRequest,
   rejectFriendRequest
 } from '../../utils/chat-api.js'
-import { getUserInfo } from '../../utils/storage.js'
+import { getUserId } from '../../utils/session.js'
+import { formatRelativeTime } from '../../utils/format.js'
+import { setPendingRequestCount } from '../../store/index.js'
 
 export default {
+  components: { CustomNavBar, UiAvatar, UiEmpty },
   data() {
     return {
       requests: [],
       isLoading: false,
-      isRefreshing: false,
-      defaultAvatar: '/static/default-avatar.png'
+      isRefreshing: false
     }
   },
-
   onLoad() {
     this.loadRequests()
   },
-
   methods: {
+    formatRelativeTime,
+    goBack() {
+      uni.navigateBack()
+    },
+    nameOf(request) {
+      return request.username || request.nickname || '对方'
+    },
+    messageOf(request) {
+      return request.message || request.remark || '请求添加你为好友'
+    },
     async loadRequests() {
-      const userInfo = getUserInfo()
-      if (!userInfo?.id) return
-
+      const userId = getUserId()
+      if (!userId) return
       this.isLoading = true
-
       try {
-        const res = await getPendingFriendRequests(userInfo.id)
-        if (res.code === 200 && res.data) {
+        const res = await getPendingFriendRequests(userId)
+        if (res && res.code === 200 && Array.isArray(res.data)) {
           this.requests = res.data
+        } else {
+          this.requests = []
         }
       } catch (e) {
-        console.error('加载好友请求失败:', e)
+        console.error('加载好友申请失败:', e)
         uni.showToast({ title: '加载失败', icon: 'none' })
       } finally {
         this.isLoading = false
       }
     },
-
     async onRefresh() {
       this.isRefreshing = true
       await this.loadRequests()
       this.isRefreshing = false
     },
-
     async handleRequest(request, action) {
       const api = action === 'accept' ? acceptFriendRequest : rejectFriendRequest
-
       try {
         const res = await api(request.id)
-        if (res.code === 200) {
-          const index = this.requests.findIndex(r => r.id === request.id)
-          if (index > -1) {
-            this.requests.splice(index, 1)
-          }
-
-          uni.showToast({
-            title: action === 'accept' ? '已同意' : '已拒绝',
-            icon: 'success'
-          })
+        if (res && res.code === 200) {
+          this.requests = this.requests.filter((r) => r.id !== request.id)
+          setPendingRequestCount(this.requests.length)
+          uni.showToast({ title: action === 'accept' ? '已接受' : '已拒绝', icon: 'success' })
         } else {
-          uni.showToast({ title: res.message || '操作失败', icon: 'none' })
+          uni.showToast({ title: (res && res.message) || '操作失败', icon: 'none' })
         }
       } catch (e) {
-        console.error('处理好友请求失败:', e)
+        console.error('处理好友申请失败:', e)
         uni.showToast({ title: '操作失败', icon: 'none' })
       }
-    },
-
-    formatTime(timeStr) {
-      if (!timeStr) return ''
-
-      const date = new Date(timeStr)
-      const now = new Date()
-      const diff = now - date
-
-      if (diff < 60000) return '刚刚'
-      if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
-      if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
-
-      return `${date.getMonth() + 1}/${date.getDate()}`
     }
   }
 }
 </script>
 
 <style scoped>
-.friend-requests-page {
+.friend-requests {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f7;
+  background-color: #ededed;
 }
 
-.request-list {
+.friend-requests__body {
   flex: 1;
-  padding: 16rpx 0;
+  height: 0;
 }
 
-.request-item {
+.group {
+  background-color: #ffffff;
+  margin-top: 20rpx;
+}
+
+.req {
   display: flex;
   align-items: flex-start;
-  padding: 32rpx;
-  margin: 16rpx 32rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
+  padding: 24rpx 32rpx;
+  position: relative;
 }
 
-.request-item:active {
-  transform: scale(0.99);
-  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.04);
+.req::after {
+  content: '';
+  position: absolute;
+  left: 152rpx;
+  right: 0;
+  bottom: 0;
+  height: 1rpx;
+  background-color: #ededed;
+  transform: scaleY(0.5);
 }
 
-.request-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 50%;
-  background-color: #f5f5f7;
-  margin-right: 24rpx;
-  flex-shrink: 0;
+.req:last-child::after {
+  display: none;
 }
 
-.request-info {
+.req__body {
   flex: 1;
   min-width: 0;
+  margin-left: 24rpx;
 }
 
-.request-header {
+.req__top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8rpx;
+  justify-content: space-between;
   gap: 16rpx;
 }
 
-.request-name {
+.req__name {
   font-size: 32rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  letter-spacing: -0.3rpx;
+  color: #191919;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.request-time {
-  font-size: 24rpx;
-  color: #6e6e73;
+.req__time {
   flex-shrink: 0;
+  font-size: 24rpx;
+  color: #b2b2b2;
 }
 
-.request-message {
+.req__msg {
   display: block;
-  font-size: 28rpx;
-  color: #6e6e73;
-  margin-bottom: 24rpx;
+  font-size: 26rpx;
+  color: #888888;
+  margin-top: 10rpx;
   line-height: 1.5;
 }
 
-.request-actions {
+.req__actions {
+  flex-shrink: 0;
+  margin-left: 20rpx;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 16rpx;
 }
 
-.action-btn {
-  padding: 12rpx 40rpx;
-  border-radius: 36rpx;
+.btn {
+  min-width: 132rpx;
+  height: 60rpx;
+  padding: 0 24rpx;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn text {
   font-size: 26rpx;
   font-weight: 500;
-  transition: all 0.2s ease;
 }
 
-.action-btn text {
-  font-size: 26rpx;
-  line-height: 1;
+.btn--accept {
+  background-color: #07c160;
 }
 
-.action-btn.decline {
-  background-color: #f5f5f7;
-}
-
-.action-btn.decline:active {
-  background-color: #e8e8ed;
-  transform: scale(0.97);
-}
-
-.action-btn.decline text {
-  color: #6e6e73;
-}
-
-.action-btn.accept {
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-}
-
-.action-btn.accept:active {
-  transform: scale(0.97);
-}
-
-.action-btn.accept text {
+.btn--accept text {
   color: #ffffff;
 }
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 240rpx 0;
+.btn--hover {
+  background-color: #06ad56;
 }
 
-.empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 32rpx;
-  opacity: 0.3;
+.btn--reject {
+  background-color: #f2f2f2;
 }
 
-.empty-text {
-  font-size: 28rpx;
-  color: #6e6e73;
-  letter-spacing: -0.2rpx;
+.btn--reject text {
+  color: #888888;
 }
 
-.fade-in {
-  animation: fadeInUp 0.4s ease forwards;
-  opacity: 0;
+.btn--reject-hover {
+  background-color: #e6e6e6;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.friend-requests__safe {
+  height: calc(24rpx + env(safe-area-inset-bottom));
 }
 </style>

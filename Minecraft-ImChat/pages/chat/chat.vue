@@ -1,139 +1,151 @@
 <template>
   <view class="chat-page">
-    <view class="nav-bar">
-      <view class="nav-back" @click="goBack">
-        <svg t="1782226242150" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="20935" width="200" height="200"><path d="M185.3952 511.232l398.2336 398.2336-72.3968 72.448L40.6016 511.232 511.232 40.6016 583.68 112.9984z" fill="#bfbfbf" p-id="20936"></path></svg>
+    <CustomNavBar
+      :title="headerTitle"
+      :show-back="true"
+      :show-add="true"
+      :show-search="false"
+      background="#EDEDED"
+      title-align="center"
+      :menu-items="headerMenu"
+      @back="goBack"
+      @menuItemClick="onHeaderMenu"
+    />
+
+    <scroll-view
+      class="msg-list"
+      scroll-y
+      :scroll-into-view="scrollIntoId"
+      :scroll-with-animation="true"
+      @scrolltoupper="onReachTop"
+      :show-scrollbar="false"
+    >
+      <view class="msg-list__top">
+        <text v-if="isLoading" class="msg-list__loading">加载中…</text>
+        <text v-else-if="!messages.length" class="msg-list__empty">还没有消息，打个招呼吧</text>
       </view>
-      <view class="nav-title">
-        <text class="title-text">{{ chatName }}</text>
+
+      <view v-for="(msg, index) in messages" :key="msg.localId || msg.id || index">
+        <view v-if="showTimeDivider(index)" class="msg-time">
+          <text>{{ formatChatTime(msg.createTime) }}</text>
+        </view>
+
+        <view class="msg-row" :class="{ 'is-self': isSelf(msg) }">
+          <view class="msg-avatar" @click="onAvatarTap(msg)">
+            <UiAvatar
+              shape="square"
+              :size="80"
+              :src="isSelf(msg) ? currentUser.avatar : senderAvatarOf(msg)"
+              :name="isSelf(msg) ? currentUser.name : (msg.senderName || chatName)"
+            />
+          </view>
+
+          <view class="msg-main">
+            <text
+              v-if="chatType === 'group' && !isSelf(msg) && msg.senderName"
+              class="msg-sender"
+            >{{ msg.senderName }}</text>
+
+            <view class="msg-bubble" :class="bubbleClass(msg)">
+              <text v-if="isTextLike(msg)" class="msg-bubble__text">{{ msg.content }}</text>
+
+              <image
+                v-else-if="isImageLike(msg)"
+                class="msg-bubble__image"
+                :class="{ 'is-sticker': isSticker(msg) }"
+                :src="msg.content"
+                mode="widthFix"
+                @click="previewImage(msg.content)"
+              />
+
+              <view v-else-if="isFileLike(msg)" class="msg-file">
+                <UiIcon name="file" :size="64" color="#576B95" />
+                <view class="msg-file__info">
+                  <text class="msg-file__name">{{ msg.fileName || '文件' }}</text>
+                  <text class="msg-file__size">{{ msg.content }}</text>
+                </view>
+              </view>
+
+              <text v-else class="msg-bubble__text">{{ msg.content }}</text>
+
+              <view v-if="isSelf(msg) && msg.status === 'failed'" class="msg-bubble__failed">
+                <UiIcon name="close" :size="26" color="#FA5151" />
+              </view>
+              <view v-else-if="isSelf(msg) && msg.status === 'sending'" class="msg-bubble__sending">
+                <view class="spinner"></view>
+              </view>
+            </view>
+          </view>
+        </view>
       </view>
-      <view class="nav-more" @click="showMore">
-        <text class="more-icon">···</text>
+
+      <view id="msg-bottom" class="msg-bottom"></view>
+    </scroll-view>
+
+    <view class="input-bar">
+      <view class="input-bar__row">
+        <view class="input-bar__btn" @click="toggleVoice">
+          <UiIcon :name="voiceMode ? 'keyboard' : 'voice'" :size="52" color="#191919" />
+        </view>
+
+        <view v-if="voiceMode" class="input-bar__voice" @touchstart="onVoiceStart" @touchend="onVoiceEnd">
+          <text>按住 说话</text>
+        </view>
+        <input
+          v-else
+          class="input-bar__input"
+          v-model="inputText"
+          :adjust-position="false"
+          confirm-type="send"
+          :cursor-spacing="10"
+          @confirm="sendText"
+          @focus="onInputFocus"
+        />
+
+        <view class="input-bar__btn" @click="toggleEmoji">
+          <UiIcon name="smile" :size="52" color="#191919" />
+        </view>
+        <view class="input-bar__btn" @click="toggleMore">
+          <UiIcon name="plus" :size="52" color="#191919" />
+        </view>
+        <view
+          v-if="inputText.trim().length"
+          class="input-bar__send"
+          @click="sendText"
+        >
+          <text>发送</text>
+        </view>
       </view>
     </view>
 
-    <scroll-view
-      class="message-list"
-      scroll-y
-      :scroll-top="scrollTop"
-      :scroll-with-animation="true"
-      :refresher-enabled="true"
-      :refresher-triggered="isRefreshing"
-      @refresherrefresh="loadMoreMessages"
-      @scrolltoupper="loadMoreMessages"
-    >
-      <view v-if="isLoading" class="loading-tip">
-        <text>加载中...</text>
+    <EmojiPanel v-if="panel === 'emoji'" @select="onEmojiSelect" />
+
+    <view v-if="panel === 'more'" class="more-panel">
+      <view class="more-panel__item" @click="pickImage('album')">
+        <view class="more-panel__icon"><UiIcon name="image" :size="56" color="#576B95" /></view>
+        <text>相册</text>
       </view>
-
-      <view
-        v-for="(msg, index) in messages"
-        :key="msg.id || index"
-        :class="['message-item', { mine: msg.senderId === currentUserId }]"
-      >
-        <view v-if="showTimeDivider(index)" class="time-divider">
-          <text class="time-text">{{ formatTime(msg.createTime) }}</text>
-        </view>
-
-        <view class="message-row">
-          <image
-            class="message-avatar"
-            :class="{ clickable: !isSelfMessage(msg) }"
-            :src="msg.senderId === currentUserId ? (currentUserAvatar || defaultAvatar) : (msg.senderAvatar || getSenderAvatar(msg))"
-            mode="aspectFill"
-            :data-msg="JSON.stringify(msg)"
-            @click="onAvatarClick"
-          />
-
-          <view
-            :class="[
-              'message-bubble',
-              { mine: msg.senderId === currentUserId },
-              { image: msg.messageType === 'image' || msg.messageType === 'IMAGE' }
-            ]"
-          >
-            <text v-if="msg.messageType === 'text' || msg.messageType === 'TEXT'" class="message-text">
-              {{ msg.content }}
-            </text>
-
-            <image
-              v-else-if="msg.messageType === 'image' || msg.messageType === 'IMAGE'"
-              class="message-image"
-              :src="msg.content"
-              mode="widthFix"
-              @click="previewImage(msg.content)"
-            />
-
-            <text v-else class="message-text">
-              {{ msg.content }}
-            </text>
-
-            <view class="message-status">
-              <text v-if="msg.senderId === currentUserId && msg.status === 'sending'" class="status-icon">⏳</text>
-              <text v-else-if="msg.senderId === currentUserId && msg.status === 'sent'" class="status-icon">✓</text>
-              <text v-else-if="msg.senderId === currentUserId && msg.status === 'read'" class="status-icon">✓✓</text>
-              <text v-else-if="msg.senderId === currentUserId && msg.status === 'failed'" class="status-icon">✕</text>
-            </view>
-          </view>
-        </view>
+      <view class="more-panel__item" @click="pickImage('camera')">
+        <view class="more-panel__icon"><UiIcon name="camera" :size="56" color="#576B95" /></view>
+        <text>拍摄</text>
       </view>
-
-      <view v-if="messages.length === 0 && !isLoading" class="empty-state">
-        <text class="empty-icon">💬</text>
-        <text class="empty-text">还没有消息，开始聊天吧</text>
+      <view class="more-panel__item" @click="openChatInfo">
+        <view class="more-panel__icon"><UiIcon name="users" :size="56" color="#576B95" /></view>
+        <text>{{ chatType === 'group' ? '群信息' : '好友信息' }}</text>
       </view>
-    </scroll-view>
-
-    <view class="input-area">
-      <view class="tools-bar">
-        <view class="tool-btn" @click="toggleEmoji">
-          <text class="tool-icon">😀</text>
-        </view>
-        <view class="tool-btn" @click="selectImage">
-          <text class="tool-icon">🖼️</text>
-        </view>
-        <view class="tool-btn" @click="showMoreTools">
-          <text class="tool-icon">➕</text>
-        </view>
-      </view>
-
-      <view v-if="showEmojiPanel" class="emoji-panel slide-up">
-        <scroll-view scroll-y class="emoji-scroll">
-          <view class="emoji-grid">
-            <view
-              v-for="(emoji, index) in emojiList"
-              :key="index"
-              class="emoji-item"
-              @click="selectEmoji(emoji)"
-            >
-              <text>{{ emoji }}</text>
-            </view>
-          </view>
-        </scroll-view>
-      </view>
-
-      <view class="input-row">
-        <input
-          class="message-input"
-          v-model="inputMessage"
-          :placeholder="inputPlaceholder"
-          confirm-type="send"
-          @confirm="sendMessage"
-          @focus="onInputFocus"
-          @blur="onInputBlur"
-        />
-        <view
-          :class="['send-btn', { active: canSend }]"
-          @click="sendMessage"
-        >
-          <text class="send-text">发送</text>
-        </view>
+      <view class="more-panel__item" @click="comingSoon">
+        <view class="more-panel__icon"><UiIcon name="map-pin" :size="56" color="#576B95" /></view>
+        <text>位置</text>
       </view>
     </view>
   </view>
 </template>
 
 <script>
+import CustomNavBar from '../../components/CustomNavBar.vue'
+import UiIcon from '../../components/Icon.vue'
+import UiAvatar from '../../components/Avatar.vue'
+import EmojiPanel from '../../components/EmojiPanel.vue'
 import {
   sendSingleMessage,
   sendGroupMessage,
@@ -142,458 +154,292 @@ import {
   markAsRead,
   uploadFile
 } from '../../utils/chat-api.js'
-import { getUserInfo } from '../../utils/storage.js'
+import { getCurrentProfile } from '../../utils/session.js'
+import { formatChatTime } from '../../utils/format.js'
+import { clearUnread } from '../../store/index.js'
 import wsService from '../../utils/websocket.js'
 
 export default {
+  components: { CustomNavBar, UiIcon, UiAvatar, EmojiPanel },
   data() {
     return {
       chatType: 'single',
       chatId: '',
       chatName: '',
       chatAvatar: '',
+      memberCount: 0,
 
       messages: [],
-      inputMessage: '',
+      inputText: '',
       isLoading: false,
-      isRefreshing: false,
-      scrollTop: 0,
-
-      currentUserId: null,
-      currentUserAvatar: '',
-      defaultAvatar: '/static/default-avatar.png',
-
-      showEmojiPanel: false,
-      isNavigating: false,
-      emojiList: [
-        '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣',
-        '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰',
-        '😘', '😗', '😙', '😚', '😋', '😛', '😜', '🤪',
-        '😝', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐',
-        '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😔',
-        '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮',
-        '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳',
-        '🥸', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️',
-        '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨',
-        '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞',
-        '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬',
-        '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺',
-        '👻', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹',
-        '😻', '😼', '😽', '🙀', '😿', '😾', '💋', '🤝',
-        '👍', '👎', '👊', '✊', '🤛', '🤜', '🤞', '✌️',
-        '🤟', '🤘', '🤙', '👋', '🤚', '🖐️', '🖖', '👌',
-        '👍', '👎', '👊', '✊', '🤛', '🤜', '🤞', '✌️',
-        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍',
-        '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖',
-        '💘', '💝', '💟', '💢', '💥', '💫', '💦', '💨',
-        '🍎', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍑',
-        '🍒', '🥝', '🍅', '🥑', '🥕', '🌽', '🌶️', '🥒',
-        '🍔', '🍕', '🌭', '🍿', '🍦', '🍩', '🍪', '🎂'
-      ],
-
-      inputPlaceholder: '输入消息...'
+      scrollIntoId: '',
+      panel: '',
+      voiceMode: false,
+      currentUser: { id: null, name: '', avatar: '' },
+      headerMenu: [
+        { text: '查看聊天信息', action: 'info' },
+        { text: '清空聊天记录', action: 'clear' }
+      ]
     }
   },
-
   computed: {
-    canSend() {
-      return this.inputMessage.trim().length > 0
+    headerTitle() {
+      if (this.chatType === 'group' && this.memberCount) {
+        return `${this.chatName}(${this.memberCount})`
+      }
+      return this.chatName
     }
   },
-
   onLoad(options) {
     this.chatType = options.type || 'single'
     this.chatId = options.id
     this.chatName = decodeURIComponent(options.name || '聊天')
     this.chatAvatar = decodeURIComponent(options.avatar || '')
+    this.memberCount = Number(options.memberCount || 0)
+    this.currentUser = getCurrentProfile()
 
-    uni.setNavigationBarTitle({ title: this.chatName })
-
-    this.loadUserInfo()
-    this.initWebSocket()
-    this.loadMessages()
+    this.loadHistory()
+    this.bindWs()
+    this.clearUnreadState()
   },
-
   onUnload() {
-    wsService.off('private-message', this.handlePrivateMessage)
-    wsService.off('group-message', this.handleGroupMessage)
-
-    if (this.chatType === 'single' && this.currentUserId) {
-      markAsRead(this.chatId).catch(console.error)
+    wsService.off('private-message', this.onPrivateMessage)
+    wsService.off('group-message', this.onGroupMessage)
+    if (this.chatType === 'single' && this.currentUser.id) {
+      markAsRead(this.chatId).catch(() => {})
     }
   },
-
   methods: {
-    loadUserInfo() {
-      const userInfo = getUserInfo()
-      if (userInfo) {
-        this.currentUserId = userInfo.id
-        this.currentUserAvatar = userInfo.avatar || ''
+    formatChatTime,
+    bindWs() {
+      wsService.on('private-message', this.onPrivateMessage)
+      wsService.on('group-message', this.onGroupMessage)
+    },
+    clearUnreadState() {
+      clearUnread(this.chatType, this.chatId)
+    },
+    isSelf(msg) {
+      return String(msg.senderId) === String(this.currentUser.id)
+    },
+    isTextLike(msg) {
+      const type = String(msg.messageType || 'text').toLowerCase()
+      return type === 'text' || !type
+    },
+    isImageLike(msg) {
+      const type = String(msg.messageType || '').toLowerCase()
+      return type === 'image'
+    },
+    isSticker(msg) {
+      const type = String(msg.messageType || '').toLowerCase()
+      return type === 'emoji'
+    },
+    isFileLike(msg) {
+      return String(msg.messageType || '').toLowerCase() === 'file'
+    },
+    bubbleClass(msg) {
+      return {
+        'is-self': this.isSelf(msg),
+        'is-plain': this.isImageLike(msg) || this.isSticker(msg)
       }
     },
-
-    initWebSocket() {
-      wsService.connect(this.currentUserId)
-
-      wsService.on('private-message', this.handlePrivateMessage)
-      wsService.on('group-message', this.handleGroupMessage)
+    senderAvatarOf(msg) {
+      return msg.senderAvatar || (this.chatType === 'single' ? this.chatAvatar : '')
     },
-
-    handlePrivateMessage(data) {
-      if (this.chatType !== 'single') return
-      if (data.senderId !== parseInt(this.chatId)) return
-
-      this.messages.push({
-        id: data.timestamp || Date.now(),
-        senderId: data.senderId,
-        content: data.content,
-        messageType: data.messageType || 'text',
-        createTime: new Date().toISOString(),
-        status: 'read'
+    onAvatarTap(msg) {
+      if (this.isSelf(msg)) {
+        return
+      }
+      const id = msg.senderId
+      if (!id) {
+        uni.showToast({ title: '无法获取用户信息', icon: 'none' })
+        return
+      }
+      uni.navigateTo({
+        url: `/pages/contact-detail/contact-detail?type=single&id=${id}&name=${encodeURIComponent(msg.senderName || '')}&avatar=${encodeURIComponent(msg.senderAvatar || '')}`
       })
-
-      this.scrollToBottom()
     },
-
-    handleGroupMessage(data) {
-      if (this.chatType !== 'group') return
-      if (data.groupId !== parseInt(this.chatId)) return
-
-      this.messages.push({
-        id: data.timestamp || Date.now(),
-        senderId: data.senderId,
-        senderName: data.senderName,
-        content: data.content,
-        messageType: data.messageType || 'text',
-        createTime: new Date().toISOString(),
-        status: 'read'
+    showTimeDivider(index) {
+      if (index === 0) return true
+      const cur = new Date(this.messages[index].createTime).getTime()
+      const prev = new Date(this.messages[index - 1].createTime).getTime()
+      return cur - prev > 5 * 60 * 1000
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        this.scrollIntoId = ''
+        this.$nextTick(() => {
+          this.scrollIntoId = 'msg-bottom'
+        })
       })
-
-      this.scrollToBottom()
     },
-
-    async loadMessages() {
+    async loadHistory() {
       if (this.isLoading) return
       this.isLoading = true
-
       try {
-        let res
-        if (this.chatType === 'single') {
-          res = await getSingleChatHistory(this.currentUserId, this.chatId)
-        } else {
-          res = await getGroupChatHistory(this.chatId)
-        }
-
-        if (res.code === 200 && res.data) {
-          this.messages = res.data.reverse().map(m => ({
-            ...m,
-            status: 'read'
-          }))
+        const res = this.chatType === 'single'
+          ? await getSingleChatHistory(this.currentUser.id, this.chatId)
+          : await getGroupChatHistory(this.chatId)
+        if (res && res.code === 200 && Array.isArray(res.data)) {
+          this.messages = res.data
+            .slice()
+            .reverse()
+            .map((m) => ({ ...m, status: 'sent' }))
           this.scrollToBottom()
         }
       } catch (e) {
-        console.error('加载消息失败:', e)
-        uni.showToast({ title: '加载消息失败', icon: 'none' })
+        console.error('加载聊天记录失败:', e)
       } finally {
         this.isLoading = false
       }
     },
-
-    async loadMoreMessages() {
-      this.isRefreshing = true
-      await this.loadMessages()
-      this.isRefreshing = false
+    onReachTop() {
+      // 预留：下拉加载更多历史
     },
-
-    async sendMessage() {
-      if (!this.canSend) return
-
-      const content = this.inputMessage.trim()
-      const messageType = 'text'
-
-      this.inputMessage = ''
-
-      const tempMsgId = Date.now()
+    onPrivateMessage(data) {
+      if (this.chatType !== 'single') return
+      if (String(data.senderId) !== String(this.chatId)) return
+      this.appendIncoming(data, '')
+      this.clearUnreadState()
+    },
+    onGroupMessage(data) {
+      if (this.chatType !== 'group') return
+      if (String(data.groupId) !== String(this.chatId)) return
+      this.appendIncoming(data, data.senderName || '')
+      this.clearUnreadState()
+    },
+    appendIncoming(data, senderName) {
       this.messages.push({
-        id: tempMsgId,
-        senderId: this.currentUserId,
-        content: content,
-        messageType: messageType,
-        createTime: new Date().toISOString(),
-        status: 'sending'
+        localId: `in-${data.timestamp || Date.now()}-${Math.random()}`,
+        senderId: data.senderId,
+        senderName,
+        senderAvatar: data.senderAvatar || '',
+        content: data.content,
+        messageType: data.messageType || 'text',
+        createTime: Date.now(),
+        status: 'sent'
       })
-
+      this.scrollToBottom()
+    },
+    async sendText() {
+      const content = this.inputText.trim()
+      if (!content) return
+      this.inputText = ''
+      await this.pushMessage(content, 'text')
+    },
+    onEmojiSelect(payload) {
+      if (typeof payload === 'string') {
+        this.inputText += payload
+        return
+      }
+      if (payload && payload.type === 'image') {
+        this.pushMessage(payload.url, 'emoji')
+      }
+    },
+    async pushMessage(content, messageType) {
+      const localId = `local-${Date.now()}`
+      const message = {
+        localId,
+        senderId: this.currentUser.id,
+        content,
+        messageType,
+        createTime: Date.now(),
+        status: 'sending'
+      }
+      this.messages.push(message)
       this.scrollToBottom()
 
       try {
-        let res
-        if (this.chatType === 'single') {
-          res = await sendSingleMessage({
-            senderId: this.currentUserId,
-            receiverId: parseInt(this.chatId),
-            content: content,
-            messageType: messageType
-          })
-        } else {
-          res = await sendGroupMessage({
-            groupId: parseInt(this.chatId),
-            senderId: this.currentUserId,
-            content: content,
-            messageType: messageType
-          })
-        }
-
-        if (res.code === 200) {
-          const msgIndex = this.messages.findIndex(m => m.id === tempMsgId)
-          if (msgIndex !== -1) {
-            this.messages[msgIndex].id = res.data?.id || tempMsgId
-            this.messages[msgIndex].status = 'sent'
-          }
+        const res = this.chatType === 'single'
+          ? await sendSingleMessage({
+              senderId: this.currentUser.id,
+              receiverId: Number(this.chatId),
+              content,
+              messageType
+            })
+          : await sendGroupMessage({
+              groupId: Number(this.chatId),
+              senderId: this.currentUser.id,
+              content,
+              messageType
+            })
+        const target = this.messages.find((m) => m.localId === localId)
+        if (target) {
+          target.status = res && res.code === 200 ? 'sent' : 'failed'
+          if (res && res.data && res.data.id) target.id = res.data.id
         }
       } catch (e) {
         console.error('发送消息失败:', e)
+        const target = this.messages.find((m) => m.localId === localId)
+        if (target) target.status = 'failed'
         uni.showToast({ title: '发送失败', icon: 'none' })
-        const msgIndex = this.messages.findIndex(m => m.id === tempMsgId)
-        if (msgIndex !== -1) {
-          this.messages[msgIndex].status = 'failed'
-        }
-        this.inputMessage = content
       }
     },
-
-    async selectImage() {
+    pickImage(source) {
       uni.chooseImage({
-        count: 1,
+        count: source === 'album' ? 9 : 1,
+        sourceType: source === 'camera' ? ['camera'] : ['album'],
         success: async (res) => {
-          const tempFilePath = res.tempFilePaths[0]
-
-          try {
-            uni.showLoading({ title: '上传中...' })
-
-            const uploadRes = await uploadFile(tempFilePath)
-
-            if (uploadRes.code === 200) {
-              const imageUrl = uploadRes.data
-
-              let sendRes
-              if (this.chatType === 'single') {
-                sendRes = await sendSingleMessage({
-                  senderId: this.currentUserId,
-                  receiverId: parseInt(this.chatId),
-                  content: imageUrl,
-                  messageType: 'image'
-                })
-              } else {
-                sendRes = await sendGroupMessage({
-                  groupId: parseInt(this.chatId),
-                  senderId: this.currentUserId,
-                  content: imageUrl,
-                  messageType: 'image'
-                })
-              }
-
-              if (sendRes.code === 200) {
-                this.messages.push({
-                  id: sendRes.data?.id || Date.now(),
-                  senderId: this.currentUserId,
-                  content: imageUrl,
-                  messageType: 'image',
-                  createTime: new Date().toISOString(),
-                  status: 'sent'
-                })
-
-                this.scrollToBottom()
-              }
-            }
-          } catch (e) {
-            console.error('上传图片失败:', e)
-            uni.showToast({ title: '上传失败', icon: 'none' })
-          } finally {
-            uni.hideLoading()
+          for (const path of res.tempFilePaths) {
+            await this.uploadAndSendImage(path)
           }
         }
       })
+      this.panel = ''
     },
-
-    toggleEmoji() {
-      this.showEmojiPanel = !this.showEmojiPanel
-    },
-
-    selectEmoji(emoji) {
-      this.inputMessage += emoji
-    },
-
-    onInputFocus() {
-      this.showEmojiPanel = false
-      this.$nextTick(() => {
-        this.scrollToBottom()
-      })
-    },
-
-    onInputBlur() {
-    },
-
-    previewImage(url) {
-      uni.previewImage({
-        urls: [url],
-        current: url
-      })
-    },
-
-    getSenderAvatar(msg) {
-      if (this.chatType === 'group' && msg.senderAvatar) {
-        return msg.senderAvatar
+    async uploadAndSendImage(filePath) {
+      uni.showLoading({ title: '发送中…', mask: true })
+      try {
+        const res = await uploadFile(filePath)
+        if (res && res.code === 200 && res.data) {
+          await this.pushMessage(res.data, 'image')
+        } else {
+          uni.showToast({ title: '上传失败', icon: 'none' })
+        }
+      } catch (e) {
+        console.error('图片上传失败:', e)
+        uni.showToast({ title: '上传失败', icon: 'none' })
+      } finally {
+        uni.hideLoading()
       }
-      return this.chatAvatar || this.defaultAvatar
     },
-
-    formatTime(timeStr) {
-      if (!timeStr) return ''
-
-      const date = new Date(timeStr)
-      const now = new Date()
-      const diff = now - date
-
-      if (diff < 60000) return '刚刚'
-      if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
-      if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
-
-      return `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`
+    previewImage(url) {
+      uni.previewImage({ urls: [url], current: url })
     },
-
-    showTimeDivider(index) {
-      if (index === 0) return true
-
-      const currentMsg = this.messages[index]
-      const prevMsg = this.messages[index - 1]
-
-      const currentTime = new Date(currentMsg.createTime)
-      const prevTime = new Date(prevMsg.createTime)
-
-      const diff = currentTime - prevTime
-      return diff > 5 * 60 * 1000
+    toggleEmoji() {
+      this.panel = this.panel === 'emoji' ? '' : 'emoji'
+      this.voiceMode = false
     },
-
-    scrollToBottom() {
-      this.$nextTick(() => {
-        this.scrollTop = 99999
-      })
+    toggleMore() {
+      this.panel = this.panel === 'more' ? '' : 'more'
+      this.voiceMode = false
     },
-
+    toggleVoice() {
+      this.voiceMode = !this.voiceMode
+      this.panel = ''
+      if (this.voiceMode) uni.showToast({ title: '语音消息开发中', icon: 'none' })
+    },
+    onVoiceStart() {},
+    onVoiceEnd() {},
+    onInputFocus() {
+      this.panel = ''
+    },
     goBack() {
       uni.navigateBack()
     },
-
-    isSelfMessage(msg) {
-      if (!msg) return false
-      if (msg.senderId == null || this.currentUserId == null) return false
-      return String(msg.senderId) === String(this.currentUserId)
+    onHeaderMenu(item) {
+      if (item.action === 'info') this.openChatInfo()
+      else if (item.action === 'clear') this.clearHistory()
     },
-
-    async onAvatarClick(event) {
-      if (this.isNavigating) return
-
-      const dataset = (event && event.currentTarget && event.currentTarget.dataset) || {}
-      const raw = dataset.msg
-
-      if (!raw) {
-        console.warn('头像点击事件缺少消息数据')
-        return
-      }
-
-      let msg
-      try {
-        msg = typeof raw === 'string' ? JSON.parse(raw) : raw
-      } catch (e) {
-        console.error('解析头像消息数据失败:', e)
-        return
-      }
-
-      if (!msg) return
-
-      if (this.isSelfMessage(msg)) {
-        uni.showToast({ title: '这是你自己的头像', icon: 'none' })
-        return
-      }
-
-      if (!msg.senderId) {
-        uni.showToast({ title: '无法获取用户信息', icon: 'none' })
-        return
-      }
-
-      this.isNavigating = true
-      uni.showLoading({ title: '加载中...', mask: true })
-
-      try {
-        const targetId = String(msg.senderId)
-        const targetName = msg.senderName || msg.senderNickname || this.chatName || '好友'
-        const targetAvatar = msg.senderAvatar || this.getSenderAvatar(msg) || ''
-
-        await this.navigateToUserProfile(targetId, targetName, targetAvatar)
-      } catch (e) {
-        console.error('跳转好友信息页面失败:', e)
-        uni.showToast({ title: '页面打开失败', icon: 'none' })
-      } finally {
-        uni.hideLoading()
-        this.$nextTick(() => {
-          this.isNavigating = false
-        })
-      }
-    },
-
-    navigateToUserProfile(userId, userName, userAvatar) {
-      return new Promise((resolve, reject) => {
-        const url =
-          `/pages/contact-detail/contact-detail` +
-          `?type=single` +
-          `&id=${encodeURIComponent(userId)}` +
-          `&name=${encodeURIComponent(userName || '')}` +
-          `&avatar=${encodeURIComponent(userAvatar || '')}`
-
-        uni.navigateTo({
-          url,
-          success: () => resolve(),
-          fail: (err) => {
-            console.error('uni.navigateTo 失败:', err)
-            reject(err)
-          }
-        })
+    openChatInfo() {
+      this.panel = ''
+      uni.navigateTo({
+        url: `/pages/chat-info/chat-info?type=${this.chatType}&id=${this.chatId}&name=${encodeURIComponent(this.chatName)}&avatar=${encodeURIComponent(this.chatAvatar)}`
       })
     },
-
-    showMore() {
-      const actionList = [
-        { text: '清空聊天记录', action: () => this.clearChatHistory() },
-        { text: '查看聊天信息', action: () => this.showChatInfo() }
-      ]
-
-      uni.showActionSheet({
-        itemList: actionList.map(a => a.text),
-        success: (res) => {
-          actionList[res.tapIndex].action()
-        }
-      })
-    },
-
-    showMoreTools() {
-      const actionList = [
-        { text: '图片', action: () => this.selectImage() },
-        { text: '文件', action: () => uni.showToast({ title: '开发中', icon: 'none' }) },
-        { text: '语音通话', action: () => uni.showToast({ title: '开发中', icon: 'none' }) }
-      ]
-
-      uni.showActionSheet({
-        itemList: actionList.map(a => a.text),
-        success: (res) => {
-          actionList[res.tapIndex].action()
-        }
-      })
-    },
-
-    clearChatHistory() {
+    clearHistory() {
       uni.showModal({
         title: '提示',
-        content: '确定要清空聊天记录吗？',
+        content: '确定清空聊天记录吗？',
         success: (res) => {
           if (res.confirm) {
             this.messages = []
@@ -602,11 +448,8 @@ export default {
         }
       })
     },
-
-    showChatInfo() {
-      uni.navigateTo({
-        url: `/pages/contact-detail/contact-detail?id=${this.chatId}&type=${this.chatType}&name=${encodeURIComponent(this.chatName)}`
-      })
+    comingSoon() {
+      uni.showToast({ title: '功能开发中', icon: 'none' })
     }
   }
 }
@@ -614,385 +457,290 @@ export default {
 
 <style scoped>
 .chat-page {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f7;
+  background-color: #ededed;
 }
 
-.nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  padding: 20rpx 32rpx;
-  background-color: rgba(255, 255, 255, 0.96);
-  backdrop-filter: saturate(180%) blur(20rpx);
-  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
-  border-bottom: 1rpx solid #e5e5e5;
-  padding-top: calc(20rpx + env(safe-area-inset-top));
+.chat-page__subtitle {
+  font-size: 26rpx;
+  color: #888888;
+  font-weight: 400;
+  margin-left: 8rpx;
 }
 
-.nav-back {
-  width: 48rpx;
-  height: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
+.msg-avatar:active {
+  opacity: 0.7;
 }
 
-.nav-back:active {
-  background-color: rgba(7, 193, 96, 0.1);
-}
-
-.nav-back svg {
-  width: 100%;
-  height: 100%;
-}
-
-.nav-title {
+.msg-list {
   flex: 1;
-  text-align: center;
+  height: 0;
+  padding: 20rpx 0;
 }
 
-.title-text {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #1d1d1f;
-  letter-spacing: -0.4rpx;
-}
-
-.nav-more {
-  width: 56rpx;
-  height: 56rpx;
+.msg-list__top {
   display: flex;
-  align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
+  padding: 20rpx 0 8rpx;
 }
 
-.nav-more:active {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.more-icon {
-  font-size: 36rpx;
-  color: #6e6e73;
-  font-weight: 600;
-}
-
-.message-list {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding-top: calc(96rpx + env(safe-area-inset-top));
-  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
-  box-sizing: border-box;
-}
-
-.loading-tip {
-  text-align: center;
-  padding: 24rpx;
-  color: #6e6e73;
+.msg-list__loading,
+.msg-list__empty {
   font-size: 24rpx;
+  color: #b2b2b2;
 }
 
-.time-divider {
+.msg-time {
   display: flex;
   justify-content: center;
-  padding: 24rpx 0;
+  padding: 24rpx 0 8rpx;
 }
 
-.time-text {
+.msg-time text {
   font-size: 22rpx;
-  color: #6e6e73;
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 8rpx 20rpx;
-  border-radius: 20rpx;
-  line-height: 1.4;
+  color: #b2b2b2;
 }
 
-.message-item {
-  margin-bottom: 32rpx;
-  padding: 0 32rpx;
-}
-
-.message-row {
+.msg-row {
   display: flex;
+  padding: 16rpx 32rpx;
   align-items: flex-start;
 }
 
-.message-item.mine .message-row {
-  justify-content: flex-end;
+.msg-row.is-self {
+  flex-direction: row-reverse;
 }
 
-
-
-.message-avatar {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  background-color: #f5f5f7;
-  flex-shrink: 0;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+.msg-main {
+  display: flex;
+  flex-direction: column;
+  max-width: 72%;
+  margin: 0 20rpx;
 }
 
-.message-avatar.clickable {
-  cursor: pointer;
+.msg-row.is-self .msg-main {
+  align-items: flex-end;
 }
 
-.message-avatar.clickable:active {
-  transform: scale(0.92);
-  opacity: 0.75;
+.msg-sender {
+  font-size: 22rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
 }
 
-.message-item.mine .message-avatar {
-  order: 2;
-}
-
-.message-bubble {
-  max-width: 70%;
-  margin: 0 16rpx;
+.msg-bubble {
+  position: relative;
   padding: 20rpx 24rpx;
   background-color: #ffffff;
-  border-radius: 24rpx;
-  position: relative;
-  font-size: 30rpx;
-  line-height: 1.5;
+  border-radius: 12rpx;
   word-break: break-word;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
 }
 
-.message-bubble::before {
+.msg-bubble::after {
   content: '';
   position: absolute;
-  top: 20rpx;
-  left: -12rpx;
-  border: 12rpx solid transparent;
-  border-right-color: #ffffff;
+  top: 22rpx;
+  left: -10rpx;
+  width: 0;
+  height: 0;
+  border-top: 10rpx solid transparent;
+  border-bottom: 10rpx solid transparent;
+  border-right: 10rpx solid #ffffff;
 }
 
-.message-item.mine .message-bubble {
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-  margin-left: 0;
-  margin-right: 16rpx;
+.msg-bubble.is-self {
+  background-color: #95ec69;
 }
 
-.message-item.mine .message-bubble::before {
+.msg-bubble.is-self::after {
   left: auto;
-  right: -12rpx;
-  border-right-color: transparent;
-  border-left-color: #07C160;
+  right: -10rpx;
+  border-right: none;
+  border-left: 10rpx solid #95ec69;
 }
 
-.message-text {
-  font-size: 30rpx;
-  color: #1d1d1f;
-  line-height: 1.5;
-  word-break: break-word;
+.msg-bubble.is-plain {
+  background-color: transparent;
+  padding: 0;
 }
 
-.message-item.mine .message-text {
-  color: #ffffff;
-}
-
-.message-bubble.image {
-  background-color: transparent !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-}
-
-.message-bubble.image::before {
+.msg-bubble.is-plain::after {
   display: none;
 }
 
-.message-image {
+.msg-bubble__text {
+  font-size: 30rpx;
+  color: #191919;
+  line-height: 1.45;
+}
+
+.msg-bubble__image {
   max-width: 400rpx;
-  border-radius: 16rpx;
+  border-radius: 12rpx;
   display: block;
 }
 
-.message-status {
-  position: absolute;
-  right: 8rpx;
-  bottom: 8rpx;
+.msg-bubble__image.is-sticker {
+  max-width: 240rpx;
 }
 
-.status-icon {
-  font-size: 20rpx;
-  opacity: 0.6;
+.msg-file {
+  display: flex;
+  align-items: center;
+  min-width: 360rpx;
 }
 
-.message-item.mine .status-icon {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.empty-state {
+.msg-file__info {
+  margin-left: 16rpx;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 160rpx 0;
 }
 
-.empty-icon {
-  font-size: 120rpx;
-  margin-bottom: 32rpx;
-  opacity: 0.3;
-}
-
-.empty-text {
+.msg-file__name {
   font-size: 28rpx;
-  color: #6e6e73;
+  color: #191919;
 }
 
-.input-area {
+.msg-file__size {
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 4rpx;
+}
+
+.msg-bubble__sending,
+.msg-bubble__failed {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  background-color: rgba(255, 255, 255, 0.96);
-  backdrop-filter: saturate(180%) blur(20rpx);
-  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
-  border-top: 1rpx solid #e5e5e5;
-}
-
-.tools-bar {
+  left: -40rpx;
+  top: 24rpx;
   display: flex;
-  padding: 16rpx 32rpx;
-  gap: 24rpx;
+  align-items: center;
 }
 
-.tool-btn {
+.msg-bubble.is-self .msg-bubble__sending,
+.msg-bubble.is-self .msg-bubble__failed {
+  left: auto;
+  right: -40rpx;
+}
+
+.spinner {
+  width: 26rpx;
+  height: 26rpx;
+  border: 3rpx solid rgba(0, 0, 0, 0.15);
+  border-top-color: #07c160;
+  border-radius: 50%;
+  animation: chatSpin 0.8s linear infinite;
+}
+
+@keyframes chatSpin {
+  to { transform: rotate(360deg); }
+}
+
+.msg-bottom {
+  height: 24rpx;
+}
+
+/* 输入栏 */
+.input-bar {
+  flex-shrink: 0;
+  background-color: #f7f7f7;
+  border-top: 1rpx solid #e2e2e2;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.input-bar__row {
+  display: flex;
+  align-items: center;
+  padding: 14rpx 20rpx;
+  gap: 12rpx;
+}
+
+.input-bar__btn {
   width: 64rpx;
   height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f5f7;
-  border-radius: 16rpx;
-  transition: all 0.2s ease;
 }
 
-.tool-btn:active {
-  background-color: #e5e5e5;
-  transform: scale(0.95);
+.input-bar__btn:active {
+  opacity: 0.5;
 }
 
-.tool-icon {
-  font-size: 36rpx;
-}
-
-.emoji-panel {
-  height: 400rpx;
-  border-top: 1rpx solid #e5e5e5;
-  background-color: #fafafa;
-}
-
-.emoji-scroll {
-  height: 100%;
-}
-
-.emoji-grid {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 24rpx;
-  box-sizing: border-box;
-}
-
-.emoji-item {
-  width: 12.5%;
-  height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.emoji-item:active {
-  transform: scale(0.85);
-}
-
-.emoji-item text {
-  font-size: 48rpx;
-}
-
-.input-row {
-  display: flex;
-  align-items: center;
-  padding: 16rpx 32rpx;
-  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  gap: 16rpx;
-}
-
-.message-input {
+.input-bar__input {
   flex: 1;
-  height: 72rpx;
-  padding: 0 28rpx;
-  background-color: #f5f5f7;
-  border-radius: 36rpx;
-  font-size: 30rpx;
-  color: #1d1d1f;
-  border: none;
-  outline: none;
-  transition: all 0.25s ease;
-}
-
-.message-input:focus {
+  height: 68rpx;
+  padding: 0 22rpx;
   background-color: #ffffff;
-  box-shadow: 0 0 0 3rpx rgba(7, 193, 96, 0.1);
+  border-radius: 10rpx;
+  font-size: 30rpx;
+  color: #191919;
 }
 
-.send-btn {
-  padding: 0 36rpx;
-  height: 72rpx;
-  background-color: #e5e5e5;
-  border-radius: 36rpx;
+.input-bar__voice {
+  flex: 1;
+  height: 68rpx;
+  background-color: #ffffff;
+  border-radius: 10rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s ease;
 }
 
-.send-btn.active {
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-}
-
-.send-btn.active:active {
-  transform: scale(0.97);
-}
-
-.send-text {
+.input-bar__voice text {
   font-size: 28rpx;
-  color: #a1a1a6;
+  color: #576b95;
+}
+
+.input-bar__send {
+  padding: 0 28rpx;
+  height: 68rpx;
+  background-color: #07c160;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+.input-bar__send:active {
+  background-color: #06ad56;
+}
+
+.input-bar__send text {
+  font-size: 28rpx;
+  color: #ffffff;
   font-weight: 500;
 }
 
-.send-btn.active .send-text {
-  color: #ffffff;
+/* 更多面板 */
+.more-panel {
+  flex-shrink: 0;
+  display: flex;
+  padding: 32rpx 24rpx;
+  background-color: #f7f7f7;
+  border-top: 1rpx solid #e2e2e2;
 }
 
-.slide-up {
-  animation: slideUp 0.3s ease forwards;
+.more-panel__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.more-panel__icon {
+  width: 112rpx;
+  height: 112rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.more-panel__item text {
+  font-size: 24rpx;
+  color: #666666;
 }
 </style>

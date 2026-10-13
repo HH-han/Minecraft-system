@@ -1,0 +1,131 @@
+/* ImChat 侧边栏共享样式：列表项、头像、徽标、空状态等
+   使用 :where(.im-sidebar) 限定作用域（零特异性），避免污染全局且不改变原有样式权重 */
+
+:where(.im-sidebar) .contact-item {
+  display: flex;
+  align-items: center;
+  padding: 9px 12px;
+  cursor: pointer;
+  background: var(--theme-bg-surface);
+  position: relative;
+  transition: background 0.15s ease;
+}
+
+:where(.im-sidebar) .contact-item:hover {
+  background: var(--theme-bg-hover);
+}
+
+:where(.im-sidebar) .contact-item.active {
+  background: var(--theme-bg-active);
+}
+
+:where(.im-sidebar) .contact-item.active:hover {
+  background: var(--theme-bg-active);
+}
+
+:where(.im-sidebar) .avatar-wrapper {
+  position: relative;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+:where(.im-sidebar) .contact-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+:where(.im-sidebar) .icon-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+:where(.im-sidebar) .contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+:where(.im-sidebar) .contact-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 14.5px;
+  font-weight: 400;
+  color: var(--theme-text-1);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+:where(.im-sidebar) .name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+:where(.im-sidebar) .contact-last-message {
+  font-size: 12.5px;
+  color: var(--theme-text-3);
+  margin: 3px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.im-sidebar) .arrow-icon {
+  color: var(--theme-text-3);
+  flex-shrink: 0;
+}
+
+/* ---- 分组入口计数 ---- */
+:where(.im-sidebar) .entry-count {
+  flex-shrink: 0;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
+  margin-left: 8px;
+}
+
+:where(.im-sidebar) .entry-badge {
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 8px;
+  background: var(--theme-danger);
+  color: var(--theme-primary-text);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+:where(.im-sidebar) .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--theme-text-3);
+}
+
+:where(.im-sidebar) .empty-state .svg-icon {
+  margin-bottom: 12px;
+}
+
+:where(.im-sidebar) .empty-state p {
+  margin: 0;
+  font-size: 13px;
+}

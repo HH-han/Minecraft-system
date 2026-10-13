@@ -40,32 +40,62 @@
 			"path": "pages/discover/discover",
 			"style": {
 				"navigationBarTitleText": "发现",
-				"navigationStyle": "custom",
-				"enablePullDownRefresh": true
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/add-friend/add-friend",
 			"style": {
-				"navigationBarTitleText": "添加好友"
+				"navigationBarTitleText": "添加朋友",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/friend-requests/friend-requests",
 			"style": {
-				"navigationBarTitleText": "新的朋友"
+				"navigationBarTitleText": "新的朋友",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/create-group/create-group",
 			"style": {
-				"navigationBarTitleText": "发起群聊"
+				"navigationBarTitleText": "发起群聊",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/contact-detail/contact-detail",
 			"style": {
 				"navigationBarTitleText": "资料",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/chat-info/chat-info",
+			"style": {
+				"navigationBarTitleText": "聊天信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/profile-edit/profile-edit",
+			"style": {
+				"navigationBarTitleText": "个人信息",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/moments/moments",
+			"style": {
+				"navigationBarTitleText": "朋友圈",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/favorites/favorites",
+			"style": {
+				"navigationBarTitleText": "收藏",
 				"navigationStyle": "custom"
 			}
 		},
@@ -79,21 +109,23 @@
 		{
 			"path": "pages/forgot-password/forgot-password",
 			"style": {
-				"navigationBarTitleText": "找回账号密码"
+				"navigationBarTitleText": "找回账号密码",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/register/register",
 			"style": {
-				"navigationBarTitleText": "注册"
+				"navigationBarTitleText": "注册",
+				"navigationStyle": "custom"
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "博览通讯",
-		"navigationBarBackgroundColor": "#FFFFFF",
-		"backgroundColor": "#F5F5F5",
+		"navigationBarBackgroundColor": "#EDEDED",
+		"backgroundColor": "#EDEDED",
 		"app-plus": {
 			"titleNView": {
 				"buttons": []
@@ -101,10 +133,10 @@
 		}
 	},
 	"tabBar": {
-		"color": "#999999",
+		"color": "#7F7F7F",
 		"selectedColor": "#07C160",
-		"borderStyle": "white",
-		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"backgroundColor": "#F7F7F7",
 		"list": [
 			{
 				"pagePath": "pages/index/index",

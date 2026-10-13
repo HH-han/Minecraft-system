@@ -17,23 +17,31 @@ const requestInterceptor = (config) => {
   return config;
 };
 
+// 401 只处理一次的标记，避免并发请求重复跳转
+let redirecting = false;
+
 // 响应拦截器
 const responseInterceptor = (response) => {
   const { statusCode, data } = response;
-  
+
   if (statusCode === 200) {
     return data;
   } else if (statusCode === 401) {
-    // token过期，跳转到登录页
+    // token 过期：清除登录态并跳转登录页（reLaunch 清空页面栈，避免堆叠）
     uni.hideLoading();
     uni.removeStorageSync('token');
-    uni.showToast({
-      title: '登录已过期，请重新登录',
-      icon: 'none'
-    });
-    uni.navigateTo({
-      url: '/pages/login/login'
-    });
+    uni.removeStorageSync('userInfo');
+    if (!redirecting) {
+      redirecting = true;
+      uni.showToast({
+        title: '登录已过期，请重新登录',
+        icon: 'none'
+      });
+      setTimeout(() => {
+        uni.reLaunch({ url: '/pages/login/login' });
+        redirecting = false;
+      }, 800);
+    }
     return Promise.reject(new Error('登录已过期'));
   } else {
     return Promise.reject(new Error(`请求失败: ${statusCode}`));
@@ -112,15 +120,24 @@ export const put = (url, data = {}, config = {}) => {
   });
 };
 
-// DELETE请求
+// DELETE请求（data 序列化为 query，兼容后端 @RequestParam）
 export const del = (url, data = {}, config = {}) => {
   return request({
-    url,
-    data,
+    url: appendQuery(url, data),
     method: 'DELETE',
     ...config
   });
 };
+
+// 将对象拼接到 URL 查询串
+function appendQuery(url, data) {
+  if (!data || typeof data !== 'object') return url;
+  const pairs = Object.keys(data)
+    .filter((key) => data[key] !== undefined && data[key] !== null)
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`);
+  if (!pairs.length) return url;
+  return url + (url.includes('?') ? '&' : '?') + pairs.join('&');
+}
 
 // 文件上传
 export const upload = (url, filePath, formData = {}, config = {}) => {

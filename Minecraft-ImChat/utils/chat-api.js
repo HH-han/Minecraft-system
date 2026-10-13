@@ -1,27 +1,23 @@
 /**
- * 聊天模块 API - 统一封装
+ * 即时通讯模块统一接口层
  *
- * 此文件保持向后兼容，重新导出所有 API 接口
- * 实际实现已拆分到 api/ 目录和 utils/ 目录中
- *
- * 推荐使用以下模块化引用：
- * - import { authApi, userApi } from '@/utils/auth.js'
- * - import chatApi from '@/api/chat.js'
- * - import friendApi from '@/api/friend.js'
- * - import groupApi from '@/api/group.js'
+ * 全项目唯一的接口来源（原 api/ 目录已废弃合并到此处）。
+ * 页面统一使用 `import { xxx } from '@/utils/chat-api.js'` 或相对路径引用。
  */
 
 import { get, post, put, del, upload } from './request.js'
 import { API_CONFIG, UPLOAD_CONFIG } from './config.js'
 import { authApi, userApi, auth } from './auth.js'
 
-const { CHAT, FRIEND, CHAT_GROUP, EMOJI } = API_CONFIG
+const { CHAT, FRIEND, CHAT_GROUP, EMOJI, USER } = API_CONFIG
 
 // ==================== 认证相关 ====================
 
 export const login = authApi.login
 export const register = authApi.register
 export const logout = authApi.logout
+export const sendCode = authApi.sendCode
+export const emailLogin = authApi.emailLogin
 export const sendResetCode = authApi.sendResetCode
 export const resetPassword = authApi.resetPassword
 
@@ -29,6 +25,11 @@ export const resetPassword = authApi.resetPassword
 
 export const getUserInfo = userApi.getUserInfo
 export const getUserByAccount = userApi.getUserByAccount
+
+/**
+ * 更新当前用户信息
+ */
+export const updateUserInfo = (data) => post(USER.BASE + USER.ENDPOINTS.UPDATE, data)
 
 // ==================== 聊天相关 ====================
 
@@ -65,6 +66,13 @@ export const getGroupChatHistory = (groupId, limit = 50) => {
  */
 export const markAsRead = (friendId) => {
   return post(CHAT.BASE + CHAT.ENDPOINTS.MARK_READ, { friendId })
+}
+
+/**
+ * 获取未读消息数量
+ */
+export const getUnreadMessageCount = () => {
+  return get(CHAT.BASE + CHAT.ENDPOINTS.UNREAD_COUNT)
 }
 
 /**
@@ -126,12 +134,24 @@ export const createGroupWithMembers = (groupData) => {
   return post(CHAT_GROUP.BASE + CHAT_GROUP.ENDPOINTS.CREATE_WITH_MEMBERS, groupData)
 }
 
-export const updateGroup = (groupData) => {
-  return post(CHAT_GROUP.BASE + CHAT_GROUP.ENDPOINTS.UPDATE, groupData, {
-    header: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
+const GROUP_UPDATE_URL = CHAT_GROUP.BASE + CHAT_GROUP.ENDPOINTS.UPDATE
+
+/**
+ * 更新群资料
+ * @param {Object} groupData 群字段（id/name/description/maxMembers/remark 等）
+ * @param {String} avatarPath 群头像本地路径（可选，存在时走 uni.uploadFile）
+ */
+export const updateGroup = (groupData, avatarPath = '') => {
+  if (avatarPath) {
+    const formData = {}
+    Object.keys(groupData).forEach((key) => {
+      if (groupData[key] !== undefined && groupData[key] !== null) {
+        formData[key] = String(groupData[key])
+      }
+    })
+    return upload(GROUP_UPDATE_URL, avatarPath, formData)
+  }
+  return post(GROUP_UPDATE_URL, groupData)
 }
 
 export const deleteGroup = (groupId) => {
@@ -165,6 +185,13 @@ export const getSystemEmojis = () => {
   return get(EMOJI.BASE + EMOJI.ENDPOINTS.SYSTEM)
 }
 
+/**
+ * 按分类获取系统表情
+ */
+export const getGroupedSystemEmojis = () => {
+  return get(EMOJI.BASE + EMOJI.ENDPOINTS.GROUPED)
+}
+
 // ==================== 默认导出 ====================
 
 export default {
@@ -172,17 +199,21 @@ export default {
   login,
   register,
   logout,
+  sendCode,
+  emailLogin,
   sendResetCode,
   resetPassword,
   // 用户
   getUserInfo,
   getUserByAccount,
+  updateUserInfo,
   // 聊天
   sendSingleMessage,
   getSingleChatHistory,
   sendGroupMessage,
   getGroupChatHistory,
   markAsRead,
+  getUnreadMessageCount,
   uploadFile,
   // 好友
   getFriendList,
@@ -206,6 +237,7 @@ export default {
   // 表情
   getEmojiList,
   getSystemEmojis,
+  getGroupedSystemEmojis,
   // 业务封装
   auth
 }

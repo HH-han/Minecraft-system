@@ -1,149 +1,76 @@
 <template>
   <view class="settings-page">
-    <view class="nav-bar">
-      <view class="nav-back" @click="goBack">
-        <text>‹</text>
-      </view>
-      <text class="nav-title">设置</text>
-      <view class="nav-right"></view>
+    <CustomNavBar :show-back="true" title="设置" title-align="center" @back="goBack" />
+
+    <view class="settings-group">
+      <UiCell title="账号与安全" arrow :border="false" @click="toastDev" />
     </view>
 
-    <view class="settings-list">
-      <view class="settings-group">
-        <view class="settings-item" @click="goToAccount">
-          <view class="item-left">
-            <text class="item-icon">👤</text>
-            <text class="item-text">账号与安全</text>
+    <view class="settings-group">
+      <UiCell title="新消息通知" :clickable="false">
+        <template #right>
+          <view class="switch" :class="{ active: settings.notification }" @click.stop="toggle('notification')">
+            <view class="switch-dot"></view>
           </view>
-          <text class="item-arrow">›</text>
-        </view>
-
-        <view class="settings-item" @click="goToPrivacy">
-          <view class="item-left">
-            <text class="item-icon">🔒</text>
-            <text class="item-text">隐私</text>
+        </template>
+      </UiCell>
+      <UiCell title="声音" :clickable="false">
+        <template #right>
+          <view class="switch" :class="{ active: settings.sound }" @click.stop="toggle('sound')">
+            <view class="switch-dot"></view>
           </view>
-          <text class="item-arrow">›</text>
-        </view>
-
-        <view class="settings-item" @click="goToNoti">
-          <view class="item-left">
-            <text class="item-icon">🔔</text>
-            <text class="item-text">新消息通知</text>
+        </template>
+      </UiCell>
+      <UiCell title="震动" :clickable="false" :border="false">
+        <template #right>
+          <view class="switch" :class="{ active: settings.vibration }" @click.stop="toggle('vibration')">
+            <view class="switch-dot"></view>
           </view>
-          <view class="item-right">
-            <view :class="['switch', { active: notificationEnabled }]" @click="toggleNotification">
-              <view class="switch-dot"></view>
-            </view>
-          </view>
-        </view>
-
-        <view class="settings-item" @click="goToGeneral">
-          <view class="item-left">
-            <text class="item-icon">⚙️</text>
-            <text class="item-text">通用</text>
-          </view>
-          <text class="item-arrow">›</text>
-        </view>
-      </view>
-
-      <view class="settings-group">
-        <view class="settings-item" @click="goToStorage">
-          <view class="item-left">
-            <text class="item-icon">💾</text>
-            <text class="item-text">存储空间</text>
-          </view>
-          <text class="item-right-text">52.3MB</text>
-          <text class="item-arrow">›</text>
-        </view>
-
-        <view class="settings-item" @click="goToLanguage">
-          <view class="item-left">
-            <text class="item-icon">🌐</text>
-            <text class="item-text">多语言</text>
-          </view>
-          <text class="item-right-text">简体中文</text>
-          <text class="item-arrow">›</text>
-        </view>
-
-        <view class="settings-item" @click="goToAbout">
-          <view class="item-left">
-            <text class="item-icon">ℹ️</text>
-            <text class="item-text">关于微信</text>
-          </view>
-          <text class="item-right-text">版本 8.0.0</text>
-          <text class="item-arrow">›</text>
-        </view>
-      </view>
-
-      <view class="settings-group">
-        <view class="settings-item" @click="goToHelp">
-          <view class="item-left">
-            <text class="item-icon">❓</text>
-            <text class="item-text">帮助与反馈</text>
-          </view>
-          <text class="item-arrow">›</text>
-        </view>
-      </view>
+        </template>
+      </UiCell>
     </view>
 
-    <view class="version-info">
-      <text>微信 8.0.0</text>
+    <view class="settings-group">
+      <UiCell title="通用" arrow :border="false" @click="toastDev" />
+    </view>
+
+    <view class="settings-group">
+      <UiCell title="关于" :value="version" arrow :border="false" @click="toastDev" />
+    </view>
+
+    <view class="settings-version">
+      <text>博览通讯 v{{ version }}</text>
     </view>
   </view>
 </template>
 
 <script>
+import CustomNavBar from '../../components/CustomNavBar.vue'
+import UiCell from '../../components/CellItem.vue'
+import appConfig from '../../config/index.js'
+import store, { saveSettings } from '../../store/index.js'
+
 export default {
+  components: { CustomNavBar, UiCell },
   data() {
     return {
-      notificationEnabled: true
+      version: appConfig.APP_VERSION
     }
   },
-
+  computed: {
+    settings() {
+      return store.settings
+    }
+  },
   methods: {
     goBack() {
       uni.navigateBack()
     },
-
-    goToAccount() {
-      uni.showToast({ title: '开发中', icon: 'none' })
+    toggle(key) {
+      saveSettings({ [key]: !store.settings[key] })
     },
-
-    goToPrivacy() {
-      uni.showToast({ title: '开发中', icon: 'none' })
-    },
-
-    toggleNotification() {
-      this.notificationEnabled = !this.notificationEnabled
-      uni.showToast({
-        title: this.notificationEnabled ? '已开启通知' : '已关闭通知',
-        icon: 'none'
-      })
-    },
-
-    goToNoti() {
-      uni.showToast({ title: '开发中', icon: 'none' })
-    },
-
-    goToGeneral() {
-      uni.showToast({ title: '开发中', icon: 'none' })
-    },
-
-    goToStorage() {
-      uni.showToast({ title: '开发中', icon: 'none' })
-    },
-
-    goToLanguage() {
-      uni.showToast({ title: '开发中', icon: 'none' })
-    },
-
-    goToAbout() {
-      uni.showToast({ title: '开发中', icon: 'none' })
-    },
-
-    goToHelp() {
-      uni.showToast({ title: '开发中', icon: 'none' })
+    toastDev() {
+      uni.showToast({ title: '功能开发中', icon: 'none' })
     }
   }
 }
@@ -152,98 +79,13 @@ export default {
 <style scoped>
 .settings-page {
   min-height: 100vh;
-  background-color: #f7f7f7;
-}
-
-.nav-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20rpx 32rpx;
-  padding-top: calc(20rpx + env(safe-area-inset-top));
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.nav-back,
-.nav-right {
-  width: 60rpx;
-  height: 60rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-back text {
-  font-size: 48rpx;
-  color: #07C160;
-  font-weight: 300;
-}
-
-.nav-title {
-  font-size: 32rpx;
-  color: #000000;
-  font-weight: 600;
-}
-
-.settings-list {
-  padding: 24rpx;
+  background-color: #ededed;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
 .settings-group {
   background-color: #ffffff;
-  border-radius: 8rpx;
-  margin-bottom: 24rpx;
-  overflow: hidden;
-}
-
-.settings-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 28rpx 24rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.settings-item:last-child {
-  border-bottom: none;
-}
-
-.settings-item:active {
-  background-color: #f5f5f5;
-}
-
-.item-left {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.item-icon {
-  font-size: 36rpx;
-}
-
-.item-text {
-  font-size: 30rpx;
-  color: #333333;
-  font-weight: 500;
-}
-
-.item-arrow {
-  font-size: 36rpx;
-  color: #cccccc;
-  margin-left: 16rpx;
-}
-
-.item-right {
-  display: flex;
-  align-items: center;
-}
-
-.item-right-text {
-  font-size: 26rpx;
-  color: #999999;
-  margin-right: 16rpx;
+  margin-top: 20rpx;
 }
 
 .switch {
@@ -256,7 +98,7 @@ export default {
 }
 
 .switch.active {
-  background-color: #07C160;
+  background-color: #07c160;
 }
 
 .switch-dot {
@@ -275,13 +117,13 @@ export default {
   transform: translateX(32rpx);
 }
 
-.version-info {
+.settings-version {
   text-align: center;
   padding: 48rpx 0;
 }
 
-.version-info text {
+.settings-version text {
   font-size: 24rpx;
-  color: #999999;
+  color: #888888;
 }
 </style>

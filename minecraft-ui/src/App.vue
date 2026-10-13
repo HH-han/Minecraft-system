@@ -11,9 +11,9 @@
         <router-view v-else />
       </div>
       <!-- 悬浮按钮 -->
-      <div>
+      <!-- <div>
         <FloatingButton />
-      </div>
+      </div> -->
       <!-- 返回上一页按钮（全局） -->
       <ReturnButton />
       <!-- 系统公告弹窗（全局唯一，弹窗队列驱动） -->

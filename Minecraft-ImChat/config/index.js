@@ -2,7 +2,7 @@ export default {
   NODE_ENV: import.meta.env.VITE_NODE_ENV || import.meta.env.NODE_ENV || 'development',
   API_BASE_URL: import.meta.env.VITE_API_BASE_URL || '',
   APP_BASE_URL: import.meta.env.VITE_APP_BASE_URL || '',
-  APP_TITLE: import.meta.env.VITE_APP_TITLE || 'SpiritualPressure',
+  APP_TITLE: import.meta.env.VITE_APP_TITLE || '博览通讯',
   APP_VERSION: import.meta.env.VITE_APP_VERSION || '1.0.0',
   DEBUG: import.meta.env.VITE_DEBUG === 'true',
   LOG_LEVEL: import.meta.env.VITE_LOG_LEVEL || 'debug',

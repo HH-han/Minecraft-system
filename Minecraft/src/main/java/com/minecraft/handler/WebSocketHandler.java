@@ -3,6 +3,7 @@ package com.minecraft.handler;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.minecraft.constant.CacheConstants;
+import com.minecraft.entity.User;
 import com.minecraft.service.UserService;
 import com.minecraft.utils.JwtUtil;
 import com.minecraft.utils.RedisUtil;
@@ -54,6 +55,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (!jwtUtil.validateToken(token)) {
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
+        }
+
+        // 同一用户重复连接时，先关闭旧会话，保证 SESSIONS 中登记的是最新连接
+        WebSocketSession existing = SESSIONS.get(userId);
+        if (existing != null && existing.isOpen() && !existing.getId().equals(session.getId())) {
+            try {
+                existing.close(CloseStatus.NORMAL);
+            } catch (Exception ignore) {
+                // 忽略旧连接关闭异常
+            }
         }
 
         SESSIONS.put(userId, session);
@@ -122,14 +133,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         Long userId = SESSION_USER.remove(session.getId());
-        if (userId != null) {
-            SESSIONS.remove(userId);
-            MESSAGE_QUEUES.remove(userId);
-            SESSION_LOCKS.remove(userId);
-            redisUtil.delete(CacheConstants.ONLINE_STATUS_KEY + userId);
-            redisUtil.hdel(CacheConstants.USER_SESSION_KEY, String.valueOf(userId));
-            userService.updateOnlineStatus(userId, false);
+        if (userId == null) {
+            return;
         }
+        // 仅当当前登记的会话正是本次关闭的会话时才清理，
+        // 避免「旧连接关闭」误删同一用户刚建立的新连接。
+        WebSocketSession current = SESSIONS.get(userId);
+        if (current != null && !current.getId().equals(session.getId())) {
+            return;
+        }
+        SESSIONS.remove(userId);
+        MESSAGE_QUEUES.remove(userId);
+        SESSION_LOCKS.remove(userId);
+        redisUtil.delete(CacheConstants.ONLINE_STATUS_KEY + userId);
+        redisUtil.hdel(CacheConstants.USER_SESSION_KEY, String.valueOf(userId));
+        userService.updateOnlineStatus(userId, false);
     }
 
     private void handleHeartbeat(WebSocketSession session) {
@@ -141,14 +159,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private void handlePrivateMessage(JSONObject json) {
         Long receiverId = json.getLong("receiverId");
+        Long senderId = json.getLong("senderId");
 
         JSONObject message = new JSONObject();
         message.put("type", "PRIVATE_MESSAGE");
-        message.put("senderId", json.getLong("senderId"));
+        message.put("senderId", senderId);
         message.put("receiverId", receiverId);
         message.put("content", json.getString("content"));
         message.put("messageType", json.getString("messageType"));
         message.put("timestamp", System.currentTimeMillis());
+        // 附带发送者信息，便于客户端展示昵称与头像
+        User sender = userService.getUserInfo(senderId);
+        if (sender != null) {
+            message.put("senderName", displayName(sender));
+            message.put("senderAvatar", sender.getAvatar());
+        }
 
         sendMessage(receiverId, message);
     }
@@ -166,12 +191,32 @@ public class WebSocketHandler extends TextWebSocketHandler {
         message.put("content", content);
         message.put("messageType", messageType);
         message.put("timestamp", System.currentTimeMillis());
+        // 群聊气泡需要发送者昵称与头像
+        User sender = userService.getUserInfo(senderId);
+        if (sender != null) {
+            message.put("senderName", displayName(sender));
+            message.put("senderAvatar", sender.getAvatar());
+        }
 
         SESSIONS.forEach((userId, session) -> {
             if (!userId.equals(senderId)) {
                 sendMessageToSession(session, message.toJSONString());
             }
         });
+    }
+
+    /**
+     * 展示名：优先昵称，其次用户名
+     */
+    private String displayName(User user) {
+        if (user == null) {
+            return null;
+        }
+        String nickname = user.getNickname();
+        if (nickname != null && !nickname.isEmpty()) {
+            return nickname;
+        }
+        return user.getUsername();
     }
 
     private void handleReadReceipt(JSONObject json) {
@@ -197,14 +242,31 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     private String getTokenFromSession(WebSocketSession session) {
+        // 优先取握手拦截器写入的 token（与 query 参数顺序无关）
+        Object attr = session.getAttributes().get("token");
+        if (attr != null) {
+            String token = String.valueOf(attr);
+            if (!token.isEmpty()) {
+                return token;
+            }
+        }
+
+        // 兜底：从 query 中解析 token（不依赖参数顺序，不能用 startsWith）
         String query = session.getUri().getQuery();
-        if (query != null && query.startsWith("token=")) {
-            try {
-                return java.net.URLDecoder.decode(query.substring(6), "UTF-8");
-            } catch (Exception e) {
-                System.out.println("Error decoding token: " + e.getMessage());
-                e.printStackTrace();
-                return null;
+        if (query != null && !query.isEmpty()) {
+            for (String pair : query.split("&")) {
+                int idx = pair.indexOf('=');
+                if (idx <= 0) {
+                    continue;
+                }
+                if ("token".equals(pair.substring(0, idx))) {
+                    try {
+                        return java.net.URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
+                    } catch (Exception e) {
+                        System.out.println("Error decoding token: " + e.getMessage());
+                        return null;
+                    }
+                }
             }
         }
         return null;

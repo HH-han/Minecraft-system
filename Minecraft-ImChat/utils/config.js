@@ -56,6 +56,7 @@ export const API_CONFIG = {
       SEND_GROUP: '/public/im/group/send',
       HISTORY_GROUP: '/public/im/group/history',
       MARK_READ: '/chat/read',
+      UNREAD_COUNT: '/public/im/message/unread/count',
       UPLOAD: '/upload'
     }
   },
@@ -97,7 +98,42 @@ export const API_CONFIG = {
     BASE: '/api',
     ENDPOINTS: {
       LIST: '/emoji/list',
-      SYSTEM: '/emojis'
+      SYSTEM: '/emojis',
+      GROUPED: '/emojis/grouped'
+    }
+  },
+
+  // 朋友圈接口
+  MOMENT: {
+    BASE: '/api/public/moment',
+    ENDPOINTS: {
+      PUBLISH: '/publish',
+      FEED: '/feed',
+      USER: '/user',
+      DELETE: '/{id}',
+      LIKE: '/{id}/like',
+      LIKES: '/{id}/likes',
+      COMMENT: '/{id}/comment',
+      COMMENTS: '/{id}/comments',
+      DELETE_COMMENT: '/comment/{id}',
+      COVER: '/cover'
+    }
+  },
+
+  // 收藏接口
+  FAVORITE: {
+    BASE: '/api/public/favorite',
+    ENDPOINTS: {
+      ADD: '/add',
+      UPDATE: '/{id}',
+      LIST: '/list',
+      RECENT: '/recent',
+      STATS: '/stats',
+      TAGS: '/tags',
+      DETAIL: '/{id}',
+      TOUCH: '/{id}/touch',
+      DELETE: '/{id}',
+      CLEAR: '/clear'
     }
   }
 }

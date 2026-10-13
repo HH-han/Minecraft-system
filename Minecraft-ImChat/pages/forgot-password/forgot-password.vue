@@ -1,97 +1,104 @@
 <template>
-  <view class="forgot-page">
-    <view class="nav-bar glass-effect">
-      <view class="nav-back" @click="goBack">
-        <text class="nav-icon">‹</text>
+  <view class="forgot">
+    <CustomNavBar
+      :show-back="true"
+      title="找回密码"
+      title-align="center"
+      @back="goBack"
+    />
+
+    <scroll-view class="forgot__body" scroll-y :show-scrollbar="false">
+      <view class="hero">
+        <text class="hero__title">重置密码</text>
+        <text class="hero__subtitle">输入您的手机号以找回账号密码</text>
       </view>
-      <text class="nav-title">找回密码</text>
-      <view class="nav-right"></view>
-    </view>
 
-    <scroll-view class="content-scroll" scroll-y>
-      <view class="content-wrapper">
-        <view class="hero-section">
-          <text class="hero-title">重置密码</text>
-          <text class="hero-subtitle">输入您的手机号以找回账号密码</text>
-        </view>
+      <view class="form-card">
+        <view class="form-body">
+          <view class="form-group">
+            <text class="form-label">手机号</text>
+            <input
+              class="form-input"
+              v-model="form.phone"
+              type="number"
+              placeholder="请输入手机号"
+              placeholder-class="form-ph"
+              maxlength="11"
+            />
+          </view>
 
-        <view class="form-card">
-          <view class="reset-form">
-            <view class="form-group">
-              <text class="form-label">手机号</text>
+          <view class="form-group">
+            <text class="form-label">验证码</text>
+            <view class="code-row">
               <input
-                class="form-input"
-                v-model="form.phone"
+                class="form-input code-row__input"
+                v-model="form.code"
                 type="number"
-                placeholder="请输入手机号"
-                placeholder-class="input-placeholder"
-                maxlength="11"
+                placeholder="请输入验证码"
+                placeholder-class="form-ph"
+                maxlength="6"
               />
-            </view>
-
-            <view class="form-group">
-              <text class="form-label">验证码</text>
-              <view class="code-input-wrapper">
-                <input
-                  class="form-input code-input"
-                  v-model="form.code"
-                  type="number"
-                  placeholder="请输入验证码"
-                  placeholder-class="input-placeholder"
-                  maxlength="6"
-                />
-                <view
-                  :class="['send-code-btn', { disabled: form.countdown > 0 }]"
-                  @click="sendCode"
-                >
-                  <text class="send-code-text">{{ form.countdown > 0 ? `${form.countdown}s` : '获取验证码' }}</text>
-                </view>
-              </view>
-            </view>
-
-            <view class="form-group">
-              <text class="form-label">新密码</text>
-              <view class="password-input-wrapper">
-                <input
-                  class="form-input"
-                  v-model="form.newPassword"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="请设置新密码"
-                  placeholder-class="input-placeholder"
-                  maxlength="20"
-                />
-                <view class="toggle-pwd" @click="showPassword = !showPassword">
-                  <text class="toggle-icon">{{ showPassword ? '🙈' : '👁️' }}</text>
-                </view>
+              <view
+                class="code-btn"
+                :class="{ 'is-disabled': form.countdown > 0 }"
+                hover-class="code-btn--hover"
+                hover-stay-time="60"
+                @click="sendCode"
+              >
+                <text>{{ form.countdown > 0 ? `${form.countdown}s` : '获取验证码' }}</text>
               </view>
             </view>
           </view>
 
-          <button
-            :class="['submit-btn', { loading: isLoading, disabled: !canSubmit }]"
-            :disabled="isLoading || !canSubmit"
-            @click="handleReset"
-          >
-            <text v-if="!isLoading" class="btn-text">确认重置</text>
-            <view v-else class="loading-content">
-              <view class="loading-spinner"></view>
-              <text class="btn-text">提交中...</text>
+          <view class="form-group">
+            <text class="form-label">新密码</text>
+            <view class="pwd-row">
+              <input
+                class="form-input pwd-row__input"
+                v-model="form.newPassword"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="请设置新密码"
+                placeholder-class="form-ph"
+                maxlength="20"
+              />
+              <view class="eye-btn" @click="showPassword = !showPassword">
+                <UiIcon name="eye" :size="40" :color="showPassword ? '#07C160' : '#B2B2B2'" />
+              </view>
             </view>
-          </button>
+          </view>
         </view>
 
-        <view class="back-login-row">
-          <text class="back-login-link" @click="goBackToLogin">返回登录</text>
+        <view
+          class="submit-btn"
+          :class="{ 'is-disabled': !canSubmit || isLoading }"
+          hover-class="submit-btn--hover"
+          hover-stay-time="60"
+          @click="handleReset"
+        >
+          <text v-if="!isLoading">确认重置</text>
+          <view v-else class="submit-btn__loading">
+            <view class="spinner"></view>
+            <text>提交中…</text>
+          </view>
         </view>
       </view>
+
+      <view class="back-login-row">
+        <text class="back-login-link" @click="goBackToLogin">返回登录</text>
+      </view>
+
+      <view class="forgot__safe"></view>
     </scroll-view>
   </view>
 </template>
 
 <script>
+import CustomNavBar from '../../components/CustomNavBar.vue'
+import UiIcon from '../../components/Icon.vue'
 import { sendResetCode, resetPassword } from '../../utils/chat-api.js'
 
 export default {
+  components: { CustomNavBar, UiIcon },
   data() {
     return {
       showPassword: false,
@@ -194,90 +201,50 @@ export default {
 </script>
 
 <style scoped>
-.forgot-page {
-  min-height: 100vh;
-  background-color: #f5f5f7;
+.forgot {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  background-color: #ededed;
 }
 
-.nav-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32rpx;
-  padding-top: calc(20rpx + env(safe-area-inset-top));
-  padding-bottom: 20rpx;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-}
-
-.nav-back,
-.nav-right {
-  width: 80rpx;
-  height: 44rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-icon {
-  font-size: 48rpx;
-  color: #2997ff;
-  font-weight: 300;
-  line-height: 1;
-}
-
-.nav-title {
-  font-size: 34rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  letter-spacing: -0.5rpx;
-}
-
-.content-scroll {
+.forgot__body {
   flex: 1;
-  padding-top: calc(88rpx + env(safe-area-inset-top));
+  height: 0;
 }
 
-.content-wrapper {
-  padding: 48rpx 32rpx 64rpx;
-}
-
-.hero-section {
+/* 头部说明 */
+.hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32rpx 0 48rpx;
+  padding: 48rpx 48rpx 32rpx;
 }
 
-.hero-title {
+.hero__title {
   font-size: 44rpx;
   font-weight: 700;
-  color: #1d1d1f;
-  letter-spacing: -1rpx;
+  color: #191919;
+  letter-spacing: -0.5rpx;
   margin-bottom: 12rpx;
+}
+
+.hero__subtitle {
+  font-size: 26rpx;
+  color: #888888;
   text-align: center;
 }
 
-.hero-subtitle {
-  font-size: 28rpx;
-  color: #6e6e73;
-  font-weight: 400;
-  text-align: center;
-}
-
+/* 表单卡片 */
 .form-card {
   background-color: #ffffff;
-  border-radius: 24rpx;
+  margin: 0 24rpx;
+  border-radius: 12rpx;
   padding: 40rpx 32rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
-.reset-form {
+.form-body {
   display: flex;
   flex-direction: column;
   gap: 32rpx;
@@ -286,161 +253,140 @@ export default {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 14rpx;
 }
 
 .form-label {
-  font-size: 26rpx;
-  color: #6e6e73;
-  font-weight: 500;
-  letter-spacing: -0.2rpx;
+  font-size: 28rpx;
+  color: #888888;
 }
 
 .form-input {
   width: 100%;
   height: 88rpx;
   padding: 0 24rpx;
-  background-color: #f5f5f7;
-  border-radius: 16rpx;
+  background-color: #f7f7f7;
+  border-radius: 10rpx;
   font-size: 30rpx;
-  color: #1d1d1f;
+  color: #191919;
   box-sizing: border-box;
   border: none;
   outline: none;
-  transition: all 0.15s ease;
 }
 
-.form-input:focus {
-  background-color: #ffffff;
-  box-shadow: inset 0 0 0 3rpx #2997ff;
+.form-ph {
+  color: #b2b2b2;
 }
 
-.input-placeholder {
-  color: #a1a1a6;
-}
-
-.code-input-wrapper {
+.code-row {
   display: flex;
   align-items: center;
   gap: 16rpx;
 }
 
-.code-input {
+.code-row__input {
   flex: 1;
 }
 
-.send-code-btn {
-  padding: 0 28rpx;
+.code-btn {
+  flex-shrink: 0;
   height: 88rpx;
-  background-color: #2997ff;
-  border-radius: 16rpx;
+  padding: 0 28rpx;
+  border-radius: 10rpx;
+  background-color: #07c160;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
 }
 
-.send-code-btn:active {
-  background-color: #0066cc;
-  transform: scale(0.98);
+.code-btn--hover {
+  background-color: #06ad56;
 }
 
-.send-code-btn.disabled {
-  background-color: #d2d2d6;
-}
-
-.send-code-btn.disabled:active {
-  transform: none;
-}
-
-.send-code-text {
-  font-size: 26rpx;
+.code-btn text {
+  font-size: 28rpx;
   color: #ffffff;
   font-weight: 500;
   white-space: nowrap;
 }
 
-.password-input-wrapper {
+.code-btn.is-disabled {
+  background-color: #b2b2b2;
+}
+
+.pwd-row {
   position: relative;
 }
 
-.toggle-pwd {
+.pwd-row__input {
+  padding-right: 96rpx;
+}
+
+.eye-btn {
   position: absolute;
-  right: 24rpx;
+  right: 12rpx;
   top: 50%;
   transform: translateY(-50%);
-  width: 60rpx;
-  height: 60rpx;
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.toggle-icon {
-  font-size: 32rpx;
+.eye-btn:active {
+  opacity: 0.6;
 }
 
+/* 提交 */
 .submit-btn {
-  width: 100%;
-  height: 96rpx;
-  background-color: #2997ff;
-  border-radius: 48rpx;
+  height: 88rpx;
+  margin-top: 40rpx;
+  background-color: #07c160;
+  border-radius: 10rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  margin-top: 40rpx;
-  transition: all 0.2s ease;
 }
 
-.submit-btn::after {
-  border: none;
+.submit-btn--hover {
+  background-color: #06ad56;
 }
 
-.submit-btn:active {
-  background-color: #0066cc;
-  transform: scale(0.98);
+.submit-btn.is-disabled {
+  background-color: #c8e9d4;
 }
 
-.submit-btn.disabled {
-  background-color: #d2d2d6;
-}
-
-.submit-btn.disabled:active {
-  transform: none;
-}
-
-.submit-btn[disabled] {
-  background-color: #d2d2d6;
-}
-
-.btn-text {
+.submit-btn text {
   font-size: 32rpx;
   color: #ffffff;
-  font-weight: 600;
-  letter-spacing: -0.3rpx;
+  font-weight: 500;
 }
 
-.loading-content {
+.submit-btn__loading {
   display: flex;
   align-items: center;
   gap: 12rpx;
 }
 
-.loading-spinner {
-  width: 32rpx;
-  height: 32rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.submit-btn__loading text {
+  font-size: 30rpx;
 }
 
-@keyframes spin {
+.spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: forgotSpin 0.8s linear infinite;
+}
+
+@keyframes forgotSpin {
   to { transform: rotate(360deg); }
 }
 
+/* 返回登录 */
 .back-login-row {
   display: flex;
   justify-content: center;
@@ -450,13 +396,14 @@ export default {
 
 .back-login-link {
   font-size: 28rpx;
-  color: #2997ff;
-  font-weight: 500;
+  color: #576b95;
 }
 
-.glass-effect {
-  background-color: rgba(245, 245, 247, 0.72);
-  backdrop-filter: saturate(180%) blur(20rpx);
-  -webkit-backdrop-filter: saturate(180%) blur(20rpx);
+.back-login-link:active {
+  opacity: 0.6;
+}
+
+.forgot__safe {
+  height: calc(48rpx + env(safe-area-inset-bottom));
 }
 </style>

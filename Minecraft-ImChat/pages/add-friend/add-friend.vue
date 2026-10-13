@@ -1,129 +1,180 @@
 <template>
-  <view class="add-friend-page">
-    <view class="search-section">
-      <view class="search-input-wrapper">
-        <text class="search-icon">🔍</text>
-        <input
-          class="search-input"
-          v-model="searchKeyword"
-          placeholder="输入手机号搜索用户"
-          placeholder-class="search-placeholder"
-          type="number"
-          maxlength="11"
-          @confirm="searchUser"
-        />
-        <view v-if="searchKeyword" class="clear-btn" @click="clearSearch">
-          <text>✕</text>
-        </view>
-      </view>
-      <view class="search-btn" @click="searchUser">
-        <text>搜索</text>
-      </view>
-    </view>
+  <view class="add-friend">
+    <CustomNavBar
+      :show-back="true"
+      title="添加朋友"
+      title-align="center"
+      @back="goBack"
+    />
 
-    <view v-if="searchResult" class="search-result slide-up">
-      <view class="result-header">
-        <text class="result-title">搜索结果</text>
-      </view>
-      <view class="user-card">
-        <image
-          class="user-avatar"
-          :src="searchResult.avatar || defaultAvatar"
-          mode="aspectFill"
-        />
-        <view class="user-info">
-          <text class="user-name">{{ searchResult.username }}</text>
-          <text class="user-phone">{{ formatPhone(searchResult.phone) }}</text>
+    <scroll-view class="add-friend__body" scroll-y :show-scrollbar="false">
+      <view class="search-row">
+        <view class="search-box">
+          <UiIcon name="search" :size="36" color="#B2B2B2" />
+          <input
+            class="search-box__input"
+            v-model="keyword"
+            type="text"
+            placeholder="手机号/账号"
+            placeholder-class="search-box__ph"
+            confirm-type="search"
+            @confirm="searchUser"
+          />
+          <view v-if="keyword" class="search-box__clear" @click="keyword = ''">
+            <UiIcon name="close" :size="20" color="#FFFFFF" />
+          </view>
         </view>
-        <view
-          :class="['add-btn', { added: isAdded || isFriend }]"
-          @click="addFriend"
-        >
-          <text>{{ isAdded ? '已发送' : isFriend ? '已是好友' : '添加' }}</text>
+        <view class="search-action" hover-class="search-action--hover" hover-stay-time="60" @click="searchUser">
+          <text>搜索</text>
         </view>
       </view>
-    </view>
 
-    <view class="tips-section">
-      <view class="tips-header">
-        <text class="tips-title">温馨提示</text>
+      <view v-if="searchResult" class="group">
+        <view class="group__title">搜索结果</view>
+        <view class="result">
+          <UiAvatar shape="square" :size="96" :src="searchResult.avatar" :name="resultName" />
+          <view class="result__body">
+            <text class="result__name">{{ resultName }}</text>
+            <text v-if="resultSub" class="result__sub">{{ resultSub }}</text>
+          </view>
+          <view v-if="isFriend" class="op-btn is-disabled">
+            <text>已是好友</text>
+          </view>
+          <view v-else-if="isAdded" class="op-btn is-disabled">
+            <text>已发送</text>
+          </view>
+          <view v-else class="op-btn is-primary" hover-class="op-btn--hover" hover-stay-time="60" @click="addFriend">
+            <text>添加到通讯录</text>
+          </view>
+        </view>
       </view>
-      <view class="tips-list">
-        <view class="tip-item">
-          <text class="tip-icon">💡</text>
-          <text class="tip-text">输入对方的手机号即可发送好友请求</text>
-        </view>
-        <view class="tip-item">
-          <text class="tip-icon">💡</text>
-          <text class="tip-text">对方同意后即可开始聊天</text>
-        </view>
-        <view class="tip-item">
-          <text class="tip-icon">💡</text>
-          <text class="tip-text">请礼貌用语，文明交流</text>
-        </view>
-      </view>
-    </view>
 
-    <view v-if="searchHistory.length > 0" class="history-section">
-      <view class="history-header">
-        <text class="history-title">搜索历史</text>
-        <text class="clear-btn" @click="clearHistory">清空</text>
-      </view>
-      <view class="history-list">
+      <view v-if="searchHistory.length" class="group">
+        <view class="group__head">
+          <text class="group__title">搜索历史</text>
+          <text class="group__extra" hover-class="group__extra--hover" hover-stay-time="60" @click="clearHistory">清空</text>
+        </view>
         <view
           v-for="(item, index) in searchHistory"
-          :key="index"
-          :style="{ animationDelay: `${index * 0.05}s` }"
-          class="history-item fade-in"
+          :key="item.phone + '-' + index"
+          class="history"
+          hover-class="history--hover"
+          hover-stay-time="60"
           @click="selectHistory(item)"
         >
-          <text class="history-phone">{{ item.phone }}</text>
+          <UiAvatar shape="square" :size="72" :src="item.avatar" :name="item.username || item.phone" />
+          <view class="history__body">
+            <text class="history__name">{{ item.username || maskPhone(item.phone) }}</text>
+            <text class="history__sub">{{ maskPhone(item.phone) }}</text>
+          </view>
         </view>
       </view>
-    </view>
+
+      <view class="group">
+        <view class="group__title">温馨提示</view>
+        <view class="tip">
+          <UiIcon name="info" :size="34" color="#07C160" />
+          <text class="tip__text">输入对方手机号或账号即可发送好友请求</text>
+        </view>
+        <view class="tip">
+          <UiIcon name="info" :size="34" color="#07C160" />
+          <text class="tip__text">对方同意后即可开始聊天</text>
+        </view>
+      </view>
+
+      <view class="add-friend__safe"></view>
+    </scroll-view>
   </view>
 </template>
 
 <script>
-import { sendFriendRequest, getUserByAccount } from '../../utils/chat-api.js'
-import { getUserInfo } from '../../utils/storage.js'
+import CustomNavBar from '../../components/CustomNavBar.vue'
+import UiIcon from '../../components/Icon.vue'
+import UiAvatar from '../../components/Avatar.vue'
+import { getUserByAccount, getFriendInfoList, sendFriendRequest } from '../../utils/chat-api.js'
+import { getUserId } from '../../utils/session.js'
+import { maskPhone } from '../../utils/format.js'
+
+const HISTORY_KEY = 'friendSearchHistory'
 
 export default {
+  components: { CustomNavBar, UiIcon, UiAvatar },
   data() {
     return {
-      searchKeyword: '',
+      keyword: '',
       searchResult: null,
-      searchHistory: [],
-      isAdded: false,
       isFriend: false,
-      defaultAvatar: '/static/default-avatar.png'
+      isAdded: false,
+      searchHistory: [],
+      // 已是好友判断依据（拿不到则为空集合，按 false 处理）
+      friendIds: [],
+      friendKeys: []
     }
   },
-
+  computed: {
+    resultName() {
+      const r = this.searchResult || {}
+      return r.nickname || r.username || r.account || '未知用户'
+    },
+    resultSub() {
+      const r = this.searchResult || {}
+      if (r.account && r.phone) return `账号：${r.account} · ${maskPhone(r.phone)}`
+      if (r.account) return `账号：${r.account}`
+      if (r.phone) return maskPhone(r.phone)
+      return ''
+    }
+  },
   onLoad() {
     this.loadHistory()
+    this.loadFriends()
   },
-
   methods: {
+    maskPhone,
+    goBack() {
+      uni.navigateBack()
+    },
+    async loadFriends() {
+      const userId = getUserId()
+      if (!userId) return
+      try {
+        const res = await getFriendInfoList(userId)
+        if (res && res.code === 200 && Array.isArray(res.data)) {
+          this.friendIds = res.data.map((f) => String(f.friendId))
+          this.friendKeys = res.data
+            .reduce((acc, f) => acc.concat([f.phone, f.email, f.username]), [])
+            .filter((v) => v !== undefined && v !== null && v !== '')
+            .map(String)
+        }
+      } catch (e) {
+        console.error('加载好友列表失败:', e)
+      }
+    },
+    checkIsFriend(user) {
+      if (!user) return false
+      if (this.friendIds.includes(String(user.id))) return true
+      const keys = [user.account, user.phone, user.username]
+        .filter((v) => v !== undefined && v !== null && v !== '')
+        .map(String)
+      return keys.some((k) => this.friendKeys.includes(k))
+    },
     async searchUser() {
-      if (!this.searchKeyword || this.searchKeyword.length !== 11) {
-        uni.showToast({ title: '请输入11位手机号', icon: 'none' })
+      const kw = this.keyword.trim()
+      if (!kw) {
+        uni.showToast({ title: '请输入手机号或账号', icon: 'none' })
         return
       }
-
-      uni.showLoading({ title: '搜索中...' })
-
+      uni.showLoading({ title: '搜索中…' })
       try {
-        const res = await getUserByAccount(this.searchKeyword)
-
-        if (res.code === 200 && res.data) {
+        const res = await getUserByAccount(kw)
+        if (res && res.code === 200 && res.data) {
           this.searchResult = res.data
           this.isAdded = false
-          this.isFriend = false
-
-          this.saveToHistory(this.searchResult)
+          this.isFriend = this.checkIsFriend(res.data)
+          this.saveToHistory(res.data)
         } else {
           this.searchResult = null
+          this.isAdded = false
+          this.isFriend = false
           uni.showToast({ title: '未找到该用户', icon: 'none' })
         }
       } catch (e) {
@@ -133,71 +184,61 @@ export default {
         uni.hideLoading()
       }
     },
-
-    async addFriend() {
+    addFriend() {
       if (!this.searchResult || this.isAdded || this.isFriend) return
-
-      const userInfo = getUserInfo()
-      if (!userInfo) {
+      const userId = getUserId()
+      if (!userId) {
         uni.showToast({ title: '请先登录', icon: 'none' })
         return
       }
-
       uni.showModal({
         title: '发送好友请求',
-        placeholderText: '请输入验证消息（选填）',
         editable: true,
-        placeholderText: '我是...',
+        placeholderText: '请输入验证消息（选填）',
         success: async (res) => {
-          if (res.confirm) {
-            try {
-              const res2 = await sendFriendRequest({
-                senderId: userInfo.id,
-                receiverPhone: this.searchKeyword,
-                message: res.content || ''
-              })
-
-              if (res2.code === 200) {
-                this.isAdded = true
-                uni.showToast({ title: '请求已发送', icon: 'success' })
-              } else {
-                uni.showToast({ title: res2.message || '发送失败', icon: 'none' })
-              }
-            } catch (e) {
-              console.error('发送好友请求失败:', e)
-              uni.showToast({ title: '发送失败', icon: 'none' })
+          if (!res.confirm) return
+          try {
+            const result = await sendFriendRequest({
+              senderId: userId,
+              receiverPhone: this.keyword.trim(),
+              message: res.content || ''
+            })
+            if (result && result.code === 200) {
+              this.isAdded = true
+              uni.showToast({ title: '请求已发送', icon: 'success' })
+            } else {
+              uni.showToast({ title: (result && result.message) || '发送失败', icon: 'none' })
             }
+          } catch (e) {
+            console.error('发送好友请求失败:', e)
+            uni.showToast({ title: '发送失败', icon: 'none' })
           }
         }
       })
     },
-
-    formatPhone(phone) {
-      if (!phone) return ''
-      return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
-    },
-
     loadHistory() {
       try {
-        const history = uni.getStorageSync('friendSearchHistory')
+        const history = uni.getStorageSync(HISTORY_KEY)
         this.searchHistory = history ? JSON.parse(history) : []
       } catch (e) {
         this.searchHistory = []
       }
     },
-
     saveToHistory(user) {
-      const history = this.searchHistory.filter(h => h.phone !== user.phone)
+      if (!user || !user.phone) return
+      const history = this.searchHistory.filter((h) => h.phone !== user.phone)
       history.unshift({
         phone: user.phone,
-        username: user.username,
-        avatar: user.avatar
+        username: user.username || user.nickname || '',
+        avatar: user.avatar || ''
       })
-
       this.searchHistory = history.slice(0, 10)
-      uni.setStorageSync('friendSearchHistory', JSON.stringify(this.searchHistory))
+      uni.setStorageSync(HISTORY_KEY, JSON.stringify(this.searchHistory))
     },
-
+    selectHistory(item) {
+      this.keyword = item.phone
+      this.searchUser()
+    },
     clearHistory() {
       uni.showModal({
         title: '提示',
@@ -205,310 +246,254 @@ export default {
         success: (res) => {
           if (res.confirm) {
             this.searchHistory = []
-            uni.removeStorageSync('friendSearchHistory')
+            uni.removeStorageSync(HISTORY_KEY)
           }
         }
       })
-    },
-
-    clearSearch() {
-      this.searchKeyword = ''
-    },
-
-    selectHistory(item) {
-      this.searchKeyword = item.phone
-      this.searchResult = item
-      this.isAdded = false
-      this.isFriend = false
     }
   }
 }
 </script>
 
 <style scoped>
-.add-friend-page {
+.add-friend {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f5f5f7;
-  padding: 0 32rpx;
-  box-sizing: border-box;
+  height: 100vh;
+  background-color: #ededed;
 }
 
-.search-section {
-  display: flex;
-  align-items: center;
-  padding: 32rpx 0;
-}
-
-.search-input-wrapper {
+.add-friend__body {
   flex: 1;
+  height: 0;
+}
+
+/* 搜索栏 */
+.search-row {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border-radius: 36rpx;
-  padding: 16rpx 24rpx;
-  margin-right: 20rpx;
-  border: 1rpx solid #e5e5e5;
-  transition: all 0.25s ease;
-}
-
-.search-input-wrapper:focus-within {
-  border-color: #07C160;
-  box-shadow: 0 0 0 3rpx rgba(7, 193, 96, 0.1);
-}
-
-.search-icon {
-  font-size: 28rpx;
-  margin-right: 16rpx;
-  opacity: 0.5;
-}
-
-.search-input {
-  flex: 1;
-  font-size: 28rpx;
-  color: #1d1d1f;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-.search-placeholder {
-  color: #a1a1a6;
-}
-
-.clear-btn {
-  width: 40rpx;
-  height: 40rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #d2d2d6;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.clear-btn:active {
-  background-color: #a1a1a6;
-}
-
-.clear-btn text {
-  font-size: 24rpx;
-  color: #ffffff;
-  line-height: 1;
-}
-
-.search-btn {
-  padding: 16rpx 36rpx;
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-  border-radius: 36rpx;
-  transition: all 0.2s ease;
-}
-
-.search-btn:active {
-  transform: scale(0.97);
-}
-
-.search-btn text {
-  font-size: 28rpx;
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.search-result {
-  margin-top: 24rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-}
-
-.result-header {
   padding: 24rpx 32rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.result-title {
-  font-size: 26rpx;
-  color: #6e6e73;
-  font-weight: 500;
-  letter-spacing: -0.2rpx;
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  padding: 32rpx;
-}
-
-.user-avatar {
-  width: 96rpx;
-  height: 96rpx;
-  border-radius: 50%;
-  background-color: #f5f5f7;
-  margin-right: 24rpx;
-}
-
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  display: block;
-  font-size: 32rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  margin-bottom: 8rpx;
-  letter-spacing: -0.3rpx;
-}
-
-.user-phone {
-  font-size: 26rpx;
-  color: #6e6e73;
-}
-
-.add-btn {
-  padding: 16rpx 32rpx;
-  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-  border-radius: 36rpx;
-  transition: all 0.2s ease;
-}
-
-.add-btn:active {
-  transform: scale(0.97);
-}
-
-.add-btn text {
-  font-size: 26rpx;
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.add-btn.added {
-  background-color: #e5e5e5;
-  background: none;
-}
-
-.add-btn.added text {
-  color: #6e6e73;
-}
-
-.tips-section {
-  margin-top: 32rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-}
-
-.tips-header {
-  padding: 28rpx 32rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.tips-title {
-  font-size: 30rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  letter-spacing: -0.3rpx;
-}
-
-.tips-list {
-  padding: 24rpx 32rpx;
-}
-
-.tip-item {
-  display: flex;
-  align-items: center;
-  padding: 16rpx 0;
-}
-
-.tip-icon {
-  font-size: 28rpx;
-  margin-right: 16rpx;
-  opacity: 0.6;
-}
-
-.tip-text {
-  font-size: 26rpx;
-  color: #6e6e73;
-  line-height: 1.5;
-}
-
-.history-section {
-  margin-top: 32rpx;
-  background-color: #ffffff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-}
-
-.history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 28rpx 32rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.history-title {
-  font-size: 30rpx;
-  color: #1d1d1f;
-  font-weight: 600;
-  letter-spacing: -0.3rpx;
-}
-
-.history-list {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 24rpx;
   gap: 20rpx;
 }
 
-.history-item {
-  padding: 16rpx 32rpx;
-  background-color: #f5f5f7;
-  border-radius: 36rpx;
-  transition: all 0.2s ease;
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  padding: 0 24rpx;
 }
 
-.history-item:active {
-  background-color: #d2d2d6;
+.search-box__input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #191919;
+  margin-left: 16rpx;
 }
 
-.history-phone {
+.search-box__ph {
+  color: #b2b2b2;
+}
+
+.search-box__clear {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background-color: #c8c8cd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-action {
+  flex-shrink: 0;
+  height: 88rpx;
+  padding: 0 40rpx;
+  background-color: #07c160;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-action--hover {
+  background-color: #06ad56;
+}
+
+.search-action text {
+  font-size: 30rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 分组 */
+.group {
+  background-color: #ffffff;
+  margin-top: 20rpx;
+}
+
+.group__title {
   font-size: 26rpx;
-  color: #6e6e73;
+  color: #888888;
+  padding: 20rpx 32rpx 12rpx;
 }
 
-.slide-up {
-  animation: slideUp 0.3s ease forwards;
+.group__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 32rpx 12rpx;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.group__head .group__title {
+  padding: 0;
 }
 
-.fade-in {
-  animation: fadeInUp 0.4s ease forwards;
-  opacity: 0;
+.group__extra {
+  font-size: 26rpx;
+  color: #576b95;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.group__extra--hover {
+  opacity: 0.6;
+}
+
+/* 搜索结果 */
+.result {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx 32rpx;
+}
+
+.result__body {
+  flex: 1;
+  min-width: 0;
+  margin-left: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.result__name {
+  font-size: 32rpx;
+  color: #191919;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result__sub {
+  font-size: 26rpx;
+  color: #888888;
+  margin-top: 8rpx;
+}
+
+.op-btn {
+  flex-shrink: 0;
+  height: 64rpx;
+  padding: 0 28rpx;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.op-btn text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.op-btn.is-primary {
+  background-color: #07c160;
+}
+
+.op-btn.is-primary text {
+  color: #ffffff;
+}
+
+.op-btn--hover {
+  background-color: #06ad56;
+}
+
+.op-btn.is-disabled {
+  background-color: #f2f2f2;
+}
+
+.op-btn.is-disabled text {
+  color: #b2b2b2;
+}
+
+/* 搜索历史 */
+.history {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 32rpx;
+  position: relative;
+}
+
+.history::after {
+  content: '';
+  position: absolute;
+  left: 128rpx;
+  right: 0;
+  bottom: 0;
+  height: 1rpx;
+  background-color: #ededed;
+  transform: scaleY(0.5);
+}
+
+.history:last-child::after {
+  display: none;
+}
+
+.history--hover {
+  background-color: #ececec;
+}
+
+.history__body {
+  flex: 1;
+  min-width: 0;
+  margin-left: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.history__name {
+  font-size: 30rpx;
+  color: #191919;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history__sub {
+  font-size: 24rpx;
+  color: #b2b2b2;
+  margin-top: 6rpx;
+}
+
+/* 温馨提示 */
+.tip {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 32rpx;
+}
+
+.tip:last-child {
+  padding-bottom: 28rpx;
+}
+
+.tip__text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #888888;
+  line-height: 1.5;
+  margin-left: 16rpx;
+}
+
+.add-friend__safe {
+  height: calc(24rpx + env(safe-area-inset-bottom));
 }
 </style>
