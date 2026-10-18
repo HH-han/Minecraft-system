@@ -5042,3 +5042,282 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-10-11 23:54:48
+
+-- ============================================================
+-- 铁路票务模块（12306 仿制）
+-- ============================================================
+
+-- ============================================================
+-- 铁路票务模块（12306 仿制）数据库脚本
+-- 依赖：db_minecraft
+-- 说明：
+--   1. 车次经停模板 railway_train_stop 用于按日生成运行实例（railway_service）
+--   2. 库存按相邻站区间切割（railway_segment_inventory），跨区间购票需逐段扣减
+--   3. 本脚本可重复执行（先 DROP 再 CREATE，并重置种子数据）
+-- ============================================================
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `railway_ticket`;
+DROP TABLE IF EXISTS `railway_order`;
+DROP TABLE IF EXISTS `railway_passenger`;
+DROP TABLE IF EXISTS `railway_segment_inventory`;
+DROP TABLE IF EXISTS `railway_stop_station`;
+DROP TABLE IF EXISTS `railway_service`;
+DROP TABLE IF EXISTS `railway_train_stop`;
+DROP TABLE IF EXISTS `railway_train`;
+DROP TABLE IF EXISTS `railway_station`;
+
+-- ------------------------------------------------------------
+-- 1. 车站基础表
+-- ------------------------------------------------------------
+CREATE TABLE `railway_station` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `station_code` varchar(10) NOT NULL COMMENT '电报码',
+  `station_name` varchar(50) NOT NULL COMMENT '车站名',
+  `city_name` varchar(50) NOT NULL COMMENT '城市名',
+  `pinyin` varchar(100) DEFAULT NULL COMMENT '全拼',
+  `initial` char(1) DEFAULT NULL COMMENT '首字母',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_code` (`station_code`),
+  KEY `idx_city` (`city_name`),
+  KEY `idx_station_name` (`station_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='火车站基础表';
+
+-- ------------------------------------------------------------
+-- 2. 车次基础表
+-- ------------------------------------------------------------
+CREATE TABLE `railway_train` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `train_no` varchar(20) NOT NULL COMMENT '车次号 G101',
+  `train_type` varchar(10) NOT NULL COMMENT 'G/D/Z/T/K',
+  `start_station_id` bigint NOT NULL,
+  `end_station_id` bigint NOT NULL,
+  `second_class_seats` int NOT NULL DEFAULT '0' COMMENT '二等座定员',
+  `first_class_seats` int NOT NULL DEFAULT '0' COMMENT '一等座定员',
+  `sleeper_seats` int NOT NULL DEFAULT '0' COMMENT '卧铺定员',
+  `status` tinyint DEFAULT '1' COMMENT '1正常 0停运',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_train_no` (`train_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='车次基础表';
+
+-- ------------------------------------------------------------
+-- 3. 车次经停模板（用于按日生成运行实例）
+-- ------------------------------------------------------------
+CREATE TABLE `railway_train_stop` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `train_id` bigint NOT NULL,
+  `station_id` bigint NOT NULL,
+  `stop_seq` int NOT NULL COMMENT '站序，从1开始',
+  `arrive_time` time DEFAULT NULL,
+  `depart_time` time DEFAULT NULL,
+  `stop_over` int DEFAULT '0' COMMENT '停留分钟数',
+  `day_offset` int DEFAULT '0' COMMENT '到达日期相对发车日的偏移天数',
+  `second_class_price_cents` int NOT NULL DEFAULT '0' COMMENT '至上一站二等座票价(分)',
+  `first_class_price_cents` int NOT NULL DEFAULT '0' COMMENT '至上一站一等座票价(分)',
+  `sleeper_price_cents` int NOT NULL DEFAULT '0' COMMENT '至上一站卧铺票价(分)',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_train_seq` (`train_id`,`stop_seq`),
+  KEY `idx_station` (`station_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='车次经停模板';
+
+-- ------------------------------------------------------------
+-- 4. 每日运行实例
+-- ------------------------------------------------------------
+CREATE TABLE `railway_service` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `train_id` bigint NOT NULL,
+  `service_date` date NOT NULL,
+  `status` tinyint DEFAULT '1' COMMENT '1正常 0停运',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_train_date` (`train_id`,`service_date`),
+  KEY `idx_service_date` (`service_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='每日开行服务';
+
+-- ------------------------------------------------------------
+-- 5. 运行实例经停站
+-- ------------------------------------------------------------
+CREATE TABLE `railway_stop_station` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `service_id` bigint NOT NULL,
+  `station_id` bigint NOT NULL,
+  `stop_seq` int NOT NULL COMMENT '站序，从1开始',
+  `arrive_time` time DEFAULT NULL,
+  `depart_time` time DEFAULT NULL,
+  `stop_over` int DEFAULT '0' COMMENT '停留分钟数',
+  `day_offset` int DEFAULT '0' COMMENT '到达日期相对发车日的偏移天数',
+  PRIMARY KEY (`id`),
+  KEY `idx_service_seq` (`service_id`,`stop_seq`),
+  KEY `idx_station` (`station_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='运行实例经停站';
+
+-- ------------------------------------------------------------
+-- 6. 区间库存（核心）
+-- ------------------------------------------------------------
+CREATE TABLE `railway_segment_inventory` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `service_id` bigint NOT NULL,
+  `from_stop_seq` int NOT NULL,
+  `to_stop_seq` int NOT NULL COMMENT '= from_stop_seq + 1',
+  `seat_type` varchar(20) NOT NULL COMMENT 'SECOND_CLASS/FIRST_CLASS/SLEEPER',
+  `total_seats` int NOT NULL,
+  `left_seats` int NOT NULL,
+  `price_cents` int NOT NULL COMMENT '该段票价(分)',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_adj_seg` (`service_id`,`from_stop_seq`,`to_stop_seq`,`seat_type`),
+  KEY `idx_service_seat` (`service_id`,`seat_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='区间库存';
+
+-- ------------------------------------------------------------
+-- 7. 乘车人
+-- ------------------------------------------------------------
+CREATE TABLE `railway_passenger` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL COMMENT '关联系统用户',
+  `name` varchar(50) NOT NULL,
+  `id_card_no` varchar(18) NOT NULL,
+  `passenger_type` varchar(20) DEFAULT 'ADULT' COMMENT 'ADULT/CHILD/STUDENT',
+  `phone` varchar(20) DEFAULT NULL,
+  `verify_status` tinyint DEFAULT '1' COMMENT '1已核验 0待核验',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_card` (`user_id`,`id_card_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='铁路乘车人';
+
+-- ------------------------------------------------------------
+-- 8. 铁路订单
+-- ------------------------------------------------------------
+CREATE TABLE `railway_order` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order_no` varchar(32) NOT NULL,
+  `user_id` bigint NOT NULL,
+  `service_id` bigint NOT NULL,
+  `from_stop_seq` int NOT NULL,
+  `to_stop_seq` int NOT NULL,
+  `seat_type` varchar(20) NOT NULL,
+  `passenger_count` int NOT NULL DEFAULT '1',
+  `total_amount` int NOT NULL COMMENT '总金额(分)',
+  `contact_phone` varchar(20) DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'PENDING' COMMENT 'PENDING/PAID/CANCELLED/REFUNDED',
+  `expire_time` datetime NOT NULL COMMENT '15分钟支付超时',
+  `pay_time` datetime DEFAULT NULL,
+  `cancel_time` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_order_no` (`order_no`),
+  KEY `idx_user_status` (`user_id`,`status`),
+  KEY `idx_status_expire` (`status`,`expire_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='铁路订单';
+
+-- ------------------------------------------------------------
+-- 9. 车票明细
+-- ------------------------------------------------------------
+CREATE TABLE `railway_ticket` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order_id` bigint NOT NULL,
+  `passenger_id` bigint NOT NULL,
+  `passenger_name` varchar(50) NOT NULL,
+  `id_card_no` varchar(18) NOT NULL,
+  `seat_no` varchar(20) DEFAULT NULL COMMENT '05车12A',
+  `price_cents` int NOT NULL DEFAULT '0',
+  `status` varchar(20) DEFAULT 'ACTIVE' COMMENT 'ACTIVE/REFUNDED',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_order` (`order_id`),
+  KEY `idx_id_card` (`id_card_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='铁路车票明细';
+
+-- ============================================================
+-- 种子数据：车站
+-- ============================================================
+INSERT INTO `railway_station` (`id`, `station_code`, `station_name`, `city_name`, `pinyin`, `initial`) VALUES
+(1, 'BJP', '北京', '北京', 'beijing', 'B'),
+(2, 'VNP', '北京南', '北京', 'beijingnan', 'B'),
+(3, 'BXP', '北京西', '北京', 'beijingxi', 'B'),
+(4, 'AOH', '上海虹桥', '上海', 'shanghaihongqiao', 'S'),
+(5, 'SHH', '上海', '上海', 'shanghai', 'S'),
+(6, 'IZQ', '广州南', '广州', 'guangzhounan', 'G'),
+(7, 'IOQ', '深圳北', '深圳', 'shenzhenbei', 'S'),
+(8, 'HGH', '杭州东', '杭州', 'hangzhoudong', 'H'),
+(9, 'NKH', '南京南', '南京', 'nanjingnan', 'N'),
+(10, 'JGK', '济南西', '济南', 'jinanxi', 'J'),
+(11, 'TIP', '天津南', '天津', 'tianjinnan', 'T'),
+(12, 'ZAF', '郑州东', '郑州', 'zhengzhoudong', 'Z'),
+(13, 'WHN', '武汉', '武汉', 'wuhan', 'W'),
+(14, 'EAY', '西安北', '西安', 'xianbei', 'X'),
+(15, 'ICW', '成都东', '成都', 'chengdudong', 'C'),
+(16, 'CWQ', '长沙南', '长沙', 'changshanan', 'C'),
+(17, 'SZH', '苏州北', '苏州', 'suzhoubei', 'S'),
+(18, 'UUH', '徐州东', '徐州', 'xuzhoudong', 'X'),
+(19, 'JNH', '嘉兴南', '嘉兴', 'jiaxingnan', 'J'),
+(20, 'TJP', '天津', '天津', 'tianjin', 'T'),
+(21, 'JNK', '济南', '济南', 'jinan', 'J'),
+(22, 'NJH', '南京', '南京', 'nanjing', 'N'),
+(23, 'GZQ', '广州', '广州', 'guangzhou', 'G'),
+(24, 'SZQ', '深圳', '深圳', 'shenzhen', 'S'),
+(25, 'SJP', '石家庄', '石家庄', 'shijiazhuang', 'S'),
+(26, 'IUQ', '虎门', '东莞', 'humen', 'H');
+
+-- ============================================================
+-- 种子数据：车次（二等座 / 一等座 / 卧铺定员）
+-- ============================================================
+INSERT INTO `railway_train` (`id`, `train_no`, `train_type`, `start_station_id`, `end_station_id`, `second_class_seats`, `first_class_seats`, `sleeper_seats`, `status`) VALUES
+(1, 'G101', 'G', 2, 4, 600, 120, 0, 1),
+(2, 'G102', 'G', 4, 2, 600, 120, 0, 1),
+(3, 'G7', 'G', 2, 4, 500, 100, 0, 1),
+(4, 'D301', 'D', 2, 4, 400, 80, 0, 1),
+(5, 'G81', 'G', 3, 14, 500, 100, 0, 1),
+(6, 'G1001', 'G', 6, 7, 550, 90, 0, 1),
+(7, 'G1501', 'G', 4, 8, 500, 80, 0, 1),
+(8, 'G501', 'G', 2, 8, 600, 120, 0, 1),
+(9, 'K101', 'K', 1, 5, 300, 0, 400, 1);
+
+-- ============================================================
+-- 种子数据：经停模板（票价为「至上一站」的区间票价，单位：分）
+-- ============================================================
+INSERT INTO `railway_train_stop` (`train_id`, `station_id`, `stop_seq`, `arrive_time`, `depart_time`, `stop_over`, `day_offset`, `second_class_price_cents`, `first_class_price_cents`, `sleeper_price_cents`) VALUES
+-- G101 北京南 → 上海虹桥
+(1, 2, 1, NULL, '07:00:00', 0, 0, 0, 0, 0),
+(1, 10, 2, '08:22:00', '08:24:00', 2, 0, 18500, 29600, 0),
+(1, 9, 3, '10:24:00', '10:27:00', 3, 0, 24500, 39200, 0),
+(1, 4, 4, '11:29:00', NULL, 0, 0, 13500, 21600, 0),
+-- G102 上海虹桥 → 北京南
+(2, 4, 1, NULL, '08:00:00', 0, 0, 0, 0, 0),
+(2, 9, 2, '09:02:00', '09:05:00', 3, 0, 13500, 21600, 0),
+(2, 10, 3, '11:05:00', '11:07:00', 2, 0, 24500, 39200, 0),
+(2, 2, 4, '12:30:00', NULL, 0, 0, 18500, 29600, 0),
+-- G7 北京南 → 上海虹桥（大站快车）
+(3, 2, 1, NULL, '09:00:00', 0, 0, 0, 0, 0),
+(3, 9, 2, '12:30:00', '12:33:00', 3, 0, 41000, 65600, 0),
+(3, 4, 3, '13:35:00', NULL, 0, 0, 13500, 21600, 0),
+-- D301 北京南 → 上海虹桥（夕发朝至）
+(4, 2, 1, NULL, '19:30:00', 0, 0, 0, 0, 0),
+(4, 9, 2, '04:30:00', '04:36:00', 6, 1, 38000, 60800, 0),
+(4, 4, 3, '06:20:00', NULL, 0, 1, 13500, 21600, 0),
+-- G81 北京西 → 西安北
+(5, 3, 1, NULL, '08:05:00', 0, 0, 0, 0, 0),
+(5, 25, 2, '09:20:00', '09:23:00', 3, 0, 12900, 20600, 0),
+(5, 12, 3, '10:40:00', '10:45:00', 5, 0, 18900, 30200, 0),
+(5, 14, 4, '12:30:00', NULL, 0, 0, 22900, 36600, 0),
+-- G1001 广州南 → 深圳北
+(6, 6, 1, NULL, '08:15:00', 0, 0, 0, 0, 0),
+(6, 26, 2, '08:48:00', '08:50:00', 2, 0, 4500, 7200, 0),
+(6, 7, 3, '09:15:00', NULL, 0, 0, 7500, 12000, 0),
+-- G1501 上海虹桥 → 杭州东
+(7, 4, 1, NULL, '07:30:00', 0, 0, 0, 0, 0),
+(7, 19, 2, '08:05:00', '08:07:00', 2, 0, 4500, 7200, 0),
+(7, 8, 3, '08:35:00', NULL, 0, 0, 5500, 8800, 0),
+-- G501 北京南 → 杭州东
+(8, 2, 1, NULL, '08:40:00', 0, 0, 0, 0, 0),
+(8, 10, 2, '10:02:00', '10:05:00', 3, 0, 18500, 29600, 0),
+(8, 9, 3, '12:05:00', '12:10:00', 5, 0, 24500, 39200, 0),
+(8, 8, 4, '13:25:00', NULL, 0, 0, 15500, 24800, 0),
+-- K101 北京 → 上海（普速卧铺）
+(9, 1, 1, NULL, '18:00:00', 0, 0, 0, 0, 0),
+(9, 20, 2, '20:00:00', '20:10:00', 10, 0, 2500, 0, 5500),
+(9, 21, 3, '23:30:00', '23:40:00', 10, 0, 6500, 0, 9800),
+(9, 22, 4, '07:00:00', '07:15:00', 15, 1, 12500, 0, 15800),
+(9, 5, 5, '10:00:00', NULL, 0, 1, 8500, 0, 10800);
+
