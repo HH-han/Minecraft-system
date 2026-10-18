@@ -1,5 +1,5 @@
 <template>
-  <div class="glass-pay-container">
+  <div class="glass-pay-container" @click.self="handleContainerClick">
     <div class="glass-card">
       <div class="order-header">
         <h1>{{ $t('payment.title') }}</h1>
@@ -557,6 +557,13 @@ const confirmMockPayments = async (payments) => {
 // 关闭自定义提示框
 const closeAlert = () => {
   isAlertVisible.value = false;
+};
+
+// 点击支付弹窗遮罩（卡片以外的空白区域）关闭弹窗
+// 与支付成功的 closeModal 消息区分，避免被父组件误判为支付成功
+const handleContainerClick = () => {
+  if (paying.value) return;
+  window.parent.postMessage({ action: 'closePay' }, '*');
 };
 
 // 关闭支付成功模态框

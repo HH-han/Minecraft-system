@@ -65,6 +65,7 @@
       "railwayShort": "车票",
       "memberCenter": "前往会员中心",
       "myTickets": "前往我的车票",
+      "payNow": "立即支付",
       "loadFailed": "获取订单列表失败，请重试"
     },
     "orderDetail": {

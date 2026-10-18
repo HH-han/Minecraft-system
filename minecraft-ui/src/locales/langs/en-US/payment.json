@@ -65,6 +65,7 @@
       "railwayShort": "Ticket",
       "memberCenter": "Membership Center",
       "myTickets": "My Tickets",
+      "payNow": "Pay Now",
       "loadFailed": "Failed to load orders, please try again"
     },
     "orderDetail": {

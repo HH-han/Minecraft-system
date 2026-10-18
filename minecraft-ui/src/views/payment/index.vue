@@ -124,10 +124,10 @@ watch(activeTab, (newValue) => {
   store.updatePageState('payment', { activeTab: newValue })
 }, { immediate: true })
 
-// 监听来自PayPage的closeModal消息
+// 监听来自PayPage的closeModal（支付成功）/ closePay（点击遮罩关闭）消息
 onMounted(() => {
   window.addEventListener('message', (event) => {
-    if (event.data.action === 'closeModal') {
+    if (event.data.action === 'closeModal' || event.data.action === 'closePay') {
       closePayModal()
     }
   })
@@ -214,6 +214,7 @@ const handlePay = () => {
   if (orderId) {
     paymentData.value.orderId = orderId
     paymentData.value.orderIds = [orderId]
+    paymentData.value.orderType = 'mall'
   }
   showPayModal.value = true
 }
