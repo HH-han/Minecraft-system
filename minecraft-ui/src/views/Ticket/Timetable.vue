@@ -252,6 +252,7 @@ watch(
 
 .rw-search-bar :deep(.rw-date-input) {
   width: 160px;
+  height: 40px;
   flex-shrink: 0;
 }
 

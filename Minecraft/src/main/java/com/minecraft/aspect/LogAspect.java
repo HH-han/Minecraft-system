@@ -138,7 +138,8 @@ public class LogAspect {
 
             // 异步落库，不影响主流程
             operationLogService.saveOperationLogAsync(operationLog);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            // 日志记录失败（含类加载错误等 Error）不能影响业务主流程
             logger.error("保存操作日志失败", ex);
         }
     }

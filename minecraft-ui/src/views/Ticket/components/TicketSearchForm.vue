@@ -407,9 +407,14 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
   width: 100%;
 }
 
-/* 提高权重覆盖 Element Plus 的 .el-date-editor.el-input 默认 220px 宽度 */
+/* 提高权重覆盖 Element Plus 的 .el-date-editor.el-input 默认 220px 宽 / 32px 高 */
 .rw-field--date :deep(.el-date-editor) {
   width: 100%;
+  height: 42px;
+}
+
+.rw-search-card--compact .rw-field--date :deep(.el-date-editor) {
+  height: 38px;
 }
 
 .rw-search-card :deep(.el-input__wrapper) {
