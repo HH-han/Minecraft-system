@@ -29,6 +29,12 @@ export default [
     meta: { title: '积分商城', requiresAuth: true },
   },
   {
+    path: '/member',
+    name: 'Member',
+    component: () => import('@/views/Member/index.vue'),
+    meta: { title: '会员中心', requiresAuth: true },
+  },
+  {
     path: '/chat',
     name: 'Chat',
     component: () => import('@/views/ImChat/index.vue'),
