@@ -68,6 +68,7 @@
       "payNow": "立即支付",
       "loadFailed": "获取订单列表失败，请重试",
       "title": "历史订单",
+      "all": "全部",
       "empty": "暂无历史订单",
       "goShopping": "去购物",
       "orderNo": "订单编号：{orderNo}",

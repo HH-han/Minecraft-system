@@ -1,7 +1,7 @@
 <template>
   <div class="order-detail" v-if="hasOrderData">
     <div class="order-header">
-      <h2 class="order-title">订单详情</h2>
+      <h2 class="order-title">{{ $t('payment.title') }}</h2>
       <div class="order-status" :class="getStatusClass(order.status)">
         {{ getStatusText(order.status) }}
       </div>
@@ -9,28 +9,28 @@
 
     <div class="order-info-card">
       <div class="info-item">
-        <span class="label">订单编号</span>
+        <span class="label">{{ $t('payment.orderNo') }}</span>
         <span class="value">
           {{ order.orderNo || '-' }}
           <button v-if="order.orderNo" type="button" class="copy-btn" @click="copyText(order.orderNo)">
-            复制
+            {{ $t('payment.orderDetail.copy') }}
           </button>
         </span>
       </div>
       <div class="info-item">
-        <span class="label">订单类型</span>
+        <span class="label">{{ $t('payment.orderDetail.orderType') }}</span>
         <span class="value">{{ getItemTypeText(order.itemType) }}</span>
       </div>
       <div class="info-item">
-        <span class="label">下单时间</span>
+        <span class="label">{{ $t('payment.orderDetail.createTime') }}</span>
         <span class="value">{{ order.createTime || '-' }}</span>
       </div>
       <div class="info-item">
-        <span class="label">支付时间</span>
-        <span class="value">{{ order.payTime || '未支付' }}</span>
+        <span class="label">{{ $t('payment.orderDetail.payTime') }}</span>
+        <span class="value">{{ order.payTime || $t('payment.orderDetail.unpaid') }}</span>
       </div>
       <div class="info-item">
-        <span class="label">订单金额</span>
+        <span class="label">{{ $t('payment.orderDetail.amountLabel') }}</span>
         <span class="value price">{{ priceText(order.amount) }}</span>
       </div>
     </div>
@@ -91,7 +91,7 @@
     </div>
     
     <div class="shipping-address-card" v-if="isShippableOrder">
-      <h3 class="section-title">收货地址</h3>
+      <h3 class="section-title">{{ $t('payment.orderDetail.shippingAddress') }}</h3>
       <div class="address-content">
         <div class="name-phone">
           <span class="name">{{ order.address.name }}</span>
@@ -104,7 +104,7 @@
     </div>
     
     <div class="order-items-card">
-      <h3 class="section-title">商品信息</h3>
+      <h3 class="section-title">{{ $t('payment.orderDetail.goodsInfo') }}</h3>
       <div class="items-list">
         <div v-for="item in order.items" :key="item.id" class="item">
           <div class="item-image">
@@ -120,70 +120,70 @@
         </div>
       </div>
       <div v-if="order.remark" class="order-remark">
-        <span class="order-remark__label">备注</span>
+        <span class="order-remark__label">{{ $t('payment.orderDetail.remark') }}</span>
         {{ order.remark }}
       </div>
     </div>
     
     <div class="order-summary-card">
       <div class="summary-item">
-        <span class="summary-label">商品数量</span>
-        <span class="summary-value">{{ order.quantity }} 件</span>
+        <span class="summary-label">{{ $t('payment.orderDetail.goodsQuantity') }}</span>
+        <span class="summary-value">{{ $t('payment.orderDetail.goodsQuantityUnit', { count: order.quantity }) }}</span>
       </div>
       <template v-if="!isPointsOrder">
         <div class="summary-item">
-          <span class="summary-label">商品总价</span>
+          <span class="summary-label">{{ $t('payment.orderDetail.goodsTotal') }}</span>
           <span class="summary-value">¥{{ formatMoney(order.amount) }}</span>
         </div>
         <div class="summary-item">
-          <span class="summary-label">运费</span>
+          <span class="summary-label">{{ $t('payment.orderDetail.freight') }}</span>
           <span class="summary-value">¥{{ formatMoney(order.freight) }}</span>
         </div>
       </template>
       <div class="summary-item total">
-        <span class="summary-label">实付金额</span>
+        <span class="summary-label">{{ $t('payment.orderDetail.actuallyPaid') }}</span>
         <span class="summary-value price">{{ priceText(order.amount) }}</span>
       </div>
     </div>
 
     <!-- 物流信息 -->
     <div class="shipping-info-card" v-if="hasShippingInfo">
-      <h3 class="section-title">物流信息</h3>
+      <h3 class="section-title">{{ $t('payment.orderDetail.shippingInfo') }}</h3>
       <div class="info-item">
-        <span class="label">物流状态</span>
+        <span class="label">{{ $t('payment.orderDetail.shippingStatus') }}</span>
         <span class="value">{{ getShippingStatusText(order.shippingStatus) }}</span>
       </div>
       <div class="info-item" v-if="order.carrierName">
-        <span class="label">承运商</span>
+        <span class="label">{{ $t('payment.orderDetail.carrier') }}</span>
         <span class="value">{{ order.carrierName }}</span>
       </div>
       <div class="info-item" v-if="order.trackingNo">
-        <span class="label">运单号</span>
+        <span class="label">{{ $t('payment.orderDetail.trackingNo') }}</span>
         <span class="value">
           {{ order.trackingNo }}
-          <button type="button" class="copy-btn" @click="copyText(order.trackingNo)">复制</button>
+          <button type="button" class="copy-btn" @click="copyText(order.trackingNo)">{{ $t('payment.orderDetail.copy') }}</button>
         </span>
       </div>
       <div class="info-item" v-if="order.shipTime">
-        <span class="label">发货时间</span>
+        <span class="label">{{ $t('payment.orderDetail.shipTime') }}</span>
         <span class="value">{{ order.shipTime }}</span>
       </div>
       <div class="info-item" v-if="order.receiveTime">
-        <span class="label">签收时间</span>
+        <span class="label">{{ $t('payment.orderDetail.receiveTime') }}</span>
         <span class="value">{{ order.receiveTime }}</span>
       </div>
       <div class="info-item" v-if="order.afterSaleStatus > 0">
-        <span class="label">售后状态</span>
+        <span class="label">{{ $t('payment.orderDetail.afterSaleStatus') }}</span>
         <span class="value">{{ getAfterSaleText(order.afterSaleStatus) }}</span>
       </div>
     </div>
     
     <div class="order-actions" v-if="order.status === '0'">
-      <button class="btn btn-secondary" @click="handleCancelOrder">取消订单</button>
-      <button class="btn btn-primary" @click="goToPay">立即支付</button>
+      <button class="btn btn-secondary" @click="handleCancelOrder">{{ $t('payment.orderDetail.cancelOrder') }}</button>
+      <button class="btn btn-primary" @click="goToPay">{{ $t('payment.orderDetail.payNowAction') }}</button>
     </div>
     <div class="order-actions" v-else-if="canViewLogistics">
-      <button class="btn btn-primary" @click="viewLogistics">查看物流</button>
+      <button class="btn btn-primary" @click="viewLogistics">{{ $t('payment.orderDetail.viewLogistics') }}</button>
     </div>
   </div>
   
@@ -197,9 +197,9 @@
           <line x1="9" y1="9" x2="15" y2="15"></line>
         </svg>
       </div>
-      <h3 class="no-order-title">暂无订单数据</h3>
-      <p class="no-order-desc">您还没有相关订单信息，请先去浏览商品</p>
-      <button class="btn btn-primary" @click="goToHome">返回首页</button>
+      <h3 class="no-order-title">{{ $t('payment.orderDetail.noData') }}</h3>
+      <p class="no-order-desc">{{ $t('payment.orderDetail.noDataDesc') }}</p>
+      <button class="btn btn-primary" @click="goToHome">{{ $t('payment.orderDetail.backHome') }}</button>
     </div>
   </div>
 </template>
@@ -225,16 +225,19 @@ const tOr = (key, fallback) => (te(key) ? t(key) : fallback)
 
 // 承运商代码 → 名称
 const CARRIER_MAP = {
-  YTO: '圆通速递',
-  ZTO: '中通快递',
-  STO: '申通快递',
-  YD: '韵达速递',
-  SF: '顺丰速运',
-  JD: '京东物流',
-  EMS: '中国邮政',
-  YZPY: '邮政快递包裹',
-  DBL: '德邦快递'
+  YTO: 'payment.orderDetail.carriers.YTO',
+  ZTO: 'payment.orderDetail.carriers.ZTO',
+  STO: 'payment.orderDetail.carriers.STO',
+  YD: 'payment.orderDetail.carriers.YD',
+  SF: 'payment.orderDetail.carriers.SF',
+  JD: 'payment.orderDetail.carriers.JD',
+  EMS: 'payment.orderDetail.carriers.EMS',
+  YZPY: 'payment.orderDetail.carriers.YZPY',
+  DBL: 'payment.orderDetail.carriers.DBL'
 }
+
+// 承运商名称（未知代码回退后端返回值）
+const getCarrierName = (code) => (CARRIER_MAP[code] ? t(CARRIER_MAP[code]) : '')
 
 // 订单默认结构
 const createDefaultOrder = () => ({
@@ -247,7 +250,7 @@ const createDefaultOrder = () => ({
   quantity: 1,
   freight: 0,
   remark: '',
-  address: { name: '未填写', phone: '', detail: '暂无收货地址' },
+  address: { name: t('payment.orderDetail.unfilled'), phone: '', detail: t('payment.orderDetail.noAddress') },
   items: [],
   carrierCode: '',
   carrierName: '',
@@ -310,29 +313,29 @@ const formatMoney = (value) => {
 }
 
 // 金额展示：积分订单不显示金额
-const priceText = (value) => (isPointsOrder.value ? '积分兑换' : `¥${formatMoney(value)}`)
+const priceText = (value) => (isPointsOrder.value ? t('payment.points') : `¥${formatMoney(value)}`)
 
 const getItemTypeText = (type) => {
   const map = {
-    food: '美食',
-    product: '纪念品',
-    points: '积分兑换',
-    hotel: '酒店',
-    attraction: '景点'
+    food: 'payment.orderDetail.itemTypes.food',
+    product: 'payment.orderDetail.itemTypes.product',
+    points: 'payment.orderDetail.itemTypes.points',
+    hotel: 'payment.orderDetail.itemTypes.hotel',
+    attraction: 'payment.orderDetail.itemTypes.attraction'
   }
-  return map[type] || '商品'
+  return map[type] ? t(map[type]) : t('payment.orderDetail.itemTypes.goods')
 }
 
 const getStatusText = (status) => {
   const statusMap = {
-    '0': '待支付',
-    '1': '已支付',
-    '2': '已发货',
-    '3': '已完成',
-    '4': '已取消',
-    '5': '已退款'
+    '0': 'payment.history.status.unpaid',
+    '1': 'payment.history.status.paid',
+    '2': 'payment.history.status.shipped',
+    '3': 'payment.history.status.completed',
+    '4': 'payment.history.status.cancelled',
+    '5': 'payment.history.status.refunded'
   }
-  return statusMap[status] || '未知状态'
+  return statusMap[status] ? t(statusMap[status]) : t('payment.common.unknownStatus')
 }
 
 const getStatusClass = (status) => {
@@ -349,14 +352,22 @@ const getStatusClass = (status) => {
 
 // 物流状态 0-待发货 1-部分发货 2-已发货 3-已签收
 const getShippingStatusText = (status) => {
-  const map = { 0: '待发货', 1: '部分发货', 2: '已发货', 3: '已签收' }
-  return map[status] ?? '待发货'
+  const map = {
+    0: 'payment.orderDetail.shippingStatusLabels.0',
+    1: 'payment.orderDetail.shippingStatusLabels.1',
+    2: 'payment.orderDetail.shippingStatusLabels.2',
+    3: 'payment.orderDetail.shippingStatusLabels.3'
+  }
+  return t(map[status] ?? 'payment.orderDetail.shippingStatusLabels.0')
 }
 
 // 售后状态 0-无 1-售后中 2-售后完成
 const getAfterSaleText = (status) => {
-  const map = { 1: '售后中', 2: '售后完成' }
-  return map[status] || '无'
+  const map = {
+    1: 'payment.orderDetail.afterSale.processing',
+    2: 'payment.orderDetail.afterSale.completed'
+  }
+  return t(map[status] || 'payment.orderDetail.afterSale.none')
 }
 
 // 支付渠道文案
@@ -375,9 +386,9 @@ const getPayStatusText = (payment) => {
 const copyText = async (text) => {
   try {
     await navigator.clipboard.writeText(String(text))
-    ElMessage.success('已复制')
+    ElMessage.success(t('payment.orderDetail.copied'))
   } catch {
-    ElMessage.warning('复制失败，请手动复制')
+    ElMessage.warning(t('payment.orderDetail.copyFailed'))
   }
 }
 
@@ -398,9 +409,9 @@ const normalizeOrder = (data) => {
     freight: Number(data.freight) || 0,
     remark: data.remark || '',
     address: {
-      name: data.receiverName || '未填写',
+      name: data.receiverName || t('payment.orderDetail.unfilled'),
       phone: data.receiverPhone || '',
-      detail: data.receiverAddress || '暂无收货地址'
+      detail: data.receiverAddress || t('payment.orderDetail.noAddress')
     },
     items: data.itemName
       ? [
@@ -414,7 +425,7 @@ const normalizeOrder = (data) => {
         ]
       : [],
     carrierCode: data.carrierCode || '',
-    carrierName: CARRIER_MAP[data.carrierCode] || data.carrierName || data.carrierCode || '',
+    carrierName: getCarrierName(data.carrierCode) || data.carrierName || data.carrierCode || '',
     trackingNo: data.trackingNo || '',
     shippingStatus: data.shippingStatus ?? null,
     shipTime: formatTime(data.shipTime),
@@ -549,9 +560,9 @@ const viewLogistics = () => {
 
 const handleCancelOrder = async () => {
   try {
-    await ElMessageBox.confirm('确定要取消订单吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.orderDetail.cancelConfirm'), t('payment.common.tip'), {
+      confirmButtonText: t('payment.common.confirm'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'warning'
     })
     
@@ -559,12 +570,12 @@ const handleCancelOrder = async () => {
     if (orderId) {
       await cancelOrder(orderId)
       order.value.status = '4' // 4-已取消
-      ElMessage.success('订单已取消')
+      ElMessage.success(t('payment.orderDetail.cancelSuccess'))
     }
   } catch (error) {
     if (error !== 'cancel') {
       console.error('取消订单失败:', error)
-      ElMessage.error('取消订单失败，请重试')
+      ElMessage.error(t('payment.orderDetail.cancelFailed'))
     }
   }
 }

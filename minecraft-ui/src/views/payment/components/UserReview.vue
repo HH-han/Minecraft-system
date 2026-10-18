@@ -1,7 +1,7 @@
 <template>
   <div class="user-review">
     <div class="review-header">
-      <h3>用户评价</h3>
+      <h3>{{ $t('payment.review.title') }}</h3>
       <div class="review-stats">
         <div class="average-rating">
           <div class="rating-score">{{ averageRating }}</div>
@@ -13,11 +13,11 @@
               :class="{ active: i <= Math.round(averageRating) }"
             >★</span>
           </div>
-          <div class="rating-count">{{ reviews.length }} 条评价</div>
+          <div class="rating-count">{{ $t('payment.review.count', { count: reviews.length }) }}</div>
         </div>
         <div class="rating-distribution">
           <div v-for="(count, star) in ratingDistribution" :key="star" class="rating-bar">
-            <span class="star-label">{{ star }}星</span>
+            <span class="star-label">{{ $t('payment.review.starLabel', { star }) }}</span>
             <div class="bar-container">
               <div 
                 class="bar" 
@@ -55,12 +55,12 @@
             v-for="(image, imgIndex) in review.images" 
             :key="imgIndex"
             :src="image"
-            :alt="'Review image ' + (imgIndex + 1)"
+            :alt="$t('payment.review.imageAlt', { index: imgIndex + 1 })"
             class="review-image"
           >
         </div>
         <div class="review-spec" v-if="review.spec">
-          购买规格：{{ review.spec }}
+          {{ $t('payment.review.spec', { spec: review.spec }) }}
         </div>
       </div>
     </div>
@@ -70,7 +70,7 @@
         class="page-btn" 
         :disabled="currentPage === 1"
         @click="currentPage--"
-      >上一页</button>
+      >{{ $t('payment.review.prevPage') }}</button>
       <span class="page-info">
         {{ currentPage }} / {{ totalPages }}
       </span>
@@ -78,7 +78,7 @@
         class="page-btn" 
         :disabled="currentPage === totalPages"
         @click="currentPage++"
-      >下一页</button>
+      >{{ $t('payment.review.nextPage') }}</button>
     </div>
   </div>
 </template>
@@ -87,49 +87,52 @@
 
 import { onMounted } from 'vue' 
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-const reviews = ref([
+const { t } = useI18n()
+
+const reviews = computed(() => [
   {
     id: 1,
-    username: '史蒂夫',
+    username: t('payment.review.mock.steve'),
     avatar: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20Steve%20avatar&size=128x128',
     rating: 5,
     time: '2024-01-15 10:30',
-    content: '非常棒的游戏！画面精美，玩法丰富，是我玩过的最好的沙盒游戏之一。推荐给所有喜欢创造和探索的玩家。',
+    content: t('payment.review.mock.steveContent'),
     images: [
       'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20gameplay%20screenshot&size=512x512'
     ],
-    spec: 'Java版 标准版'
+    spec: `${t('payment.productType.java')} ${t('payment.productType.standard')}`
   },
   {
     id: 2,
-    username: '爱丽克斯',
+    username: t('payment.review.mock.alex'),
     avatar: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20Alex%20avatar&size=128x128',
     rating: 4,
     time: '2024-01-10 14:20',
-    content: '游戏很好玩，但是有时候会有点卡。总体来说还是很值得购买的。',
+    content: t('payment.review.mock.alexContent'),
     images: [],
-    spec: '基岩版 豪华版'
+    spec: `${t('payment.productType.bedrock')} ${t('payment.productType.deluxe')}`
   },
   {
     id: 3,
-    username: ' Notch',
+    username: t('payment.review.mock.notch'),
     avatar: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20Notch%20avatar&size=128x128',
     rating: 5,
     time: '2024-01-05 12:15',
-    content: '游戏的创建者，非常有才华和创新精神。',
+    content: t('payment.review.mock.notchContent'),
     images: [],
-    spec: 'Java版 标准版'
+    spec: `${t('payment.productType.java')} ${t('payment.productType.standard')}`
   },
   {
     id: 4,
-    username: '开发者',
+    username: t('payment.review.mock.developer'),
     avatar: 'https://neeko-copilot.bytedance.net/api/text2image?prompt=Minecraft%20Notch%20avatar&size=128x128',
     rating: 5,
     time: '2024-01-05 09:15',
-    content: '作为开发者，我非常满意这款游戏的表现。希望大家喜欢！',
+    content: t('payment.review.mock.developerContent'),
     images: [],
-    spec: 'Java版 终极版'
+    spec: `${t('payment.productType.java')} ${t('payment.productType.ultimate')}`
   }
 ])
 

@@ -68,6 +68,7 @@
       "payNow": "Pay Now",
       "loadFailed": "Failed to load orders, please try again",
       "title": "Order History",
+      "all": "All",
       "empty": "No order history",
       "goShopping": "Go Shopping",
       "orderNo": "Order No.: {orderNo}",
