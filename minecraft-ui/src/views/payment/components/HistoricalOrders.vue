@@ -111,7 +111,7 @@
           <div class="order-actions">
             <template v-if="order.source === 'mall'">
               <button v-if="order.status === '0'" class="btn btn-primary" @click="goToPay(order)">
-                立即支付
+                {{ $t('payment.history.payNow') }}
               </button>
               <button v-if="order.status === '0'" class="btn btn-secondary" @click="handleCancelOrder(order.id)">
                 取消订单
@@ -129,9 +129,14 @@
                 删除订单
               </button>
             </template>
-            <button v-else class="btn btn-link" @click="openSourceOrder(order)">
-              {{ order.source === 'member' ? $t('payment.history.memberCenter') : $t('payment.history.myTickets') }}
-            </button>
+            <template v-else>
+              <button v-if="order.status === '0'" class="btn btn-primary" @click="goToPay(order)">
+                {{ $t('payment.history.payNow') }}
+              </button>
+              <button class="btn btn-link" @click="openSourceOrder(order)">
+                {{ order.source === 'member' ? $t('payment.history.memberCenter') : $t('payment.history.myTickets') }}
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -555,9 +560,10 @@ const viewLogistics = (order) => {
   })
 }
 
-// 立即支付：拉起支付弹窗（使用数据库主键 id，而非订单编号 orderNo）
+// 立即支付：商城/车票订单用业务主键 id，会员订单按订单编号匹配
 const goToPay = (order) => {
-  emit('pay', order.id)
+  const orderId = order.source === 'member' ? order.orderId : order.id
+  emit('pay', orderId, order.source)
 }
 
 // 取消订单

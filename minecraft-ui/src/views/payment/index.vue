@@ -86,6 +86,7 @@
             :cartItems="paymentData.cartItems"
             :userId="paymentData.userId"
             :predetermined="paymentData.predetermined"
+            :orderType="paymentData.orderType"
           />
         </div>
       </div>
@@ -196,12 +197,13 @@ const paymentData = ref({
   orderId: '',
   orderIds: [],
   userId: '',
-  cartItems: []
+  cartItems: [],
+  orderType: 'mall'
 })
 
 // 处理 checkout
 const handleCheckout = (data) => {
-  paymentData.value = data
+  paymentData.value = { ...data, orderType: data.orderType || 'mall' }
   showPayModal.value = true
 }
 
@@ -222,13 +224,14 @@ const handleViewOrderDetail = async (orderId) => {
   activeTab.value = 'order'
 }
 
-// 从历史订单直接发起支付：以订单主键 id 拉起支付弹窗
-const handlePayOrder = (orderId) => {
+// 从历史订单直接发起支付：按订单来源（商城/车票/会员）拉起支付弹窗
+const handlePayOrder = (orderId, orderType = 'mall') => {
   paymentData.value = {
     orderId: String(orderId),
     orderIds: [String(orderId)],
     userId: '',
-    cartItems: []
+    cartItems: [],
+    orderType
   }
   showPayModal.value = true
 }
