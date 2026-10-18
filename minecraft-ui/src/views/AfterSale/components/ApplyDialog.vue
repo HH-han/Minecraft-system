@@ -148,10 +148,12 @@ const isAfterSaleBusy = (order) =>
 const canApply = (order) =>
   ELIGIBLE_ORDER_STATUS.includes(String(order.status)) && !isAfterSaleBusy(order)
 
-const disabledReason = (order) =>
-  isAfterSaleBusy(order)
-    ? t('afterSale.applyDialog.orderInAfterSale')
-    : t('afterSale.applyDialog.orderStatusBlocked')
+const disabledReason = (order) => {
+  const afterSaleStatus = Number(order.afterSaleStatus)
+  if (afterSaleStatus === 1) return t('afterSale.applyDialog.orderInAfterSale')
+  if (afterSaleStatus === 2) return t('afterSale.applyDialog.orderAfterSaleDone')
+  return t('afterSale.applyDialog.orderStatusBlocked')
+}
 
 const orderStatusText = (order) => {
   const key = `afterSale.orderStatus.${order.status}`
@@ -218,9 +220,9 @@ watch(
   () => props.modelValue,
   (visible) => {
     if (!visible) return
-    if (props.orderId) {
-      form.orderId = Number(props.orderId) || props.orderId
-    }
+    form.orderId = props.orderId
+      ? Number(props.orderId) || props.orderId
+      : undefined
     fetchOrders()
   }
 )

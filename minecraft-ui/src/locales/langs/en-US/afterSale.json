@@ -41,9 +41,32 @@
       "4": "Cancelled",
       "5": "Refunded"
     },
+    "orderAfterSaleStatus": {
+      "0": "None",
+      "1": "In Progress",
+      "2": "Completed"
+    },
     "cancelConfirmTitle": "Cancel Request",
     "cancelConfirmText": "Are you sure you want to cancel this after-sales request?",
     "cancelSuccess": "Request cancelled",
+    "applyPanel": {
+      "title": "After-Sales Request",
+      "subtitle": "Select an order and fill in the after-sales details",
+      "back": "Back to Requests",
+      "refresh": "Refresh",
+      "noOrders": "No orders available",
+      "orderListTitle": "My Orders",
+      "orderListSubtitle": "Only paid, shipped or completed orders can request after-sales service",
+      "orderNo": "Order No.",
+      "orderAmount": "Order Amount",
+      "orderStatus": "Order Status",
+      "afterSaleStatus": "After-Sales Status",
+      "createTime": "Order Time",
+      "applyAction": "Request Service",
+      "formTitle": "After-Sales Information",
+      "currentOrder": "Current Order",
+      "submit": "Submit"
+    },
     "applyDialog": {
       "title": "After-Sales Request",
       "subtitle": "Please provide accurate information so we can process your request quickly",
@@ -52,6 +75,7 @@
       "selectOrderRequired": "Please select an order",
       "noEligibleOrders": "No orders available for after-sales service",
       "orderInAfterSale": "This order is already in after-sales processing",
+      "orderAfterSaleDone": "After-sales for this order is completed",
       "orderStatusBlocked": "After-sales is unavailable for the current order status",
       "type": "Service Type",
       "typePlaceholder": "Please select",

@@ -10,8 +10,8 @@
       <div class="as-detail-head">
         <span class="as-detail-head__badge"><el-icon :size="18"><Document /></el-icon></span>
         <div class="as-detail-head__text">
-          <h3 class="as-detail-head__title">售后详情</h3>
-          <p class="as-detail-head__sub">查看处理进度与协商记录</p>
+          <h3 class="as-detail-head__title">{{ $t('afterSale.detailDialog.title') }}</h3>
+          <p class="as-detail-head__sub">{{ $t('afterSale.detailDialog.subtitle') }}</p>
         </div>
       </div>
     </template>
@@ -22,37 +22,47 @@
         <div class="as-detail__head">
           <div>
             <div class="as-detail__no">{{ detail.afterSaleNo }}</div>
-            <div class="as-detail__type">{{ detail.typeDesc }}</div>
+            <div class="as-detail__type">{{ typeText(detail) }}</div>
           </div>
           <span class="as-detail__status" :class="`as-detail__status--${statusKey(detail.status)}`">
-            {{ detail.statusDesc }}
+            {{ statusText(detail) }}
           </span>
         </div>
 
         <el-descriptions :column="2" size="small" class="as-detail__desc">
-          <el-descriptions-item label="商品">
+          <el-descriptions-item :label="$t('afterSale.detailDialog.item')">
             {{ detail.itemName }} ×{{ detail.quantity }}
           </el-descriptions-item>
-          <el-descriptions-item label="类型">{{ detail.typeDesc }}</el-descriptions-item>
-          <el-descriptions-item label="申请金额">
+          <el-descriptions-item :label="$t('afterSale.detailDialog.type')">
+            {{ typeText(detail) }}
+          </el-descriptions-item>
+          <el-descriptions-item :label="$t('afterSale.detailDialog.refundAmount')">
             ¥{{ detail.refundAmount ?? '-' }}
           </el-descriptions-item>
-          <el-descriptions-item label="实际退款">
+          <el-descriptions-item :label="$t('afterSale.detailDialog.actualAmount')">
             ¥{{ detail.actualAmount ?? '-' }}
           </el-descriptions-item>
-          <el-descriptions-item label="问题描述" :span="2">
+          <el-descriptions-item :label="$t('afterSale.detailDialog.reason')" :span="2">
             {{ detail.reason || '-' }}
           </el-descriptions-item>
-          <el-descriptions-item v-if="detail.refundNo" label="退款流水号" :span="2">
+          <el-descriptions-item
+            v-if="detail.refundNo"
+            :label="$t('afterSale.detailDialog.refundNo')"
+            :span="2"
+          >
             {{ detail.refundNo }}
           </el-descriptions-item>
-          <el-descriptions-item v-if="detail.auditRemark" label="审核备注" :span="2">
+          <el-descriptions-item
+            v-if="detail.auditRemark"
+            :label="$t('afterSale.detailDialog.auditRemark')"
+            :span="2"
+          >
             {{ detail.auditRemark }}
           </el-descriptions-item>
         </el-descriptions>
 
         <div v-if="evidence.length" class="as-detail__block">
-          <div class="as-detail__block-title">凭证图片</div>
+          <div class="as-detail__block-title">{{ $t('afterSale.detailDialog.evidence') }}</div>
           <div class="as-detail__evidence">
             <el-image
               v-for="(url, i) in evidence"
@@ -67,18 +77,26 @@
 
         <!-- 待买家退货：填写退货物流 -->
         <div v-if="detail.status === 3" class="as-detail__block">
-          <div class="as-detail__block-title">填写退货物流</div>
+          <div class="as-detail__block-title">
+            {{ $t('afterSale.detailDialog.returnLogistics') }}
+          </div>
           <div class="as-return">
-            <el-input v-model="returnForm.returnCarrier" placeholder="承运商" />
-            <el-input v-model="returnForm.returnTracking" placeholder="退货单号" />
+            <el-input
+              v-model="returnForm.returnCarrier"
+              :placeholder="$t('afterSale.detailDialog.returnCarrier')"
+            />
+            <el-input
+              v-model="returnForm.returnTracking"
+              :placeholder="$t('afterSale.detailDialog.returnTracking')"
+            />
             <el-button type="primary" round :loading="returning" @click="submitReturnInfo">
-              提交
+              {{ $t('afterSale.detailDialog.submit') }}
             </el-button>
           </div>
         </div>
 
         <div class="as-detail__block">
-          <div class="as-detail__block-title">协商记录</div>
+          <div class="as-detail__block-title">{{ $t('afterSale.detailDialog.messages') }}</div>
           <el-timeline v-if="(detail.messages || []).length" class="as-detail__messages">
             <el-timeline-item
               v-for="(m, i) in detail.messages"
@@ -89,14 +107,14 @@
               <div class="as-msg__content">{{ m.content }}</div>
             </el-timeline-item>
           </el-timeline>
-          <div v-else class="as-detail__empty">暂无记录</div>
+          <div v-else class="as-detail__empty">{{ $t('afterSale.detailDialog.noMessages') }}</div>
 
           <div class="as-msg__input">
             <el-input
               v-model="messageContent"
               type="textarea"
               :rows="2"
-              placeholder="输入留言…"
+              :placeholder="$t('afterSale.detailDialog.messagePlaceholder')"
             />
             <el-button
               type="primary"
@@ -105,7 +123,7 @@
               class="as-msg__send"
               @click="sendMessage"
             >
-              发送
+              {{ $t('afterSale.detailDialog.send') }}
             </el-button>
           </div>
         </div>
@@ -120,15 +138,18 @@
         round
         @click="handleCancel"
       >
-        撤销申请
+        {{ $t('afterSale.detailDialog.cancelApply') }}
       </el-button>
-      <el-button round @click="handleVisible(false)">关闭</el-button>
+      <el-button round @click="handleVisible(false)">
+        {{ $t('afterSale.detailDialog.close') }}
+      </el-button>
     </template>
   </el-dialog>
 </template>
 
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   cancelAfterSale,
@@ -145,6 +166,8 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'refresh'])
 
+const { t, te } = useI18n()
+
 const loading = ref(false)
 const detail = ref(null)
 const messageContent = ref('')
@@ -160,12 +183,22 @@ const statusKey = (status) => {
   return 'active'
 }
 
+const statusText = (row) => {
+  const key = `afterSale.status.${row.status}`
+  return te(key) ? t(key) : row.statusDesc || '-'
+}
+
+const typeText = (row) => {
+  const key = `afterSale.type.${row.type}`
+  return te(key) ? t(key) : row.typeDesc || row.type
+}
+
 const formatTime = (v) => (v ? String(v).replace('T', ' ') : '')
 
 const senderText = (type) => {
-  if (type === 2) return '商家'
-  if (type === 3) return '系统'
-  return '我'
+  if (type === 2) return t('afterSale.detailDialog.senderMerchant')
+  if (type === 3) return t('afterSale.detailDialog.senderSystem')
+  return t('afterSale.detailDialog.senderMe')
 }
 
 const evidence = computed(() => {
@@ -213,13 +246,13 @@ watch(
 
 const submitReturnInfo = async () => {
   if (!returnForm.returnCarrier || !returnForm.returnTracking) {
-    ElMessage.warning('请填写完整的退货物流信息')
+    ElMessage.warning(t('afterSale.detailDialog.returnIncomplete'))
     return
   }
   returning.value = true
   try {
     await submitReturn(props.id, { ...returnForm })
-    ElMessage.success('退货物流已提交')
+    ElMessage.success(t('afterSale.detailDialog.returnSuccess'))
     await fetchDetail()
     emit('refresh')
   } finally {
@@ -241,12 +274,16 @@ const sendMessage = async () => {
 
 const handleCancel = async () => {
   try {
-    await ElMessageBox.confirm('确定撤销该售后申请吗？', '撤销确认', { type: 'warning' })
+    await ElMessageBox.confirm(
+      t('afterSale.cancelConfirmText'),
+      t('afterSale.cancelConfirmTitle'),
+      { type: 'warning' }
+    )
   } catch {
     return
   }
   await cancelAfterSale(props.id)
-  ElMessage.success('已撤销')
+  ElMessage.success(t('afterSale.cancelSuccess'))
   emit('update:modelValue', false)
   emit('refresh')
 }

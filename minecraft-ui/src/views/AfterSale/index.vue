@@ -103,7 +103,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Refresh } from '@element-plus/icons-vue'
@@ -113,6 +113,7 @@ import ApplyDialog from './components/ApplyDialog.vue'
 import DetailDialog from './components/DetailDialog.vue'
 
 const route = useRoute()
+const router = useRouter()
 const { t, te } = useI18n()
 
 const loading = ref(false)
@@ -191,6 +192,13 @@ const openDetail = (id) => {
 }
 
 const onApplySuccess = () => {
+  // 申请成功后解除订单锁定，下次可重新选择订单
+  if (route.query.orderId) {
+    const rest = { ...route.query }
+    delete rest.orderId
+    router.replace({ query: rest })
+  }
+  applyOrderId.value = undefined
   fetchList()
 }
 
