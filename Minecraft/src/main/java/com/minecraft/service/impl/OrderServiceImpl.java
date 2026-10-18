@@ -9,14 +9,20 @@ import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Order;
 import com.minecraft.enums.OrderStatus;
 import com.minecraft.mapper.OrderMapper;
+import com.minecraft.service.MemberService;
 import com.minecraft.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
+
+    @Autowired
+    private MemberService memberService;
 
     @Override
     public Order createOrder(Long userId, OrderRequest request) {
@@ -29,7 +35,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setReceiverName(request.getReceiverName());
         order.setReceiverPhone(request.getReceiverPhone());
         order.setReceiverAddress(request.getReceiverAddress());
-        order.setAmount(request.getAmount());
+        // 会员等级折扣（未登录/无等级时原价）
+        BigDecimal amount = request.getAmount();
+        order.setAmount(memberService.calcDiscountPrice(userId, amount));
         order.setQuantity(request.getQuantity());
         order.setRemark(request.getRemark());
         order.setStatus(OrderStatus.PENDING.getCode().toString());

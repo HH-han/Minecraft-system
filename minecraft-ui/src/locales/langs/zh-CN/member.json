@@ -1,0 +1,111 @@
+{
+  "member": {
+    "title": "会员中心",
+    "subtitle": "解锁专属折扣、积分加速与会员礼遇",
+    "back": "返回",
+    "loading": "加载中...",
+    "loadFailed": "会员信息加载失败",
+    "levelNames": {
+      "0": "普通用户",
+      "1": "白银会员",
+      "2": "黄金会员",
+      "3": "铂金会员",
+      "4": "钻石会员"
+    },
+    "level": "会员等级",
+    "growth": "成长值",
+    "nextLevel": "距下一等级还需 {value} 成长值",
+    "maxLevel": "已达最高等级",
+    "expireTime": "有效期至 {date}",
+    "notPaid": "暂未开通付费会员",
+    "paid": "付费会员",
+    "stats": {
+      "discount": "下单折扣",
+      "pointsRate": "积分倍率",
+      "signDays": "连续签到"
+    },
+    "discountRate": "{value}折",
+    "discountOff": "{value}% OFF",
+    "pointsRate": "{value}x",
+    "signDaysValue": "{value} 天",
+    "benefits": {
+      "title": "专属权益",
+      "empty": "暂无权益",
+      "BIRTHDAY": "生日礼包",
+      "PRIORITY_SERVICE": "优先客服",
+      "FREE_CANCEL": "免费取消订单",
+      "EXCLUSIVE_SERVICE": "专属客服"
+    },
+    "sign": {
+      "title": "每日签到",
+      "desc": "连续签到天数越多，成长值与积分奖励越丰厚",
+      "button": "立即签到",
+      "signed": "今日已签到",
+      "success": "签到成功",
+      "failed": "签到失败",
+      "continuous": "已连续签到 {days} 天"
+    },
+    "packages": {
+      "title": "开通会员",
+      "subtitle": "选择适合你的会员套餐，立即享受会员权益",
+      "original": "原价",
+      "givePoints": "赠 {value} 积分",
+      "giveGrowth": "赠 {value} 成长值",
+      "open": "立即开通",
+      "confirmTitle": "开通会员",
+      "confirmContent": "确认开通【{name}】并支付 ¥{price}？",
+      "success": "开通成功，会员权益已生效",
+      "failed": "开通失败",
+      "empty": "暂无可开通套餐",
+      "types": {
+        "1": "月卡会员",
+        "2": "季卡会员",
+        "3": "年卡会员"
+      }
+    },
+    "records": {
+      "title": "成长值明细",
+      "time": "时间",
+      "change": "变化",
+      "remark": "说明",
+      "empty": "暂无成长值记录",
+      "total": "共 {total} 条"
+    },
+    "orders": {
+      "title": "会员订单",
+      "orderNo": "订单号",
+      "package": "套餐",
+      "amount": "金额",
+      "status": "状态",
+      "createTime": "下单时间",
+      "action": "操作",
+      "pay": "支付",
+      "cancel": "取消",
+      "empty": "暂无会员订单",
+      "cancelConfirm": "确认取消该订单？",
+      "cancelSuccess": "订单已取消",
+      "paySuccess": "支付成功",
+      "statusMap": {
+        "0": "待支付",
+        "1": "已支付",
+        "2": "已取消",
+        "3": "已退款"
+      }
+    },
+    "sources": {
+      "1": "消费",
+      "2": "签到",
+      "3": "评价",
+      "4": "分享",
+      "5": "开通会员",
+      "6": "管理员调整"
+    },
+    "levels": {
+      "title": "等级体系",
+      "threshold": "成长值 {value}+",
+      "unlimited": "无上限",
+      "current": "当前"
+    },
+    "loginRequired": "请先登录"
+  }
+}

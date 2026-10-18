@@ -1,0 +1,111 @@
+{
+  "member": {
+    "title": "Membership",
+    "subtitle": "Unlock exclusive discounts, point boosts and member perks",
+    "back": "Back",
+    "loading": "Loading...",
+    "loadFailed": "Failed to load membership information",
+    "levelNames": {
+      "0": "Regular",
+      "1": "Silver",
+      "2": "Gold",
+      "3": "Platinum",
+      "4": "Diamond"
+    },
+    "level": "Member Level",
+    "growth": "Growth",
+    "nextLevel": "{value} growth to the next level",
+    "maxLevel": "Top level reached",
+    "expireTime": "Valid until {date}",
+    "notPaid": "No paid membership",
+    "paid": "Paid Member",
+    "stats": {
+      "discount": "Order Discount",
+      "pointsRate": "Points Rate",
+      "signDays": "Check-in Streak"
+    },
+    "discountRate": "{value}% off",
+    "discountOff": "{value}% OFF",
+    "pointsRate": "{value}x",
+    "signDaysValue": "{value} days",
+    "benefits": {
+      "title": "Exclusive Benefits",
+      "empty": "No benefits yet",
+      "BIRTHDAY": "Birthday Gift",
+      "PRIORITY_SERVICE": "Priority Support",
+      "FREE_CANCEL": "Free Cancellation",
+      "EXCLUSIVE_SERVICE": "Dedicated Support"
+    },
+    "sign": {
+      "title": "Daily Check-in",
+      "desc": "The longer your streak, the more growth and points you earn",
+      "button": "Check in",
+      "signed": "Checked in today",
+      "success": "Check-in successful",
+      "failed": "Check-in failed",
+      "continuous": "Checked in {days} days in a row"
+    },
+    "packages": {
+      "title": "Join Membership",
+      "subtitle": "Choose a plan that fits you and enjoy member benefits",
+      "original": "Original",
+      "givePoints": "+{value} points",
+      "giveGrowth": "+{value} growth",
+      "open": "Subscribe",
+      "confirmTitle": "Join Membership",
+      "confirmContent": "Subscribe to {name} and pay ¥{price}?",
+      "success": "Subscription successful. Your benefits are active",
+      "failed": "Subscription failed",
+      "empty": "No plans available",
+      "types": {
+        "1": "Monthly Plan",
+        "2": "Quarterly Plan",
+        "3": "Annual Plan"
+      }
+    },
+    "records": {
+      "title": "Growth History",
+      "time": "Time",
+      "change": "Change",
+      "remark": "Description",
+      "empty": "No growth records",
+      "total": "{total} records"
+    },
+    "orders": {
+      "title": "Membership Orders",
+      "orderNo": "Order No.",
+      "package": "Plan",
+      "amount": "Amount",
+      "status": "Status",
+      "createTime": "Created At",
+      "action": "Actions",
+      "pay": "Pay",
+      "cancel": "Cancel",
+      "empty": "No membership orders",
+      "cancelConfirm": "Cancel this order?",
+      "cancelSuccess": "Order cancelled",
+      "paySuccess": "Payment successful",
+      "statusMap": {
+        "0": "Pending",
+        "1": "Paid",
+        "2": "Cancelled",
+        "3": "Refunded"
+      }
+    },
+    "sources": {
+      "1": "Consumption",
+      "2": "Check-in",
+      "3": "Review",
+      "4": "Share",
+      "5": "Membership",
+      "6": "Admin adjustment"
+    },
+    "levels": {
+      "title": "Level System",
+      "threshold": "{value}+ growth",
+      "unlimited": "Unlimited",
+      "current": "Current"
+    },
+    "loginRequired": "Please log in first"
+  }
+}
