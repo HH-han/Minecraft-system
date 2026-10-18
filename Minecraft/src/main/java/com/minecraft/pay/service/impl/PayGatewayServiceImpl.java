@@ -156,12 +156,12 @@ public class PayGatewayServiceImpl implements PayGatewayService {
         try {
             PayChannelAdapter adapter = channelRouter.resolve(channel.name());
             prepayResult = adapter.prepay(prepayRequest);
-        } catch (BusinessException e) {
-            throw e;
         } catch (Exception e) {
             flow.setStatus(PayStatus.FAILED.name());
             flow.setChannelResponse(e.getMessage());
             payFlowMapper.updateById(flow);
+            payOrder.setStatus(PayStatus.FAILED.name());
+            payOrderMapper.updateById(payOrder);
             log.error("[支付] 渠道下单失败 payNo={}, channel={}", payOrder.getPayNo(), channel.name(), e);
             throw new BusinessException("发起支付失败：" + e.getMessage());
         }

@@ -6,8 +6,14 @@ import com.minecraft.dto.request.MemberGrowthAdjustDTO;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.*;
+import com.minecraft.enums.RefundStatus;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.*;
+import com.minecraft.pay.entity.PayOrder;
+import com.minecraft.pay.entity.PayRefund;
+import com.minecraft.pay.enums.PayStatus;
+import com.minecraft.pay.mapper.PayOrderMapper;
+import com.minecraft.pay.service.PayGatewayService;
 import com.minecraft.vo.MemberGrowthRecordVO;
 import com.minecraft.vo.MemberOrderVO;
 import com.minecraft.vo.MemberUserVO;
@@ -35,6 +41,8 @@ public class MemberAdminService {
     private final MemberGrowthRecordMapper growthMapper;
     private final MemberSignRecordMapper signMapper;
     private final UserService userService;
+    private final PayGatewayService payGatewayService;
+    private final PayOrderMapper payOrderMapper;
 
     // ==================== 等级配置 ====================
 
@@ -178,6 +186,21 @@ public class MemberAdminService {
         if (order.getStatus() == null || order.getStatus() != 1) {
             throw new BusinessException("仅已支付的订单可以退款");
         }
+
+        // 统一走聚合支付网关退款（历史订单无支付单时跳过渠道退款）
+        PayOrder payOrder = payOrderMapper.selectOne(new LambdaQueryWrapper<PayOrder>()
+                .eq(PayOrder::getBizOrderNo, order.getOrderNo())
+                .in(PayOrder::getStatus, PayStatus.SUCCESS.name(), PayStatus.REFUNDING.name())
+                .orderByDesc(PayOrder::getId)
+                .last("LIMIT 1"));
+        if (payOrder != null) {
+            PayRefund refund = payGatewayService.refund(
+                    payOrder.getPayNo(), order.getAmount(), "会员订单退款", null);
+            if (!RefundStatus.SUCCESS.getCode().equals(refund.getStatus())) {
+                throw new BusinessException("渠道退款失败：" + refund.getFailReason());
+            }
+        }
+
         order.setStatus(3);
         orderMapper.updateById(order);
 
