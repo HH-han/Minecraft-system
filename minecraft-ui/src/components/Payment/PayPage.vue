@@ -142,22 +142,6 @@
         <button @click="closeAlert" class="custom-alert-button">{{ $t('payment.close') }}</button>
       </div>
     </div>
-    <!-- 模拟支付确认 -->
-    <div v-if="mockConfirmVisible" class="custom-alert">
-      <div class="alert-content">
-        <p class="mock-title">{{ $t('payment.mockTitle') }}</p>
-        <p>{{ $t('payment.mockAmount', { amount: pendingAmount.toFixed(2) }) }}</p>
-        <p class="mock-tip">{{ $t('payment.mockTip') }}</p>
-        <div class="mock-actions">
-          <button class="mock-btn mock-btn-ghost" :disabled="paying" @click="cancelMockPayments">
-            {{ $t('payment.cancel') }}
-          </button>
-          <button class="mock-btn mock-btn-primary" :disabled="paying" @click="confirmMockPayments">
-            {{ paying ? $t('payment.paying') : $t('payment.confirm') }}
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -170,6 +154,7 @@ import { ElMessage } from 'element-plus';
 import { getOrderDetail } from '@/api/order.js';
 import { createPayment, mockConfirmPayment, queryPayment, waitForPayment } from '@/api/payment.js';
 import { getRailwayOrderDetail } from '@/api/railway.js';
+import { getMyMemberOrders } from '@/api/member.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -193,7 +178,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  /** 订单类型：mall（商城订单）/ railway（铁路车票订单） */
+  /** 订单类型：mall（商城订单）/ railway（铁路车票订单）/ member（会员订单） */
   orderType: {
     type: String,
     default: 'mall'
@@ -226,10 +211,8 @@ const orderIds = ref([]);
 const orderDetails = ref([]);
 // 铁路订单详情
 const railwayOrder = ref(null);
-// 模拟支付确认
-const mockConfirmVisible = ref(false);
-const pendingPayments = ref([]);
-const pendingAmount = ref(0);
+// 会员订单详情
+const memberOrder = ref(null);
 
 // 生成当前时间作为订单时间
 const generateOrderTime = () => {
@@ -261,6 +244,31 @@ const loadRailwayOrder = async () => {
   } catch (error) {
     console.error('获取车票订单详情失败:', error);
     ElMessage.error(t('railway.orders.loadFailed'));
+  }
+};
+
+// 加载会员开通订单详情
+const loadMemberOrder = async (orderNo) => {
+  try {
+    const response = await getMyMemberOrders();
+    const list = Array.isArray(response?.data) ? response.data : [];
+    const order = list.find((row) => String(row.orderNo) === String(orderNo));
+    if (!order) {
+      ElMessage.error(t('payment.loadOrderFailed'));
+      return;
+    }
+    memberOrder.value = order;
+    item.value = {
+      id: order.id,
+      name: order.packageName,
+      orderNo: order.orderNo,
+      price: Number(order.amount || 0),
+      quantity: 1,
+      ticketType: t('payment.memberPackage')
+    };
+  } catch (error) {
+    console.error('获取会员订单详情失败:', error);
+    ElMessage.error(t('payment.loadOrderFailed'));
   }
 };
 
@@ -338,6 +346,8 @@ onMounted(async () => {
   if (orderIds.value.length > 0) {
     if (props.orderType === 'railway') {
       await loadRailwayOrder();
+    } else if (props.orderType === 'member') {
+      await loadMemberOrder(orderIds.value[0]);
     } else {
       await loadMallOrders(orderIds.value);
     }
@@ -427,6 +437,18 @@ const buildPaymentTargets = () => {
       subject: item.value.name || t('payment.railwaySubject', { orderNo: order.orderNo })
     }];
   }
+  if (props.orderType === 'member') {
+    const order = memberOrder.value;
+    if (!order?.orderNo) {
+      throw new Error(t('payment.memberOrderIncomplete'));
+    }
+    return [{
+      bizOrderNo: order.orderNo,
+      bizType: 'MEMBER',
+      totalAmount: Number(order.amount || 0),
+      subject: t('payment.memberSubject', { name: order.packageName })
+    }];
+  }
   if (orderDetails.value.length > 0) {
     return orderDetails.value.map((order) => ({
       bizOrderNo: order.orderNo,
@@ -500,13 +522,8 @@ const confirmPayment = async () => {
     const channelPending = pending.filter((payment) => !payment.payParams?.mock);
 
     if (mockPending.length > 0) {
-      // 模拟支付：先展示确认弹窗，确认后逐笔确认支付
-      pendingPayments.value = mockPending;
-      pendingAmount.value = Number(
-        mockPending.reduce((sum, payment) => sum + Number(payment.amount || 0), 0).toFixed(2)
-      );
-      mockConfirmVisible.value = true;
-      return;
+      // 模拟渠道：静默确认支付，不再弹出二次确认框
+      await confirmMockPayments(mockPending);
     }
 
     if (channelPending.length > 0) {
@@ -523,37 +540,20 @@ const confirmPayment = async () => {
   }
 };
 
-// 模拟支付确认
-const confirmMockPayments = async () => {
-  paying.value = true;
-  try {
-    for (const payment of pendingPayments.value) {
-      const confirmed = await mockConfirmPayment(payment.flowNo);
-      if (confirmed?.code !== 200) {
-        throw new Error(confirmed?.message || t('payment.payFailed'));
-      }
-      const queried = await queryPayment(payment.payNo);
-      if (queried?.code !== 200 || queried.data?.status !== 'SUCCESS') {
-        throw new Error(queried?.message || t('payment.payIncomplete'));
-      }
+// 模拟渠道：逐笔确认支付并校验支付结果
+const confirmMockPayments = async (payments) => {
+  for (const payment of payments) {
+    const confirmed = await mockConfirmPayment(payment.flowNo);
+    if (confirmed?.code !== 200) {
+      throw new Error(confirmed?.message || t('payment.payFailed'));
     }
-    mockConfirmVisible.value = false;
-    pendingPayments.value = [];
-    isPaymentModalVisible.value = true;
-  } catch (error) {
-    console.error('模拟支付失败:', error);
-    isAlertVisible.value = true;
-    alertMessage.value = error?.message || t('payment.payFailed');
-  } finally {
-    paying.value = false;
+    const queried = await queryPayment(payment.payNo);
+    if (queried?.code !== 200 || queried.data?.status !== 'SUCCESS') {
+      throw new Error(queried?.message || t('payment.payIncomplete'));
+    }
   }
 };
 
-const cancelMockPayments = () => {
-  mockConfirmVisible.value = false;
-  pendingPayments.value = [];
-  ElMessage.warning(t('payment.cancelled'));
-};
 // 关闭自定义提示框
 const closeAlert = () => {
   isAlertVisible.value = false;
@@ -923,49 +923,5 @@ const closeModal = () => {
   opacity: 0.65;
   cursor: not-allowed;
   transform: none;
-}
-
-/* 模拟支付确认弹窗 */
-.mock-title {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--theme-text-1);
-  margin-bottom: 8px;
-}
-
-.mock-tip {
-  font-size: 12px;
-  color: var(--theme-text-2);
-  margin-top: 10px;
-}
-
-.mock-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.mock-actions .mock-btn {
-  flex: 1;
-  margin-top: 0;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.mock-actions .mock-btn-ghost {
-  background: var(--theme-bg-surface-2);
-  color: var(--theme-text-1);
-  border: 1px solid var(--theme-border);
-}
-
-.mock-actions .mock-btn-primary {
-  background: var(--theme-success);
-  color: var(--theme-primary-text);
-}
-
-.mock-actions .mock-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 </style>

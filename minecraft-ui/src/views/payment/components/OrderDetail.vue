@@ -90,7 +90,7 @@
       </div>
     </div>
     
-    <div class="shipping-address-card">
+    <div class="shipping-address-card" v-if="isShippableOrder">
       <h3 class="section-title">收货地址</h3>
       <div class="address-content">
         <div class="name-phone">
@@ -280,16 +280,23 @@ const paymentPurpose = computed(() => {
 // 积分兑换订单（无实际支付金额）
 const isPointsOrder = computed(() => order.value.itemType === 'points')
 
-// 是否展示物流信息：非待支付且已进入物流环节
+// 是否使用物流系统：仅纪念品等实物商品（酒店/景点/美食等不发货）
+const SHIPPABLE_ITEM_TYPES = ['product', 'points']
+const isShippableOrder = computed(() => SHIPPABLE_ITEM_TYPES.includes(order.value.itemType))
+
+// 是否展示物流信息：实物商品且已进入物流环节
 const hasShippingInfo = computed(
   () =>
+    isShippableOrder.value &&
     ['1', '2', '3'].includes(order.value.status) &&
     ((order.value.shippingStatus !== null && order.value.shippingStatus !== undefined) ||
       !!order.value.trackingNo)
 )
 
 // 是否可查看物流
-const canViewLogistics = computed(() => ['1', '2', '3'].includes(order.value.status))
+const canViewLogistics = computed(
+  () => isShippableOrder.value && ['1', '2', '3'].includes(order.value.status)
+)
 
 // 时间格式化：2026-10-11T16:16:02 → 2026-10-11 16:16:02
 const formatTime = (time) => (time ? String(time).replace('T', ' ') : '')
@@ -350,6 +357,18 @@ const getAfterSaleText = (status) => {
   return map[status] || '无'
 }
 
+// 支付渠道文案
+const getChannelText = (code) => {
+  const key = `payment.orderDetail.channels.${String(code || '').toLowerCase()}`
+  return tOr(key, code || '-')
+}
+
+// 支付状态文案（优先国际化，后端 statusDesc 兜底）
+const getPayStatusText = (payment) => {
+  const status = String(payment?.status || '')
+  return tOr(`payment.orderDetail.statusLabels.${status}`, payment?.statusDesc || status || '-')
+}
+
 // 复制文本
 const copyText = async (text) => {
   try {
@@ -368,6 +387,7 @@ const normalizeOrder = (data) => {
     orderNo: data.orderNo || (data.id != null ? String(data.id) : ''),
     status,
     itemType: data.itemType || '',
+    payNo: data.payNo || '',
     createTime: formatTime(data.createTime),
     // 后端无独立支付时间字段，非待支付订单以更新时间近似
     payTime: formatTime(data.payTime || (status !== '0' ? data.updateTime : '')),
@@ -418,6 +438,24 @@ const fetchCommodityItem = async (id, commodity) => {
   return null
 }
 
+// 查询订单关联的聚合支付单（校验归属由后端完成）
+const fetchPaymentInfo = async (payNo) => {
+  paymentInfo.value = null
+  if (!payNo) return
+  try {
+    const response = await queryPayment(payNo, { silent: true })
+    if (response?.code === 200 && response.data) {
+      paymentInfo.value = response.data
+      // 以支付单的成功支付时间作为准确支付时间
+      if (response.data.payTime) {
+        order.value.payTime = formatTime(response.data.payTime)
+      }
+    }
+  } catch (err) {
+    console.warn('获取支付信息失败:', err)
+  }
+}
+
 // 获取订单数据
 const fetchProductData = async () => {
   const orderId = route.query.orderId
@@ -426,6 +464,7 @@ const fetchProductData = async () => {
 
   // 初始设置为false
   hasOrderData.value = false
+  paymentInfo.value = null
 
   if (orderId) {
     // 如果有订单编号，从后端获取订单数据
@@ -444,6 +483,9 @@ const fetchProductData = async () => {
             order.value.amount = item.price
           }
         }
+
+        // 查询该订单的支付信息（支付单号由支付成功回调回写）
+        await fetchPaymentInfo(order.value.payNo)
 
         // 设置为有订单数据
         hasOrderData.value = true
@@ -607,6 +649,7 @@ onMounted(() => {
 
 /* 卡片通用样式 */
 .order-info-card,
+.payment-info-card,
 .shipping-address-card,
 .order-items-card,
 .order-summary-card,
@@ -944,6 +987,7 @@ onMounted(() => {
   .section-title { font-size: 15px; }
 
   .order-info-card,
+  .payment-info-card,
   .shipping-address-card,
   .order-items-card,
   .order-summary-card,
@@ -982,6 +1026,7 @@ onMounted(() => {
 @media (max-width: 480px) {
   .order-title { font-size: 20px; }
   .order-info-card,
+  .payment-info-card,
   .shipping-address-card,
   .order-items-card,
   .order-summary-card,

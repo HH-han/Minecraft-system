@@ -52,6 +52,59 @@
     "points": "积分兑换",
     "goods": "商品",
     "railwayOrderIncomplete": "车票订单信息不完整，请重新下单",
-    "railwaySubject": "铁路车票：{orderNo}"
+    "railwaySubject": "铁路车票：{orderNo}",
+    "memberPackage": "会员套餐",
+    "memberOrderIncomplete": "会员订单信息不完整，请重新下单",
+    "memberSubject": "会员开通：{name}",
+    "history": {
+      "paymentRecord": "支付记录",
+      "unpaid": "未支付",
+      "orderType": "订单类型",
+      "memberItem": "会员开通：{name}",
+      "memberShort": "会员",
+      "railwayShort": "车票",
+      "memberCenter": "前往会员中心",
+      "myTickets": "前往我的车票",
+      "loadFailed": "获取订单列表失败，请重试"
+    },
+    "orderDetail": {
+      "paymentInfo": "支付信息",
+      "payNo": "支付单号",
+      "copy": "复制",
+      "purpose": "支付用途",
+      "channel": "支付方式",
+      "payStatus": "支付状态",
+      "totalAmount": "应付金额",
+      "pointsDeduct": "积分抵扣",
+      "payAmount": "实付金额",
+      "refundedAmount": "已退款",
+      "payTime": "支付时间",
+      "tradeNo": "渠道交易号",
+      "channels": {
+        "mock": "模拟支付",
+        "wechat": "微信支付",
+        "alipay": "支付宝",
+        "unionpay": "银联云闪付",
+        "balance": "余额支付"
+      },
+      "statusLabels": {
+        "INIT": "待支付",
+        "PAYING": "支付中",
+        "SUCCESS": "支付成功",
+        "FAILED": "支付失败",
+        "CLOSED": "已关闭",
+        "REFUNDING": "退款中",
+        "REFUNDED": "已退款"
+      },
+      "bizTypes": {
+        "MALL": "商城购物",
+        "HOTEL": "酒店预订",
+        "TICKET": "景点门票",
+        "POINTS": "积分兑换",
+        "GROUP": "拼团",
+        "MEMBER": "会员服务",
+        "RAILWAY": "火车票"
+      }
+    }
   }
 }

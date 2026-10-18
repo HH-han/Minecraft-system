@@ -21,7 +21,7 @@ public interface OrderShippingService extends IService<OrderShipping> {
     /** 批量发货（同一承运商多订单） */
     void batchCreateShipping(ShippingBatchRequest request, Long adminId);
 
-    /** 待发货订单分页列表（已支付且未发货，含纪念品购买与积分兑换） */
+    /** 待发货订单分页列表（仅纪念品等实物商品：已支付且未发货） */
     PageResponse<?> listPendingOrders(PageRequest request);
 
     /** 查询订单下所有包裹 */

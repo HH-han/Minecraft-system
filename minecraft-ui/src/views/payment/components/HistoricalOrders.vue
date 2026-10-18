@@ -26,7 +26,7 @@
         <div class="empty-text">暂无历史订单</div>
         <router-link to="/payment" class="btn btn-primary">去购物</router-link>
       </div>
-      <div v-else class="order-item" v-for="order in filteredOrders" :key="order.id">
+      <div v-else class="order-item" v-for="order in pagedOrders" :key="order.key">
         <div class="order-header">
           <div class="order-id">订单编号：{{ order.orderId }}</div>
           <div class="order-status" :class="getStatusClass(order.status)">
@@ -41,26 +41,62 @@
             </div>
             <div class="info-item">
               <span class="label">支付时间</span>
-              <span class="value">{{ order.updateTime || '未支付' }}</span>
+              <span class="value">{{ getPayTimeText(order) || '未支付' }}</span>
             </div>
             <div class="info-item">
               <span class="label">订单金额</span>
-              <span class="value price">¥{{ order.totalPrice }}</span>
+              <span class="value price">¥{{ formatMoney(order.totalPrice) }}</span>
             </div>
             <div class="info-item">
-              <span class="label">物流状态</span>
-              <span class="value">{{ order.statusDesc }}</span>
+              <span class="label">{{ isShippableOrder(order) ? '物流状态' : $t('payment.history.orderType') }}</span>
+              <span class="value">{{ isShippableOrder(order) ? order.statusDesc : getItemTypeText(order.itemType) }}</span>
+            </div>
+          </div>
+          <!-- 已执行的支付行为（商城取聚合支付单，会员/车票取业务订单） -->
+          <div class="payment-record" v-if="order.payNo || order.source !== 'mall'">
+            <div class="payment-record__head">
+              <span class="payment-record__title">{{ $t('payment.history.paymentRecord') }}</span>
+              <span
+                v-if="getPaymentView(order)"
+                class="payment-status"
+                :class="getPayStatusClass(getPaymentView(order)?.status)"
+              >
+                {{ getPayStatusText(getPaymentView(order)) }}
+              </span>
+            </div>
+            <div class="payment-record__grid">
+              <div class="info-item">
+                <span class="label">{{ $t('payment.orderDetail.channel') }}</span>
+                <span class="value">{{ getChannelText(getPaymentView(order)?.channelCode) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">{{ $t('payment.orderDetail.payAmount') }}</span>
+                <span class="value price">{{ payAmountText(order) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">{{ $t('payment.orderDetail.payTime') }}</span>
+                <span class="value">{{ getPayTimeText(order) || '-' }}</span>
+              </div>
+              <div class="info-item" v-if="order.payNo">
+                <span class="label">{{ $t('payment.orderDetail.payNo') }}</span>
+                <span class="value mono">{{ order.payNo }}</span>
+              </div>
+              <div class="info-item" v-if="Number(getPaymentView(order)?.refundedAmount) > 0">
+                <span class="label">{{ $t('payment.orderDetail.refundedAmount') }}</span>
+                <span class="value">¥{{ formatMoney(getPaymentView(order)?.refundedAmount) }}</span>
+              </div>
             </div>
           </div>
           <div class="order-products">
             <div class="product-item" v-for="(item, index) in order.items" :key="index">
               <div class="product-image">
-                <img :src="item.image" :alt="item.name">
+                <img v-if="item.image" :src="item.image" :alt="item.name">
+                <span v-else class="product-image__fallback">{{ getItemFallbackText(order) }}</span>
               </div>
               <div class="product-info">
                 <div class="product-name">{{ item.name }}</div>
                 <div class="product-price">
-                  <span class="price">¥{{ item.price }}</span>
+                  <span class="price">¥{{ formatMoney(item.price) }}</span>
                   <span class="quantity">x{{ item.quantity }}</span>
                 </div>
               </div>
@@ -70,26 +106,31 @@
         <div class="order-footer">
           <div class="order-total">
             共 {{ order.quantity }} 件商品，合计：
-            <span class="total-price">¥{{ order.totalPrice }}</span>
+            <span class="total-price">¥{{ formatMoney(order.totalPrice) }}</span>
           </div>
           <div class="order-actions">
-            <button v-if="order.status === '0'" class="btn btn-primary" @click="goToPay(order)">
-              立即支付
-            </button>
-            <button v-if="order.status === '0'" class="btn btn-secondary" @click="handleCancelOrder(order.id)">
-              取消订单
-            </button>
-            <button v-if="order.status === '3'" class="btn btn-secondary" @click="reviewOrder(order.id)">
-              评价
-            </button>
-            <button class="btn btn-link" @click="viewOrderDetail(order.id)">
-              查看详情
-            </button>
-            <button v-if="canViewLogistics(order)" class="btn btn-secondary" @click="viewLogistics(order)">
-              查看物流
-            </button>
-            <button class="btn btn-delete" @click="handleDeleteOrder(order.id)">
-              删除订单
+            <template v-if="order.source === 'mall'">
+              <button v-if="order.status === '0'" class="btn btn-primary" @click="goToPay(order)">
+                立即支付
+              </button>
+              <button v-if="order.status === '0'" class="btn btn-secondary" @click="handleCancelOrder(order.id)">
+                取消订单
+              </button>
+              <button v-if="order.status === '3'" class="btn btn-secondary" @click="reviewOrder(order.id)">
+                评价
+              </button>
+              <button class="btn btn-link" @click="viewOrderDetail(order.id)">
+                查看详情
+              </button>
+              <button v-if="canViewLogistics(order)" class="btn btn-secondary" @click="viewLogistics(order)">
+                查看物流
+              </button>
+              <button class="btn btn-delete" @click="handleDeleteOrder(order.id)">
+                删除订单
+              </button>
+            </template>
+            <button v-else class="btn btn-link" @click="openSourceOrder(order)">
+              {{ order.source === 'member' ? $t('payment.history.memberCenter') : $t('payment.history.myTickets') }}
             </button>
           </div>
         </div>
@@ -117,17 +158,26 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getOrderList, cancelOrder, deleteOrder } from '@/api/order.js'
+import { queryPayment } from '@/api/payment.js'
+import { getMyMemberOrders } from '@/api/member.js'
+import { getRailwayOrders } from '@/api/railway.js'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const router = useRouter()
 const emit = defineEmits(['view-detail', 'pay'])
+const { t, te } = useI18n()
 
-// 订单数据
+// 国际化键存在时取翻译，否则回退
+const tOr = (key, fallback) => (te(key) ? t(key) : fallback)
+
+// 订单数据（商城订单 + 会员订单 + 火车票订单合并）
 const orders = ref([])
 const loading = ref(false)
-const total = ref(0)
+// 商城订单主键 → 聚合支付单
+const payments = ref({})
 
 // 筛选条件
 const filters = [
@@ -143,11 +193,6 @@ const activeFilter = ref('all')
 const currentPage = ref(1)
 const pageSize = ref(10)
 
-// 计算总页数
-const totalPages = computed(() => {
-  return Math.ceil(total.value / pageSize.value)
-})
-
 // 筛选订单
 const filteredOrders = computed(() => {
   if (activeFilter.value === 'all') {
@@ -156,45 +201,303 @@ const filteredOrders = computed(() => {
   return orders.value.filter(order => order.status === activeFilter.value)
 })
 
-// 获取订单列表
+// 计算总页数
+const totalPages = computed(() => Math.ceil(filteredOrders.value.length / pageSize.value))
+
+// 当前页订单（多来源合并后由前端统一分页）
+const pagedOrders = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  return filteredOrders.value.slice(start, start + pageSize.value)
+})
+
+// 会员订单 / 火车票订单状态 → 商城订单统一状态码
+const MEMBER_STATUS_MAP = { 0: '0', 1: '1', 2: '4', 3: '5' }
+const RAILWAY_STATUS_MAP = { PENDING: '0', PAID: '1', CANCELLED: '4', REFUNDED: '5' }
+const MEMBER_PAY_CHANNEL = { 1: 'ALIPAY', 2: 'WECHAT', 3: 'BALANCE' }
+
+const toTimestamp = (value) => {
+  if (!value) return 0
+  const ts = new Date(String(value).replace(' ', 'T')).getTime()
+  return Number.isNaN(ts) ? 0 : ts
+}
+
+// 商城 / 预订订单
+const normalizeMallOrder = (order) => ({
+  key: `mall-${order.id}`,
+  id: order.id,
+  source: 'mall',
+  orderId: order.orderNo,
+  status: order.status != null ? String(order.status) : '',
+  rawStatus: order.status,
+  itemType: order.itemType || '',
+  payNo: order.payNo || '',
+  createTime: formatTime(order.createTime),
+  updateTime: formatTime(order.updateTime),
+  totalPrice: Number(order.amount) || 0,
+  quantity: order.quantity || 1,
+  shippingStatus: order.shippingStatus,
+  carrierCode: order.carrierCode,
+  trackingNo: order.trackingNo,
+  statusDesc: shippingStatusText(order.status),
+  items: [{
+    id: order.itemId,
+    name: order.itemName,
+    price: Number(order.amount) || 0,
+    quantity: order.quantity || 1,
+    image: order.image,
+  }]
+})
+
+// 会员开通订单
+const normalizeMemberOrder = (order) => {
+  const status = MEMBER_STATUS_MAP[order.status] ?? '0'
+  return {
+    key: `member-${order.id}`,
+    id: order.id,
+    source: 'member',
+    orderId: order.orderNo,
+    status,
+    rawStatus: order.status,
+    itemType: 'member',
+    payNo: '',
+    payType: order.payType,
+    createTime: formatTime(order.createTime),
+    updateTime: formatTime(order.payTime || order.updateTime),
+    payTime: formatTime(order.payTime),
+    totalPrice: Number(order.amount) || 0,
+    quantity: 1,
+    statusDesc: getStatusText(status),
+    items: [{
+      id: order.packageId,
+      name: t('payment.history.memberItem', { name: order.packageName || '-' }),
+      price: Number(order.amount) || 0,
+      quantity: 1,
+      image: ''
+    }]
+  }
+}
+
+// 火车票订单（金额单位为分）
+const normalizeRailwayOrder = (order) => {
+  const status = RAILWAY_STATUS_MAP[order.status] ?? '0'
+  const amount = Number(order.totalAmount || 0) / 100
+  const route = [order.fromStationName, order.toStationName].filter(Boolean).join(' → ')
+  return {
+    key: `railway-${order.id}`,
+    id: order.id,
+    source: 'railway',
+    orderId: order.orderNo,
+    status,
+    rawStatus: order.status,
+    itemType: 'railway',
+    payNo: '',
+    createTime: formatTime(order.createTime),
+    updateTime: formatTime(order.payTime),
+    payTime: formatTime(order.payTime),
+    totalPrice: amount,
+    quantity: order.passengerCount || 1,
+    statusDesc: getStatusText(status),
+    items: [{
+      id: order.id,
+      name: [order.trainNo, route].filter(Boolean).join(' ') || order.orderNo,
+      price: amount,
+      quantity: order.passengerCount || 1,
+      image: ''
+    }]
+  }
+}
+
+// 分页拉取全部商城订单（合并多来源后由前端统一分页）
+const fetchAllMallOrders = async () => {
+  const size = 100
+  const list = []
+  let pageNum = 1
+  let total = 0
+  do {
+    const response = await getOrderList({ pageNum, pageSize: size })
+    list.push(...(response?.data?.records || []))
+    total = response?.data?.total || 0
+    pageNum += 1
+  } while (list.length < total && pageNum <= 20)
+  return list
+}
+
+// 分页拉取全部火车票订单
+const fetchAllRailwayOrders = async () => {
+  const size = 50
+  const list = []
+  let pageNum = 1
+  let total = 0
+  do {
+    const response = await getRailwayOrders({ pageNum, pageSize: size })
+    list.push(...(response?.data?.records || []))
+    total = response?.data?.total || 0
+    pageNum += 1
+  } while (list.length < total && pageNum <= 20)
+  return list
+}
+
+// 获取订单列表（商城 + 会员 + 火车票）
 const fetchOrders = async () => {
   loading.value = true
   try {
-    const response = await getOrderList({ 
-      pageNum: currentPage.value, 
-      pageSize: pageSize.value 
-    })
-    
-    // 处理响应数据，转换为前端需要的格式
-    const orderData = response.data.records || []
-    orders.value = orderData.map(order => ({
-      id: order.id,
-      orderId: order.orderNo,
-      status: order.status,
-      createTime: order.createTime,
-      updateTime: order.updateTime || '',
-      totalPrice: order.amount,
-      quantity: order.quantity,
-      shippingStatus: order.shippingStatus,
-      carrierCode: order.carrierCode,
-      trackingNo: order.trackingNo,
-      statusDesc: shippingStatusText(order.status),
-      items: [{
-        id: order.itemId,
-        name: order.itemName,
-        price: order.amount,
-        quantity: order.quantity,
-        image: order.image,
-      }]
-    }))
-    
-    total.value = response.data.total || 0
+    const [mallList, memberList, railwayList] = await Promise.all([
+      fetchAllMallOrders(),
+      getMyMemberOrders()
+        .then((response) => (response?.code === 200 ? response.data || [] : []))
+        .catch(() => []),
+      fetchAllRailwayOrders().catch(() => [])
+    ])
+
+    orders.value = [
+      ...mallList.map(normalizeMallOrder),
+      ...memberList.map(normalizeMemberOrder),
+      ...railwayList.map(normalizeRailwayOrder)
+    ].sort((a, b) => toTimestamp(b.createTime) - toTimestamp(a.createTime))
+
+    // 查询商城订单关联的聚合支付单（用户归属由后端校验）
+    await loadPayments(orders.value)
   } catch (error) {
     console.error('获取订单列表失败:', error)
-    ElMessage.error('获取订单列表失败，请重试')
+    ElMessage.error(t('payment.history.loadFailed'))
   } finally {
     loading.value = false
   }
+}
+
+// 批量查询商城订单关联的支付单
+const loadPayments = async (list) => {
+  const targets = list.filter((order) => order.source === 'mall' && order.payNo)
+  if (targets.length === 0) {
+    payments.value = {}
+    return
+  }
+  const results = await Promise.all(
+    targets.map(async (order) => {
+      try {
+        const response = await queryPayment(order.payNo, { silent: true })
+        return { id: order.id, payment: response?.code === 200 ? response.data : null }
+      } catch {
+        return { id: order.id, payment: null }
+      }
+    })
+  )
+  const map = {}
+  results.forEach(({ id, payment }) => {
+    if (payment) map[id] = payment
+  })
+  payments.value = map
+}
+
+// 时间格式化：2026-10-11T16:16:02 → 2026-10-11 16:16:02
+const formatTime = (time) => (time ? String(time).replace('T', ' ') : '')
+
+// 金额格式化：整数不带小数，非整数保留两位
+const formatMoney = (value) => {
+  const num = Number(value || 0)
+  return Number.isInteger(num) ? String(num) : num.toFixed(2)
+}
+
+// 商城订单对应的聚合支付单
+const getPayment = (order) => payments.value[order.id] || null
+
+// 统一支付信息视图：商城取聚合支付单，会员/车票用业务订单字段兜底
+const getPaymentView = (order) => {
+  if (order.source === 'mall') return getPayment(order)
+  if (order.source === 'member') {
+    const raw = String(order.rawStatus ?? '')
+    const statusMap = { '0': 'INIT', '1': 'SUCCESS', '2': 'CLOSED', '3': 'REFUNDED' }
+    return {
+      status: statusMap[raw] || 'INIT',
+      channelCode: MEMBER_PAY_CHANNEL[order.payType] || 'WECHAT',
+      payAmount: order.totalPrice,
+      payTime: order.payTime,
+      refundedAmount: 0
+    }
+  }
+  if (order.source === 'railway') {
+    const statusMap = { PENDING: 'INIT', PAID: 'SUCCESS', CANCELLED: 'CLOSED', REFUNDED: 'REFUNDED' }
+    return {
+      status: statusMap[order.rawStatus] || 'INIT',
+      // 车票订单表未留存渠道信息，展示为未知
+      channelCode: '',
+      payAmount: order.totalPrice,
+      payTime: order.payTime,
+      refundedAmount: 0
+    }
+  }
+  return null
+}
+
+// 支付时间：优先取支付单成功时间，未支付订单显示占位
+const getPayTimeText = (order) => {
+  const payment = getPaymentView(order)
+  if (payment?.payTime) return formatTime(payment.payTime)
+  if (order.status === '0') return t('payment.history.unpaid')
+  return order.updateTime || ''
+}
+
+// 支付渠道文案
+const getChannelText = (code) =>
+  tOr(`payment.orderDetail.channels.${String(code || '').toLowerCase()}`, code || '-')
+
+// 支付状态文案（后端 statusDesc 兜底）
+const getPayStatusText = (payment) => {
+  if (!payment) return '-'
+  const status = String(payment.status || '')
+  return tOr(`payment.orderDetail.statusLabels.${status}`, payment.statusDesc || status || '-')
+}
+
+// 支付状态样式沿用订单状态的配色
+const getPayStatusClass = (status) => {
+  const map = {
+    SUCCESS: 'paid',
+    INIT: 'unpaid',
+    PAYING: 'unpaid',
+    FAILED: 'cancelled',
+    CLOSED: 'cancelled',
+    REFUNDING: 'refunded',
+    REFUNDED: 'refunded'
+  }
+  return map[status] || 'unpaid'
+}
+
+// 实付金额（积分订单显示积分兑换）
+const payAmountText = (order) => {
+  if (order.itemType === 'points') return t('payment.points')
+  const payment = getPaymentView(order)
+  return `¥${formatMoney(payment?.payAmount ?? order.totalPrice)}`
+}
+
+// 订单类型文案
+const ITEM_TYPE_I18N_KEYS = {
+  food: 'payment.food',
+  product: 'payment.product',
+  hotel: 'payment.hotel',
+  ticket: 'payment.ticket',
+  points: 'payment.points',
+  member: 'payment.orderDetail.bizTypes.MEMBER',
+  railway: 'payment.orderDetail.bizTypes.RAILWAY'
+}
+const getItemTypeText = (itemType) => {
+  const type = String(itemType || '').toLowerCase()
+  return tOr(ITEM_TYPE_I18N_KEYS[type] || '', type || '-')
+}
+
+// 是否使用物流系统：仅纪念品等实物商品（酒店/景点/美食等不发货）
+const SHIPPABLE_ITEM_TYPES = ['product', 'points']
+const isShippableOrder = (order) => SHIPPABLE_ITEM_TYPES.includes(order.itemType)
+
+// 无商品图时的占位文案
+const getItemFallbackText = (order) => {
+  if (order.itemType === 'member') return t('payment.history.memberShort')
+  if (order.itemType === 'railway') return t('payment.history.railwayShort')
+  return t('payment.goods')
+}
+
+// 会员 / 车票订单跳转到对应业务页处理
+const openSourceOrder = (order) => {
+  router.push(order.source === 'member' ? '/member' : '/ticket/my-orders')
 }
 
 // 数据变更后自动刷新
@@ -239,8 +542,9 @@ const shippingStatusText = (status) => {
   return map[status] || '未知状态'
 }
 
-// 是否已进入物流环节（可查看物流）
-const canViewLogistics = (order) => ['1', '2', '3'].includes(order.status)
+// 是否可查看物流：仅纪念品等实物商品且已进入物流环节
+const canViewLogistics = (order) =>
+  isShippableOrder(order) && ['1', '2', '3'].includes(order.status)
 
 // 查看物流
 const viewLogistics = (order) => {
@@ -316,15 +620,16 @@ onMounted(() => {
   fetchOrders()
 })
 
-// 监听分页变化
-watch(currentPage, () => {
-  fetchOrders()
+// 筛选条件变化时回到第一页（前端统一分页）
+watch(activeFilter, () => {
+  currentPage.value = 1
 })
 
-// 监听筛选条件变化
-watch(activeFilter, () => {
-  currentPage.value = 1 // 重置为第一页
-  fetchOrders()
+// 数据刷新后避免停留在超出范围的页码
+watch(totalPages, (pages) => {
+  if (pages > 0 && currentPage.value > pages) {
+    currentPage.value = pages
+  }
 })
 </script>
 
@@ -419,7 +724,7 @@ watch(activeFilter, () => {
 /* 订单列表 */
 .orders-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 16px;
 }
 
@@ -512,6 +817,87 @@ watch(activeFilter, () => {
   gap: 10px 16px;
 }
 
+/* 已执行的支付行为 */
+.payment-record {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--theme-primary-soft);
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 18%, transparent);
+}
+
+.payment-record__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.payment-record__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--theme-primary);
+}
+
+.payment-record__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+/* 支付信息项自动撑满整行，避免出现半行空白 */
+.payment-record__grid .info-item {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.payment-record__grid .value.mono {
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.payment-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.payment-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.payment-status.unpaid {
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+}
+
+.payment-status.paid {
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
+}
+
+.payment-status.cancelled {
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
+}
+
+.payment-status.refunded {
+  background: color-mix(in srgb, var(--theme-accent-2) 10%, transparent);
+  color: var(--theme-accent-2);
+}
+
 .info-item {
   display: flex;
   flex-direction: column;
@@ -571,6 +957,19 @@ watch(activeFilter, () => {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+}
+
+/* 会员 / 车票等无商品图时的占位 */
+.product-image__fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text-3);
+  background: var(--theme-bg-surface-2);
 }
 
 .product-item:hover .product-image img {

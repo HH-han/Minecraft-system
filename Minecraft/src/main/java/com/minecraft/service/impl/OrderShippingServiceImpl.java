@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, OrderShipping> implements OrderShippingService {
+
+    /** 仅纪念品等实物商品订单使用物流系统（product-纪念品，points-积分兑换实物） */
+    private static final Set<String> SHIPPABLE_ITEM_TYPES = Set.of("product", "points");
 
     private final OrderMapper orderMapper;
     private final LogisticsCarrierMapper carrierMapper;
@@ -55,6 +59,9 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         Order order = orderMapper.selectById(request.getOrderId());
         if (order == null) {
             throw new BusinessException("订单不存在");
+        }
+        if (!SHIPPABLE_ITEM_TYPES.contains(order.getItemType())) {
+            throw new BusinessException("仅纪念品等实物商品订单支持发货");
         }
         if (!OrderStatus.PAID.getCode().toString().equals(order.getStatus())) {
             throw new BusinessException("订单状态不允许发货");
@@ -225,6 +232,7 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         Page<Order> page = new Page<>(request.getPageNum(), request.getPageSize());
         LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Order::getStatus, OrderStatus.PAID.getCode().toString())
+                .in(Order::getItemType, SHIPPABLE_ITEM_TYPES)
                 .and(w -> w.isNull(Order::getShippingStatus).or().eq(Order::getShippingStatus, 0))
                 .orderByDesc(Order::getCreateTime);
         Page<Order> result = orderMapper.selectPage(page, wrapper);

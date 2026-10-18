@@ -52,6 +52,59 @@
     "points": "Points Exchange",
     "goods": "Goods",
     "railwayOrderIncomplete": "Train order information is incomplete, please create the order again",
-    "railwaySubject": "Train ticket: {orderNo}"
+    "railwaySubject": "Train ticket: {orderNo}",
+    "memberPackage": "Membership Package",
+    "memberOrderIncomplete": "Membership order information is incomplete, please create the order again",
+    "memberSubject": "Membership: {name}",
+    "history": {
+      "paymentRecord": "Payment Record",
+      "unpaid": "Unpaid",
+      "orderType": "Order Type",
+      "memberItem": "Membership: {name}",
+      "memberShort": "Member",
+      "railwayShort": "Ticket",
+      "memberCenter": "Membership Center",
+      "myTickets": "My Tickets",
+      "loadFailed": "Failed to load orders, please try again"
+    },
+    "orderDetail": {
+      "paymentInfo": "Payment Information",
+      "payNo": "Payment No.",
+      "copy": "Copy",
+      "purpose": "Payment For",
+      "channel": "Payment Method",
+      "payStatus": "Payment Status",
+      "totalAmount": "Amount Due",
+      "pointsDeduct": "Points Deduction",
+      "payAmount": "Amount Paid",
+      "refundedAmount": "Refunded",
+      "payTime": "Paid At",
+      "tradeNo": "Channel Trade No.",
+      "channels": {
+        "mock": "Mock Payment",
+        "wechat": "WeChat Pay",
+        "alipay": "Alipay",
+        "unionpay": "UnionPay",
+        "balance": "Balance"
+      },
+      "statusLabels": {
+        "INIT": "Unpaid",
+        "PAYING": "Paying",
+        "SUCCESS": "Paid",
+        "FAILED": "Failed",
+        "CLOSED": "Closed",
+        "REFUNDING": "Refunding",
+        "REFUNDED": "Refunded"
+      },
+      "bizTypes": {
+        "MALL": "Mall Purchase",
+        "HOTEL": "Hotel Booking",
+        "TICKET": "Attraction Ticket",
+        "POINTS": "Points Exchange",
+        "GROUP": "Group Buy",
+        "MEMBER": "Membership",
+        "RAILWAY": "Train Ticket"
+      }
+    }
   }
 }

@@ -270,21 +270,31 @@
         </div>
       </section>
     </div>
+
+    <!-- 支付面板 -->
+    <div v-if="payVisible" class="member-pay-overlay" @click.self="closePay">
+      <div class="member-pay-modal" @click.stop>
+        <button type="button" class="member-pay-close" :aria-label="$t('payment.close')" @click="closePay">
+          <el-icon><Close /></el-icon>
+        </button>
+        <PayPage order-type="member" :order-id="payOrderNo" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowLeft } from '@element-plus/icons-vue'
+import { ArrowLeft, Close } from '@element-plus/icons-vue'
+import PayPage from '@/components/Payment/PayPage.vue'
 import {
   getMemberInfo,
   getMemberLevels,
   getMemberPackages,
   openMember,
-  payMemberOrder,
   cancelMemberOrder,
   signIn,
   getGrowthRecords,
@@ -297,6 +307,8 @@ const { t, te, locale } = useI18n()
 const loading = ref(false)
 const signing = ref(false)
 const activeTab = ref('records')
+const payVisible = ref(false)
+const payOrderNo = ref('')
 
 const info = ref({
   userId: null,
@@ -479,31 +491,33 @@ async function handleOpen(pkg) {
       ElMessage.error(openRes?.message || t('member.packages.failed'))
       return
     }
-    const payRes = await payMemberOrder(openRes.data.orderNo)
-    if (payRes?.code === 200) {
-      if (payRes.data) info.value = payRes.data
-      ElMessage.success(t('member.packages.success'))
-      await Promise.all([fetchOrders(), fetchRecords(1)])
-    } else {
-      ElMessage.error(payRes?.message || t('member.packages.failed'))
-    }
+    openPay(openRes.data.orderNo)
   } catch {
     // 错误提示由请求拦截器统一处理
   }
 }
 
 async function handlePay(order) {
-  try {
-    const res = await payMemberOrder(order.orderNo)
-    if (res?.code === 200) {
-      if (res.data) info.value = res.data
-      ElMessage.success(t('member.orders.paySuccess'))
-      await Promise.all([fetchOrders(), fetchRecords(1)])
-    } else if (res?.message) {
-      ElMessage.warning(res.message)
-    }
-  } catch {
-    // 错误提示由请求拦截器统一处理
+  openPay(order.orderNo)
+}
+
+// 打开系统统一支付面板
+function openPay(orderNo) {
+  if (!orderNo) return
+  payOrderNo.value = String(orderNo)
+  payVisible.value = true
+}
+
+function closePay() {
+  payVisible.value = false
+  payOrderNo.value = ''
+  loadAll().catch(() => {})
+}
+
+// 支付成功后 PayPage 会发送 closeModal 消息
+function onPayMessage(event) {
+  if (event.data?.action === 'closeModal' && payVisible.value) {
+    closePay()
   }
 }
 
@@ -543,7 +557,14 @@ function goBack() {
   }
 }
 
-onMounted(loadAll)
+onMounted(() => {
+  loadAll()
+  window.addEventListener('message', onPayMessage)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', onPayMessage)
+})
 </script>
 
 <style scoped>
@@ -1011,6 +1032,59 @@ onMounted(loadAll)
   margin-left: auto;
   font-size: 11px;
   color: var(--theme-primary, #409eff);
+}
+
+/* 支付面板 */
+.member-pay-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.member-pay-modal {
+  position: relative;
+  width: min(500px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 22px;
+}
+
+/* PayPage 默认以 fixed 居中，这里改为随弹层流式排布 */
+.member-pay-modal :deep(.glass-pay-container) {
+  position: static;
+  transform: none;
+  min-height: auto;
+  z-index: auto;
+}
+
+.member-pay-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--theme-bg-hover, rgb(0 0 0 / 6%));
+  color: var(--theme-text-2, #4b5563);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.member-pay-close:hover {
+  background: var(--theme-bg-active, rgb(0 0 0 / 10%));
+  color: var(--theme-text-1, #111827);
 }
 
 @media (max-width: 900px) {

@@ -173,40 +173,15 @@
       </template>
     </el-dialog>
 
-    <!-- 支付 -->
-    <el-dialog v-model="payVisible" :title="$t('railway.order.payTitle')" width="420px"
-      :close-on-click-modal="false" :show-close="false">
-      <template v-if="payState === 'success'">
-        <div class="rw-pay-success">
-          <span class="rw-pay-success-icon"><el-icon><CircleCheckFilled /></el-icon></span>
-          <h3>{{ $t('railway.order.paySuccess') }}</h3>
-          <p>{{ $t('railway.order.paySuccessDesc') }}</p>
-        </div>
-      </template>
-      <template v-else>
-        <div class="rw-pay-panel">
-          <p class="rw-pay-amount">
-            <span>{{ $t('railway.order.payAmount') }}</span>
-            <strong>¥{{ formatPrice(createdOrder?.totalAmount) }}</strong>
-          </p>
-          <p class="rw-pay-countdown" :class="{ 'is-danger': remaining <= 60 }">
-            {{ $t('railway.order.payCountdown', { time: formatClock(remaining) }) }}
-          </p>
-          <p class="rw-pay-order-no">{{ $t('railway.orders.orderNo') }}：{{ createdOrder?.orderNo }}</p>
-        </div>
-      </template>
-      <template #footer>
-        <template v-if="payState === 'success'">
-          <el-button type="primary" @click="goMyOrders">{{ $t('railway.order.goOrders') }}</el-button>
-        </template>
-        <template v-else>
-          <el-button @click="goMyOrders">{{ $t('railway.order.payLater') }}</el-button>
-          <el-button type="primary" :loading="paying" :disabled="remaining <= 0" @click="payOrder">
-            {{ $t('railway.order.payNow') }}
-          </el-button>
-        </template>
-      </template>
-    </el-dialog>
+    <!-- 系统支付面板 -->
+    <div v-if="payVisible" class="rw-pay-overlay" @click.self="closePay(false)">
+      <div class="rw-pay-modal" @click.stop>
+        <button type="button" class="rw-pay-close" :aria-label="$t('railway.common.close')" @click="closePay(false)">
+          <el-icon><Close /></el-icon>
+        </button>
+        <PayPage order-type="railway" :order-id="String(createdOrder?.id || '')" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,12 +197,10 @@ import {
   getRailwayPassengers,
   getRailwayServiceDetail,
 } from '@/api/railway'
-import { createPayment, mockConfirmPayment, queryPayment } from '@/api/payment'
+import PayPage from '@/components/Payment/PayPage.vue'
 import {
-  formatClock,
   formatPrice,
   queryString,
-  remainingSeconds,
 } from './utils'
 
 const route = useRoute()
@@ -257,11 +230,7 @@ const addDialogVisible = ref(false)
 const adding = ref(false)
 
 const payVisible = ref(false)
-const payState = ref('pending')
-const paying = ref(false)
 const createdOrder = ref(null)
-const remaining = ref(0)
-let countdownTimer = null
 
 const fromStop = computed(() => detail.value?.stops?.find((stop) => stop.stopSeq === fromSeq))
 const toStop = computed(() => detail.value?.stops?.find((stop) => stop.stopSeq === toSeq))
@@ -309,10 +278,13 @@ const load = async () => {
   }
 }
 
-onMounted(load)
+onMounted(() => {
+  load()
+  window.addEventListener('message', onPayMessage)
+})
 
 onBeforeUnmount(() => {
-  stopCountdown()
+  window.removeEventListener('message', onPayMessage)
 })
 
 const togglePassenger = (id) => {
@@ -400,9 +372,10 @@ const submitOrder = async () => {
       contactPhone: contactPhone.value,
     })
     createdOrder.value = res?.data || null
-    payState.value = 'pending'
+    if (!createdOrder.value?.id) {
+      throw new Error(t('railway.order.createFailed'))
+    }
     payVisible.value = true
-    startCountdown()
   } catch (err) {
     ElMessage.error(err?.message || t('railway.order.createFailed'))
   } finally {
@@ -410,71 +383,20 @@ const submitOrder = async () => {
   }
 }
 
-const startCountdown = () => {
-  stopCountdown()
-  remaining.value = remainingSeconds(createdOrder.value?.expireTime)
-  countdownTimer = setInterval(() => {
-    remaining.value = remainingSeconds(createdOrder.value?.expireTime)
-    if (remaining.value <= 0) {
-      stopCountdown()
-      ElMessage.warning(t('railway.order.expired'))
-    }
-  }, 1000)
-}
-
-const stopCountdown = () => {
-  if (countdownTimer) {
-    clearInterval(countdownTimer)
-    countdownTimer = null
+// 支付成功后 PayPage 会发送 closeModal 消息
+const onPayMessage = (event) => {
+  if (event.data?.action === 'closeModal' && payVisible.value) {
+    closePay(true)
   }
 }
 
-const payOrder = async () => {
-  if (!createdOrder.value) return
-  paying.value = true
-  try {
-    const order = createdOrder.value
-    const amount = Number(order.totalAmount || 0) / 100
-    // 统一走聚合支付网关
-    const created = await createPayment({
-      bizOrderNo: order.orderNo,
-      bizType: 'RAILWAY',
-      totalAmount: amount,
-      channelCode: 'MOCK',
-      subject: `铁路车票：${order.orderNo}`,
-      expireMinutes: 30,
-    })
-    if (created?.code !== 200 || !created.data) {
-      throw new Error(created?.message || t('railway.order.payFailed'))
-    }
-    const payment = created.data
-    if (payment.status !== 'SUCCESS') {
-      if (!payment.payParams?.mock) {
-        throw new Error(t('railway.order.payChannelPending'))
-      }
-      const confirmed = await mockConfirmPayment(payment.flowNo)
-      if (confirmed?.code !== 200) {
-        throw new Error(confirmed?.message || t('railway.order.payFailed'))
-      }
-      const queried = await queryPayment(payment.payNo)
-      if (queried?.code !== 200 || queried.data?.status !== 'SUCCESS') {
-        throw new Error(queried?.message || t('railway.order.payFailed'))
-      }
-    }
-    payState.value = 'success'
-    stopCountdown()
-    ElMessage.success(t('railway.order.paySuccess'))
-  } catch (err) {
-    ElMessage.error(err?.message || t('railway.order.payFailed'))
-  } finally {
-    paying.value = false
-  }
-}
-
-const goMyOrders = () => {
+// 关闭支付面板；paid 为 true 时支付成功，跳转我的车票
+const closePay = (paid = false) => {
   payVisible.value = false
-  stopCountdown()
-  router.push('/ticket/my-orders')
+  createdOrder.value = null
+  if (paid) {
+    router.push('/ticket/my-orders')
+  }
 }
 </script>
 
@@ -954,67 +876,57 @@ const goMyOrders = () => {
   width: 100%;
 }
 
-/* 支付 */
-.rw-pay-panel {
-  padding: 6px 0 2px;
-  text-align: center;
-}
-
-.rw-pay-amount {
+/* 支付面板 */
+.rw-pay-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 13px;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.rw-pay-modal {
+  position: relative;
+  width: min(500px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 22px;
+}
+
+/* PayPage 默认以 fixed 居中，这里改为随弹层流式排布 */
+.rw-pay-modal :deep(.glass-pay-container) {
+  position: static;
+  transform: none;
+  min-height: auto;
+  z-index: auto;
+}
+
+.rw-pay-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
   color: var(--rw-text-2);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.rw-pay-amount strong {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--rw-orange);
-}
-
-.rw-pay-countdown {
-  margin: 14px 0 6px;
-  font-size: 13px;
-  color: var(--rw-blue);
-  font-variant-numeric: tabular-nums;
-}
-
-.rw-pay-countdown.is-danger {
-  color: var(--rw-danger);
-}
-
-.rw-pay-order-no {
-  margin: 0;
-  font-size: 12px;
-  color: var(--rw-text-3);
-  letter-spacing: 0.02em;
-}
-
-.rw-pay-success {
-  text-align: center;
-  padding: 10px 0 4px;
-}
-
-.rw-pay-success-icon {
-  font-size: 46px;
-  color: var(--rw-success);
-  display: inline-flex;
-}
-
-.rw-pay-success h3 {
-  margin: 12px 0 6px;
-  font-size: 18px;
+.rw-pay-close:hover {
+  background: rgba(0, 0, 0, 0.1);
   color: var(--rw-text);
-}
-
-.rw-pay-success p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--rw-text-3);
 }
 
 @media (max-width: 900px) {
