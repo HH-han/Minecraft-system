@@ -50,6 +50,7 @@ import TestProject002 from '@/views/Test/components/TestProject002.vue'
 import TestProject003 from '@/views/Test/components/TestProject003.vue'
 import TestProject004 from '@/views/Test/components/TestProject004.vue'
 import TestProject005 from '@/views/Test/components/TestProject005.vue'
+import TestProject006 from '@/views/Test/components/TestProject006.vue'
 
 
 const router = useRouter()
@@ -62,6 +63,7 @@ const pages = [
   { name: '项目三', component: TestProject003, icon: 'fas fa-chart-line' },
   { name: '项目四', component: TestProject004, icon: 'fas fa-chart-line' },
   { name: '项目五', component: TestProject005, icon: 'fas fa-chart-line' },
+  { name: '项目六', component: TestProject006, icon: 'fas fa-chart-line' },
 ]
 
 // 当前页面
