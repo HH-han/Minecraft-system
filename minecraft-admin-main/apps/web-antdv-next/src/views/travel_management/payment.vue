@@ -18,7 +18,6 @@ import {
   Table,
   Tabs,
   Tag,
-  Textarea,
 } from 'antdv-next';
 
 import { getRefundPage } from '#/api/management/logistics/refund';
@@ -393,7 +392,7 @@ onMounted(fetchData);
         </div>
         <div class="flex items-start gap-2">
           <span class="w-24 pt-1 text-right">{{ $t('travel.payment_page.refund.reason') }}</span>
-          <Textarea v-model:value="refundReason" :rows="3" class="flex-1" />
+          <Input.TextArea v-model:value="refundReason" :rows="3" class="flex-1" />
         </div>
       </div>
     </Modal>
