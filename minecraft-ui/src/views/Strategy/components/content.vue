@@ -1,6 +1,8 @@
 <template>
   <div class="group-container">
-    <HeroSection @create="showCreateModal = true" @join="showSearchModal = true" />
+    <HeroSection @create="showCreateModal = true" @join="activeTab = 'explore'" />
+
+    <Recommend />
 
     <section class="group-main">
       <TabNavigation :tabs="tabs" v-model:activeTab="activeTab" />
@@ -104,6 +106,8 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 import * as groupApi from '@/api/travelGroup'
 import * as postApi from '@/api/groupPost'
@@ -117,6 +121,7 @@ import * as diaryApi from '@/api/travelDiary'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 import HeroSection from './module/HeroSection.vue'
+import Recommend from './recommend.vue'
 import TabNavigation from './module/TabNavigation.vue'
 import MyGroups from './module/MyGroups.vue'
 import ExploreGroups from './module/ExploreGroups.vue'
@@ -128,35 +133,37 @@ import AddTripModal from './module/AddTripModal.vue'
 import AddBillModal from './module/AddBillModal.vue'
 import CreatePollModal from './module/CreatePollModal.vue'
 
+const { t } = useI18n()
+
 const authStore = useAuthStore()
 const currentUserId = computed(() => authStore.userInfo?.id)
 
 const defaultCover = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800'
 const defaultAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100'
 
-const tabs = [
-  { id: 'my-groups', name: '我的群组', icon: new URL('@/assets/icons/groups.svg', import.meta.url).href },
-  { id: 'explore', name: '发现群组', icon: new URL('@/assets/icons/search.svg', import.meta.url).href },
-  { id: 'notifications', name: '通知', icon: new URL('@/assets/icons/notifications.svg', import.meta.url).href }
-]
+const tabs = computed(() => [
+  { id: 'my-groups', name: t('strategy.tabs.myGroups') },
+  { id: 'explore', name: t('strategy.tabs.explore') },
+  { id: 'notifications', name: t('strategy.tabs.notifications') }
+])
 
 const activeTab = ref('my-groups')
-const exploreFilters = [
-  { id: 'all', name: '全部' },
-  { id: 'active', name: '进行中' },
-  { id: 'ended', name: '已结束' }
-]
+const exploreFilters = computed(() => [
+  { id: 'all', name: t('strategy.filters.all') },
+  { id: 'active', name: t('strategy.filters.active') },
+  { id: 'ended', name: t('strategy.filters.ended') }
+])
 const activeFilter = ref('all')
 
-const detailTabs = [
-  { id: 'members', name: '成员' },
-  { id: 'posts', name: '动态' },
-  { id: 'trip', name: '行程' },
-  { id: 'bills', name: '账单' },
-  { id: 'album', name: '相册' },
-  { id: 'poll', name: '投票' },
-  { id: 'diary', name: '日记' }
-]
+const detailTabs = computed(() => [
+  { id: 'members', name: t('strategy.detailTabs.members') },
+  { id: 'posts', name: t('strategy.detailTabs.posts') },
+  { id: 'trip', name: t('strategy.detailTabs.trip') },
+  { id: 'bills', name: t('strategy.detailTabs.bills') },
+  { id: 'album', name: t('strategy.detailTabs.album') },
+  { id: 'poll', name: t('strategy.detailTabs.poll') },
+  { id: 'diary', name: t('strategy.detailTabs.diary') }
+])
 const detailTab = ref('members')
 
 const loading = ref(false)
@@ -171,7 +178,6 @@ const showInviteModal = ref(false)
 const showAddTripModal = ref(false)
 const showAddBillModal = ref(false)
 const showCreatePollModal = ref(false)
-const showSearchModal = ref(false)
 
 const currentGroup = ref({})
 const isGroupAdmin = computed(() => {
@@ -262,6 +268,7 @@ async function handleCreateGroup(form) {
     const res = await groupApi.createGroup(form)
     if (res.code === 200) {
       showCreateModal.value = false
+      ElMessage.success(t('strategy.toast.createSuccess'))
       fetchMyGroups()
     }
   } catch (error) {
@@ -358,7 +365,7 @@ async function applyToJoin(groupId) {
   try {
     const res = await groupApi.applyToJoin(groupId)
     if (res.code === 200) {
-      alert('申请已提交')
+      ElMessage.success(t('strategy.toast.applySuccess'))
       fetchExploreGroups()
     }
   } catch (error) {
@@ -379,7 +386,15 @@ async function handleInviteMembers(ids) {
 }
 
 async function removeMember(userId) {
-  if (!confirm('确定要移除该成员吗？')) return
+  try {
+    await ElMessageBox.confirm(
+      t('strategy.confirm.removeMember'),
+      t('strategy.confirm.title'),
+      { type: 'warning' }
+    )
+  } catch {
+    return
+  }
   try {
     const res = await groupApi.removeMember(currentGroup.value.id, userId)
     if (res.code === 200) {
@@ -402,7 +417,15 @@ async function handleCreatePost(content) {
 }
 
 async function deletePost(postId) {
-  if (!confirm('确定删除该动态？')) return
+  try {
+    await ElMessageBox.confirm(
+      t('strategy.confirm.deletePost'),
+      t('strategy.confirm.title'),
+      { type: 'warning' }
+    )
+  } catch {
+    return
+  }
   try {
     const res = await postApi.deletePost(currentGroup.value.id, postId)
     if (res.code === 200) {
@@ -442,7 +465,15 @@ async function handleAddTrip(form) {
 }
 
 async function deleteTripItem(tripId) {
-  if (!confirm('确定删除该行程？')) return
+  try {
+    await ElMessageBox.confirm(
+      t('strategy.confirm.deleteTrip'),
+      t('strategy.confirm.title'),
+      { type: 'warning' }
+    )
+  } catch {
+    return
+  }
   try {
     const res = await tripApi.deleteTripItem(currentGroup.value.id, tripId)
     if (res.code === 200) {
@@ -460,7 +491,7 @@ async function generateAITrip() {
       destination: currentGroup.value.destination
     })
     if (res.code === 200) {
-      alert('AI行程规划已生成，请查看行程列表')
+      ElMessage.success(t('strategy.toast.aiTripReady'))
       fetchTripPlan(currentGroup.value.id)
     }
   } catch (error) {
@@ -484,7 +515,7 @@ async function getSettlement() {
   try {
     const res = await billApi.getSettlement(currentGroup.value.id)
     if (res.code === 200) {
-      alert('结算详情：' + JSON.stringify(res.data, null, 2))
+      ElMessageBox.alert(JSON.stringify(res.data, null, 2), t('strategy.bills.settlement'))
     }
   } catch (error) {
     console.error('获取结算失败:', error)
@@ -503,7 +534,15 @@ async function handlePhotoUpload(files) {
 }
 
 async function deletePhoto(photoId) {
-  if (!confirm('确定删除该照片？')) return
+  try {
+    await ElMessageBox.confirm(
+      t('strategy.confirm.deletePhoto'),
+      t('strategy.confirm.title'),
+      { type: 'warning' }
+    )
+  } catch {
+    return
+  }
   try {
     const res = await albumApi.deletePhoto(currentGroup.value.id, photoId)
     if (res.code === 200) {
@@ -592,13 +631,10 @@ function handleNotification(item) {
 .group-container {
   --color-text: var(--theme-text-1);
   --color-text-secondary: var(--theme-text-2);
-  --color-text-dark-bg: var(--theme-text-inverse);
-  --color-text-secondary-dark-bg: var(--theme-text-3);
   --color-primary: var(--theme-primary);
   --color-primary-hover: var(--theme-primary-hover);
-  --color-bg: var(--theme-bg-surface);
+  --color-bg: var(--theme-bg-app);
   --color-bg-secondary: var(--theme-bg-surface-2);
-  --color-bg-dark: var(--theme-bg-app);
   --color-border: var(--theme-border);
   --color-success: var(--theme-success);
   --color-danger: var(--theme-danger);
@@ -623,8 +659,8 @@ function handleNotification(item) {
   --spacing-80: 80px;
 
   --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
   --radius-xl: 28px;
   --radius-full: 980px;
 
@@ -632,83 +668,31 @@ function handleNotification(item) {
   --shadow-md: var(--theme-shadow-md);
   --shadow-lg: var(--theme-shadow-lg);
 
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.2s ease;
-  --transition-slow: 0.3s ease;
+  --transition-fast: var(--theme-duration-fast) ease;
+  --transition-normal: var(--theme-duration) var(--theme-ease);
+  --transition-slow: var(--theme-duration-slow) var(--theme-ease);
 
-  padding: 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
   font-family: var(--font-family);
   color: var(--color-text);
   scroll-behavior: smooth;
 }
 
-.btn-primary {
-  background: var(--color-primary);
-  color: var(--theme-primary-text);
-  border: none;
-  padding: var(--spacing-12) var(--spacing-28);
-  border-radius: var(--radius-full);
-  font-size: 17px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-4);
-}
-
-.btn-primary:hover {
-  background: var(--color-primary-hover);
-}
-
-.btn-primary:active {
-  transform: scale(0.98);
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--color-primary);
-  border: none;
-  padding: var(--spacing-12) var(--spacing-28);
-  border-radius: var(--radius-full);
-  font-size: 17px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-4);
-}
-
-.btn-secondary:hover {
-  background: var(--theme-primary-soft);
-}
-
-.btn-secondary:active {
-  transform: scale(0.98);
-}
-
-.btn-small {
-  padding: var(--spacing-8) var(--spacing-16);
-  font-size: 14px;
-  border-radius: var(--radius-md);
-}
-
-@media (max-width: 1199px) and (min-width: 768px) {
-  .group-container {
-    padding: 0 var(--spacing-20);
-  }
+.group-main {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
 @media (max-width: 767px) {
   .group-container {
-    padding: 0 var(--spacing-16);
+    gap: 32px;
+  }
+
+  .group-main {
+    gap: 20px;
   }
 }
 </style>

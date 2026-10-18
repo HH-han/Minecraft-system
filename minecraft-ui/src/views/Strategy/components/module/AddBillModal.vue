@@ -1,27 +1,42 @@
 <template>
   <div v-if="visible" class="modal-overlay" @click.self="$emit('close')">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2>添加账单</h2>
-        <button class="close-btn" @click="$emit('close')">×</button>
+        <h2>{{ t('strategy.addBill.title') }}</h2>
+        <button class="close-btn" type="button" @click="$emit('close')">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
       </div>
+
       <div class="modal-body">
         <div class="form-group">
-          <label>账单名称</label>
-          <input v-model="form.title" type="text" placeholder="如：晚餐" />
+          <label>{{ t('strategy.addBill.name') }}</label>
+          <input v-model="form.title" type="text" :placeholder="t('strategy.addBill.namePlaceholder')" />
         </div>
+
         <div class="form-group">
-          <label>金额</label>
-          <input v-model.number="form.amount" type="number" placeholder="0.00" />
+          <label>{{ t('strategy.addBill.amount') }}</label>
+          <div class="input-prefix">
+            <span>¥</span>
+            <input v-model.number="form.amount" type="number" min="0" step="0.01" placeholder="0.00" />
+          </div>
         </div>
+
         <div class="form-group">
-          <label>说明</label>
-          <textarea v-model="form.description" placeholder="账单说明"></textarea>
+          <label>{{ t('strategy.addBill.description') }}</label>
+          <textarea v-model="form.description" :placeholder="t('strategy.addBill.descriptionPlaceholder')"></textarea>
         </div>
       </div>
+
       <div class="modal-footer">
-        <button class="btn-secondary" @click="$emit('close')">取消</button>
-        <button class="btn-primary" @click="handleSubmit">添加</button>
+        <button class="btn-secondary" type="button" @click="$emit('close')">
+          {{ t('strategy.addBill.cancel') }}
+        </button>
+        <button class="btn-primary" type="button" @click="handleSubmit">
+          {{ t('strategy.addBill.submit') }}
+        </button>
       </div>
     </div>
   </div>
@@ -29,6 +44,8 @@
 
 <script setup>
 import { reactive, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   visible: {
@@ -38,6 +55,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'submit'])
+
+const { t } = useI18n()
 
 const form = reactive({
   title: '',
@@ -57,7 +76,7 @@ watch(() => props.visible, (val) => {
 
 function handleSubmit() {
   if (!form.title || !form.amount) {
-    alert('请填写账单名称和金额')
+    ElMessage.warning(t('strategy.addBill.required'))
     return
   }
   emit('submit', { ...form })
@@ -68,40 +87,45 @@ function handleSubmit() {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: var(--theme-overlay);
-  backdrop-filter: blur(20px);
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: var(--spacing-20);
-  animation: fadeIn var(--transition-normal);
+  padding: 24px;
+  background: var(--theme-overlay);
+  backdrop-filter: blur(16px);
+  animation: fade-in var(--transition-normal);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background: var(--color-bg);
-  border-radius: var(--radius-lg);
-  width: 100%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  animation: slideUp var(--transition-normal);
+  animation: modal-in var(--transition-slow);
 }
 
-@keyframes slideUp {
-  from { 
+@keyframes modal-in {
+  from {
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
+    transform: translateY(20px) scale(0.97);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
@@ -109,120 +133,130 @@ function handleSubmit() {
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-24);
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 26px 18px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .modal-header h2 {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
 }
 
 .close-btn {
-  background: transparent;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  color: var(--color-text-secondary);
-  line-height: 1;
-  width: 32px;
-  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
   border-radius: 50%;
-  transition: all var(--transition-fast);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.close-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
 }
 
 .close-btn:hover {
-  background: var(--theme-bg-hover);
+  background: var(--color-bg-secondary);
   color: var(--color-text);
 }
 
 .modal-body {
-  padding: var(--spacing-24);
-  overflow-y: auto;
   flex: 1;
+  padding: 22px 26px 8px;
+  overflow-y: auto;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-12);
-  padding: var(--spacing-16) var(--spacing-24);
+  gap: 10px;
+  padding: 16px 26px 22px;
   border-top: 1px solid var(--color-border);
 }
 
 .modal-footer button {
-  border: none;
-  padding: var(--spacing-12) var(--spacing-28);
+  padding: 10px 24px;
+  border: 1px solid transparent;
   border-radius: var(--radius-full);
-  font-size: 17px;
-  font-weight: 500;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-4);
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.modal-footer .btn-primary {
+.btn-primary {
   background: var(--color-primary);
   color: var(--theme-primary-text);
 }
 
-.modal-footer .btn-primary:hover {
+.btn-primary:hover {
   background: var(--color-primary-hover);
 }
 
-.modal-footer .btn-primary:active {
-  transform: scale(0.98);
+.btn-secondary {
+  background: var(--theme-bg-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
 }
 
-.modal-footer .btn-secondary {
-  background: transparent;
+.btn-secondary:hover {
+  border-color: var(--color-primary);
   color: var(--color-primary);
 }
 
-.modal-footer .btn-secondary:hover {
-  background: var(--theme-primary-soft);
-}
-
-.modal-footer .btn-secondary:active {
-  transform: scale(0.98);
+.modal-footer button:active {
+  transform: scale(0.97);
 }
 
 .form-group {
-  margin-bottom: var(--spacing-20);
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: var(--spacing-8);
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--color-text);
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: var(--spacing-12) var(--spacing-16);
+  padding: 11px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 15px;
+  background: var(--color-bg-secondary);
   font-family: inherit;
-  transition: all var(--transition-normal);
+  font-size: 14px;
+  color: var(--color-text);
   box-sizing: border-box;
-  background: var(--color-bg);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal),
+    background var(--transition-normal);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--color-primary);
+  background: var(--theme-bg-surface);
   box-shadow: var(--theme-ring);
 }
 
@@ -233,23 +267,71 @@ function handleSubmit() {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 96px;
+  line-height: 1.6;
+}
+
+.input-prefix {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal),
+    background var(--transition-normal);
+  overflow: hidden;
+}
+
+.input-prefix:focus-within {
+  border-color: var(--color-primary);
+  background: var(--theme-bg-surface);
+  box-shadow: var(--theme-ring);
+}
+
+.input-prefix span {
+  padding: 0 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.input-prefix input {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.input-prefix input:focus {
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 @media (max-width: 767px) {
+  .modal-overlay {
+    padding: 12px;
+  }
+
   .modal {
     max-width: 100%;
-    border-radius: var(--radius-lg);
-    margin: var(--spacing-8);
+    max-height: 92vh;
+    border-radius: var(--radius-md);
   }
-  .modal-body {
-    padding: var(--spacing-16);
-  }
+
   .modal-header {
-    padding: var(--spacing-16);
+    padding: 18px 18px 14px;
   }
+
+  .modal-body {
+    padding: 18px 18px 4px;
+  }
+
   .modal-footer {
-    padding: var(--spacing-12) var(--spacing-16);
+    padding: 14px 18px 18px;
+  }
+
+  .modal-footer button {
+    flex: 1;
   }
 }
 </style>

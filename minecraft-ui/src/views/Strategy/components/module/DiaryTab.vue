@@ -1,28 +1,52 @@
 <template>
   <div class="diary-tab">
-    <div class="tab-actions">
-      <button class="btn-small btn-secondary" @click="$emit('generate')">生成旅行日记</button>
-      <button v-if="diary" class="btn-small" @click="$emit('export')">导出日记</button>
-    </div>
-    <div v-if="diary" class="diary-content">
-      <h3>{{ diary.title }}</h3>
-      <div class="diary-sections">
-        <div v-for="section in diary.sections" :key="section.date" class="diary-section">
-          <h4>{{ section.date }}</h4>
-          <p>{{ section.content }}</p>
-          <div v-if="section.photos" class="diary-photos">
-            <img v-for="photo in section.photos" :key="photo" :src="photo" />
-          </div>
-        </div>
+    <div class="tab-toolbar">
+      <span class="toolbar-title">
+        {{ t('strategy.detailTabs.diary') }}
+      </span>
+      <div class="toolbar-actions">
+        <button v-if="diary" class="btn-secondary" type="button" @click="$emit('export')">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 4v12M7 11l5 5 5-5" />
+            <path d="M5 20h14" />
+          </svg>
+          {{ t('strategy.diary.export') }}
+        </button>
+        <button class="btn-primary" type="button" @click="$emit('generate')">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3L12 3Z" />
+          </svg>
+          {{ t('strategy.diary.generate') }}
+        </button>
       </div>
     </div>
-    <div v-else class="empty-state small">
-      <p>还没有旅行日记，点击上方按钮生成</p>
+
+    <div v-if="!diary" class="tab-empty">
+      <p>{{ t('strategy.diary.empty') }}</p>
     </div>
+
+    <article v-else class="diary-content">
+      <h3 class="diary-title">{{ diary.title }}</h3>
+
+      <div class="diary-sections">
+        <section v-for="section in diary.sections" :key="section.date" class="diary-section">
+          <h4>
+            <span class="section-dot"></span>
+            {{ section.date }}
+          </h4>
+          <p>{{ section.content }}</p>
+          <div v-if="section.photos?.length" class="diary-photos">
+            <img v-for="photo in section.photos" :key="photo" :src="photo" alt="" loading="lazy" />
+          </div>
+        </section>
+      </div>
+    </article>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 defineProps({
   diary: {
     type: Object,
@@ -31,126 +55,200 @@ defineProps({
 })
 
 defineEmits(['generate', 'export'])
+
+const { t } = useI18n()
 </script>
 
 <style scoped>
 .diary-tab {
-  animation: fadeIn var(--transition-normal);
+  animation: fade-in var(--transition-normal);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.tab-actions {
+.tab-toolbar {
   display: flex;
-  gap: var(--spacing-12);
-  margin-bottom: var(--spacing-20);
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
-.tab-actions button {
-  border: none;
-  padding: var(--spacing-8) var(--spacing-16);
-  border-radius: var(--radius-md);
+.toolbar-title {
   font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-normal);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.toolbar-actions button {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.toolbar-actions svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.btn-primary {
   background: var(--color-primary);
   color: var(--theme-primary-text);
 }
 
-.tab-actions button:hover {
+.btn-primary:hover {
   background: var(--color-primary-hover);
 }
 
-.tab-actions button:active {
-  transform: scale(0.98);
-}
-
-.tab-actions .btn-secondary {
-  background: var(--color-bg-secondary);
+.btn-secondary {
+  background: var(--theme-bg-surface);
+  border-color: var(--color-border);
   color: var(--color-text);
 }
 
-.tab-actions .btn-secondary:hover {
-  background: var(--theme-bg-hover);
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
-.diary-content h3 {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: var(--spacing-20);
+.toolbar-actions button:active {
+  transform: scale(0.97);
+}
+
+.diary-content {
+  padding: 26px 28px 30px;
+  background:
+    radial-gradient(90% 120% at 100% 0%, var(--theme-primary-soft) 0%, transparent 55%),
+    var(--theme-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.diary-title {
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .diary-sections {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-24);
-}
-
-.diary-section {
-  padding: var(--spacing-20);
-  background: var(--color-bg-secondary);
-  border-radius: var(--radius-md);
+  gap: 22px;
 }
 
 .diary-section h4 {
-  font-size: 17px;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 650;
   color: var(--color-primary);
-  margin-bottom: var(--spacing-8);
+  margin-bottom: 8px;
+}
+
+.section-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
 }
 
 .diary-section p {
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.85;
   color: var(--color-text);
-  font-size: 15px;
+  white-space: pre-wrap;
 }
 
 .diary-photos {
   display: flex;
-  gap: var(--spacing-8);
-  margin-top: var(--spacing-12);
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .diary-photos img {
-  width: 100px;
-  height: 100px;
+  width: 96px;
+  height: 96px;
   object-fit: cover;
   border-radius: var(--radius-sm);
   transition: transform var(--transition-normal);
 }
 
 .diary-photos img:hover {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
-.empty-state {
+.tab-empty {
+  padding: 44px;
   text-align: center;
-  padding: 80px 40px;
-  background: var(--color-bg-secondary);
-  border-radius: 28px;
-}
-
-.empty-state.small {
-  padding: 40px;
-}
-
-.empty-state p {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
   color: var(--color-text-secondary);
+  font-size: 13px;
 }
 
 @media (max-width: 767px) {
+  .tab-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toolbar-actions {
+    width: 100%;
+  }
+
+  .toolbar-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .diary-content {
+    padding: 18px;
+  }
+
+  .diary-title {
+    font-size: 18px;
+  }
+
   .diary-photos img {
-    width: 80px;
-    height: 80px;
+    width: 76px;
+    height: 76px;
   }
 }
 </style>

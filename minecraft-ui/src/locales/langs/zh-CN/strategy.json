@@ -1,0 +1,216 @@
+{
+  "strategy": {
+    "hero": {
+      "eyebrow": "TRAVEL TOGETHER",
+      "title": "旅行群组",
+      "subtitle": "与志同道合的旅伴一起规划、分享、记录精彩旅程",
+      "create": "创建群组",
+      "join": "发现群组",
+      "featureTrip": "共同行程",
+      "featureBill": "分摊账单",
+      "featureAlbum": "共享相册"
+    },
+    "tabs": {
+      "myGroups": "我的群组",
+      "explore": "发现群组",
+      "notifications": "通知"
+    },
+    "filters": {
+      "all": "全部",
+      "active": "进行中",
+      "ended": "已结束"
+    },
+    "detailTabs": {
+      "members": "成员",
+      "posts": "动态",
+      "trip": "行程",
+      "bills": "账单",
+      "album": "相册",
+      "poll": "投票",
+      "diary": "日记"
+    },
+    "myGroups": {
+      "eyebrow": "MY JOURNEYS",
+      "title": "我的群组",
+      "subtitle": "继续你和旅伴们的旅程",
+      "searchPlaceholder": "搜索群组名称或目的地",
+      "loading": "正在加载群组…",
+      "emptyTitle": "还没有加入任何群组",
+      "emptyDesc": "创建或加入一个旅行群组，开始你的旅程",
+      "create": "创建群组",
+      "statusActive": "进行中",
+      "statusEnded": "已结束",
+      "noDestination": "未设置目的地",
+      "memberCount": "{current}/{max} 成员"
+    },
+    "explore": {
+      "eyebrow": "DISCOVER",
+      "title": "发现群组",
+      "subtitle": "找到同路的旅伴，一起出发",
+      "emptyTitle": "暂无公开群组",
+      "emptyDesc": "成为第一个创建公开群组的人吧",
+      "join": "加入",
+      "joined": "已加入",
+      "creator": "创建者 · {name}",
+      "noDescription": "暂无描述",
+      "memberCount": "{count} 成员"
+    },
+    "notifications": {
+      "eyebrow": "INBOX",
+      "title": "通知中心",
+      "subtitle": "群组邀请、申请与互动消息",
+      "markAll": "全部已读",
+      "emptyTitle": "暂无通知",
+      "emptyDesc": "所有消息已处理完毕",
+      "justNow": "刚刚",
+      "minutesAgo": "{count} 分钟前",
+      "hoursAgo": "{count} 小时前",
+      "markRead": "标记已读"
+    },
+    "roles": {
+      "owner": "群主",
+      "admin": "管理员",
+      "member": "成员"
+    },
+    "create": {
+      "title": "创建群组",
+      "name": "群组名称",
+      "namePlaceholder": "给群组起个名字",
+      "destination": "目的地",
+      "destinationPlaceholder": "旅行目的地",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "cover": "群组封面",
+      "coverHint": "点击上传封面图片",
+      "description": "群组描述",
+      "descriptionPlaceholder": "描述一下这个群组",
+      "maxMembers": "最大人数",
+      "public": "设为公开群组",
+      "cancel": "取消",
+      "submit": "创建",
+      "submitting": "创建中…",
+      "nameRequired": "请输入群组名称"
+    },
+    "detail": {
+      "close": "关闭",
+      "memberCount": "{count} 位成员",
+      "noDestination": "未设置目的地"
+    },
+    "members": {
+      "invite": "邀请成员",
+      "joinedAt": "加入于 {date}",
+      "remove": "移除",
+      "empty": "还没有成员"
+    },
+    "posts": {
+      "placeholder": "分享你的旅行动态…",
+      "publish": "发布",
+      "delete": "删除",
+      "like": "点赞",
+      "comment": "评论",
+      "empty": "还没有动态，发布第一条吧"
+    },
+    "trip": {
+      "add": "添加行程",
+      "generate": "AI 智能规划",
+      "day": "第 {count} 天",
+      "empty": "还没有行程安排"
+    },
+    "bills": {
+      "add": "添加账单",
+      "settlement": "查看结算",
+      "payer": "付款人 · {name}",
+      "settled": "已结清",
+      "unsettled": "未结清",
+      "empty": "还没有账单"
+    },
+    "album": {
+      "upload": "上传照片",
+      "empty": "相册还是空的"
+    },
+    "poll": {
+      "create": "发起投票",
+      "active": "进行中",
+      "ended": "已结束",
+      "votes": "{count} 票",
+      "empty": "还没有投票"
+    },
+    "diary": {
+      "generate": "生成旅行日记",
+      "export": "导出日记",
+      "empty": "还没有旅行日记，点击上方按钮生成"
+    },
+    "invite": {
+      "title": "邀请成员",
+      "label": "输入用户 ID（多个用逗号分隔）",
+      "placeholder": "1, 2, 3",
+      "cancel": "取消",
+      "submit": "发送邀请"
+    },
+    "addTrip": {
+      "title": "添加行程",
+      "date": "日期",
+      "time": "时间",
+      "activity": "活动",
+      "activityPlaceholder": "活动内容",
+      "location": "地点",
+      "locationPlaceholder": "地点（可选）",
+      "cancel": "取消",
+      "submit": "添加",
+      "required": "请填写日期和活动"
+    },
+    "addBill": {
+      "title": "添加账单",
+      "name": "账单名称",
+      "namePlaceholder": "如：晚餐",
+      "amount": "金额",
+      "description": "说明",
+      "descriptionPlaceholder": "账单说明",
+      "cancel": "取消",
+      "submit": "添加",
+      "required": "请填写账单名称和金额"
+    },
+    "createPoll": {
+      "title": "发起投票",
+      "pollTitle": "投票标题",
+      "pollTitlePlaceholder": "投票主题",
+      "options": "选项（每行一个）",
+      "optionsPlaceholder": "选项1\n选项2\n选项3",
+      "cancel": "取消",
+      "submit": "发起投票",
+      "required": "请填写投票标题和选项"
+    },
+    "recommend": {
+      "eyebrow": "FEATURED",
+      "title": "热门旅行群组",
+      "subtitle": "正在招募的旅程，挑一个加入",
+      "members": "已有 {count} 人加入",
+      "priceFrom": "/人起",
+      "join": "立即入群",
+      "recruiting": "招募中",
+      "ended": "已结束",
+      "empty": "暂无推荐群组",
+      "modal": {
+        "groupName": "群组名称",
+        "groupDesc": "群组简介",
+        "dates": "行程日期",
+        "highlights": "行程亮点",
+        "members": "群组成员（{count}）",
+        "confirm": "确认加入群组"
+      }
+    },
+    "confirm": {
+      "title": "提示",
+      "removeMember": "确定要移除该成员吗？",
+      "deletePost": "确定删除该动态？",
+      "deleteTrip": "确定删除该行程？",
+      "deletePhoto": "确定删除该照片？"
+    },
+    "toast": {
+      "applySuccess": "申请已提交",
+      "aiTripReady": "AI 行程规划已生成，请查看行程列表",
+      "createSuccess": "创建成功",
+      "actionFailed": "操作失败，请稍后重试"
+    }
+  }
+}

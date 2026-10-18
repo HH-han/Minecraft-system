@@ -1,62 +1,77 @@
 <template>
   <div v-if="visible" class="modal-overlay" @click.self="$emit('close')">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2>创建群组</h2>
-        <button class="close-btn" @click="$emit('close')">×</button>
+        <h2>{{ t('strategy.create.title') }}</h2>
+        <button class="close-btn" type="button" @click="$emit('close')">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
       </div>
+
       <div class="modal-body">
         <div class="form-group">
-          <label>群组名称 *</label>
-          <input v-model="form.name" type="text" placeholder="给群组起个名字" />
+          <label>{{ t('strategy.create.name') }} <em>*</em></label>
+          <input v-model="form.name" type="text" :placeholder="t('strategy.create.namePlaceholder')" />
         </div>
+
         <div class="form-group">
-          <label>目的地</label>
-          <input v-model="form.destination" type="text" placeholder="旅行目的地" />
+          <label>{{ t('strategy.create.destination') }}</label>
+          <input v-model="form.destination" type="text" :placeholder="t('strategy.create.destinationPlaceholder')" />
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label>开始日期</label>
+            <label>{{ t('strategy.create.startDate') }}</label>
             <input v-model="form.startDate" type="date" />
           </div>
           <div class="form-group">
-            <label>结束日期</label>
+            <label>{{ t('strategy.create.endDate') }}</label>
             <input v-model="form.endDate" type="date" />
           </div>
         </div>
+
         <div class="form-group">
-          <label>群组封面</label>
+          <label>{{ t('strategy.create.cover') }}</label>
           <div class="cover-upload">
-            <img v-if="form.coverUrl" :src="form.coverUrl" alt="封面预览" />
-            <input
-              type="file"
-              accept="image/*"
-              @change="handleCoverUpload"
-              placeholder="上传封面"
-            />
+            <img v-if="form.coverUrl" :src="form.coverUrl" alt="cover preview" />
+            <span v-else class="cover-hint">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4M7 9l5-5 5 5" />
+                <path d="M5 16v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3" />
+              </svg>
+              {{ t('strategy.create.coverHint') }}
+            </span>
+            <input type="file" accept="image/*" @change="handleCoverUpload" />
           </div>
         </div>
+
         <div class="form-group">
-          <label>群组描述</label>
-          <textarea v-model="form.description" placeholder="描述一下这个群组"></textarea>
+          <label>{{ t('strategy.create.description') }}</label>
+          <textarea v-model="form.description" :placeholder="t('strategy.create.descriptionPlaceholder')"></textarea>
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label>最大人数</label>
+            <label>{{ t('strategy.create.maxMembers') }}</label>
             <input v-model.number="form.maxMembers" type="number" min="2" max="100" />
           </div>
-          <div class="form-group">
+          <div class="form-group checkbox-field">
             <label class="checkbox-label">
               <input v-model="form.isPublic" type="checkbox" />
-              设为公开群组
+              <span>{{ t('strategy.create.public') }}</span>
             </label>
           </div>
         </div>
       </div>
+
       <div class="modal-footer">
-        <button class="btn-secondary" @click="$emit('close')">取消</button>
-        <button class="btn-primary" @click="handleSubmit" :disabled="loading">
-          {{ loading ? '创建中...' : '创建' }}
+        <button class="btn-secondary" type="button" @click="$emit('close')">
+          {{ t('strategy.create.cancel') }}
+        </button>
+        <button class="btn-primary" type="button" :disabled="loading" @click="handleSubmit">
+          {{ loading ? t('strategy.create.submitting') : t('strategy.create.submit') }}
         </button>
       </div>
     </div>
@@ -65,6 +80,8 @@
 
 <script setup>
 import { ref, reactive, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   visible: {
@@ -74,6 +91,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'submit'])
+
+const { t } = useI18n()
 
 const loading = ref(false)
 
@@ -117,7 +136,7 @@ function handleCoverUpload(event) {
 
 function handleSubmit() {
   if (!form.name) {
-    alert('请输入群组名称')
+    ElMessage.warning(t('strategy.create.nameRequired'))
     return
   }
   loading.value = true
@@ -129,40 +148,45 @@ function handleSubmit() {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: var(--theme-overlay);
-  backdrop-filter: blur(20px);
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: var(--spacing-20);
-  animation: fadeIn var(--transition-normal);
+  padding: 24px;
+  background: var(--theme-overlay);
+  backdrop-filter: blur(16px);
+  animation: fade-in var(--transition-normal);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background: var(--color-bg);
-  border-radius: var(--radius-lg);
-  width: 100%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  animation: slideUp var(--transition-normal);
+  animation: modal-in var(--transition-slow);
 }
 
-@keyframes slideUp {
-  from { 
+@keyframes modal-in {
+  from {
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
+    transform: translateY(20px) scale(0.97);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
@@ -170,126 +194,140 @@ function handleSubmit() {
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-24);
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 26px 18px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .modal-header h2 {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
 }
 
 .close-btn {
-  background: transparent;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  color: var(--color-text-secondary);
-  line-height: 1;
-  width: 32px;
-  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
   border-radius: 50%;
-  transition: all var(--transition-fast);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.close-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
 }
 
 .close-btn:hover {
-  background: var(--theme-bg-hover);
+  background: var(--color-bg-secondary);
   color: var(--color-text);
 }
 
 .modal-body {
-  padding: var(--spacing-24);
-  overflow-y: auto;
   flex: 1;
+  padding: 22px 26px 8px;
+  overflow-y: auto;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-12);
-  padding: var(--spacing-16) var(--spacing-24);
+  gap: 10px;
+  padding: 16px 26px 22px;
   border-top: 1px solid var(--color-border);
 }
 
 .modal-footer button {
-  border: none;
-  padding: var(--spacing-12) var(--spacing-28);
+  padding: 10px 24px;
+  border: 1px solid transparent;
   border-radius: var(--radius-full);
-  font-size: 17px;
-  font-weight: 500;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-normal);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-4);
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.modal-footer .btn-primary {
+.btn-primary {
   background: var(--color-primary);
   color: var(--theme-primary-text);
 }
 
-.modal-footer .btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
 }
 
-.modal-footer .btn-primary:active {
-  transform: scale(0.98);
-}
-
-.modal-footer .btn-primary:disabled {
-  opacity: 0.6;
+.btn-primary:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
-  transform: none;
 }
 
-.modal-footer .btn-secondary {
-  background: transparent;
+.btn-secondary {
+  background: var(--theme-bg-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-primary);
   color: var(--color-primary);
 }
 
-.modal-footer .btn-secondary:hover {
-  background: var(--theme-primary-soft);
-}
-
-.modal-footer .btn-secondary:active {
-  transform: scale(0.98);
+.modal-footer button:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .form-group {
-  margin-bottom: var(--spacing-20);
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: var(--spacing-8);
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--color-text);
+}
+
+.form-group label em {
+  color: var(--color-danger);
+  font-style: normal;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: var(--spacing-12) var(--spacing-16);
+  padding: 11px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 15px;
+  background: var(--color-bg-secondary);
   font-family: inherit;
-  transition: all var(--transition-normal);
+  font-size: 14px;
+  color: var(--color-text);
   box-sizing: border-box;
-  background: var(--color-bg);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal),
+    background var(--transition-normal);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
   border-color: var(--color-primary);
+  background: var(--theme-bg-surface);
   box-shadow: var(--theme-ring);
 }
 
@@ -300,47 +338,73 @@ function handleSubmit() {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 96px;
+  line-height: 1.6;
 }
 
 .form-row {
-  display: flex;
-  gap: var(--spacing-16);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
-.form-row .form-group {
-  flex: 1;
+.checkbox-field {
+  display: flex;
+  align-items: flex-end;
 }
 
 .checkbox-label {
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center;
-  gap: var(--spacing-8);
+  gap: 8px;
+  padding-bottom: 11px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
 }
 
 .checkbox-label input {
-  width: auto !important;
+  width: auto;
   accent-color: var(--color-primary);
 }
 
 .cover-upload {
   position: relative;
   width: 100%;
-  height: 120px;
-  border: 2px dashed var(--color-border);
+  height: 128px;
+  border: 1.5px dashed var(--color-border);
   border-radius: var(--radius-sm);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-normal);
+  background: var(--color-bg-secondary);
+  transition: border-color var(--transition-normal), background var(--transition-normal);
   cursor: pointer;
 }
 
 .cover-upload:hover {
   border-color: var(--color-primary);
   background: var(--theme-primary-soft);
+}
+
+.cover-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.cover-hint svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .cover-upload img {
@@ -352,27 +416,42 @@ function handleSubmit() {
 .cover-upload input {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   cursor: pointer;
 }
 
 @media (max-width: 767px) {
+  .modal-overlay {
+    padding: 12px;
+  }
+
   .modal {
     max-width: 100%;
-    border-radius: var(--radius-lg);
-    margin: var(--spacing-8);
+    max-height: 92vh;
+    border-radius: var(--radius-md);
   }
-  .modal-body {
-    padding: var(--spacing-16);
-  }
+
   .modal-header {
-    padding: var(--spacing-16);
+    padding: 18px 18px 14px;
   }
+
+  .modal-body {
+    padding: 18px 18px 4px;
+  }
+
   .modal-footer {
-    padding: var(--spacing-12) var(--spacing-16);
+    padding: 14px 18px 18px;
   }
+
   .form-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .modal-footer button {
+    flex: 1;
   }
 }
 </style>

@@ -1,0 +1,216 @@
+{
+  "strategy": {
+    "hero": {
+      "eyebrow": "TRAVEL TOGETHER",
+      "title": "Travel Groups",
+      "subtitle": "Plan, share and remember every journey with like-minded travelers",
+      "create": "Create Group",
+      "join": "Discover Groups",
+      "featureTrip": "Shared itinerary",
+      "featureBill": "Split bills",
+      "featureAlbum": "Shared album"
+    },
+    "tabs": {
+      "myGroups": "My Groups",
+      "explore": "Discover",
+      "notifications": "Notifications"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Ongoing",
+      "ended": "Ended"
+    },
+    "detailTabs": {
+      "members": "Members",
+      "posts": "Posts",
+      "trip": "Itinerary",
+      "bills": "Bills",
+      "album": "Album",
+      "poll": "Polls",
+      "diary": "Diary"
+    },
+    "myGroups": {
+      "eyebrow": "MY JOURNEYS",
+      "title": "My Groups",
+      "subtitle": "Pick up where you and your travel mates left off",
+      "searchPlaceholder": "Search groups or destinations",
+      "loading": "Loading groups…",
+      "emptyTitle": "No groups yet",
+      "emptyDesc": "Create or join a travel group to start your journey",
+      "create": "Create Group",
+      "statusActive": "Ongoing",
+      "statusEnded": "Ended",
+      "noDestination": "No destination yet",
+      "memberCount": "{current}/{max} members"
+    },
+    "explore": {
+      "eyebrow": "DISCOVER",
+      "title": "Discover Groups",
+      "subtitle": "Find travel mates heading the same way",
+      "emptyTitle": "No public groups yet",
+      "emptyDesc": "Be the first to create a public group",
+      "join": "Join",
+      "joined": "Joined",
+      "creator": "Created by · {name}",
+      "noDescription": "No description",
+      "memberCount": "{count} members"
+    },
+    "notifications": {
+      "eyebrow": "INBOX",
+      "title": "Notifications",
+      "subtitle": "Invitations, requests and interactions",
+      "markAll": "Mark all read",
+      "emptyTitle": "Nothing here",
+      "emptyDesc": "All messages have been handled",
+      "justNow": "Just now",
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count} h ago",
+      "markRead": "Mark as read"
+    },
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "create": {
+      "title": "Create Group",
+      "name": "Group name",
+      "namePlaceholder": "Name your group",
+      "destination": "Destination",
+      "destinationPlaceholder": "Where are you going?",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "cover": "Cover image",
+      "coverHint": "Click to upload a cover",
+      "description": "Description",
+      "descriptionPlaceholder": "Tell people about this group",
+      "maxMembers": "Max members",
+      "public": "Make it public",
+      "cancel": "Cancel",
+      "submit": "Create",
+      "submitting": "Creating…",
+      "nameRequired": "Please enter a group name"
+    },
+    "detail": {
+      "close": "Close",
+      "memberCount": "{count} members",
+      "noDestination": "No destination yet"
+    },
+    "members": {
+      "invite": "Invite Members",
+      "joinedAt": "Joined {date}",
+      "remove": "Remove",
+      "empty": "No members yet"
+    },
+    "posts": {
+      "placeholder": "Share an update from the road…",
+      "publish": "Publish",
+      "delete": "Delete",
+      "like": "Like",
+      "comment": "Comment",
+      "empty": "No posts yet — share the first one"
+    },
+    "trip": {
+      "add": "Add Stop",
+      "generate": "AI Plan",
+      "day": "Day {count}",
+      "empty": "No itinerary yet"
+    },
+    "bills": {
+      "add": "Add Bill",
+      "settlement": "Settlement",
+      "payer": "Paid by · {name}",
+      "settled": "Settled",
+      "unsettled": "Unsettled",
+      "empty": "No bills yet"
+    },
+    "album": {
+      "upload": "Upload Photos",
+      "empty": "The album is empty"
+    },
+    "poll": {
+      "create": "New Poll",
+      "active": "Ongoing",
+      "ended": "Ended",
+      "votes": "{count} votes",
+      "empty": "No polls yet"
+    },
+    "diary": {
+      "generate": "Generate Diary",
+      "export": "Export Diary",
+      "empty": "No travel diary yet — generate one above"
+    },
+    "invite": {
+      "title": "Invite Members",
+      "label": "User IDs (comma separated)",
+      "placeholder": "1, 2, 3",
+      "cancel": "Cancel",
+      "submit": "Send Invites"
+    },
+    "addTrip": {
+      "title": "Add Itinerary",
+      "date": "Date",
+      "time": "Time",
+      "activity": "Activity",
+      "activityPlaceholder": "What are you doing?",
+      "location": "Location",
+      "locationPlaceholder": "Location (optional)",
+      "cancel": "Cancel",
+      "submit": "Add",
+      "required": "Please fill in the date and activity"
+    },
+    "addBill": {
+      "title": "Add Bill",
+      "name": "Bill name",
+      "namePlaceholder": "e.g. Dinner",
+      "amount": "Amount",
+      "description": "Note",
+      "descriptionPlaceholder": "Bill details",
+      "cancel": "Cancel",
+      "submit": "Add",
+      "required": "Please fill in the bill name and amount"
+    },
+    "createPoll": {
+      "title": "New Poll",
+      "pollTitle": "Poll title",
+      "pollTitlePlaceholder": "What are you voting on?",
+      "options": "Options (one per line)",
+      "optionsPlaceholder": "Option 1\nOption 2\nOption 3",
+      "cancel": "Cancel",
+      "submit": "Create Poll",
+      "required": "Please fill in the title and options"
+    },
+    "recommend": {
+      "eyebrow": "FEATURED",
+      "title": "Featured Groups",
+      "subtitle": "Journeys that are recruiting right now",
+      "members": "{count} travelers joined",
+      "priceFrom": "/person",
+      "join": "Join Now",
+      "recruiting": "Recruiting",
+      "ended": "Ended",
+      "empty": "No featured groups yet",
+      "modal": {
+        "groupName": "Group",
+        "groupDesc": "About",
+        "dates": "Dates",
+        "highlights": "Highlights",
+        "members": "Members ({count})",
+        "confirm": "Join Group"
+      }
+    },
+    "confirm": {
+      "title": "Notice",
+      "removeMember": "Remove this member?",
+      "deletePost": "Delete this post?",
+      "deleteTrip": "Delete this itinerary item?",
+      "deletePhoto": "Delete this photo?"
+    },
+    "toast": {
+      "applySuccess": "Request submitted",
+      "aiTripReady": "AI itinerary generated — check the trip list",
+      "createSuccess": "Created successfully",
+      "actionFailed": "Something went wrong, please try again"
+    }
+  }
+}

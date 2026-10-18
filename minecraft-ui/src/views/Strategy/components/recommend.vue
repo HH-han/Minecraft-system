@@ -1,825 +1,829 @@
 <template>
-    <div class="raiders-app-container">
-        <div class="raiders-header">
-            <p>探索世界，分享旅程，与志同道合的旅行者一起出发</p>
-            <div class="raiders-divider"></div>
-        </div>
-        <!-- 搜索区域 -->
-        <div class="raiders-search-section">
-            <div class="raiders-search-box">
-                <input type="text" placeholder="搜索目的地，主题，游记...">
-                <button><i class="fas fa-search"></i> 搜索</button>
-            </div>
-
-            <div class="raiders-search-tips">
-                <span>巴厘岛攻略</span>
-                <span>日本樱花季</span>
-                <span>欧洲自驾游</span>
-                <span>东南亚美食</span>
-                <span>登山徒步</span>
-                <span>亲子旅行</span>
-            </div>
-        </div>
-
-        <!-- 地点切换 -->
-        <div class="raiders-location-switch">
-            <button class="raiders-location-btn" :class="{ 'raiders-active': currentLocation === 'domestic' }"
-                @click="changeLocation('domestic')">
-                <i class="fas fa-flag"></i> 国内游
-            </button>
-            <button class="raiders-location-btn" :class="{ 'raiders-active': currentLocation === 'abroad' }"
-                @click="changeLocation('abroad')">
-                <i class="fas fa-globe-asia"></i> 海外游
-            </button>
-        </div>
-
-        <!-- 卡片内容展示 -->
-        <div class="raiders-cards-container">
-            <div v-for="(card, index) in filteredCards" :key="index" class="raiders-travel-card">
-                <div class="raiders-card-image" :style="{ backgroundImage: `url(${card.image})` }">
-                    <div class="raiders-card-tag">
-                        <i :class="card.tagIcon"></i> {{ card.tag }}
-                    </div>
-                </div>
-
-                <div class="raiders-card-content">
-                    <h3 class="raiders-card-title">{{ card.title }}</h3>
-
-                    <div class="raiders-card-info">
-                        <div class="raiders-card-avatar" :style="{ backgroundImage: `url(${card.avatar})` }"></div>
-                        <div class="raiders-card-stats">
-                            已有 <strong>{{ card.members }}</strong> 人加入群组
-                        </div>
-                    </div>
-
-                    <p class="raiders-card-description">{{ card.description }}</p>
-
-                    <div class="raiders-card-actions">
-                        <div class="raiders-card-price">
-                            ¥{{ card.price }} <span>/人起</span>
-                        </div>
-                        <button class="raiders-join-btn" @click="showModal(card)">
-                            立即入群 <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 群组信息模态框 -->
-        <div class="raiders-modal-overlay" :class="{ 'raiders-active': showGroupModal }">
-            <div class="raiders-modal-container">
-                <div class="raiders-modal-header" :style="{ backgroundImage: `url(${currentGroup.image})` }">
-                    <h2 class="raiders-modal-title">{{ currentGroup.title }}</h2>
-                    <div class="raiders-modal-close" @click="closeModal">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </div>
-
-                <div class="raiders-modal-content">
-                    <div class="raiders-group-details">
-                        <div class="raiders-group-info">
-                            <div class="raiders-info-item">
-                                <div class="raiders-info-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="raiders-info-content">
-                                    <h3>群组名称</h3>
-                                    <p>{{ currentGroup.groupName }}</p>
-                                </div>
-                            </div>
-
-                            <div class="raiders-info-item">
-                                <div class="raiders-info-icon">
-                                    <i class="fas fa-info-circle"></i>
-                                </div>
-                                <div class="raiders-info-content">
-                                    <h3>群组简介</h3>
-                                    <p>{{ currentGroup.groupDescription }}</p>
-                                </div>
-                            </div>
-
-                            <div class="raiders-info-item">
-                                <div class="raiders-info-icon">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <div class="raiders-info-content">
-                                    <h3>行程日期</h3>
-                                    <p>{{ currentGroup.dates }}</p>
-                                </div>
-                            </div>
-
-                            <div class="raiders-info-item">
-                                <div class="raiders-info-icon">
-                                    <i class="fas fa-map-marked-alt"></i>
-                                </div>
-                                <div class="raiders-info-content">
-                                    <h3>行程亮点</h3>
-                                    <p>{{ currentGroup.highlights }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="raiders-members-section">
-                        <h2>群组成员 ({{ currentGroup.members }})</h2>
-                        <div class="raiders-members-grid">
-                            <div v-for="(member, index) in groupMembers" :key="index" class="raiders-member-card">
-                                <div class="raiders-member-avatar"
-                                    :style="{ backgroundImage: `url(${member.avatar})` }"></div>
-                                <div class="raiders-member-name">{{ member.name }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="raiders-action-section">
-                    <button class="raiders-confirm-btn">
-                        确认加入群组 <i class="fas fa-check"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+  <section class="recommend">
+    <div class="section-head">
+      <div class="head-copy">
+        <span class="eyebrow">{{ t('strategy.recommend.eyebrow') }}</span>
+        <h2>{{ t('strategy.recommend.title') }}</h2>
+        <p class="head-sub">{{ t('strategy.recommend.subtitle') }}</p>
+      </div>
+      <span v-if="travelCards.length" class="head-count">{{ travelCards.length }}</span>
     </div>
+
+    <div v-if="travelCards.length === 0" class="recommend-empty">
+      {{ t('strategy.recommend.empty') }}
+    </div>
+
+    <div v-else class="card-grid">
+      <article
+        v-for="(card, index) in travelCards"
+        :key="card.id || index"
+        class="travel-card"
+        :style="{ '--i': index }"
+        @click="showModal(card)"
+      >
+        <div class="card-image">
+          <img :src="card.image" :alt="card.title" loading="lazy" />
+          <span :class="['card-tag', card.status === 1 ? 'active' : 'ended']">
+            {{ card.status === 1 ? t('strategy.recommend.recruiting') : t('strategy.recommend.ended') }}
+          </span>
+          <span class="card-members">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="9" cy="8" r="3.2" />
+              <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+              <path d="M16 5.6a3 3 0 0 1 0 5.8M17.6 14.4A5 5 0 0 1 20.5 19" />
+            </svg>
+            {{ t('strategy.recommend.members', { count: card.members || 0 }) }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <h3>{{ card.title }}</h3>
+          <p class="card-desc">{{ card.description }}</p>
+
+          <div class="card-footer">
+            <span v-if="card.price > 0" class="card-price">
+              ¥{{ card.price }}<em>{{ t('strategy.recommend.priceFrom') }}</em>
+            </span>
+            <span v-else class="card-price muted">
+              {{ t('strategy.recommend.recruiting') }}
+            </span>
+
+            <button class="join-btn" type="button" @click.stop="showModal(card)">
+              {{ t('strategy.recommend.join') }}
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- 群组信息模态框 -->
+    <div class="group-modal" :class="{ active: showGroupModal }" @click.self="closeModal">
+      <div class="group-modal-panel" role="dialog" aria-modal="true">
+        <header class="group-modal-hero">
+          <img v-if="currentGroup.image" :src="currentGroup.image" :alt="currentGroup.title" class="group-modal-cover" />
+          <div class="group-modal-scrim" aria-hidden="true"></div>
+          <div class="group-modal-title">
+            <span class="group-modal-eyebrow">
+              {{ t('strategy.recommend.members', { count: currentGroup.members || 0 }) }}
+            </span>
+            <h2>{{ currentGroup.title }}</h2>
+          </div>
+          <button class="group-modal-close" type="button" @click="closeModal">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="group-modal-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="9" cy="8" r="3.2" />
+                  <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+                  <path d="M16 5.6a3 3 0 0 1 0 5.8M17.6 14.4A5 5 0 0 1 20.5 19" />
+                </svg>
+              </span>
+              <div class="info-content">
+                <h3>{{ t('strategy.recommend.modal.groupName') }}</h3>
+                <p>{{ currentGroup.groupName || currentGroup.title }}</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 11v6M12 7.5v.5" />
+                </svg>
+              </span>
+              <div class="info-content">
+                <h3>{{ t('strategy.recommend.modal.groupDesc') }}</h3>
+                <p>{{ currentGroup.groupDescription || currentGroup.description }}</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="16" rx="3" />
+                  <path d="M8 3v4M16 3v4M3 10h18" />
+                </svg>
+              </span>
+              <div class="info-content">
+                <h3>{{ t('strategy.recommend.modal.dates') }}</h3>
+                <p>{{ currentGroup.dates || '—' }}</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+              </span>
+              <div class="info-content">
+                <h3>{{ t('strategy.recommend.modal.highlights') }}</h3>
+                <p>{{ currentGroup.highlights || '—' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="members-section">
+            <h3>{{ t('strategy.recommend.modal.members', { count: currentGroup.members || 0 }) }}</h3>
+            <div class="members-grid">
+              <div v-for="(member, index) in groupMembers" :key="index" class="member-card">
+                <div class="member-avatar" :style="{ backgroundImage: `url(${member.avatar})` }"></div>
+                <span class="member-name">{{ member.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="group-modal-footer">
+          <button class="confirm-btn" type="button">
+            {{ t('strategy.recommend.modal.confirm') }}
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+        </footer>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { getGroupList } from '@/api/group';
-import carouselApi from '@/api/carousel'
+import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { getGroupList } from '@/api/group'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
-// 搜索关键词
-const searchKeyword = ref('');
+const { t } = useI18n()
 
-// 轮播图数据
-const mediaList = ref({ images: []})
-// 获取图片背景
-const fetchcarousel = async () => {
-  try {
-    const result = await carouselApi.getCarouselsByGroup('gc')
-    if (result && result.list) {
-      const filteredList = result.list.filter(item => item.type === 'gc')
-      mediaList.value.images = filteredList.map((item) => ({
-        image: item.image || '默认图片链接',
-        title: item.title || '默认标题',
-        location: item.location || '默认位置',
-        description: item.description || '默认描述'
-      }))
-    }
-  } catch (error) {
-    console.error('获取轮播图数据失败：', error)
-  }
-}
-
-// 数据变更后自动刷新
-useAutoRefresh(fetchcarousel)
-
-const currentSlide = ref(0);
+const DEFAULT_COVER = 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800'
 
 // 卡片数据
-const travelCards = ref([]);
-// 获取数据
+const travelCards = ref([])
+
 const fetchCards = async () => {
-    try {
-        const params = {
-            pageNum: 1,
-            pageSize: 10
-        };
-        const response = await getGroupList(params);
-        if (response.data && response.data.records) {
-            // 转换数据结构以匹配模板期望
-            travelCards.value = response.data.records.map(group => ({
-                id: group.id,
-                title: group.name,
-                image: group.images ? group.images.split(',')[0] : '默认图片链接',
-                avatar: 'https://randomuser.me/api/portraits/men/32.jpg', // 团队头像，使用默认值
-                members: group.currentMembers || 0,
-                description: group.description || '暂无描述',
-                price: group.price || 0,
-                tag: group.status === 1 ? '招募中' : '已结束',
-                tagIcon: group.status === 1 ? 'fas fa-users' : 'fas fa-check-circle',
-                type: 'domestic' // 默认类型，可根据实际数据调整
-            }));
-        } else {
-            travelCards.value = [];
-        }
-    } catch (error) {
-        console.error('获取数据失败:', error);
-        travelCards.value = [];
+  try {
+    const params = {
+      pageNum: 1,
+      pageSize: 10
     }
-};
+    const response = await getGroupList(params)
+    if (response.data && response.data.records) {
+      travelCards.value = response.data.records.map(group => ({
+        id: group.id,
+        title: group.name,
+        image: group.images ? group.images.split(',')[0] : DEFAULT_COVER,
+        members: group.currentMembers || 0,
+        description: group.description || '',
+        price: group.price || 0,
+        status: group.status,
+        groupName: group.name,
+        groupDescription: group.description,
+        dates: group.startDate && group.endDate ? `${group.startDate} - ${group.endDate}` : '',
+        highlights: group.description
+      }))
+    } else {
+      travelCards.value = []
+    }
+  } catch (error) {
+    console.error('获取数据失败:', error)
+    travelCards.value = []
+  }
+}
 
 // 数据变更后自动刷新
 useAutoRefresh(fetchCards)
 
-// 当前地点类型
-const currentLocation = ref('domestic');
-
-// 切换地点
-const changeLocation = (location) => {
-    currentLocation.value = location;
-    fetchCards();
-};
-
-// 过滤卡片
-const filteredCards = computed(() => {
-    return travelCards.value.filter(card => card.type === currentLocation.value);
-});
-
 // 群组成员数据
 const groupMembers = ref([
-    { name: '张明', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
-    { name: '李华', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
-    // 其他成员数据...
-]);
+  { name: '张明', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
+  { name: '李华', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' }
+])
 
 // 模态框状态
-const showGroupModal = ref(false);
-const currentGroup = ref({});
+const showGroupModal = ref(false)
+const currentGroup = ref({})
 
-// 显示模态框
-const showModal = (group) => {
-    currentGroup.value = group;
-    showGroupModal.value = true;
-    document.body.style.overflow = 'hidden';
-};
+function showModal(group) {
+  currentGroup.value = group
+  showGroupModal.value = true
+  document.body.style.overflow = 'hidden'
+}
 
-// 关闭模态框
-const closeModal = () => {
-    showGroupModal.value = false;
-    document.body.style.overflow = 'auto';
-};
+function closeModal() {
+  showGroupModal.value = false
+  document.body.style.overflow = ''
+}
 
-
-
-// 初始化轮播
 onMounted(() => {
-    fetchCards();
-    fetchcarousel();
-});
-
+  fetchCards()
+})
 </script>
 
 <style scoped>
-.raiders-app-container {
-    font-family: 'Noto Sans SC', sans-serif;
-    min-height: 100vh;
-    color: var(--theme-text-1);
-    margin: 0 auto;
-    animation: fadeInUp 1s ease-out;
+.recommend {
+  min-width: 0;
 }
 
-/* 动画效果 */
-@keyframes fadeInUp {
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: var(--theme-primary);
+  margin-bottom: 8px;
+}
+
+.head-copy h2 {
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--theme-text-1);
+}
+
+.head-sub {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--theme-text-2);
+}
+
+.head-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.travel-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  cursor: pointer;
+  transition: transform var(--theme-duration-slow) var(--theme-ease),
+    box-shadow var(--theme-duration-slow) var(--theme-ease),
+    border-color var(--theme-duration-slow) var(--theme-ease);
+  animation: card-in 0.5s var(--theme-ease) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+@keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(14px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.raiders-header {
-    text-align: center;
-    margin: 70px 0 40px 0;
-    position: relative;
+.travel-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--theme-shadow-lg);
+  border-color: var(--theme-border-strong);
 }
 
-.raiders-header p {
-    font-size: 1.2rem;
-    color: var(--theme-text-2);
-    max-width: 600px;
-    margin: 0 auto 30px;
-    line-height: 1.6;
+.card-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--theme-bg-surface-2);
 }
 
-.raiders-divider {
-    height: 3px;
-    background: linear-gradient(to right, transparent, var(--theme-primary), transparent);
-    width: 80%;
-    margin: 20px auto 40px;
-    border-radius: 50%;
+.card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
 }
 
-/* 搜索区域样式 */
-.raiders-search-section {
-    max-width: 800px;
-    margin: 20px auto 60px;
-    position: relative;
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--theme-ease);
 }
 
-.raiders-search-box {
-    display: flex;
-    height: 70px;
-    box-shadow: var(--theme-shadow-lg);
-    border-radius: 50px;
-    overflow: hidden;
+.travel-card:hover .card-image img {
+  transform: scale(1.06);
 }
 
-.raiders-search-box input {
-    flex: 1;
-    border: none;
-    padding: 0 30px;
-    font-size: 1.2rem;
-    outline: none;
-    background: var(--theme-bg-surface);
+.card-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(12, 15, 20, 0.5);
+  backdrop-filter: blur(10px);
 }
 
-.raiders-search-box input::placeholder {
-    color: var(--theme-text-3);
+.card-tag.active {
+  color: #d1fae5;
 }
 
-.raiders-search-box button {
-    background: var(--theme-gradient);
-    border: none;
-    padding: 0 40px;
-    color: var(--theme-primary-text);
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
+.card-tag.ended {
+  color: rgba(255, 255, 255, 0.62);
 }
 
-.raiders-search-box button:hover {
-    background: var(--theme-gradient);
-    transform: translateY(-2px);
+.card-members {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(12, 15, 20, 0.5);
+  backdrop-filter: blur(10px);
 }
 
-.raiders-search-tips {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    gap: 20px;
-    flex-wrap: wrap;
+.card-members svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.raiders-search-tips span {
-    background: var(--theme-bg-glass);
-    box-shadow: var(--theme-shadow-sm);
-    padding: 8px 20px;
-    border-radius: 30px;
-    font-size: 0.95rem;
-    color: var(--theme-text-1);
-    cursor: pointer;
-    transition: all 0.2s ease;
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
-.raiders-search-tips span:hover {
-    background: var(--theme-primary);
-    color: var(--theme-primary-text);
-    transform: translateY(-2px);
+.card-body h3 {
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--theme-text-1);
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* 地点切换样式 */
-.raiders-location-switch {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 40px;
-    gap: 30px;
+.card-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--theme-text-2);
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 42px;
 }
 
-.raiders-location-btn {
-    background: var(--theme-bg-surface);
-    border: none;
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: var(--theme-shadow-sm);
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--theme-border);
 }
 
-.raiders-location-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 100%;
-    background: var(--theme-gradient);
-    transition: width 0.5s ease;
-    z-index: -1;
+.card-price {
+  font-size: 19px;
+  font-weight: 750;
+  color: var(--theme-highlight);
+  line-height: 1.2;
 }
 
-.raiders-location-btn:hover::before {
-    width: 100%;
+.card-price em {
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--theme-text-3);
 }
 
-.raiders-location-btn:hover {
-    color: var(--theme-primary-text);
-    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary) 40%, transparent);
+.card-price.muted {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text-3);
 }
 
-.raiders-location-btn.raiders-active {
-    background: var(--theme-gradient);
-    color: var(--theme-primary-text);
-    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary) 40%, transparent);
+.join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--theme-duration-fast), transform var(--theme-duration-fast);
 }
 
-.raiders-location-btn.raiders-active::before {
-    display: none;
+.join-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--theme-duration-fast);
 }
 
-/* 卡片容器样式 */
-.raiders-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 30px;
-    margin-bottom: 60px;
-    padding: 20px;
+.join-btn:hover {
+  background: var(--theme-primary-hover);
 }
 
-.raiders-travel-card {
-    background: var(--theme-bg-surface);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: var(--theme-shadow-md);
-    transition: all 0.4s ease;
-    position: relative;
+.join-btn:hover svg {
+  transform: translateX(2px);
 }
 
-.raiders-travel-card:hover {
-    transform: translateY(-15px);
-    box-shadow: var(--theme-shadow-lg);
+.join-btn:active {
+  transform: scale(0.96);
 }
 
-.raiders-card-image {
-    height: 250px;
-    width: 100%;
-    background-size: cover;
-    background-position: center;
-    position: relative;
+.recommend-empty {
+  padding: 44px;
+  text-align: center;
+  border: 1px dashed var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  color: var(--theme-text-3);
+  font-size: 13px;
 }
 
-.raiders-card-tag {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: color-mix(in srgb, var(--theme-highlight) 90%, transparent);
-    color: var(--theme-primary-text);
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
+/* 弹窗 */
+.group-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--theme-overlay);
+  backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--theme-duration) var(--theme-ease),
+    visibility var(--theme-duration) var(--theme-ease);
 }
 
-.raiders-card-content {
-    padding: 25px;
+.group-modal.active {
+  opacity: 1;
+  visibility: visible;
 }
 
-.raiders-card-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    color: var(--theme-text-1);
+.group-modal-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 860px;
+  max-height: 88vh;
+  overflow: hidden;
+  background: var(--theme-bg-elevated);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-xl);
+  box-shadow: var(--theme-shadow-lg);
+  transform: translateY(24px) scale(0.98);
+  transition: transform var(--theme-duration-slow) var(--theme-ease);
 }
 
-.raiders-card-info {
-    display: flex;
-    align-items: center;
+.group-modal.active .group-modal-panel {
+  transform: translateY(0) scale(1);
+}
+
+.group-modal-hero {
+  position: relative;
+  flex-shrink: 0;
+  height: 220px;
+  overflow: hidden;
+  background: var(--theme-bg-surface-2);
+}
+
+.group-modal-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.group-modal-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 10, 14, 0.12) 0%, rgba(8, 10, 14, 0.74) 100%);
+}
+
+.group-modal-title {
+  position: absolute;
+  left: 28px;
+  right: 80px;
+  bottom: 24px;
+  color: #fff;
+}
+
+.group-modal-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.group-modal-title h2 {
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.group-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  background: rgba(12, 15, 20, 0.4);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: background var(--theme-duration-fast), transform var(--theme-duration-fast);
+}
+
+.group-modal-close svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.group-modal-close:hover {
+  background: rgba(12, 15, 20, 0.66);
+  transform: rotate(90deg);
+}
+
+.group-modal-body {
+  flex: 1;
+  padding: 26px 28px;
+  overflow-y: auto;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 26px;
+}
+
+.info-item {
+  display: flex;
+  gap: 14px;
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+}
+
+.info-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.info-content h3 {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--theme-text-3);
+}
+
+.info-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--theme-text-1);
+}
+
+.members-section {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--theme-border);
+}
+
+.members-section h3 {
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--theme-text-1);
+}
+
+.members-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 76px;
+}
+
+.member-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid var(--theme-primary-soft);
+}
+
+.member-name {
+  font-size: 12px;
+  color: var(--theme-text-2);
+  text-align: center;
+}
+
+.group-modal-footer {
+  flex-shrink: 0;
+  padding: 16px 28px 22px;
+  border-top: 1px solid var(--theme-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 26px;
+  border: none;
+  border-radius: 999px;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 12px 26px -14px var(--theme-primary);
+  transition: transform var(--theme-duration-fast), box-shadow var(--theme-duration-fast);
+}
+
+.confirm-btn svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.confirm-btn:hover {
+  transform: translateY(-1px);
+}
+
+.confirm-btn:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+  .section-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .section-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
     margin-bottom: 20px;
-}
+  }
 
-.raiders-card-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-size: cover;
-    margin-right: 15px;
-    border: 3px solid var(--theme-primary);
-}
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 
-.raiders-card-stats {
-    color: var(--theme-text-2);
-    font-size: 0.95rem;
-}
+  .card-body {
+    padding: 16px;
+  }
 
-.raiders-card-stats strong {
-    color: var(--theme-highlight);
-    font-weight: 700;
-}
+  .group-modal {
+    padding: 12px;
+  }
 
-.raiders-card-description {
-    color: var(--theme-text-2);
-    line-height: 1.6;
-    margin-bottom: 25px;
-    font-size: 1.05rem;
-}
+  .group-modal-panel {
+    max-height: 92vh;
+    border-radius: var(--theme-radius-lg);
+  }
 
-.raiders-card-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+  .group-modal-hero {
+    height: 168px;
+  }
 
-.raiders-card-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--theme-highlight);
-}
+  .group-modal-title {
+    left: 18px;
+    right: 64px;
+    bottom: 16px;
+  }
 
-.raiders-card-price span {
-    font-size: 1rem;
-    color: var(--theme-text-3);
-    font-weight: normal;
-}
+  .group-modal-title h2 {
+    font-size: 22px;
+  }
 
-.raiders-join-btn {
-    background: var(--theme-gradient);
-    border: none;
-    padding: 12px 30px;
-    border-radius: 50px;
-    color: var(--theme-primary-text);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-}
+  .group-modal-body {
+    padding: 18px;
+  }
 
-.raiders-join-btn:hover {
-    background: var(--theme-gradient);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px color-mix(in srgb, var(--theme-primary) 40%, transparent);
-}
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 
-/* 模态框样式 */
-.raiders-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+  .group-modal-footer {
+    padding: 14px 18px 18px;
+  }
+
+  .confirm-btn {
     width: 100%;
-    height: 100%;
-    background: var(--theme-overlay);
-    display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-.raiders-modal-overlay.raiders-active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.raiders-modal-container {
-    background: var(--theme-bg-elevated);
-    width: 90%;
-    max-width: 900px;
-    border-radius: 25px;
-    overflow: hidden;
-    box-shadow: var(--theme-shadow-lg);
-    transform: translateY(50px);
-    transition: transform 0.5s ease;
-}
-
-.raiders-modal-overlay.raiders-active .raiders-modal-container {
-    transform: translateY(0);
-}
-
-.raiders-modal-header {
-    height: 300px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    padding: 30px;
-    display: flex;
-    align-items: flex-end;
-}
-
-.raiders-modal-title {
-    color: white;
-    font-size: 2.5rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    font-weight: 700;
-}
-
-.raiders-modal-close {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    background: rgba(255, 255, 255, 0.25);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-.raiders-modal-close:hover {
-    background: color-mix(in srgb, var(--theme-highlight) 80%, transparent);
-    transform: rotate(90deg);
-}
-
-.raiders-modal-content {
-    padding: 40px;
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 40px;
-}
-
-.raiders-group-info {
-    margin-bottom: 30px;
-}
-
-.raiders-info-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.raiders-info-icon {
-    width: 60px;
-    height: 60px;
-    background: var(--theme-bg-surface-2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20px;
-    font-size: 1.5rem;
-    color: var(--theme-primary);
-}
-
-.raiders-info-content h3 {
-    font-size: 1.4rem;
-    margin-bottom: 5px;
-    color: var(--theme-text-1);
-}
-
-.raiders-info-content p {
-    color: var(--theme-text-2);
-    line-height: 1.6;
-    max-width: 350px;
-}
-
-.raiders-members-section h2 {
-    font-size: 1.6rem;
-    margin-bottom: 25px;
-    color: var(--theme-text-1);
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--theme-border);
-}
-
-.raiders-members-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px;
-}
-
-.raiders-member-card {
-    text-align: center;
-}
-
-.raiders-member-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-size: cover;
-    margin: 0 auto 15px;
-    border: 3px solid var(--theme-primary);
-}
-
-.raiders-member-name {
-    font-weight: 600;
-    color: var(--theme-text-1);
-}
-
-.raiders-action-section {
-    background: var(--theme-bg-surface-2);
-    padding: 30px;
-    text-align: center;
-    border-radius: 0 0 25px 25px;
-}
-
-.raiders-confirm-btn {
-    background: linear-gradient(45deg, var(--theme-highlight), var(--theme-warning));
-    border: none;
-    padding: 16px 50px;
-    border-radius: 50px;
-    color: var(--theme-primary-text);
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
-    box-shadow: 0 5px 20px color-mix(in srgb, var(--theme-highlight) 30%, transparent);
-}
-
-.raiders-confirm-btn:hover {
-    background: linear-gradient(45deg, var(--theme-highlight), var(--theme-warning));
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-highlight) 40%, transparent);
-}
-
-/* 响应式设计 */
-@media (max-width: 992px) {
-    .raiders-modal-content {
-        grid-template-columns: 1fr;
-    }
-
-    .raiders-cards-container {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-
-    .raiders-header h1 {
-        font-size: 2.8rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .raiders-carousel-container {
-        height: 400px;
-    }
-
-    .raiders-carousel-caption {
-        left: 30px;
-        bottom: 30px;
-    }
-
-    .raiders-carousel-caption h2 {
-        font-size: 2rem;
-    }
-
-    .raiders-search-box {
-        height: 60px;
-    }
-
-    .raiders-search-box button {
-        padding: 0 30px;
-    }
-
-    .raiders-header h1 {
-        font-size: 2.2rem;
-    }
-
-    .raiders-location-btn {
-        padding: 12px 30px;
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .raiders-carousel-container {
-        height: 300px;
-    }
-
-    .raiders-carousel-caption {
-        left: 20px;
-        bottom: 20px;
-    }
-
-    .raiders-carousel-caption h2 {
-        font-size: 1.5rem;
-    }
-
-    .raiders-carousel-caption p {
-        font-size: 1rem;
-    }
-
-    .raiders-search-box {
-        flex-direction: column;
-        height: auto;
-        border-radius: 15px;
-    }
-
-    .raiders-search-box input {
-        padding: 20px;
-        width: 100%;
-    }
-
-    .raiders-search-box button {
-        padding: 20px;
-        width: 100%;
-    }
-
-    .raiders-location-switch {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .raiders-cards-container {
-        grid-template-columns: 1fr;
-    }
+  }
 }
 </style>
