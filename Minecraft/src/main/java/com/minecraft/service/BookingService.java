@@ -33,11 +33,6 @@ public interface BookingService {
     void cancelTicketBooking(Long id);
 
     /**
-     * 完成门票预订（支付成功后置为已完成）
-     */
-    void completeTicketBooking(Long id);
-
-    /**
      * 删除门票预订（主表 + 明细）
      */
     void deleteTicketBooking(Long id);
@@ -61,11 +56,6 @@ public interface BookingService {
      * 取消酒店预订（状态置为已取消）
      */
     void cancelHotelBooking(Long id);
-
-    /**
-     * 完成酒店预订（支付成功后置为已完成）
-     */
-    void completeHotelBooking(Long id);
 
     /**
      * 删除酒店预订（主表 + 明细）

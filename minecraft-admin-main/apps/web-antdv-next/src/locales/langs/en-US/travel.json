@@ -14,6 +14,76 @@
   "community": "Community Management",
   "monthly": "Monthly Management",
   "website": "Official Website",
+  "payment": "Payment Management",
+  "payment_page": {
+    "title": "Payment Management",
+    "tabs": {
+      "orders": "Payment Orders",
+      "flows": "Payment Flows",
+      "refunds": "Refunds",
+      "logs": "Notify Logs"
+    },
+    "filters": {
+      "payNo": "Payment No.",
+      "bizOrderNo": "Business Order No.",
+      "status": "Status",
+      "channel": "Channel",
+      "search": "Search",
+      "reset": "Reset"
+    },
+    "refund": {
+      "action": "Refund",
+      "title": "Create Refund",
+      "amount": "Refund Amount",
+      "reason": "Refund Reason",
+      "max": "Refundable",
+      "submit": "Confirm",
+      "amount_required": "Please enter a valid refund amount",
+      "success": "Refund submitted"
+    },
+    "status": {
+      "INIT": "Pending",
+      "PAYING": "Paying",
+      "SUCCESS": "Success",
+      "FAILED": "Failed",
+      "CLOSED": "Closed",
+      "REFUNDING": "Refunding",
+      "REFUNDED": "Refunded"
+    },
+    "channel": {
+      "MOCK": "Mock",
+      "WECHAT": "WeChat Pay",
+      "ALIPAY": "Alipay",
+      "UNIONPAY": "UnionPay"
+    },
+    "verify": {
+      "0": "Verify Failed",
+      "1": "Verified"
+    },
+    "fields": {
+      "payNo": "Payment No.",
+      "flowNo": "Flow No.",
+      "bizOrderNo": "Business Order No.",
+      "bizType": "Business Type",
+      "orderNo": "Order No.",
+      "channel": "Channel",
+      "amount": "Amount",
+      "payAmount": "Paid Amount",
+      "refundAmount": "Refund Amount",
+      "status": "Status",
+      "prepayId": "Prepay ID",
+      "refundNo": "Refund No.",
+      "channelRefundNo": "Channel Refund No.",
+      "failReason": "Failure Reason",
+      "errorMsg": "Error Message",
+      "rawBody": "Raw Body",
+      "verifyResult": "Verify Result",
+      "processResult": "Process Result",
+      "payTime": "Pay Time",
+      "refundTime": "Refund Time",
+      "createTime": "Created At"
+    }
+  },
   "hotel_list": {
     "title": "Hotel Management",
     "subtitle": "Manage hotel information, facilities and rooms",

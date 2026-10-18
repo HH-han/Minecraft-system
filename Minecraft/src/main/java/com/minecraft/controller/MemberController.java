@@ -86,12 +86,6 @@ public class MemberController {
         return ApiResponse.success(memberService.listOrders(requireLogin()));
     }
 
-    @Operation(summary = "支付回调（由支付网关调用）")
-    @PostMapping("/pay/callback")
-    public ApiResponse<MemberInfoVO> payCallback(@RequestParam String orderNo) {
-        return ApiResponse.success(memberService.markPaid(orderNo));
-    }
-
     private Long requireLogin() {
         Long userId = SecurityUtils.getCurrentUserId();
         if (userId == null) {

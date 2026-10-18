@@ -9,6 +9,12 @@ import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.*;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.*;
+import com.minecraft.pay.dto.PayCreateRequest;
+import com.minecraft.pay.dto.PayCreateResponse;
+import com.minecraft.pay.enums.PayBizType;
+import com.minecraft.pay.enums.PayChannel;
+import com.minecraft.pay.enums.PayStatus;
+import com.minecraft.pay.service.PayGatewayService;
 import com.minecraft.service.UserService;
 import com.minecraft.vo.MemberInfoVO;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +55,7 @@ public class MemberService {
     private final MemberSignRecordMapper signMapper;
     private final MemberBenefitRecordMapper benefitMapper;
     private final UserService userService;
+    private final PayGatewayService payGatewayService;
 
     /**
      * 获取或初始化用户会员信息
@@ -212,7 +219,7 @@ public class MemberService {
     }
 
     /**
-     * 用户支付自己的会员订单（项目内为模拟支付）
+     * 用户支付自己的会员订单（统一走聚合支付网关）
      */
     @Transactional
     public MemberInfoVO payOrder(Long userId, String orderNo) {
@@ -221,7 +228,37 @@ public class MemberService {
         if (order == null || !userId.equals(order.getUserId())) {
             throw new BusinessException("会员订单不存在");
         }
-        return markPaid(orderNo);
+        if (order.getStatus() == null || order.getStatus() != 0) {
+            if (order.getStatus() != null && order.getStatus() == 1) {
+                return getInfo(userId);
+            }
+            throw new BusinessException("当前订单状态不支持支付");
+        }
+
+        PayCreateRequest request = new PayCreateRequest();
+        request.setBizOrderNo(orderNo);
+        request.setBizType(PayBizType.MEMBER.name());
+        request.setUserId(userId);
+        request.setTotalAmount(order.getAmount());
+        request.setChannelCode(resolvePayChannel(order.getPayType()));
+        request.setSubject("会员开通：" + order.getPackageName());
+        PayCreateResponse response = payGatewayService.pay(request);
+        if (!PayStatus.isSuccess(response.getStatus())) {
+            throw new BusinessException("支付未完成");
+        }
+        return getInfo(userId);
+    }
+
+    /** 会员订单 payType：1 支付宝 / 2 微信 / 3 余额 */
+    private String resolvePayChannel(Integer payType) {
+        if (payType == null) {
+            return PayChannel.WECHAT.name();
+        }
+        return switch (payType) {
+            case 1 -> PayChannel.ALIPAY.name();
+            case 3 -> PayChannel.MOCK.name();
+            default -> PayChannel.WECHAT.name();
+        };
     }
 
     /**

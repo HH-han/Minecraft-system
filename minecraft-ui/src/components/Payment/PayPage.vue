@@ -363,17 +363,17 @@ const confirmPayment = async () => {
       return;
     }
 
-    // 调用后端支付接口
+    // 调用后端支付接口（内部统一走聚合支付网关）
     const response = await processPayment({
       orderId: orderId.value,
       paymentMethod: selectedPaymentMethod.value
     });
 
-    if (response.code === 200) {
+    if (response.code === 200 && response.data?.status === 'SUCCESS') {
       isPaymentModalVisible.value = true;
     } else {
       isAlertVisible.value = true;
-      alertMessage.value = response.message || '支付失败，请重试';
+      alertMessage.value = response.message || '支付未完成，请重试';
     }
   } catch (error) {
     console.error('支付请求失败:', error);

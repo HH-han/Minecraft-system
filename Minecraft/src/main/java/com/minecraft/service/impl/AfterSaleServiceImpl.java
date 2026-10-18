@@ -20,6 +20,7 @@ import com.minecraft.mapper.AfterSaleMapper;
 import com.minecraft.mapper.AfterSaleMessageMapper;
 import com.minecraft.mapper.OrderMapper;
 import com.minecraft.service.AfterSaleService;
+import com.minecraft.service.RefundService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
 
     private final OrderMapper orderMapper;
     private final AfterSaleMessageMapper messageMapper;
+    private final RefundService refundService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -163,8 +165,13 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
                     || AfterSaleType.EXCHANGE.getCode().equals(as.getType());
             as.setStatus(needReturn
                     ? AfterSaleStatus.WAIT_BUYER_SEND.getCode()
-                    : AfterSaleStatus.APPROVED.getCode());
-            // TODO 退货地址持久化；仅退款可流转至 REFUNDING 并触发退款
+                    : AfterSaleStatus.REFUNDING.getCode());
+            updateById(as);
+            // 仅退款：审核通过后直接发起退款；退货退款需等待商家收货后触发
+            if (!needReturn) {
+                refundService.createRefund(id, adminId);
+            }
+            return;
         } else {
             as.setStatus(AfterSaleStatus.REJECTED.getCode());
             resetOrderAfterSale(as.getOrderId());
@@ -182,7 +189,8 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
         as.setReceiveTime(LocalDateTime.now());
         as.setStatus(AfterSaleStatus.REFUNDING.getCode());
         updateById(as);
-        // TODO 调用 RefundService.createRefund 生成退款单（当前为模拟/人工渠道）
+        // 商家确认收货后触发退款
+        refundService.createRefund(id, adminId);
     }
 
     @Override

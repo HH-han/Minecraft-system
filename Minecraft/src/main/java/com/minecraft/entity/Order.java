@@ -41,6 +41,9 @@ public class Order {
     
     private String status;
 
+    /** 关联支付主单号 */
+    private String payNo;
+
     /** 物流状态 0-待发货 1-部分发货 2-已发货 3-已签收 */
     private Integer shippingStatus;
 

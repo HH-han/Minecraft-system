@@ -3278,6 +3278,7 @@ CREATE TABLE `orders` (
   `quantity` int DEFAULT '1' COMMENT '数量',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '0' COMMENT '订单状态 0-待支付 1-已支付 2-已发货 3-已完成 4-已取消 5-已退款',
+  `pay_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '关联支付主单号',
   `shipping_status` tinyint NOT NULL DEFAULT '0' COMMENT '物流状态: 0-待发货 1-部分发货 2-已发货 3-已签收',
   `after_sale_status` tinyint NOT NULL DEFAULT '0' COMMENT '售后状态: 0-无 1-售后中 2-售后完成',
   `carrier_code` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '承运商编码',

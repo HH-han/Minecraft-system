@@ -25,11 +25,19 @@ import com.minecraft.mapper.RailwayStationMapper;
 import com.minecraft.mapper.RailwayStopStationMapper;
 import com.minecraft.mapper.RailwayTicketMapper;
 import com.minecraft.mapper.RailwayTrainMapper;
+import com.minecraft.pay.dto.PayCreateRequest;
+import com.minecraft.pay.dto.PayCreateResponse;
+import com.minecraft.pay.enums.PayBizType;
+import com.minecraft.pay.enums.PayChannel;
+import com.minecraft.pay.enums.PayStatus;
+import com.minecraft.pay.service.PayGatewayService;
 import com.minecraft.service.RailwayOrderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,6 +65,7 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
     private final RailwayStopStationMapper stopStationMapper;
     private final RailwayStationMapper stationMapper;
     private final RailwaySegmentInventoryMapper inventoryMapper;
+    private final PayGatewayService payGatewayService;
 
     public RailwayOrderServiceImpl(RailwayOrderMapper orderMapper,
                                    RailwayTicketMapper ticketMapper,
@@ -65,7 +74,8 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
                                    RailwayTrainMapper trainMapper,
                                    RailwayStopStationMapper stopStationMapper,
                                    RailwayStationMapper stationMapper,
-                                   RailwaySegmentInventoryMapper inventoryMapper) {
+                                   RailwaySegmentInventoryMapper inventoryMapper,
+                                   PayGatewayService payGatewayService) {
         this.orderMapper = orderMapper;
         this.ticketMapper = ticketMapper;
         this.passengerMapper = passengerMapper;
@@ -74,6 +84,7 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
         this.stopStationMapper = stopStationMapper;
         this.stationMapper = stationMapper;
         this.inventoryMapper = inventoryMapper;
+        this.payGatewayService = payGatewayService;
     }
 
     @Override
@@ -237,9 +248,23 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
             cancelInternal(order);
             throw new BusinessException("订单已超时取消，请重新下单");
         }
-        order.setStatus("PAID");
-        order.setPayTime(LocalDateTime.now());
-        orderMapper.updateById(order);
+        BigDecimal amount = BigDecimal.valueOf(order.getTotalAmount() == null ? 0 : order.getTotalAmount())
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        if (amount.signum() <= 0) {
+            throw new BusinessException("订单金额异常");
+        }
+
+        PayCreateRequest request = new PayCreateRequest();
+        request.setBizOrderNo(order.getOrderNo());
+        request.setBizType(PayBizType.RAILWAY.name());
+        request.setUserId(userId);
+        request.setTotalAmount(amount);
+        request.setChannelCode(PayChannel.MOCK.name());
+        request.setSubject("铁路车票：" + order.getOrderNo());
+        PayCreateResponse response = payGatewayService.pay(request);
+        if (!PayStatus.isSuccess(response.getStatus())) {
+            throw new BusinessException("支付未完成");
+        }
     }
 
     @Override

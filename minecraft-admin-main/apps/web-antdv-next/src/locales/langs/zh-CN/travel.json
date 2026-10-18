@@ -14,6 +14,76 @@
   "community": "社区管理",
   "monthly": "月度管理",
   "website": "官方网站",
+  "payment": "支付管理",
+  "payment_page": {
+    "title": "支付管理",
+    "tabs": {
+      "orders": "支付主单",
+      "flows": "支付流水",
+      "refunds": "退款单",
+      "logs": "回调日志"
+    },
+    "filters": {
+      "payNo": "支付单号",
+      "bizOrderNo": "业务订单号",
+      "status": "支付状态",
+      "channel": "支付渠道",
+      "search": "查询",
+      "reset": "重置"
+    },
+    "refund": {
+      "action": "退款",
+      "title": "发起退款",
+      "amount": "退款金额",
+      "reason": "退款原因",
+      "max": "可退金额",
+      "submit": "确认退款",
+      "amount_required": "请输入有效的退款金额",
+      "success": "退款已发起"
+    },
+    "status": {
+      "INIT": "待支付",
+      "PAYING": "支付中",
+      "SUCCESS": "支付成功",
+      "FAILED": "支付失败",
+      "CLOSED": "已关闭",
+      "REFUNDING": "退款中",
+      "REFUNDED": "已退款"
+    },
+    "channel": {
+      "MOCK": "模拟支付",
+      "WECHAT": "微信支付",
+      "ALIPAY": "支付宝",
+      "UNIONPAY": "银联"
+    },
+    "verify": {
+      "0": "验签失败",
+      "1": "验签成功"
+    },
+    "fields": {
+      "payNo": "支付单号",
+      "flowNo": "流水号",
+      "bizOrderNo": "业务订单号",
+      "bizType": "业务类型",
+      "orderNo": "订单号",
+      "channel": "渠道",
+      "amount": "支付金额",
+      "payAmount": "实付金额",
+      "refundAmount": "退款金额",
+      "status": "状态",
+      "prepayId": "预支付标识",
+      "refundNo": "退款单号",
+      "channelRefundNo": "渠道退款单号",
+      "failReason": "失败原因",
+      "errorMsg": "错误信息",
+      "rawBody": "回调报文",
+      "verifyResult": "验签结果",
+      "processResult": "处理结果",
+      "payTime": "支付时间",
+      "refundTime": "退款时间",
+      "createTime": "创建时间"
+    }
+  },
   "hotel_list": {
     "title": "酒店管理",
     "subtitle": "管理酒店信息、设施与房间",

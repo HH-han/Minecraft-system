@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableAsync
 @EnableScheduling
-@MapperScan("com.minecraft.mapper")
+@MapperScan({"com.minecraft.mapper", "com.minecraft.pay.mapper"})
 public class MinecraftApplication {
 
     public static void main(String[] args) {

@@ -5,7 +5,7 @@ import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.AfterSaleVO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
-import com.minecraft.entity.RefundOrder;
+import com.minecraft.pay.entity.PayRefund;
 import com.minecraft.recommendation.service.AdminAuthorizationService;
 import com.minecraft.service.AfterSaleService;
 import com.minecraft.service.RefundService;
@@ -60,7 +60,7 @@ public class AfterSaleAdminController {
 
     @Operation(summary = "发起退款")
     @PostMapping("/{id}/refund")
-    public ApiResponse<RefundOrder> refund(@PathVariable Long id) {
+    public ApiResponse<PayRefund> refund(@PathVariable Long id) {
         Long adminId = adminAuthorizationService.requireAdmin();
         return ApiResponse.success("退款已发起", refundService.createRefund(id, adminId));
     }

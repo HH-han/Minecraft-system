@@ -47,13 +47,6 @@ public class BookingController {
         return ApiResponse.success("取消成功", null);
     }
 
-    @Operation(summary = "完成门票预订（支付成功后置为已完成）")
-    @PutMapping("/ticket/{id}/complete")
-    public ApiResponse<Void> completeTicketBooking(@PathVariable Long id) {
-        bookingService.completeTicketBooking(id);
-        return ApiResponse.success("操作成功", null);
-    }
-
     @Operation(summary = "删除门票预订")
     @DeleteMapping("/ticket/{id}")
     public ApiResponse<Void> deleteTicketBooking(@PathVariable Long id) {
@@ -84,13 +77,6 @@ public class BookingController {
     public ApiResponse<Void> cancelHotelBooking(@PathVariable Long id) {
         bookingService.cancelHotelBooking(id);
         return ApiResponse.success("取消成功", null);
-    }
-
-    @Operation(summary = "完成酒店预订（支付成功后置为已完成）")
-    @PutMapping("/hotel/{id}/complete")
-    public ApiResponse<Void> completeHotelBooking(@PathVariable Long id) {
-        bookingService.completeHotelBooking(id);
-        return ApiResponse.success("操作成功", null);
     }
 
     @Operation(summary = "删除酒店预订")

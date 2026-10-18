@@ -66,8 +66,6 @@ public class BookingServiceImpl implements BookingService {
 
     /** 预订状态：待支付 */
     private static final int STATUS_PENDING = 0;
-    /** 预订状态：已完成 */
-    private static final int STATUS_COMPLETED = 1;
     /** 预订状态：已取消 */
     private static final int STATUS_CANCELLED = 2;
 
@@ -320,11 +318,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void completeTicketBooking(Long id) {
-        updateTicketStatus(id, STATUS_COMPLETED);
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteTicketBooking(Long id) {
         if (ticketBookingMapper.selectById(id) == null) {
@@ -339,11 +332,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void cancelHotelBooking(Long id) {
         updateHotelStatus(id, STATUS_CANCELLED);
-    }
-
-    @Override
-    public void completeHotelBooking(Long id) {
-        updateHotelStatus(id, STATUS_COMPLETED);
     }
 
     @Override

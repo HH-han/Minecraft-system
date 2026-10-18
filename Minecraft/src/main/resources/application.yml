@@ -175,3 +175,22 @@ captcha:
     default: 120000
   init-default-resource: true
   local-cache-enabled: false
+
+# 聚合支付网关
+pay:
+  # 模拟支付开关：true=所有渠道走 MockChannelAdapter，false=按 channelCode 走真实适配器
+  mock-enabled: true
+  # 模拟支付时允许的渠道（为空表示全部走 mock）
+  mock-channels: MOCK, WECHAT, ALIPAY, UNIONPAY
+  # 回调基地址（生产环境必须为公网可访问地址）
+  notify-base: ${PAY_NOTIFY_BASE:http://localhost:8080}
+  wechat:
+    app-id: ${WECHAT_APP_ID:}
+    mch-id: ${WECHAT_MCH_ID:}
+    api-v3-key: ${WECHAT_API_V3_KEY:}
+    notify-url: ${PAY_NOTIFY_BASE:http://localhost:8080}/api/pay/notify/WECHAT
+  alipay:
+    app-id: ${ALIPAY_APP_ID:}
+    private-key: ${ALIPAY_PRIVATE_KEY:}
+    alipay-public-key: ${ALIPAY_PUBLIC_KEY:}
+    notify-url: ${PAY_NOTIFY_BASE:http://localhost:8080}/api/pay/notify/ALIPAY

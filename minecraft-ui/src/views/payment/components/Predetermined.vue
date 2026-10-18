@@ -177,10 +177,8 @@ import {
   getTicketBookingList,
   getHotelBookingList,
   cancelTicketBooking,
-  completeTicketBooking,
   deleteTicketBooking,
   cancelHotelBooking,
-  completeHotelBooking,
   deleteHotelBooking
 } from '@/api/booking.js'
 import { createOrder } from '@/api/order.js'
@@ -516,21 +514,16 @@ const handleEdit = (booking) => {
   })
 }
 
-// 支付成功后：将本次结算的预订置为已完成（列表中随之移除）
+// 支付成功后：后端已自动将预订置为已完成，这里只需刷新列表
 const completePaidBookings = async () => {
-  const refs = pendingPayBookings.value
-  if (refs.length === 0) return
+  if (pendingPayBookings.value.length === 0) return
+  pendingPayBookings.value = []
   try {
-    await Promise.all(refs.map(ref =>
-      ref.type === 'ticket' ? completeTicketBooking(ref.id) : completeHotelBooking(ref.id)
-    ))
     ElMessage.success('支付成功，已移除对应预订')
     await fetchBookings()
   } catch (error) {
-    console.error('更新预订状态失败:', error)
-    ElMessage.error('预订状态更新失败，请手动刷新')
-  } finally {
-    pendingPayBookings.value = []
+    console.error('刷新预订列表失败:', error)
+    ElMessage.error('预订列表刷新失败，请手动刷新')
   }
 }
 

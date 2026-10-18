@@ -151,6 +151,15 @@ const routes: RouteRecordRaw[] = [
       },
       {
         meta: {
+          icon: 'lucide:credit-card',
+          title: $t('travel.payment'),
+        },
+        name: 'Payment',
+        path: 'payment',
+        component: () => import('#/views/travel_management/payment.vue'),
+      },
+      {
+        meta: {
           icon: 'lucide:globe',
           title: $t('travel.website'),
         },

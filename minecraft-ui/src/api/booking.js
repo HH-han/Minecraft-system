@@ -24,11 +24,6 @@ export const cancelTicketBooking = (id) => {
   return request.put(`/booking/ticket/${id}/cancel`)
 }
 
-// 完成门票预订（支付成功后）
-export const completeTicketBooking = (id) => {
-  return request.put(`/booking/ticket/${id}/complete`)
-}
-
 // 删除门票预订
 export const deleteTicketBooking = (id) => {
   return request.delete(`/booking/ticket/${id}`)
@@ -52,11 +47,6 @@ export const getHotelBookingList = (phone) => {
 // 取消酒店预订
 export const cancelHotelBooking = (id) => {
   return request.put(`/booking/hotel/${id}/cancel`)
-}
-
-// 完成酒店预订（支付成功后）
-export const completeHotelBooking = (id) => {
-  return request.put(`/booking/hotel/${id}/complete`)
 }
 
 // 删除酒店预订

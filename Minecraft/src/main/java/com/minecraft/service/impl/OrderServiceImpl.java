@@ -120,6 +120,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (order == null) {
             throw new RuntimeException("订单不存在");
         }
+        String pending = OrderStatus.PENDING.getCode().toString();
+        if (!pending.equals(order.getStatus())) {
+            if (OrderStatus.PAID.getCode().toString().equals(order.getStatus())) {
+                return;
+            }
+            throw new RuntimeException("订单当前状态不可支付");
+        }
         order.setStatus(OrderStatus.PAID.getCode().toString());
         order.setUpdateTime(LocalDateTime.now());
         updateById(order);
