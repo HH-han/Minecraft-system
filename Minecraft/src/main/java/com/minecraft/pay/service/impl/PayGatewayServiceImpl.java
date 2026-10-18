@@ -35,10 +35,10 @@ import com.minecraft.pay.enums.PayStatus;
 import com.minecraft.pay.event.PayRefundSuccessEvent;
 import com.minecraft.pay.event.PaySuccessEvent;
 import com.minecraft.pay.mapper.PayFlowMapper;
-import com.minecraft.pay.mapper.PayNotifyLogMapper;
 import com.minecraft.pay.mapper.PayOrderMapper;
 import com.minecraft.pay.mapper.PayRefundMapper;
 import com.minecraft.pay.service.PayGatewayService;
+import com.minecraft.pay.service.PayNotifyLogService;
 import com.minecraft.pay.util.PayNoGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +67,7 @@ public class PayGatewayServiceImpl implements PayGatewayService {
     private final PayOrderMapper payOrderMapper;
     private final PayFlowMapper payFlowMapper;
     private final PayRefundMapper payRefundMapper;
-    private final PayNotifyLogMapper payNotifyLogMapper;
+    private final PayNotifyLogService notifyLogService;
     private final PayChannelRouter channelRouter;
     private final PayProperties payProperties;
     private final ObjectMapper objectMapper;
@@ -410,7 +410,7 @@ public class PayGatewayServiceImpl implements PayGatewayService {
         notifyLog.setRawBody(rawBody);
         notifyLog.setHeaders(writeJson(headers));
         notifyLog.setVerifyResult(0);
-        payNotifyLogMapper.insert(notifyLog);
+        notifyLogService.create(notifyLog);
 
         try {
             PayChannelAdapter adapter = channelRouter.resolve(channelCode);
@@ -418,7 +418,7 @@ public class PayGatewayServiceImpl implements PayGatewayService {
             if (result == null || !result.isVerified()) {
                 notifyLog.setProcessResult("ERROR");
                 notifyLog.setErrorMsg("回调验签失败");
-                payNotifyLogMapper.updateById(notifyLog);
+                notifyLogService.update(notifyLog);
                 throw new BusinessException(400, "回调验签失败");
             }
             notifyLog.setVerifyResult(1);
@@ -427,42 +427,42 @@ public class PayGatewayServiceImpl implements PayGatewayService {
             if (payOrder == null) {
                 notifyLog.setProcessResult("ERROR");
                 notifyLog.setErrorMsg("支付单不存在：" + result.getPayNo());
-                payNotifyLogMapper.updateById(notifyLog);
+                notifyLogService.update(notifyLog);
                 throw new BusinessException("支付单不存在");
             }
             if (PayStatus.isSuccess(payOrder.getStatus())) {
                 notifyLog.setProcessResult("IGNORED");
-                payNotifyLogMapper.updateById(notifyLog);
+                notifyLogService.update(notifyLog);
                 return "success";
             }
             if (!result.isSuccess()) {
                 payOrder.setStatus(PayStatus.FAILED.name());
                 payOrderMapper.updateById(payOrder);
                 notifyLog.setProcessResult("SUCCESS");
-                payNotifyLogMapper.updateById(notifyLog);
+                notifyLogService.update(notifyLog);
                 return "success";
             }
             if (result.getAmount() != null
                     && result.getAmount().compareTo(payOrder.getPayAmount()) != 0) {
                 notifyLog.setProcessResult("ERROR");
                 notifyLog.setErrorMsg("回调金额与支付单金额不一致");
-                payNotifyLogMapper.updateById(notifyLog);
+                notifyLogService.update(notifyLog);
                 throw new BusinessException("回调金额校验失败");
             }
 
             markPaid(payOrder, payOrder.getPayAmount(), result.getChannelTradeNo());
             notifyLog.setProcessResult("SUCCESS");
-            payNotifyLogMapper.updateById(notifyLog);
+            notifyLogService.update(notifyLog);
             return "success";
         } catch (BusinessException e) {
             notifyLog.setProcessResult("ERROR");
             notifyLog.setErrorMsg(e.getMessage());
-            payNotifyLogMapper.updateById(notifyLog);
+            notifyLogService.update(notifyLog);
             throw e;
         } catch (Exception e) {
             notifyLog.setProcessResult("ERROR");
             notifyLog.setErrorMsg(e.getMessage());
-            payNotifyLogMapper.updateById(notifyLog);
+            notifyLogService.update(notifyLog);
             log.error("[支付回调] 处理异常 channel={}", channelCode, e);
             throw new BusinessException("回调处理失败");
         }
@@ -507,15 +507,7 @@ public class PayGatewayServiceImpl implements PayGatewayService {
 
     @Override
     public PageResponse<PayNotifyLog> pageNotifyLogs(PageRequest request, String channelCode) {
-        Page<PayNotifyLog> page = new Page<>(request.getPageNum(), request.getPageSize());
-        LambdaQueryWrapper<PayNotifyLog> wrapper = new LambdaQueryWrapper<>();
-        if (StringUtils.hasText(channelCode)) {
-            wrapper.eq(PayNotifyLog::getChannelCode, channelCode.trim());
-        }
-        wrapper.orderByDesc(PayNotifyLog::getCreatedAt);
-        Page<PayNotifyLog> result = payNotifyLogMapper.selectPage(page, wrapper);
-        return new PageResponse<>(result.getRecords(), result.getTotal(),
-                request.getPageNum(), request.getPageSize());
+        return notifyLogService.page(request, channelCode);
     }
 
     // ==================== 内部方法 ====================
