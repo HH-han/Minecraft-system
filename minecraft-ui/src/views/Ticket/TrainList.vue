@@ -5,22 +5,34 @@
       <section class="rw-summary">
         <div class="rw-summary-main">
           <div class="rw-summary-route">
-            <h1>{{ fromStation }}</h1>
+            <h1>{{ effectiveFrom }}</h1>
             <span class="rw-summary-arrow">
               <span class="rw-summary-dash"></span>
               <el-icon><Right /></el-icon>
             </span>
-            <h1>{{ toStation }}</h1>
+            <h1>{{ effectiveTo }}</h1>
           </div>
           <p class="rw-summary-meta">
-            <span class="rw-summary-date">{{ date }} · {{ weekday }}</span>
+            <span class="rw-summary-date">{{ effectiveDate }} · {{ weekday }}</span>
             <span class="rw-summary-count">{{ $t('railway.list.resultCount', { n: filteredTrains.length }) }}</span>
           </p>
         </div>
-        <button type="button" class="rw-change-btn" @click="showSearch = !showSearch">
-          <el-icon><EditPen /></el-icon>
-          {{ $t('railway.list.changeSearch') }}
-        </button>
+        <div class="rw-summary-actions">
+          <div v-if="tripType === 'round' && returnDate" class="rw-leg-switch">
+            <button type="button" :class="{ 'is-active': activeLeg === 'outbound' }"
+              @click="activeLeg = 'outbound'">
+              {{ $t('railway.list.outbound') }} · {{ date }}
+            </button>
+            <button type="button" :class="{ 'is-active': activeLeg === 'return' }"
+              @click="activeLeg = 'return'">
+              {{ $t('railway.list.returnLeg') }} · {{ returnDate }}
+            </button>
+          </div>
+          <button type="button" class="rw-change-btn" @click="showSearch = !showSearch">
+            <el-icon><EditPen /></el-icon>
+            {{ $t('railway.list.changeSearch') }}
+          </button>
+        </div>
       </section>
 
       <div v-if="showSearch" class="rw-search-wrap">
@@ -154,8 +166,21 @@ const error = ref('')
 const fromStation = computed(() => queryString(route.query.fromStation))
 const toStation = computed(() => queryString(route.query.toStation))
 const date = computed(() => queryString(route.query.date, todayString()))
+const returnDate = computed(() => queryString(route.query.returnDate))
 const tripType = computed(() => queryString(route.query.tripType, 'single'))
-const weekday = computed(() => weekdayLabel(date.value, locale.value))
+const activeLeg = ref('outbound')
+
+// 往返行程：返程方向与日期取反
+const effectiveFrom = computed(() =>
+  activeLeg.value === 'return' ? toStation.value : fromStation.value,
+)
+const effectiveTo = computed(() =>
+  activeLeg.value === 'return' ? fromStation.value : toStation.value,
+)
+const effectiveDate = computed(() =>
+  activeLeg.value === 'return' ? returnDate.value || date.value : date.value,
+)
+const weekday = computed(() => weekdayLabel(effectiveDate.value, locale.value))
 
 const timeRanges = reactive([
   { key: 'dawn', label: '00:00 - 06:00', from: 0, to: 6, checked: false },
@@ -200,7 +225,7 @@ const timeToMinutes = (time) => {
 }
 
 const load = async () => {
-  if (!fromStation.value || !toStation.value) {
+  if (!effectiveFrom.value || !effectiveTo.value) {
     router.replace('/ticket')
     return
   }
@@ -208,9 +233,9 @@ const load = async () => {
   error.value = ''
   try {
     const res = await searchRailwayTickets({
-      fromStation: fromStation.value,
-      toStation: toStation.value,
-      date: date.value,
+      fromStation: effectiveFrom.value,
+      toStation: effectiveTo.value,
+      date: effectiveDate.value,
     })
     trains.value = res?.data || []
   } catch (err) {
@@ -221,10 +246,13 @@ const load = async () => {
   }
 }
 
-watch(() => [fromStation.value, toStation.value, date.value], load, { immediate: true })
+watch(() => [effectiveFrom.value, effectiveTo.value, effectiveDate.value], load, {
+  immediate: true,
+})
 
 const handleSearch = (payload) => {
   showSearch.value = false
+  activeLeg.value = 'outbound'
   router.replace({
     path: '/ticket/list',
     query: {
@@ -262,7 +290,7 @@ const book = (train, seat) => {
       fromStation: train.fromStationName,
       toStation: train.toStationName,
       trainNo: train.trainNo,
-      date: date.value,
+      date: effectiveDate.value,
       fromTime: train.fromTime,
       toTime: train.toTime,
       price: seat.priceCents,
@@ -339,6 +367,42 @@ const book = (train, seat) => {
 .rw-summary-count {
   padding-left: 14px;
   border-left: 1px solid var(--rw-border);
+}
+
+.rw-summary-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.rw-leg-switch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--rw-soft-2);
+  border: 1px solid var(--rw-border);
+}
+
+.rw-leg-switch button {
+  border: none;
+  background: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: var(--rw-text-2);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.rw-leg-switch button.is-active {
+  background: var(--rw-card);
+  color: var(--rw-blue);
+  font-weight: 600;
+  box-shadow: 0 2px 8px -4px rgba(16, 47, 100, 0.35);
 }
 
 .rw-change-btn {
@@ -734,6 +798,12 @@ const book = (train, seat) => {
     flex-direction: column;
     align-items: flex-start;
     padding: 18px;
+  }
+
+  .rw-summary-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   .rw-summary-route h1 {

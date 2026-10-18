@@ -71,7 +71,7 @@
             <span class="rw-route-city">{{ route.to }}</span>
           </div>
           <div class="rw-route-meta">
-            <span>{{ route.duration }}</span>
+            <span>{{ formatDuration(route.durationMinutes, $t) }}</span>
             <span>¥{{ route.price }}</span>
           </div>
         </button>
@@ -133,7 +133,7 @@ import {
   Sunny,
 } from '@element-plus/icons-vue'
 import TicketSearchForm from './components/TicketSearchForm.vue'
-import { queryString, todayString } from './utils'
+import { formatDuration, queryString, todayString } from './utils'
 
 const router = useRouter()
 const route = useRoute()
@@ -158,10 +158,10 @@ const quickServices = [
 ]
 
 const popularRoutes = [
-  { from: '北京南', to: '上海虹桥', train: 'G101', duration: '4h29m', price: '565' },
-  { from: '上海虹桥', to: '杭州东', train: 'G1501', duration: '1h05m', price: '100' },
-  { from: '广州南', to: '深圳北', train: 'G1001', duration: '1h00m', price: '120' },
-  { from: '北京西', to: '西安北', train: 'G81', duration: '4h25m', price: '365' },
+  { from: '北京南', to: '上海虹桥', train: 'G101', durationMinutes: 269, price: '565' },
+  { from: '上海虹桥', to: '杭州东', train: 'G1501', durationMinutes: 65, price: '100' },
+  { from: '广州南', to: '深圳北', train: 'G1001', durationMinutes: 60, price: '120' },
+  { from: '北京西', to: '西安北', train: 'G81', durationMinutes: 265, price: '547' },
 ]
 
 const banners = [

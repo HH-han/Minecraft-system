@@ -6,6 +6,7 @@ import com.minecraft.dto.response.RailwayInventoryVO;
 import com.minecraft.dto.response.RailwayServiceAdminVO;
 import com.minecraft.dto.response.RailwayTrainAdminVO;
 import com.minecraft.dto.response.RailwayTrainStopAdminVO;
+import com.minecraft.dto.response.RailwayTrendVO;
 import com.minecraft.entity.RailwayStation;
 import com.minecraft.entity.RailwayTrain;
 import com.minecraft.entity.RailwayTrainStop;
@@ -38,4 +39,6 @@ public interface RailwayAdminService {
     List<RailwayInventoryVO> listInventory(Long serviceId);
 
     RailwayAdminStatsVO stats();
+
+    List<RailwayTrendVO> revenueTrend(int days);
 }

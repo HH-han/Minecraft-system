@@ -3,6 +3,7 @@ package com.minecraft.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -20,8 +21,10 @@ public class RailwayTrainStop {
 
     private Integer stopSeq;
 
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime arriveTime;
 
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime departTime;
 
     private Integer stopOver;

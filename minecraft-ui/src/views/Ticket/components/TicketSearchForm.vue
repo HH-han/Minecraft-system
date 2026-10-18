@@ -403,8 +403,12 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
   flex-shrink: 0;
 }
 
-.rw-autocomplete,
-.rw-date-picker {
+.rw-autocomplete {
+  width: 100%;
+}
+
+/* 提高权重覆盖 Element Plus 的 .el-date-editor.el-input 默认 220px 宽度 */
+.rw-field--date :deep(.el-date-editor) {
   width: 100%;
 }
 

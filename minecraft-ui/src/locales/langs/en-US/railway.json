@@ -93,8 +93,7 @@
         "insuranceTitle": "Rail Insurance",
         "insuranceDesc": "Travel with peace of mind",
         "periodicTitle": "Multi-ride & Period Passes",
-        "periodicDesc": "Smarter commuting",
-        "placeholder": "Coming soon"
+        "periodicDesc": "Smarter commuting"
       },
       "popularRoutes": "Popular routes",
       "feature": {
@@ -123,6 +122,8 @@
       "onlyAvailable": "Available only",
       "reset": "Reset",
       "changeSearch": "Change search",
+      "outbound": "Outbound",
+      "returnLeg": "Return",
       "book": "Book",
       "left": "Available",
       "soldOut": "Sold out",

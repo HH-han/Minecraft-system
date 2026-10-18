@@ -96,7 +96,7 @@
               </div>
             </div>
           </div>
-        </button>
+        </div>
       </div>
     </nav>
   </header>
@@ -108,11 +108,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { setLocale } from '@/locales'
+import { useAuthStore } from '@/stores/auth'
 import { hasLogin } from '../utils'
 
 const router = useRouter()
 const route = useRoute()
 const { t, locale } = useI18n()
+const authStore = useAuthStore()
 
 const trainKeyword = ref('')
 const loggedIn = ref(hasLogin())
@@ -182,13 +184,14 @@ const handleUserCommand = (command) => {
     return
   }
   if (command === 'logout') {
-    localStorage.removeItem('token')
+    authStore.logout()
     localStorage.removeItem('tokenTimestamp')
-    localStorage.removeItem('username')
-    localStorage.removeItem('userInfo')
+    localStorage.removeItem('user')
+    localStorage.removeItem('rememberedUsername')
     loggedIn.value = false
     ElMessage.success(t('railway.top.logout'))
-    router.push('/ticket')
+    // 重新加载以同步全站登录态
+    setTimeout(() => window.location.assign('/ticket'), 300)
   }
 }
 </script>

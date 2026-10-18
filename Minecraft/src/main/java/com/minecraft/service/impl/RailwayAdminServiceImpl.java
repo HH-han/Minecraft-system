@@ -1,12 +1,14 @@
 package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.minecraft.dto.request.RailwayGenerateRequest;
 import com.minecraft.dto.response.RailwayAdminStatsVO;
 import com.minecraft.dto.response.RailwayInventoryVO;
 import com.minecraft.dto.response.RailwayServiceAdminVO;
 import com.minecraft.dto.response.RailwayTrainAdminVO;
 import com.minecraft.dto.response.RailwayTrainStopAdminVO;
+import com.minecraft.dto.response.RailwayTrendVO;
 import com.minecraft.entity.RailwayOrder;
 import com.minecraft.entity.RailwaySegmentInventory;
 import com.minecraft.entity.RailwayService;
@@ -387,6 +389,40 @@ public class RailwayAdminServiceImpl implements RailwayAdminService {
     @Override
     public RailwayAdminStatsVO stats() {
         return orderService.stats();
+    }
+
+    @Override
+    public List<RailwayTrendVO> revenueTrend(int days) {
+        int safeDays = Math.max(1, Math.min(days, 30));
+        LocalDate start = LocalDate.now().minusDays(safeDays - 1L);
+        QueryWrapper<RailwayOrder> wrapper = new QueryWrapper<>();
+        wrapper.select("DATE(pay_time) AS day", "IFNULL(SUM(total_amount), 0) AS amount", "COUNT(*) AS cnt")
+                .eq("status", "PAID")
+                .ge("pay_time", start.atStartOfDay())
+                .groupBy("DATE(pay_time)");
+        List<Map<String, Object>> rows = orderMapper.selectMaps(wrapper);
+        Map<String, RailwayTrendVO> byDate = new HashMap<>();
+        for (Map<String, Object> row : rows) {
+            String day = String.valueOf(row.get("day"));
+            RailwayTrendVO vo = new RailwayTrendVO();
+            vo.setDate(day);
+            vo.setAmount(row.get("amount") == null ? 0L : Long.parseLong(String.valueOf(row.get("amount"))));
+            vo.setOrders(row.get("cnt") == null ? 0L : Long.parseLong(String.valueOf(row.get("cnt"))));
+            byDate.put(day, vo);
+        }
+        List<RailwayTrendVO> result = new ArrayList<>();
+        for (int i = 0; i < safeDays; i++) {
+            String date = start.plusDays(i).toString();
+            RailwayTrendVO vo = byDate.get(date);
+            if (vo == null) {
+                vo = new RailwayTrendVO();
+                vo.setDate(date);
+                vo.setAmount(0L);
+                vo.setOrders(0L);
+            }
+            result.add(vo);
+        }
+        return result;
     }
 
     private Map<Long, RailwayStation> loadStationMap(Collection<Long> ids) {

@@ -86,12 +86,12 @@
                   <el-icon><Delete /></el-icon>
                 </button>
               </label>
-
-              <button type="button" class="rw-passenger-add" @click="openAddDialog">
-                <el-icon><Plus /></el-icon>
-                {{ $t('railway.order.addPassenger') }}
-              </button>
             </div>
+
+            <button type="button" class="rw-passenger-add" @click="openAddDialog">
+              <el-icon><Plus /></el-icon>
+              {{ $t('railway.order.addPassenger') }}
+            </button>
           </section>
 
           <!-- 联系电话 -->
@@ -709,6 +709,7 @@ const goMyOrders = () => {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  margin-top: 10px;
   padding: 13px;
   border-radius: 12px;
   border: 1px dashed var(--rw-border);

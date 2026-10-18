@@ -9,6 +9,7 @@ import com.minecraft.dto.response.RailwayOrderVO;
 import com.minecraft.dto.response.RailwayServiceAdminVO;
 import com.minecraft.dto.response.RailwayTrainAdminVO;
 import com.minecraft.dto.response.RailwayTrainStopAdminVO;
+import com.minecraft.dto.response.RailwayTrendVO;
 import com.minecraft.entity.RailwayStation;
 import com.minecraft.entity.RailwayTrain;
 import com.minecraft.entity.RailwayTrainStop;
@@ -173,5 +174,12 @@ public class RailwayAdminController {
     @GetMapping("/stats")
     public ApiResponse<RailwayAdminStatsVO> stats() {
         return ApiResponse.success(adminService.stats());
+    }
+
+    @Operation(summary = "收入趋势")
+    @GetMapping("/stats/trend")
+    public ApiResponse<List<RailwayTrendVO>> revenueTrend(
+            @RequestParam(defaultValue = "7") Integer days) {
+        return ApiResponse.success(adminService.revenueTrend(days));
     }
 }
