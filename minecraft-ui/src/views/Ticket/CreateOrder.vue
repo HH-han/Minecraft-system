@@ -221,8 +221,8 @@ import {
   deleteRailwayPassenger,
   getRailwayPassengers,
   getRailwayServiceDetail,
-  payRailwayOrder,
 } from '@/api/railway'
+import { createPayment, mockConfirmPayment, queryPayment } from '@/api/payment'
 import {
   formatClock,
   formatPrice,
@@ -433,12 +433,39 @@ const payOrder = async () => {
   if (!createdOrder.value) return
   paying.value = true
   try {
-    await payRailwayOrder(createdOrder.value.id)
+    const order = createdOrder.value
+    const amount = Number(order.totalAmount || 0) / 100
+    // 统一走聚合支付网关
+    const created = await createPayment({
+      bizOrderNo: order.orderNo,
+      bizType: 'RAILWAY',
+      totalAmount: amount,
+      channelCode: 'MOCK',
+      subject: `铁路车票：${order.orderNo}`,
+      expireMinutes: 30,
+    })
+    if (created?.code !== 200 || !created.data) {
+      throw new Error(created?.message || t('railway.order.payFailed'))
+    }
+    const payment = created.data
+    if (payment.status !== 'SUCCESS') {
+      if (!payment.payParams?.mock) {
+        throw new Error(t('railway.order.payChannelPending'))
+      }
+      const confirmed = await mockConfirmPayment(payment.flowNo)
+      if (confirmed?.code !== 200) {
+        throw new Error(confirmed?.message || t('railway.order.payFailed'))
+      }
+      const queried = await queryPayment(payment.payNo)
+      if (queried?.code !== 200 || queried.data?.status !== 'SUCCESS') {
+        throw new Error(queried?.message || t('railway.order.payFailed'))
+      }
+    }
     payState.value = 'success'
     stopCountdown()
     ElMessage.success(t('railway.order.paySuccess'))
-  } catch {
-    // 接口已提示错误
+  } catch (err) {
+    ElMessage.error(err?.message || t('railway.order.payFailed'))
   } finally {
     paying.value = false
   }

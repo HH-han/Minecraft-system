@@ -179,6 +179,8 @@
       "payLater": "稍后支付",
       "paySuccess": "支付成功",
       "paySuccessDesc": "车票已出票，祝您旅途愉快",
+      "payFailed": "支付失败，请重试",
+      "payChannelPending": "该支付渠道暂未接入，请在订单列表中完成支付",
       "goOrders": "查看我的订单",
       "expired": "订单已超时取消",
       "backHome": "返回首页",

@@ -158,6 +158,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import { createOrder } from '@/api/order.js';
 
 const router = useRouter();
 
@@ -290,8 +291,8 @@ const addToCart = () => {
   });
 };
 
-// 立即购买
-const buyNow = () => {
+// 立即购买：先创建订单，再进入统一支付页
+const buyNow = async () => {
   // 检查是否选择了所有选项
   const allOptionsSelected = product.value.options.every(option => selectedOptions.value[option.name]);
   if (!allOptionsSelected) {
@@ -299,20 +300,39 @@ const buyNow = () => {
     return;
   }
 
-  // 跳转到订单确认页面
-  router.push({
-    path: '/payment',
-    query: {
-      item: JSON.stringify({
-        id: product.value.id,
-        name: product.value.name,
-        price: product.value.price,
-        quantity: quantity.value,
-        ticketType: '手机',
-        options: selectedOptions.value
-      })
+  const userInfo = JSON.parse(localStorage.getItem('user') || '{}');
+  const userId = userInfo?.id || userInfo?.userId;
+  if (!userId) {
+    ElMessage.warning('请先登录');
+    router.push('/login');
+    return;
+  }
+
+  try {
+    const amount = Number((Number(product.value.price) * quantity.value).toFixed(2));
+    const response = await createOrder({
+      itemType: 'product',
+      itemId: product.value.id,
+      itemName: product.value.name,
+      image: product.value.images?.[0],
+      amount,
+      quantity: quantity.value,
+      remark: Object.entries(selectedOptions.value)
+        .map(([key, value]) => `${key}:${value}`)
+        .join(' ')
+    });
+    if (response?.code !== 200 || !response.data) {
+      ElMessage.error(response?.message || '创建订单失败');
+      return;
     }
-  });
+    router.push({
+      path: '/payment',
+      query: { orderId: response.data.id }
+    });
+  } catch (error) {
+    console.error('创建订单失败:', error);
+    ElMessage.error('创建订单失败，请重试');
+  }
 };
 
 // 初始化默认选项

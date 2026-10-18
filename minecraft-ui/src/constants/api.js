@@ -67,10 +67,12 @@ export const API_ENDPOINTS = {
   },
 
   PAYMENT: {
-    BASE: '/payment',
-    CREATE: '/payment/create',
-    NOTIFY: '/payment/notify',
-    STATUS: '/payment/status'
+    BASE: '/pay',
+    CREATE: '/pay/create',
+    QUERY: '/pay/query',
+    MOCK_CONFIRM: '/pay/mock/confirm',
+    NOTIFY: '/pay/notify',
+    REFUND: '/pay/refund'
   },
 
   LOGISTICS: {

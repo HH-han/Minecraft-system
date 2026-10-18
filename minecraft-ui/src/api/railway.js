@@ -47,9 +47,6 @@ export const getRailwayOrders = (params) =>
 export const getRailwayOrderDetail = (id) =>
   call(request.get(`/railway/orders/${id}`))
 
-export const payRailwayOrder = (id) =>
-  call(request.post(`/railway/orders/${id}/pay`))
-
 export const cancelRailwayOrder = (id) =>
   call(request.post(`/railway/orders/${id}/cancel`))
 

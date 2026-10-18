@@ -12,7 +12,7 @@ export const getMemberPackages = () => request.get('/member/packages')
 // 开通会员（生成待支付订单）
 export const openMember = (data) => request.post('/member/open', data)
 
-// 支付会员订单（项目内模拟支付）
+// 支付会员订单（内部统一走聚合支付网关）
 export const payMemberOrder = (orderNo) =>
   request.post(`/member/orders/${orderNo}/pay`)
 

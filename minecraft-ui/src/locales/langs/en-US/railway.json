@@ -179,6 +179,8 @@
       "payLater": "Pay later",
       "paySuccess": "Payment successful",
       "paySuccessDesc": "Your ticket is issued. Have a pleasant journey.",
+      "payFailed": "Payment failed, please try again",
+      "payChannelPending": "This payment channel is not available yet. Please pay from your orders.",
       "goOrders": "View my orders",
       "expired": "The order expired and was cancelled",
       "backHome": "Back to home",

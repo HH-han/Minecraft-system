@@ -5322,3 +5322,79 @@ INSERT INTO `railway_train_stop` (`train_id`, `station_id`, `stop_seq`, `arrive_
 (9, 22, 4, '07:00:00', '07:15:00', 15, 1, 12500, 0, 15800),
 (9, 5, 5, '10:00:00', NULL, 0, 1, 8500, 0, 10800);
 
+-- ============================================================
+-- 聚合支付网关
+-- ============================================================
+CREATE TABLE IF NOT EXISTS `pay_order` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `pay_no` varchar(64) NOT NULL COMMENT '支付主单号（平台生成，全局唯一）',
+  `biz_order_no` varchar(64) NOT NULL COMMENT '业务订单号（商城/酒店/票务/会员/铁路等）',
+  `biz_type` varchar(32) NOT NULL COMMENT '业务类型 MALL/HOTEL/TICKET/POINTS/GROUP/MEMBER/RAILWAY',
+  `user_id` bigint DEFAULT NULL COMMENT '付款用户ID',
+  `total_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '订单总金额（元）',
+  `pay_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '实付金额（元）',
+  `points_deduct` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '积分抵扣金额（元）',
+  `channel_code` varchar(32) NOT NULL DEFAULT 'MOCK' COMMENT '支付渠道 MOCK/WECHAT/ALIPAY/UNIONPAY',
+  `status` varchar(20) NOT NULL DEFAULT 'INIT' COMMENT '状态 INIT/PAYING/SUCCESS/FAILED/CLOSED/REFUNDING/REFUNDED',
+  `channel_trade_no` varchar(128) DEFAULT NULL COMMENT '渠道交易号',
+  `subject` varchar(200) DEFAULT NULL COMMENT '支付标题',
+  `expire_time` datetime DEFAULT NULL COMMENT '支付过期时间',
+  `pay_time` datetime DEFAULT NULL COMMENT '支付成功时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_pay_no` (`pay_no`) USING BTREE,
+  KEY `idx_biz_order` (`biz_order_no`, `biz_type`) USING BTREE,
+  KEY `idx_user_status` (`user_id`, `status`) USING BTREE,
+  KEY `idx_channel_trade` (`channel_code`, `channel_trade_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='支付主单';
+
+CREATE TABLE IF NOT EXISTS `pay_flow` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `flow_no` varchar(64) NOT NULL COMMENT '支付流水号（唯一索引，防并发重复）',
+  `pay_no` varchar(64) NOT NULL COMMENT '关联支付主单号',
+  `channel_code` varchar(32) NOT NULL COMMENT '本次尝试的渠道',
+  `channel_prepay_id` varchar(128) DEFAULT NULL COMMENT '渠道预支付标识（prepay_id 等）',
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '本次支付金额',
+  `status` varchar(20) NOT NULL DEFAULT 'INIT' COMMENT '状态 INIT/PAYING/SUCCESS/FAILED',
+  `channel_response` text COMMENT '渠道原始响应（JSON）',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_flow_no` (`flow_no`) USING BTREE,
+  KEY `idx_pay_no` (`pay_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='支付流水';
+
+CREATE TABLE IF NOT EXISTS `pay_refund` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `refund_no` varchar(64) NOT NULL COMMENT '退款单号',
+  `pay_no` varchar(64) NOT NULL COMMENT '原支付单号',
+  `biz_order_no` varchar(64) DEFAULT NULL COMMENT '业务订单号（冗余，便于对账）',
+  `after_sale_id` bigint DEFAULT NULL COMMENT '关联售后单ID',
+  `user_id` bigint DEFAULT NULL COMMENT '退款用户ID',
+  `channel_code` varchar(32) DEFAULT NULL COMMENT '原支付渠道',
+  `refund_amount` decimal(12,2) NOT NULL COMMENT '退款金额',
+  `reason` varchar(256) DEFAULT NULL COMMENT '退款原因',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '0-待退款 1-退款中 2-成功 3-失败',
+  `channel_refund_no` varchar(128) DEFAULT NULL COMMENT '渠道退款单号',
+  `fail_reason` varchar(500) DEFAULT NULL COMMENT '失败原因',
+  `refund_time` datetime DEFAULT NULL COMMENT '退款完成时间',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_refund_no` (`refund_no`) USING BTREE,
+  KEY `idx_pay_no` (`pay_no`) USING BTREE,
+  KEY `idx_after_sale` (`after_sale_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='支付退款单';
+
+CREATE TABLE IF NOT EXISTS `pay_notify_log` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `channel_code` varchar(32) NOT NULL COMMENT '渠道标识',
+  `raw_body` text COMMENT '原始回调报文',
+  `headers` text COMMENT '请求头（JSON）',
+  `verify_result` tinyint NOT NULL DEFAULT '0' COMMENT '验签结果 0-失败 1-成功',
+  `process_result` varchar(32) DEFAULT NULL COMMENT '处理结果 SUCCESS/IGNORED/ERROR',
+  `error_msg` varchar(500) DEFAULT NULL COMMENT '处理失败原因',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '接收时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_channel_created` (`channel_code`, `created_at`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='支付回调日志';
+

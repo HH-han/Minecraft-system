@@ -34,6 +34,61 @@
         <span class="value price">{{ priceText(order.amount) }}</span>
       </div>
     </div>
+
+    <!-- 支付信息（聚合支付网关） -->
+    <div class="payment-info-card" v-if="paymentInfo">
+      <h3 class="section-title">{{ $t('payment.orderDetail.paymentInfo') }}</h3>
+      <div class="info-item">
+        <span class="label">{{ $t('payment.orderDetail.payNo') }}</span>
+        <span class="value">
+          {{ paymentInfo.payNo || '-' }}
+          <button
+            v-if="paymentInfo.payNo"
+            type="button"
+            class="copy-btn"
+            @click="copyText(paymentInfo.payNo)"
+          >
+            {{ $t('payment.orderDetail.copy') }}
+          </button>
+        </span>
+      </div>
+      <div class="info-item">
+        <span class="label">{{ $t('payment.orderDetail.purpose') }}</span>
+        <span class="value">{{ paymentPurpose }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">{{ $t('payment.orderDetail.channel') }}</span>
+        <span class="value">{{ getChannelText(paymentInfo.channelCode) }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">{{ $t('payment.orderDetail.payStatus') }}</span>
+        <span class="value">{{ getPayStatusText(paymentInfo) }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">{{ $t('payment.orderDetail.totalAmount') }}</span>
+        <span class="value">{{ priceText(paymentInfo.totalAmount) }}</span>
+      </div>
+      <div class="info-item" v-if="Number(paymentInfo.pointsDeduct) > 0">
+        <span class="label">{{ $t('payment.orderDetail.pointsDeduct') }}</span>
+        <span class="value">-¥{{ formatMoney(paymentInfo.pointsDeduct) }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">{{ $t('payment.orderDetail.payAmount') }}</span>
+        <span class="value price">{{ priceText(paymentInfo.payAmount) }}</span>
+      </div>
+      <div class="info-item" v-if="Number(paymentInfo.refundedAmount) > 0">
+        <span class="label">{{ $t('payment.orderDetail.refundedAmount') }}</span>
+        <span class="value">¥{{ formatMoney(paymentInfo.refundedAmount) }}</span>
+      </div>
+      <div class="info-item" v-if="paymentInfo.payTime">
+        <span class="label">{{ $t('payment.orderDetail.payTime') }}</span>
+        <span class="value">{{ formatTime(paymentInfo.payTime) }}</span>
+      </div>
+      <div class="info-item" v-if="paymentInfo.channelTradeNo">
+        <span class="label">{{ $t('payment.orderDetail.tradeNo') }}</span>
+        <span class="value">{{ paymentInfo.channelTradeNo }}</span>
+      </div>
+    </div>
     
     <div class="shipping-address-card">
       <h3 class="section-title">收货地址</h3>
@@ -152,15 +207,21 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { getFoodDetail } from '@/api/food.js'
 import { getProductDetail } from '@/api/product.js'
 import { getOrderDetail, cancelOrder } from '@/api/order.js'
+import { queryPayment } from '@/api/payment.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['pay'])
 const router = useRouter()
 const route = useRoute()
+const { t, te } = useI18n()
+
+// 国际化键存在时取翻译，否则回退到后端返回值
+const tOr = (key, fallback) => (te(key) ? t(key) : fallback)
 
 // 承运商代码 → 名称
 const CARRIER_MAP = {
@@ -201,6 +262,20 @@ const order = ref(createDefaultOrder())
 
 // 订单数据是否存在
 const hasOrderData = ref(false)
+
+// 聚合支付单信息（来自后端 /api/pay/query）
+const paymentInfo = ref(null)
+
+// 支付用途：业务类型 + 支付标题（购买了什么、钱花在哪）
+const paymentPurpose = computed(() => {
+  if (!paymentInfo.value) return ''
+  const bizType = tOr(
+    `payment.orderDetail.bizTypes.${paymentInfo.value.bizType}`,
+    paymentInfo.value.bizType || ''
+  )
+  const subject = paymentInfo.value.subject || order.value.items[0]?.name || ''
+  return subject ? `${bizType} · ${subject}` : bizType || '-'
+})
 
 // 积分兑换订单（无实际支付金额）
 const isPointsOrder = computed(() => order.value.itemType === 'points')

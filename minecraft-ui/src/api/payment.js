@@ -9,14 +9,9 @@ export const createPayment = (data) => {
   return request.post('/pay/create', data)
 }
 
-// 商城/预订订单支付（兼容接口，内部走聚合支付网关）
-export const processPayment = (params) => {
-  return request.post('/payment/process', null, { params })
-}
-
-// 查询支付详情
-export const queryPayment = (payNo) => {
-  return request.get(`/pay/query/${payNo}`)
+// 查询支付详情（config 可传 silent 等请求配置）
+export const queryPayment = (payNo, config = {}) => {
+  return request.get(`/pay/query/${payNo}`, config)
 }
 
 // 模拟支付确认
@@ -37,4 +32,21 @@ export const cancelPayment = (id) => {
 // 发起退款（管理员）
 export const refundPayment = (data) => {
   return request.post('/pay/refund', data)
+}
+
+/**
+ * 轮询支付结果（真实渠道异步回调场景）
+ */
+export const waitForPayment = async (payNo, timeoutMs = 120000) => {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline) {
+    const res = await queryPayment(payNo)
+    const status = res?.data?.status
+    if (status === 'SUCCESS') return res.data
+    if (['FAILED', 'CLOSED'].includes(status)) {
+      throw new Error('支付失败或支付单已关闭')
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+  }
+  throw new Error('支付确认超时，请稍后在订单中查看')
 }
