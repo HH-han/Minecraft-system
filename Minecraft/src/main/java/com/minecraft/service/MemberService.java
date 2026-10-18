@@ -310,10 +310,16 @@ public class MemberService {
         if (userId == null || original == null) {
             return original;
         }
-        UserMember member = getOrCreate(userId);
-        MemberLevel level = resolveLevel(member.getLevelId());
-        BigDecimal discount = level.getDiscount() == null ? BigDecimal.ONE : level.getDiscount();
-        return original.multiply(discount).setScale(2, RoundingMode.HALF_UP);
+        try {
+            UserMember member = getOrCreate(userId);
+            MemberLevel level = resolveLevel(member.getLevelId());
+            BigDecimal discount = level.getDiscount() == null ? BigDecimal.ONE : level.getDiscount();
+            return original.multiply(discount).setScale(2, RoundingMode.HALF_UP);
+        } catch (Exception e) {
+            // 会员数据未初始化时不阻断正常下单
+            log.warn("计算会员折扣失败，按原价处理: {}", e.getMessage());
+            return original;
+        }
     }
 
     /**
@@ -323,9 +329,15 @@ public class MemberService {
         if (userId == null) {
             return BigDecimal.ONE;
         }
-        UserMember member = getOrCreate(userId);
-        MemberLevel level = resolveLevel(member.getLevelId());
-        return level.getPointsRate() == null ? BigDecimal.ONE : level.getPointsRate();
+        try {
+            UserMember member = getOrCreate(userId);
+            MemberLevel level = resolveLevel(member.getLevelId());
+            return level.getPointsRate() == null ? BigDecimal.ONE : level.getPointsRate();
+        } catch (Exception e) {
+            // 会员数据未初始化时不阻断正常支付
+            log.warn("获取会员积分倍率失败，按 1 倍处理: {}", e.getMessage());
+            return BigDecimal.ONE;
+        }
     }
 
     /**
