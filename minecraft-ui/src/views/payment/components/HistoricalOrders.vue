@@ -486,7 +486,8 @@ const getItemTypeText = (itemType) => {
 
 // 是否使用物流系统：仅纪念品等实物商品（酒店/景点/美食等不发货）
 const SHIPPABLE_ITEM_TYPES = ['product', 'points']
-const isShippableOrder = (order) => SHIPPABLE_ITEM_TYPES.includes(order.itemType)
+const isShippableOrder = (order) =>
+  SHIPPABLE_ITEM_TYPES.includes(String(order.itemType || '').toLowerCase())
 
 // 无商品图时的占位文案
 const getItemFallbackText = (order) => {

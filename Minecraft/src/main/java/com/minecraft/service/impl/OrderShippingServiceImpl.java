@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -43,9 +42,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, OrderShipping> implements OrderShippingService {
-
-    /** 仅纪念品等实物商品订单使用物流系统（product-纪念品，points-积分兑换实物） */
-    private static final Set<String> SHIPPABLE_ITEM_TYPES = Set.of("product", "points");
 
     private final OrderMapper orderMapper;
     private final LogisticsCarrierMapper carrierMapper;
@@ -60,7 +56,7 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
         if (order == null) {
             throw new BusinessException("订单不存在");
         }
-        if (!SHIPPABLE_ITEM_TYPES.contains(order.getItemType())) {
+        if (!isShippableItemType(order.getItemType())) {
             throw new BusinessException("仅纪念品等实物商品订单支持发货");
         }
         if (!OrderStatus.PAID.getCode().toString().equals(order.getStatus())) {
@@ -258,6 +254,11 @@ public class OrderShippingServiceImpl extends ServiceImpl<OrderShippingMapper, O
 
     private boolean hasText(String value) {
         return value != null && !value.trim().isEmpty();
+    }
+
+    /** 是否为需要使用物流系统的商品类型（不区分大小写） */
+    private boolean isShippableItemType(String itemType) {
+        return itemType != null && SHIPPABLE_ITEM_TYPES.contains(itemType.trim().toLowerCase());
     }
 
     private OrderShippingVO toVO(OrderShipping shipping) {

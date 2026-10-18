@@ -11,6 +11,7 @@ import com.minecraft.enums.OrderStatus;
 import com.minecraft.mapper.OrderMapper;
 import com.minecraft.service.MemberService;
 import com.minecraft.service.OrderService;
+import com.minecraft.service.OrderShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setQuantity(request.getQuantity());
         order.setRemark(request.getRemark());
         order.setStatus(OrderStatus.PENDING.getCode().toString());
-        order.setShippingStatus(0);
+        // 仅纪念品等实物商品进入物流流程，酒店/景点/美食无需发货
+        order.setShippingStatus(isShippableItemType(request.getItemType()) ? 0 : null);
         
         // 生成订单编号：日期 + 4位自增数
         String orderNo = generateOrderNo();
@@ -148,5 +150,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         wrapper.orderByDesc(Order::getCreateTime);
         Page<Order> result = page(page, wrapper);
         return new PageResponse<>(result.getRecords(), result.getTotal(), request.getPageNum(), request.getPageSize());
+    }
+
+    /** 是否为需要使用物流系统的商品类型（不区分大小写） */
+    private boolean isShippableItemType(String itemType) {
+        return itemType != null
+                && OrderShippingService.SHIPPABLE_ITEM_TYPES.contains(itemType.trim().toLowerCase());
     }
 }

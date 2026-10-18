@@ -9,11 +9,15 @@ import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.OrderShipping;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 发货单服务
  */
 public interface OrderShippingService extends IService<OrderShipping> {
+
+    /** 使用物流系统的商品类型：product-纪念品，points-积分兑换实物（酒店/景点/美食不发货） */
+    Set<String> SHIPPABLE_ITEM_TYPES = Set.of("product", "points");
 
     /** 创建发货单（录入收货信息与运单） */
     OrderShipping createShipping(ShippingCreateRequest request, Long adminId);

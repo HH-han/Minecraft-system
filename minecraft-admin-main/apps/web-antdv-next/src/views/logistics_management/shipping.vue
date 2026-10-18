@@ -151,6 +151,12 @@ function itemTypeLabel(type?: string) {
   return label === key ? type : label;
 }
 
+// 仅纪念品等实物商品使用物流系统（酒店/景点/美食不发货）
+const SHIPPABLE_ITEM_TYPES = ['product', 'points'];
+function isShippableItemType(type?: string) {
+  return !!type && SHIPPABLE_ITEM_TYPES.includes(type.toLowerCase());
+}
+
 function handleTableChange(pagination: any) {
   pageNum.value = pagination.current;
   fetchList();
@@ -333,9 +339,15 @@ async function openTrack(record: any) {
             <span class="text-xs text-muted-foreground">{{ formatTime(record.createTime) }}</span>
           </template>
           <template v-else-if="column.key === 'action'">
-            <Button type="link" size="small" @click="openCreateFromOrder(record)">
+            <Button
+              v-if="isShippableItemType(record.itemType)"
+              type="link"
+              size="small"
+              @click="openCreateFromOrder(record)"
+            >
               {{ $t('logistics.pending_page.ship') }}
             </Button>
+            <span v-else class="text-xs text-muted-foreground">-</span>
           </template>
         </template>
         <template #emptyText>

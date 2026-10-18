@@ -282,7 +282,9 @@ const isPointsOrder = computed(() => order.value.itemType === 'points')
 
 // 是否使用物流系统：仅纪念品等实物商品（酒店/景点/美食等不发货）
 const SHIPPABLE_ITEM_TYPES = ['product', 'points']
-const isShippableOrder = computed(() => SHIPPABLE_ITEM_TYPES.includes(order.value.itemType))
+const isShippableOrder = computed(() =>
+  SHIPPABLE_ITEM_TYPES.includes(String(order.value.itemType || '').toLowerCase())
+)
 
 // 是否展示物流信息：实物商品且已进入物流环节
 const hasShippingInfo = computed(

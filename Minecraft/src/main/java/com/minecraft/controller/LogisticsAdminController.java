@@ -43,13 +43,14 @@ public class LogisticsAdminController {
 
     // ==================== 发货单 ====================
 
-    @Operation(summary = "发货单分页列表")
+    @Operation(summary = "发货单分页列表（仅纪念品等实物商品）")
     @GetMapping("/shipping/page")
     public ApiResponse<PageResponse<?>> shippingPage(PageRequest request) {
         adminAuthorizationService.requireAdmin();
         Page<OrderShipping> page = new Page<>(request.getPageNum(), request.getPageSize());
         LambdaQueryWrapper<OrderShipping> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByDesc(OrderShipping::getCreateTime);
+        wrapper.in(OrderShipping::getItemType, OrderShippingService.SHIPPABLE_ITEM_TYPES)
+                .orderByDesc(OrderShipping::getCreateTime);
         Page<OrderShipping> result = orderShippingService.page(page, wrapper);
         return ApiResponse.success(new PageResponse<>(
                 result.getRecords(), result.getTotal(), request.getPageNum(), request.getPageSize()));
