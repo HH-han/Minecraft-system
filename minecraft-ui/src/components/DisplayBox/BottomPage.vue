@@ -6,71 +6,74 @@
             <div class="brand-col">
                 <div class="logo">
                     <i class="fas fa-globe-asia"></i>
-                    <span>博览旅行</span>
+                    <span>{{ $t('common.brand') }}</span>
                 </div>
                 <div class="brand-desc">
-                    <i class="fas fa-compass"></i> 跨越山海，博览世界。每一程都是独特的风景。
+                    <i class="fas fa-compass"></i> {{ $t('website.footer.brandDesc') }}
                 </div>
                 <div style="display: flex; gap: 0.8rem; margin-top: 0.3rem; flex-wrap: wrap;">
                     <span
                         style="background: var(--theme-primary-soft); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid var(--theme-border); font-size:0.75rem; color:var(--theme-text-2);"><i
-                            class="fas fa-check-circle" style="color: var(--theme-primary);"></i> 品质保证</span>
+                            class="fas fa-check-circle" style="color: var(--theme-primary);"></i> {{ $t('website.footer.badgeQuality') }}</span>
                     <span
                         style="background: var(--theme-primary-soft); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid var(--theme-border); font-size:0.75rem; color:var(--theme-text-2);"><i
-                            class="fas fa-shield-alt" style="color: var(--theme-primary);"></i> 安心出行</span>
+                            class="fas fa-shield-alt" style="color: var(--theme-primary);"></i> {{ $t('website.footer.badgeSafe') }}</span>
                 </div>
             </div>
 
             <!-- 快速链接 -->
             <div class="quick-col">
-                <h4 class="footer-title"><i class="fas fa-rocket"></i> 探索</h4>
+                <h4 class="footer-title"><i class="fas fa-rocket"></i> {{ $t('website.footer.explore') }}</h4>
                 <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-map-marked-alt"></i> 目的地</a></li>
-                    <li><a href="#"><i class="fas fa-umbrella-beach"></i> 度假套餐</a></li>
-                    <li><a href="#"><i class="fas fa-hiking"></i> 户外探险</a></li>
-                    <li><a href="#"><i class="fas fa-ship"></i> 邮轮之旅</a></li>
+                    <li><a href="#"><i class="fas fa-map-marked-alt"></i> {{ $t('website.footer.links.destinations') }}</a></li>
+                    <li><a href="#"><i class="fas fa-umbrella-beach"></i> {{ $t('website.footer.links.packages') }}</a></li>
+                    <li><a href="#"><i class="fas fa-hiking"></i> {{ $t('website.footer.links.adventure') }}</a></li>
+                    <li><a href="#"><i class="fas fa-ship"></i> {{ $t('website.footer.links.cruise') }}</a></li>
                 </ul>
             </div>
 
             <!-- 联系方式 -->
             <div class="contact-col">
-                <h4 class="footer-title"><i class="fas fa-headset"></i> 联络</h4>
+                <h4 class="footer-title"><i class="fas fa-headset"></i> {{ $t('website.footer.contact') }}</h4>
                 <ul class="footer-links">
                     <li><a href="#"><i class="fas fa-phone-alt"></i> +86 400 8888 666</a></li>
                     <li><a href="#"><i class="fas fa-envelope"></i> travel@bltravel.com</a></li>
-                    <li><a href="#"><i class="fas fa-clock"></i> 09:00 – 21:00 (UTC+8)</a></li>
-                    <li><a href="#"><i class="fas fa-comment-dots"></i> 在线客服</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> {{ $t('website.footer.hours') }}</a></li>
+                    <li><a href="#"><i class="fas fa-comment-dots"></i> {{ $t('website.footer.onlineService') }}</a></li>
                 </ul>
                 <div class="social-icons">
-                    <a href="#" aria-label="微信"><i class="fab fa-weixin"></i></a>
-                    <a href="#" aria-label="微博"><i class="fab fa-weibo"></i></a>
-                    <a href="#" aria-label="抖音"><i class="fab fa-tiktok"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" :aria-label="$t('website.footer.social.wechat')"><i class="fab fa-weixin"></i></a>
+                    <a href="#" :aria-label="$t('website.footer.social.weibo')"><i class="fab fa-weibo"></i></a>
+                    <a href="#" :aria-label="$t('website.footer.social.tiktok')"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" :aria-label="$t('website.footer.social.youtube')"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
 
             <!-- 订阅 -->
             <div class="newsletter-col">
-                <h4 class="footer-title"><i class="fas fa-paper-plane"></i> 特惠订阅</h4>
-                <p><i class="fas fa-gem" style="color: var(--theme-primary); margin-right: 6px;"></i> 获取独家旅行灵感 & 早鸟折扣</p>
+                <h4 class="footer-title"><i class="fas fa-paper-plane"></i> {{ $t('website.footer.newsletter.title') }}</h4>
+                <p><i class="fas fa-gem" style="color: var(--theme-primary); margin-right: 6px;"></i> {{
+                    $t('website.footer.newsletter.desc') }}</p>
                 <div class="newsletter-input-group">
-                    <input type="email" placeholder="你的邮箱地址" aria-label="邮箱订阅">
-                    <button><i class="fas fa-arrow-right"></i> 订阅</button>
+                    <input type="email" :placeholder="$t('website.footer.newsletter.placeholder')"
+                        :aria-label="$t('website.footer.newsletter.placeholder')">
+                    <button><i class="fas fa-arrow-right"></i> {{ $t('website.footer.newsletter.submit') }}</button>
                 </div>
                 <p style="font-size:0.7rem; color:var(--theme-text-3); margin-top: 0.2rem;">
-                    <i class="fas fa-lock" style="margin-right: 4px;"></i> 你的信息受保护，可随时退订
+                    <i class="fas fa-lock" style="margin-right: 4px;"></i> {{ $t('website.footer.newsletter.privacy') }}
                 </p>
             </div>
         </div>
 
         <!-- 版权 -->
         <div class="footer-bottom">
-            <span>© 2026 <strong style="color: var(--theme-text-1);">博览旅行</strong> · 探索无限</span>
+            <span>© 2026 <strong style="color: var(--theme-text-1);">{{ $t('common.brand') }}</strong> · {{
+                $t('website.footer.slogan') }}</span>
             <div class="legal">
-                <a href="#">隐私政策</a>
-                <a href="#">使用条款</a>
-                <a href="#">Cookie 设置</a>
-                <span style="margin-left: 0.8rem;"> <span class="heart">❤</span> 匠心旅行</span>
+                <a href="#">{{ $t('website.footer.privacyPolicy') }}</a>
+                <a href="#">{{ $t('website.footer.terms') }}</a>
+                <a href="#">{{ $t('website.footer.cookieSettings') }}</a>
+                <span style="margin-left: 0.8rem;"> <span class="heart">❤</span> {{ $t('website.footer.crafted') }}</span>
             </div>
         </div>
     </footer>

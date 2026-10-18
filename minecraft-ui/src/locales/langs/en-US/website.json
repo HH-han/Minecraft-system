@@ -41,6 +41,39 @@
     "timeline": {
       "eyebrow": "Our Journey",
       "title": "Growing All the Way, True to Our Roots"
+    },
+    "footer": {
+      "brandDesc": "Across mountains and seas, explore the world. Every journey is a unique view.",
+      "badgeQuality": "Quality Assured",
+      "badgeSafe": "Travel with Ease",
+      "explore": "Explore",
+      "links": {
+        "destinations": "Destinations",
+        "packages": "Holiday Packages",
+        "adventure": "Outdoor Adventures",
+        "cruise": "Cruises"
+      },
+      "contact": "Contact",
+      "hours": "09:00 – 21:00 (UTC+8)",
+      "onlineService": "Live Support",
+      "social": {
+        "wechat": "WeChat",
+        "weibo": "Weibo",
+        "tiktok": "TikTok",
+        "youtube": "YouTube"
+      },
+      "newsletter": {
+        "title": "Special Offers",
+        "desc": "Get exclusive travel inspiration & early-bird discounts",
+        "placeholder": "Your email address",
+        "submit": "Subscribe",
+        "privacy": "Your information is protected. Unsubscribe anytime."
+      },
+      "slogan": "Explore Without Limits",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "cookieSettings": "Cookie Settings",
+      "crafted": "Crafted with Heart"
     }
   }
 }

@@ -10,8 +10,9 @@
         @open-recommendation-detail="handleOpenRecommendationDetail"
       />
     </main>
+    <!-- 底部页脚 -->
     <Footer />
-    
+    <!-- 详情弹窗 -->
     <Teleport to="body">
       <Details
         :visible="detailVisible"

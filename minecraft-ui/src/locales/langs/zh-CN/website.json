@@ -41,6 +41,39 @@
     "timeline": {
       "eyebrow": "发展历程",
       "title": "一路成长，不忘初心"
+    },
+    "footer": {
+      "brandDesc": "跨越山海，博览世界。每一程都是独特的风景。",
+      "badgeQuality": "品质保证",
+      "badgeSafe": "安心出行",
+      "explore": "探索",
+      "links": {
+        "destinations": "目的地",
+        "packages": "度假套餐",
+        "adventure": "户外探险",
+        "cruise": "邮轮之旅"
+      },
+      "contact": "联络",
+      "hours": "09:00 – 21:00 (UTC+8)",
+      "onlineService": "在线客服",
+      "social": {
+        "wechat": "微信",
+        "weibo": "微博",
+        "tiktok": "抖音",
+        "youtube": "YouTube"
+      },
+      "newsletter": {
+        "title": "特惠订阅",
+        "desc": "获取独家旅行灵感 & 早鸟折扣",
+        "placeholder": "你的邮箱地址",
+        "submit": "订阅",
+        "privacy": "你的信息受保护，可随时退订"
+      },
+      "slogan": "探索无限",
+      "privacyPolicy": "隐私政策",
+      "terms": "使用条款",
+      "cookieSettings": "Cookie 设置",
+      "crafted": "匠心旅行"
     }
   }
 }
