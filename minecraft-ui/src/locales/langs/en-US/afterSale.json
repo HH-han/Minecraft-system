@@ -3,7 +3,7 @@
     "title": "After-Sales Service",
     "subtitle": "Request refunds, returns or exchanges and track progress",
     "refresh": "Refresh",
-    "apply": "Request Service",
+    "recordsTitle": "After-Sales Records",
     "emptyTitle": "No after-sales records",
     "emptyDesc": "Submit an after-sales request if you have an issue with an order",
     "table": {
@@ -50,9 +50,6 @@
     "cancelConfirmText": "Are you sure you want to cancel this after-sales request?",
     "cancelSuccess": "Request cancelled",
     "applyPanel": {
-      "title": "After-Sales Request",
-      "subtitle": "Select an order and fill in the after-sales details",
-      "back": "Back to Requests",
       "refresh": "Refresh",
       "noOrders": "No orders available",
       "orderListTitle": "My Orders",
@@ -68,12 +65,7 @@
       "submit": "Submit"
     },
     "applyDialog": {
-      "title": "After-Sales Request",
-      "subtitle": "Please provide accurate information so we can process your request quickly",
-      "selectOrder": "Select Order",
-      "selectOrderPlaceholder": "Select an order for after-sales service",
-      "selectOrderRequired": "Please select an order",
-      "noEligibleOrders": "No orders available for after-sales service",
+      "formSubtitle": "Please provide accurate information so we can process your request quickly",
       "orderInAfterSale": "This order is already in after-sales processing",
       "orderAfterSaleDone": "After-sales for this order is completed",
       "orderStatusBlocked": "After-sales is unavailable for the current order status",
@@ -81,12 +73,13 @@
       "typePlaceholder": "Please select",
       "typeRequired": "Please select a service type",
       "refundAmount": "Refund Amount",
+      "refundAmountHint": "Up to ¥{amount} refundable",
       "reason": "Issue Description",
       "reasonPlaceholder": "Describe the issue you encountered",
       "reasonRequired": "Please describe the issue",
       "evidence": "Upload Evidence",
+      "evidenceHint": "JPG / PNG, up to 5 images",
       "cancel": "Cancel",
-      "submit": "Submit",
       "submitSuccess": "Request submitted"
     },
     "detailDialog": {

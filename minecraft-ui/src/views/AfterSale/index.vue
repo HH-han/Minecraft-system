@@ -11,15 +11,20 @@
           <el-icon class="as-mr"><Refresh /></el-icon>
           {{ $t('afterSale.refresh') }}
         </el-button>
-        <el-button type="primary" round @click="openApply">
-          <el-icon class="as-mr"><Plus /></el-icon>
-          {{ $t('afterSale.apply') }}
-        </el-button>
       </div>
     </header>
 
-    <section class="as-card">
+    <ApplyPanel :order-id="route.query.orderId" @success="onApplySuccess" />
+
+    <section class="as-card as-records">
+      <div class="as-records__head">
+        <h2 class="as-records__title">
+          {{ $t('afterSale.recordsTitle') }}
+          <span v-if="total" class="as-records__count">{{ total }}</span>
+        </h2>
+      </div>
       <el-table
+        v-show="loading || list.length > 0"
         v-loading="loading"
         :data="list"
         style="width: 100%"
@@ -79,12 +84,14 @@
       </el-table>
 
       <div v-if="!loading && list.length === 0" class="as-empty">
-        <div class="as-empty__icon">↺</div>
+        <span class="as-empty__icon">
+          <el-icon :size="26"><Tickets /></el-icon>
+        </span>
         <p class="as-empty__title">{{ $t('afterSale.emptyTitle') }}</p>
         <p class="as-empty__desc">{{ $t('afterSale.emptyDesc') }}</p>
       </div>
 
-      <div class="as-pagination">
+      <div v-if="total > 0" class="as-pagination">
         <el-pagination
           background
           layout="total, prev, pager, next"
@@ -96,7 +103,6 @@
       </div>
     </section>
 
-    <ApplyDialog v-model="applyVisible" :order-id="applyOrderId" @success="onApplySuccess" />
     <DetailDialog v-model="detailVisible" :id="detailId" @refresh="fetchList" />
   </div>
 </template>
@@ -106,10 +112,10 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Refresh } from '@element-plus/icons-vue'
+import { Refresh, Tickets } from '@element-plus/icons-vue'
 import { cancelAfterSale, getAfterSalePage } from '@/api/afterSale.js'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
-import ApplyDialog from './components/ApplyDialog.vue'
+import ApplyPanel from './components/ApplyPanel.vue'
 import DetailDialog from './components/DetailDialog.vue'
 
 const route = useRoute()
@@ -122,8 +128,6 @@ const total = ref(0)
 const pageNum = ref(1)
 const pageSize = ref(10)
 
-const applyVisible = ref(false)
-const applyOrderId = ref(undefined)
 const detailVisible = ref(false)
 const detailId = ref(null)
 
@@ -181,9 +185,11 @@ const handlePageChange = (p) => {
 // 数据变更（本地操作 / 管理员后台改动 / 其他用户操作）后自动刷新列表
 useAutoRefresh(fetchList)
 
-const openApply = () => {
-  applyOrderId.value = route.query.orderId || undefined
-  applyVisible.value = true
+const clearOrderQuery = () => {
+  if (!route.query.orderId) return
+  const rest = { ...route.query }
+  delete rest.orderId
+  router.replace({ query: rest })
 }
 
 const openDetail = (id) => {
@@ -192,13 +198,7 @@ const openDetail = (id) => {
 }
 
 const onApplySuccess = () => {
-  // 申请成功后解除订单锁定，下次可重新选择订单
-  if (route.query.orderId) {
-    const rest = { ...route.query }
-    delete rest.orderId
-    router.replace({ query: rest })
-  }
-  applyOrderId.value = undefined
+  clearOrderQuery()
   fetchList()
 }
 
@@ -326,6 +326,41 @@ onMounted(fetchList)
   opacity: 0.9;
 }
 
+.as-records {
+  margin-top: 20px;
+}
+
+.as-records__head {
+  padding: 12px 12px 14px;
+}
+
+.as-records__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--tn-ink);
+}
+
+.as-records__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
 .as-card :deep(.el-table) {
   border-radius: 16px;
   --el-table-border-color: var(--theme-hairline);
@@ -334,6 +369,11 @@ onMounted(fetchList)
 
 .as-card :deep(.el-table th.el-table__cell) {
   border-bottom: 1px solid var(--theme-hairline);
+  letter-spacing: 0.04em;
+}
+
+.as-card :deep(.el-table td.el-table__cell) {
+  padding: 11px 0;
 }
 
 .as-card :deep(.el-table__row) {
@@ -369,26 +409,34 @@ onMounted(fetchList)
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
+  line-height: 1.5;
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 
 .as-chip--type {
   background: color-mix(in srgb, var(--theme-accent-2) 10%, transparent);
+  border-color: color-mix(in srgb, var(--theme-accent-2) 18%, transparent);
   color: var(--theme-accent-2);
 }
 .as-chip--idle {
   background: var(--theme-bg-surface-2);
+  border-color: var(--theme-hairline);
   color: var(--theme-text-2);
 }
 .as-chip--active {
   background: var(--theme-primary-soft);
+  border-color: color-mix(in srgb, var(--theme-primary) 22%, transparent);
   color: var(--theme-primary);
 }
 .as-chip--warn {
   background: var(--theme-warning-soft);
+  border-color: color-mix(in srgb, var(--theme-warning) 24%, transparent);
   color: var(--theme-warning);
 }
 .as-chip--done {
   background: var(--theme-success-soft);
+  border-color: color-mix(in srgb, var(--theme-success) 24%, transparent);
   color: var(--theme-success);
 }
 
@@ -403,9 +451,18 @@ onMounted(fetchList)
 }
 
 .as-empty__icon {
-  font-size: 42px;
-  color: var(--tn-accent);
-  opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 6px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, var(--theme-primary-soft), transparent 70%),
+    var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
+  color: var(--theme-primary);
 }
 
 .as-empty__title {
@@ -425,6 +482,27 @@ onMounted(fetchList)
   display: flex;
   justify-content: flex-end;
   padding: 16px 12px 4px;
+}
+
+.as-pagination :deep(.el-pagination.is-background .el-pager li),
+.as-pagination :deep(.el-pagination.is-background .btn-prev),
+.as-pagination :deep(.el-pagination.is-background .btn-next) {
+  border-radius: 10px;
+  background: var(--theme-bg-surface-2);
+  color: var(--tn-ink-2);
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.as-pagination :deep(.el-pagination.is-background .el-pager li:hover),
+.as-pagination :deep(.el-pagination.is-background .btn-prev:hover),
+.as-pagination :deep(.el-pagination.is-background .btn-next:hover) {
+  color: var(--theme-primary);
+}
+
+.as-pagination :deep(.el-pagination.is-background .el-pager li.is-active) {
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
+  box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--theme-primary) 90%, transparent);
 }
 
 @keyframes as-rise {

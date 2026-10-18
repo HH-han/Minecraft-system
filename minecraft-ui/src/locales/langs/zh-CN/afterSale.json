@@ -3,7 +3,7 @@
     "title": "售后服务",
     "subtitle": "申请退款、退货与换货，跟踪处理进度",
     "refresh": "刷新",
-    "apply": "申请售后",
+    "recordsTitle": "售后记录",
     "emptyTitle": "暂无售后记录",
     "emptyDesc": "如对订单有疑问，可发起售后申请",
     "table": {
@@ -50,9 +50,6 @@
     "cancelConfirmText": "确定撤销该售后申请吗？",
     "cancelSuccess": "已撤销",
     "applyPanel": {
-      "title": "申请售后",
-      "subtitle": "选择一笔订单，填写售后信息",
-      "back": "返回售后列表",
       "refresh": "刷新",
       "noOrders": "暂无可申请售后的订单",
       "orderListTitle": "我的订单",
@@ -68,12 +65,7 @@
       "submit": "提交申请"
     },
     "applyDialog": {
-      "title": "申请售后",
-      "subtitle": "请如实填写售后信息，商家将尽快为您处理",
-      "selectOrder": "选择订单",
-      "selectOrderPlaceholder": "请选择要申请售后的订单",
-      "selectOrderRequired": "请选择订单",
-      "noEligibleOrders": "暂无可申请售后的订单",
+      "formSubtitle": "请如实填写售后信息，商家将尽快为您处理",
       "orderInAfterSale": "该订单售后处理中",
       "orderAfterSaleDone": "该订单已完成售后",
       "orderStatusBlocked": "当前状态不可申请售后",
@@ -81,12 +73,13 @@
       "typePlaceholder": "请选择",
       "typeRequired": "请选择售后类型",
       "refundAmount": "退款金额",
+      "refundAmountHint": "最多可退 ¥{amount}",
       "reason": "问题描述",
       "reasonPlaceholder": "请描述您遇到的问题",
       "reasonRequired": "请填写问题描述",
       "evidence": "上传凭证",
+      "evidenceHint": "支持 JPG / PNG，最多 5 张",
       "cancel": "取消",
-      "submit": "提交申请",
       "submitSuccess": "申请已提交"
     },
     "detailDialog": {

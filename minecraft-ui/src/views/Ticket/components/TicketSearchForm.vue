@@ -396,6 +396,7 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
   font-size: 12px;
   color: var(--rw-text-3);
   letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 
 .rw-field--date {
@@ -404,6 +405,7 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
 }
 
 .rw-autocomplete {
+  display: block;
   width: 100%;
 }
 
@@ -469,7 +471,7 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
 .rw-swap {
   position: absolute;
   left: calc(50% - 17px);
-  top: 24px;
+  bottom: 4px;
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -637,6 +639,30 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
   line-height: 1.6;
 }
 
+/* Hero 变体：卡片宽度有限，站点独占一行，日期与查询按钮排第二行 */
+.rw-search-card--hero .rw-fields {
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 14px;
+}
+
+.rw-search-card--hero .rw-stations {
+  flex: 1 1 100%;
+}
+
+.rw-search-card--hero .rw-field--date {
+  flex: 1 1 150px;
+  width: auto;
+  min-width: 0;
+  max-width: 220px;
+}
+
+.rw-search-card--hero .rw-submit {
+  flex: 0 0 auto;
+  min-width: 132px;
+  margin-left: auto;
+}
+
 /* 紧凑模式 */
 .rw-search-card--compact .rw-fields {
   gap: 10px;
@@ -662,7 +688,7 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
 }
 
 .rw-search-card--compact .rw-swap {
-  top: 21px;
+  bottom: 2px;
 }
 
 @media (max-width: 960px) {
@@ -703,6 +729,10 @@ const goStatus = () => router.push({ path: '/ticket/timetable', query: { mode: '
 
   .rw-field--date {
     flex-basis: 100%;
+  }
+
+  .rw-search-card--hero .rw-field--date {
+    max-width: none;
   }
 
   .rw-submit {

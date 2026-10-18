@@ -103,8 +103,10 @@
               :key="i"
               :timestamp="formatTime(m.createTime)"
             >
-              <div class="as-msg__sender">{{ senderText(m.senderType) }}</div>
-              <div class="as-msg__content">{{ m.content }}</div>
+              <div class="as-msg">
+                <div class="as-msg__sender">{{ senderText(m.senderType) }}</div>
+                <div class="as-msg__content">{{ m.content }}</div>
+              </div>
             </el-timeline-item>
           </el-timeline>
           <div v-else class="as-detail__empty">{{ $t('afterSale.detailDialog.noMessages') }}</div>
@@ -114,17 +116,20 @@
               v-model="messageContent"
               type="textarea"
               :rows="2"
+              resize="none"
               :placeholder="$t('afterSale.detailDialog.messagePlaceholder')"
             />
-            <el-button
-              type="primary"
-              round
-              :loading="sending"
-              class="as-msg__send"
-              @click="sendMessage"
-            >
-              {{ $t('afterSale.detailDialog.send') }}
-            </el-button>
+            <div class="as-msg__actions">
+              <el-button
+                type="primary"
+                round
+                :loading="sending"
+                class="as-msg__send"
+                @click="sendMessage"
+              >
+                {{ $t('afterSale.detailDialog.send') }}
+              </el-button>
+            </div>
           </div>
         </div>
       </template>
@@ -341,9 +346,11 @@ const handleCancel = async () => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: 16px;
-  background: var(--theme-bg-surface-2);
+  background:
+    linear-gradient(135deg, var(--theme-primary-soft), transparent 68%),
+    var(--theme-bg-surface-2);
   border: 1px solid var(--theme-hairline);
 }
 
@@ -365,27 +372,41 @@ const handleCancel = async () => {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 .as-detail__status--active {
   background: var(--theme-primary-soft);
+  border-color: color-mix(in srgb, var(--theme-primary) 22%, transparent);
   color: var(--theme-primary);
 }
 .as-detail__status--warn {
   background: var(--theme-warning-soft);
+  border-color: color-mix(in srgb, var(--theme-warning) 24%, transparent);
   color: var(--theme-warning);
 }
 .as-detail__status--done {
   background: var(--theme-success-soft);
+  border-color: color-mix(in srgb, var(--theme-success) 24%, transparent);
   color: var(--theme-success);
 }
 .as-detail__status--idle {
   background: var(--theme-bg-surface-2);
+  border-color: var(--theme-hairline);
   color: var(--theme-text-2);
 }
 
 /* descriptions */
 .as-detail__desc {
-  margin-top: 16px;
+  margin-top: 18px;
+  padding: 4px 14px;
+  border-radius: 16px;
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
+}
+
+.as-detail__desc :deep(.el-descriptions__cell) {
+  padding-bottom: 12px;
 }
 
 .as-detail__desc :deep(.el-descriptions__label) {
@@ -442,7 +463,11 @@ const handleCancel = async () => {
 .as-return {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
 }
 
 .as-return :deep(.el-input) {
@@ -450,25 +475,55 @@ const handleCancel = async () => {
   min-width: 140px;
 }
 
+.as-return :deep(.el-input__wrapper) {
+  border-radius: 10px;
+  background: var(--theme-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--theme-hairline);
+}
+
+.as-return :deep(.el-input__wrapper.is-focus) {
+  box-shadow: inset 0 0 0 1px var(--theme-primary);
+}
+
 /* messages */
 .as-detail__messages {
   padding-left: 4px;
 }
 
+.as-detail__messages :deep(.el-timeline-item__tail) {
+  border-left-color: var(--theme-hairline);
+}
+
+.as-detail__messages :deep(.el-timeline-item__node) {
+  background: var(--theme-primary);
+}
+
 .as-detail__messages :deep(.el-timeline-item__timestamp) {
   color: var(--tn-ink-3);
   font-weight: 600;
+  font-size: 11.5px;
+}
+
+.as-msg {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
 }
 
 .as-msg__sender {
-  font-size: 12px;
-  color: var(--tn-ink-3);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--theme-primary);
 }
 
 .as-msg__content {
+  margin-top: 3px;
   font-size: 13.5px;
+  line-height: 1.65;
   color: var(--tn-ink);
-  margin-top: 2px;
+  word-break: break-word;
 }
 
 .as-detail__empty {
@@ -481,15 +536,49 @@ const handleCancel = async () => {
 }
 
 .as-msg__input {
-  margin-top: 14px;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--theme-bg-surface-2);
+  border: 1px solid var(--theme-hairline);
 }
 
 .as-msg__input :deep(.el-textarea__inner) {
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--theme-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--theme-hairline);
+  font-size: 13.5px;
+  line-height: 1.65;
+  transition: box-shadow 0.2s ease;
+}
+
+.as-msg__input :deep(.el-textarea__inner:focus) {
+  background: var(--theme-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--theme-primary);
+}
+
+.as-msg__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 
 .as-msg__send {
-  margin-top: 10px;
+  min-width: 88px;
+  border: none;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  font-weight: 600;
+  box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--theme-primary) 85%, transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.as-msg__send:hover {
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  opacity: 0.94;
+  transform: translateY(-1px);
 }
 </style>
 
