@@ -121,6 +121,7 @@
       "trainType": "车次类型",
       "onlyAvailable": "只看有票",
       "reset": "重置",
+      "changeSearch": "修改查询",
       "book": "预订",
       "left": "余票",
       "soldOut": "无票",

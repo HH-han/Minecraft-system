@@ -1,6 +1,7 @@
 package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.minecraft.dto.request.RailwayOrderCreateRequest;
 import com.minecraft.dto.response.PageResponse;
@@ -275,16 +276,17 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
         vo.setPaidOrders(orderMapper.selectCount(new LambdaQueryWrapper<RailwayOrder>()
                 .eq(RailwayOrder::getStatus, "PAID")));
         vo.setTotalOrders(orderMapper.selectCount(new LambdaQueryWrapper<>()));
-        vo.setTodayRevenue(sumAmount(new LambdaQueryWrapper<RailwayOrder>()
-                .eq(RailwayOrder::getStatus, "PAID")
-                .ge(RailwayOrder::getPayTime, todayStart)));
-        vo.setTotalRevenue(sumAmount(new LambdaQueryWrapper<RailwayOrder>()
-                .eq(RailwayOrder::getStatus, "PAID")));
+        vo.setTodayRevenue(sumAmount(new QueryWrapper<RailwayOrder>()
+                .select("IFNULL(SUM(total_amount), 0) AS amount")
+                .eq("status", "PAID")
+                .ge("pay_time", todayStart)));
+        vo.setTotalRevenue(sumAmount(new QueryWrapper<RailwayOrder>()
+                .select("IFNULL(SUM(total_amount), 0) AS amount")
+                .eq("status", "PAID")));
         return vo;
     }
 
-    private long sumAmount(LambdaQueryWrapper<RailwayOrder> wrapper) {
-        wrapper.select("IFNULL(SUM(total_amount), 0) AS amount");
+    private long sumAmount(QueryWrapper<RailwayOrder> wrapper) {
         List<Map<String, Object>> maps = orderMapper.selectMaps(wrapper);
         if (maps == null || maps.isEmpty()) {
             return 0L;

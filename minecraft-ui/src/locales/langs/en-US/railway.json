@@ -122,6 +122,7 @@
       "trainType": "Train type",
       "onlyAvailable": "Available only",
       "reset": "Reset",
+      "changeSearch": "Change search",
       "book": "Book",
       "left": "Available",
       "soldOut": "Sold out",
