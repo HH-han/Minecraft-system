@@ -1,274 +1,316 @@
 <template>
   <div class="member-page">
-    <div class="member-shell" v-loading="loading">
+    <div class="member-shell">
       <header class="member-topbar">
-        <button class="back-btn" type="button" @click="goBack">
-          <el-icon><ArrowLeft /></el-icon>
-          <span>{{ $t('member.back') }}</span>
-        </button>
         <div class="topbar-title">
           <h1>{{ $t('member.title') }}</h1>
           <p>{{ $t('member.subtitle') }}</p>
         </div>
+        <span class="topbar-level">
+          <el-icon><Trophy /></el-icon>
+          {{ levelName }}
+        </span>
       </header>
 
-      <!-- 会员卡 -->
-      <section class="member-card" :class="`level-${info.level}`">
-        <div class="card-top">
-          <div class="card-identity">
-            <div class="card-level">{{ levelName }}</div>
-            <div class="card-user">{{ info.nickname || info.userId }}</div>
-          </div>
-          <span class="card-badge">
-            {{ info.isPaid ? $t('member.paid') : $t('member.notPaid') }}
-          </span>
-        </div>
-
-        <div class="card-growth">
-          <span>
-            {{ $t('member.growth') }}
-            <strong>{{ info.growth }}</strong>
-          </span>
-          <span v-if="info.nextLevelGrowth > 0">
-            {{ $t('member.nextLevel', { value: info.nextLevelGrowth }) }}
-          </span>
-          <span v-else>{{ $t('member.maxLevel') }}</span>
-        </div>
-
-        <el-progress
-          :percentage="progress"
-          :stroke-width="10"
-          :show-text="false"
-          color="#ffd66b"
-        />
-
-        <div v-if="info.isPaid && info.expireTime" class="card-expire">
-          {{ $t('member.expireTime', { date: formatDate(info.expireTime) }) }}
-        </div>
-      </section>
-
-      <!-- 权益数据 -->
-      <section class="stat-grid">
-        <div class="stat-card">
-          <span class="stat-value">{{ discountText }}</span>
-          <span class="stat-label">{{ $t('member.stats.discount') }}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">{{ pointsRateText }}</span>
-          <span class="stat-label">{{ $t('member.stats.pointsRate') }}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">
-            {{ $t('member.signDaysValue', { value: info.signContinuous }) }}
-          </span>
-          <span class="stat-label">{{ $t('member.stats.signDays') }}</span>
-        </div>
-      </section>
-
-      <!-- 签到与权益 -->
-      <section class="panel sign-panel">
-        <div class="sign-info">
-          <h2>{{ $t('member.sign.title') }}</h2>
-          <p>{{ $t('member.sign.desc') }}</p>
-          <p v-if="info.signContinuous > 0" class="sign-continuous">
-            {{ $t('member.sign.continuous', { days: info.signContinuous }) }}
-          </p>
-        </div>
-        <el-button
-          type="primary"
-          round
-          size="large"
-          :loading="signing"
-          :disabled="info.todaySigned === 1"
-          @click="handleSign"
-        >
-          {{ info.todaySigned === 1 ? $t('member.sign.signed') : $t('member.sign.button') }}
-        </el-button>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>{{ $t('member.benefits.title') }}</h2>
-        </div>
-        <div v-if="benefitList.length" class="benefit-list">
-          <span v-for="code in benefitList" :key="code" class="benefit-tag">
-            {{ benefitName(code) }}
-          </span>
-        </div>
-        <p v-else class="empty-text">{{ $t('member.benefits.empty') }}</p>
-      </section>
-
-      <!-- 套餐 -->
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <h2>{{ $t('member.packages.title') }}</h2>
-            <p class="panel-subtitle">{{ $t('member.packages.subtitle') }}</p>
-          </div>
-        </div>
-
-        <div v-if="packages.length" class="package-grid">
-          <div
-            v-for="pkg in packages"
-            :key="pkg.id"
-            class="package-card"
-            @click="handleOpen(pkg)"
-          >
-            <div class="package-name">{{ packageName(pkg) }}</div>
-            <p class="package-desc">{{ pkg.description }}</p>
-            <div class="package-price">
-              <span class="price">¥{{ pkg.price }}</span>
-              <span v-if="pkg.originalPrice" class="original">
-                {{ $t('member.packages.original') }} ¥{{ pkg.originalPrice }}
-              </span>
-            </div>
-            <div class="package-gifts">
-              <span v-if="pkg.givePoints > 0">
-                {{ $t('member.packages.givePoints', { value: pkg.givePoints }) }}
-              </span>
-              <span v-if="pkg.giveGrowth > 0">
-                {{ $t('member.packages.giveGrowth', { value: pkg.giveGrowth }) }}
-              </span>
-            </div>
-            <el-button type="primary" round class="package-btn">
-              {{ $t('member.packages.open') }}
-            </el-button>
-          </div>
-        </div>
-        <el-empty v-else :description="$t('member.packages.empty')" />
-      </section>
-
-      <!-- 明细 -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2>{{ activeTab === 'records' ? $t('member.records.title') : $t('member.orders.title') }}</h2>
-          <div class="tab-group">
-            <button
-              type="button"
-              class="tab-btn"
-              :class="{ active: activeTab === 'records' }"
-              @click="activeTab = 'records'"
-            >
-              {{ $t('member.records.title') }}
-            </button>
-            <button
-              type="button"
-              class="tab-btn"
-              :class="{ active: activeTab === 'orders' }"
-              @click="activeTab = 'orders'"
-            >
-              {{ $t('member.orders.title') }}
-            </button>
-          </div>
-        </div>
-
-        <template v-if="activeTab === 'records'">
-          <el-table :data="records" size="default" class="member-table">
-            <el-table-column
-              prop="changeValue"
-              :label="$t('member.records.change')"
-              width="110"
-            >
-              <template #default="{ row }">
-                <span :class="row.changeValue >= 0 ? 'value-plus' : 'value-minus'">
-                  {{ row.changeValue > 0 ? '+' : '' }}{{ row.changeValue }}
+      <div class="member-layout" v-loading="loading">
+        <div class="member-main">
+          <!-- 会员卡 -->
+          <section class="member-card" :class="`level-${info.level}`">
+            <div class="card-top">
+              <div class="card-identity">
+                <span class="card-emblem">
+                  <el-icon><Trophy /></el-icon>
                 </span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('member.records.remark')">
-              <template #default="{ row }">
-                <div class="record-remark">
-                  <span>{{ sourceText(row) }}</span>
-                  <span v-if="row.remark" class="record-sub">{{ row.remark }}</span>
+                <div class="card-identity-text">
+                  <span class="card-level">{{ levelName }}</span>
+                  <span class="card-user">{{ info.nickname || info.userId }}</span>
                 </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="afterValue"
-              :label="$t('member.growth')"
-              width="110"
-            />
-            <el-table-column :label="$t('member.records.time')" width="190">
-              <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
-            </el-table-column>
-            <template #empty>
-              <el-empty :description="$t('member.records.empty')" />
-            </template>
-          </el-table>
-
-          <div v-if="recordTotal > recordSize" class="pager">
-            <el-pagination
-              layout="prev, pager, next"
-              :current-page="recordPage"
-              :page-size="recordSize"
-              :total="recordTotal"
-              @current-change="handleRecordPageChange"
-            />
-          </div>
-        </template>
-
-        <template v-else>
-          <el-table :data="orders" size="default" class="member-table">
-            <el-table-column prop="orderNo" :label="$t('member.orders.orderNo')" min-width="190" />
-            <el-table-column prop="packageName" :label="$t('member.orders.package')" min-width="130" />
-            <el-table-column :label="$t('member.orders.amount')" width="110">
-              <template #default="{ row }">¥{{ row.amount }}</template>
-            </el-table-column>
-            <el-table-column :label="$t('member.orders.status')" width="110">
-              <template #default="{ row }">
-                <span class="status-tag" :class="`status-${row.status}`">
-                  {{ orderStatusText(row.status) }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('member.orders.createTime')" width="190">
-              <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
-            </el-table-column>
-            <el-table-column :label="$t('member.orders.action')" width="150">
-              <template #default="{ row }">
-                <template v-if="row.status === 0">
-                  <el-button link type="primary" size="small" @click="handlePay(row)">
-                    {{ $t('member.orders.pay') }}
-                  </el-button>
-                  <el-button link type="danger" size="small" @click="handleCancel(row)">
-                    {{ $t('member.orders.cancel') }}
-                  </el-button>
-                </template>
-                <span v-else class="empty-text">-</span>
-              </template>
-            </el-table-column>
-            <template #empty>
-              <el-empty :description="$t('member.orders.empty')" />
-            </template>
-          </el-table>
-        </template>
-      </section>
-
-      <!-- 等级体系 -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2>{{ $t('member.levels.title') }}</h2>
-        </div>
-        <div class="level-list">
-          <div
-            v-for="level in levels"
-            :key="level.id"
-            class="level-item"
-            :class="{ current: level.level === info.level }"
-          >
-            <span class="level-dot" :class="`dot-${level.level}`"></span>
-            <div class="level-text">
-              <span class="level-name">{{ levelNameOf(level.level, level.name) }}</span>
-              <span class="level-threshold">
-                {{ $t('member.levels.threshold', { value: level.growthMin }) }}
+              </div>
+              <span class="card-badge">
+                {{ info.isPaid ? $t('member.paid') : $t('member.notPaid') }}
               </span>
             </div>
-            <span v-if="level.level === info.level" class="level-current">
-              {{ $t('member.levels.current') }}
-            </span>
-          </div>
+
+            <div class="card-growth">
+              <div class="growth-main">
+                <span class="growth-label">{{ $t('member.growth') }}</span>
+                <span class="growth-value">{{ info.growth }}</span>
+              </div>
+              <span class="growth-hint">
+                <template v-if="info.nextLevelGrowth > 0">
+                  {{ $t('member.nextLevel', { value: info.nextLevelGrowth }) }}
+                </template>
+                <template v-else>{{ $t('member.maxLevel') }}</template>
+              </span>
+            </div>
+
+            <div
+              class="growth-track"
+              role="progressbar"
+              :aria-label="$t('member.growth')"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              :aria-valuenow="progress"
+            >
+              <span class="growth-fill" :style="{ width: `${progress}%` }"></span>
+            </div>
+
+            <div v-if="info.isPaid && info.expireTime" class="card-expire">
+              <el-icon><Clock /></el-icon>
+              <span>{{ $t('member.expireTime', { date: formatDate(info.expireTime) }) }}</span>
+            </div>
+          </section>
+
+          <!-- 权益数据 -->
+          <section class="stat-grid">
+            <div class="stat-card stat-card--primary">
+              <span class="stat-icon"><el-icon><Discount /></el-icon></span>
+              <div class="stat-body">
+                <span class="stat-value">{{ discountText }}</span>
+                <span class="stat-label">{{ $t('member.stats.discount') }}</span>
+              </div>
+            </div>
+            <div class="stat-card stat-card--warning">
+              <span class="stat-icon"><el-icon><StarFilled /></el-icon></span>
+              <div class="stat-body">
+                <span class="stat-value">{{ pointsRateText }}</span>
+                <span class="stat-label">{{ $t('member.stats.pointsRate') }}</span>
+              </div>
+            </div>
+            <div class="stat-card stat-card--success">
+              <span class="stat-icon"><el-icon><Calendar /></el-icon></span>
+              <div class="stat-body">
+                <span class="stat-value">
+                  {{ $t('member.signDaysValue', { value: info.signContinuous }) }}
+                </span>
+                <span class="stat-label">{{ $t('member.stats.signDays') }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 每日签到 -->
+          <section class="panel sign-panel">
+            <span class="sign-icon"><el-icon><Calendar /></el-icon></span>
+            <div class="sign-info">
+              <div class="sign-head">
+                <h2>{{ $t('member.sign.title') }}</h2>
+                <span v-if="info.signContinuous > 0" class="sign-streak">
+                  {{ $t('member.sign.continuous', { days: info.signContinuous }) }}
+                </span>
+              </div>
+              <p>{{ $t('member.sign.desc') }}</p>
+            </div>
+            <el-button
+              type="primary"
+              round
+              size="large"
+              class="sign-btn"
+              :loading="signing"
+              :disabled="info.todaySigned === 1"
+              @click="handleSign"
+            >
+              {{ info.todaySigned === 1 ? $t('member.sign.signed') : $t('member.sign.button') }}
+            </el-button>
+          </section>
+
+          <!-- 套餐 -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="panel-heading">
+                <h2>{{ $t('member.packages.title') }}</h2>
+                <p class="panel-subtitle">{{ $t('member.packages.subtitle') }}</p>
+              </div>
+            </div>
+
+            <div v-if="packages.length" class="package-grid">
+              <div
+                v-for="pkg in packages"
+                :key="pkg.id"
+                class="package-card"
+                @click="handleOpen(pkg)"
+              >
+                <div class="package-name">{{ packageName(pkg) }}</div>
+                <p class="package-desc">{{ pkg.description }}</p>
+                <div class="package-price">
+                  <span class="price">¥{{ pkg.price }}</span>
+                  <span v-if="pkg.originalPrice" class="original">
+                    {{ $t('member.packages.original') }} ¥{{ pkg.originalPrice }}
+                  </span>
+                </div>
+                <div class="package-gifts">
+                  <span v-if="pkg.givePoints > 0" class="package-gift">
+                    {{ $t('member.packages.givePoints', { value: pkg.givePoints }) }}
+                  </span>
+                  <span v-if="pkg.giveGrowth > 0" class="package-gift">
+                    {{ $t('member.packages.giveGrowth', { value: pkg.giveGrowth }) }}
+                  </span>
+                </div>
+                <el-button type="primary" round class="package-btn">
+                  {{ $t('member.packages.open') }}
+                </el-button>
+              </div>
+            </div>
+            <el-empty v-else :description="$t('member.packages.empty')" />
+          </section>
+
+          <!-- 明细 -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="panel-heading">
+                <h2>{{ activeTab === 'records' ? $t('member.records.title') : $t('member.orders.title') }}</h2>
+                <p v-if="activeTab === 'records' && recordTotal" class="panel-subtitle">
+                  {{ $t('member.records.total', { total: recordTotal }) }}
+                </p>
+              </div>
+              <div class="tab-group">
+                <button
+                  type="button"
+                  class="tab-btn"
+                  :class="{ active: activeTab === 'records' }"
+                  @click="activeTab = 'records'"
+                >
+                  {{ $t('member.records.title') }}
+                </button>
+                <button
+                  type="button"
+                  class="tab-btn"
+                  :class="{ active: activeTab === 'orders' }"
+                  @click="activeTab = 'orders'"
+                >
+                  {{ $t('member.orders.title') }}
+                </button>
+              </div>
+            </div>
+
+            <template v-if="activeTab === 'records'">
+              <el-table :data="records" size="default" class="member-table">
+                <el-table-column
+                  prop="changeValue"
+                  :label="$t('member.records.change')"
+                  width="110"
+                >
+                  <template #default="{ row }">
+                    <span :class="row.changeValue >= 0 ? 'value-plus' : 'value-minus'">
+                      {{ row.changeValue > 0 ? '+' : '' }}{{ row.changeValue }}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column :label="$t('member.records.remark')">
+                  <template #default="{ row }">
+                    <div class="record-remark">
+                      <span>{{ sourceText(row) }}</span>
+                      <span v-if="row.remark" class="record-sub">{{ row.remark }}</span>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="afterValue"
+                  :label="$t('member.growth')"
+                  width="110"
+                />
+                <el-table-column :label="$t('member.records.time')" width="190">
+                  <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+                </el-table-column>
+                <template #empty>
+                  <el-empty :description="$t('member.records.empty')" />
+                </template>
+              </el-table>
+
+              <div v-if="recordTotal > recordSize" class="pager">
+                <el-pagination
+                  layout="prev, pager, next"
+                  :current-page="recordPage"
+                  :page-size="recordSize"
+                  :total="recordTotal"
+                  @current-change="handleRecordPageChange"
+                />
+              </div>
+            </template>
+
+            <template v-else>
+              <el-table :data="orders" size="default" class="member-table">
+                <el-table-column prop="orderNo" :label="$t('member.orders.orderNo')" min-width="190" />
+                <el-table-column prop="packageName" :label="$t('member.orders.package')" min-width="130" />
+                <el-table-column :label="$t('member.orders.amount')" width="110">
+                  <template #default="{ row }">¥{{ row.amount }}</template>
+                </el-table-column>
+                <el-table-column :label="$t('member.orders.status')" width="110">
+                  <template #default="{ row }">
+                    <span class="status-tag" :class="`status-${row.status}`">
+                      {{ orderStatusText(row.status) }}
+                    </span>
+                  </template>
+                </el-table-column>
+                <el-table-column :label="$t('member.orders.createTime')" width="190">
+                  <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+                </el-table-column>
+                <el-table-column :label="$t('member.orders.action')" width="150">
+                  <template #default="{ row }">
+                    <template v-if="row.status === 0">
+                      <el-button link type="primary" size="small" @click="handlePay(row)">
+                        {{ $t('member.orders.pay') }}
+                      </el-button>
+                      <el-button link type="danger" size="small" @click="handleCancel(row)">
+                        {{ $t('member.orders.cancel') }}
+                      </el-button>
+                    </template>
+                    <span v-else class="empty-text">-</span>
+                  </template>
+                </el-table-column>
+                <template #empty>
+                  <el-empty :description="$t('member.orders.empty')" />
+                </template>
+              </el-table>
+            </template>
+          </section>
         </div>
-      </section>
+
+        <aside class="member-side">
+          <!-- 权益 -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="panel-heading">
+                <h2>{{ $t('member.benefits.title') }}</h2>
+              </div>
+            </div>
+            <div v-if="benefitList.length" class="benefit-list">
+              <span v-for="code in benefitList" :key="code" class="benefit-tag">
+                <el-icon><Check /></el-icon>
+                {{ benefitName(code) }}
+              </span>
+            </div>
+            <p v-else class="empty-text">{{ $t('member.benefits.empty') }}</p>
+          </section>
+
+          <!-- 等级体系 -->
+          <section class="panel">
+            <div class="panel-head">
+              <div class="panel-heading">
+                <h2>{{ $t('member.levels.title') }}</h2>
+              </div>
+            </div>
+            <div class="level-list">
+              <div
+                v-for="level in levels"
+                :key="level.id"
+                class="level-item"
+                :class="{ current: level.level === info.level }"
+              >
+                <span class="level-dot" :class="`dot-${level.level}`"></span>
+                <div class="level-text">
+                  <span class="level-name">{{ levelNameOf(level.level, level.name) }}</span>
+                  <span class="level-threshold">
+                    {{ $t('member.levels.threshold', { value: level.growthMin }) }}
+                  </span>
+                </div>
+                <span v-if="level.level === info.level" class="level-current">
+                  {{ $t('member.levels.current') }}
+                </span>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
     </div>
 
     <!-- 支付面板 -->
@@ -288,7 +330,16 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowLeft, Close } from '@element-plus/icons-vue'
+import {
+  ArrowLeft,
+  Calendar,
+  Check,
+  Clock,
+  Close,
+  Discount,
+  StarFilled,
+  Trophy,
+} from '@element-plus/icons-vue'
 import PayPage from '@/components/Payment/PayPage.vue'
 import {
   getMemberInfo,
@@ -569,27 +620,33 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+/* ===== 页面骨架 ===== */
 .member-page {
+  position: relative;
   min-height: 100vh;
-  padding: 28px 20px 56px;
-  background-color: var(--theme-bg-surface-2, #f5f6f8);
-  background-image:
-    radial-gradient(900px 460px at 4% -6%, var(--theme-primary-soft, rgb(64 158 255 / 12%)), transparent 60%),
-    radial-gradient(760px 420px at 100% 0%, color-mix(in srgb, var(--theme-warning, #e6a23c) 10%, transparent), transparent 58%);
+  padding: 26px 20px 72px;
+  font-family: 'SF Pro Display', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--theme-text-1);
+  background:
+    radial-gradient(900px 480px at 4% -8%, color-mix(in srgb, var(--theme-primary) 10%, transparent), transparent 62%),
+    radial-gradient(760px 420px at 100% 0%, color-mix(in srgb, var(--theme-accent-2) 9%, transparent), transparent 58%),
+    var(--theme-bg-app);
 }
 
 .member-shell {
-  width: min(1120px, 100%);
+  width: min(1180px, 100%);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
+/* ===== 顶部 ===== */
 .member-topbar {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .back-btn {
@@ -597,97 +654,207 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  border: 1px solid var(--theme-hairline, rgb(0 0 0 / 8%));
+  border: 1px solid var(--theme-hairline);
   border-radius: 999px;
-  background: var(--theme-bg-surface, #fff);
-  color: var(--theme-text-2, #4b5563);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-2);
+  font: inherit;
   font-size: 14px;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition:
+    color var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    background-color var(--theme-duration-fast) var(--theme-ease);
 }
 
 .back-btn:hover {
-  color: var(--theme-primary, #409eff);
-  border-color: var(--theme-primary, #409eff);
+  color: var(--theme-primary);
+  border-color: color-mix(in srgb, var(--theme-primary) 55%, transparent);
+}
+
+.back-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+.topbar-title {
+  flex: 1;
+  min-width: 200px;
 }
 
 .topbar-title h1 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--theme-text-1, #111827);
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .topbar-title p {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   font-size: 13px;
-  color: var(--theme-text-3, #6b7280);
+  color: var(--theme-text-2);
 }
 
+.topbar-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 26%, transparent);
+  border-radius: 999px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ===== 双栏布局 ===== */
+.member-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 316px;
+  gap: 20px;
+  align-items: start;
+}
+
+.member-main,
+.member-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* ===== 会员卡 ===== */
 .member-card {
+  --card-a: #6b7687;
+  --card-b: #39414e;
+  --card-ink: #ffffff;
+  --card-muted: rgb(255 255 255 / 78%);
+  --card-line: rgb(255 255 255 / 45%);
+  --card-glass: rgb(255 255 255 / 16%);
+  --card-track: rgb(255 255 255 / 24%);
+  --card-fill: linear-gradient(90deg, #ffffff, #ffe8a8);
+  --card-glow: rgb(255 255 255 / 18%);
+
   position: relative;
+  isolation: isolate;
   overflow: hidden;
-  padding: 26px 28px;
-  border-radius: 20px;
-  color: #fff;
-  background: linear-gradient(135deg, #7c8798, #4c5666);
-  box-shadow: 0 18px 40px -24px rgb(15 23 42 / 55%);
+  padding: 28px 30px;
+  border-radius: 24px;
+  color: var(--card-ink);
+  background:
+    radial-gradient(120% 160% at 0% 0%, var(--card-glow), transparent 46%),
+    radial-gradient(90% 120% at 100% 0%, var(--card-glow), transparent 58%),
+    linear-gradient(135deg, var(--card-a), var(--card-b));
+  box-shadow: 0 26px 50px -30px rgb(15 23 42 / 60%);
 }
 
 .member-card::after {
   content: '';
   position: absolute;
-  top: -60%;
-  right: -8%;
-  width: 320px;
-  height: 320px;
+  top: -90px;
+  right: -70px;
+  z-index: -1;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 14%);
+  background: radial-gradient(circle, rgb(255 255 255 / 26%), transparent 68%);
+  pointer-events: none;
 }
 
 .member-card.level-1 {
-  background: linear-gradient(135deg, #d9dee6, #97a2b0);
+  --card-a: #edf0f5;
+  --card-b: #b6c0cd;
+  --card-ink: #2f3a48;
+  --card-muted: rgb(47 58 72 / 72%);
+  --card-line: rgb(47 58 72 / 22%);
+  --card-glass: rgb(255 255 255 / 55%);
+  --card-track: rgb(47 58 72 / 16%);
+  --card-fill: linear-gradient(90deg, #5c6b7d, #33404f);
+  --card-glow: rgb(255 255 255 / 30%);
 }
 
 .member-card.level-2 {
-  background: linear-gradient(135deg, #f6d06b, #d09a2a);
+  --card-a: #f7d982;
+  --card-b: #d09a2a;
+  --card-ink: #42300a;
+  --card-muted: rgb(66 48 10 / 72%);
+  --card-line: rgb(66 48 10 / 22%);
+  --card-glass: rgb(255 255 255 / 42%);
+  --card-track: rgb(66 48 10 / 16%);
+  --card-fill: linear-gradient(90deg, #6b4a0c, #3f2c05);
+  --card-glow: rgb(255 255 255 / 35%);
 }
 
 .member-card.level-3 {
-  background: linear-gradient(135deg, #79d6ff, #2f7be4);
+  --card-a: #4a95f0;
+  --card-b: #1c4f9e;
+  --card-fill: linear-gradient(90deg, #ffffff, #cfe6ff);
 }
 
 .member-card.level-4 {
-  background: linear-gradient(135deg, #b07cff, #ff6b6b);
+  --card-a: #8b5cf6;
+  --card-b: #d1335f;
+  --card-fill: linear-gradient(90deg, #ffffff, #ffd9e6);
 }
 
 .card-top {
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 16px;
 }
 
+.card-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.card-emblem {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--card-line);
+  border-radius: 14px;
+  background: var(--card-glass);
+  font-size: 22px;
+  flex: none;
+}
+
+.card-identity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .card-level {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
 }
 
 .card-user {
-  margin-top: 6px;
   font-size: 13px;
-  opacity: 0.85;
+  color: var(--card-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-badge {
   padding: 5px 14px;
-  border: 1px solid rgb(255 255 255 / 55%);
+  border: 1px solid var(--card-line);
   border-radius: 999px;
-  background: rgb(255 255 255 / 18%);
+  background: var(--card-glass);
   font-size: 12px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -695,59 +862,138 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 1;
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
-  margin: 22px 0 10px;
-  font-size: 13px;
-  opacity: 0.95;
+  gap: 14px;
+  margin: 26px 0 10px;
 }
 
-.card-growth strong {
-  font-size: 20px;
+.growth-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.growth-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--card-muted);
+}
+
+.growth-value {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.growth-hint {
+  padding-bottom: 4px;
+  font-size: 12px;
+  color: var(--card-muted);
+  text-align: right;
+}
+
+.growth-track {
+  position: relative;
+  z-index: 1;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--card-track);
+}
+
+.growth-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--card-fill);
+  transition: width var(--theme-duration-slow) var(--theme-ease);
 }
 
 .card-expire {
   position: relative;
   z-index: 1;
-  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
   font-size: 12px;
-  opacity: 0.88;
+  color: var(--card-muted);
 }
 
+/* ===== 权益数据 ===== */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 14px;
 }
 
 .stat-card {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 18px;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--theme-hairline);
   border-radius: 16px;
-  border: 1px solid var(--theme-hairline, rgb(0 0 0 / 6%));
-  background: var(--theme-bg-surface, #fff);
-  box-shadow: var(--theme-shadow-sm, 0 6px 18px -12px rgb(15 23 42 / 25%));
+  background: var(--theme-bg-surface);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.stat-card--primary {
+  --stat-accent: var(--theme-primary);
+  --stat-soft: var(--theme-primary-soft);
+}
+
+.stat-card--warning {
+  --stat-accent: var(--theme-warning);
+  --stat-soft: var(--theme-warning-soft);
+}
+
+.stat-card--success {
+  --stat-accent: var(--theme-success);
+  --stat-soft: var(--theme-success-soft);
+}
+
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--stat-soft);
+  color: var(--stat-accent);
+  font-size: 20px;
+  flex: none;
+}
+
+.stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .stat-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--theme-primary, #409eff);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--stat-accent);
 }
 
 .stat-label {
   font-size: 12px;
-  color: var(--theme-text-3, #6b7280);
+  color: var(--theme-text-3);
 }
 
+/* ===== 通用面板 ===== */
 .panel {
-  padding: 22px;
-  border-radius: 18px;
-  border: 1px solid var(--theme-hairline, rgb(0 0 0 / 6%));
-  background: var(--theme-bg-surface, #fff);
-  box-shadow: var(--theme-shadow-sm, 0 6px 18px -12px rgb(15 23 42 / 25%));
+  padding: 20px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 20px;
+  background: var(--theme-bg-surface);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .panel-head {
@@ -755,126 +1001,191 @@ onBeforeUnmount(() => {
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.panel-heading {
+  min-width: 0;
 }
 
 .panel-head h2 {
   margin: 0;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--theme-text-1, #111827);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-1);
 }
 
 .panel-subtitle {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   font-size: 12px;
-  color: var(--theme-text-3, #6b7280);
+  color: var(--theme-text-3);
 }
 
+/* ===== 签到 ===== */
 .sign-panel {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
 }
 
-.sign-info h2 {
+.sign-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+  font-size: 22px;
+  flex: none;
+}
+
+.sign-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sign-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sign-head h2 {
   margin: 0;
-  font-size: 17px;
-  color: var(--theme-text-1, #111827);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.sign-streak {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .sign-info p {
-  margin: 8px 0 0;
+  margin: 6px 0 0;
   font-size: 13px;
-  color: var(--theme-text-3, #6b7280);
+  color: var(--theme-text-3);
 }
 
-.sign-continuous {
-  color: var(--theme-warning, #e6a23c) !important;
+.sign-btn {
+  flex: none;
 }
 
+/* ===== 权益标签 ===== */
 .benefit-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .benefit-tag {
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--theme-primary-soft, rgb(64 158 255 / 12%));
-  color: var(--theme-primary, #409eff);
-  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
 .empty-text {
   margin: 0;
   font-size: 13px;
-  color: var(--theme-text-3, #9ca3af);
+  color: var(--theme-text-3);
 }
 
+/* ===== 套餐 ===== */
 .package-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+  gap: 14px;
 }
 
 .package-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 20px;
-  border: 1px solid var(--theme-hairline, rgb(0 0 0 / 8%));
+  padding: 18px;
+  border: 1px solid var(--theme-hairline);
   border-radius: 16px;
-  background: var(--theme-bg-surface-2, #fafafa);
+  background: var(--theme-bg-surface-2);
   cursor: pointer;
-  transition: 0.22s ease;
+  transition:
+    transform var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease);
 }
 
 .package-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--theme-primary, #409eff);
-  box-shadow: 0 16px 30px -20px rgb(64 158 255 / 65%);
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--theme-primary) 55%, transparent);
+  box-shadow: 0 18px 34px -22px color-mix(in srgb, var(--theme-primary) 65%, transparent);
+}
+
+.package-card:focus-within {
+  border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .package-name {
   font-size: 16px;
-  font-weight: 700;
-  color: var(--theme-text-1, #111827);
+  font-weight: 800;
+  color: var(--theme-text-1);
 }
 
 .package-desc {
   min-height: 34px;
   margin: 0;
   font-size: 12px;
-  color: var(--theme-text-3, #6b7280);
+  line-height: 1.5;
+  color: var(--theme-text-3);
 }
 
 .package-price {
   display: flex;
   align-items: baseline;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .package-price .price {
   font-size: 26px;
-  font-weight: 700;
-  color: var(--theme-danger, #f56c6c);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--theme-highlight);
 }
 
 .package-price .original {
   font-size: 12px;
-  color: var(--theme-text-3, #9ca3af);
+  color: var(--theme-text-3);
   text-decoration: line-through;
 }
 
 .package-gifts {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--theme-warning, #b7791f);
+  gap: 6px;
+  min-height: 22px;
+}
+
+.package-gift {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+  font-size: 11.5px;
+  font-weight: 600;
 }
 
 .package-btn {
@@ -882,11 +1193,13 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 
+/* ===== 标签页 ===== */
 .tab-group {
   display: inline-flex;
   padding: 3px;
+  border: 1px solid var(--theme-hairline);
   border-radius: 999px;
-  background: var(--theme-bg-surface-2, #f3f4f6);
+  background: var(--theme-bg-surface-2);
 }
 
 .tab-btn {
@@ -894,33 +1207,55 @@ onBeforeUnmount(() => {
   border: none;
   border-radius: 999px;
   background: transparent;
-  color: var(--theme-text-3, #6b7280);
+  color: var(--theme-text-3);
+  font: inherit;
   font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition:
+    background-color var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease);
+}
+
+.tab-btn:hover {
+  color: var(--theme-text-1);
 }
 
 .tab-btn.active {
-  background: var(--theme-bg-surface, #fff);
-  color: var(--theme-primary, #409eff);
-  box-shadow: 0 4px 10px -6px rgb(15 23 42 / 35%);
+  background: var(--theme-bg-elevated);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-shadow-sm);
 }
 
+.tab-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+/* ===== 表格 ===== */
 .member-table {
   --el-table-bg-color: transparent;
   --el-table-tr-bg-color: transparent;
-  --el-table-header-bg-color: var(--theme-bg-surface-2, #fafafa);
+  --el-table-header-bg-color: var(--theme-bg-surface-2);
+  --el-table-border-color: var(--theme-hairline);
+  --el-table-row-hover-bg-color: var(--theme-bg-hover);
   background: transparent;
 }
 
-.value-plus {
-  color: var(--theme-success, #67c23a);
+.member-table :deep(th.el-table__cell) {
+  font-size: 12px;
   font-weight: 600;
+  color: var(--theme-text-3);
+}
+
+.value-plus {
+  color: var(--theme-success);
+  font-weight: 700;
 }
 
 .value-minus {
-  color: var(--theme-danger, #f56c6c);
-  font-weight: 600;
+  color: var(--theme-danger);
+  font-weight: 700;
 }
 
 .record-remark {
@@ -931,7 +1266,7 @@ onBeforeUnmount(() => {
 
 .record-sub {
   font-size: 12px;
-  color: var(--theme-text-3, #9ca3af);
+  color: var(--theme-text-3);
 }
 
 .status-tag {
@@ -939,26 +1274,27 @@ onBeforeUnmount(() => {
   padding: 3px 10px;
   border-radius: 999px;
   font-size: 12px;
+  font-weight: 600;
 }
 
 .status-0 {
-  background: rgb(230 162 60 / 15%);
-  color: #b7791f;
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
 }
 
 .status-1 {
-  background: rgb(103 194 58 / 15%);
-  color: #4e9a2f;
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
 }
 
 .status-2 {
-  background: rgb(148 163 184 / 18%);
-  color: #64748b;
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-3);
 }
 
 .status-3 {
-  background: rgb(245 108 108 / 15%);
-  color: #d94a4a;
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
 }
 
 .pager {
@@ -967,33 +1303,53 @@ onBeforeUnmount(() => {
   margin-top: 16px;
 }
 
+/* ===== 等级时间线 ===== */
 .level-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 12px;
+  position: relative;
+}
+
+.level-list::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 17px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--theme-hairline);
 }
 
 .level-item {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--theme-hairline, rgb(0 0 0 / 8%));
-  border-radius: 14px;
-  background: var(--theme-bg-surface-2, #fafafa);
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
 }
 
 .level-item.current {
-  border-color: var(--theme-primary, #409eff);
-  background: var(--theme-primary-soft, rgb(64 158 255 / 10%));
+  border-color: color-mix(in srgb, var(--theme-primary) 24%, transparent);
+  background: var(--theme-primary-soft);
 }
 
 .level-dot {
-  width: 12px;
-  height: 12px;
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  margin-top: 4px;
   border-radius: 50%;
   background: #9aa5b1;
+  box-shadow: 0 0 0 4px var(--theme-bg-surface);
   flex: none;
+}
+
+.level-item.current .level-dot {
+  box-shadow:
+    0 0 0 4px var(--theme-bg-surface),
+    0 0 0 6px color-mix(in srgb, var(--theme-primary) 24%, transparent);
 }
 
 .dot-1 {
@@ -1015,27 +1371,33 @@ onBeforeUnmount(() => {
 .level-text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
+  min-width: 0;
 }
 
 .level-name {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--theme-text-1, #111827);
+  font-weight: 700;
+  color: var(--theme-text-1);
 }
 
 .level-threshold {
   font-size: 12px;
-  color: var(--theme-text-3, #6b7280);
+  color: var(--theme-text-3);
 }
 
 .level-current {
   margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-primary);
   font-size: 11px;
-  color: var(--theme-primary, #409eff);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* 支付面板 */
+/* ===== 支付面板 ===== */
 .member-pay-overlay {
   position: fixed;
   inset: 0;
@@ -1044,7 +1406,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(15, 23, 42, 0.45);
+  background: var(--theme-overlay);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -1070,41 +1432,142 @@ onBeforeUnmount(() => {
   top: 14px;
   right: 14px;
   z-index: 10;
-  width: 36px;
-  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
   border: none;
   border-radius: 50%;
-  background: var(--theme-bg-hover, rgb(0 0 0 / 6%));
-  color: var(--theme-text-2, #4b5563);
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-2);
   cursor: pointer;
-  transition: 0.2s ease;
+  transition:
+    background-color var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease);
 }
 
 .member-pay-close:hover {
-  background: var(--theme-bg-active, rgb(0 0 0 / 10%));
-  color: var(--theme-text-1, #111827);
+  background: var(--theme-bg-active);
+  color: var(--theme-text-1);
 }
 
-@media (max-width: 900px) {
-  .member-page {
-    padding: 20px 12px 40px;
+.member-pay-close:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+/* ===== 动效 ===== */
+@keyframes member-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
 
-  .stat-grid,
-  .package-grid {
-    grid-template-columns: 1fr;
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.member-main > *,
+.member-side > * {
+  animation: member-rise var(--theme-duration-slow) var(--theme-ease) both;
+}
+
+.member-main > :nth-child(2) {
+  animation-delay: 0.04s;
+}
+
+.member-main > :nth-child(3) {
+  animation-delay: 0.08s;
+}
+
+.member-main > :nth-child(4) {
+  animation-delay: 0.12s;
+}
+
+.member-main > :nth-child(5) {
+  animation-delay: 0.16s;
+}
+
+.member-side > :nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 1024px) {
+  .member-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .member-side {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .member-page {
+    padding: 18px 12px 56px;
+  }
+
+  .member-topbar {
+    gap: 12px;
+  }
+
+  .topbar-level {
+    display: none;
+  }
+
+  .member-card {
+    padding: 22px;
+  }
+
+  .card-top {
+    flex-direction: column;
+  }
+
+  .card-growth {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .growth-hint {
+    padding-bottom: 0;
+    text-align: left;
   }
 
   .sign-panel {
     flex-direction: column;
     align-items: flex-start;
+    gap: 14px;
   }
 
-  .panel-head {
-    flex-direction: column;
+  .sign-btn {
+    width: 100%;
+  }
+
+  .member-side {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .member-main > *,
+  .member-side > * {
+    animation: none;
+  }
+
+  .package-card,
+  .growth-fill {
+    transition: none;
   }
 }
 </style>

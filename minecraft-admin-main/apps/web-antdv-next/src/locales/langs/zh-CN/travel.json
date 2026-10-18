@@ -56,6 +56,16 @@
       "ALIPAY": "支付宝",
       "UNIONPAY": "银联"
     },
+    "insight": {
+      "count": "流水笔数",
+      "totalAmount": "流水总金额",
+      "successAmount": "成功金额",
+      "successRate": "支付成功率",
+      "channel_title": "渠道流水分布",
+      "trend_title": "近 14 天流水趋势",
+      "trend_series": "流水金额",
+      "empty": "暂无流水数据"
+    },
     "verify": {
       "0": "验签失败",
       "1": "验签成功"

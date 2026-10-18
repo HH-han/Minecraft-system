@@ -56,6 +56,16 @@
       "ALIPAY": "Alipay",
       "UNIONPAY": "UnionPay"
     },
+    "insight": {
+      "count": "Flow Count",
+      "totalAmount": "Total Amount",
+      "successAmount": "Success Amount",
+      "successRate": "Success Rate",
+      "channel_title": "Channel Distribution",
+      "trend_title": "Flow Trend (Last 14 Days)",
+      "trend_series": "Flow Amount",
+      "empty": "No flow data"
+    },
     "verify": {
       "0": "Verify Failed",
       "1": "Verified"
