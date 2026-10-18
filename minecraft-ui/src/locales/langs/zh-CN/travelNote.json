@@ -1,0 +1,107 @@
+{
+  "travelNote": {
+    "editor": {
+      "eyebrow": "TRAVEL JOURNAL",
+      "createTitle": "发布旅游笔记",
+      "editTitle": "编辑笔记",
+      "subtitle": "把旅途写成故事，让灵感被更多人看见",
+      "backToMine": "我的笔记",
+      "badgeNew": "新建笔记",
+      "badgeEdit": "编辑中",
+      "section": {
+        "basic": "基础信息",
+        "basicDesc": "标题、摘要与出行数据",
+        "media": "封面与图集",
+        "mediaDesc": "第一张图片将作为笔记封面",
+        "content": "正文",
+        "contentDesc": "记录旅程中的所见所感",
+        "tags": "标签",
+        "tagsDesc": "最多添加 10 个标签，帮助读者发现你",
+        "relations": "关联内容",
+        "relationsDesc": "关联景点、酒店、美食或商品",
+        "routes": "行程轨迹",
+        "routesDesc": "按天记录你的路线节点"
+      },
+      "fields": {
+        "title": "标题",
+        "titlePlaceholder": "一句话介绍这次旅行",
+        "summary": "摘要",
+        "summaryPlaceholder": "将展示在卡片上，建议 50 字以内",
+        "destination": "目的地",
+        "destinationPlaceholder": "如：云南 · 大理",
+        "travelDate": "出行日期",
+        "travelDatePlaceholder": "选择日期",
+        "travelDays": "旅行天数",
+        "cost": "人均花费（元）",
+        "tagPlaceholder": "输入后回车",
+        "addTag": "添加",
+        "bizId": "ID",
+        "day": "天",
+        "poiName": "地点名称",
+        "longitude": "经度",
+        "latitude": "纬度",
+        "remark": "备注",
+        "remove": "移除"
+      },
+      "bizType": {
+        "attraction": "景点",
+        "hotel": "酒店",
+        "food": "美食",
+        "product": "商品"
+      },
+      "toolbar": {
+        "bold": "加粗",
+        "italic": "斜体",
+        "heading": "标题",
+        "quote": "引用",
+        "unorderedList": "无序列表",
+        "orderedList": "有序列表",
+        "divider": "分隔线",
+        "image": "插入图片"
+      },
+      "editorPlaceholder": "开始记录你的旅程...",
+      "mediaHint": "支持多图上传，第一张图默认作为封面，上传顺序即展示顺序",
+      "upload": {
+        "add": "上传图片",
+        "onlyImage": "只能上传图片",
+        "failed": "上传失败",
+        "imageFailed": "图片上传失败"
+      },
+      "addRelation": "添加关联",
+      "addRoute": "添加节点",
+      "tagsCount": "{count}/{max}",
+      "wordCount": "{count} 字",
+      "preview": {
+        "label": "CARD PREVIEW",
+        "titleFallback": "未命名笔记",
+        "summaryFallback": "写一段摘要，让读者一眼记住这次旅行",
+        "destinationFallback": "目的地待填写",
+        "days": "{days} 天"
+      },
+      "check": {
+        "title": "发布检查",
+        "titleLabel": "标题",
+        "coverLabel": "封面",
+        "contentLabel": "正文"
+      },
+      "actions": {
+        "submit": "提交审核",
+        "draft": "保存草稿",
+        "private": "设为私密",
+        "tip": "提交后进入审核，通过后将公开展示"
+      },
+      "messages": {
+        "loginRequired": "请先登录",
+        "noteNotFound": "笔记不存在",
+        "titleRequired": "请填写标题",
+        "contentRequired": "提交审核前请填写正文",
+        "draftSaved": "草稿已保存",
+        "privateSaved": "已设为私密",
+        "submitted": "已提交审核，审核通过后将发布",
+        "saveFailed": "保存失败",
+        "maxTags": "最多10个标签",
+        "tagExists": "标签已存在"
+      }
+    }
+  }
+}

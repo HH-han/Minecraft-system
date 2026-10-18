@@ -1,0 +1,107 @@
+{
+  "travelNote": {
+    "editor": {
+      "eyebrow": "TRAVEL JOURNAL",
+      "createTitle": "Publish a Travel Note",
+      "editTitle": "Edit Note",
+      "subtitle": "Turn your journey into a story and let more travelers find it",
+      "backToMine": "My Notes",
+      "badgeNew": "New note",
+      "badgeEdit": "Editing",
+      "section": {
+        "basic": "Basic info",
+        "basicDesc": "Title, summary and trip details",
+        "media": "Cover & gallery",
+        "mediaDesc": "The first image is used as the cover",
+        "content": "Story",
+        "contentDesc": "Capture what you saw and felt along the way",
+        "tags": "Tags",
+        "tagsDesc": "Up to 10 tags help readers discover you",
+        "relations": "Related places",
+        "relationsDesc": "Link attractions, hotels, food or products",
+        "routes": "Route",
+        "routesDesc": "Record your stops day by day"
+      },
+      "fields": {
+        "title": "Title",
+        "titlePlaceholder": "Describe this trip in one sentence",
+        "summary": "Summary",
+        "summaryPlaceholder": "Shown on the card, keep it within 50 characters",
+        "destination": "Destination",
+        "destinationPlaceholder": "e.g. Dali, Yunnan",
+        "travelDate": "Travel date",
+        "travelDatePlaceholder": "Pick a date",
+        "travelDays": "Days",
+        "cost": "Cost per person (CNY)",
+        "tagPlaceholder": "Press Enter to add",
+        "addTag": "Add",
+        "bizId": "ID",
+        "day": "Day",
+        "poiName": "Place name",
+        "longitude": "Longitude",
+        "latitude": "Latitude",
+        "remark": "Note",
+        "remove": "Remove"
+      },
+      "bizType": {
+        "attraction": "Attraction",
+        "hotel": "Hotel",
+        "food": "Food",
+        "product": "Product"
+      },
+      "toolbar": {
+        "bold": "Bold",
+        "italic": "Italic",
+        "heading": "Heading",
+        "quote": "Quote",
+        "unorderedList": "Bulleted list",
+        "orderedList": "Numbered list",
+        "divider": "Divider",
+        "image": "Insert image"
+      },
+      "editorPlaceholder": "Start writing your journey...",
+      "mediaHint": "Upload multiple images. The first one becomes the cover and the order is kept.",
+      "upload": {
+        "add": "Upload",
+        "onlyImage": "Images only",
+        "failed": "Upload failed",
+        "imageFailed": "Image upload failed"
+      },
+      "addRelation": "Add relation",
+      "addRoute": "Add stop",
+      "tagsCount": "{count}/{max}",
+      "wordCount": "{count} chars",
+      "preview": {
+        "label": "CARD PREVIEW",
+        "titleFallback": "Untitled note",
+        "summaryFallback": "Add a summary that makes readers remember this trip",
+        "destinationFallback": "Destination not set",
+        "days": "{days} days"
+      },
+      "check": {
+        "title": "Before publishing",
+        "titleLabel": "Title",
+        "coverLabel": "Cover",
+        "contentLabel": "Story"
+      },
+      "actions": {
+        "submit": "Submit for review",
+        "draft": "Save draft",
+        "private": "Keep private",
+        "tip": "Your note will be reviewed before it goes public."
+      },
+      "messages": {
+        "loginRequired": "Please sign in first",
+        "noteNotFound": "Note not found",
+        "titleRequired": "Please enter a title",
+        "contentRequired": "Please write the story before submitting",
+        "draftSaved": "Draft saved",
+        "privateSaved": "Saved as private",
+        "submitted": "Submitted for review. It will be published once approved.",
+        "saveFailed": "Save failed",
+        "maxTags": "Up to 10 tags",
+        "tagExists": "Tag already exists"
+      }
+    }
+  }
+}
