@@ -36,13 +36,7 @@
         <!-- 商品展示区 -->
         <main class="main">
             <div class="sort-options">
-                <span>排序方式：</span>
-                <select v-model="sortOption">
-                    <option value="popular">综合推荐</option>
-                    <option value="price-asc">价格从低到高</option>
-                    <option value="price-desc">价格从高到低</option>
-                    <option value="rating">评分优先</option>
-                </select>
+                <SortSelect v-model="sortOption" label="排序方式：" :options="sortOptions" />
             </div>
 
             <div class="grid" v-loading="loading">
@@ -100,11 +94,18 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getClientRecommendations } from '@/api/clientRecommendation'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
+import SortSelect from '@/components/SortSelect/index.vue'
 
 // 搜索相关
 const searchQuery = ref('')
 const activeCategory = ref('all')
 const sortOption = ref('popular')
+const sortOptions = [
+    { value: 'popular', label: '综合推荐' },
+    { value: 'price-asc', label: '价格从低到高' },
+    { value: 'price-desc', label: '价格从高到低' },
+    { value: 'rating', label: '评分优先' }
+]
 const loading = ref(false)
 
 // 分类导航（基于商品真实类型）
@@ -469,26 +470,9 @@ onMounted(loadRecommendations)
 
 /* 商品展示区 */
 .sort-options {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
     margin-bottom: 20px;
-    font-size: 14px;
-}
-
-.sort-options select {
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--theme-border);
-    margin-left: 10px;
-    background: var(--theme-bg-surface);
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.sort-options select:focus {
-    outline: none;
-    border-color: var(--theme-primary);
-    box-shadow: var(--theme-ring);
 }
 
 .grid {

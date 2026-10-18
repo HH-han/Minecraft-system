@@ -1,221 +1,311 @@
 <template>
   <div class="community-content">
-    <div class="content-header">
-      <h2>社区动态</h2>
-      <button class="create-post-btn" @click="showCreateModal = true">发布帖子</button>
-    </div>
+    <header class="content-header">
+      <div class="header-copy">
+        <span class="eyebrow">{{ t('community.feed.eyebrow') }}</span>
+        <div class="title-row">
+          <h2>{{ t('community.feed.title') }}</h2>
+          <span v-if="!loading && !error && total > 0" class="post-count">
+            {{ t('community.feed.postCount', { count: total }) }}
+          </span>
+        </div>
+        <p class="header-subtitle">{{ t('community.feed.subtitle') }}</p>
+      </div>
+      <button type="button" class="create-post-btn" @click="showCreateModal = true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        <span>{{ t('community.feed.createPost') }}</span>
+      </button>
+    </header>
 
-    <!-- 加载状态 -->
-    <div v-if="loading" class="loading-state">
-      <div class="loading-spinner"></div>
-      <p>加载中...</p>
+    <!-- 加载骨架屏（下滑追加时保留列表） -->
+    <div v-if="loading && !appending" class="skeleton-grid" aria-busy="true">
+      <div v-for="n in 4" :key="n" class="skeleton-card">
+        <div class="skeleton-author">
+          <span class="skeleton-block skeleton-avatar"></span>
+          <div class="skeleton-author-lines">
+            <span class="skeleton-block skeleton-line w-40"></span>
+            <span class="skeleton-block skeleton-line w-24"></span>
+          </div>
+        </div>
+        <span class="skeleton-block skeleton-line skeleton-title"></span>
+        <span class="skeleton-block skeleton-line"></span>
+        <span class="skeleton-block skeleton-line w-70"></span>
+      </div>
     </div>
 
     <!-- 错误状态 -->
-    <div v-else-if="error" class="error-state">
-      <p>{{ error }}</p>
-      <button @click="fetchPosts" class="retry-btn">重试</button>
+    <div v-else-if="error" class="state-card">
+      <div class="state-icon state-icon--danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v5M12 16h.01" />
+        </svg>
+      </div>
+      <h3>{{ t('community.feed.errorTitle') }}</h3>
+      <p>{{ t(error) }}</p>
+      <button type="button" class="primary-btn" @click="fetchPosts">{{ t('community.feed.retry') }}</button>
+    </div>
+
+    <!-- 空状态 -->
+    <div v-else-if="posts.length === 0" class="state-card">
+      <div class="state-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+        </svg>
+      </div>
+      <h3>{{ t('community.feed.emptyTitle') }}</h3>
+      <p>{{ t('community.feed.emptyDesc') }}</p>
+      <button type="button" class="primary-btn" @click="showCreateModal = true">
+        {{ t('community.feed.emptyAction') }}
+      </button>
     </div>
 
     <!-- 帖子列表 -->
-    <div v-else class="posts-list">
-      <div v-for="post in posts" :key="post.id" class="post-card" @click="goToDetail(post.id)">
+    <div v-else class="posts-grid">
+      <article
+        v-for="(post, index) in posts"
+        :key="post.id"
+        class="post-card theme-transition"
+        :style="{ animationDelay: `${Math.min(index, 8) * 45}ms` }"
+        :aria-label="post.title"
+        role="button"
+        tabindex="0"
+        @click="goToDetail(post.id)"
+        @keydown.enter="goToDetail(post.id)"
+        @keydown.space.prevent="goToDetail(post.id)"
+      >
+        <div v-if="post._images.length" class="post-cover">
+          <img
+            :src="post._images[0]"
+            :alt="post.title"
+            loading="lazy"
+            @error="handleCoverError"
+          />
+          <span v-if="post._images.length > 1" class="cover-badge">
+            {{ t('community.feed.imageCount', { count: post._images.length }) }}
+          </span>
+        </div>
+
         <div class="post-header">
-          <div class="post-author">
-            <div class="author-avatar">
-              <img 
-                v-if="post.avatar && post.avatar.trim() !== ''" 
-                :src="post.avatar" 
-                alt="用户头像" 
-                class="avatar-image"
-                @error="handleAvatarError($event)"
-              >
-              <div v-else class="avatar-placeholder">
-                {{ getAvatarInitial(post.username) }}
-              </div>
-            </div>
-            <div class="author-info">
-              <h3>{{ post.username || '未知用户' }}</h3>
-              <p class="post-time">{{ formatDate(post.createTime) }}</p>
+          <div class="author-avatar">
+            <img
+              v-if="post.avatar && post.avatar.trim() !== ''"
+              :src="post.avatar"
+              alt="avatar"
+              class="avatar-image"
+              @error="handleAvatarError($event)"
+            />
+            <div v-else class="avatar-placeholder">
+              {{ getAvatarInitial(post.username) }}
             </div>
           </div>
+          <div class="author-info">
+            <h3>{{ post.username || t('community.feed.unknownUser') }}</h3>
+            <p class="post-time">{{ formatDate(post.createTime) }}</p>
+          </div>
+          <svg class="card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M9 7h8v8" />
+          </svg>
         </div>
+
         <div class="post-content">
           <h4 class="post-title">{{ post.title }}</h4>
           <p class="post-text">{{ post.content }}</p>
         </div>
+
         <div class="post-footer">
           <div class="post-stats">
-            <span class="stat-item">
-              <svg t="1771774195840" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" p-id="5808" width="256" height="256">
-                <path
-                  d="M511.4368 512m-432.3328 0a432.3328 432.3328 0 1 0 864.6656 0 432.3328 432.3328 0 1 0-864.6656 0Z"
-                  fill="#FF6161" p-id="5809"></path>
-                <path
-                  d="M286.464 417.8432c-85.0432 0-160.4096 41.3696-207.104 105.0624 4.5568 182.7328 122.368 337.3056 285.952 396.032 103.2192-33.28 177.92-130.048 177.92-244.3776 0-141.7728-114.944-256.7168-256.768-256.7168z"
-                  fill="#FF7D7D" p-id="5810"></path>
-                <path
-                  d="M342.6304 721.6128h6.7584V427.9808h-6.7584c-36.096 0-65.3824 29.2864-65.3824 65.3824v162.9184c0.0512 36.0448 29.2864 65.3312 65.3824 65.3312z"
-                  fill="#FFCAC7" p-id="5811"></path>
-                <path
-                  d="M710.656 390.9632h-136.8064c10.6496-34.9696 24.9344-106.8032-25.088-137.1648-23.5008-14.1824-78.8992-24.1664-77.568 37.9904 1.28 62.1568-2.2528 130.4064-81.152 136.192v293.632h280.2688c31.744 0 59.136-22.3232 65.4848-53.4528l40.2944-196.9152c8.5504-41.472-23.0912-80.2816-65.4336-80.2816z"
-                  fill="#FFFFFF" p-id="5812"></path>
-              </svg> {{ post.likeCount || 0 }}</span>
-            <span class="stat-item">
-              <svg t="1771774227524" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" p-id="7673" width="256" height="256">
-                <path
-                  d="M170.666667 136.533333m136.533333 0l512 0q136.533333 0 136.533333 136.533334l0 307.2q0 136.533333-136.533333 136.533333l-512 0q-136.533333 0-136.533333-136.533333l0-307.2q0-136.533333 136.533333-136.533334Z"
-                  fill="#FC7300" p-id="7674"></path>
-                <path
-                  d="M170.666667 170.666667m136.533333 0l512 0q136.533333 0 136.533333 136.533333l0 307.2q0 136.533333-136.533333 136.533333l-512 0q-136.533333 0-136.533333-136.533333l0-307.2q0-136.533333 136.533333-136.533333Z"
-                  fill="#FA8511" p-id="7675"></path>
-                <path
-                  d="M170.666667 273.066667h512a136.533333 136.533333 0 0 1 136.533333 136.533333v307.2a136.533333 136.533333 0 0 1-136.533333 136.533333h-188.757334l-67.242666 67.4816L359.1168 853.333333H170.666667a136.533333 136.533333 0 0 1-136.533334-136.533333v-307.2a136.533333 136.533333 0 0 1 136.533334-136.533333z"
-                  fill="#FBC476" p-id="7676"></path>
-                <path
-                  d="M170.666667 307.2h512a136.533333 136.533333 0 0 1 136.533333 136.533333v307.2a136.533333 136.533333 0 0 1-136.533333 136.533334h-188.757334l-67.242666 67.4816L359.1168 887.466667H170.666667a136.533333 136.533333 0 0 1-136.533334-136.533334v-307.2a136.533333 136.533333 0 0 1 136.533334-136.533333z"
-                  fill="#FAB85F" p-id="7677"></path>
-                <path
-                  d="M204.8 477.866667m34.133333 0l375.466667 0q34.133333 0 34.133333 34.133333l0 0q0 34.133333-34.133333 34.133333l-375.466667 0q-34.133333 0-34.133333-34.133333l0 0q0-34.133333 34.133333-34.133333Z"
-                  fill="#FFFFFF" p-id="7678"></path>
-                <path
-                  d="M204.8 648.533333m34.133333 0l273.066667 0q34.133333 0 34.133333 34.133334l0 0q0 34.133333-34.133333 34.133333l-273.066667 0q-34.133333 0-34.133333-34.133333l0 0q0-34.133333 34.133333-34.133334Z"
-                  fill="#FFFFFF" p-id="7679"></path>
-              </svg> {{ post.commentCount || 0 }}</span>
-            <span class="stat-item">
-              <svg t="1771774293176" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" p-id="14939" width="256" height="256">
-                <path
-                  d="M819.2 563.2c-113.1 0-204.8 91.7-204.8 204.8 0 113.1 91.7 204.8 204.8 204.8 24.2 0 47-4.9 68.6-12.6l48.8 48.8c20 20 52.4 20 72.4 0 20-20 20-52.4 0-72.4l-35.4-35.4c31-35.9 50.4-82.1 50.4-133.2 0-113.1-91.7-204.8-204.8-204.8z"
-                  fill="#00A2FF" p-id="14940"></path>
-                <path
-                  d="M921.6 0H102.4C46.1 0 0 46.1 0 102.4v819.2C0 977.9 46.1 1024 102.4 1024h547.1C566.7 969 512 874.9 512 768c0-169.7 137.5-307.2 307.2-307.2 78.8 0 150.4 29.9 204.8 78.7V102.4C1024 46.1 977.9 0 921.6 0z m-512 716.8H204.8c-28.2 0-51.2-23-51.2-51.2 0-28.2 23-51.2 51.2-51.2h204.8c28.2 0 51.2 23 51.2 51.2 0 28.2-23 51.2-51.2 51.2zM512 512H204.8c-28.2 0-51.2-23-51.2-51.2 0-28.2 23-51.2 51.2-51.2H512c28.2 0 51.2 23 51.2 51.2 0 28.2-23 51.2-51.2 51.2z m307.2-204.8H204.8c-28.2 0-51.2-23-51.2-51.2s23-51.2 51.2-51.2h614.4c28.2 0 51.2 23 51.2 51.2s-23 51.2-51.2 51.2z"
-                  fill="#00A2FF" p-id="14941"></path>
-              </svg> {{ post.viewCount || 0 }}</span>
+            <span class="stat-item" :title="t('community.feed.likes')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+              {{ post.likeCount || 0 }}
+            </span>
+            <span class="stat-item" :title="t('community.feed.comments')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              {{ post.commentCount || 0 }}
+            </span>
+            <span class="stat-item" :title="t('community.feed.collects')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+              </svg>
+              {{ post.collectCount || 0 }}
+            </span>
           </div>
-          <div class="post-tags">
+          <div v-if="post.tags && post.tags.length" class="post-tags">
             <span v-for="tag in post.tags" :key="tag" class="tag">{{ tag }}</span>
           </div>
         </div>
-      </div>
-
-      <!-- 空状态 -->
-      <div v-if="posts.length === 0" class="empty-state">
-        <p>暂无帖子</p>
-      </div>
+      </article>
     </div>
 
     <!-- 分页 -->
-    <div v-if="!loading && !error && posts.length > 0" class="pagination">
-      <button class="page-btn" :disabled="currentPage === 1" @click="changePage(currentPage - 1)">
-        上一页
-      </button>
-      <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
-      <button class="page-btn" :disabled="currentPage >= totalPages" @click="changePage(currentPage + 1)">
-        下一页
-      </button>
-    </div>
+    <Paging
+      v-if="totalPages > 0"
+      :total-pages="totalPages"
+      :current-page="currentPage"
+      :loading="loading"
+      @update:current-page="handlePageChange"
+      @load-more="handleLoadMore"
+    />
 
     <!-- 创建帖子模态框 -->
-    <div v-if="showCreateModal" class="modal-overlay" @click.self="closeModal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>发布帖子</h3>
-          <button class="close-btn" @click="closeModal">×</button>
-        </div>
-        <div class="modal-body">
-          <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-              <label for="title">标题</label>
-              <input type="text" id="title" v-model="newPost.title" required placeholder="请输入标题">
+    <transition name="modal">
+      <div v-if="showCreateModal" class="modal-overlay" @click.self="closeModal">
+        <div class="modal-content" role="dialog" aria-modal="true" :aria-label="t('community.create.title')">
+          <div class="modal-header">
+            <div class="modal-title-group">
+              <span class="eyebrow">{{ t('community.create.eyebrow') }}</span>
+              <h3>{{ t('community.create.title') }}</h3>
             </div>
-            <div class="form-group">
-              <label for="content">内容</label>
-              <textarea id="content" v-model="newPost.content" required placeholder="请输入内容" rows="5"></textarea>
-            </div>
-            
-            <!-- 图片上传区域 -->
-            <div class="form-group">
-              <label>图片（最多9张，支持 JPG、PNG、GIF、WebP，每张不超过2MB）</label>
-              <div class="image-upload-area">
-                <!-- 图片预览列表 -->
-                <div v-if="selectedImages.length > 0" class="image-preview-list">
-                  <div v-for="(img, index) in selectedImages" :key="index" class="image-preview-item">
-                    <img :src="img.preview" :alt="`图片${index + 1}`">
-                    <div v-if="img.uploading" class="upload-progress">
-                      <div class="progress-bar" :style="{ width: img.progress + '%' }"></div>
-                    </div>
-                    <div v-if="img.error" class="upload-error">
-                      <span>上传失败</span>
-                    </div>
-                    <button type="button" class="remove-image-btn" @click="removeImage(index)" :disabled="img.uploading">×</button>
-                  </div>
-                </div>
-                
-                <!-- 上传按钮 -->
-                <div v-if="selectedImages.length < 9" class="upload-trigger" @click="triggerFileInput">
-                  <input 
-                    type="file" 
-                    ref="fileInputRef" 
-                    @change="handleFileSelect" 
-                    accept="image/jpeg,image/png,image/gif,image/webp" 
-                    multiple 
-                    class="file-input-hidden"
-                  >
-                  <div class="upload-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                      <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                  </div>
-                  <span>点击上传图片</span>
-                </div>
+            <button type="button" class="close-btn" :aria-label="t('community.create.cancel')" @click="closeModal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form @submit.prevent="handleSubmit">
+              <div class="form-group">
+                <label for="title">{{ t('community.create.postTitle') }}</label>
+                <input
+                  id="title"
+                  v-model="newPost.title"
+                  type="text"
+                  required
+                  :placeholder="t('community.create.titlePlaceholder')"
+                />
               </div>
-              
-              <!-- 错误提示 -->
-              <div v-if="uploadError" class="upload-error-message">{{ uploadError }}</div>
-            </div>
-            
-            <div class="form-group">
-              <label for="tags">标签（用逗号分隔）</label>
-              <input type="text" id="tags" v-model="newPost.tags" placeholder="例如：旅行,摄影,美食">
-            </div>
-            <div class="form-actions">
-              <button type="button" class="cancel-btn" @click="closeModal">取消</button>
-              <button type="submit" class="submit-btn" :disabled="isSubmitting || selectedImages.some(img => img.uploading)">
-                {{ isSubmitting ? '发布中...' : '发布' }}
-              </button>
-            </div>
-          </form>
+
+              <div class="form-group">
+                <label for="content">{{ t('community.create.content') }}</label>
+                <textarea
+                  id="content"
+                  v-model="newPost.content"
+                  required
+                  rows="5"
+                  :placeholder="t('community.create.contentPlaceholder')"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <div class="label-row">
+                  <label>{{ t('community.create.images') }}</label>
+                  <span class="field-counter">{{ selectedImages.length }}/9</span>
+                </div>
+                <p class="field-hint">{{ t('community.create.imagesHint') }}</p>
+
+                <div class="image-upload-area">
+                  <div v-if="selectedImages.length > 0" class="image-preview-list">
+                    <div v-for="(img, index) in selectedImages" :key="index" class="image-preview-item">
+                      <img :src="img.preview" :alt="`${t('community.create.images')} ${index + 1}`" />
+                      <div v-if="img.uploading" class="upload-progress">
+                        <div class="progress-bar" :style="{ width: img.progress + '%' }"></div>
+                      </div>
+                      <div v-if="img.error" class="upload-error">
+                        <span>{{ t('community.create.uploadFailed') }}</span>
+                      </div>
+                      <button
+                        type="button"
+                        class="remove-image-btn"
+                        :disabled="img.uploading"
+                        :aria-label="t('community.create.removeImage')"
+                        @click="removeImage(index)"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    v-if="selectedImages.length < 9"
+                    type="button"
+                    class="upload-trigger"
+                    @click="triggerFileInput"
+                  >
+                    <input
+                      ref="fileInputRef"
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      multiple
+                      class="file-input-hidden"
+                      @change="handleFileSelect"
+                    />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="4" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                    <span>{{ t('community.create.upload') }}</span>
+                  </button>
+                </div>
+
+                <div v-if="uploadError" class="upload-error-message">{{ uploadError }}</div>
+              </div>
+
+              <div class="form-group">
+                <label for="tags">{{ t('community.create.tags') }}</label>
+                <input
+                  id="tags"
+                  v-model="newPost.tags"
+                  type="text"
+                  :placeholder="t('community.create.tagsPlaceholder')"
+                />
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="cancel-btn" @click="closeModal">
+                  {{ t('community.create.cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  class="submit-btn"
+                  :disabled="isSubmitting || selectedImages.some(img => img.uploading)"
+                >
+                  {{ isSubmitting ? t('community.create.submitting') : t('community.create.submit') }}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
 import {
   getPostList,
   createPost as createPostApi
 } from '@/api/community';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
+import Paging from '@/components/paging/index.vue';
 
 const router = useRouter();
+const { t, locale } = useI18n();
 
 // 状态管理
 const posts = ref([]);
 const loading = ref(false);
+// 下滑追加加载中：列表保持挂载，仅底部提示加载，避免滚动位置被重置
+const appending = ref(false);
 const error = ref(null);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
-const totalPages = ref(1);
+const totalPages = ref(0);
 
 // 创建帖子相关
 const showCreateModal = ref(false);
@@ -236,41 +326,65 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024;
 // 允许的文件类型
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
-// 获取帖子列表
-const fetchPosts = async () => {
+// 解析图片字符串，兼容 JSON 数组与逗号分隔两种格式
+const parseImages = (imagesStr) => {
+  if (!imagesStr) return [];
+  try {
+    const images = JSON.parse(imagesStr);
+    if (Array.isArray(images)) {
+      return images.map(img => img.replace(/`/g, '').trim()).filter(Boolean);
+    }
+  } catch {
+    return imagesStr.split(',').map(img => img.trim()).filter(Boolean);
+  }
+  return [];
+};
+
+// 获取帖子列表（append=true 时在已有数据之后追加，不重置）
+const fetchPosts = async (page = currentPage.value, { append = false } = {}) => {
+  appending.value = append;
   loading.value = true;
   error.value = null;
 
   try {
     const response = await getPostList({
-      current: currentPage.value,
+      current: page,
       size: pageSize.value
     });
 
     if (response.code === 200 && response.data) {
-      posts.value = response.data.records || [];
-      total.value = response.data.total || 0;
+      const records = (response.data.records || []).map(item => ({
+        ...item,
+        _images: parseImages(item.images)
+      }));
+      posts.value = append ? [...posts.value, ...records] : records;
+      total.value = Number(response.data.total) || 0;
       totalPages.value = Math.ceil(total.value / pageSize.value);
     } else {
-      error.value = '获取帖子失败';
+      error.value = 'community.feed.errorFetch';
     }
   } catch (err) {
-    error.value = '网络错误，请稍后重试';
+    error.value = 'community.feed.errorNetwork';
     console.error('获取帖子失败:', err);
   } finally {
     loading.value = false;
+    appending.value = false;
   }
 };
 
 // 数据变更后自动刷新
 useAutoRefresh(fetchPosts);
 
-// 切换页码
-const changePage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-    fetchPosts();
-  }
+// 分页切换（点击页码/上下页：跳页并替换数据）
+const handlePageChange = (page) => {
+  currentPage.value = page;
+  fetchPosts(page);
+};
+
+// 下滑继续加载（在已有数据之后追加新数据）
+const handleLoadMore = (page) => {
+  currentPage.value = page;
+  fetchPosts(page, { append: true });
 };
 
 // 跳转到详情页
@@ -285,16 +399,14 @@ const triggerFileInput = () => {
 
 // 验证文件
 const validateFile = (file) => {
-  // 检查文件类型
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return '仅支持 JPG、PNG、GIF、WebP 格式的图片';
+    return t('community.create.invalidType');
   }
-  
-  // 检查文件大小
+
   if (file.size > MAX_FILE_SIZE) {
-    return '图片大小不能超过 2MB';
+    return t('community.create.tooLarge');
   }
-  
+
   return null;
 };
 
@@ -302,41 +414,40 @@ const validateFile = (file) => {
 const handleFileSelect = (event) => {
   const files = event.target.files;
   if (!files || files.length === 0) return;
-  
+
   uploadError.value = '';
-  
+
   // 检查是否超过数量限制
   const remainingSlots = 9 - selectedImages.value.length;
   if (files.length > remainingSlots) {
-    uploadError.value = `最多只能选择 ${remainingSlots} 张图片`;
-    event.target.value = ''; // 清空输入
+    uploadError.value = t('community.create.tooMany', { count: remainingSlots });
+    event.target.value = '';
     return;
   }
-  
+
   // 处理每个文件
   Array.from(files).forEach(file => {
-    const error = validateFile(file);
-    if (error) {
-      uploadError.value = error;
+    const fileError = validateFile(file);
+    if (fileError) {
+      uploadError.value = fileError;
       return;
     }
-    
+
     // 创建预览
     const reader = new FileReader();
     reader.onload = (e) => {
-      const imageData = {
-        file: file,
+      selectedImages.value.push({
+        file,
         preview: e.target.result,
         uploading: false,
         progress: 0,
         error: false,
         base64: e.target.result
-      };
-      selectedImages.value.push(imageData);
+      });
     };
     reader.readAsDataURL(file);
   });
-  
+
   // 清空输入，允许重新选择相同文件
   event.target.value = '';
 };
@@ -349,7 +460,6 @@ const removeImage = (index) => {
 // 关闭模态框
 const closeModal = () => {
   showCreateModal.value = false;
-  // 重置表单
   newPost.value = {
     title: '',
     content: '',
@@ -362,45 +472,42 @@ const closeModal = () => {
 // 提交表单
 const handleSubmit = async () => {
   if (!newPost.value.title || !newPost.value.content) {
-    ElMessage.warning('请填写标题和内容');
+    ElMessage.warning(t('community.create.needTitleContent'));
     return;
   }
-  
-  // 检查是否有上传失败的图片
+
   if (selectedImages.value.some(img => img.error)) {
-    ElMessage.warning('请移除上传失败的图片后重试');
+    ElMessage.warning(t('community.create.removeFailedImages'));
     return;
   }
-  
+
   isSubmitting.value = true;
-  
+
   try {
-    // 将图片转换为 Base64 数组
     const images = selectedImages.value
       .filter(img => !img.error)
       .map(img => img.base64);
-    
+
     const postData = {
       title: newPost.value.title,
       content: newPost.value.content,
       tags: newPost.value.tags,
       images: images.length > 0 ? JSON.stringify(images) : null
     };
-    
+
     const response = await createPostApi(postData);
-    
+
     if (response.code === 200) {
-      ElMessage.success('发布成功');
+      ElMessage.success(t('community.create.success'));
       closeModal();
-      // 重新加载帖子列表
       currentPage.value = 1;
       fetchPosts();
     } else {
-      ElMessage.error(response.message || '发布失败');
+      ElMessage.error(response.message || t('community.create.failed'));
     }
   } catch (err) {
     console.error('发布帖子失败:', err);
-    ElMessage.error('网络错误，请稍后重试');
+    ElMessage.error(t('community.feed.errorNetwork'));
   } finally {
     isSubmitting.value = false;
   }
@@ -410,9 +517,10 @@ const handleSubmit = async () => {
 const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
-  return date.toLocaleString('zh-CN', {
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString(locale.value, {
     year: 'numeric',
-    month: '2-digit',
+    month: 'short',
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit'
@@ -421,7 +529,7 @@ const formatDate = (dateString) => {
 
 // 获取头像首字母
 const getAvatarInitial = (name) => {
-  if (!name || name === '未知用户') return '?';
+  if (!name) return '?';
   return name.charAt(0).toUpperCase();
 };
 
@@ -429,7 +537,6 @@ const getAvatarInitial = (name) => {
 const handleAvatarError = (event) => {
   const img = event.target;
   const parent = img.parentElement;
-  // 隐藏图片，显示占位符
   img.style.display = 'none';
   if (parent && !parent.querySelector('.avatar-placeholder')) {
     const placeholder = document.createElement('div');
@@ -437,6 +544,12 @@ const handleAvatarError = (event) => {
     placeholder.textContent = '?';
     parent.appendChild(placeholder);
   }
+};
+
+// 封面加载失败处理
+const handleCoverError = (event) => {
+  event.target.style.display = 'none';
+  event.target.parentElement?.classList.add('is-broken');
 };
 
 // 初始化加载
@@ -447,134 +560,225 @@ onMounted(() => {
 
 <style scoped>
 .community-content {
-  padding: 20px;
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
-}
-
-.content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.content-header h2 {
-  font-size: 24px;
-  font-weight: 600;
+  padding: 32px 24px 64px;
   color: var(--theme-text-1);
 }
 
-.create-post-btn {
-  padding: 10px 20px;
-  background-color: var(--theme-primary);
-  color: var(--theme-primary-text);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+/* ---------- 页头 ---------- */
+.content-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--theme-primary);
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.title-row h2 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--theme-text-1);
+}
+
+.post-count {
+  padding: 4px 12px;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header-subtitle {
+  margin: 8px 0 0;
   font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.3s;
+  color: var(--theme-text-3);
+}
+
+.create-post-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 11px 22px;
+  border: none;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -14px color-mix(in srgb, var(--theme-primary) 80%, transparent);
+  transition:
+    transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease),
+    filter var(--theme-duration) var(--theme-ease);
+}
+
+.create-post-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .create-post-btn:hover {
-  background-color: var(--theme-primary-hover);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 16px 30px -16px color-mix(in srgb, var(--theme-primary) 90%, transparent);
 }
 
-/* 加载状态 */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 0;
+.create-post-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--theme-bg-surface-2);
-  border-top: 4px solid var(--theme-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* 错误状态 */
-.error-state {
-  text-align: center;
-  padding: 40px 0;
-  color: var(--theme-danger);
-}
-
-.retry-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: var(--theme-primary);
-  color: var(--theme-primary-text);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* 帖子列表 */
-.posts-list {
+/* ---------- 帖子网格 ---------- */
+.posts-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
+  align-items: stretch;
 }
 
 .post-card {
-  background-color: var(--theme-bg-surface);
-  border-radius: 8px;
-  box-shadow: var(--theme-shadow-sm);
+  position: relative;
+  display: flex;
+  flex-direction: column;
   padding: 20px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  animation: card-in 0.5s var(--theme-ease) both;
+  transition:
+    transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    background-color var(--theme-duration) var(--theme-ease);
+}
+
+.post-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 90% at 100% 0%, var(--theme-primary-soft), transparent 58%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--theme-duration) var(--theme-ease);
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--theme-primary) 38%, transparent);
   box-shadow: var(--theme-shadow-md);
 }
 
-.post-header {
-  margin-bottom: 15px;
+.post-card:hover::before {
+  opacity: 1;
 }
 
-.post-author {
+.post-card:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 封面 */
+.post-cover {
+  position: relative;
+  margin: -20px -20px 18px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--theme-bg-surface-2);
+}
+
+.post-cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform var(--theme-duration-slow) var(--theme-ease);
+}
+
+.post-card:hover .post-cover img {
+  transform: scale(1.04);
+}
+
+.cover-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 4px 10px;
+  border-radius: var(--theme-radius-pill);
+  background: color-mix(in srgb, #000 46%, transparent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  backdrop-filter: blur(6px);
+}
+
+/* 作者行 */
+.post-header {
   display: flex;
   align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .author-avatar {
-  width: 40px;
-  height: 40px;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background-color: var(--theme-primary);
-  color: var(--theme-primary-text);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  margin-right: 12px;
   overflow: hidden;
+  background: var(--theme-primary);
+  color: var(--theme-primary-text);
+  font-weight: 600;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary) 14%, transparent);
 }
 
 .avatar-image {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
 .avatar-placeholder {
@@ -586,14 +790,22 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 600;
   color: var(--theme-primary-text);
-  background-color: var(--theme-primary);
+  background: var(--theme-primary);
+}
+
+.author-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .author-info h3 {
-  margin: 0 0 4px 0;
-  font-size: 16px;
+  margin: 0 0 3px;
+  font-size: 14.5px;
   font-weight: 600;
   color: var(--theme-text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .post-time {
@@ -602,145 +814,322 @@ onMounted(() => {
   color: var(--theme-text-3);
 }
 
+.card-arrow {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--theme-text-3);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition:
+    opacity var(--theme-duration) var(--theme-ease),
+    transform var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease);
+}
+
+.post-card:hover .card-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+  color: var(--theme-primary);
+}
+
+/* 正文 */
 .post-content {
-  margin-bottom: 15px;
+  flex: 1;
+  margin-bottom: 18px;
 }
 
 .post-title {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 650;
+  line-height: 1.45;
   color: var(--theme-text-1);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .post-text {
   margin: 0;
   font-size: 14px;
+  line-height: 1.7;
   color: var(--theme-text-2);
-  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
 }
 
+/* 底部 */
 .post-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--theme-hairline);
 }
 
 .post-stats {
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: 16px;
 }
 
 .stat-item {
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
   color: var(--theme-text-3);
 }
 
 .stat-item svg {
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  margin-right: 4px;
+  width: 15px;
+  height: 15px;
 }
 
 .post-tags {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .tag {
-  padding: 4px 12px;
-  font-size: 12px;
-  background-color: var(--theme-bg-surface-2);
-  border-radius: 12px;
-  color: var(--theme-text-2);
+  padding: 3px 10px;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* 空状态 */
-.empty-state {
+/* ---------- 骨架屏 ---------- */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.skeleton-card {
+  padding: 20px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
+}
+
+.skeleton-block {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--theme-bg-surface-2) 25%,
+    var(--theme-bg-hover) 37%,
+    var(--theme-bg-surface-2) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.skeleton-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.skeleton-author-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+
+.skeleton-line {
+  height: 11px;
+  margin-bottom: 10px;
+}
+
+.skeleton-title {
+  height: 18px;
+  margin-bottom: 14px;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+.w-40 {
+  width: 40%;
+}
+
+.w-24 {
+  width: 24%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* ---------- 状态卡片 ---------- */
+.state-card {
+  padding: 64px 24px;
   text-align: center;
-  padding: 60px 0;
+  border: 1px dashed var(--theme-border);
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
+}
+
+.state-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+}
+
+.state-icon--danger {
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
+}
+
+.state-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.state-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--theme-text-1);
+}
+
+.state-card p {
+  margin: 0 0 22px;
+  font-size: 14px;
   color: var(--theme-text-3);
 }
 
-/* 分页 */
-.pagination {
-  display: flex;
-  justify-content: center;
+.primary-btn {
+  display: inline-flex;
   align-items: center;
-  margin-top: 30px;
-  gap: 10px;
-}
-
-.page-btn {
-  padding: 8px 16px;
-  background-color: var(--theme-bg-surface-2);
+  justify-content: center;
+  padding: 10px 24px;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.page-btn:hover:not(:disabled) {
-  background-color: var(--theme-bg-hover);
-}
-
-.page-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.page-info {
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
   font-size: 14px;
-  color: var(--theme-text-2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter var(--theme-duration) var(--theme-ease);
 }
 
-/* 模态框 */
+.primary-btn:hover {
+  filter: brightness(1.06);
+}
+
+.primary-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+/* ---------- 模态框 ---------- */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--theme-overlay);
+  inset: 0;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  padding: 24px;
+  background: color-mix(in srgb, var(--theme-overlay) 88%, transparent);
+  backdrop-filter: blur(6px);
 }
 
 .modal-content {
-  background-color: var(--theme-bg-elevated);
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 620px;
+  max-height: calc(100vh - 48px);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-xl);
+  background: var(--theme-bg-elevated);
   box-shadow: var(--theme-shadow-lg);
+  overflow: hidden;
 }
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 16px;
   border-bottom: 1px solid var(--theme-hairline);
 }
 
-.modal-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+.modal-title-group h3 {
+  margin: 4px 0 0;
+  font-size: 19px;
+  font-weight: 650;
+  color: var(--theme-text-1);
 }
 
 .close-btn {
-  background: none;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
-  font-size: 24px;
-  cursor: pointer;
+  border-radius: 50%;
+  background: var(--theme-bg-surface-2);
   color: var(--theme-text-3);
+  cursor: pointer;
+  transition:
+    background-color var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease),
+    transform var(--theme-duration-fast) var(--theme-ease);
+}
+
+.close-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.close-btn:hover {
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
+  transform: rotate(90deg);
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 22px 24px 24px;
+  overflow-y: auto;
 }
 
 .form-group {
@@ -750,62 +1139,116 @@ onMounted(() => {
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
   color: var(--theme-text-1);
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label-row label {
+  margin-bottom: 0;
+}
+
+.field-counter {
+  font-size: 12px;
+  color: var(--theme-text-3);
+}
+
+.field-hint {
+  margin: 6px 0 10px;
+  font-size: 12px;
+  color: var(--theme-text-3);
+  line-height: 1.5;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid var(--theme-border);
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 11px 14px;
   box-sizing: border-box;
+  border: 1.5px solid var(--theme-border);
+  border-radius: var(--theme-radius-md);
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-1);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    background-color var(--theme-duration-fast) var(--theme-ease),
+    box-shadow var(--theme-duration-fast) var(--theme-ease);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--theme-text-3);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--theme-primary);
+  background: var(--theme-bg-surface);
+  box-shadow: var(--theme-ring);
 }
 
 .form-group textarea {
   resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 30px;
+  margin-top: 26px;
+}
+
+.cancel-btn,
+.submit-btn {
+  padding: 10px 22px;
+  border-radius: var(--theme-radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--theme-duration-fast) var(--theme-ease),
+    filter var(--theme-duration-fast) var(--theme-ease);
 }
 
 .cancel-btn {
-  padding: 10px 20px;
-  background-color: var(--theme-bg-surface-2);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+  border: 1px solid var(--theme-border);
+  background: transparent;
+  color: var(--theme-text-2);
+}
+
+.cancel-btn:hover {
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-1);
 }
 
 .submit-btn {
-  padding: 10px 20px;
-  background-color: var(--theme-primary);
-  color: var(--theme-primary-text);
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  font-weight: 600;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: var(--theme-primary-hover);
+  filter: brightness(1.06);
 }
 
 .submit-btn:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 
-/* 图片上传区域 */
+/* ---------- 图片上传 ---------- */
 .image-upload-area {
   display: flex;
   flex-wrap: wrap;
@@ -813,18 +1256,17 @@ onMounted(() => {
 }
 
 .image-preview-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: contents;
 }
 
 .image-preview-item {
   position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
+  width: 92px;
+  height: 92px;
+  border-radius: var(--theme-radius-md);
   overflow: hidden;
   border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface-2);
 }
 
 .image-preview-item img {
@@ -835,9 +1277,9 @@ onMounted(() => {
 
 .upload-progress {
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   height: 4px;
   background: rgba(0, 0, 0, 0.3);
 }
@@ -850,39 +1292,39 @@ onMounted(() => {
 
 .upload-error {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: color-mix(in srgb, var(--theme-danger) 55%, transparent);
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: color-mix(in srgb, var(--theme-danger) 55%, transparent);
   color: #fff;
   font-size: 12px;
 }
 
 .remove-image-btn {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  cursor: pointer;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  line-height: 1;
-  transition: background 0.2s;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  cursor: pointer;
+  transition: background var(--theme-duration-fast) var(--theme-ease);
+}
+
+.remove-image-btn svg {
+  width: 12px;
+  height: 12px;
 }
 
 .remove-image-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--theme-danger) 70%, transparent);
+  background: var(--theme-danger);
 }
 
 .remove-image-btn:disabled {
@@ -891,65 +1333,117 @@ onMounted(() => {
 }
 
 .upload-trigger {
-  width: 80px;
-  height: 80px;
-  border: 2px dashed var(--theme-border-strong);
-  border-radius: 8px;
+  width: 92px;
+  height: 92px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
+  gap: 6px;
+  border: 1.5px dashed var(--theme-border-strong);
+  border-radius: var(--theme-radius-md);
+  background: transparent;
   color: var(--theme-text-3);
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease),
+    background-color var(--theme-duration-fast) var(--theme-ease);
+}
+
+.upload-trigger svg {
+  width: 22px;
+  height: 22px;
 }
 
 .upload-trigger:hover {
   border-color: var(--theme-primary);
   color: var(--theme-primary);
+  background: var(--theme-primary-soft);
 }
 
 .file-input-hidden {
   display: none;
 }
 
-.upload-icon svg {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 4px;
-}
-
-.upload-trigger span {
-  font-size: 11px;
-}
-
 .upload-error-message {
-  color: var(--theme-danger);
+  margin-top: 10px;
   font-size: 12px;
-  margin-top: 8px;
+  color: var(--theme-danger);
 }
 
-/* 响应式设计 */
+/* 模态框过渡 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.22s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-content {
+  animation: modal-in 0.3s var(--theme-ease);
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- 响应式 ---------- */
 @media (max-width: 768px) {
   .community-content {
-    padding: 10px;
+    padding: 20px 16px 48px;
   }
 
-  .content-header h2 {
-    font-size: 20px;
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 
-  .post-card {
-    padding: 15px;
+  .create-post-btn {
+    width: 100%;
+    justify-content: center;
   }
 
-  .post-title {
-    font-size: 16px;
+  .posts-grid,
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-overlay {
+    padding: 12px;
+    align-items: flex-end;
   }
 
   .modal-content {
-    width: 95%;
-    margin: 20px;
+    max-height: calc(100vh - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-card,
+  .skeleton-block,
+  .modal-enter-active .modal-content {
+    animation: none;
+  }
+
+  .post-card,
+  .create-post-btn,
+  .close-btn,
+  .post-cover img {
+    transition: none;
   }
 }
 </style>

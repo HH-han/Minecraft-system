@@ -1,0 +1,45 @@
+{
+  "accountSettings": {
+    "title": "Account Settings",
+    "subtitle": "Manage your account profile and notification preferences",
+    "avatarUpload": "Upload photo",
+    "avatarTip": "JPG / PNG supported, a 1:1 square image is recommended",
+    "fields": {
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "email": "Email address",
+      "emailPlaceholder": "Enter email",
+      "currentPassword": "Current password",
+      "currentPasswordPlaceholder": "Required when changing password",
+      "newPassword": "New password",
+      "newPasswordPlaceholder": "Leave blank to keep current password"
+    },
+    "notifications": {
+      "title": "Notification preferences",
+      "email": "Email notifications",
+      "push": "Push notifications",
+      "sms": "SMS notifications"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving..."
+    },
+    "messages": {
+      "loadFailed": "Failed to load user information",
+      "usernameRequired": "Please enter a username",
+      "emailRequired": "Please enter an email address",
+      "emailInvalid": "Please enter a valid email address",
+      "currentPasswordRequired": "Please enter your current password",
+      "noChanges": "There is nothing to save",
+      "saveSuccess": "Saved successfully",
+      "saveFailed": "Failed to save",
+      "passwordSuccess": "Password updated successfully",
+      "passwordFailed": "Failed to update password",
+      "avatarType": "Please select a JPG / PNG image",
+      "avatarSize": "Image size cannot exceed 2MB",
+      "avatarSuccess": "Avatar uploaded successfully",
+      "avatarFailed": "Failed to upload avatar"
+    }
+  }
+}

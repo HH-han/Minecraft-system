@@ -1,0 +1,45 @@
+{
+  "accountSettings": {
+    "title": "账户设置",
+    "subtitle": "管理你的账号资料与通知偏好",
+    "avatarUpload": "上传照片",
+    "avatarTip": "支持 JPG / PNG，建议 1:1 正方形图片",
+    "fields": {
+      "username": "用户名",
+      "usernamePlaceholder": "输入用户名",
+      "email": "电子邮件地址",
+      "emailPlaceholder": "输入电子邮件",
+      "currentPassword": "当前密码",
+      "currentPasswordPlaceholder": "修改密码时需填写当前密码",
+      "newPassword": "新密码",
+      "newPasswordPlaceholder": "留空则不修改密码"
+    },
+    "notifications": {
+      "title": "通知偏好",
+      "email": "电子邮件通知",
+      "push": "推送通知",
+      "sms": "短信通知"
+    },
+    "actions": {
+      "cancel": "取消",
+      "save": "保存更改",
+      "saving": "保存中..."
+    },
+    "messages": {
+      "loadFailed": "获取用户信息失败",
+      "usernameRequired": "请输入用户名",
+      "emailRequired": "请输入电子邮件",
+      "emailInvalid": "请输入有效的电子邮件地址",
+      "currentPasswordRequired": "请输入当前密码",
+      "noChanges": "没有需要保存的更改",
+      "saveSuccess": "保存成功",
+      "saveFailed": "保存失败",
+      "passwordSuccess": "密码修改成功",
+      "passwordFailed": "密码修改失败",
+      "avatarType": "请选择 JPG / PNG 格式的图片",
+      "avatarSize": "图片大小不能超过 2MB",
+      "avatarSuccess": "头像上传成功",
+      "avatarFailed": "头像上传失败"
+    }
+  }
+}

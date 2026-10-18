@@ -8,73 +8,89 @@
         </div>
 
         <!-- 主内容区域 -->
-        <div class="accountsettings-content">
+        <div class="accountsettings-content" v-loading="loading" :element-loading-text="$t('common.loading')">
             <header class="accountsettings-header">
                 <span class="accountsettings-header-icon">
                     <i class="fas fa-sliders-h"></i>
                 </span>
                 <div>
-                    <h1 class="accountsettings-title">账户设置</h1>
-                    <p class="accountsettings-subtitle">管理你的账号资料与通知偏好</p>
+                    <h1 class="accountsettings-title">{{ $t('accountSettings.title') }}</h1>
+                    <p class="accountsettings-subtitle">{{ $t('accountSettings.subtitle') }}</p>
                 </div>
             </header>
 
             <!-- 头像上传区域 -->
             <div class="accountsettings-avatar-container">
-                <div class="accountsettings-avatar-wrapper" role="button" tabindex="0" aria-label="上传照片"
-                    @click="triggerFileInput" @keydown.enter="triggerFileInput">
-                    <img v-if="avatarPreview" :src="avatarPreview" class="accountsettings-avatar" alt="用户头像" />
+                <div class="accountsettings-avatar-wrapper" role="button" tabindex="0"
+                    :aria-label="$t('accountSettings.avatarUpload')" @click="triggerFileInput"
+                    @keydown.enter="triggerFileInput">
+                    <img v-if="avatarPreview" :src="avatarPreview" class="accountsettings-avatar"
+                        :alt="$t('accountSettings.avatarUpload')" />
                     <div v-else class="accountsettings-avatar-placeholder">
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="accountsettings-avatar-hover">
                         <i class="fas fa-camera"></i>
-                        <span>上传照片</span>
+                        <span>{{ $t('accountSettings.avatarUpload') }}</span>
                     </div>
                 </div>
-                <input type="file" ref="fileInput" @change="handleAvatarUpload" accept="image/*"
+                <input type="file" ref="fileInput" @change="handleAvatarUpload" accept="image/jpeg,image/png"
                     style="display: none;" />
-                <p class="accountsettings-avatar-tip">支持 JPG / PNG，建议 1:1 正方形图片</p>
+                <p class="accountsettings-avatar-tip">{{ $t('accountSettings.avatarTip') }}</p>
             </div>
 
             <!-- 表单区域 -->
-            <form class="accountsettings-form" @submit.prevent="saveChanges">
+            <form class="accountsettings-form" novalidate @submit.prevent="saveChanges">
                 <!-- 用户名 -->
                 <div class="accountsettings-form-group">
-                    <label class="accountsettings-label">用户名</label>
+                    <label class="accountsettings-label">{{ $t('accountSettings.fields.username') }}</label>
                     <div class="accountsettings-input-container">
                         <i class="fas fa-user accountsettings-input-icon"></i>
-                        <input type="text" v-model="username" class="accountsettings-input" placeholder="输入用户名" />
+                        <input type="text" v-model="username" class="accountsettings-input"
+                            :placeholder="$t('accountSettings.fields.usernamePlaceholder')" autocomplete="username" />
                     </div>
                 </div>
 
                 <!-- 邮箱 -->
                 <div class="accountsettings-form-group">
-                    <label class="accountsettings-label">电子邮件地址</label>
+                    <label class="accountsettings-label">{{ $t('accountSettings.fields.email') }}</label>
                     <div class="accountsettings-input-container">
                         <i class="fas fa-envelope accountsettings-input-icon"></i>
-                        <input type="email" v-model="email" class="accountsettings-input" placeholder="输入电子邮件" />
+                        <input type="email" v-model="email" class="accountsettings-input"
+                            :placeholder="$t('accountSettings.fields.emailPlaceholder')" autocomplete="email" />
                     </div>
                 </div>
 
                 <!-- 密码 -->
                 <div class="accountsettings-form-group">
-                    <label class="accountsettings-label">密码</label>
+                    <label class="accountsettings-label">{{ $t('accountSettings.fields.currentPassword') }}</label>
                     <div class="accountsettings-input-container">
                         <i class="fas fa-lock accountsettings-input-icon"></i>
-                        <input type="password" v-model="password" class="accountsettings-input" placeholder="输入新密码" />
+                        <input type="password" v-model="currentPassword" class="accountsettings-input"
+                            :placeholder="$t('accountSettings.fields.currentPasswordPlaceholder')"
+                            autocomplete="current-password" />
+                    </div>
+                </div>
+                <div class="accountsettings-form-group">
+                    <label class="accountsettings-label">{{ $t('accountSettings.fields.newPassword') }}</label>
+                    <div class="accountsettings-input-container">
+                        <i class="fas fa-key accountsettings-input-icon"></i>
+                        <input type="password" v-model="newPassword" class="accountsettings-input"
+                            :placeholder="$t('accountSettings.fields.newPasswordPlaceholder')"
+                            autocomplete="new-password" />
                     </div>
                 </div>
 
                 <!-- 通知偏好 -->
                 <div class="accountsettings-form-group">
-                    <label class="accountsettings-label">通知偏好</label>
+                    <label class="accountsettings-label">{{ $t('accountSettings.notifications.title') }}</label>
                     <div class="accountsettings-toggle-group">
-                        <div v-for="(pref, index) in notificationPrefs" :key="index"
-                            class="accountsettings-toggle-item">
-                            <span class="accountsettings-toggle-label">{{ pref.label }}</span>
+                        <div v-for="pref in notificationPrefs" :key="pref.key" class="accountsettings-toggle-item">
+                            <span class="accountsettings-toggle-label">
+                                {{ $t(`accountSettings.notifications.${pref.key}`) }}
+                            </span>
                             <label class="accountsettings-switch">
-                                <input type="checkbox" v-model="pref.value" @change="toggleNotification(pref)" />
+                                <input type="checkbox" v-model="pref.value" />
                                 <span class="accountsettings-slider"></span>
                             </label>
                         </div>
@@ -84,11 +100,12 @@
                 <!-- 按钮区域 -->
                 <div class="accountsettings-button-group">
                     <button type="button" class="accountsettings-button accountsettings-button-cancel"
-                        @click="cancelChanges">
-                        取消
+                        :disabled="saving" @click="cancelChanges">
+                        {{ $t('accountSettings.actions.cancel') }}
                     </button>
-                    <button type="submit" class="accountsettings-button accountsettings-button-save">
-                        保存更改
+                    <button type="submit" class="accountsettings-button accountsettings-button-save"
+                        :disabled="saving || loading">
+                        {{ saving ? $t('accountSettings.actions.saving') : $t('accountSettings.actions.save') }}
                     </button>
                 </div>
             </form>
@@ -97,23 +114,98 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import { ElMessage } from 'element-plus';
+import { useI18n } from 'vue-i18n';
+import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
+
+const { t } = useI18n();
+
+// 通知偏好本地存储键（后端暂未提供通知偏好接口，先持久化在本地）
+const NOTIFICATION_STORAGE_KEY = 'account-settings:notifications';
 
 // 用户数据
-const username = ref('John Doe');
-const email = ref('john.doe@example.com');
-const password = ref('');
-const avatarPreview = ref(null);
+const userId = ref(null);
+const username = ref('');
+const email = ref('');
+const currentPassword = ref('');
+const newPassword = ref('');
+const avatarPreview = ref('');
+// 已保存的用户名 / 邮箱，用于取消时回滚
+const savedProfile = ref({ username: '', email: '' });
 
 // 通知偏好设置
 const notificationPrefs = ref([
-    { label: '电子邮件通知', value: true },
-    { label: '推送通知', value: true },
-    { label: '短信通知', value: false }
+    { key: 'email', value: true },
+    { key: 'push', value: true },
+    { key: 'sms', value: false }
 ]);
+
+// 加载 / 保存状态
+const loading = ref(false);
+const saving = ref(false);
 
 // 文件输入引用
 const fileInput = ref(null);
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// 同步本地用户缓存，保证导航栏等处的用户信息及时更新
+const syncLocalUser = (patch) => {
+    try {
+        const cached = JSON.parse(localStorage.getItem('user') || 'null') || {};
+        localStorage.setItem('user', JSON.stringify({ ...cached, ...patch }));
+    } catch {
+        // 本地缓存异常时忽略
+    }
+};
+
+// 读取本地通知偏好
+const loadNotificationPrefs = () => {
+    try {
+        const saved = JSON.parse(localStorage.getItem(NOTIFICATION_STORAGE_KEY) || 'null');
+        if (!saved) return;
+        notificationPrefs.value.forEach((pref) => {
+            if (typeof saved[pref.key] === 'boolean') pref.value = saved[pref.key];
+        });
+    } catch {
+        // 本地数据损坏时忽略，使用默认值
+    }
+};
+
+// 持久化通知偏好
+const persistNotificationPrefs = () => {
+    const value = {};
+    notificationPrefs.value.forEach((pref) => {
+        value[pref.key] = pref.value;
+    });
+    localStorage.setItem(NOTIFICATION_STORAGE_KEY, JSON.stringify(value));
+};
+
+// 开关变化时自动保存到本地
+watch(notificationPrefs, persistNotificationPrefs, { deep: true });
+
+// 获取用户信息
+const fetchUserInfo = async () => {
+    loading.value = true;
+    try {
+        const response = await getUserInfo();
+        if (response.code === 200 && response.data) {
+            const data = response.data;
+            userId.value = data.id;
+            username.value = data.username || '';
+            email.value = data.email || '';
+            avatarPreview.value = data.avatar || '';
+            savedProfile.value = { username: username.value, email: email.value };
+        } else {
+            ElMessage.error(response.message || t('accountSettings.messages.loadFailed'));
+        }
+    } catch (error) {
+        console.error('获取用户信息失败:', error);
+    } finally {
+        loading.value = false;
+    }
+};
 
 // 触发文件选择
 const triggerFileInput = () => {
@@ -121,38 +213,122 @@ const triggerFileInput = () => {
 };
 
 // 处理头像上传
-const handleAvatarUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            avatarPreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
+const handleAvatarUpload = async (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+
+    // 验证文件类型
+    const validTypes = ['image/jpeg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+        ElMessage.error(t('accountSettings.messages.avatarType'));
+        return;
+    }
+
+    // 验证文件大小 (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+        ElMessage.error(t('accountSettings.messages.avatarSize'));
+        return;
+    }
+
+    loading.value = true;
+    try {
+        const formData = new FormData();
+        formData.append('avatar', file);
+        const response = await uploadAvatar(formData);
+        if (response.code === 200) {
+            avatarPreview.value = response.data;
+            syncLocalUser({ avatar: response.data });
+            ElMessage.success(t('accountSettings.messages.avatarSuccess'));
+        } else {
+            ElMessage.error(response.message || t('accountSettings.messages.avatarFailed'));
+        }
+    } catch (error) {
+        console.error('头像上传失败:', error);
+    } finally {
+        loading.value = false;
     }
 };
 
-// 切换通知偏好
-const toggleNotification = (pref) => {
-    console.log(`${pref.label} 状态已更改为: ${pref.value}`);
-};
-
 // 保存更改
-const saveChanges = () => {
-    console.log('保存更改:', {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-        notifications: notificationPrefs.value
-    });
-    // 这里可以添加API调用
+const saveChanges = async () => {
+    const nextUsername = username.value.trim();
+    const nextEmail = email.value.trim();
+
+    if (!nextUsername) {
+        ElMessage.warning(t('accountSettings.messages.usernameRequired'));
+        return;
+    }
+    if (!nextEmail) {
+        ElMessage.warning(t('accountSettings.messages.emailRequired'));
+        return;
+    }
+    if (!EMAIL_REGEX.test(nextEmail)) {
+        ElMessage.warning(t('accountSettings.messages.emailInvalid'));
+        return;
+    }
+    if (newPassword.value && !currentPassword.value) {
+        ElMessage.warning(t('accountSettings.messages.currentPasswordRequired'));
+        return;
+    }
+
+    const profileChanged =
+        nextUsername !== savedProfile.value.username || nextEmail !== savedProfile.value.email;
+    if (!profileChanged && !newPassword.value) {
+        ElMessage.info(t('accountSettings.messages.noChanges'));
+        return;
+    }
+
+    saving.value = true;
+    try {
+        if (profileChanged) {
+            const response = await updateUserInfo({
+                id: userId.value,
+                username: nextUsername,
+                email: nextEmail
+            });
+            if (response.code !== 200) {
+                ElMessage.error(response.message || t('accountSettings.messages.saveFailed'));
+                return;
+            }
+            savedProfile.value = { username: nextUsername, email: nextEmail };
+            syncLocalUser({ username: nextUsername, email: nextEmail });
+            ElMessage.success(t('accountSettings.messages.saveSuccess'));
+        }
+
+        if (newPassword.value) {
+            const response = await updatePassword(currentPassword.value, newPassword.value);
+            if (response.code !== 200) {
+                ElMessage.error(response.message || t('accountSettings.messages.passwordFailed'));
+                return;
+            }
+            currentPassword.value = '';
+            newPassword.value = '';
+            ElMessage.success(t('accountSettings.messages.passwordSuccess'));
+        }
+
+        // 重新拉取最新用户信息，重置表单基线
+        await fetchUserInfo();
+    } catch (error) {
+        console.error('保存账户设置失败:', error);
+    } finally {
+        saving.value = false;
+    }
 };
 
 // 取消更改
 const cancelChanges = () => {
-    console.log('取消更改');
-    // 这里可以重置表单
+    username.value = savedProfile.value.username;
+    email.value = savedProfile.value.email;
+    currentPassword.value = '';
+    newPassword.value = '';
+    loadNotificationPrefs();
 };
+
+onMounted(() => {
+    loadNotificationPrefs();
+    fetchUserInfo();
+});
 </script>
 
 <style scoped>
@@ -507,13 +683,19 @@ input:focus-visible + .accountsettings-slider {
     transform: translateY(1px);
 }
 
+.accountsettings-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .accountsettings-button-cancel {
     background: var(--theme-bg-surface-2);
     border-color: var(--theme-border);
     color: var(--theme-text-1);
 }
 
-.accountsettings-button-cancel:hover {
+.accountsettings-button-cancel:hover:not(:disabled) {
     background: var(--theme-bg-hover);
     border-color: var(--theme-border-strong);
 }
@@ -524,7 +706,7 @@ input:focus-visible + .accountsettings-slider {
     box-shadow: var(--theme-shadow-sm);
 }
 
-.accountsettings-button-save:hover {
+.accountsettings-button-save:hover:not(:disabled) {
     transform: translateY(-1px);
     filter: brightness(1.06);
     box-shadow: var(--theme-shadow-md);

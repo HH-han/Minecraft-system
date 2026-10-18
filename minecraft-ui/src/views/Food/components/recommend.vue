@@ -42,11 +42,7 @@
             <div class="section-header">
                 <h2>精选推荐</h2>
                 <div class="sort-options">
-                    <select v-model="sortOption">
-                        <option value="default">综合推荐</option>
-                        <option value="rating">按评分排序</option>
-                        <option value="price">按价格排序</option>
-                    </select>
+                    <SortSelect v-model="sortOption" label="排序方式：" :options="sortOptions" />
                 </div>
             </div>
 
@@ -99,12 +95,18 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getClientRecommendations } from '@/api/clientRecommendation'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
+import SortSelect from '@/components/SortSelect/index.vue'
 
 // 搜索相关
 const searchQuery = ref('')
 const activeFilter = ref('all')
 const selectedCuisine = ref('all')
 const sortOption = ref('default')
+const sortOptions = [
+    { value: 'default', label: '综合推荐' },
+    { value: 'rating', label: '按评分排序' },
+    { value: 'price', label: '按价格排序' }
+]
 const isLoading = ref(false)
 
 // 快速筛选选项（仅保留数据可支持的维度）
@@ -462,7 +464,6 @@ onMounted(loadRecommendations)
 .cuisine-card {
     background: var(--theme-bg-surface);
     border-radius: 12px;
-    padding: 20px 10px;
     display: flex;
     text-align: center;
     cursor: pointer;
@@ -524,20 +525,9 @@ onMounted(loadRecommendations)
     border-radius: 3px;
 }
 
-.sort-options select {
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--theme-border);
-    background: var(--theme-bg-surface);
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.sort-options select:focus {
-    outline: none;
-    border-color: var(--theme-primary);
-    box-shadow: var(--theme-ring);
+.sort-options {
+    display: flex;
+    align-items: center;
 }
 
 .restaurant-list {
