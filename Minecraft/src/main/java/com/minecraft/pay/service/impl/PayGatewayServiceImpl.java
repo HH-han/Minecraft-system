@@ -77,7 +77,7 @@ public class PayGatewayServiceImpl implements PayGatewayService {
     private final RailwayOrderMapper railwayOrderMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(noRollbackFor = BusinessException.class)
     public PayCreateResponse create(PayCreateRequest request) {
         if (request == null) {
             throw new BusinessException("支付参数不能为空");
