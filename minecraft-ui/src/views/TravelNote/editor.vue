@@ -291,6 +291,11 @@ const { t } = useI18n()
 const editId = route.query.id ? Number(route.query.id) : null
 const isEdit = computed(() => !!editId)
 
+/** 浏览器本地临时地址（blob:/file:）无法跨会话访问，不能作为封面保存 */
+function isLocalPreviewUrl(url) {
+  return /^(blob|file):/i.test(String(url || ''))
+}
+
 const form = ref({
   title: '',
   summary: '',
@@ -348,6 +353,9 @@ async function loadForEdit() {
     return
   }
   const d = res.data
+  const mediaItems = (d.mediaList || []).filter(
+    (m) => m.mediaType === 1 && m.url && !isLocalPreviewUrl(m.url)
+  )
   form.value = {
     title: d.title || '',
     summary: d.summary || '',
@@ -355,11 +363,12 @@ async function loadForEdit() {
     travelDate: d.travelDate || null,
     travelDays: d.travelDays || 1,
     cost: d.cost ? Number(d.cost) : null,
-    coverUrl: d.coverUrl || '',
+    // 历史数据可能把 blob 预览地址存成了封面，回退到第一张有效图片
+    coverUrl: d.coverUrl && !isLocalPreviewUrl(d.coverUrl) ? d.coverUrl : (mediaItems[0]?.url || ''),
     content: d.content || '',
     contentType: d.contentType || 1,
     tags: d.tags || [],
-    mediaList: (d.mediaList || []).map((m) => ({ mediaType: m.mediaType, url: m.url, thumbUrl: m.thumbUrl, sort: m.sort })),
+    mediaList: mediaItems.map((m) => ({ mediaType: m.mediaType, url: m.url, thumbUrl: m.thumbUrl, sort: m.sort })),
     relations: (d.relations || []).map((r) => ({ bizType: r.bizType, bizId: r.bizId })),
     routes: (d.routes || []).map((r) => ({
       dayIndex: r.dayIndex,
@@ -369,9 +378,7 @@ async function loadForEdit() {
       remark: r.remark || ''
     }))
   }
-  fileList.value = (d.mediaList || [])
-    .filter((m) => m.mediaType === 1)
-    .map((m) => ({ name: m.url.split('/').pop(), url: m.url }))
+  fileList.value = mediaItems.map((m) => ({ name: m.url.split('/').pop(), url: m.url }))
   if (editorRef.value) {
     editorRef.value.innerHTML = d.contentType === 1 ? d.content || '' : ''
   }
@@ -394,7 +401,12 @@ async function handleUpload({ file, onSuccess, onError }) {
     const res = await uploadFile(file)
     if (res.code === 200 && res.data) {
       form.value.mediaList.push({ mediaType: 1, url: res.data, thumbUrl: '', sort: form.value.mediaList.length })
-      if (!form.value.coverUrl) form.value.coverUrl = res.data
+      // 上传完成后用服务器地址覆盖 blob 预览地址，避免把 blob: 存进封面
+      if (!form.value.coverUrl || isLocalPreviewUrl(form.value.coverUrl)) {
+        form.value.coverUrl = res.data
+      }
+      const uploaded = fileList.value.find((item) => item.raw === file)
+      if (uploaded) uploaded.url = res.data
       onSuccess(res)
     } else {
       ElMessage.error(res.message || t('travelNote.editor.upload.failed'))
@@ -437,10 +449,10 @@ async function handleEditorImage(e) {
 }
 
 watch(fileList, (list) => {
-  // 上传成功后维护封面：无封面时取第一张
-  if (!form.value.coverUrl) {
-    form.value.coverUrl = list.find((f) => f.url)?.url || ''
-  }
+  // 仅在没有有效封面时回退到第一张已上传图片，忽略 blob 预览地址
+  if (form.value.coverUrl && !isLocalPreviewUrl(form.value.coverUrl)) return
+  const first = list.find((item) => item.url && !isLocalPreviewUrl(item.url))
+  form.value.coverUrl = first?.url || ''
 })
 
 function handleRemove(file) {
@@ -483,10 +495,19 @@ async function save(status) {
   }
   saving.value = true
   try {
+    const mediaList = form.value.mediaList
+      .filter((m) => m.url && !isLocalPreviewUrl(m.url))
+      .map((m, idx) => ({ ...m, sort: idx }))
+    // 封面必须落库为可访问地址，blob/file 预览地址一律回退到图集第一张
+    const coverUrl =
+      form.value.coverUrl && !isLocalPreviewUrl(form.value.coverUrl)
+        ? form.value.coverUrl
+        : (mediaList.find((m) => m.mediaType === 1)?.url || '')
     const payload = {
       ...form.value,
+      coverUrl,
       status,
-      mediaList: form.value.mediaList.map((m, idx) => ({ ...m, sort: idx })),
+      mediaList,
       relations: form.value.relations.filter((r) => r.bizId != null),
       routes: form.value.routes
         .filter((r) => r.poiName && r.poiName.trim())

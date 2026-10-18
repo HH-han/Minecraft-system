@@ -43,6 +43,7 @@
             fit="cover"
             class="note-detail__gallery-item"
             hide-on-click-modal
+            preview-teleported
           />
         </div>
 

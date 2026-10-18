@@ -94,6 +94,31 @@ const notes = ref([])
 const total = ref(0)
 const query = reactive({ pageNum: 1, pageSize: 10 })
 
+const BACKEND_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+// 记录加载失败的封面，回退为图标占位，避免出现浏览器破图
+const failedCovers = ref(new Set())
+
+/** 补全相对图片地址；blob/file 为本地临时预览地址，无法跨会话访问 */
+function normalizeImageUrl(url) {
+  if (!url) return ''
+  const raw = String(url).trim()
+  if (!raw || raw === 'null' || raw === 'undefined') return ''
+  if (/^(blob|file):/i.test(raw)) return ''
+  if (/^data:/i.test(raw)) return raw
+  if (/^https?:\/\//i.test(raw)) return raw
+  if (raw.startsWith('/')) return BACKEND_BASE + raw
+  return `${BACKEND_BASE}/${raw}`
+}
+
+function coverSrc(note) {
+  if (failedCovers.value.has(note.id)) return ''
+  return normalizeImageUrl(note.coverUrl)
+}
+
+function markCoverError(note) {
+  failedCovers.value.add(note.id)
+}
+
 const STATUS_MAP = {
   0: { label: '草稿', type: 'info' },
   1: { label: '待审核', type: 'warning' },
