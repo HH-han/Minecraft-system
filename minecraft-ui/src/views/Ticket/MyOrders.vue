@@ -118,40 +118,15 @@
       </template>
     </div>
 
-    <!-- 支付弹窗 -->
-    <el-dialog v-model="payVisible" :title="$t('railway.order.payTitle')" width="420px"
-      :close-on-click-modal="false" :show-close="false">
-      <template v-if="payState === 'success'">
-        <div class="rw-pay-success">
-          <span class="rw-pay-success-icon"><el-icon><CircleCheckFilled /></el-icon></span>
-          <h3>{{ $t('railway.order.paySuccess') }}</h3>
-          <p>{{ $t('railway.order.paySuccessDesc') }}</p>
-        </div>
-      </template>
-      <template v-else>
-        <div class="rw-pay-panel">
-          <p class="rw-pay-amount">
-            <span>{{ $t('railway.order.payAmount') }}</span>
-            <strong>¥{{ formatPrice(payOrderInfo?.totalAmount) }}</strong>
-          </p>
-          <p class="rw-pay-countdown" :class="{ 'is-danger': remaining <= 60 }">
-            {{ $t('railway.order.payCountdown', { time: formatClock(remaining) }) }}
-          </p>
-          <p class="rw-pay-order-no">{{ $t('railway.orders.orderNo') }}：{{ payOrderInfo?.orderNo }}</p>
-        </div>
-      </template>
-      <template #footer>
-        <template v-if="payState === 'success'">
-          <el-button type="primary" @click="closePay">{{ $t('railway.common.confirm') }}</el-button>
-        </template>
-        <template v-else>
-          <el-button @click="closePay">{{ $t('railway.order.payLater') }}</el-button>
-          <el-button type="primary" :loading="paying" :disabled="remaining <= 0" @click="confirmPay">
-            {{ $t('railway.order.payNow') }}
-          </el-button>
-        </template>
-      </template>
-    </el-dialog>
+    <!-- 系统支付面板 -->
+    <div v-if="payVisible" class="rw-pay-overlay" @click.self="closePay">
+      <div class="rw-pay-modal" @click.stop>
+        <button type="button" class="rw-pay-close" :aria-label="$t('railway.common.close')" @click="closePay">
+          <el-icon><Close /></el-icon>
+        </button>
+        <PayPage order-type="railway" :order-id="String(payOrderInfo?.id || '')" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -162,8 +137,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   cancelRailwayOrder,
   getRailwayOrders,
-  payRailwayOrder,
 } from '@/api/railway'
+import PayPage from '@/components/Payment/PayPage.vue'
 import { formatClock, formatPrice, remainingSeconds } from './utils'
 
 const { t } = useI18n()
@@ -189,11 +164,7 @@ const now = ref(Date.now())
 let ticker = null
 
 const payVisible = ref(false)
-const payState = ref('pending')
-const paying = ref(false)
 const payOrderInfo = ref(null)
-const remaining = ref(0)
-let countdownTimer = null
 
 const remainingOf = (order) => {
   // 读取 now 以便倒计时每秒响应式更新
@@ -221,8 +192,15 @@ const load = async () => {
   }
 }
 
+const onPayMessage = (event) => {
+  if (event.data?.action === 'closeModal' && payVisible.value) {
+    closePay()
+  }
+}
+
 onMounted(() => {
   load()
+  window.addEventListener('message', onPayMessage)
   ticker = setInterval(() => {
     now.value = Date.now()
   }, 1000)
@@ -230,7 +208,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (ticker) clearInterval(ticker)
-  stopCountdown()
+  window.removeEventListener('message', onPayMessage)
 })
 
 const changeStatus = (value) => {
@@ -246,48 +224,13 @@ const handlePageChange = (page) => {
 
 const handlePay = (order) => {
   payOrderInfo.value = order
-  payState.value = 'pending'
   payVisible.value = true
-  startCountdown()
-}
-
-const startCountdown = () => {
-  stopCountdown()
-  remaining.value = remainingSeconds(payOrderInfo.value?.expireTime)
-  countdownTimer = setInterval(() => {
-    remaining.value = remainingSeconds(payOrderInfo.value?.expireTime)
-    if (remaining.value <= 0) {
-      stopCountdown()
-      ElMessage.warning(t('railway.order.expired'))
-    }
-  }, 1000)
-}
-
-const stopCountdown = () => {
-  if (countdownTimer) {
-    clearInterval(countdownTimer)
-    countdownTimer = null
-  }
-}
-
-const confirmPay = async () => {
-  if (!payOrderInfo.value) return
-  paying.value = true
-  try {
-    await payRailwayOrder(payOrderInfo.value.id)
-    payState.value = 'success'
-    stopCountdown()
-    await load()
-  } catch {
-    // 接口已提示错误
-  } finally {
-    paying.value = false
-  }
 }
 
 const closePay = () => {
   payVisible.value = false
-  stopCountdown()
+  payOrderInfo.value = null
+  load()
 }
 
 const handleCancel = async (order, isRefund) => {
@@ -664,66 +607,58 @@ const handleCancel = async (order, isRefund) => {
   font-family: inherit;
 }
 
-/* 支付 */
-.rw-pay-panel {
-  padding: 6px 0 2px;
-  text-align: center;
-}
-
-.rw-pay-amount {
+/* 系统支付面板 */
+.rw-pay-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 13px;
-  color: var(--rw-text-2);
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
-.rw-pay-amount strong {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--rw-orange);
+.rw-pay-modal {
+  position: relative;
+  width: min(500px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 22px;
 }
 
-.rw-pay-countdown {
-  margin: 14px 0 6px;
-  font-size: 13px;
-  color: var(--rw-blue);
-  font-variant-numeric: tabular-nums;
+/* 支付组件默认以 fixed 居中，这里改为随弹层流式排布 */
+.rw-pay-modal :deep(.glass-pay-container) {
+  position: static;
+  transform: none;
+  min-height: auto;
+  z-index: auto;
 }
 
-.rw-pay-countdown.is-danger {
-  color: var(--rw-danger);
+.rw-pay-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--theme-bg-hover);
+  color: var(--theme-text-2);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.rw-pay-order-no {
-  margin: 0;
-  font-size: 12px;
-  color: var(--rw-text-3);
-}
-
-.rw-pay-success {
-  text-align: center;
-  padding: 10px 0 4px;
-}
-
-.rw-pay-success-icon {
-  font-size: 46px;
-  color: var(--rw-success);
-  display: inline-flex;
-}
-
-.rw-pay-success h3 {
-  margin: 12px 0 6px;
-  font-size: 18px;
-  color: var(--rw-text);
-}
-
-.rw-pay-success p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--rw-text-3);
+.rw-pay-close:hover {
+  background: var(--theme-bg-active);
+  color: var(--theme-text-1);
+  transform: rotate(90deg);
 }
 
 @media (max-width: 640px) {

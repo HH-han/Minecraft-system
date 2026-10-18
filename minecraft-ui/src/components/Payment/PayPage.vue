@@ -148,13 +148,16 @@
 <script setup>
 import { ref, onMounted, defineProps } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import PaymentSuccessModal from '@/components/PromptComponent/PaymentSuccessModal.vue';
 import { ElMessage } from 'element-plus';
 import { getOrderDetail } from '@/api/order.js';
 import { processPayment } from '@/api/payment.js';
+import { getRailwayOrderDetail, payRailwayOrder } from '@/api/railway.js';
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 
 // 接收props参数
 const props = defineProps({
@@ -173,6 +176,11 @@ const props = defineProps({
   userId: {
     type: String,
     default: ''
+  },
+  /** 订单类型：mall（商城订单）/ railway（铁路车票订单） */
+  orderType: {
+    type: String,
+    default: 'mall'
   }
 });
 
@@ -206,6 +214,26 @@ const generateOrderTime = () => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
+// 加载铁路车票订单详情
+const loadRailwayOrder = async () => {
+  try {
+    const response = await getRailwayOrderDetail(orderId.value);
+    const order = response.data || {};
+    const yuan = Number(order.totalAmount || 0) / 100;
+    item.value = {
+      id: order.id,
+      name: `${order.trainNo || ''} ${order.fromStationName || ''} → ${order.toStationName || ''}`,
+      orderNo: order.orderNo,
+      price: Number.isInteger(yuan) ? String(yuan) : yuan.toFixed(2),
+      quantity: order.passengerCount || 1,
+      ticketType: order.seatType ? t(`railway.list.seat.${order.seatType}`) : ''
+    };
+  } catch (error) {
+    console.error('获取车票订单详情失败:', error);
+    ElMessage.error(t('railway.orders.loadFailed'));
+  }
+};
+
 // 从props或路由查询参数中获取商品信息和订单ID
 onMounted(async () => {
   // 生成订单时间
@@ -217,22 +245,26 @@ onMounted(async () => {
   
   // 如果有订单ID，从API获取订单详情
   if (orderId.value) {
-    try {
-      const response = await getOrderDetail(orderId.value);
-      const orderData = response.data;
-      
-      // 构建商品信息
-      item.value = {
-        id: orderData.itemId,
-        name: orderData.itemName,
-        orderNo: orderData.orderNo,
-        price: orderData.amount,
-        quantity: orderData.quantity || 1,
-        ticketType: orderData.itemType === 'food' ? '美食' : '纪念品'
-      };
-    } catch (error) {
-      console.error('获取订单详情失败:', error);
-      ElMessage.error('获取订单详情失败，请重试');
+    if (props.orderType === 'railway') {
+      await loadRailwayOrder();
+    } else {
+      try {
+        const response = await getOrderDetail(orderId.value);
+        const orderData = response.data;
+
+        // 构建商品信息
+        item.value = {
+          id: orderData.itemId,
+          name: orderData.itemName,
+          orderNo: orderData.orderNo,
+          price: orderData.amount,
+          quantity: orderData.quantity || 1,
+          ticketType: orderData.itemType === 'food' ? '美食' : '纪念品'
+        };
+      } catch (error) {
+        console.error('获取订单详情失败:', error);
+        ElMessage.error('获取订单详情失败，请重试');
+      }
     }
   } else if (cartItemsParam) {
     // 如果有购物车数据，使用购物车数据
@@ -324,6 +356,13 @@ const confirmPayment = async () => {
   }
 
   try {
+    // 铁路车票订单走车票支付接口
+    if (props.orderType === 'railway') {
+      await payRailwayOrder(orderId.value);
+      isPaymentModalVisible.value = true;
+      return;
+    }
+
     // 调用后端支付接口
     const response = await processPayment({
       orderId: orderId.value,

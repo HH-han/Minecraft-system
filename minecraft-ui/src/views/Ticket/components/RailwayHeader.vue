@@ -29,33 +29,6 @@
             </template>
           </el-input>
         </div>
-
-        <div class="rw-top-links">
-          <button type="button" class="rw-link" @click="comingSoon">{{ $t('railway.top.accessible') }}</button>
-          <span class="rw-sep"></span>
-          <button type="button" class="rw-link" @click="comingSoon">{{ $t('railway.top.elder') }}</button>
-          <span class="rw-sep"></span>
-          <button type="button" class="rw-link" @click="toggleLocale">{{ localeButtonText }}</button>
-          <span class="rw-sep"></span>
-
-          <el-dropdown v-if="loggedIn" trigger="hover" @command="handleUserCommand">
-            <button type="button" class="rw-link rw-link--user">
-              {{ $t('railway.top.my') }}
-              <el-icon class="rw-caret"><ArrowDown /></el-icon>
-            </button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="orders">{{ $t('railway.top.myOrders') }}</el-dropdown-item>
-                <el-dropdown-item command="logout" divided>{{ $t('railway.top.logout') }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          <template v-else>
-            <button type="button" class="rw-link rw-link--strong" @click="goLogin">{{ $t('railway.top.login') }}</button>
-            <span class="rw-sep"></span>
-            <button type="button" class="rw-link" @click="goRegister">{{ $t('railway.top.register') }}</button>
-          </template>
-        </div>
       </div>
     </div>
 
@@ -107,21 +80,13 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
-import { setLocale } from '@/locales'
-import { useAuthStore } from '@/stores/auth'
 import { hasLogin } from '../utils'
 
 const router = useRouter()
 const route = useRoute()
-const { t, locale } = useI18n()
-const authStore = useAuthStore()
+const { t } = useI18n()
 
 const trainKeyword = ref('')
-const loggedIn = ref(hasLogin())
-
-const localeButtonText = computed(() =>
-  locale.value === 'zh-CN' ? t('railway.top.english') : '简体中文',
-)
 
 const navItems = computed(() => [
   { key: 'home', path: '/ticket', active: route.path === '/ticket' },
@@ -140,7 +105,6 @@ const comingSoon = () => {
 
 const goHome = () => router.push('/ticket')
 const goLogin = () => router.push({ path: '/login', query: { redirect: route.fullPath } })
-const goRegister = () => router.push({ path: '/login', query: { redirect: route.fullPath } })
 const goMyOrders = () => {
   if (!hasLogin()) {
     goLogin()
@@ -173,34 +137,14 @@ const searchTrain = () => {
   }
   router.push({ path: '/ticket/timetable', query: { trainNo: keyword } })
 }
-
-const toggleLocale = () => {
-  setLocale(locale.value === 'zh-CN' ? 'en-US' : 'zh-CN')
-}
-
-const handleUserCommand = (command) => {
-  if (command === 'orders') {
-    goMyOrders()
-    return
-  }
-  if (command === 'logout') {
-    authStore.logout()
-    localStorage.removeItem('tokenTimestamp')
-    localStorage.removeItem('user')
-    localStorage.removeItem('rememberedUsername')
-    loggedIn.value = false
-    ElMessage.success(t('railway.top.logout'))
-    // 重新加载以同步全站登录态
-    setTimeout(() => window.location.assign('/ticket'), 300)
-  }
-}
 </script>
 
 <style scoped>
 .rw-header {
   position: sticky;
-  top: 0;
-  z-index: 120;
+  /* 吸顶在全站固定顶部导航下方，两栏同步显示 */
+  top: 70px;
+  z-index: 90;
   background: var(--rw-card);
   box-shadow: 0 1px 0 rgba(15, 46, 102, 0.06);
 }
@@ -282,52 +226,6 @@ const handleUserCommand = (command) => {
 
 .rw-top-search :deep(.el-input__inner) {
   font-size: 13px;
-}
-
-.rw-top-links {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.rw-link {
-  border: none;
-  background: none;
-  padding: 2px 2px;
-  font-size: 13px;
-  color: var(--rw-text-2);
-  cursor: pointer;
-  transition: color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-family: inherit;
-}
-
-.rw-link:hover {
-  color: var(--rw-blue);
-}
-
-.rw-link--strong {
-  color: var(--rw-blue);
-  font-weight: 600;
-}
-
-.rw-link--user {
-  color: var(--rw-text);
-  font-weight: 500;
-}
-
-.rw-caret {
-  font-size: 11px;
-}
-
-.rw-sep {
-  width: 1px;
-  height: 11px;
-  background: var(--rw-border);
 }
 
 /* ---------- 主导航 ---------- */
@@ -481,15 +379,6 @@ const handleUserCommand = (command) => {
     order: 3;
     max-width: none;
     flex-basis: 100%;
-  }
-
-  .rw-top-links {
-    gap: 8px;
-  }
-
-  .rw-top-links .rw-link:nth-child(-n + 4),
-  .rw-top-links .rw-sep:nth-child(-n + 4) {
-    display: none;
   }
 
   .rw-nav-inner {
