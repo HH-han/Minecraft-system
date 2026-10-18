@@ -256,7 +256,7 @@ public class MemberService {
         }
         return switch (payType) {
             case 1 -> PayChannel.ALIPAY.name();
-            case 3 -> PayChannel.MOCK.name();
+            case 3 -> throw new BusinessException("余额支付暂未开放");
             default -> PayChannel.WECHAT.name();
         };
     }

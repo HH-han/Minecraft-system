@@ -32,6 +32,9 @@ public class PayChannelRouter {
             }
             return mockAdapter;
         }
+        if (channel == PayChannel.MOCK) {
+            throw new BusinessException("模拟支付渠道未启用，请选择真实支付渠道");
+        }
         return adapters.stream()
                 .filter(adapter -> channel.name().equalsIgnoreCase(adapter.channelCode()))
                 .findFirst()
