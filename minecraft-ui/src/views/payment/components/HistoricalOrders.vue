@@ -1,7 +1,7 @@
 <template>
   <div class="historical-orders">
     <div class="orders-header">
-      <h2>历史订单</h2>
+      <h2>{{ $t('payment.history.title') }}</h2>
       <div class="order-filters">
         <button 
           v-for="filter in filters" 
@@ -23,12 +23,12 @@
                 <path d="M939.642 98.617h-82.23v47.698c0 52.668-44.188 95.4-98.688 95.4s-98.687-42.732-98.687-95.4V98.617H607.4c0-1.117-40.9 0-95.4 0s-95.398 0.496-95.398 0h-52.639v47.698c0 52.668-44.156 95.4-98.688 95.4-54.499 0-98.688-42.732-98.688-95.4V98.617h-82.23c-27.266 0-49.346 21.367-49.346 47.698v826.78c0 26.333 22.08 47.699 49.346 47.699h855.287c27.266 0 49.345-21.366 49.345-47.7V146.316c-0.002-26.331-22.082-47.698-49.347-47.698zM725.817 861.795H298.181c-19.683 0-35.644-15.962-35.644-35.634 0-19.684 15.961-35.646 35.644-35.646h427.635c19.685 0 35.646 15.962 35.646 35.646 0.001 19.672-15.96 35.634-35.645 35.634z m0-184.195H298.181c-19.683 0-35.644-15.962-35.644-35.634 0-19.684 15.961-35.646 35.644-35.646h427.635c19.685 0 35.646 15.962 35.646 35.646 0.001 19.672-15.96 35.634-35.645 35.634z m0-184.196H298.181c-19.683 0-35.644-15.962-35.644-35.634 0-19.683 15.961-35.644 35.644-35.644h427.635c19.685 0 35.646 15.96 35.646 35.644 0.001 19.673-15.96 35.634-35.645 35.634z" fill="currentColor"></path>
               </svg>
         </div>
-        <div class="empty-text">暂无历史订单</div>
-        <router-link to="/payment" class="btn btn-primary">去购物</router-link>
+        <div class="empty-text">{{ $t('payment.history.empty') }}</div>
+        <router-link to="/payment" class="btn btn-primary">{{ $t('payment.history.goShopping') }}</router-link>
       </div>
       <div v-else class="order-item" v-for="order in pagedOrders" :key="order.key">
         <div class="order-header">
-          <div class="order-id">订单编号：{{ order.orderId }}</div>
+          <div class="order-id">{{ $t('payment.history.orderNo', { orderNo: order.orderId }) }}</div>
           <div class="order-status" :class="getStatusClass(order.status)">
             {{ getStatusText(order.status) }}
           </div>
@@ -36,19 +36,19 @@
         <div class="order-content">
           <div class="order-info">
             <div class="info-item">
-              <span class="label">下单时间</span>
+              <span class="label">{{ $t('payment.history.createTime') }}</span>
               <span class="value">{{ order.createTime }}</span>
             </div>
             <div class="info-item">
-              <span class="label">支付时间</span>
-              <span class="value">{{ getPayTimeText(order) || '未支付' }}</span>
+              <span class="label">{{ $t('payment.history.payTime') }}</span>
+              <span class="value">{{ getPayTimeText(order) || $t('payment.history.unpaid') }}</span>
             </div>
             <div class="info-item">
-              <span class="label">订单金额</span>
+              <span class="label">{{ $t('payment.history.amount') }}</span>
               <span class="value price">¥{{ formatMoney(order.totalPrice) }}</span>
             </div>
             <div class="info-item">
-              <span class="label">{{ isShippableOrder(order) ? '物流状态' : $t('payment.history.orderType') }}</span>
+              <span class="label">{{ isShippableOrder(order) ? $t('payment.history.logisticsStatus') : $t('payment.history.orderType') }}</span>
               <span class="value">{{ isShippableOrder(order) ? order.statusDesc : getItemTypeText(order.itemType) }}</span>
             </div>
           </div>
@@ -105,7 +105,7 @@
         </div>
         <div class="order-footer">
           <div class="order-total">
-            共 {{ order.quantity }} 件商品，合计：
+            {{ $t('payment.history.totalItems', { count: order.quantity }) }}
             <span class="total-price">¥{{ formatMoney(order.totalPrice) }}</span>
           </div>
           <div class="order-actions">
@@ -114,19 +114,19 @@
                 {{ $t('payment.history.payNow') }}
               </button>
               <button v-if="order.status === '0'" class="btn btn-secondary" @click="handleCancelOrder(order.id)">
-                取消订单
+                {{ $t('payment.history.cancelOrder') }}
               </button>
               <button v-if="order.status === '3'" class="btn btn-secondary" @click="reviewOrder(order.id)">
-                评价
+                {{ $t('payment.history.reviewOrder') }}
               </button>
               <button class="btn btn-link" @click="viewOrderDetail(order.id)">
-                查看详情
+                {{ $t('payment.history.viewDetail') }}
               </button>
               <button v-if="canViewLogistics(order)" class="btn btn-secondary" @click="viewLogistics(order)">
-                查看物流
+                {{ $t('payment.history.viewLogistics') }}
               </button>
               <button class="btn btn-delete" @click="handleDeleteOrder(order.id)">
-                删除订单
+                {{ $t('payment.history.deleteOrder') }}
               </button>
             </template>
             <template v-else>
@@ -147,7 +147,7 @@
         class="page-btn" 
         :disabled="currentPage === 1"
         @click="currentPage--"
-      >上一页</button>
+      >{{ $t('payment.history.prevPage') }}</button>
       <span class="page-info">
         {{ currentPage }} / {{ totalPages }}
       </span>
@@ -155,7 +155,7 @@
         class="page-btn" 
         :disabled="currentPage === totalPages"
         @click="currentPage++"
-      >下一页</button>
+      >{{ $t('payment.history.nextPage') }}</button>
     </div>
   </div>
 </template>
@@ -185,14 +185,14 @@ const loading = ref(false)
 const payments = ref({})
 
 // 筛选条件
-const filters = [
-  { label: '全部', value: 'all' },
-  { label: '待支付', value: '0' },
-  { label: '已支付', value: '1' },
-  { label: '已发货', value: '2' },
-  { label: '已完成', value: '3' },
-  { label: '已取消', value: '4' }
-]
+const filters = computed(() => [
+  { label: t('payment.history.all'), value: 'all' },
+  { label: t('payment.history.status.unpaid'), value: '0' },
+  { label: t('payment.history.status.paid'), value: '1' },
+  { label: t('payment.history.status.shipped'), value: '2' },
+  { label: t('payment.history.status.completed'), value: '3' },
+  { label: t('payment.history.status.cancelled'), value: '4' }
+])
 
 const activeFilter = ref('all')
 const currentPage = ref(1)
@@ -512,14 +512,14 @@ useAutoRefresh(fetchOrders)
 // 获取订单状态文本
 const getStatusText = (status) => {
   const statusMap = {
-    '0': '待支付',
-    '1': '已支付',
-    '2': '已发货',
-    '3': '已完成',
-    '4': '已取消',
-    '5': '已退款'
+    '0': 'payment.history.status.unpaid',
+    '1': 'payment.history.status.paid',
+    '2': 'payment.history.status.shipped',
+    '3': 'payment.history.status.completed',
+    '4': 'payment.history.status.cancelled',
+    '5': 'payment.history.status.refunded'
   }
-  return statusMap[status] || '未知状态'
+  return statusMap[status] ? t(statusMap[status]) : t('payment.common.unknownStatus')
 }
 
 // 获取订单状态样式类
@@ -538,14 +538,14 @@ const getStatusClass = (status) => {
 // 物流状态文本（已支付即进入待发货）
 const shippingStatusText = (status) => {
   const map = {
-    '0': '待支付',
-    '1': '待发货',
-    '2': '已发货',
-    '3': '已签收',
-    '4': '已取消',
-    '5': '已退款'
+    '0': 'payment.history.shippingStatus.0',
+    '1': 'payment.history.shippingStatus.1',
+    '2': 'payment.history.shippingStatus.2',
+    '3': 'payment.history.shippingStatus.3',
+    '4': 'payment.history.shippingStatus.4',
+    '5': 'payment.history.shippingStatus.5'
   }
-  return map[status] || '未知状态'
+  return map[status] ? t(map[status]) : t('payment.common.unknownStatus')
 }
 
 // 是否可查看物流：仅纪念品等实物商品且已进入物流环节
@@ -569,22 +569,22 @@ const goToPay = (order) => {
 // 取消订单
 const handleCancelOrder = async (orderId) => {
   try {
-    await ElMessageBox.confirm('确定要取消订单吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.history.confirmCancel'), t('payment.common.tip'), {
+      confirmButtonText: t('payment.common.confirm'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'warning'
     })
     
     // 调用 API 取消订单
     await cancelOrder(orderId)
-    ElMessage.success('订单已取消')
+    ElMessage.success(t('payment.history.cancelSuccess'))
     
     // 重新获取订单列表
     await fetchOrders()
   } catch (error) {
     if (error !== 'cancel') {
       console.error('取消订单失败:', error)
-      ElMessage.error('取消订单失败，请重试')
+      ElMessage.error(t('payment.history.cancelFailed'))
     }
   }
 }
@@ -592,29 +592,29 @@ const handleCancelOrder = async (orderId) => {
 // 删除订单
 const handleDeleteOrder = async (orderId) => {
   try {
-    await ElMessageBox.confirm('确定要删除订单吗？此操作不可恢复！', '警告', {
-      confirmButtonText: '删除',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.history.confirmDelete'), t('payment.common.warning'), {
+      confirmButtonText: t('payment.common.delete'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'error'
     })
     
     // 调用 API 删除订单
     await deleteOrder(orderId)
-    ElMessage.success('订单已删除')
+    ElMessage.success(t('payment.history.deleteSuccess'))
     
     // 重新获取订单列表
     await fetchOrders()
   } catch (error) {
     if (error !== 'cancel') {
       console.error('删除订单失败:', error)
-      ElMessage.error('删除订单失败，请重试')
+      ElMessage.error(t('payment.history.deleteFailed'))
     }
   }
 }
 
 // 评价订单
 const reviewOrder = (orderId) => {
-  ElMessage.info('评价功能开发中')
+  ElMessage.info(t('payment.history.reviewComingSoon'))
 }
 
 // 查看订单详情

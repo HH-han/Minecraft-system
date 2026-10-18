@@ -1,10 +1,10 @@
 <template>
   <div class="shopping-cart">
     <div class="cart-header">
-      <h2 class="cart-title">购物车</h2>
+      <h2 class="cart-title">{{ $t('payment.cart.title') }}</h2>
       <div class="cart-actions">
-        <button class="action-link" @click="selectAll">全选</button>
-        <button class="action-link delete-link" @click="deleteSelected">删除选中</button>
+        <button class="action-link" @click="selectAll">{{ $t('payment.cart.selectAll') }}</button>
+        <button class="action-link delete-link" @click="deleteSelected">{{ $t('payment.cart.deleteSelected') }}</button>
       </div>
     </div>
     
@@ -20,8 +20,8 @@
                   fill="#6e6e73" p-id="20588"></path>
               </svg>
         </div>
-        <div class="empty-text">购物车是空的</div>
-        <router-link to="/product" class="primary-button">去购物</router-link>
+        <div class="empty-text">{{ $t('payment.cart.empty') }}</div>
+        <router-link to="/product" class="primary-button">{{ $t('payment.cart.goShopping') }}</router-link>
       </div>
       <div v-else class="items-list">
         <div v-for="item in cartItems" :key="item.id" class="cart-item">
@@ -43,10 +43,10 @@
               <div class="item-text">
                 <div class="item-name">{{ item.itemName || item.name }}</div>
                 <div class="item-spec" v-if="item.itemType">
-                  {{ item.itemType === 'food' ? '美食' : item.itemType === 'product' ? '纪念品' : item.itemType }}
+                  {{ item.itemType === 'food' ? $t('payment.food') : item.itemType === 'product' ? $t('payment.product') : item.itemType }}
                 </div>
               </div>
-              <button class="item-delete" @click="removeItem(item.id)" aria-label="删除">
+              <button class="item-delete" @click="removeItem(item.id)" :aria-label="$t('payment.cart.delete')">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -90,45 +90,45 @@
           >
           <span class="checkbox-custom"></span>
         </label>
-        <span class="select-label">全选</span>
-        <span class="selected-count">已选择 {{ selectedCount }} 件商品</span>
+        <span class="select-label">{{ $t('payment.cart.selectAll') }}</span>
+        <span class="selected-count">{{ $t('payment.cart.selectedCount', { count: selectedCount }) }}</span>
       </div>
       <div class="footer-right">
         <div class="total-price">
-          <span class="total-label">合计</span>
+          <span class="total-label">{{ $t('payment.cart.total') }}</span>
           <span class="price-value">¥{{ totalPrice.toFixed(2) }}</span>
         </div>
-        <button class="primary-button checkout-btn" @click="checkout">去结算</button>
+        <button class="primary-button checkout-btn" @click="checkout">{{ $t('payment.cart.checkout') }}</button>
       </div>
     </div>
 
     <!-- 收货信息：结算后订单需通过物流发货 -->
     <el-dialog
       v-model="addressVisible"
-      title="填写收货信息"
+      :title="$t('payment.cart.addressTitle')"
       width="460px"
       :close-on-click-modal="false"
     >
       <el-form ref="addressFormRef" :model="addressForm" :rules="addressRules" label-width="80px">
-        <el-form-item label="收件人" prop="receiverName">
-          <el-input v-model="addressForm.receiverName" placeholder="请输入收件人姓名" maxlength="50" />
+        <el-form-item :label="$t('payment.cart.receiverName')" prop="receiverName">
+          <el-input v-model="addressForm.receiverName" :placeholder="$t('payment.cart.receiverNamePlaceholder')" maxlength="50" />
         </el-form-item>
-        <el-form-item label="联系电话" prop="receiverPhone">
-          <el-input v-model="addressForm.receiverPhone" placeholder="请输入手机号" maxlength="20" />
+        <el-form-item :label="$t('payment.cart.receiverPhone')" prop="receiverPhone">
+          <el-input v-model="addressForm.receiverPhone" :placeholder="$t('payment.cart.receiverPhonePlaceholder')" maxlength="20" />
         </el-form-item>
-        <el-form-item label="收货地址" prop="receiverAddress">
+        <el-form-item :label="$t('payment.cart.receiverAddress')" prop="receiverAddress">
           <el-input
             v-model="addressForm.receiverAddress"
             type="textarea"
             :rows="2"
-            placeholder="请输入详细收货地址"
+            :placeholder="$t('payment.cart.receiverAddressPlaceholder')"
             maxlength="200"
           />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="addressVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="confirmAddress">确认并结算</el-button>
+        <el-button @click="addressVisible = false">{{ $t('payment.common.cancel') }}</el-button>
+        <el-button type="primary" :loading="submitting" @click="confirmAddress">{{ $t('payment.cart.confirmCheckout') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -137,6 +137,7 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { getCartList, updateCart, deleteFromCart } from '@/api/cart.js'
 import { createOrder } from '@/api/order.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -144,6 +145,7 @@ import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['checkout'])
 const router = useRouter()
+const { t } = useI18n()
 
 const cartItems = ref([])
 
@@ -157,14 +159,14 @@ const addressForm = reactive({
   receiverPhone: '',
   receiverAddress: ''
 })
-const addressRules = {
-  receiverName: [{ required: true, message: '请输入收件人姓名', trigger: 'blur' }],
+const addressRules = computed(() => ({
+  receiverName: [{ required: true, message: t('payment.cart.validation.receiverName'), trigger: 'blur' }],
   receiverPhone: [
-    { required: true, message: '请输入联系电话', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+    { required: true, message: t('payment.cart.validation.receiverPhone'), trigger: 'blur' },
+    { pattern: /^1[3-9]\d{9}$/, message: t('payment.cart.validation.receiverPhoneInvalid'), trigger: 'blur' }
   ],
-  receiverAddress: [{ required: true, message: '请输入收货地址', trigger: 'blur' }]
-}
+  receiverAddress: [{ required: true, message: t('payment.cart.validation.receiverAddress'), trigger: 'blur' }]
+}))
 
 const selectAllFlag = ref(false)
 
@@ -224,20 +226,20 @@ const decreaseQuantity = async (item) => {
 
 const removeItem = async (id) => {
   try {
-    await ElMessageBox.confirm('确定要删除这个商品吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.cart.confirmDeleteItem'), t('payment.common.tip'), {
+      confirmButtonText: t('payment.common.confirm'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'warning'
     })
     
     await deleteFromCart(id)
     cartItems.value = cartItems.value.filter(item => item.id !== id)
     updateTotal()
-    ElMessage.success('商品已删除')
+    ElMessage.success(t('payment.cart.deleteSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
       console.error('删除购物车商品失败:', error)
-      ElMessage.error('删除失败，请重试')
+      ElMessage.error(t('payment.cart.deleteFailed'))
     }
   }
 }
@@ -245,13 +247,13 @@ const removeItem = async (id) => {
 const deleteSelected = async () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
-    ElMessage.warning('请选择要删除的商品')
+    ElMessage.warning(t('payment.cart.selectToDelete'))
     return
   }
   try {
-    await ElMessageBox.confirm(`确定要删除选中的 ${selectedItems.length} 件商品吗？`, '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.cart.confirmDeleteSelected', { count: selectedItems.length }), t('payment.common.tip'), {
+      confirmButtonText: t('payment.common.confirm'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'warning'
     })
     
@@ -265,11 +267,11 @@ const deleteSelected = async () => {
     }
     // 重新获取购物车数据
     await fetchCartData()
-    ElMessage.success('选中商品已删除')
+    ElMessage.success(t('payment.cart.deleteSelectedSuccess'))
   } catch (error) {
     if (error !== 'cancel') {
       console.error('删除选中商品失败:', error)
-      ElMessage.error('删除失败，请重试')
+      ElMessage.error(t('payment.cart.deleteFailed'))
     }
   }
 }
@@ -277,7 +279,7 @@ const deleteSelected = async () => {
 const checkout = () => {
   const selectedItems = cartItems.value.filter(item => item.selected)
   if (selectedItems.length === 0) {
-    ElMessage.warning('请选择要结算的商品')
+    ElMessage.warning(t('payment.cart.selectToCheckout'))
     return
   }
   // 从 localStorage 获取用户信息
@@ -285,7 +287,7 @@ const checkout = () => {
   const userId = userInfo?.id || userInfo?.userId
 
   if (!userId) {
-    ElMessage.warning('请先登录')
+    ElMessage.warning(t('payment.cart.loginRequired'))
     router.push('/login')
     return
   }
@@ -346,7 +348,7 @@ const confirmAddress = async () => {
 
     const failedOrders = responses.filter(response => response.code !== 200)
     if (failedOrders.length > 0) {
-      ElMessage.error('部分订单创建失败，请重试')
+      ElMessage.error(t('payment.cart.orderCreatePartialFailed'))
       return
     }
 
@@ -365,7 +367,7 @@ const confirmAddress = async () => {
     })
   } catch (error) {
     console.error('创建订单失败:', error)
-    ElMessage.error('创建订单失败，请检查网络')
+    ElMessage.error(t('payment.cart.orderCreateFailed'))
   } finally {
     submitting.value = false
   }
@@ -399,12 +401,12 @@ const removePaidCartItems = async () => {
   try {
     // 逐个删除已支付的购物车条目（按购物车条目主键 ID，精准匹配）
     await Promise.all(ids.map(id => deleteFromCart(id)))
-    ElMessage.success('支付成功，已移除购物车中的对应商品')
+    ElMessage.success(t('payment.cart.paidSuccess'))
     // 重新拉取购物车列表，确保与后端一致
     await fetchCartData()
   } catch (error) {
     console.error('移除已支付购物车商品失败:', error)
-    ElMessage.error('购物车更新失败，请手动刷新')
+    ElMessage.error(t('payment.cart.cartUpdateFailed'))
   } finally {
     // 无论成功失败，清空待处理列表，避免重复处理
     pendingCartItemIds.value = []

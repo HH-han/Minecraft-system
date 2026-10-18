@@ -2,7 +2,7 @@
   <div class="predetermined-card">
     <!-- 头部：标题 + 类型筛选 + 刷新 -->
     <div class="card-header">
-      <h2 class="card-title">我的预订</h2>
+      <h2 class="card-title">{{ $t('payment.booking.title') }}</h2>
       <div class="header-actions">
         <div class="filter-tabs">
           <button
@@ -13,7 +13,7 @@
             @click="activeFilter = filter.value"
           >{{ filter.label }}</button>
         </div>
-        <button class="refresh-btn" aria-label="刷新" @click="fetchBookings">
+        <button class="refresh-btn" :aria-label="$t('payment.booking.refresh')" @click="fetchBookings">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
@@ -28,7 +28,7 @@
       <!-- 加载中 -->
       <div v-if="loading" class="state-wrapper">
         <div class="loading-spinner"></div>
-        <span class="state-text">加载预订信息中...</span>
+        <span class="state-text">{{ $t('payment.booking.loading') }}</span>
       </div>
 
       <!-- 未登录 / 无联系电话 -->
@@ -39,8 +39,8 @@
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
         </div>
-        <div class="state-text">未获取到联系电话，请先登录</div>
-        <router-link to="/login" class="primary-button">去登录</router-link>
+        <div class="state-text">{{ $t('payment.booking.noPhone') }}</div>
+        <router-link to="/login" class="primary-button">{{ $t('payment.booking.goLogin') }}</router-link>
       </div>
 
       <!-- 空数据 -->
@@ -51,8 +51,8 @@
             <path d="M939.642 98.617h-82.23v47.698c0 52.668-44.188 95.4-98.688 95.4s-98.687-42.732-98.687-95.4V98.617H607.4c0-1.117-40.9 0-95.4 0s-95.398 0.496-95.398 0h-52.639v47.698c0 52.668-44.156 95.4-98.688 95.4-54.499 0-98.688-42.732-98.688-95.4V98.617h-82.23c-27.266 0-49.346 21.367-49.346 47.698v826.78c0 26.333 22.08 47.699 49.346 47.699h855.287c27.266 0 49.345-21.366 49.345-47.7V146.316c-0.002-26.331-22.082-47.698-49.347-47.698zM725.817 861.795H298.181c-19.683 0-35.644-15.962-35.644-35.634 0-19.684 15.961-35.646 35.644-35.646h427.635c19.685 0 35.646 15.962 35.646 35.646 0.001 19.672-15.96 35.634-35.645 35.634z m0-184.195H298.181c-19.683 0-35.644-15.962-35.644-35.634 0-19.684 15.961-35.646 35.644-35.646h427.635c19.685 0 35.646 15.962 35.646 35.646 0.001 19.672-15.96 35.634-35.645 35.634z m0-184.196H298.181c-19.683 0-35.644-15.962-35.644-35.634 0-19.683 15.961-35.644 35.644-35.644h427.635c19.685 0 35.646 15.96 35.646 35.644 0.001 19.673-15.96 35.634-35.645 35.634z" fill="#d2d2d6"></path>
           </svg>
         </div>
-        <div class="state-text">暂无预订记录</div>
-        <router-link to="/predetermined" class="primary-button">去预订</router-link>
+        <div class="state-text">{{ $t('payment.booking.empty') }}</div>
+        <router-link to="/predetermined" class="primary-button">{{ $t('payment.booking.goBooking') }}</router-link>
       </div>
 
       <!-- 预订卡片列表 -->
@@ -79,7 +79,7 @@
             <div class="item-top">
               <div class="item-title-group">
                 <span class="type-badge" :class="booking.type === 'ticket' ? 'badge-ticket' : 'badge-hotel'">
-                  {{ booking.type === 'ticket' ? '门票' : '酒店' }}
+                  {{ booking.type === 'ticket' ? $t('payment.booking.ticket') : $t('payment.booking.hotel') }}
                 </span>
                 <span class="item-name">{{ booking.title }}</span>
               </div>
@@ -122,19 +122,19 @@
             <!-- 房间明细 -->
             <div v-if="booking.type === 'hotel' && booking.rooms.length" class="ticket-items">
               <span class="ticket-tag" v-for="room in booking.rooms" :key="room.id">
-                {{ room.name }} × {{ room.quantity }}间 · {{ room.nights }}晚
+                {{ $t('payment.booking.roomTag', { name: room.name, quantity: room.quantity, nights: room.nights }) }}
               </span>
             </div>
 
             <div class="item-footer">
               <div class="footer-meta">
-                <span class="booking-no">预订编号：{{ booking.id }}</span>
+                <span class="booking-no">{{ $t('payment.booking.bookingNo', { id: booking.id }) }}</span>
                 <span class="booking-time">{{ booking.createdText }}</span>
               </div>
               <div class="booking-actions" @click.stop>
-                <button type="button" class="mini-btn" @click="handleEdit(booking)">修改</button>
-                <button type="button" class="mini-btn" @click="handleCancel(booking)">取消</button>
-                <button type="button" class="mini-btn mini-btn--danger" @click="handleDelete(booking)">删除</button>
+                <button type="button" class="mini-btn" @click="handleEdit(booking)">{{ $t('payment.booking.edit') }}</button>
+                <button type="button" class="mini-btn" @click="handleCancel(booking)">{{ $t('payment.booking.cancel') }}</button>
+                <button type="button" class="mini-btn mini-btn--danger" @click="handleDelete(booking)">{{ $t('payment.booking.delete') }}</button>
               </div>
             </div>
           </div>
@@ -153,16 +153,16 @@
           >
           <span class="checkbox-custom"></span>
         </label>
-        <span class="select-label">全选</span>
-        <span class="selected-count">已选择 {{ selectedCount }} 项预订</span>
+        <span class="select-label">{{ $t('payment.booking.selectAll') }}</span>
+        <span class="selected-count">{{ $t('payment.booking.selectedCount', { count: selectedCount }) }}</span>
       </div>
       <div class="footer-right">
         <div class="total-price">
-          <span class="total-label">合计</span>
+          <span class="total-label">{{ $t('payment.booking.total') }}</span>
           <span class="price-value">¥{{ totalPrice.toFixed(2) }}</span>
         </div>
         <button class="primary-button pay-btn" :disabled="submitting" @click="checkout">
-          {{ submitting ? '创建订单中...' : '去支付' }}
+          {{ submitting ? $t('payment.booking.creating') : $t('payment.booking.pay') }}
         </button>
       </div>
     </div>
@@ -172,6 +172,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getTicketBookingList,
@@ -186,6 +187,7 @@ import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const emit = defineEmits(['checkout'])
 const router = useRouter()
+const { t } = useI18n()
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -199,11 +201,11 @@ const bookingList = ref([])
 // 本次结算的预订（支付成功后据此更新状态并移除）
 const pendingPayBookings = ref([])
 
-const filters = [
-  { label: '全部', value: 'all' },
-  { label: '门票', value: 'ticket' },
-  { label: '酒店', value: 'hotel' }
-]
+const filters = computed(() => [
+  { label: t('payment.booking.filterAll'), value: 'all' },
+  { label: t('payment.booking.ticket'), value: 'ticket' },
+  { label: t('payment.booking.hotel'), value: 'hotel' }
+])
 
 // 计算酒店入住晚数
 const calcNights = (checkIn, checkOut) => {
@@ -235,8 +237,10 @@ const mapTicketBooking = (booking) => {
   const attractionNames = [...new Set(items.map(item => item.attractionName).filter(Boolean))]
   const attractionText = attractionNames.join('、')
   const title = attractionText
-    ? (items.length === 1 ? `${attractionText} · ${items[0].ticketName}` : `${attractionText} · 门票预订（${items.length}种票）`)
-    : (items.length === 1 ? items[0].ticketName : `景点门票预订（${items.length}种票）`)
+    ? (items.length === 1
+        ? t('payment.booking.ticketTitleSame', { attraction: attractionText, ticket: items[0].ticketName })
+        : t('payment.booking.ticketTitleMulti', { attraction: attractionText, count: items.length }))
+    : (items.length === 1 ? items[0].ticketName : t('payment.booking.ticketTitleOnlyMulti', { count: items.length }))
   return {
     key: `ticket-${booking.id}`,
     type: 'ticket',
@@ -244,8 +248,8 @@ const mapTicketBooking = (booking) => {
     title,
     price,
     items,
-    dateText: `游玩日期：${formatDate(booking.visitDate)}`,
-    detailText: `联系人：${booking.contactName} · ${totalQuantity} 张`,
+    dateText: t('payment.booking.visitDate', { date: formatDate(booking.visitDate) }),
+    detailText: t('payment.booking.ticketContact', { name: booking.contactName, count: totalQuantity }),
     createdText: formatCreated(booking.createdAt),
     attractionText,
     selected: false
@@ -256,7 +260,7 @@ const mapTicketBooking = (booking) => {
 const mapHotelBooking = (booking) => {
   const nights = calcNights(booking.checkInDate, booking.checkOutDate)
   const items = booking.items || []
-  let title = booking.roomName || '酒店预订'
+  let title = booking.roomName || t('payment.booking.hotelTitle')
   let addressText = ''
   let rooms = []
   let price = 0
@@ -289,8 +293,12 @@ const mapHotelBooking = (booking) => {
     price,
     rooms,
     items,
-    dateText: `${formatDate(booking.checkInDate)} 入住 · ${formatDate(booking.checkOutDate)} 离店 · 共 ${nights} 晚`,
-    detailText: `联系人：${booking.contactName} · 入住 ${booking.guests} 人`,
+    dateText: t('payment.booking.hotelDate', {
+      checkIn: formatDate(booking.checkInDate),
+      checkOut: formatDate(booking.checkOutDate),
+      nights
+    }),
+    detailText: t('payment.booking.hotelContact', { name: booking.contactName, guests: booking.guests }),
     createdText: formatCreated(booking.createdAt),
     addressText,
     selected: false
@@ -379,12 +387,12 @@ useAutoRefresh(fetchBookings)
 // 结算：为每项预订创建订单，触发支付流程
 const checkout = async () => {
   if (selectedBookings.value.length === 0) {
-    ElMessage.warning('请选择要支付的预订')
+    ElMessage.warning(t('payment.booking.selectRequired'))
     return
   }
   const userId = getUserId()
   if (!userId) {
-    ElMessage.warning('请先登录')
+    ElMessage.warning(t('payment.booking.loginRequired'))
     return
   }
   if (submitting.value) return
@@ -410,7 +418,7 @@ const checkout = async () => {
     const responses = await Promise.all(orderPromises)
     const failed = responses.filter(response => response.code !== 200)
     if (failed.length > 0) {
-      ElMessage.error('部分订单创建失败，请重试')
+      ElMessage.error(t('payment.booking.orderCreatePartialFailed'))
       return
     }
 
@@ -436,7 +444,7 @@ const checkout = async () => {
     })
   } catch (error) {
     console.error('创建预订订单失败:', error)
-    ElMessage.error('创建订单失败，请检查网络')
+    ElMessage.error(t('payment.booking.orderCreateFailed'))
   } finally {
     submitting.value = false
   }
@@ -451,9 +459,9 @@ const removeBookingFromList = (booking) => {
 // 取消预订
 const handleCancel = async (booking) => {
   try {
-    await ElMessageBox.confirm('确定要取消该预订吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.booking.confirmCancel'), t('payment.common.tip'), {
+      confirmButtonText: t('payment.common.confirm'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'warning'
     })
   } catch {
@@ -464,23 +472,23 @@ const handleCancel = async (booking) => {
       ? await cancelTicketBooking(booking.id)
       : await cancelHotelBooking(booking.id)
     if (response && response.code === 200) {
-      ElMessage.success('预订已取消')
+      ElMessage.success(t('payment.booking.cancelSuccess'))
       removeBookingFromList(booking)
     } else {
-      ElMessage.error(response?.message || '取消失败，请重试')
+      ElMessage.error(response?.message || t('payment.booking.cancelFailed'))
     }
   } catch (error) {
     console.error('取消预订失败:', error)
-    ElMessage.error('取消失败，请重试')
+    ElMessage.error(t('payment.booking.cancelFailed'))
   }
 }
 
 // 删除预订
 const handleDelete = async (booking) => {
   try {
-    await ElMessageBox.confirm('确定要删除该预订吗？此操作不可恢复！', '警告', {
-      confirmButtonText: '删除',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('payment.booking.confirmDelete'), t('payment.common.warning'), {
+      confirmButtonText: t('payment.common.delete'),
+      cancelButtonText: t('payment.common.cancel'),
       type: 'error'
     })
   } catch {
@@ -491,14 +499,14 @@ const handleDelete = async (booking) => {
       ? await deleteTicketBooking(booking.id)
       : await deleteHotelBooking(booking.id)
     if (response && response.code === 200) {
-      ElMessage.success('预订已删除')
+      ElMessage.success(t('payment.booking.deleteSuccess'))
       removeBookingFromList(booking)
     } else {
-      ElMessage.error(response?.message || '删除失败，请重试')
+      ElMessage.error(response?.message || t('payment.booking.deleteFailed'))
     }
   } catch (error) {
     console.error('删除预订失败:', error)
-    ElMessage.error('删除失败，请重试')
+    ElMessage.error(t('payment.booking.deleteFailed'))
   }
 }
 
@@ -519,11 +527,11 @@ const completePaidBookings = async () => {
   if (pendingPayBookings.value.length === 0) return
   pendingPayBookings.value = []
   try {
-    ElMessage.success('支付成功，已移除对应预订')
+    ElMessage.success(t('payment.booking.paidSuccess'))
     await fetchBookings()
   } catch (error) {
     console.error('刷新预订列表失败:', error)
-    ElMessage.error('预订列表刷新失败，请手动刷新')
+    ElMessage.error(t('payment.booking.refreshFailed'))
   }
 }
 

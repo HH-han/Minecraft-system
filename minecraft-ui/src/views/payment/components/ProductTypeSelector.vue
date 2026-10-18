@@ -26,38 +26,43 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   types: {
     type: Array,
-    default: () => [
-      {
-        label: '版本',
-        options: [
-          { label: 'Java版', value: 'java' },
-          { label: '基岩版', value: 'bedrock' },
-          { label: '教育版', value: 'education' }
-        ]
-      },
-      {
-        label: '规格',
-        options: [
-          { label: '标准版', value: 'standard' },
-          { label: '豪华版', value: 'deluxe' },
-          { label: '终极版', value: 'ultimate' }
-        ]
-      }
-    ]
+    default: null
   }
 })
+
+const types = computed(() => props.types || [
+  {
+    label: t('payment.productType.version'),
+    options: [
+      { label: t('payment.productType.java'), value: 'java' },
+      { label: t('payment.productType.bedrock'), value: 'bedrock' },
+      { label: t('payment.productType.education'), value: 'education' }
+    ]
+  },
+  {
+    label: t('payment.productType.spec'),
+    options: [
+      { label: t('payment.productType.standard'), value: 'standard' },
+      { label: t('payment.productType.deluxe'), value: 'deluxe' },
+      { label: t('payment.productType.ultimate'), value: 'ultimate' }
+    ]
+  }
+])
 
 const emit = defineEmits(['optionChange'])
 
 const selectedOptions = reactive({})
 
 // 初始化默认选中第一个选项
-props.types.forEach(type => {
+types.value.forEach(type => {
   if (type.options && type.options.length > 0) {
     selectedOptions[type.label] = type.options[0].value
   }

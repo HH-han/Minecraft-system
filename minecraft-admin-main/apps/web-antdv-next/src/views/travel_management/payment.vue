@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { EchartsUIType } from '@vben/plugins/echarts';
 import type { TableColumnsType } from 'antdv-next';
 
 import { computed, onMounted, ref } from 'vue';
@@ -6,6 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 import { Page } from '@vben/common-ui';
 import { RefreshCw, Search } from '@vben/icons';
 import { $t } from '@vben/locales';
+import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 import {
   Button,
@@ -46,6 +48,61 @@ const refundSubmitting = ref(false);
 const refundRecord = ref<any>(null);
 const refundAmount = ref<number>();
 const refundReason = ref('');
+
+// 流水可视化数据（独立于表格分页，聚合全部流水）
+const flowInsights = ref<any[]>([]);
+const channelChartRef = ref<EchartsUIType>();
+const trendChartRef = ref<EchartsUIType>();
+const { renderEcharts: renderChannelChart } = useEcharts(channelChartRef);
+const { renderEcharts: renderTrendChart } = useEcharts(trendChartRef);
+
+const flowSummary = computed(() => {
+  const records = flowInsights.value;
+  const totalAmount = records.reduce(
+    (sum, item) => sum + Number(item.amount ?? 0),
+    0,
+  );
+  const successRecords = records.filter((item) => item.status === 'SUCCESS');
+  const successAmount = successRecords.reduce(
+    (sum, item) => sum + Number(item.amount ?? 0),
+    0,
+  );
+  return {
+    count: records.length,
+    totalAmount: totalAmount.toFixed(2),
+    successAmount: successAmount.toFixed(2),
+    successRate: records.length
+      ? ((successRecords.length / records.length) * 100).toFixed(1)
+      : '0.0',
+  };
+});
+
+const flowCards = computed(() => [
+  {
+    key: 'count',
+    label: $t('travel.payment_page.insight.count'),
+    tone: 'text-blue-500',
+    value: flowSummary.value.count,
+  },
+  {
+    key: 'totalAmount',
+    label: $t('travel.payment_page.insight.totalAmount'),
+    tone: 'text-emerald-500',
+    value: `¥${flowSummary.value.totalAmount}`,
+  },
+  {
+    key: 'successAmount',
+    label: $t('travel.payment_page.insight.successAmount'),
+    tone: 'text-cyan-500',
+    value: `¥${flowSummary.value.successAmount}`,
+  },
+  {
+    key: 'successRate',
+    label: $t('travel.payment_page.insight.successRate'),
+    tone: 'text-orange-500',
+    value: `${flowSummary.value.successRate}%`,
+  },
+]);
 
 const channels = ['MOCK', 'WECHAT', 'ALIPAY', 'UNIONPAY'];
 const payStatuses = ['INIT', 'PAYING', 'SUCCESS', 'FAILED', 'CLOSED', 'REFUNDING', 'REFUNDED'];
@@ -136,6 +193,104 @@ function refundStatusColor(value?: number) {
   return 'default';
 }
 
+async function fetchFlowInsights() {
+  try {
+    const res: any = await getPayFlowPage({
+      pageNum: 1,
+      pageSize: 500,
+      payNo: payNo.value || undefined,
+    });
+    flowInsights.value = res?.records ?? [];
+    renderFlowCharts();
+  } catch {
+    flowInsights.value = [];
+  }
+}
+
+function renderFlowCharts() {
+  const channelMap = new Map<string, number>();
+  const trendMap = new Map<string, number>();
+
+  flowInsights.value.forEach((item) => {
+    const channel = String(item.channelCode || item.channel || 'MOCK');
+    channelMap.set(
+      channel,
+      (channelMap.get(channel) ?? 0) + Number(item.amount ?? 0),
+    );
+    const date = String(item.createdAt ?? '').slice(0, 10);
+    if (date) {
+      trendMap.set(date, (trendMap.get(date) ?? 0) + Number(item.amount ?? 0));
+    }
+  });
+
+  if (channelMap.size > 0) {
+    renderChannelChart({
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) =>
+          `${params.name}<br/>¥${Number(params.value).toFixed(2)} (${params.percent}%)`,
+      },
+      legend: { bottom: 0, type: 'scroll' },
+      series: [
+        {
+          type: 'pie',
+          radius: ['45%', '70%'],
+          center: ['50%', '45%'],
+          avoidLabelOverlap: true,
+          itemStyle: { borderRadius: 6, borderColor: 'transparent', borderWidth: 2 },
+          label: { show: false },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 14,
+              fontWeight: 'bold',
+              formatter: '{b}\n{d}%',
+            },
+          },
+          data: [...channelMap.entries()].map(([key, value]) => ({
+            name: $t(`travel.payment_page.channel.${key}`),
+            value: Number(value.toFixed(2)),
+          })),
+        },
+      ],
+    });
+  }
+
+  const trendEntries = [...trendMap.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .slice(-14);
+
+  if (trendEntries.length > 0) {
+    renderTrendChart({
+      grid: { bottom: 28, left: 64, right: 20, top: 24 },
+      tooltip: {
+        trigger: 'axis',
+        valueFormatter: (value: any) => `¥${Number(value).toFixed(2)}`,
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: trendEntries.map(([date]) => date.slice(5)),
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { formatter: (value: any) => `¥${value}` },
+      },
+      series: [
+        {
+          name: $t('travel.payment_page.insight.trend_series'),
+          type: 'line',
+          smooth: true,
+          symbolSize: 6,
+          areaStyle: { opacity: 0.12 },
+          lineStyle: { width: 2 },
+          data: trendEntries.map(([, amount]) => Number(amount.toFixed(2))),
+        },
+      ],
+    });
+  }
+}
+
 async function fetchData() {
   loading.value = true;
   try {
@@ -169,6 +324,9 @@ async function fetchData() {
     }
     list.value = res?.records ?? [];
     total.value = res?.total ?? 0;
+    if (activeTab.value === 'flows') {
+      fetchFlowInsights();
+    }
   } catch {
     // 统一错误提示
   } finally {
@@ -299,6 +457,60 @@ onMounted(fetchData);
           {{ $t('logistics.common.refresh') }}
         </Button>
       </div>
+
+      <template v-if="activeTab === 'flows'">
+        <div class="grid grid-cols-2 gap-3 border-b p-4 xl:grid-cols-4">
+          <div
+            v-for="card in flowCards"
+            :key="card.key"
+            class="rounded-lg border border-border bg-accent/40 px-4 py-3"
+          >
+            <div class="text-xs text-muted-foreground">{{ card.label }}</div>
+            <div class="mt-1 text-xl font-semibold tabular-nums" :class="card.tone">
+              {{ card.value }}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-3 border-b p-4 xl:grid-cols-2">
+          <div class="rounded-lg border border-border p-4">
+            <div class="mb-2 text-sm font-medium">
+              {{ $t('travel.payment_page.insight.channel_title') }}
+            </div>
+            <div class="h-56 w-full">
+              <EchartsUI
+                v-if="flowInsights.length > 0"
+                ref="channelChartRef"
+                height="100%"
+              />
+              <div
+                v-else
+                class="flex h-full items-center justify-center text-sm text-muted-foreground"
+              >
+                {{ $t('travel.payment_page.insight.empty') }}
+              </div>
+            </div>
+          </div>
+          <div class="rounded-lg border border-border p-4">
+            <div class="mb-2 text-sm font-medium">
+              {{ $t('travel.payment_page.insight.trend_title') }}
+            </div>
+            <div class="h-56 w-full">
+              <EchartsUI
+                v-if="flowInsights.length > 0"
+                ref="trendChartRef"
+                height="100%"
+              />
+              <div
+                v-else
+                class="flex h-full items-center justify-center text-sm text-muted-foreground"
+              >
+                {{ $t('travel.payment_page.insight.empty') }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
 
       <Table
         :columns="columns"
