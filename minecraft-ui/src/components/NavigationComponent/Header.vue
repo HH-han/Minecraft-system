@@ -1,6 +1,6 @@
 <template>
   <!-- 导航栏 -->
-  <div class="navbar-background">
+  <div v-if="!isRailwayRoute" class="navbar-background">
     <div class="navbar-background-container">
       <div class="navbar-home">
         <!-- 移动端汉堡菜单按钮（≤992px 显示） -->
@@ -140,7 +140,7 @@
   </div>
   <!-- 移动端导航面板（≤992px 显示，含主导航与更多菜单） -->
   <Transition name="mobile-nav">
-    <div v-if="mobileMenuOpen" class="mobile-nav-panel" @click.stop>
+    <div v-if="mobileMenuOpen && !isRailwayRoute" class="mobile-nav-panel" @click.stop>
       <div class="mobile-nav-section">{{ $t('header.nav.sectionNav') }}</div>
       <button v-for="(navItem, i) in navItems" :key="navItem.path" class="mobile-nav-item"
         :class="{ 'nav-item-active': isActiveNav(navItem.path) }" :style="{ animationDelay: `${i * 40}ms` }"
@@ -278,6 +278,9 @@ const userMenuItems = computed(() => [
 
 const router = useRouter();
 const route = useRoute();
+
+/** 铁路购票模块使用独立的 12306 风格导航，隐藏全站导航栏 */
+const isRailwayRoute = computed(() => route.path === '/ticket' || route.path.startsWith('/ticket/'));
 
 /** 判断导航项是否为当前激活路由（含子路径） */
 const isActiveNav = (path) => {

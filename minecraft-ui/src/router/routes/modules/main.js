@@ -149,13 +149,45 @@ export default [
     name: 'Ticket',
     component: () => import('@/views/Ticket/index.vue'),
     meta: {
-      title: '机票',
+      title: '铁路购票',
       requiresAuth: false,
       nav: 'more',
       navLabel: '购票服务',
       navLabelKey: 'header.nav.ticket',
       order: 4,
     },
+    children: [
+      {
+        path: '',
+        name: 'RailwayHome',
+        component: () => import('@/views/Ticket/Home.vue'),
+        meta: { title: '铁路购票', requiresAuth: false },
+      },
+      {
+        path: 'list',
+        name: 'RailwayTrainList',
+        component: () => import('@/views/Ticket/TrainList.vue'),
+        meta: { title: '车次查询', requiresAuth: false },
+      },
+      {
+        path: 'order',
+        name: 'RailwayCreateOrder',
+        component: () => import('@/views/Ticket/CreateOrder.vue'),
+        meta: { title: '确认订单', requiresAuth: true },
+      },
+      {
+        path: 'my-orders',
+        name: 'RailwayMyOrders',
+        component: () => import('@/views/Ticket/MyOrders.vue'),
+        meta: { title: '我的车票', requiresAuth: true },
+      },
+      {
+        path: 'timetable',
+        name: 'RailwayTimetable',
+        component: () => import('@/views/Ticket/Timetable.vue'),
+        meta: { title: '时刻表查询', requiresAuth: false },
+      },
+    ],
   },
   {
     path: '/travel',
