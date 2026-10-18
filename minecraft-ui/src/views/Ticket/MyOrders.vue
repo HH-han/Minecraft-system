@@ -193,7 +193,8 @@ const load = async () => {
 }
 
 const onPayMessage = (event) => {
-  if (event.data?.action === 'closeModal' && payVisible.value) {
+  if (!payVisible.value) return
+  if (event.data?.action === 'closeModal' || event.data?.action === 'closePay') {
     closePay()
   }
 }

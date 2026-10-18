@@ -19,6 +19,10 @@
     "expireTime": "Valid until {date}",
     "notPaid": "No paid membership",
     "paid": "Paid Member",
+    "pointsTitle": "Member Points",
+    "pointsDesc": "Redeem your points for rewards in the points mall",
+    "pointsBalance": "Available Points",
+    "pointsMall": "Go to Points Mall",
     "stats": {
       "discount": "Order Discount",
       "pointsRate": "Points Rate",

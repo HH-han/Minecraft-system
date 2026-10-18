@@ -383,10 +383,13 @@ const submitOrder = async () => {
   }
 }
 
-// 支付成功后 PayPage 会发送 closeModal 消息
+// 支付成功后 PayPage 会发送 closeModal 消息；点击遮罩发送 closePay 消息
 const onPayMessage = (event) => {
-  if (event.data?.action === 'closeModal' && payVisible.value) {
+  if (!payVisible.value) return
+  if (event.data?.action === 'closeModal') {
     closePay(true)
+  } else if (event.data?.action === 'closePay') {
+    closePay()
   }
 }
 

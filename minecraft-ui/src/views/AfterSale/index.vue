@@ -3,17 +3,17 @@
     <header class="as-hero">
       <div>
         <p class="as-hero__eyebrow">AFTER-SALE</p>
-        <h1 class="as-hero__title">售后服务</h1>
-        <p class="as-hero__sub">申请退款、退货与换货，跟踪处理进度</p>
+        <h1 class="as-hero__title">{{ $t('afterSale.title') }}</h1>
+        <p class="as-hero__sub">{{ $t('afterSale.subtitle') }}</p>
       </div>
       <div class="as-hero__actions">
         <el-button round @click="fetchList">
           <el-icon class="as-mr"><Refresh /></el-icon>
-          刷新
+          {{ $t('afterSale.refresh') }}
         </el-button>
         <el-button type="primary" round @click="openApply">
           <el-icon class="as-mr"><Plus /></el-icon>
-          申请售后
+          {{ $t('afterSale.apply') }}
         </el-button>
       </div>
     </header>
@@ -27,45 +27,52 @@
         :row-style="rowStyle"
         empty-text=" "
       >
-        <el-table-column prop="afterSaleNo" label="售后单号" min-width="180">
+        <el-table-column prop="afterSaleNo" :label="$t('afterSale.table.afterSaleNo')" min-width="180">
           <template #default="{ row }">
             <span class="as-mono">{{ row.afterSaleNo }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="itemName" label="商品" min-width="150" show-overflow-tooltip />
-        <el-table-column prop="quantity" label="数量" width="72" />
-        <el-table-column label="类型" width="110">
+        <el-table-column
+          prop="itemName"
+          :label="$t('afterSale.table.item')"
+          min-width="150"
+          show-overflow-tooltip
+        />
+        <el-table-column prop="quantity" :label="$t('afterSale.table.quantity')" width="72" />
+        <el-table-column :label="$t('afterSale.table.type')" width="110">
           <template #default="{ row }">
-            <span class="as-chip as-chip--type">{{ row.typeDesc || row.type }}</span>
+            <span class="as-chip as-chip--type">{{ typeText(row) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="120">
+        <el-table-column :label="$t('afterSale.table.status')" width="120">
           <template #default="{ row }">
             <span class="as-chip" :class="`as-chip--${statusKey(row.status)}`">
-              {{ row.statusDesc || '-' }}
+              {{ statusText(row) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="退款金额" width="120">
+        <el-table-column :label="$t('afterSale.table.refundAmount')" width="120">
           <template #default="{ row }">
             <span class="as-amount">¥{{ row.actualAmount ?? row.refundAmount ?? '-' }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="申请时间" width="170">
+        <el-table-column :label="$t('afterSale.table.createTime')" width="170">
           <template #default="{ row }">
             <span class="as-time">{{ formatTime(row.createTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column :label="$t('afterSale.table.actions')" width="150" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDetail(row.id)">详情</el-button>
+            <el-button link type="primary" @click="openDetail(row.id)">
+              {{ $t('afterSale.table.detail') }}
+            </el-button>
             <el-button
               v-if="row.status === 0 || row.status === 1"
               link
               type="danger"
               @click="handleCancel(row)"
             >
-              撤销
+              {{ $t('afterSale.table.cancel') }}
             </el-button>
           </template>
         </el-table-column>
@@ -73,8 +80,8 @@
 
       <div v-if="!loading && list.length === 0" class="as-empty">
         <div class="as-empty__icon">↺</div>
-        <p class="as-empty__title">暂无售后记录</p>
-        <p class="as-empty__desc">如对订单有疑问，可发起售后申请</p>
+        <p class="as-empty__title">{{ $t('afterSale.emptyTitle') }}</p>
+        <p class="as-empty__desc">{{ $t('afterSale.emptyDesc') }}</p>
       </div>
 
       <div class="as-pagination">
@@ -97,6 +104,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Refresh } from '@element-plus/icons-vue'
 import { cancelAfterSale, getAfterSalePage } from '@/api/afterSale.js'
@@ -105,6 +113,7 @@ import ApplyDialog from './components/ApplyDialog.vue'
 import DetailDialog from './components/DetailDialog.vue'
 
 const route = useRoute()
+const { t, te } = useI18n()
 
 const loading = ref(false)
 const list = ref([])
@@ -123,6 +132,16 @@ const statusKey = (status) => {
   if (status === 2 || status === 7) return 'idle'
   if (status === 3 || status === 4 || status === 5) return 'warn'
   return 'active'
+}
+
+const statusText = (row) => {
+  const key = `afterSale.status.${row.status}`
+  return te(key) ? t(key) : row.statusDesc || '-'
+}
+
+const typeText = (row) => {
+  const key = `afterSale.type.${row.type}`
+  return te(key) ? t(key) : row.typeDesc || row.type
 }
 
 const formatTime = (v) => (v ? String(v).replace('T', ' ') : '-')
@@ -162,7 +181,7 @@ const handlePageChange = (p) => {
 useAutoRefresh(fetchList)
 
 const openApply = () => {
-  applyOrderId.value = route.query.orderId
+  applyOrderId.value = route.query.orderId || undefined
   applyVisible.value = true
 }
 
@@ -177,12 +196,16 @@ const onApplySuccess = () => {
 
 const handleCancel = async (row) => {
   try {
-    await ElMessageBox.confirm('确定撤销该售后申请吗？', '撤销确认', { type: 'warning' })
+    await ElMessageBox.confirm(
+      t('afterSale.cancelConfirmText'),
+      t('afterSale.cancelConfirmTitle'),
+      { type: 'warning' }
+    )
   } catch {
     return
   }
   await cancelAfterSale(row.id)
-  ElMessage.success('已撤销')
+  ElMessage.success(t('afterSale.cancelSuccess'))
   fetchList()
 }
 

@@ -514,9 +514,10 @@ function closePay() {
   loadAll().catch(() => {})
 }
 
-// 支付成功后 PayPage 会发送 closeModal 消息
+// 支付成功后 PayPage 会发送 closeModal 消息；点击遮罩发送 closePay 消息
 function onPayMessage(event) {
-  if (event.data?.action === 'closeModal' && payVisible.value) {
+  if (!payVisible.value) return
+  if (event.data?.action === 'closeModal' || event.data?.action === 'closePay') {
     closePay()
   }
 }

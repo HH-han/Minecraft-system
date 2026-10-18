@@ -19,6 +19,10 @@
     "expireTime": "有效期至 {date}",
     "notPaid": "暂未开通付费会员",
     "paid": "付费会员",
+    "pointsTitle": "会员积分",
+    "pointsDesc": "积分可在积分商城兑换好物",
+    "pointsBalance": "可用积分",
+    "pointsMall": "去积分商城",
     "stats": {
       "discount": "下单折扣",
       "pointsRate": "积分倍率",

@@ -66,6 +66,81 @@
         </article>
       </section>
 
+      <!-- 会员积分与会员等级 -->
+      <section class="pc-member">
+        <article class="pc-member-card theme-transition">
+          <header class="pc-member-card__head">
+            <span class="pc-member-card__icon pc-member-card__icon--level"><i class="fas fa-crown"></i></span>
+            <div class="pc-member-card__title">
+              <h2>{{ $t('member.level') }}</h2>
+              <p>{{ levelName || $t('member.levelNames.0') }}</p>
+            </div>
+            <span class="pc-member-card__tag" :class="{ 'is-on': memberInfo.isPaid === 1 }">
+              {{ memberInfo.isPaid === 1 ? $t('member.paid') : $t('member.notPaid') }}
+            </span>
+          </header>
+
+          <div class="pc-level">
+            <div class="pc-level__row">
+              <span>{{ $t('member.growth') }}</span>
+              <strong>{{ memberInfo.growth || 0 }}</strong>
+            </div>
+            <div class="pc-level__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+              :aria-valuenow="levelProgress">
+              <span :style="{ width: `${levelProgress}%` }"></span>
+            </div>
+            <p class="pc-level__hint">
+              {{ Number(memberInfo.nextLevelGrowth) > 0
+                ? $t('member.nextLevel', { value: memberInfo.nextLevelGrowth })
+                : $t('member.maxLevel') }}
+            </p>
+            <div class="pc-mini-chips">
+              <span class="pc-mini-chip">
+                <i class="fas fa-bolt"></i>{{ $t('member.stats.pointsRate') }} {{ pointsRateText }}
+              </span>
+              <span class="pc-mini-chip" v-if="memberInfo.isPaid === 1 && memberInfo.expireTime">
+                <i class="fas fa-hourglass-half"></i>{{ $t('member.expireTime', { date: formatDay(memberInfo.expireTime) }) }}
+              </span>
+            </div>
+          </div>
+
+          <button class="pc-member-card__link" type="button" @click="goToMember">
+            {{ $t('member.title') }}
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </article>
+
+        <article class="pc-member-card theme-transition">
+          <header class="pc-member-card__head">
+            <span class="pc-member-card__icon pc-member-card__icon--points"><i class="fas fa-coins"></i></span>
+            <div class="pc-member-card__title">
+              <h2>{{ $t('member.pointsTitle') }}</h2>
+              <p>{{ $t('member.pointsDesc') }}</p>
+            </div>
+          </header>
+
+          <div class="pc-points">
+            <div class="pc-points__value">
+              <strong>{{ userPoints ?? 0 }}</strong>
+              <span>{{ $t('member.pointsBalance') }}</span>
+            </div>
+            <div class="pc-mini-chips">
+              <span class="pc-mini-chip">
+                <i class="fas fa-gem"></i>{{ $t('member.stats.pointsRate') }} {{ pointsRateText }}
+              </span>
+              <span class="pc-mini-chip" v-if="Number(memberInfo.signContinuous) > 0">
+                <i class="fas fa-calendar-check"></i>{{ $t('member.signDaysValue', { value: memberInfo.signContinuous }) }}
+              </span>
+            </div>
+          </div>
+
+          <button class="pc-member-card__link" type="button" @click="goToPoints">
+            {{ $t('member.pointsMall') }}
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </article>
+      </section>
+
       <!-- 快捷入口 -->
       <section class="pc-entries">
         <button v-for="entry in quickEntries" :key="entry.title" type="button" class="pc-entry theme-transition"
@@ -348,8 +423,10 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Edit, Lock } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { getUserInfo, updateUserInfo, updatePassword, uploadAvatar } from '@/api/user';
 import { getUserPoints } from '@/api/points';
+import { getMemberInfo } from '@/api/member';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 // 用户信息 (根据后端返回完整字段)
@@ -378,12 +455,29 @@ const userInfo = ref({
 // 积分信息
 const userPoints = ref(0);
 
+// 会员信息（等级 / 成长值 / 积分倍率）
+const memberInfo = ref({
+  growth: 0,
+  level: 0,
+  levelName: '',
+  levelMinGrowth: 0,
+  nextLevelGrowth: 0,
+  discount: 1,
+  pointsRate: 1,
+  isPaid: 0,
+  expireTime: null,
+  signContinuous: 0
+});
+
 // 加载状态
 const loading = ref(false);
 const passwordLoading = ref(false);
 
 // 路由实例
 const router = useRouter();
+
+// 国际化
+const { t, te } = useI18n();
 
 // 模态框状态
 const showEditModal = ref(false);
@@ -461,6 +555,28 @@ const statCards = computed(() => [
   { key: 'updateTime', label: '最近更新', value: formatDay(userInfo.value.updateTime) || '—', icon: 'fas fa-clock', tone: 'violet' }
 ]);
 
+// 会员等级名称（按等级序号取国际化文案，兜底后端返回名称）
+const levelName = computed(() => {
+  const key = `member.levelNames.${memberInfo.value.level}`;
+  return te(key) ? t(key) : memberInfo.value.levelName || '';
+});
+
+// 积分倍率文案
+const pointsRateText = computed(() => t('member.pointsRate', {
+  value: Number(memberInfo.value.pointsRate ?? 1)
+}));
+
+// 当前等级成长进度
+const levelProgress = computed(() => {
+  const growth = Number(memberInfo.value.growth) || 0;
+  const min = Number(memberInfo.value.levelMinGrowth) || 0;
+  const next = Number(memberInfo.value.nextLevelGrowth) || 0;
+  if (!next) return 100;
+  const span = growth - min + next;
+  if (span <= 0) return 0;
+  return Math.min(100, Math.max(0, Math.round(((growth - min) / span) * 100)));
+});
+
 // 初始化获取用户信息
 const onEscKey = (e) => {
   if (e.key !== 'Escape') return;
@@ -471,6 +587,7 @@ const onEscKey = (e) => {
 onMounted(() => {
   fetchUserInfo();
   fetchUserPoints();
+  fetchMemberInfo();
   window.addEventListener('keydown', onEscKey);
 });
 
@@ -517,13 +634,31 @@ const fetchUserPoints = async () => {
   }
 };
 
+// 获取会员信息（等级 / 成长值 / 积分倍率）
+const fetchMemberInfo = async () => {
+  try {
+    const response = await getMemberInfo();
+    if (response?.code === 200 && response.data) {
+      memberInfo.value = { ...memberInfo.value, ...response.data };
+    }
+  } catch (error) {
+    console.error('获取会员信息失败:', error);
+  }
+};
+
 // 数据变更后自动刷新
 useAutoRefresh(fetchUserInfo);
 useAutoRefresh(fetchUserPoints);
+useAutoRefresh(fetchMemberInfo);
 
 // 跳转到积分商城
 const goToPoints = () => {
   router.push('/points');
+};
+
+// 跳转到会员中心
+const goToMember = () => {
+  router.push('/member');
 };
 
 // 跳转到物流详情
@@ -1066,6 +1201,220 @@ const formatDay = (dateString) => {
 .tone-violet .pc-stat__icon {
   background: color-mix(in srgb, var(--theme-accent-2) 16%, transparent);
   color: var(--theme-accent-2);
+}
+
+/* ========== 会员积分与会员等级 ========== */
+.pc-member {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.pc-member-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 24px;
+  border-radius: var(--theme-radius-lg);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow-sm);
+  transition: transform var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease);
+}
+
+.pc-member-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--theme-border-strong);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.pc-member-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pc-member-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--theme-radius-sm);
+  font-size: 16px;
+}
+
+.pc-member-card__icon--level {
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+}
+
+.pc-member-card__icon--points {
+  background: var(--theme-info-soft);
+  color: var(--theme-info);
+}
+
+.pc-member-card__title {
+  flex: 1;
+  min-width: 0;
+}
+
+.pc-member-card__title h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--theme-text-1);
+}
+
+.pc-member-card__title p {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pc-member-card__tag {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pc-member-card__tag.is-on {
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+}
+
+.pc-level {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pc-level__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--theme-text-2);
+}
+
+.pc-level__row strong {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-1);
+}
+
+.pc-level__bar {
+  height: 8px;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-bg-surface-2);
+  overflow: hidden;
+}
+
+.pc-level__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--theme-warning), var(--theme-primary));
+  transition: width 0.5s var(--theme-ease);
+}
+
+.pc-level__hint {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--theme-text-3);
+}
+
+.pc-mini-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pc-mini-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 12px;
+}
+
+.pc-mini-chip i {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.pc-points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pc-points__value {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.pc-points__value strong {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--theme-text-1);
+}
+
+.pc-points__value span {
+  font-size: 12.5px;
+  color: var(--theme-text-3);
+}
+
+.pc-member-card__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 8px 14px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius-pill);
+  background: var(--theme-bg-surface);
+  color: var(--theme-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    color var(--theme-duration) var(--theme-ease);
+}
+
+.pc-member-card__link:hover {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary-text);
+}
+
+.pc-member-card__link:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+.pc-member-card__link i {
+  font-size: 11px;
 }
 
 /* ========== 快捷入口 ========== */
@@ -1741,6 +2090,19 @@ const formatDay = (dateString) => {
 
   .pc-stat__value {
     font-size: 17px;
+  }
+
+  .pc-member {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .pc-member-card {
+    padding: 18px;
+  }
+
+  .pc-points__value strong {
+    font-size: 28px;
   }
 
   .pc-entry {
