@@ -1027,6 +1027,8 @@ watch(totalPages, (pages) => {
   border-top: 1px solid var(--theme-hairline);
   gap: 12px;
   flex-wrap: wrap;
+  /* 底部信息栏贴底，让卡片内容铺满整行高度 */
+  margin-top: auto;
 }
 
 .order-total {
