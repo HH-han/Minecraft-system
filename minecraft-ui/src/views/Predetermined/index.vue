@@ -3,15 +3,16 @@
     <div class="page-wrapper">
       <!-- 页面头部：标题 + 描述 -->
       <header class="page-header">
-        <h1 class="page-title">预订服务</h1>
-        <p class="page-subtitle">选择规格数量以及联系人，完成您的旅行预订</p>
+        <span class="page-eyebrow">{{ $t('predetermined.page.eyebrow') }}</span>
+        <h1 class="page-title">{{ $t('predetermined.page.title') }}</h1>
+        <p class="page-subtitle">{{ $t('predetermined.page.subtitle') }}</p>
       </header>
 
       <!-- 主内容区 -->
       <main class="content-wrap">
         <div v-if="loading" class="loading-wrapper" role="status" aria-live="polite">
           <div class="loading-spinner"></div>
-          <span class="loading-text">加载中...</span>
+          <span class="loading-text">{{ $t('predetermined.page.loading') }}</span>
         </div>
 
         <Transition name="fade" mode="out-in">
@@ -67,23 +68,11 @@ const updateQuery = (tab) => {
   })
 }
 
-const switchTab = (tab) => {
-  if (tab === currentTab.value) return
-  loading.value = true
-  currentTab.value = tab
-  bookingStore.activeTab = tab
-  updateQuery(tab)
-  setTimeout(() => {
-    loading.value = false
-  }, 250)
-}
-
 onMounted(() => {
   const tab = getInitialTab()
   currentTab.value = tab
   bookingStore.activeTab = tab
   updateQuery(tab)
-  // 让 Segmented Control 先渲染出来，再显示模块，视觉更顺
   setTimeout(() => {
     loading.value = false
   }, 150)
@@ -134,6 +123,19 @@ watch(() => route.query.tab, (newTab) => {
   margin-bottom: 48px;
 }
 
+.page-eyebrow {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .page-title {
   margin: 0 0 12px;
   font-size: 56px;
@@ -144,52 +146,10 @@ watch(() => route.query.tab, (newTab) => {
 }
 
 .page-subtitle {
-  margin: 0 0 32px;
+  margin: 0;
   font-size: 18px;
   line-height: 1.4;
   color: var(--theme-text-2);
-}
-
-/* ===== Segmented Control (iOS Tab) ===== */
-.segmented-control {
-  display: inline-flex;
-  align-items: center;
-  width: 280px;
-  padding: 4px;
-  background: var(--theme-bg-muted);
-  border-radius: 28px;
-  box-sizing: border-box;
-}
-
-.segmented-item {
-  flex: 1;
-  height: 36px;
-  border: none;
-  background: transparent;
-  color: var(--theme-text-1);
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 24px;
-  cursor: pointer;
-  padding: 0 16px;
-  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-  box-sizing: border-box;
-}
-
-.segmented-item:hover:not(.active) {
-  color: var(--theme-primary);
-}
-
-.segmented-item.active {
-  background: var(--theme-bg-surface);
-  color: var(--theme-text-1);
-  box-shadow: var(--theme-shadow-sm);
-  font-weight: 600;
-}
-
-.segmented-item:focus-visible {
-  outline: 2px solid var(--theme-primary);
-  outline-offset: 2px;
 }
 
 /* ===== 内容容器 ===== */
@@ -280,11 +240,6 @@ watch(() => route.query.tab, (newTab) => {
 
   .page-subtitle {
     font-size: 15px;
-    margin-bottom: 24px;
-  }
-
-  .segmented-control {
-    width: 100%;
   }
 
   .content-wrap,

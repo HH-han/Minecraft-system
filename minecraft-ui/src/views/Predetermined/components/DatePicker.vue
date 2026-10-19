@@ -1,8 +1,8 @@
 <template>
   <div class="date-picker-component" ref="rootEl">
     <!-- 触发器：展示选中结果（高德酒店样式：开始/结束两栏 + 住宿天数） -->
-    <button type="button" class="dp-trigger" @click="togglePanel" aria-haspopup="dialog"
-      :aria-expanded="panelVisible">
+    <button type="button" class="dp-trigger" :class="{ 'is-open': panelVisible }" @click="togglePanel"
+      aria-haspopup="dialog" :aria-expanded="panelVisible">
       <span class="dp-cell">
         <span class="dp-label">{{ rangeMode ? '入住' : '游玩日期' }}</span>
         <span class="dp-value" :class="{ 'is-placeholder': !startDate }">
@@ -396,7 +396,8 @@ watch(() => props.dateFields, () => {
 }
 
 .dp-trigger:hover {
-  border-color: var(--theme-border-strong);
+  border-color: var(--theme-primary);
+  background: var(--theme-bg-hover);
 }
 
 .dp-trigger:focus-visible,
@@ -404,6 +405,7 @@ watch(() => props.dateFields, () => {
   outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
   border-color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
 }
 
 .dp-cell {
@@ -472,13 +474,14 @@ watch(() => props.dateFields, () => {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  right: 0;
+  right: auto;
+  width: min(100%, 420px);
   z-index: 100;
   background: var(--theme-bg-surface);
   border: 1px solid var(--theme-hairline);
   border-radius: 20px;
   box-shadow: var(--theme-shadow-lg);
-  padding: 16px;
+  padding: 18px;
   box-sizing: border-box;
   animation: dp-fade-in 0.18s ease;
 }
@@ -596,6 +599,9 @@ watch(() => props.dateFields, () => {
   color: var(--theme-primary);
   font-weight: 600;
 }
+.dp-day.is-today:not(.is-start):not(.is-end) {
+  box-shadow: inset 0 0 0 1px var(--theme-primary);
+}
 
 /* 范围内 */
 .dp-day.in-range {
@@ -605,19 +611,19 @@ watch(() => props.dateFields, () => {
 
 /* 开始/结束（圆角只留外侧，胶囊连接效果） */
 .dp-day.is-start {
-  background: var(--theme-primary);
+  background: var(--theme-gradient);
   border-radius: 10px 0 0 10px;
 }
 
 .dp-day.is-end {
-  background: var(--theme-primary);
+  background: var(--theme-gradient);
   border-radius: 0 10px 10px 0;
 }
 
 /* 单选（景点）或首尾同格 */
 .dp-day.is-start.is-end,
 .dp-day.is-single-selected {
-  background: var(--theme-primary);
+  background: var(--theme-gradient);
   border-radius: 10px;
 }
 
@@ -691,6 +697,7 @@ watch(() => props.dateFields, () => {
   .dp-panel {
     left: -16px;
     right: -16px;
+    width: auto;
   }
 
   .dp-day {

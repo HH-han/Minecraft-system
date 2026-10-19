@@ -2,37 +2,39 @@
   <div class="booking-form-component">
     <h4 class="form-title">预订详情</h4>
 
-    <div class="form-group">
-      <label for="contactName">联系人姓名</label>
-      <input
-        id="contactName"
-        type="text"
-        v-model="contactName"
-        placeholder="请输入联系人姓名"
-        autocomplete="name"
-      >
-    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="contactName">联系人姓名</label>
+        <input
+          id="contactName"
+          type="text"
+          v-model="contactName"
+          placeholder="请输入联系人姓名"
+          autocomplete="name"
+        >
+      </div>
 
-    <div class="form-group">
-      <label for="contactPhone">联系电话</label>
-      <input
-        id="contactPhone"
-        type="tel"
-        v-model="contactPhone"
-        placeholder="请输入联系电话"
-        autocomplete="tel"
-      >
-    </div>
+      <div class="form-group">
+        <label for="contactPhone">联系电话</label>
+        <input
+          id="contactPhone"
+          type="tel"
+          v-model="contactPhone"
+          placeholder="请输入联系电话"
+          autocomplete="tel"
+        >
+      </div>
 
-    <div class="form-group">
-      <label for="contactEmail">电子邮箱</label>
-      <input
-        id="contactEmail"
-        type="email"
-        v-model="contactEmail"
-        placeholder="请输入电子邮箱"
-        autocomplete="email"
-      >
+      <div class="form-group form-group--full">
+        <label for="contactEmail">电子邮箱</label>
+        <input
+          id="contactEmail"
+          type="email"
+          v-model="contactEmail"
+          placeholder="请输入电子邮箱"
+          autocomplete="email"
+        >
+      </div>
     </div>
 
     <div class="form-group special-request" v-if="showSpecialRequest">
@@ -63,6 +65,7 @@
 
 <script setup>
 import { defineProps, defineEmits, ref, onMounted, watch } from 'vue'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   totalPrice: {
@@ -102,7 +105,7 @@ watch(() => props.initialContact, applyContact, { deep: true })
 
 const submitBooking = () => {
   if (!contactName.value || !contactPhone.value || !contactEmail.value) {
-    alert('请填写完整的联系人信息')
+    ElMessage.warning('请填写完整的联系人信息')
     return
   }
   emit('submit', {
@@ -127,11 +130,36 @@ const submitBooking = () => {
 }
 
 .form-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0 0 28px;
   font-size: 20px;
   font-weight: 700;
   color: var(--theme-text-1);
   line-height: 1.2;
+}
+.form-title::before {
+  content: '';
+  flex-shrink: 0;
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--theme-gradient);
+}
+
+/* 联系信息：桌面双栏，邮箱独占一行 */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.form-grid .form-group {
+  margin-bottom: 0;
+}
+.form-group--full {
+  grid-column: 1 / -1;
 }
 
 .form-group {
@@ -209,17 +237,14 @@ const submitBooking = () => {
   border-color: var(--theme-primary);
 }
 
-/* 价格汇总 */
+/* 价格汇总：独立浅色卡片 */
 .price-summary {
   box-sizing: border-box;
   margin: 28px 0;
-  padding: 24px 0 0;
-  border-top: 1px solid var(--theme-border-strong);
-  border-radius: 0;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
+  padding: 20px 22px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 18px;
+  background: var(--theme-bg-surface);
 }
 
 .price-item {
@@ -249,27 +274,29 @@ const submitBooking = () => {
   color: var(--theme-text-1);
 }
 
-/* 提交按钮：胶囊蓝色 CTA */
+/* 提交按钮：主题渐变胶囊 CTA */
 .submit-btn {
   box-sizing: border-box;
   width: 100%;
   height: 48px;
   padding: 0 28px;
-  background: var(--theme-primary);
+  background: var(--theme-gradient);
   color: var(--theme-primary-text);
   border: none;
   border-radius: 40px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.01em;
   line-height: 48px;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
   box-shadow: none;
 }
 
 .submit-btn:hover {
-  background: var(--theme-primary-hover);
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: var(--theme-shadow-sm);
 }
 
 .submit-btn:active {
@@ -297,6 +324,18 @@ const submitBooking = () => {
     margin-bottom: 16px;
   }
 
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .price-summary {
+    margin: 20px 0;
+    padding: 18px;
+    border-radius: 16px;
+  }
+
   .submit-btn {
     height: 46px;
     line-height: 46px;
@@ -305,11 +344,6 @@ const submitBooking = () => {
 
   .total-value {
     font-size: 20px;
-  }
-
-  .price-summary {
-    margin: 20px 0;
-    padding-top: 20px;
   }
 }
 </style>

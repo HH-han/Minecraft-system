@@ -12,6 +12,7 @@
         @click="selectRoom(room)"
         role="listitem"
       >
+        <span class="choice-dot" aria-hidden="true"></span>
         <div class="room-info">
           <h5 class="room-name">{{ room.name }}</h5>
           <p v-if="room.description" class="room-desc">{{ room.description }}</p>
@@ -78,22 +79,24 @@ const selectRoom = (room) => {
 }
 
 .room-option {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  padding: 24px;
+  gap: 18px;
+  padding: 22px 24px;
   box-sizing: border-box;
   background: var(--theme-bg-surface-2);
-  border-radius: 24px;
+  border-radius: 20px;
   margin-bottom: 12px;
-  border: 1.5px solid transparent;
+  border: 1px solid var(--theme-hairline);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   cursor: pointer;
 }
 
 .room-option:hover {
-  transform: scale(1.005);
+  transform: translateY(-2px);
+  border-color: var(--theme-border-strong);
   box-shadow: var(--theme-shadow-md);
 }
 
@@ -101,6 +104,25 @@ const selectRoom = (room) => {
   background: var(--theme-bg-surface);
   border-color: var(--theme-primary);
   box-shadow: var(--theme-ring);
+}
+
+/* 选择态圆点 */
+.choice-dot {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--theme-border-strong);
+  background: var(--theme-bg-surface);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.room-option.selected .choice-dot,
+.room-option:hover .choice-dot {
+  border-color: var(--theme-primary);
+}
+.room-option.selected .choice-dot {
+  background: var(--theme-primary);
+  box-shadow: inset 0 0 0 3px var(--theme-bg-surface);
 }
 
 .room-info {
@@ -199,7 +221,8 @@ const selectRoom = (room) => {
   text-align: center;
   color: var(--theme-text-2);
   font-size: 14px;
-  border-radius: 24px;
+  border-radius: 20px;
+  border: 1px dashed var(--theme-border-strong);
   background: var(--theme-bg-surface-2);
 }
 
@@ -255,6 +278,10 @@ const selectRoom = (room) => {
     align-items: stretch;
     gap: 16px;
     padding: 20px;
+  }
+
+  .choice-dot {
+    display: none;
   }
 
   .room-price {

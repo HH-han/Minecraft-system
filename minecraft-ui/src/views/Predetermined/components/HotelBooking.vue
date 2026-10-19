@@ -143,7 +143,7 @@
         @roomSelect="selectRoom"
       />
 
-      <div v-if="selectedRoom" :key="selectedRoom.id">
+      <div v-if="selectedRoom" :key="selectedRoom.id" class="booking-form-wrap">
         <BookingForm
           :totalPrice="totalPrice + serviceFee"
           :initialContact="prefill?.contact"
@@ -162,15 +162,110 @@
         </BookingForm>
       </div>
     </section>
+
+    <!-- ====== 推荐酒店（推荐接口） ====== -->
+    <section class="recommend-section card-shell" aria-labelledby="hotel-recommend-title">
+      <header class="recommend-head">
+        <div class="recommend-copy">
+          <span class="recommend-eyebrow">{{ $t('predetermined.hotelRecommend.eyebrow') }}</span>
+          <h3 id="hotel-recommend-title" class="recommend-title">
+            {{ $t('predetermined.hotelRecommend.title') }}
+          </h3>
+          <p class="recommend-desc">{{ $t('predetermined.hotelRecommend.subtitle') }}</p>
+        </div>
+        <button
+          type="button"
+          class="recommend-refresh"
+          :class="{ 'is-loading': recommendLoading }"
+          :disabled="recommendLoading"
+          @click="loadRecommendations"
+        >
+          <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <path d="M21 3v6h-6" />
+          </svg>
+          {{ $t('predetermined.refresh') }}
+        </button>
+      </header>
+
+      <!-- 骨架屏 -->
+      <div v-if="recommendLoading" class="recommend-grid" aria-hidden="true">
+        <div class="rec-skeleton" v-for="n in 4" :key="n">
+          <div class="rec-sk-media"></div>
+          <div class="rec-sk-line"></div>
+          <div class="rec-sk-line rec-sk-line--short"></div>
+        </div>
+      </div>
+
+      <div v-else-if="visibleRecommendations.length" class="recommend-grid">
+        <article
+          v-for="item in visibleRecommendations"
+          :key="item.itemId"
+          class="rec-card"
+          role="button"
+          tabindex="0"
+          @click="openRecommendation(item)"
+          @keydown.enter.prevent="openRecommendation(item)"
+          @keydown.space.prevent="openRecommendation(item)"
+        >
+          <div class="rec-media">
+            <img :src="item.image || fallbackImage" :alt="item.name" loading="lazy" />
+            <span v-if="item.ruleType === 'PIN'" class="rec-pin">{{ $t('predetermined.pin') }}</span>
+            <span class="rec-loc" v-if="formatLocation(item)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {{ formatLocation(item) }}
+            </span>
+          </div>
+          <div class="rec-body">
+            <h4 class="rec-name">{{ item.name }}</h4>
+            <div class="rec-tags" v-if="(item.tags || []).length">
+              <span v-for="tag in (item.tags || []).slice(0, 3)" :key="tag">{{ tag }}</span>
+            </div>
+            <div class="rec-foot">
+              <span class="rec-price">
+                ¥{{ item.price ?? 0 }}<small>/{{ $t('predetermined.perNight') }}</small>
+              </span>
+              <span class="rec-rating" v-if="item.rating">★ {{ formatRating(item.rating) }}</span>
+              <span class="rec-rating is-empty" v-else>{{ $t('predetermined.noRating') }}</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div v-else class="recommend-empty">
+        <p>{{ recommendError || $t('predetermined.hotelRecommend.empty') }}</p>
+        <button v-if="recommendError" type="button" class="recommend-retry" @click="loadRecommendations">
+          {{ $t('predetermined.retry') }}
+        </button>
+      </div>
+    </section>
+
+    <!-- 推荐酒店详情弹窗 -->
+    <Select
+      :visible="detailVisible"
+      :productId="detailProductId"
+      commodity="2"
+      @close="detailVisible = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { defineProps, ref, computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import DatePicker from './DatePicker.vue'
 import RoomSelector from './RoomSelector.vue'
 import BookingForm from './BookingForm.vue'
+import Select from '@/components/Payment/Select.vue'
 import { createHotelBooking } from '@/api/booking.js'
+import { getClientRecommendations } from '@/api/clientRecommendation'
+import { useAutoRefresh } from '@/hooks/useAutoRefresh'
 
 const props = defineProps({
   dateFields: {
@@ -201,6 +296,62 @@ const checkOutDate = ref('')
 const guests = ref(2)
 const selectedRoom = ref(null)
 
+const { t } = useI18n()
+
+/* ===================== 推荐酒店 ===================== */
+const fallbackImage = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20with%20pool&image_size=landscape_4_3'
+const recommendations = ref([])
+const recommendLoading = ref(false)
+const recommendError = ref('')
+const detailVisible = ref(false)
+const detailProductId = ref('')
+
+// 排除当前正在预订的酒店，最多展示 4 个
+const visibleRecommendations = computed(() =>
+  recommendations.value
+    .filter(item => String(item.itemId) !== String(props.hotelData?.id))
+    .slice(0, 4)
+)
+
+// 加载推荐酒店（与酒店推荐页同源接口）
+const loadRecommendations = async () => {
+  recommendLoading.value = true
+  recommendError.value = ''
+  try {
+    const res = await getClientRecommendations('hotel', { limit: 8 })
+    recommendations.value = res?.data || []
+  } catch (error) {
+    console.error('加载酒店推荐失败:', error)
+    recommendError.value = t('predetermined.hotelRecommend.error')
+    recommendations.value = []
+  } finally {
+    recommendLoading.value = false
+  }
+}
+
+useAutoRefresh(loadRecommendations)
+
+// 地点展示（省市重复时只展示一个）
+const formatLocation = (item) => {
+  if (item.province && item.city && item.province !== item.city && !item.province.includes(item.city)) {
+    return `${item.province} · ${item.city}`
+  }
+  return item.city || item.province || ''
+}
+
+// 评分兼容 5 分制与百分制两种历史数据
+const formatRating = (rating) => {
+  if (rating === null || rating === undefined) return ''
+  return Number(rating) > 5 ? (Number(rating) / 20).toFixed(1) : rating
+}
+
+// 打开酒店详情弹窗（与酒店列表页一致）
+const openRecommendation = (item) => {
+  if (!item?.itemId) return
+  detailProductId.value = String(item.itemId)
+  detailVisible.value = true
+}
+
 // 用回填数据初始化日期 / 住客 / 房型
 const applyPrefill = () => {
   if (!props.prefill) return
@@ -213,7 +364,10 @@ const applyPrefill = () => {
   }
 }
 
-onMounted(applyPrefill)
+onMounted(() => {
+  applyPrefill()
+  loadRecommendations()
+})
 watch(() => props.prefill, applyPrefill, { deep: true })
 watch(() => props.rooms, applyPrefill, { deep: true })
 
@@ -279,11 +433,11 @@ const submitting = ref(false)
 
 const submitBooking = async (bookingData) => {
   if (!checkInDate.value || !checkOutDate.value) {
-    alert('请选择入住和离店日期')
+    ElMessage.warning('请选择入住和离店日期')
     return
   }
   if (!selectedRoom.value) {
-    alert('请选择房间')
+    ElMessage.warning('请选择房间')
     return
   }
   if (submitting.value) return
@@ -297,13 +451,16 @@ const submitBooking = async (bookingData) => {
       roomId: selectedRoom.value.id
     })
     if (response && response.code === 200) {
-      alert(`预订提交成功！预订编号：${response.data}`)
+      ElMessageBox.alert(`预订编号：${response.data}`, '预订提交成功', {
+        confirmButtonText: '确定',
+        type: 'success'
+      }).catch(() => {})
     } else {
-      alert(response?.message || '预订提交失败，请稍后重试')
+      ElMessage.error(response?.message || '预订提交失败，请稍后重试')
     }
   } catch (error) {
     console.error('预订提交失败:', error)
-    alert('预订提交失败，请稍后重试')
+    ElMessage.error('预订提交失败，请稍后重试')
   } finally {
     submitting.value = false
   }
@@ -552,14 +709,29 @@ const submitBooking = async (bookingData) => {
 .booking-panel {
   padding: 40px 32px;
   box-sizing: border-box;
+  /* 允许日期面板浮层溢出卡片，避免被 card-shell 的 overflow:hidden 裁切 */
+  overflow: visible;
 }
 .panel-title {
+  position: relative;
   margin: 0 0 24px 0;
+  padding-left: 14px;
   font-size: 22px;
   line-height: 1.3;
   font-weight: 700;
   color: var(--theme-text-1);
   letter-spacing: -0.005em;
+}
+.panel-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--theme-gradient);
+  transform: translateY(-50%);
 }
 
 /* 住客 stepper（维持原样，景点没有 stepper） */
@@ -635,6 +807,328 @@ const submitBooking = async (bookingData) => {
   gap: 12px;
 }
 
+/* 表单区与上方选项之间的分隔 */
+.booking-form-wrap {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--theme-hairline);
+}
+
+/* ============================================================
+   RECOMMENDATIONS（推荐酒店）
+   ============================================================ */
+.recommend-section {
+  padding: 40px 32px 44px;
+  box-sizing: border-box;
+}
+
+.recommend-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.recommend-copy {
+  min-width: 0;
+}
+
+.recommend-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--theme-primary);
+}
+
+.recommend-title {
+  margin: 8px 0 0;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--theme-text-1);
+  letter-spacing: -0.01em;
+}
+
+.recommend-desc {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--theme-text-2);
+}
+
+.recommend-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.recommend-refresh:hover:not(:disabled) {
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  background: var(--theme-primary-soft);
+}
+.recommend-refresh:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.recommend-refresh:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+.refresh-icon {
+  width: 14px;
+  height: 14px;
+}
+.recommend-refresh.is-loading .refresh-icon {
+  animation: rec-spin 0.9s linear infinite;
+}
+@keyframes rec-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- 卡片网格 --- */
+.recommend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.rec-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-hairline);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.rec-card:hover {
+  transform: translateY(-4px);
+  border-color: transparent;
+  box-shadow: var(--theme-shadow-md);
+}
+.rec-card:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+.rec-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--theme-bg-surface-2);
+}
+.rec-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.rec-card:hover .rec-media img {
+  transform: scale(1.04);
+}
+.rec-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 10, 18, 0) 45%, rgba(6, 10, 18, 0.55) 100%);
+  pointer-events: none;
+}
+
+.rec-pin {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--theme-danger), var(--theme-warning));
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
+}
+
+.rec-loc {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100% - 24px);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rec-loc svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.rec-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  padding: 14px 16px 16px;
+}
+
+.rec-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--theme-text-1);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rec-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rec-tags span {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.rec-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.rec-price {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--theme-text-1);
+  letter-spacing: -0.01em;
+}
+.rec-price small {
+  margin-left: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--theme-text-2);
+}
+
+.rec-rating {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-warning);
+  white-space: nowrap;
+}
+.rec-rating.is-empty {
+  font-weight: 400;
+  color: var(--theme-text-3);
+}
+
+/* --- 骨架屏 --- */
+.rec-skeleton {
+  border: 1px solid var(--theme-hairline);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--theme-bg-surface);
+}
+.rec-sk-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--theme-bg-surface-2);
+}
+.rec-sk-line {
+  position: relative;
+  height: 12px;
+  margin: 14px 16px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--theme-bg-surface-2);
+}
+.rec-sk-line--short {
+  width: 45%;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+.rec-sk-media::after,
+.rec-sk-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--theme-bg-hover), transparent);
+  animation: rec-shimmer 1.4s infinite;
+}
+@keyframes rec-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* --- 空态 --- */
+.recommend-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+  border-radius: 16px;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 14px;
+  text-align: center;
+}
+.recommend-empty p {
+  margin: 0;
+}
+.recommend-retry {
+  height: 34px;
+  padding: 0 18px;
+  border: 1px solid var(--theme-border-strong);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-1);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.recommend-retry:hover {
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+}
+
 /* ============================================================
    RESPONSIVE BREAKPOINTS（与 AttractionBooking 三档 100% 对齐）
    ============================================================ */
@@ -657,6 +1151,12 @@ const submitBooking = async (bookingData) => {
   }
   .booking-panel {
     padding: 32px 24px;
+  }
+  .recommend-section {
+    padding: 32px 24px 36px;
+  }
+  .recommend-grid {
+    gap: 16px;
   }
 }
 
@@ -710,6 +1210,98 @@ const submitBooking = async (bookingData) => {
   }
   .guest-block {
     margin-bottom: 24px;
+  }
+  .booking-form-wrap {
+    margin-top: 24px;
+    padding-top: 24px;
+  }
+  .recommend-section {
+    padding: 24px 16px 28px;
+  }
+  .recommend-head {
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .recommend-title {
+    font-size: 20px;
+  }
+  .recommend-desc {
+    font-size: 13px;
+  }
+  .recommend-grid {
+    gap: 14px;
+  }
+  .rec-name {
+    font-size: 15px;
+  }
+}
+
+/* ============================================================
+   DESKTOP HERO — 双栏布局（>=1024px）
+   ============================================================ */
+@media (min-width: 1024px) {
+  .product-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+    grid-template-areas:
+      'image details'
+      'thumbs details';
+    align-items: start;
+  }
+
+  .hero-image {
+    grid-area: image;
+    width: auto;
+    aspect-ratio: 4 / 3;
+    margin: 20px 20px 0;
+    border-radius: 20px;
+  }
+
+  .hero-thumbs {
+    grid-area: thumbs;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 14px 20px 20px;
+  }
+
+  .hero-details {
+    grid-area: details;
+    padding: 34px 32px;
+    gap: 14px;
+    border-left: 1px solid var(--theme-hairline);
+  }
+
+  .product-name {
+    font-size: 30px;
+  }
+
+  .stats-grid {
+    gap: 12px;
+  }
+
+  .stat-item {
+    padding: 14px;
+  }
+}
+
+/* 1024–1199：双栏下压缩右侧信息密度，避免拥挤 */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .hero-details {
+    padding: 28px 24px;
+  }
+  .product-name {
+    font-size: 26px;
+  }
+  .stat-item {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+  .stat-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .stat-value {
+    font-size: 16px;
   }
 }
 </style>

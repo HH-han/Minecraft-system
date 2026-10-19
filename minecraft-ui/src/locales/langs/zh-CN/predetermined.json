@@ -1,0 +1,31 @@
+{
+  "predetermined": {
+    "page": {
+      "eyebrow": "TRAVEL BOOKING",
+      "title": "预订服务",
+      "subtitle": "选择规格数量以及联系人，完成您的旅行预订",
+      "loading": "加载中..."
+    },
+    "hotelRecommend": {
+      "eyebrow": "MORE STAYS",
+      "title": "精选酒店推荐",
+      "subtitle": "为你挑选值得入住的酒店，价格与口碑双重保障",
+      "empty": "暂无酒店推荐，稍后再来看看",
+      "error": "酒店推荐加载失败"
+    },
+    "attractionRecommend": {
+      "eyebrow": "MORE SPOTS",
+      "title": "精选景点推荐",
+      "subtitle": "发现更多热门景点，让行程安排更加充实",
+      "empty": "暂无景点推荐，稍后再来看看",
+      "error": "景点推荐加载失败"
+    },
+    "refresh": "刷新",
+    "retry": "重试",
+    "pin": "精选",
+    "perNight": "晚",
+    "perPerson": "人",
+    "free": "免费",
+    "noRating": "暂无评分"
+  }
+}

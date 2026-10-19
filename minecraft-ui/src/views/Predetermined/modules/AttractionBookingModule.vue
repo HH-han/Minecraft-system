@@ -151,6 +151,15 @@ onMounted(async () => {
 watch(currentAttractionId, () => {
   debouncedLoadData()
 })
+
+// 推荐弹窗「去预订」后同步切换当前景点
+watch(() => bookingStore.getAttractionData, (data) => {
+  if (!data?.id || data.id === attractionData.value?.id) return
+  attractionData.value = data
+  tickets.value = data.tickets || []
+  tags.value = data.tags || []
+  facilities.value = data.facilities || []
+})
 </script>
 
 <style scoped>

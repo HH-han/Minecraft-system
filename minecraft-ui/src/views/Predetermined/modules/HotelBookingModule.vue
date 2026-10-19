@@ -155,6 +155,14 @@ onMounted(async () => {
 watch(currentHotelId, () => {
   debouncedLoadData()
 })
+
+// 推荐弹窗「去预订」后同步切换当前酒店
+watch(() => bookingStore.getHotelData, (data) => {
+  if (!data?.id || data.id === hotelData.value?.id) return
+  hotelData.value = data
+  rooms.value = data.rooms || []
+  facilities.value = data.facilities || []
+})
 </script>
 
 <style scoped>

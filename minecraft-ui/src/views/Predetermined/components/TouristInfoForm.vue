@@ -91,7 +91,7 @@ watch(() => props.initialTourists, (newTourists) => {
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  margin-top: 28px;
+  margin-top: 24px;
   padding-top: 0;
   border-top: none;
 }
@@ -118,11 +118,16 @@ watch(() => props.initialTourists, (newTourists) => {
   width: 100%;
   max-width: 100%;
   background: var(--theme-bg-surface);
-  padding: 20px 24px;
-  border-radius: 20px;
-  margin-bottom: 12px;
-  border: 1px solid var(--theme-border-strong);
+  padding: 18px 20px;
+  border-radius: 18px;
+  margin-bottom: 14px;
+  border: 1px solid var(--theme-hairline);
   box-shadow: none;
+  transition: border-color 0.2s ease;
+}
+
+.tourist-form:hover {
+  border-color: var(--theme-border-strong);
 }
 
 .tourist-head {
@@ -130,10 +135,14 @@ watch(() => props.initialTourists, (newTourists) => {
 }
 
 .tourist-index {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
   font-size: 12px;
-  font-weight: 500;
-  color: var(--theme-text-2);
-  text-transform: uppercase;
+  font-weight: 600;
   letter-spacing: 0.02em;
 }
 
@@ -199,7 +208,7 @@ watch(() => props.initialTourists, (newTourists) => {
 @media (max-width: 767px) {
   .tourist-form {
     padding: 16px 18px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .form-row {

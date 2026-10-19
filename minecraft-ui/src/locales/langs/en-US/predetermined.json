@@ -1,0 +1,31 @@
+{
+  "predetermined": {
+    "page": {
+      "eyebrow": "TRAVEL BOOKING",
+      "title": "Book Your Trip",
+      "subtitle": "Pick your options, add contact details, and complete your booking",
+      "loading": "Loading..."
+    },
+    "hotelRecommend": {
+      "eyebrow": "MORE STAYS",
+      "title": "Recommended hotels",
+      "subtitle": "Handpicked stays with trusted prices and reviews",
+      "empty": "No hotel recommendations yet",
+      "error": "Failed to load hotel recommendations"
+    },
+    "attractionRecommend": {
+      "eyebrow": "MORE SPOTS",
+      "title": "Recommended attractions",
+      "subtitle": "Discover more popular spots to enrich your itinerary",
+      "empty": "No attraction recommendations yet",
+      "error": "Failed to load attraction recommendations"
+    },
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "pin": "Featured",
+    "perNight": "night",
+    "perPerson": "person",
+    "free": "Free",
+    "noRating": "No rating"
+  }
+}
