@@ -1,0 +1,28 @@
+{
+  "announcement": {
+    "carousel": {
+      "kicker": "NOTICE BOARD",
+      "title": "Platform Notices",
+      "subtitle": "Latest updates and important announcements",
+      "viewAll": "View all",
+      "detail": "Read more",
+      "top": "Pinned",
+      "unread": "Unread",
+      "readCount": "{count} views",
+      "deadline": "Ends {date}",
+      "goTo": "Go to announcement {index}",
+      "type": {
+        "0": "Notice",
+        "1": "System",
+        "2": "Event",
+        "3": "Maintenance",
+        "4": "Release"
+      },
+      "level": {
+        "1": "Normal",
+        "2": "Important",
+        "3": "Urgent"
+      }
+    }
+  }
+}
