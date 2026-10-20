@@ -1,12 +1,15 @@
 package com.minecraft.im.ui.chat
 
-import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,19 +19,26 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.MoreVert
@@ -38,11 +48,12 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -51,6 +62,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,14 +70,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -73,13 +91,14 @@ import com.minecraft.im.R
 import com.minecraft.im.core.formatMessageDivider
 import com.minecraft.im.core.localeIsEnglish
 import com.minecraft.im.core.mediaUrl
+import com.minecraft.im.domain.model.Contact
 import com.minecraft.im.domain.model.MessageKind
 import com.minecraft.im.domain.model.MessageUi
 import com.minecraft.im.ui.components.EMOJI_GROUPS
 import com.minecraft.im.ui.components.EmptyState
 import com.minecraft.im.ui.components.ImAvatar
 import com.minecraft.im.ui.components.LocalBaseUrl
-import com.minecraft.im.ui.components.TopBarBack
+import com.minecraft.im.ui.components.OnlineDot
 import com.minecraft.im.ui.theme.LocalImColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -141,53 +160,17 @@ fun ChatScreen(
     }
 
     Scaffold(
+        containerColor = colors.chatBackground,
         topBar = {
-            TopBarBack(
-                title = contact?.name ?: stringResource(R.string.tab_messages),
+            ChatHeader(
+                contact = contact,
+                isGroup = isGroup,
                 onBack = onBack,
-                subtitle = contact?.let { c ->
-                    if (c.isGroup) stringResource(R.string.contact_member_count, c.memberCount)
-                    else if (c.online) stringResource(R.string.chat_online)
-                    else stringResource(R.string.chat_offline)
-                },
-                actions = {
-                    Box {
-                        IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.action_more))
-                        }
-                        DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.chat_menu_profile)) },
-                                onClick = {
-                                    showMenu = false
-                                    onOpenProfile(contactId, isGroup)
-                                }
-                            )
-                            if (!isGroup) {
-                                val isStarred = starred.contains(contactId)
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            stringResource(
-                                                if (isStarred) R.string.contacts_unstar else R.string.contacts_star
-                                            )
-                                        )
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = if (isStarred) Icons.Default.Star else Icons.Outlined.StarBorder,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    onClick = {
-                                        showMenu = false
-                                        viewModel.toggleStar(contactId)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
+                onOpenProfile = { onOpenProfile(contactId, isGroup) },
+                showMenu = showMenu,
+                onShowMenu = { showMenu = it },
+                starred = starred.contains(contactId),
+                onToggleStar = { viewModel.toggleStar(contactId) }
             )
         },
         snackbarHost = { SnackbarHost(snackbar) }
@@ -200,7 +183,11 @@ fun ChatScreen(
                 .imePadding()
         ) {
             if (state.loading) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(2.dp)
+                )
             }
 
             Box(Modifier.weight(1f)) {
@@ -243,7 +230,132 @@ fun ChatScreen(
     }
 
     previewImage?.let { raw ->
-        ImagePreviewDialog(url = mediaUrl(baseUrl, raw).orEmpty(), onDismiss = { previewImage = null })
+        ImagePreviewDialog(
+            url = mediaUrl(baseUrl, raw).orEmpty(),
+            onDismiss = { previewImage = null }
+        )
+    }
+}
+
+@Composable
+private fun ChatHeader(
+    contact: Contact?,
+    isGroup: Boolean,
+    onBack: () -> Unit,
+    onOpenProfile: () -> Unit,
+    showMenu: Boolean,
+    onShowMenu: (Boolean) -> Unit,
+    starred: Boolean,
+    onToggleStar: () -> Unit
+) {
+    Surface(color = MaterialTheme.colorScheme.surface) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .height(56.dp)
+                    .padding(horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.action_back)
+                    )
+                }
+                if (contact != null) {
+                    Box {
+                        ImAvatar(
+                            name = contact.name,
+                            avatar = contact.avatar,
+                            isGroup = contact.isGroup,
+                            size = 34.dp
+                        )
+                        if (!contact.isGroup && contact.online) {
+                            OnlineDot(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(end = 1.dp, bottom = 1.dp),
+                                size = 10.dp
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(10.dp))
+                }
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = contact?.name ?: stringResource(R.string.tab_messages),
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    contact?.let {
+                        Text(
+                            text = if (it.isGroup) {
+                                stringResource(R.string.contact_member_count, it.memberCount)
+                            } else if (it.online) {
+                                stringResource(R.string.chat_online)
+                            } else {
+                                stringResource(R.string.chat_offline)
+                            },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (!it.isGroup && it.online) {
+                                LocalImColors.current.online
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+                    }
+                }
+                Box {
+                    IconButton(onClick = { onShowMenu(true) }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.action_more)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { onShowMenu(false) }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.chat_menu_profile)) },
+                            onClick = {
+                                onShowMenu(false)
+                                onOpenProfile()
+                            }
+                        )
+                        if (!isGroup) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        stringResource(
+                                            if (starred) R.string.contacts_unstar
+                                            else R.string.contacts_star
+                                        )
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = if (starred) Icons.Default.Star
+                                        else Icons.Outlined.StarBorder,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = {
+                                    onShowMenu(false)
+                                    onToggleStar()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            )
+        }
     }
 }
 
@@ -280,16 +392,18 @@ private fun MessageList(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         itemsIndexed(rows) { _, row ->
             when (row) {
                 is ChatRow.TimeDivider -> Text(
                     text = formatMessageDivider(row.time, isEnglish),
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = LocalImColors.current.muted,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp)
                 )
 
                 is ChatRow.Message -> MessageRow(
@@ -309,6 +423,7 @@ private sealed interface ChatRow {
     data class Message(val message: MessageUi) : ChatRow
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MessageRow(
     message: MessageUi,
@@ -320,6 +435,9 @@ private fun MessageRow(
     val colors = LocalImColors.current
     val baseUrl = LocalBaseUrl.current
     val mine = message.isMine
+    val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
+    var menuVisible by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -344,43 +462,67 @@ private fun MessageRow(
                     modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
                 )
             }
-            Box(
-                modifier = Modifier
-                    .widthIn(max = 268.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 16.dp,
-                            topEnd = 16.dp,
-                            bottomStart = if (mine) 16.dp else 4.dp,
-                            bottomEnd = if (mine) 4.dp else 16.dp
-                        )
-                    )
-                    .background(if (mine) colors.sentBubble else colors.receivedBubble)
-                    .padding(
-                        if (message.kind == MessageKind.IMAGE) 4.dp else 12.dp
-                    )
-            ) {
-                when (message.kind) {
-                    MessageKind.IMAGE -> AsyncImage(
-                        model = mediaUrl(baseUrl, message.content),
-                        contentDescription = stringResource(R.string.message_image_preview),
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .widthIn(max = 240.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable { onImageClick(message.content) }
-                    )
+            when (message.kind) {
+                MessageKind.IMAGE -> AsyncImage(
+                    model = mediaUrl(baseUrl, message.content),
+                    contentDescription = stringResource(R.string.message_image_preview),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .widthIn(max = 220.dp)
+                        .heightIn(max = 260.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable { onImageClick(message.content) }
+                )
 
-                    MessageKind.EMOJI -> Text(
-                        text = message.content,
-                        fontSize = 30.sp
-                    )
+                MessageKind.EMOJI -> Text(
+                    text = message.content,
+                    fontSize = 32.sp,
+                    modifier = Modifier.padding(horizontal = 2.dp)
+                )
 
-                    else -> Text(
-                        text = message.content,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = if (mine) colors.sentText else colors.receivedText
-                    )
+                else -> Row(verticalAlignment = Alignment.Top) {
+                    if (!mine) {
+                        BubbleTail(color = colors.receivedBubble, pointingLeft = true)
+                    }
+                    Box {
+                        Box(
+                            modifier = Modifier
+                                .widthIn(max = 264.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (mine) colors.sentBubble else colors.receivedBubble)
+                                .combinedClickable(
+                                    onClick = {},
+                                    onLongClick = { menuVisible = true }
+                                )
+                                .padding(horizontal = 12.dp, vertical = 9.dp)
+                        ) {
+                            Text(
+                                text = message.content,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = if (mine) colors.sentText else colors.receivedText
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = menuVisible,
+                            onDismissRequest = { menuVisible = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.chat_copy)) },
+                                onClick = {
+                                    menuVisible = false
+                                    clipboard.setText(AnnotatedString(message.content))
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.chat_copied),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            )
+                        }
+                    }
+                    if (mine) {
+                        BubbleTail(color = colors.sentBubble, pointingLeft = false)
+                    }
                 }
             }
         }
@@ -388,6 +530,27 @@ private fun MessageRow(
         if (mine) {
             Spacer(Modifier.width(8.dp))
             ImAvatar(name = myName.ifBlank { "Me" }, avatar = myAvatar, size = 38.dp)
+        }
+    }
+}
+
+/** 气泡小尖角 */
+@Composable
+private fun BubbleTail(color: Color, pointingLeft: Boolean) {
+    Box(Modifier.padding(top = 11.dp)) {
+        Canvas(Modifier.size(width = 6.dp, height = 12.dp)) {
+            val path = Path()
+            if (pointingLeft) {
+                path.moveTo(size.width, 0f)
+                path.lineTo(0f, size.height / 2f)
+                path.lineTo(size.width, size.height)
+            } else {
+                path.moveTo(0f, 0f)
+                path.lineTo(size.width, size.height / 2f)
+                path.lineTo(0f, size.height)
+            }
+            path.close()
+            drawPath(path, color)
         }
     }
 }
@@ -401,32 +564,78 @@ private fun ChatInputBar(
     onToggleEmoji: () -> Unit,
     onPickImage: () -> Unit
 ) {
-    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 6.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            IconButton(onClick = onToggleEmoji) {
-                Icon(Icons.Default.EmojiEmotions, contentDescription = stringResource(R.string.chat_emoji))
-            }
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = { Text(stringResource(R.string.chat_input_hint)) },
-                maxLines = 4,
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.weight(1f)
+    Surface(color = MaterialTheme.colorScheme.surface) {
+        Column {
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
             )
-            IconButton(onClick = onPickImage) {
-                Icon(Icons.Default.Image, contentDescription = stringResource(R.string.chat_send_image))
-            }
-            FilledIconButton(
-                onClick = onSend,
-                enabled = value.isNotBlank() && !sending
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.Bottom
             ) {
-                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.action_send))
+                IconButton(onClick = onToggleEmoji, modifier = Modifier.size(42.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.EmojiEmotions,
+                        contentDescription = stringResource(R.string.chat_emoji),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .heightIn(min = 40.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 14.dp, vertical = 9.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    if (value.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.chat_input_hint),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    BasicTextField(
+                        value = value,
+                        onValueChange = onValueChange,
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                        maxLines = 4,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                IconButton(onClick = onPickImage, modifier = Modifier.size(42.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.Image,
+                        contentDescription = stringResource(R.string.chat_send_image),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                FilledIconButton(
+                    onClick = onSend,
+                    enabled = value.isNotBlank() && !sending,
+                    shape = CircleShape,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier
+                        .padding(start = 2.dp, end = 2.dp)
+                        .size(38.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = stringResource(R.string.action_send),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
     }
@@ -434,34 +643,68 @@ private fun ChatInputBar(
 
 @Composable
 private fun EmojiPanel(onPick: (String) -> Unit) {
-    val emojis = remember { EMOJI_GROUPS.flatMap { it.second } }
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(8),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(220.dp)
-            .background(MaterialTheme.colorScheme.surface),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(emojis) { emoji ->
-            Text(
-                text = emoji,
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .clickable { onPick(emoji) }
-                    .padding(6.dp)
+    var groupIndex by remember { mutableIntStateOf(0) }
+    Surface(color = MaterialTheme.colorScheme.surface) {
+        Column {
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                EMOJI_GROUPS.forEachIndexed { index, group ->
+                    val selected = index == groupIndex
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(
+                                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                else Color.Transparent
+                            )
+                            .clickable { groupIndex = index }
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(text = group.first, fontSize = 18.sp)
+                    }
+                }
+            }
+            val emojis = EMOJI_GROUPS[groupIndex].second
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(8),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(emojis) { emoji ->
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { onPick(emoji) }
+                            .padding(6.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = emoji, fontSize = 24.sp, textAlign = TextAlign.Center)
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 private fun ImagePreviewDialog(url: String, onDismiss: () -> Unit) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(Color.Black)
                 .clickable(onClick = onDismiss),
             contentAlignment = Alignment.Center
         ) {
@@ -471,6 +714,19 @@ private fun ImagePreviewDialog(url: String, onDismiss: () -> Unit) {
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxWidth()
             )
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(R.string.action_close),
+                    tint = Color.White
+                )
+            }
         }
     }
 }

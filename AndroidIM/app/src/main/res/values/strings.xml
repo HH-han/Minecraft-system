@@ -19,6 +19,7 @@
     <string name="label_empty">暂无数据</string>
     <string name="label_network_error">网络异常</string>
     <string name="label_me">我</string>
+    <string name="me_favorites">我的收藏</string>
     <string name="label_unknown">未知</string>
     <string name="label_success">操作成功</string>
 
@@ -36,6 +37,7 @@
     <string name="tab_messages">消息</string>
     <string name="tab_contacts">通讯录</string>
     <string name="tab_discover">发现</string>
+    <string name="tab_favorites">收藏</string>
     <string name="tab_me">我</string>
 
     <!-- 会话列表 -->
@@ -68,6 +70,42 @@
     <string name="chat_send_failed">发送失败</string>
     <string name="chat_group_tag">群聊</string>
     <string name="chat_me">我</string>
+    <string name="chat_copy">复制</string>
+    <string name="chat_copied">已复制</string>
+
+    <!-- 收藏 -->
+    <string name="favorites_search_hint">搜索收藏</string>
+    <string name="favorites_add">新建收藏</string>
+    <string name="favorites_cat_all">全部</string>
+    <string name="favorites_cat_recent">最近</string>
+    <string name="favorites_cat_note">笔记</string>
+    <string name="favorites_cat_link">链接</string>
+    <string name="favorites_cat_image">图片</string>
+    <string name="favorites_cat_file">文件</string>
+    <string name="favorites_cat_chat">聊天记录</string>
+    <string name="favorites_cat_voice">语音</string>
+    <string name="favorites_cat_location">位置</string>
+    <string name="favorites_empty">还没有收藏，点右下角新建一条吧</string>
+    <string name="favorites_empty_search">没有找到相关收藏</string>
+    <string name="favorites_count">%1$d 项</string>
+    <string name="favorites_new_note">写笔记</string>
+    <string name="favorites_new_link">添加链接</string>
+    <string name="favorites_field_title">标题</string>
+    <string name="favorites_field_content">内容</string>
+    <string name="favorites_field_url">链接地址</string>
+    <string name="favorites_field_tags">标签（用逗号分隔）</string>
+    <string name="favorites_saved">已保存</string>
+    <string name="favorites_deleted">已删除</string>
+    <string name="favorites_cleared">已清空</string>
+    <string name="favorites_delete_confirm">确定删除这条收藏？</string>
+    <string name="favorites_clear">清空</string>
+    <string name="favorites_clear_confirm">确定清空当前分类的全部收藏？</string>
+    <string name="favorites_copy">复制</string>
+    <string name="favorites_load_more">加载更多</string>
+    <string name="favorites_no_more">— 没有更多了 —</string>
+    <string name="favorites_untitled">未命名收藏</string>
+    <string name="favorites_required">请输入内容或标题</string>
+    <string name="favorites_url_required">请输入链接地址</string>
 
     <!-- 联系人详情 -->
     <string name="contact_detail_title">详情</string>

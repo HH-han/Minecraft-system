@@ -1,23 +1,27 @@
 package com.minecraft.im.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -55,13 +60,16 @@ fun ImAvatar(
     isGroup: Boolean = false
 ) {
     val resolved = mediaUrl(LocalBaseUrl.current, avatar)
-    val shape = if (isGroup) RoundedCornerShape(12.dp) else CircleShape
-    val color = AVATAR_COLORS[(name.hashCode().let { if (it == Int.MIN_VALUE) 0 else kotlin.math.abs(it) }) % AVATAR_COLORS.size]
+    val shape = if (isGroup) RoundedCornerShape(size * 0.28f) else CircleShape
+    val color = AVATAR_COLORS[
+        (name.hashCode().let { if (it == Int.MIN_VALUE) 0 else kotlin.math.abs(it) }) % AVATAR_COLORS.size
+    ]
     Box(
         modifier = modifier
             .size(size)
             .clip(shape)
-            .background(color),
+            .background(color)
+            .border(0.5.dp, Color.Black.copy(alpha = 0.05f), shape),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -83,34 +91,66 @@ fun ImAvatar(
     }
 }
 
+/** 在线状态小圆点 */
+@Composable
+fun OnlineDot(modifier: Modifier = Modifier, size: Dp = 10.dp) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(1.5.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+    )
+}
+
 /** 未读角标，超过 99 显示 99+ */
 @Composable
 fun UnreadBadge(count: Int, modifier: Modifier = Modifier, maxText: String = "99+") {
     if (count <= 0) return
     Box(
         modifier = modifier
+            .heightIn(min = 18.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.error)
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+            .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape)
+            .padding(horizontal = 5.dp, vertical = 1.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = if (count > 99) maxText else count.toString(),
             color = MaterialTheme.colorScheme.onError,
-            fontSize = 11.sp,
+            fontSize = 10.sp,
+            lineHeight = 12.sp,
             fontWeight = FontWeight.SemiBold
         )
     }
 }
 
 @Composable
-fun EmptyState(text: String, modifier: Modifier = Modifier) {
+fun EmptyState(
+    text: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null
+) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.size(44.dp)
+                )
+                Spacer(Modifier.height(10.dp))
+            }
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -122,7 +162,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(30.dp))
     }
 }
 
@@ -158,10 +198,11 @@ fun TopBarBack(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null,
                 modifier = Modifier
-                    .padding(start = 4.dp)
+                    .padding(start = 6.dp)
                     .clip(CircleShape)
                     .clickable(onClick = onBack)
-                    .padding(10.dp)
+                    .padding(9.dp)
+                    .size(22.dp)
             )
         },
         actions = { actions() },
@@ -171,6 +212,30 @@ fun TopBarBack(
     )
 }
 
+/** 方形彩色图标块：用于功能入口 */
+@Composable
+fun IconTile(
+    icon: ImageVector,
+    tint: Color,
+    modifier: Modifier = Modifier,
+    size: Dp = 40.dp
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(RoundedCornerShape(size * 0.3f))
+            .background(tint.copy(alpha = 0.14f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = tint,
+            modifier = Modifier.size(size * 0.52f)
+        )
+    }
+}
+
 /** 设置项通用行 */
 @Composable
 fun SettingRow(
@@ -178,17 +243,27 @@ fun SettingRow(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     onClick: (() -> Unit)? = null,
-    trailing: @Composable (() -> Unit)? = null
+    leading: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    titleColor: Color = Color.Unspecified
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if (leading != null) {
+            leading()
+            Spacer(Modifier.width(12.dp))
+        }
         Column(Modifier.weight(1f)) {
-            Text(text = title, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (titleColor == Color.Unspecified) MaterialTheme.colorScheme.onSurface else titleColor
+            )
             if (!subtitle.isNullOrBlank()) {
                 Spacer(Modifier.height(2.dp))
                 Text(
@@ -200,13 +275,14 @@ fun SettingRow(
         }
         if (trailing != null) {
             trailing()
-            Spacer(Modifier.width(6.dp))
+            Spacer(Modifier.width(4.dp))
         }
         if (onClick != null) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.size(20.dp)
             )
         }
     }
@@ -216,30 +292,30 @@ fun SettingRow(
 @Composable
 fun SectionCard(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surface)
-    ) {
-        content()
-    }
+            .padding(horizontal = 12.dp, vertical = 5.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surface),
+        content = content
+    )
 }
 
+/** 卡片内部分隔线，默认左侧缩进 */
 @Composable
 fun HorizontalDivider(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(0.5.dp)
-            .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            .height(0.6.dp)
+            .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f))
     )
 }
 
-/** 顶部搜索框 */
+/** 顶部搜索框：QQ 风格的浅灰胶囊 */
 @Composable
 fun SearchField(
     value: String,
@@ -247,22 +323,53 @@ fun SearchField(
     placeholder: String,
     modifier: Modifier = Modifier
 ) {
-    androidx.compose.material3.OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        placeholder = { Text(placeholder) },
-        singleLine = true,
-        shape = RoundedCornerShape(24.dp),
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = null
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .height(38.dp)
+            .clip(RoundedCornerShape(19.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(Modifier.width(8.dp))
+        Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+            if (value.isEmpty()) {
+                Text(
+                    text = placeholder,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
         }
-    )
+        if (value.isNotEmpty()) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .clickable { onValueChange("") }
+            )
+        }
+    }
 }
 
 @Composable

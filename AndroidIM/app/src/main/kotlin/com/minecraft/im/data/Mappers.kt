@@ -3,12 +3,14 @@ package com.minecraft.im.data
 import com.minecraft.im.core.parseServerTime
 import com.minecraft.im.data.remote.dto.ChatGroupDto
 import com.minecraft.im.data.remote.dto.ChatMessageDto
+import com.minecraft.im.data.remote.dto.FavoriteDto
 import com.minecraft.im.data.remote.dto.FriendInfoDto
 import com.minecraft.im.data.remote.dto.FriendRequestDto
 import com.minecraft.im.data.remote.dto.GroupChatMessageDto
 import com.minecraft.im.data.remote.dto.MomentCommentDto
 import com.minecraft.im.data.remote.dto.MomentDto
 import com.minecraft.im.domain.model.Contact
+import com.minecraft.im.domain.model.FavoriteUi
 import com.minecraft.im.domain.model.FriendRequestUi
 import com.minecraft.im.domain.model.MessageUi
 import com.minecraft.im.domain.model.MomentCommentUi
@@ -71,6 +73,21 @@ fun GroupChatMessageDto.toUi(currentUserId: Long): MessageUi = MessageUi(
     kind = messageKindOf(messageType),
     time = parseServerTime(createTime),
     isMine = senderId == currentUserId
+)
+
+fun FavoriteDto.toUi(): FavoriteUi = FavoriteUi(
+    id = id,
+    type = type?.takeIf { it.isNotBlank() } ?: "note",
+    title = title,
+    content = content,
+    cover = cover,
+    url = url,
+    fileName = fileName,
+    fileSize = fileSize ?: 0L,
+    tags = tags,
+    source = source,
+    createdTime = if (createTime.isNullOrBlank()) 0L else parseServerTime(createTime),
+    updatedTime = if (updateTime.isNullOrBlank()) 0L else parseServerTime(updateTime)
 )
 
 fun MomentDto.toUi(): MomentUi = MomentUi(

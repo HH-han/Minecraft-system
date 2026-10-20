@@ -157,4 +157,54 @@ interface ApiService {
 
     @GET("public/moment/cover")
     suspend fun getMomentCover(@Query("userId") userId: Long): ApiEnvelope<String>
+
+    // ---------------- 收藏 ----------------
+    @GET("public/favorite/list")
+    suspend fun getFavoriteList(
+        @Query("userId") userId: Long,
+        @Query("type") type: String? = null,
+        @Query("tag") tag: String? = null,
+        @Query("keyword") keyword: String? = null,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20
+    ): ApiEnvelope<List<FavoriteDto>>
+
+    @GET("public/favorite/recent")
+    suspend fun getRecentFavorites(
+        @Query("userId") userId: Long,
+        @Query("limit") limit: Int = 30
+    ): ApiEnvelope<List<FavoriteDto>>
+
+    @GET("public/favorite/stats")
+    suspend fun getFavoriteStats(@Query("userId") userId: Long): ApiEnvelope<FavoriteStatDto>
+
+    @GET("public/favorite/tags")
+    suspend fun getFavoriteTags(@Query("userId") userId: Long): ApiEnvelope<List<String>>
+
+    @POST("public/favorite/add")
+    suspend fun addFavorite(@Body body: FavoriteSaveRequest): ApiEnvelope<FavoriteDto>
+
+    @PUT("public/favorite/{id}")
+    suspend fun updateFavorite(
+        @Path("id") id: Long,
+        @Body body: FavoriteSaveRequest
+    ): ApiEnvelope<FavoriteDto>
+
+    @POST("public/favorite/{id}/touch")
+    suspend fun touchFavorite(
+        @Path("id") id: Long,
+        @Query("userId") userId: Long
+    ): ApiEnvelope<JsonElement>
+
+    @DELETE("public/favorite/{id}")
+    suspend fun deleteFavorite(
+        @Path("id") id: Long,
+        @Query("userId") userId: Long
+    ): ApiEnvelope<JsonElement>
+
+    @DELETE("public/favorite/clear")
+    suspend fun clearFavorites(
+        @Query("userId") userId: Long,
+        @Query("type") type: String? = null
+    ): ApiEnvelope<JsonElement>
 }

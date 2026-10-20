@@ -19,6 +19,7 @@
     <string name="label_empty">No data</string>
     <string name="label_network_error">Network error</string>
     <string name="label_me">Me</string>
+    <string name="me_favorites">My favorites</string>
     <string name="label_unknown">Unknown</string>
     <string name="label_success">Done</string>
 
@@ -36,6 +37,7 @@
     <string name="tab_messages">Chats</string>
     <string name="tab_contacts">Contacts</string>
     <string name="tab_discover">Discover</string>
+    <string name="tab_favorites">Favorites</string>
     <string name="tab_me">Me</string>
 
     <!-- Conversations -->
@@ -68,6 +70,42 @@
     <string name="chat_send_failed">Failed to send</string>
     <string name="chat_group_tag">Group</string>
     <string name="chat_me">Me</string>
+    <string name="chat_copy">Copy</string>
+    <string name="chat_copied">Copied</string>
+
+    <!-- Favorites -->
+    <string name="favorites_search_hint">Search favorites</string>
+    <string name="favorites_add">New favorite</string>
+    <string name="favorites_cat_all">All</string>
+    <string name="favorites_cat_recent">Recent</string>
+    <string name="favorites_cat_note">Notes</string>
+    <string name="favorites_cat_link">Links</string>
+    <string name="favorites_cat_image">Images</string>
+    <string name="favorites_cat_file">Files</string>
+    <string name="favorites_cat_chat">Chats</string>
+    <string name="favorites_cat_voice">Voice</string>
+    <string name="favorites_cat_location">Places</string>
+    <string name="favorites_empty">No favorites yet. Tap the button below to add one</string>
+    <string name="favorites_empty_search">No matching favorites</string>
+    <string name="favorites_count">%1$d items</string>
+    <string name="favorites_new_note">New note</string>
+    <string name="favorites_new_link">Add link</string>
+    <string name="favorites_field_title">Title</string>
+    <string name="favorites_field_content">Content</string>
+    <string name="favorites_field_url">URL</string>
+    <string name="favorites_field_tags">Tags (comma separated)</string>
+    <string name="favorites_saved">Saved</string>
+    <string name="favorites_deleted">Deleted</string>
+    <string name="favorites_cleared">Cleared</string>
+    <string name="favorites_delete_confirm">Delete this favorite?</string>
+    <string name="favorites_clear">Clear</string>
+    <string name="favorites_clear_confirm">Clear all favorites in this category?</string>
+    <string name="favorites_copy">Copy</string>
+    <string name="favorites_load_more">Load more</string>
+    <string name="favorites_no_more">— No more items —</string>
+    <string name="favorites_untitled">Untitled favorite</string>
+    <string name="favorites_required">Please enter content or a title</string>
+    <string name="favorites_url_required">Please enter a URL</string>
 
     <!-- Contact detail -->
     <string name="contact_detail_title">Details</string>

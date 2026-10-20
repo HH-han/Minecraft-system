@@ -78,6 +78,42 @@ data class MomentUi(
     val time: Long = 0L
 )
 
+/** 收藏类型，与后端 favorite.type 对应 */
+object FavoriteType {
+    const val NOTE = "note"
+    const val LINK = "link"
+    const val IMAGE = "image"
+    const val VIDEO = "video"
+    const val FILE = "file"
+    const val CHAT = "chat"
+    const val VOICE = "voice"
+    const val LOCATION = "location"
+    const val MINIAPP = "miniapp"
+
+    /** 分类筛选时传给后端的 type 参数 */
+    fun queryOf(category: String): String? = when (category) {
+        "all", "recent" -> null
+        "media" -> "image,video"
+        else -> category
+    }
+}
+
+/** 收藏项 */
+data class FavoriteUi(
+    val id: Long,
+    val type: String,
+    val title: String? = null,
+    val content: String? = null,
+    val cover: String? = null,
+    val url: String? = null,
+    val fileName: String? = null,
+    val fileSize: Long = 0L,
+    val tags: List<String> = emptyList(),
+    val source: String? = null,
+    val createdTime: Long = 0L,
+    val updatedTime: Long = 0L
+)
+
 fun messageKindOf(raw: String?): MessageKind = when (raw?.lowercase()) {
     "image" -> MessageKind.IMAGE
     "emoji" -> MessageKind.EMOJI

@@ -230,6 +230,46 @@ data class MomentLikeResult(
     val likeCount: Int = 0
 )
 
+/** 收藏项（与 Web 端「收藏」模块对齐） */
+@Serializable
+data class FavoriteDto(
+    val id: Long = 0,
+    val userId: Long? = null,
+    val type: String? = null,
+    val title: String? = null,
+    val content: String? = null,
+    val cover: String? = null,
+    val url: String? = null,
+    val fileName: String? = null,
+    val fileSize: Long? = null,
+    val tags: List<String> = emptyList(),
+    val source: String? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null
+)
+
+/** 新增 / 编辑收藏请求 */
+@Serializable
+data class FavoriteSaveRequest(
+    val userId: Long,
+    val type: String,
+    val title: String? = null,
+    val content: String? = null,
+    val cover: String? = null,
+    val url: String? = null,
+    val fileName: String? = null,
+    val fileSize: Long? = null,
+    val tags: List<String> = emptyList(),
+    val source: String? = null
+)
+
+/** 收藏分类统计 */
+@Serializable
+data class FavoriteStatDto(
+    val total: Long = 0,
+    val types: Map<String, Long> = emptyMap()
+)
+
 /** 表情包接口返回结构（自定义表情） */
 @Serializable
 data class UserEmojiDto(
