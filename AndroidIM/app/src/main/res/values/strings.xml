@@ -19,9 +19,10 @@
     <string name="label_empty">暂无数据</string>
     <string name="label_network_error">网络异常</string>
     <string name="label_me">我</string>
-    <string name="me_favorites">我的收藏</string>
+    <string name="me_favorites">收藏</string>
     <string name="label_unknown">未知</string>
     <string name="label_success">操作成功</string>
+    <string name="feature_unavailable">该功能暂未开放</string>
 
     <!-- 登录 -->
     <string name="login_title">登录</string>
@@ -37,7 +38,6 @@
     <string name="tab_messages">消息</string>
     <string name="tab_contacts">通讯录</string>
     <string name="tab_discover">发现</string>
-    <string name="tab_favorites">收藏</string>
     <string name="tab_me">我</string>
 
     <!-- 会话列表 -->
@@ -53,9 +53,15 @@
 
     <!-- 通讯录 -->
     <string name="contacts_new_friend">新的朋友</string>
+    <string name="contacts_chat_only">仅聊天的朋友</string>
     <string name="contacts_group_chat">群聊</string>
+    <string name="contacts_tags">标签</string>
+    <string name="contacts_official">公众号</string>
+    <string name="contacts_service">服务号</string>
+    <string name="contacts_enterprise">我的企业及企业联系人</string>
+    <string name="contacts_wecom">企业微信联系人</string>
+    <string name="contacts_enterprise_app">路尚</string>
     <string name="contacts_starred">星标朋友</string>
-    <string name="contacts_starred_only">仅看星标</string>
     <string name="contacts_star">设为星标</string>
     <string name="contacts_unstar">取消星标</string>
 
@@ -185,7 +191,31 @@
     <string name="moments_images">图片</string>
     <string name="moments_liked">赞</string>
     <string name="moments_reply">回复</string>
-    <string name="discover_moments_desc">查看好友动态</string>
+    <string name="moments_cover_hint">点击更换封面</string>
+    <string name="moments_cover_uploading">封面上传中…</string>
+    <string name="moments_cover_updated">封面已更新</string>
+
+    <!-- 发现 -->
+    <string name="discover_channels">视频号</string>
+    <string name="discover_live">直播</string>
+    <string name="discover_scan">扫一扫</string>
+    <string name="discover_listen">听一听</string>
+    <string name="discover_look">看一看</string>
+    <string name="discover_search">搜一搜</string>
+    <string name="discover_nearby">附近的人</string>
+    <string name="discover_games">游戏</string>
+    <string name="discover_mini_programs">小程序</string>
+
+    <!-- 我 -->
+    <string name="me_wechat_id">微信号：%1$s</string>
+    <string name="me_status">状态</string>
+    <string name="me_new_messages">%1$d条新消息</string>
+    <string name="me_services">服务</string>
+    <string name="me_works">作品</string>
+    <string name="me_works_hint">在这里看我的视频号和公众号</string>
+    <string name="me_store">小店与卡包</string>
+    <string name="me_stickers">表情</string>
+    <string name="me_qrcode">我的二维码</string>
 
     <!-- 个人资料 -->
     <string name="profile_title">个人信息</string>

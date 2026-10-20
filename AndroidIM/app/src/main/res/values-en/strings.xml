@@ -19,9 +19,10 @@
     <string name="label_empty">No data</string>
     <string name="label_network_error">Network error</string>
     <string name="label_me">Me</string>
-    <string name="me_favorites">My favorites</string>
+    <string name="me_favorites">Favorites</string>
     <string name="label_unknown">Unknown</string>
     <string name="label_success">Done</string>
+    <string name="feature_unavailable">This feature is not available yet</string>
 
     <!-- Login -->
     <string name="login_title">Sign in</string>
@@ -37,7 +38,6 @@
     <string name="tab_messages">Chats</string>
     <string name="tab_contacts">Contacts</string>
     <string name="tab_discover">Discover</string>
-    <string name="tab_favorites">Favorites</string>
     <string name="tab_me">Me</string>
 
     <!-- Conversations -->
@@ -53,9 +53,15 @@
 
     <!-- Contacts -->
     <string name="contacts_new_friend">New friends</string>
+    <string name="contacts_chat_only">Chat-only friends</string>
     <string name="contacts_group_chat">Group chats</string>
-    <string name="contacts_starred">Starred</string>
-    <string name="contacts_starred_only">Starred only</string>
+    <string name="contacts_tags">Tags</string>
+    <string name="contacts_official">Official accounts</string>
+    <string name="contacts_service">Service accounts</string>
+    <string name="contacts_enterprise">My enterprise and contacts</string>
+    <string name="contacts_wecom">WeCom contacts</string>
+    <string name="contacts_enterprise_app">Lushang</string>
+    <string name="contacts_starred">Starred friends</string>
     <string name="contacts_star">Add star</string>
     <string name="contacts_unstar">Remove star</string>
 
@@ -185,7 +191,31 @@
     <string name="moments_images">Images</string>
     <string name="moments_liked">Likes</string>
     <string name="moments_reply">Reply</string>
-    <string name="discover_moments_desc">See what friends are up to</string>
+    <string name="moments_cover_hint">Tap to change cover</string>
+    <string name="moments_cover_uploading">Uploading cover…</string>
+    <string name="moments_cover_updated">Cover updated</string>
+
+    <!-- Discover -->
+    <string name="discover_channels">Channels</string>
+    <string name="discover_live">Live</string>
+    <string name="discover_scan">Scan</string>
+    <string name="discover_listen">Listen</string>
+    <string name="discover_look">Top stories</string>
+    <string name="discover_search">Search</string>
+    <string name="discover_nearby">People nearby</string>
+    <string name="discover_games">Games</string>
+    <string name="discover_mini_programs">Mini programs</string>
+
+    <!-- Me -->
+    <string name="me_wechat_id">WeChat ID: %1$s</string>
+    <string name="me_status">Status</string>
+    <string name="me_new_messages">%1$d new messages</string>
+    <string name="me_services">Services</string>
+    <string name="me_works">Works</string>
+    <string name="me_works_hint">See my channels and official accounts</string>
+    <string name="me_store">Store and wallet</string>
+    <string name="me_stickers">Stickers</string>
+    <string name="me_qrcode">My QR code</string>
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
