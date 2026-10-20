@@ -36,6 +36,8 @@ class MomentsViewModel @Inject constructor(
         val page: Int = 0,
         val end: Boolean = false,
         val error: String? = null,
+        val coverUrl: String? = null,
+        val coverUploading: Boolean = false,
         val currentUserId: Long = 0L,
         val currentUserName: String = "",
         val currentUserAvatar: String? = null
@@ -53,6 +55,34 @@ class MomentsViewModel @Inject constructor(
 
     init {
         refresh()
+        loadCover()
+    }
+
+    fun loadCover() {
+        viewModelScope.launch {
+            repository.cover().onSuccess { url ->
+                _uiState.update { it.copy(coverUrl = url) }
+            }
+        }
+    }
+
+    /** 上传朋友圈封面，成功后在页面顶部立即替换 */
+    fun uploadCover(bytes: ByteArray, mime: String, fileName: String, onDone: (String?) -> Unit) {
+        if (_uiState.value.coverUploading) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(coverUploading = true, error = null) }
+            repository.uploadCover(bytes, fileName, mime)
+                .onSuccess { url ->
+                    _uiState.update { it.copy(coverUploading = false, coverUrl = url) }
+                    onDone(null)
+                }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(coverUploading = false, error = error.toMessage())
+                    }
+                    onDone(error.toMessage())
+                }
+        }
     }
 
     fun refresh() {

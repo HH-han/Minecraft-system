@@ -9,21 +9,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.PersonOutline
-import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +37,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -58,9 +56,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minecraft.im.R
 import com.minecraft.im.ui.components.SearchField
-import com.minecraft.im.ui.favorites.FavoritesScreen
 
-/** 主界面：消息 / 通讯录 / 发现 / 收藏 / 我 */
+private const val TAB_MESSAGES = 0
+private const val TAB_CONTACTS = 1
+private const val TAB_DISCOVER = 2
+private const val TAB_ME = 3
+
+/** 主界面：消息 / 通讯录 / 发现 / 我 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -70,6 +72,7 @@ fun HomeScreen(
     onCreateGroup: () -> Unit,
     onMoments: () -> Unit,
     onProfile: () -> Unit,
+    onFavorites: () -> Unit,
     onSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -81,94 +84,103 @@ fun HomeScreen(
     val totalUnread by viewModel.totalUnread.collectAsStateWithLifecycle()
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
 
-    var tab by rememberSaveable { mutableIntStateOf(0) }
+    var tab by rememberSaveable { mutableIntStateOf(TAB_MESSAGES) }
     var query by rememberSaveable { mutableStateOf("") }
-    var starredOnly by rememberSaveable { mutableStateOf(false) }
+    var searchActive by rememberSaveable { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
     var showGroupSheet by remember { mutableStateOf(false) }
-    var showLogoutConfirm by remember { mutableStateOf(false) }
 
     val snackbar = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) { viewModel.refresh() }
 
     LaunchedEffect(tab) {
-        if (tab != 0 && tab != 1) query = ""
+        query = ""
+        searchActive = false
     }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = homeTitle(tab),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    ),
-                    actions = {
-                        if (tab == 0) {
-                            Box {
-                                IconButton(onClick = { showMenu = true }) {
-                                    Icon(
-                                        Icons.Default.Add,
-                                        contentDescription = stringResource(R.string.action_more)
-                                    )
-                                }
-                                DropdownMenu(
+                when (tab) {
+                    TAB_MESSAGES -> {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = stringResource(R.string.tab_messages),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            actions = {
+                                AddMenuButton(
                                     expanded = showMenu,
-                                    onDismissRequest = { showMenu = false }
-                                ) {
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_create_group)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.GroupAdd, contentDescription = null)
-                                        },
-                                        onClick = {
-                                            showMenu = false
-                                            onCreateGroup()
-                                        }
-                                    )
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_add_friend)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.PersonAdd, contentDescription = null)
-                                        },
-                                        onClick = {
-                                            showMenu = false
-                                            onAddFriend()
-                                        }
-                                    )
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_friend_requests)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.People, contentDescription = null)
-                                        },
-                                        onClick = {
-                                            showMenu = false
-                                            onFriendRequests()
-                                        }
-                                    )
-                                }
+                                    onExpandedChange = { showMenu = it },
+                                    onCreateGroup = onCreateGroup,
+                                    onAddFriend = onAddFriend,
+                                    onFriendRequests = onFriendRequests
+                                )
                             }
-                        }
+                        )
+                        SearchField(
+                            value = query,
+                            onValueChange = { query = it },
+                            placeholder = stringResource(R.string.home_search_hint)
+                        )
                     }
-                )
-                if (tab == 0 || tab == 1) {
-                    SearchField(
-                        value = query,
-                        onValueChange = { query = it },
-                        placeholder = stringResource(R.string.home_search_hint)
+
+                    TAB_CONTACTS -> {
+                        CenterTopBar(
+                            title = stringResource(R.string.tab_contacts),
+                            onSearch = { searchActive = !searchActive },
+                            expanded = showMenu,
+                            onExpandedChange = { showMenu = it },
+                            onCreateGroup = onCreateGroup,
+                            onAddFriend = onAddFriend,
+                            onFriendRequests = onFriendRequests
+                        )
+                        if (searchActive) SearchField(
+                            value = query,
+                            onValueChange = { query = it },
+                            placeholder = stringResource(R.string.home_search_hint)
+                        )
+                    }
+
+                    TAB_DISCOVER -> {
+                        CenterTopBar(
+                            title = stringResource(R.string.tab_discover),
+                            onSearch = { searchActive = !searchActive },
+                            expanded = showMenu,
+                            onExpandedChange = { showMenu = it },
+                            menuItems = {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.moments_publish)) },
+                                    leadingIcon = {
+                                        Icon(Icons.Default.Explore, contentDescription = null)
+                                    },
+                                    onClick = {
+                                        showMenu = false
+                                        onMoments()
+                                    }
+                                )
+                            }
+                        )
+                        if (searchActive) SearchField(
+                            value = query,
+                            onValueChange = { query = it },
+                            placeholder = stringResource(R.string.home_search_hint)
+                        )
+                    }
+                }
+                if (tab != TAB_ME) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
                     )
                 }
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
-                )
             }
         },
         bottomBar = {
@@ -177,41 +189,34 @@ fun HomeScreen(
                 tonalElevation = 0.dp
             ) {
                 HomeTabItem(
-                    selected = tab == 0,
+                    selected = tab == TAB_MESSAGES,
                     label = stringResource(R.string.tab_messages),
                     selectedIcon = Icons.AutoMirrored.Filled.Chat,
                     unselectedIcon = Icons.Outlined.ChatBubbleOutline,
                     badge = totalUnread,
-                    onClick = { tab = 0 }
+                    onClick = { tab = TAB_MESSAGES }
                 )
                 HomeTabItem(
-                    selected = tab == 1,
+                    selected = tab == TAB_CONTACTS,
                     label = stringResource(R.string.tab_contacts),
                     selectedIcon = Icons.Default.People,
                     unselectedIcon = Icons.Outlined.PeopleOutline,
                     badge = requests.size,
-                    onClick = { tab = 1 }
+                    onClick = { tab = TAB_CONTACTS }
                 )
                 HomeTabItem(
-                    selected = tab == 2,
+                    selected = tab == TAB_DISCOVER,
                     label = stringResource(R.string.tab_discover),
                     selectedIcon = Icons.Default.Explore,
                     unselectedIcon = Icons.Outlined.Explore,
-                    onClick = { tab = 2 }
+                    onClick = { tab = TAB_DISCOVER }
                 )
                 HomeTabItem(
-                    selected = tab == 3,
-                    label = stringResource(R.string.tab_favorites),
-                    selectedIcon = Icons.Default.Star,
-                    unselectedIcon = Icons.Outlined.StarBorder,
-                    onClick = { tab = 3 }
-                )
-                HomeTabItem(
-                    selected = tab == 4,
+                    selected = tab == TAB_ME,
                     label = stringResource(R.string.tab_me),
                     selectedIcon = Icons.Default.Person,
                     unselectedIcon = Icons.Outlined.PersonOutline,
-                    onClick = { tab = 4 }
+                    onClick = { tab = TAB_ME }
                 )
             }
         },
@@ -223,7 +228,7 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
             when (tab) {
-                0 -> ConversationsTab(
+                TAB_MESSAGES -> ConversationsTab(
                     conversations = conversations,
                     query = query,
                     onOpen = { contact ->
@@ -232,14 +237,12 @@ fun HomeScreen(
                     }
                 )
 
-                1 -> ContactsTab(
+                TAB_CONTACTS -> ContactsTab(
                     friends = friends,
                     groups = groups,
                     requests = requests,
                     starred = starred,
                     query = query,
-                    starredOnly = starredOnly,
-                    onToggleStarredOnly = { starredOnly = !starredOnly },
                     onToggleStar = viewModel::toggleStar,
                     onOpenChat = { contact ->
                         viewModel.openConversation(contact)
@@ -249,19 +252,24 @@ fun HomeScreen(
                     onShowGroups = { showGroupSheet = true }
                 )
 
-                2 -> DiscoverTab(onMoments = onMoments)
-
-                3 -> FavoritesScreen()
+                TAB_DISCOVER -> DiscoverTab(
+                    query = query,
+                    selfName = currentUser?.nickname?.takeIf { it.isNotBlank() }
+                        ?: currentUser?.username.orEmpty(),
+                    selfAvatar = currentUser?.avatar,
+                    onMoments = onMoments
+                )
 
                 else -> MeTab(
                     name = currentUser?.nickname?.takeIf { it.isNotBlank() }
                         ?: currentUser?.username.orEmpty(),
                     account = currentUser?.account.orEmpty(),
                     avatar = currentUser?.avatar,
+                    unread = totalUnread,
                     onProfile = onProfile,
-                    onFavorites = { tab = 3 },
-                    onSettings = onSettings,
-                    onLogout = { showLogoutConfirm = true }
+                    onFavorites = onFavorites,
+                    onMoments = onMoments,
+                    onSettings = onSettings
                 )
             }
         }
@@ -278,36 +286,145 @@ fun HomeScreen(
             }
         )
     }
-
-    if (showLogoutConfirm) {
-        AlertDialog(
-            onDismissRequest = { showLogoutConfirm = false },
-            title = { Text(stringResource(R.string.settings_logout)) },
-            text = { Text(stringResource(R.string.settings_logout_confirm)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showLogoutConfirm = false
-                        viewModel.logout()
-                    }
-                ) { Text(stringResource(R.string.action_ok)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { showLogoutConfirm = false }) {
-                    Text(stringResource(R.string.action_cancel))
-                }
-            }
-        )
-    }
 }
 
+/** 居中式顶栏：搜索 + 圆形加号菜单 */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun homeTitle(tab: Int): String = when (tab) {
-    0 -> stringResource(R.string.tab_messages)
-    1 -> stringResource(R.string.tab_contacts)
-    2 -> stringResource(R.string.tab_discover)
-    3 -> stringResource(R.string.tab_favorites)
-    else -> stringResource(R.string.tab_me)
+private fun CenterTopBar(
+    title: String,
+    onSearch: () -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onCreateGroup: (() -> Unit)? = null,
+    onAddFriend: (() -> Unit)? = null,
+    onFriendRequests: (() -> Unit)? = null,
+    menuItems: (@Composable () -> Unit)? = null
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        actions = {
+            IconButton(onClick = onSearch) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.action_search),
+                    modifier = Modifier.size(21.dp)
+                )
+            }
+            Box {
+                IconButton(onClick = { onExpandedChange(true) }) {
+                    Icon(
+                        imageVector = Icons.Outlined.AddCircleOutline,
+                        contentDescription = stringResource(R.string.action_more),
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { onExpandedChange(false) }
+                ) {
+                    if (menuItems != null) {
+                        menuItems()
+                    } else {
+                        if (onAddFriend != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_add_friend)) },
+                                leadingIcon = {
+                                    Icon(Icons.Default.PersonAdd, contentDescription = null)
+                                },
+                                onClick = {
+                                    onExpandedChange(false)
+                                    onAddFriend()
+                                }
+                            )
+                        }
+                        if (onCreateGroup != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_create_group)) },
+                                leadingIcon = {
+                                    Icon(Icons.Default.GroupAdd, contentDescription = null)
+                                },
+                                onClick = {
+                                    onExpandedChange(false)
+                                    onCreateGroup()
+                                }
+                            )
+                        }
+                        if (onFriendRequests != null) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.menu_friend_requests)) },
+                                leadingIcon = {
+                                    Icon(Icons.Default.People, contentDescription = null)
+                                },
+                                onClick = {
+                                    onExpandedChange(false)
+                                    onFriendRequests()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    )
+}
+
+/** 消息页的加号菜单 */
+@Composable
+private fun AddMenuButton(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onCreateGroup: () -> Unit,
+    onAddFriend: () -> Unit,
+    onFriendRequests: () -> Unit
+) {
+    Box {
+        IconButton(onClick = { onExpandedChange(true) }) {
+            Icon(
+                imageVector = Icons.Outlined.AddCircleOutline,
+                contentDescription = stringResource(R.string.action_more),
+                modifier = Modifier.size(22.dp)
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) }
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.menu_create_group)) },
+                leadingIcon = { Icon(Icons.Default.GroupAdd, contentDescription = null) },
+                onClick = {
+                    onExpandedChange(false)
+                    onCreateGroup()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.menu_add_friend)) },
+                leadingIcon = { Icon(Icons.Default.PersonAdd, contentDescription = null) },
+                onClick = {
+                    onExpandedChange(false)
+                    onAddFriend()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.menu_friend_requests)) },
+                leadingIcon = { Icon(Icons.Default.People, contentDescription = null) },
+                onClick = {
+                    onExpandedChange(false)
+                    onFriendRequests()
+                }
+            )
+        }
+    }
 }
 
 @Composable

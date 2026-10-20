@@ -85,4 +85,16 @@ class MomentRepository @Inject constructor(
         val res = apiProvider.api().getMomentCover(session.currentUserId)
         if (res.code != 200) null else res.data
     }
+
+    suspend fun uploadCover(
+        bytes: ByteArray,
+        fileName: String,
+        mime: String
+    ): Result<String> = runCatching {
+        val body = bytes.toRequestBody(mime.toMediaTypeOrNull())
+        val part = MultipartBody.Part.createFormData("file", fileName, body)
+        val res = apiProvider.api().uploadMomentCover(session.currentUserId, part)
+        if (res.code != 200) throw ApiException(res.message ?: "封面上传失败")
+        res.data ?: throw ApiException("封面上传失败")
+    }
 }

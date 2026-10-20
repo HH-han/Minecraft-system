@@ -1,23 +1,32 @@
 package com.minecraft.im.ui.moments
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,12 +36,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,17 +52,17 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,12 +72,19 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -77,7 +95,6 @@ import com.minecraft.im.core.mediaUrl
 import com.minecraft.im.domain.model.MomentUi
 import com.minecraft.im.ui.components.ImAvatar
 import com.minecraft.im.ui.components.LocalBaseUrl
-import com.minecraft.im.ui.components.TopBarBack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -91,10 +108,67 @@ fun MomentsScreen(
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val context = LocalContext.current
     var showPublish by remember { mutableStateOf(false) }
     var commentTarget by remember { mutableStateOf<MomentUi?>(null) }
     val successText = stringResource(R.string.label_success)
     val publishSuccessText = stringResource(R.string.moments_publish_success)
+    val coverUpdatedText = stringResource(R.string.moments_cover_updated)
+
+    // 上滑封面后顶栏逐渐变成实心，并切换为深色图标
+    val collapseFraction by remember {
+        derivedStateOf {
+            if (listState.firstVisibleItemIndex > 0) 1f
+            else (listState.firstVisibleItemScrollOffset / 180f).coerceIn(0f, 1f)
+        }
+    }
+
+    // 封面为深色图片时状态栏图标用白色，顶栏收起后再切回深色
+    val view = LocalView.current
+    val insetsController = remember(view) {
+        view.context.findActivity()?.window?.let { WindowCompat.getInsetsController(it, view) }
+    }
+    val previousLightStatusBars = remember {
+        insetsController?.isAppearanceLightStatusBars
+    }
+    val useDarkStatusIcons by remember {
+        derivedStateOf { collapseFraction > 0.5f }
+    }
+    LaunchedEffect(useDarkStatusIcons) {
+        insetsController?.isAppearanceLightStatusBars = useDarkStatusIcons
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            if (insetsController != null && previousLightStatusBars != null) {
+                insetsController.isAppearanceLightStatusBars = previousLightStatusBars
+            }
+        }
+    }
+
+    val coverPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val bytes = withContext(Dispatchers.IO) {
+                runCatching {
+                    context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                }.getOrNull()
+            }
+            if (bytes == null) {
+                snackbar.showSnackbar(context.getString(R.string.image_pick_failed))
+                return@launch
+            }
+            val mime = context.contentResolver.getType(uri) ?: "image/jpeg"
+            viewModel.uploadCover(
+                bytes = bytes,
+                mime = mime,
+                fileName = "moment_cover_${System.currentTimeMillis()}.jpg"
+            ) { error ->
+                scope.launch { snackbar.showSnackbar(error ?: coverUpdatedText) }
+            }
+        }
+    }
 
     LaunchedEffect(state.error) {
         state.error?.let {
@@ -106,73 +180,112 @@ fun MomentsScreen(
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0 }
             .collect { lastVisible ->
-                if (lastVisible >= state.moments.size - 2) viewModel.loadMore()
+                if (lastVisible >= state.moments.size - 1) viewModel.loadMore()
             }
     }
 
-    Scaffold(
-        topBar = {
-            TopBarBack(
-                title = stringResource(R.string.moments_title),
-                onBack = onBack,
-                actions = {
-                    IconButton(onClick = { showPublish = true }) {
-                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.moments_publish))
-                    }
-                    IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.action_refresh))
-                    }
-                }
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbar) }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(MaterialTheme.colorScheme.background)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 32.dp)
         ) {
+            item(key = "cover") {
+                MomentsCover(
+                    coverUrl = state.coverUrl,
+                    userName = state.currentUserName.ifBlank {
+                        stringResource(R.string.label_me)
+                    },
+                    userAvatar = state.currentUserAvatar,
+                    uploading = state.coverUploading,
+                    onClick = {
+                        if (!state.coverUploading) {
+                            coverPicker.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
+                    }
+                )
+            }
+
             if (state.loading && state.moments.isEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else if (state.moments.isEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = stringResource(R.string.moments_empty),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            } else {
-                LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                    items(state.moments, key = { it.id }) { moment ->
-                        MomentCard(
-                            moment = moment,
-                            isMine = moment.userId == state.currentUserId,
-                            onLike = { viewModel.toggleLike(moment) },
-                            onComment = { commentTarget = moment },
-                            onDelete = {
-                                viewModel.deleteMoment(moment.id) { error ->
-                                    scope.launch { snackbar.showSnackbar(error ?: successText) }
-                                }
-                            }
+                item(key = "loading") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(28.dp)
                         )
                     }
-                    if (state.loadingMore) {
-                        item {
-                            Box(Modifier.fillMaxWidth().padding(12.dp), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp)
+                }
+            } else if (state.moments.isEmpty()) {
+                item(key = "empty") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.moments_empty),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            } else {
+                items(state.moments, key = { it.id }) { moment ->
+                    MomentCard(
+                        moment = moment,
+                        isMine = moment.userId == state.currentUserId,
+                        onLike = { viewModel.toggleLike(moment) },
+                        onComment = { commentTarget = moment },
+                        onDelete = {
+                            viewModel.deleteMoment(moment.id) { error ->
+                                scope.launch { snackbar.showSnackbar(error ?: successText) }
                             }
+                        }
+                    )
+                }
+                if (state.loadingMore) {
+                    item(key = "footer") {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                Modifier.size(22.dp),
+                                strokeWidth = 2.dp
+                            )
                         }
                     }
                 }
             }
-
-            if (state.loadingMore && state.moments.isNotEmpty()) {
-                LinearProgressIndicator(Modifier.fillMaxWidth().align(Alignment.TopCenter))
-            }
         }
+
+        MomentsTopBar(
+            collapseFraction = collapseFraction,
+            onBack = onBack,
+            onRefresh = { viewModel.refresh() },
+            onPublish = { showPublish = true },
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+
+        SnackbarHost(
+            hostState = snackbar,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 20.dp)
+        )
     }
 
     if (showPublish) {
@@ -203,6 +316,267 @@ fun MomentsScreen(
             }
         )
     }
+}
+
+/** 朋友圈封面：背景图 + 渐变遮罩 + 悬浮顶栏 + 右下角昵称头像 */
+@Composable
+private fun MomentsCover(
+    coverUrl: String?,
+    userName: String,
+    userAvatar: String?,
+    uploading: Boolean,
+    onClick: () -> Unit
+) {
+    val resolved = mediaUrl(LocalBaseUrl.current, coverUrl)
+    val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val coverHeight = 230.dp + statusBarHeight
+    val avatarSize = 72.dp
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(coverHeight + 36.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(coverHeight)
+                .clickable(onClick = onClick)
+        ) {
+            if (resolved.isNullOrBlank()) {
+                // 默认封面：草方块绿渐变
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.linearGradient(
+                                listOf(
+                                    Color(0xFF245A2E),
+                                    Color(0xFF3FA34D),
+                                    Color(0xFF8BD450)
+                                )
+                            )
+                        )
+                )
+            } else {
+                AsyncImage(
+                    model = resolved,
+                    contentDescription = stringResource(R.string.moments_cover_hint),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            0f to Color.Black.copy(alpha = 0.42f),
+                            0.35f to Color.Transparent,
+                            0.75f to Color.Transparent,
+                            1f to Color.Black.copy(alpha = 0.38f)
+                        )
+                    )
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 16.dp, bottom = 16.dp)
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color.Black.copy(alpha = 0.32f))
+                    .padding(horizontal = 11.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PhotoCamera,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(Modifier.width(5.dp))
+                Text(
+                    text = stringResource(R.string.moments_cover_hint),
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+
+            Text(
+                text = userName,
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 108.dp, bottom = 22.dp)
+            )
+
+            if (uploading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.45f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(26.dp)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.moments_cover_uploading),
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp)
+        ) {
+            CoverAvatar(name = userName, avatar = userAvatar, size = avatarSize)
+        }
+    }
+}
+
+/** 封面右下角的方形头像（白边） */
+@Composable
+private fun CoverAvatar(name: String, avatar: String?, size: Dp) {
+    val resolved = mediaUrl(LocalBaseUrl.current, avatar)
+    val shape = RoundedCornerShape(10.dp)
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.primary),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name.trim().take(1).ifBlank { "?" }.uppercase(),
+            color = Color.White,
+            fontSize = 26.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+        if (!resolved.isNullOrBlank()) {
+            AsyncImage(
+                model = resolved,
+                contentDescription = name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(shape)
+            )
+        }
+        Box(
+            Modifier
+                .fillMaxSize()
+                .border(3.dp, Color.White, shape)
+        )
+    }
+}
+
+/** 悬浮顶栏：随封面上滑由透明渐变到实心 */
+@Composable
+private fun MomentsTopBar(
+    collapseFraction: Float,
+    onBack: () -> Unit,
+    onRefresh: () -> Unit,
+    onPublish: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val surface = MaterialTheme.colorScheme.surface
+    val contentColor = lerp(Color.White, MaterialTheme.colorScheme.onSurface, collapseFraction)
+    val buttonBackground = if (collapseFraction < 0.5f) {
+        Color.Black.copy(alpha = 0.22f)
+    } else {
+        Color.Transparent
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(surface.copy(alpha = collapseFraction))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .height(56.dp)
+                .padding(horizontal = 6.dp)
+        ) {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .size(38.dp)
+                    .clip(CircleShape)
+                    .background(buttonBackground)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.action_back),
+                    tint = contentColor,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.moments_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = contentColor,
+                modifier = Modifier.align(Alignment.Center)
+            )
+
+            Row(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                IconButton(
+                    onClick = onRefresh,
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(buttonBackground)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.action_refresh),
+                        tint = contentColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+                IconButton(
+                    onClick = onPublish,
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(buttonBackground)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.moments_publish),
+                        tint = contentColor,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
 
 @Composable

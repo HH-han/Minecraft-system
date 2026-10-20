@@ -212,27 +212,120 @@ fun TopBarBack(
     )
 }
 
-/** 方形彩色图标块：用于功能入口 */
+/** 方形彩色图标块：用于功能入口；solid 为实心色块 + 白色图标（微信风格） */
 @Composable
 fun IconTile(
     icon: ImageVector,
     tint: Color,
     modifier: Modifier = Modifier,
-    size: Dp = 40.dp
+    size: Dp = 40.dp,
+    solid: Boolean = false
 ) {
     Box(
         modifier = modifier
             .size(size)
-            .clip(RoundedCornerShape(size * 0.3f))
-            .background(tint.copy(alpha = 0.14f)),
+            .clip(RoundedCornerShape(size * if (solid) 0.24f else 0.3f))
+            .background(if (solid) tint else tint.copy(alpha = 0.14f)),
         contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(size * 0.52f)
+            tint = if (solid) Color.White else tint,
+            modifier = Modifier.size(size * if (solid) 0.58f else 0.52f)
         )
+    }
+}
+
+/** 微信风格通栏分组：白底、无圆角、无外边距 */
+@Composable
+fun GroupCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
+        content = content
+    )
+}
+
+/** 微信风格分组标题：灰色小字 */
+@Composable
+fun GroupHeader(title: String, modifier: Modifier = Modifier) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 10.dp, bottom = 6.dp)
+    )
+}
+
+/** 列表功能行：左侧实心图标 + 标题 + 可选右侧内容 + 箭头 */
+@Composable
+fun NavRow(
+    title: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    iconTint: Color = MaterialTheme.colorScheme.primary,
+    iconSize: Dp = 30.dp,
+    badge: Int = 0,
+    subtitle: String? = null,
+    showChevron: Boolean = true,
+    leftContent: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    onClick: (() -> Unit)? = null
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .padding(horizontal = 16.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (leftContent != null) {
+            leftContent()
+            Spacer(Modifier.width(12.dp))
+        } else if (icon != null) {
+            IconTile(icon = icon, tint = iconTint, size = iconSize, solid = true)
+            Spacer(Modifier.width(12.dp))
+        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        if (badge > 0) {
+            Spacer(Modifier.width(6.dp))
+            UnreadBadge(badge)
+        }
+        Spacer(Modifier.weight(1f))
+        if (!subtitle.isNullOrBlank()) {
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+        if (trailing != null) {
+            trailing()
+            Spacer(Modifier.width(2.dp))
+        }
+        if (showChevron) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.size(18.dp)
+            )
+        }
     }
 }
 

@@ -158,6 +158,13 @@ interface ApiService {
     @GET("public/moment/cover")
     suspend fun getMomentCover(@Query("userId") userId: Long): ApiEnvelope<String>
 
+    @Multipart
+    @POST("public/moment/cover")
+    suspend fun uploadMomentCover(
+        @Query("userId") userId: Long,
+        @Part file: MultipartBody.Part
+    ): ApiEnvelope<String>
+
     // ---------------- 收藏 ----------------
     @GET("public/favorite/list")
     suspend fun getFavoriteList(

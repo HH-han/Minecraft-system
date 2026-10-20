@@ -1,17 +1,25 @@
 package com.minecraft.im.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.minecraft.im.R
 import com.minecraft.im.data.SessionState
 import com.minecraft.im.ui.chat.ChatScreen
 import com.minecraft.im.ui.components.LoadingScreen
 import com.minecraft.im.ui.contact.AddFriendScreen
 import com.minecraft.im.ui.contact.ContactDetailScreen
 import com.minecraft.im.ui.contact.FriendRequestsScreen
+import com.minecraft.im.ui.favorites.FavoritesScreen
 import com.minecraft.im.ui.group.CreateGroupScreen
 import com.minecraft.im.ui.group.GroupInfoScreen
 import com.minecraft.im.ui.home.HomeScreen
@@ -19,6 +27,7 @@ import com.minecraft.im.ui.login.LoginScreen
 import com.minecraft.im.ui.moments.MomentsScreen
 import com.minecraft.im.ui.profile.ProfileScreen
 import com.minecraft.im.ui.settings.SettingsScreen
+import com.minecraft.im.ui.components.TopBarBack
 
 object ImRoutes {
     const val HOME = "home"
@@ -29,6 +38,7 @@ object ImRoutes {
     const val FRIEND_REQUESTS = "friend_requests"
     const val CREATE_GROUP = "create_group"
     const val MOMENTS = "moments"
+    const val FAVORITES = "favorites"
     const val PROFILE = "profile"
     const val SETTINGS = "settings"
 
@@ -62,6 +72,7 @@ private fun MainNavigation() {
                 onCreateGroup = { navController.navigate(ImRoutes.CREATE_GROUP) },
                 onMoments = { navController.navigate(ImRoutes.MOMENTS) },
                 onProfile = { navController.navigate(ImRoutes.PROFILE) },
+                onFavorites = { navController.navigate(ImRoutes.FAVORITES) },
                 onSettings = { navController.navigate(ImRoutes.SETTINGS) }
             )
         }
@@ -138,6 +149,20 @@ private fun MainNavigation() {
 
         composable(ImRoutes.MOMENTS) {
             MomentsScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(ImRoutes.FAVORITES) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                TopBarBack(
+                    title = stringResource(R.string.me_favorites),
+                    onBack = { navController.popBackStack() }
+                )
+                FavoritesScreen()
+            }
         }
 
         composable(ImRoutes.PROFILE) {
