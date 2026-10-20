@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Minecraft IM</string>
+
+    <!-- 通用 -->
+    <string name="action_ok">确定</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_save">保存</string>
+    <string name="action_send">发送</string>
+    <string name="action_delete">删除</string>
+    <string name="action_back">返回</string>
+    <string name="action_retry">重试</string>
+    <string name="action_search">搜索</string>
+    <string name="action_close">关闭</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_refresh">刷新</string>
+    <string name="action_more">更多</string>
+    <string name="label_loading">加载中…</string>
+    <string name="label_empty">暂无数据</string>
+    <string name="label_network_error">网络异常</string>
+    <string name="label_me">我</string>
+    <string name="label_unknown">未知</string>
+
+    <!-- 登录 -->
+    <string name="login_title">登录</string>
+    <string name="login_subtitle">使用 Minecraft 账号登录即时通讯</string>
+    <string name="login_account">账号</string>
+    <string name="login_password">密码</string>
+    <string name="login_server">服务器地址</string>
+    <string name="login_server_hint">http://10.0.2.2:8080/api/</string>
+    <string name="login_button">登录</string>
+    <string name="login_failed">登录失败</string>
+
+    <!-- 底部导航 -->
+    <string name="tab_messages">消息</string>
+    <string name="tab_contacts">通讯录</string>
+    <string name="tab_discover">发现</string>
+    <string name="tab_me">我</string>
+
+    <!-- 会话列表 -->
+    <string name="home_search_hint">搜索</string>
+    <string name="menu_create_group">发起群聊</string>
+    <string name="menu_add_friend">添加朋友</string>
+    <string name="menu_friend_requests">好友申请</string>
+    <string name="empty_conversations">暂无会话，去通讯录找好友聊聊吧</string>
+    <string name="empty_contacts">暂无联系人</string>
+    <string name="empty_search">没有匹配结果</string>
+    <string name="unread_badge_99">99+</string>
+    <string name="message_image_preview">[图片]</string>
+
+    <!-- 通讯录 -->
+    <string name="contacts_new_friend">新的朋友</string>
+    <string name="contacts_group_chat">群聊</string>
+    <string name="contacts_starred">星标朋友</string>
+    <string name="contacts_starred_only">仅看星标</string>
+    <string name="contacts_star">设为星标</string>
+    <string name="contacts_unstar">取消星标</string>
+
+    <!-- 聊天 -->
+    <string name="chat_input_hint">输入消息…</string>
+    <string name="chat_send_image">发送图片</string>
+    <string name="chat_emoji">表情</string>
+    <string name="chat_online">在线</string>
+    <string name="chat_offline">离线</string>
+    <string name="chat_no_messages">还没有聊天记录，打个招呼吧</string>
+    <string name="chat_menu_profile">查看资料</string>
+    <string name="chat_send_failed">发送失败</string>
+    <string name="chat_group_tag">群聊</string>
+    <string name="chat_me">我</string>
+
+    <!-- 联系人详情 -->
+    <string name="contact_detail_title">详情</string>
+    <string name="contact_id">账号 ID</string>
+    <string name="contact_phone">手机号</string>
+    <string name="contact_email">邮箱</string>
+    <string name="contact_status">状态</string>
+    <string name="contact_group_members">群成员</string>
+    <string name="contact_send_message">发消息</string>
+    <string name="contact_edit_remark">修改备注</string>
+    <string name="contact_edit_group">群资料</string>
+    <string name="contact_remark_title">修改备注</string>
+    <string name="contact_remark_hint">请输入备注名</string>
+    <string name="contact_delete">删除好友</string>
+    <string name="contact_delete_confirm">确定删除该好友？</string>
+    <string name="contact_group_creator">群主</string>
+    <string name="contact_member_count">%1$d 位成员</string>
+
+    <!-- 添加朋友 -->
+    <string name="add_friend_title">添加朋友</string>
+    <string name="add_friend_phone">手机号</string>
+    <string name="add_friend_message">验证信息</string>
+    <string name="add_friend_message_hint">我是…</string>
+    <string name="add_friend_submit">发送申请</string>
+    <string name="add_friend_success">好友申请已发送</string>
+    <string name="add_friend_phone_required">请输入手机号</string>
+
+    <!-- 好友申请 -->
+    <string name="requests_title">新的朋友</string>
+    <string name="requests_empty">暂无好友申请</string>
+    <string name="requests_accept">同意</string>
+    <string name="requests_reject">拒绝</string>
+    <string name="requests_accepted">已同意</string>
+    <string name="requests_rejected">已拒绝</string>
+    <string name="requests_default_message">请求添加你为好友</string>
+
+    <!-- 群聊 -->
+    <string name="create_group_title">发起群聊</string>
+    <string name="create_group_name">群名称</string>
+    <string name="create_group_desc">群描述</string>
+    <string name="create_group_members">选择成员</string>
+    <string name="create_group_submit">创建</string>
+    <string name="create_group_name_required">请输入群名称</string>
+    <string name="create_group_success">群聊创建成功</string>
+    <string name="create_group_selected">已选 %1$d 人</string>
+    <string name="group_info_title">群资料</string>
+    <string name="group_info_name">群名称</string>
+    <string name="group_info_desc">群描述</string>
+    <string name="group_info_members">群成员（%1$d）</string>
+    <string name="group_info_invite">邀请好友入群</string>
+    <string name="group_info_edit">编辑群资料</string>
+    <string name="group_info_saved">保存成功</string>
+    <string name="group_info_invited">邀请成功</string>
+
+    <!-- 朋友圈 -->
+    <string name="moments_title">朋友圈</string>
+    <string name="moments_publish">发布动态</string>
+    <string name="moments_publish_hint">这一刻的想法…</string>
+    <string name="moments_visibility">可见范围</string>
+    <string name="moments_visibility_public">公开</string>
+    <string name="moments_visibility_friends">仅好友</string>
+    <string name="moments_visibility_private">私密</string>
+    <string name="moments_publish_action">发布</string>
+    <string name="moments_like">赞</string>
+    <string name="moments_comment">评论</string>
+    <string name="moments_delete">删除</string>
+    <string name="moments_delete_confirm">确定删除这条动态？</string>
+    <string name="moments_empty">还没有动态，发布第一条吧</string>
+    <string name="moments_publish_success">发布成功</string>
+    <string name="moments_comment_hint">评论…</string>
+    <string name="moments_location">所在位置</string>
+    <string name="moments_images">图片</string>
+    <string name="moments_liked">赞</string>
+    <string name="moments_reply">回复</string>
+    <string name="discover_moments_desc">查看好友动态</string>
+
+    <!-- 个人资料 -->
+    <string name="profile_title">个人信息</string>
+    <string name="profile_nickname">昵称</string>
+    <string name="profile_gender">性别</string>
+    <string name="profile_age">年龄</string>
+    <string name="profile_phone">手机号</string>
+    <string name="profile_email">邮箱</string>
+    <string name="profile_occupation">职业</string>
+    <string name="profile_signature">个性签名</string>
+    <string name="profile_hobbies">爱好</string>
+    <string name="profile_bio">简介</string>
+    <string name="profile_experience">经历</string>
+    <string name="profile_saved">保存成功</string>
+    <string name="profile_change_avatar">更换头像</string>
+    <string name="profile_account">账号</string>
+    <string name="gender_unknown">保密</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
+
+    <!-- 设置 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_general">通用</string>
+    <string name="settings_theme">主题</string>
+    <string name="settings_theme_system">跟随系统</string>
+    <string name="settings_theme_light">浅色</string>
+    <string name="settings_theme_dark">深色</string>
+    <string name="settings_theme_game">游戏</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_zh">简体中文</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_account">账号与安全</string>
+    <string name="settings_logout">退出登录</string>
+    <string name="settings_logout_confirm">确定退出登录？</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_version">版本</string>
+    <string name="settings_server">服务器地址</string>
+
+    <!-- 错误提示 -->
+    <string name="image_pick_failed">图片读取失败</string>
+    <string name="upload_failed">上传失败</string>
+    <string name="error_empty_message">不能发送空消息</string>
+</resources>

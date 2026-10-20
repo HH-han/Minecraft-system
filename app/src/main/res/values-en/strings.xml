@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Minecraft IM</string>
+
+    <!-- Common -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_send">Send</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_back">Back</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_search">Search</string>
+    <string name="action_close">Close</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_more">More</string>
+    <string name="label_loading">Loading…</string>
+    <string name="label_empty">No data</string>
+    <string name="label_network_error">Network error</string>
+    <string name="label_me">Me</string>
+    <string name="label_unknown">Unknown</string>
+
+    <!-- Login -->
+    <string name="login_title">Sign in</string>
+    <string name="login_subtitle">Sign in to Minecraft IM with your account</string>
+    <string name="login_account">Account</string>
+    <string name="login_password">Password</string>
+    <string name="login_server">Server address</string>
+    <string name="login_server_hint">http://10.0.2.2:8080/api/</string>
+    <string name="login_button">Sign in</string>
+    <string name="login_failed">Sign in failed</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_messages">Chats</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_me">Me</string>
+
+    <!-- Conversations -->
+    <string name="home_search_hint">Search</string>
+    <string name="menu_create_group">New group</string>
+    <string name="menu_add_friend">Add friend</string>
+    <string name="menu_friend_requests">Friend requests</string>
+    <string name="empty_conversations">No conversations yet. Find a friend in Contacts</string>
+    <string name="empty_contacts">No contacts</string>
+    <string name="empty_search">No results</string>
+    <string name="unread_badge_99">99+</string>
+    <string name="message_image_preview">[Image]</string>
+
+    <!-- Contacts -->
+    <string name="contacts_new_friend">New friends</string>
+    <string name="contacts_group_chat">Group chats</string>
+    <string name="contacts_starred">Starred</string>
+    <string name="contacts_starred_only">Starred only</string>
+    <string name="contacts_star">Add star</string>
+    <string name="contacts_unstar">Remove star</string>
+
+    <!-- Chat -->
+    <string name="chat_input_hint">Message…</string>
+    <string name="chat_send_image">Send image</string>
+    <string name="chat_emoji">Emoji</string>
+    <string name="chat_online">Online</string>
+    <string name="chat_offline">Offline</string>
+    <string name="chat_no_messages">No messages yet. Say hello!</string>
+    <string name="chat_menu_profile">View profile</string>
+    <string name="chat_send_failed">Failed to send</string>
+    <string name="chat_group_tag">Group</string>
+    <string name="chat_me">Me</string>
+
+    <!-- Contact detail -->
+    <string name="contact_detail_title">Details</string>
+    <string name="contact_id">Account ID</string>
+    <string name="contact_phone">Phone</string>
+    <string name="contact_email">Email</string>
+    <string name="contact_status">Status</string>
+    <string name="contact_group_members">Members</string>
+    <string name="contact_send_message">Send message</string>
+    <string name="contact_edit_remark">Edit remark</string>
+    <string name="contact_edit_group">Group profile</string>
+    <string name="contact_remark_title">Edit remark</string>
+    <string name="contact_remark_hint">Enter a remark</string>
+    <string name="contact_delete">Delete friend</string>
+    <string name="contact_delete_confirm">Delete this friend?</string>
+    <string name="contact_group_creator">Owner</string>
+    <string name="contact_member_count">%1$d members</string>
+
+    <!-- Add friend -->
+    <string name="add_friend_title">Add friend</string>
+    <string name="add_friend_phone">Phone number</string>
+    <string name="add_friend_message">Verification message</string>
+    <string name="add_friend_message_hint">I am…</string>
+    <string name="add_friend_submit">Send request</string>
+    <string name="add_friend_success">Friend request sent</string>
+    <string name="add_friend_phone_required">Please enter a phone number</string>
+
+    <!-- Friend requests -->
+    <string name="requests_title">New friends</string>
+    <string name="requests_empty">No friend requests</string>
+    <string name="requests_accept">Accept</string>
+    <string name="requests_reject">Reject</string>
+    <string name="requests_accepted">Accepted</string>
+    <string name="requests_rejected">Rejected</string>
+    <string name="requests_default_message">wants to add you as a friend</string>
+
+    <!-- Groups -->
+    <string name="create_group_title">New group</string>
+    <string name="create_group_name">Group name</string>
+    <string name="create_group_desc">Description</string>
+    <string name="create_group_members">Select members</string>
+    <string name="create_group_submit">Create</string>
+    <string name="create_group_name_required">Please enter a group name</string>
+    <string name="create_group_success">Group created</string>
+    <string name="create_group_selected">%1$d selected</string>
+    <string name="group_info_title">Group profile</string>
+    <string name="group_info_name">Group name</string>
+    <string name="group_info_desc">Description</string>
+    <string name="group_info_members">Members (%1$d)</string>
+    <string name="group_info_invite">Invite friends</string>
+    <string name="group_info_edit">Edit group profile</string>
+    <string name="group_info_saved">Saved</string>
+    <string name="group_info_invited">Invitation sent</string>
+
+    <!-- Moments -->
+    <string name="moments_title">Moments</string>
+    <string name="moments_publish">New post</string>
+    <string name="moments_publish_hint">What is on your mind…</string>
+    <string name="moments_visibility">Visibility</string>
+    <string name="moments_visibility_public">Public</string>
+    <string name="moments_visibility_friends">Friends</string>
+    <string name="moments_visibility_private">Private</string>
+    <string name="moments_publish_action">Publish</string>
+    <string name="moments_like">Like</string>
+    <string name="moments_comment">Comment</string>
+    <string name="moments_delete">Delete</string>
+    <string name="moments_delete_confirm">Delete this post?</string>
+    <string name="moments_empty">No posts yet. Publish your first one</string>
+    <string name="moments_publish_success">Published</string>
+    <string name="moments_comment_hint">Comment…</string>
+    <string name="moments_location">Location</string>
+    <string name="moments_images">Images</string>
+    <string name="moments_liked">Likes</string>
+    <string name="moments_reply">Reply</string>
+    <string name="discover_moments_desc">See what friends are up to</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_nickname">Nickname</string>
+    <string name="profile_gender">Gender</string>
+    <string name="profile_age">Age</string>
+    <string name="profile_phone">Phone</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_occupation">Occupation</string>
+    <string name="profile_signature">Signature</string>
+    <string name="profile_hobbies">Hobbies</string>
+    <string name="profile_bio">Bio</string>
+    <string name="profile_experience">Experience</string>
+    <string name="profile_saved">Saved</string>
+    <string name="profile_change_avatar">Change avatar</string>
+    <string name="profile_account">Account</string>
+    <string name="gender_unknown">Secret</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_general">General</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_game">Game</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_zh">简体中文</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_account">Account and security</string>
+    <string name="settings_logout">Sign out</string>
+    <string name="settings_logout_confirm">Sign out of this account?</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_server">Server address</string>
+
+    <!-- Errors -->
+    <string name="image_pick_failed">Failed to read image</string>
+    <string name="upload_failed">Upload failed</string>
+    <string name="error_empty_message">Cannot send an empty message</string>
+</resources>
