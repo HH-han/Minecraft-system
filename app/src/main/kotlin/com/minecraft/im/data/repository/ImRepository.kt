@@ -431,7 +431,7 @@ class ImRepository @Inject constructor(
             id = groupId.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
             name = name.toRequestBody("text/plain".toMediaTypeOrNull()),
             description = description.toRequestBody("text/plain".toMediaTypeOrNull()),
-            avatar = avatar?.let { imagePart(it, "group_avatar", avatarMime) }
+            avatar = avatar?.let { imagePart(it, "group_avatar", avatarMime, "avatar") }
         )
         if (res.code != 200) throw ApiException(res.message ?: "保存群资料失败")
         refreshGroups()
@@ -451,9 +451,14 @@ class ImRepository @Inject constructor(
         res.data ?: throw ApiException("头像上传失败")
     }
 
-    private fun imagePart(bytes: ByteArray, fileName: String, mime: String): MultipartBody.Part {
+    private fun imagePart(
+        bytes: ByteArray,
+        fileName: String,
+        mime: String,
+        partName: String = "file"
+    ): MultipartBody.Part {
         val body = bytes.toRequestBody(mime.toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData("file", fileName, body)
+        return MultipartBody.Part.createFormData(partName, fileName, body)
     }
 
     fun findContact(id: Long, isGroup: Boolean): Contact? =

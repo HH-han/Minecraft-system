@@ -75,7 +75,8 @@ class AuthRepository @Inject constructor(
 
     suspend fun uploadAvatar(bytes: ByteArray, fileName: String, mime: String): Result<String> = runCatching {
         val body = bytes.toRequestBody(mime.toMediaTypeOrNull())
-        val part = MultipartBody.Part.createFormData("file", fileName, body)
+        // 后端 /user/avatar 的参数名为 avatar
+        val part = MultipartBody.Part.createFormData("avatar", fileName, body)
         val res = apiProvider.api().uploadAvatar(part)
         if (res.code != 200) throw ApiException(res.message ?: "头像上传失败")
         val url = res.data ?: throw ApiException("头像上传失败")
