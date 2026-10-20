@@ -7,6 +7,7 @@ import com.minecraft.im.data.SessionManager
 import com.minecraft.im.data.SessionState
 import com.minecraft.im.data.repository.ImRepository
 import com.minecraft.im.data.remote.dto.UserDto
+import com.minecraft.im.data.remote.dto.UserEmojiDto
 import com.minecraft.im.domain.model.Contact
 import com.minecraft.im.domain.model.MessageUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,12 +46,45 @@ class ChatViewModel @Inject constructor(
         .map { (it as? SessionState.LoggedIn)?.user }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val _customEmojis = MutableStateFlow<List<UserEmojiDto>>(emptyList())
+    val customEmojis: StateFlow<List<UserEmojiDto>> = _customEmojis.asStateFlow()
+
     data class UiState(
         val input: String = "",
         val loading: Boolean = false,
         val sending: Boolean = false,
+        val emojiUploading: Boolean = false,
         val error: String? = null
     )
+
+    init {
+        loadEmojis()
+    }
+
+    fun loadEmojis() {
+        viewModelScope.launch {
+            repository.getMyEmojis().onSuccess { _customEmojis.value = it }
+        }
+    }
+
+    fun uploadEmoji(bytes: ByteArray, mime: String, fileName: String) {
+        if (_uiState.value.emojiUploading) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(emojiUploading = true, error = null) }
+            repository.uploadEmoji(bytes, fileName, mime, "emoji_${System.currentTimeMillis()}")
+                .onSuccess { loadEmojis() }
+                .onFailure { error -> _uiState.update { it.copy(error = error.toMessage()) } }
+            _uiState.update { it.copy(emojiUploading = false) }
+        }
+    }
+
+    fun deleteEmoji(emojiId: Long) {
+        viewModelScope.launch {
+            repository.deleteEmoji(emojiId)
+                .onSuccess { _customEmojis.update { list -> list.filterNot { it.id == emojiId } } }
+                .onFailure { error -> _uiState.update { it.copy(error = error.toMessage()) } }
+        }
+    }
 
     fun load(contactId: Long, isGroup: Boolean) {
         if (_contact.value?.id == contactId && _contact.value?.isGroup == isGroup) return

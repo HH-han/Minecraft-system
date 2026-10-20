@@ -9,6 +9,7 @@ import com.minecraft.im.data.remote.dto.CreateGroupRequest
 import com.minecraft.im.data.remote.dto.SendFriendRequest
 import com.minecraft.im.data.remote.dto.SingleMessageRequest
 import com.minecraft.im.data.remote.dto.GroupMessageRequest
+import com.minecraft.im.data.remote.dto.UserEmojiDto
 import com.minecraft.im.data.remote.ws.ImWebSocketClient
 import com.minecraft.im.data.remote.ws.WsEvent
 import com.minecraft.im.data.toContact
@@ -435,6 +436,33 @@ class ImRepository @Inject constructor(
         )
         if (res.code != 200) throw ApiException(res.message ?: "保存群资料失败")
         refreshGroups()
+    }
+
+    // ---------------- 自定义表情包 ----------------
+
+    suspend fun getMyEmojis(): Result<List<UserEmojiDto>> = runCatching {
+        val res = apiProvider.api().getMyEmojis()
+        if (res.code != 200) throw ApiException(res.message ?: "加载表情包失败")
+        res.data.orEmpty()
+    }
+
+    suspend fun uploadEmoji(
+        bytes: ByteArray,
+        fileName: String,
+        mime: String,
+        emojiName: String
+    ): Result<UserEmojiDto> = runCatching {
+        val res = apiProvider.api().uploadEmoji(
+            file = imagePart(bytes, fileName, mime),
+            emojiName = emojiName.toRequestBody("text/plain".toMediaTypeOrNull())
+        )
+        if (res.code != 200) throw ApiException(res.message ?: "上传表情包失败")
+        res.data ?: throw ApiException("上传表情包失败")
+    }
+
+    suspend fun deleteEmoji(emojiId: Long): Result<Unit> = runCatching {
+        val res = apiProvider.api().deleteEmoji(emojiId)
+        if (res.code != 200) throw ApiException(res.message ?: "删除表情包失败")
     }
 
     // ---------------- 上传 ----------------

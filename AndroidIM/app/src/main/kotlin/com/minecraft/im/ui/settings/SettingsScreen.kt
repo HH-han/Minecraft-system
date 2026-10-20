@@ -2,7 +2,6 @@ package com.minecraft.im.ui.settings
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -39,9 +45,14 @@ import com.minecraft.im.data.SessionManager
 import com.minecraft.im.data.ThemeMode
 import com.minecraft.im.data.repository.AuthRepository
 import com.minecraft.im.ui.components.HorizontalDivider
+import com.minecraft.im.ui.components.IconTile
 import com.minecraft.im.ui.components.SectionCard
 import com.minecraft.im.ui.components.SettingRow
 import com.minecraft.im.ui.components.TopBarBack
+import com.minecraft.im.ui.theme.AccentBlue
+import com.minecraft.im.ui.theme.AccentPurple
+import com.minecraft.im.ui.theme.AccentRed
+import com.minecraft.im.ui.theme.AccentTeal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -80,6 +91,8 @@ fun SettingsScreen(
     val theme by viewModel.theme.collectAsStateWithLifecycle()
     val language by viewModel.language.collectAsStateWithLifecycle()
     var showLogoutConfirm by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { TopBarBack(title = stringResource(R.string.settings_title), onBack = onBack) }
@@ -91,99 +104,146 @@ fun SettingsScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                text = stringResource(R.string.settings_general),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 20.dp, top = 16.dp, bottom = 4.dp)
-            )
+            SectionLabel(stringResource(R.string.settings_general))
             SectionCard {
-                Text(
-                    text = stringResource(R.string.settings_theme),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                )
-                ThemeMode.entries.forEach { mode ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.setTheme(mode) }
-                            .padding(horizontal = 16.dp, vertical = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = theme == mode, onClick = { viewModel.setTheme(mode) })
-                        Spacer(Modifier.width(4.dp))
-                        Text(text = themeLabel(mode), style = MaterialTheme.typography.bodyMedium)
+                SettingRow(
+                    title = stringResource(R.string.settings_theme),
+                    subtitle = themeLabel(theme),
+                    onClick = { showThemeDialog = true },
+                    leading = {
+                        IconTile(icon = Icons.Default.Palette, tint = AccentPurple, size = 34.dp)
                     }
-                }
-                Spacer(Modifier.height(6.dp))
+                )
+                HorizontalDivider(Modifier.padding(start = 62.dp))
+                SettingRow(
+                    title = stringResource(R.string.settings_language),
+                    subtitle = languageLabel(language),
+                    onClick = { showLanguageDialog = true },
+                    leading = {
+                        IconTile(icon = Icons.Default.Language, tint = AccentBlue, size = 34.dp)
+                    }
+                )
             }
 
-            Spacer(Modifier.height(4.dp))
-            SectionCard {
-                Text(
-                    text = stringResource(R.string.settings_language),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-                )
-                listOf("zh" to R.string.settings_language_zh, "en" to R.string.settings_language_en)
-                    .forEach { (code, labelRes) ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    viewModel.setLanguage(code) {
-                                        AppCompatDelegate.setApplicationLocales(
-                                            LocaleListCompat.forLanguageTags(
-                                                if (code == "en") "en" else "zh-CN"
-                                            )
-                                        )
-                                    }
-                                }
-                                .padding(horizontal = 16.dp, vertical = 2.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = language == code,
-                                onClick = {
-                                    viewModel.setLanguage(code) {
-                                        AppCompatDelegate.setApplicationLocales(
-                                            LocaleListCompat.forLanguageTags(
-                                                if (code == "en") "en" else "zh-CN"
-                                            )
-                                        )
-                                    }
-                                }
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Text(text = stringResource(labelRes), style = MaterialTheme.typography.bodyMedium)
-                        }
-                    }
-                Spacer(Modifier.height(6.dp))
-            }
-
-            Spacer(Modifier.height(4.dp))
+            SectionLabel(stringResource(R.string.settings_account))
             SectionCard {
                 SettingRow(
                     title = stringResource(R.string.settings_server),
-                    subtitle = viewModel.serverUrl
-                )
-                HorizontalDivider(Modifier.padding(start = 16.dp))
-                SettingRow(
-                    title = stringResource(R.string.settings_logout),
-                    onClick = { showLogoutConfirm = true }
+                    subtitle = viewModel.serverUrl,
+                    leading = {
+                        IconTile(icon = Icons.Default.Dns, tint = AccentTeal, size = 34.dp)
+                    }
                 )
             }
 
-            Spacer(Modifier.height(4.dp))
+            SectionLabel(stringResource(R.string.settings_about))
             SectionCard {
                 SettingRow(
-                    title = stringResource(R.string.settings_version),
-                    subtitle = BuildConfig.VERSION_NAME
+                    title = BuildConfig.APPLICATION_ID,
+                    subtitle = stringResource(R.string.settings_version) + " " + BuildConfig.VERSION_NAME,
+                    leading = {
+                        IconTile(icon = Icons.Default.Info, tint = AccentBlue, size = 34.dp)
+                    }
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+            SectionCard {
+                SettingRow(
+                    title = stringResource(R.string.settings_logout),
+                    onClick = { showLogoutConfirm = true },
+                    titleColor = MaterialTheme.colorScheme.error,
+                    leading = {
+                        IconTile(
+                            icon = Icons.AutoMirrored.Filled.Logout,
+                            tint = AccentRed,
+                            size = 34.dp
+                        )
+                    }
                 )
             }
             Spacer(Modifier.height(24.dp))
         }
+    }
+
+    if (showThemeDialog) {
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = { Text(stringResource(R.string.settings_theme)) },
+            text = {
+                Column {
+                    ThemeMode.entries.forEach { mode ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(selected = theme == mode) {
+                                    viewModel.setTheme(mode)
+                                    showThemeDialog = false
+                                }
+                                .padding(vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = theme == mode,
+                                onClick = {
+                                    viewModel.setTheme(mode)
+                                    showThemeDialog = false
+                                }
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(text = themeLabel(mode), style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showThemeDialog = false }) {
+                    Text(stringResource(R.string.action_close))
+                }
+            }
+        )
+    }
+
+    if (showLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            title = { Text(stringResource(R.string.settings_language)) },
+            text = {
+                Column {
+                    listOf("zh" to R.string.settings_language_zh, "en" to R.string.settings_language_en)
+                        .forEach { (code, labelRes) ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .selectable(selected = language == code) {
+                                        applyLanguage(viewModel, code)
+                                        showLanguageDialog = false
+                                    }
+                                    .padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = language == code,
+                                    onClick = {
+                                        applyLanguage(viewModel, code)
+                                        showLanguageDialog = false
+                                    }
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    text = stringResource(labelRes),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) {
+                    Text(stringResource(R.string.action_close))
+                }
+            }
+        )
     }
 
     if (showLogoutConfirm) {
@@ -206,10 +266,35 @@ fun SettingsScreen(
     }
 }
 
+private fun applyLanguage(viewModel: SettingsViewModel, code: String) {
+    viewModel.setLanguage(code) {
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags(if (code == "en") "en" else "zh-CN")
+        )
+    }
+}
+
+@Composable
+private fun SectionLabel(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(start = 20.dp, top = 14.dp, bottom = 4.dp)
+    )
+}
+
 @Composable
 private fun themeLabel(mode: ThemeMode): String = when (mode) {
     ThemeMode.SYSTEM -> stringResource(R.string.settings_theme_system)
     ThemeMode.LIGHT -> stringResource(R.string.settings_theme_light)
     ThemeMode.DARK -> stringResource(R.string.settings_theme_dark)
     ThemeMode.GAME -> stringResource(R.string.settings_theme_game)
+}
+
+@Composable
+private fun languageLabel(language: String): String = if (language == "en") {
+    stringResource(R.string.settings_language_en)
+} else {
+    stringResource(R.string.settings_language_zh)
 }

@@ -158,6 +158,8 @@
       "goodsTotal": "Subtotal",
       "freight": "Shipping Fee",
       "actuallyPaid": "Amount Paid",
+      "costBreakdown": "Cost Breakdown",
+      "orderProgress": "Order Progress",
       "shippingInfo": "Shipping Information",
       "shippingStatus": "Shipping Status",
       "carrier": "Carrier",

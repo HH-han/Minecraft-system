@@ -72,6 +72,11 @@
     <string name="chat_me">Me</string>
     <string name="chat_copy">Copy</string>
     <string name="chat_copied">Copied</string>
+    <string name="emoji_tab_system">System</string>
+    <string name="emoji_tab_custom">My stickers</string>
+    <string name="emoji_empty">No stickers yet. Tap the button above to upload</string>
+    <string name="emoji_delete_confirm">Delete this sticker?</string>
+    <string name="emoji_uploading">Uploading…</string>
 
     <!-- Favorites -->
     <string name="favorites_search_hint">Search favorites</string>

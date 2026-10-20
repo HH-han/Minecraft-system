@@ -1,205 +1,367 @@
 <template>
-  <div class="order-detail" v-if="hasOrderData">
-    <div class="order-header">
-      <h2 class="order-title">{{ $t('payment.title') }}</h2>
-      <div class="order-status" :class="getStatusClass(order.status)">
-        {{ getStatusText(order.status) }}
-      </div>
-    </div>
+  <div v-if="hasOrderData" class="order-detail">
+    <!-- 订单概览 -->
+    <header class="od-hero theme-transition">
+      <span class="od-hero__glow" aria-hidden="true"></span>
 
-    <div class="order-info-card">
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderNo') }}</span>
-        <span class="value">
-          {{ order.orderNo || '-' }}
-          <button v-if="order.orderNo" type="button" class="copy-btn" @click="copyText(order.orderNo)">
-            {{ $t('payment.orderDetail.copy') }}
-          </button>
-        </span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.orderType') }}</span>
-        <span class="value">{{ getItemTypeText(order.itemType) }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.createTime') }}</span>
-        <span class="value">{{ order.createTime || '-' }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.payTime') }}</span>
-        <span class="value">{{ order.payTime || $t('payment.orderDetail.unpaid') }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.amountLabel') }}</span>
-        <span class="value price">{{ priceText(order.amount) }}</span>
-      </div>
-    </div>
+      <div class="od-hero__body">
+        <div class="od-hero__main">
+          <span class="od-hero__eyebrow">{{ $t('payment.orderNo') }}</span>
 
-    <!-- 支付信息（聚合支付网关） -->
-    <div class="payment-info-card" v-if="paymentInfo">
-      <h3 class="section-title">{{ $t('payment.orderDetail.paymentInfo') }}</h3>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.payNo') }}</span>
-        <span class="value">
-          {{ paymentInfo.payNo || '-' }}
-          <button
-            v-if="paymentInfo.payNo"
-            type="button"
-            class="copy-btn"
-            @click="copyText(paymentInfo.payNo)"
-          >
-            {{ $t('payment.orderDetail.copy') }}
-          </button>
-        </span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.purpose') }}</span>
-        <span class="value">{{ paymentPurpose }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.channel') }}</span>
-        <span class="value">{{ getChannelText(paymentInfo.channelCode) }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.payStatus') }}</span>
-        <span class="value">{{ getPayStatusText(paymentInfo) }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.totalAmount') }}</span>
-        <span class="value">{{ priceText(paymentInfo.totalAmount) }}</span>
-      </div>
-      <div class="info-item" v-if="Number(paymentInfo.pointsDeduct) > 0">
-        <span class="label">{{ $t('payment.orderDetail.pointsDeduct') }}</span>
-        <span class="value">-¥{{ formatMoney(paymentInfo.pointsDeduct) }}</span>
-      </div>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.payAmount') }}</span>
-        <span class="value price">{{ priceText(paymentInfo.payAmount) }}</span>
-      </div>
-      <div class="info-item" v-if="Number(paymentInfo.refundedAmount) > 0">
-        <span class="label">{{ $t('payment.orderDetail.refundedAmount') }}</span>
-        <span class="value">¥{{ formatMoney(paymentInfo.refundedAmount) }}</span>
-      </div>
-      <div class="info-item" v-if="paymentInfo.payTime">
-        <span class="label">{{ $t('payment.orderDetail.payTime') }}</span>
-        <span class="value">{{ formatTime(paymentInfo.payTime) }}</span>
-      </div>
-      <div class="info-item" v-if="paymentInfo.channelTradeNo">
-        <span class="label">{{ $t('payment.orderDetail.tradeNo') }}</span>
-        <span class="value">{{ paymentInfo.channelTradeNo }}</span>
-      </div>
-    </div>
-    
-    <div class="shipping-address-card" v-if="isShippableOrder">
-      <h3 class="section-title">{{ $t('payment.orderDetail.shippingAddress') }}</h3>
-      <div class="address-content">
-        <div class="name-phone">
-          <span class="name">{{ order.address.name }}</span>
-          <span class="phone">{{ order.address.phone }}</span>
-        </div>
-        <div class="address-detail">
-          {{ order.address.detail }}
-        </div>
-      </div>
-    </div>
-    
-    <div class="order-items-card">
-      <h3 class="section-title">{{ $t('payment.orderDetail.goodsInfo') }}</h3>
-      <div class="items-list">
-        <div v-for="item in order.items" :key="item.id" class="item">
-          <div class="item-image">
-            <img :src="item.image" :alt="item.name">
+          <div class="od-hero__number">
+            <span class="od-hero__no">{{ order.orderNo || '-' }}</span>
+            <button
+              v-if="order.orderNo"
+              type="button"
+              class="od-copy"
+              :title="$t('payment.orderDetail.copy')"
+              :aria-label="$t('payment.orderDetail.copy')"
+              @click="copyText(order.orderNo)"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
           </div>
-          <div class="item-info">
-            <div class="item-name">{{ item.name }}</div>
-            <div class="item-price">
-              <span class="price">{{ priceText(item.price) }}</span>
-              <span class="quantity">x{{ item.quantity }}</span>
+
+          <div class="od-hero__tags">
+            <span class="od-tag">{{ getItemTypeText(order.itemType) }}</span>
+            <span v-if="order.createTime" class="od-tag od-tag--ghost">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              {{ $t('payment.orderDetail.createTime') }} · {{ order.createTime }}
+            </span>
+            <span v-if="order.payTime" class="od-tag od-tag--ghost">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              {{ $t('payment.orderDetail.payTime') }} · {{ order.payTime }}
+            </span>
+          </div>
+        </div>
+
+        <div class="od-hero__aside">
+          <span class="od-status" :class="getStatusClass(order.status)">
+            {{ getStatusText(order.status) }}
+          </span>
+          <div class="od-amount">
+            <span class="od-amount__label">{{ $t('payment.orderDetail.amountLabel') }}</span>
+            <span class="od-amount__value">{{ priceText(order.amount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 订单进度 -->
+      <div v-if="progressSteps.length" class="od-steps">
+        <span class="od-steps__caption">{{ $t('payment.orderDetail.orderProgress') }}</span>
+        <ol class="od-steps__list">
+          <li
+            v-for="step in progressSteps"
+            :key="step.key"
+            class="od-step"
+            :class="{ 'is-done': step.done, 'is-current': step.current }"
+          >
+            <span class="od-step__dot">
+              <svg
+                v-if="step.done && !step.current"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <span class="od-step__label">{{ $t(step.label) }}</span>
+          </li>
+        </ol>
+      </div>
+    </header>
+
+    <div class="od-layout">
+      <div class="od-main">
+        <!-- 商品信息 -->
+        <section class="od-card">
+          <div class="od-card__head">
+            <span class="od-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+                <path d="M3 6h18"></path>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+            </span>
+            <h3 class="od-card__title">{{ $t('payment.orderDetail.goodsInfo') }}</h3>
+            <span class="od-card__count">
+              {{ $t('payment.orderDetail.goodsQuantityUnit', { count: order.quantity }) }}
+            </span>
+          </div>
+
+          <div class="od-items">
+            <article v-for="item in order.items" :key="item.id" class="od-item">
+              <div class="od-item__thumb">
+                <img v-if="item.image" :src="item.image" :alt="item.name" loading="lazy">
+                <span v-else class="od-item__thumb-empty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                    <circle cx="9" cy="9" r="2"></circle>
+                    <path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"></path>
+                  </svg>
+                </span>
+              </div>
+              <div class="od-item__body">
+                <p class="od-item__name">{{ item.name }}</p>
+                <div class="od-item__meta">
+                  <span class="od-item__price">{{ priceText(item.price) }}</span>
+                  <span class="od-item__qty">×{{ item.quantity }}</span>
+                </div>
+              </div>
+            </article>
+            <p v-if="!order.items.length" class="od-items__empty">-</p>
+          </div>
+
+          <div v-if="order.remark" class="od-remark">
+            <span class="od-remark__tag">{{ $t('payment.orderDetail.remark') }}</span>
+            <span class="od-remark__text">{{ order.remark }}</span>
+          </div>
+        </section>
+
+        <!-- 支付信息（聚合支付网关） -->
+        <section v-if="paymentInfo" class="od-card">
+          <div class="od-card__head">
+            <span class="od-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="3"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+            </span>
+            <h3 class="od-card__title">{{ $t('payment.orderDetail.paymentInfo') }}</h3>
+          </div>
+
+          <div class="od-fields">
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.payNo') }}</span>
+              <span class="od-field__value od-field__value--mono">
+                {{ paymentInfo.payNo || '-' }}
+                <button
+                  v-if="paymentInfo.payNo"
+                  type="button"
+                  class="od-copy od-copy--sm"
+                  :title="$t('payment.orderDetail.copy')"
+                  :aria-label="$t('payment.orderDetail.copy')"
+                  @click="copyText(paymentInfo.payNo)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </span>
+            </div>
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.purpose') }}</span>
+              <span class="od-field__value">{{ paymentPurpose }}</span>
+            </div>
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.channel') }}</span>
+              <span class="od-field__value">{{ getChannelText(paymentInfo.channelCode) }}</span>
+            </div>
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.payStatus') }}</span>
+              <span class="od-pill">{{ getPayStatusText(paymentInfo) }}</span>
+            </div>
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.totalAmount') }}</span>
+              <span class="od-field__value">{{ priceText(paymentInfo.totalAmount) }}</span>
+            </div>
+            <div v-if="Number(paymentInfo.pointsDeduct) > 0" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.pointsDeduct') }}</span>
+              <span class="od-field__value od-field__value--deduct">
+                -¥{{ formatMoney(paymentInfo.pointsDeduct) }}
+              </span>
+            </div>
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.payAmount') }}</span>
+              <span class="od-field__value od-field__value--accent">{{ priceText(paymentInfo.payAmount) }}</span>
+            </div>
+            <div v-if="Number(paymentInfo.refundedAmount) > 0" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.refundedAmount') }}</span>
+              <span class="od-field__value od-field__value--deduct">
+                ¥{{ formatMoney(paymentInfo.refundedAmount) }}
+              </span>
+            </div>
+            <div v-if="paymentInfo.payTime" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.payTime') }}</span>
+              <span class="od-field__value">{{ formatTime(paymentInfo.payTime) }}</span>
+            </div>
+            <div v-if="paymentInfo.channelTradeNo" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.tradeNo') }}</span>
+              <span class="od-field__value od-field__value--mono">{{ paymentInfo.channelTradeNo }}</span>
             </div>
           </div>
-        </div>
-      </div>
-      <div v-if="order.remark" class="order-remark">
-        <span class="order-remark__label">{{ $t('payment.orderDetail.remark') }}</span>
-        {{ order.remark }}
-      </div>
-    </div>
-    
-    <div class="order-summary-card">
-      <div class="summary-item">
-        <span class="summary-label">{{ $t('payment.orderDetail.goodsQuantity') }}</span>
-        <span class="summary-value">{{ $t('payment.orderDetail.goodsQuantityUnit', { count: order.quantity }) }}</span>
-      </div>
-      <template v-if="!isPointsOrder">
-        <div class="summary-item">
-          <span class="summary-label">{{ $t('payment.orderDetail.goodsTotal') }}</span>
-          <span class="summary-value">¥{{ formatMoney(order.amount) }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">{{ $t('payment.orderDetail.freight') }}</span>
-          <span class="summary-value">¥{{ formatMoney(order.freight) }}</span>
-        </div>
-      </template>
-      <div class="summary-item total">
-        <span class="summary-label">{{ $t('payment.orderDetail.actuallyPaid') }}</span>
-        <span class="summary-value price">{{ priceText(order.amount) }}</span>
-      </div>
-    </div>
+        </section>
 
-    <!-- 物流信息 -->
-    <div class="shipping-info-card" v-if="hasShippingInfo">
-      <h3 class="section-title">{{ $t('payment.orderDetail.shippingInfo') }}</h3>
-      <div class="info-item">
-        <span class="label">{{ $t('payment.orderDetail.shippingStatus') }}</span>
-        <span class="value">{{ getShippingStatusText(order.shippingStatus) }}</span>
+        <!-- 收货地址 -->
+        <section v-if="isShippableOrder" class="od-card">
+          <div class="od-card__head">
+            <span class="od-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </span>
+            <h3 class="od-card__title">{{ $t('payment.orderDetail.shippingAddress') }}</h3>
+          </div>
+
+          <div class="od-address">
+            <span class="od-address__avatar">{{ addressInitial }}</span>
+            <div class="od-address__body">
+              <div class="od-address__line">
+                <span class="od-address__name">{{ order.address.name }}</span>
+                <span v-if="order.address.phone" class="od-address__phone">
+                  {{ order.address.phone }}
+                </span>
+              </div>
+              <p class="od-address__text">{{ order.address.detail }}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 物流信息 -->
+        <section v-if="hasShippingInfo" class="od-card">
+          <div class="od-card__head">
+            <span class="od-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 17V7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h1"></path>
+                <path d="M14 9h4l4 4v4h-2"></path>
+                <circle cx="6.5" cy="18" r="2"></circle>
+                <circle cx="17.5" cy="18" r="2"></circle>
+              </svg>
+            </span>
+            <h3 class="od-card__title">{{ $t('payment.orderDetail.shippingInfo') }}</h3>
+          </div>
+
+          <div class="od-fields">
+            <div class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.shippingStatus') }}</span>
+              <span class="od-pill">{{ getShippingStatusText(order.shippingStatus) }}</span>
+            </div>
+            <div v-if="order.carrierName" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.carrier') }}</span>
+              <span class="od-field__value">{{ order.carrierName }}</span>
+            </div>
+            <div v-if="order.trackingNo" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.trackingNo') }}</span>
+              <span class="od-field__value od-field__value--mono">
+                {{ order.trackingNo }}
+                <button
+                  type="button"
+                  class="od-copy od-copy--sm"
+                  :title="$t('payment.orderDetail.copy')"
+                  :aria-label="$t('payment.orderDetail.copy')"
+                  @click="copyText(order.trackingNo)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </span>
+            </div>
+            <div v-if="order.shipTime" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.shipTime') }}</span>
+              <span class="od-field__value">{{ order.shipTime }}</span>
+            </div>
+            <div v-if="order.receiveTime" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.receiveTime') }}</span>
+              <span class="od-field__value">{{ order.receiveTime }}</span>
+            </div>
+            <div v-if="order.afterSaleStatus > 0" class="od-field">
+              <span class="od-field__label">{{ $t('payment.orderDetail.afterSaleStatus') }}</span>
+              <span class="od-pill od-pill--warn">{{ getAfterSaleText(order.afterSaleStatus) }}</span>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="info-item" v-if="order.carrierName">
-        <span class="label">{{ $t('payment.orderDetail.carrier') }}</span>
-        <span class="value">{{ order.carrierName }}</span>
-      </div>
-      <div class="info-item" v-if="order.trackingNo">
-        <span class="label">{{ $t('payment.orderDetail.trackingNo') }}</span>
-        <span class="value">
-          {{ order.trackingNo }}
-          <button type="button" class="copy-btn" @click="copyText(order.trackingNo)">{{ $t('payment.orderDetail.copy') }}</button>
-        </span>
-      </div>
-      <div class="info-item" v-if="order.shipTime">
-        <span class="label">{{ $t('payment.orderDetail.shipTime') }}</span>
-        <span class="value">{{ order.shipTime }}</span>
-      </div>
-      <div class="info-item" v-if="order.receiveTime">
-        <span class="label">{{ $t('payment.orderDetail.receiveTime') }}</span>
-        <span class="value">{{ order.receiveTime }}</span>
-      </div>
-      <div class="info-item" v-if="order.afterSaleStatus > 0">
-        <span class="label">{{ $t('payment.orderDetail.afterSaleStatus') }}</span>
-        <span class="value">{{ getAfterSaleText(order.afterSaleStatus) }}</span>
-      </div>
-    </div>
-    
-    <div class="order-actions" v-if="order.status === '0'">
-      <button class="btn btn-secondary" @click="handleCancelOrder">{{ $t('payment.orderDetail.cancelOrder') }}</button>
-      <button class="btn btn-primary" @click="goToPay">{{ $t('payment.orderDetail.payNowAction') }}</button>
-    </div>
-    <div class="order-actions" v-else-if="canViewLogistics">
-      <button class="btn btn-primary" @click="viewLogistics">{{ $t('payment.orderDetail.viewLogistics') }}</button>
+
+      <!-- 结算侧栏 -->
+      <aside class="od-side">
+        <section class="od-card od-summary">
+          <div class="od-card__head">
+            <span class="od-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+                <line x1="8" y1="8" x2="16" y2="8"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+                <line x1="8" y1="16" x2="13" y2="16"></line>
+              </svg>
+            </span>
+            <h3 class="od-card__title">{{ $t('payment.orderDetail.costBreakdown') }}</h3>
+          </div>
+
+          <div class="od-summary__rows">
+            <div class="od-summary__row">
+              <span>{{ $t('payment.orderDetail.goodsQuantity') }}</span>
+              <span>{{ $t('payment.orderDetail.goodsQuantityUnit', { count: order.quantity }) }}</span>
+            </div>
+            <template v-if="!isPointsOrder">
+              <div class="od-summary__row">
+                <span>{{ $t('payment.orderDetail.goodsTotal') }}</span>
+                <span>¥{{ formatMoney(order.amount) }}</span>
+              </div>
+              <div class="od-summary__row">
+                <span>{{ $t('payment.orderDetail.freight') }}</span>
+                <span>¥{{ formatMoney(order.freight) }}</span>
+              </div>
+            </template>
+          </div>
+
+          <div class="od-summary__total">
+            <span class="od-summary__total-label">{{ $t('payment.orderDetail.actuallyPaid') }}</span>
+            <span class="od-summary__total-value">{{ priceText(order.amount) }}</span>
+          </div>
+
+          <div v-if="order.status === '0'" class="od-actions">
+            <button type="button" class="od-btn od-btn--ghost" @click="handleCancelOrder">
+              {{ $t('payment.orderDetail.cancelOrder') }}
+            </button>
+            <button type="button" class="od-btn od-btn--primary" @click="goToPay">
+              {{ $t('payment.orderDetail.payNowAction') }}
+            </button>
+          </div>
+          <div v-else-if="canViewLogistics" class="od-actions">
+            <button type="button" class="od-btn od-btn--primary" @click="viewLogistics">
+              {{ $t('payment.orderDetail.viewLogistics') }}
+            </button>
+          </div>
+        </section>
+      </aside>
     </div>
   </div>
-  
-  <!-- 无订单数据页面 -->
-  <div class="no-order" v-else>
-    <div class="no-order-content">
-      <div class="no-order-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="15" y1="9" x2="9" y2="15"></line>
-          <line x1="9" y1="9" x2="15" y2="15"></line>
+
+  <!-- 无订单数据 -->
+  <div v-else class="no-order">
+    <div class="no-order__card">
+      <span class="no-order__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m7.5 4.27 9 5.15"></path>
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+          <path d="m3.3 7 8.7 5 8.7-5"></path>
+          <path d="M12 22V12"></path>
         </svg>
-      </div>
-      <h3 class="no-order-title">{{ $t('payment.orderDetail.noData') }}</h3>
-      <p class="no-order-desc">{{ $t('payment.orderDetail.noDataDesc') }}</p>
-      <button class="btn btn-primary" @click="goToHome">{{ $t('payment.orderDetail.backHome') }}</button>
+      </span>
+      <h3 class="no-order__title">{{ $t('payment.orderDetail.noData') }}</h3>
+      <p class="no-order__desc">{{ $t('payment.orderDetail.noDataDesc') }}</p>
+      <button type="button" class="od-btn od-btn--primary no-order__btn" @click="goToHome">
+        {{ $t('payment.orderDetail.backHome') }}
+      </button>
     </div>
   </div>
 </template>
@@ -302,6 +464,35 @@ const hasShippingInfo = computed(
 const canViewLogistics = computed(
   () => isShippableOrder.value && ['1', '2', '3'].includes(order.value.status)
 )
+
+// 订单进度：已取消 / 已退款不展示进度条
+const progressSteps = computed(() => {
+  const status = String(order.value.status || '')
+  if (['4', '5'].includes(status)) return []
+
+  const current = Number(status) || 0
+  const steps = [
+    { key: 'unpaid', label: 'payment.history.status.unpaid', level: 0 },
+    { key: 'paid', label: 'payment.history.status.paid', level: 1 }
+  ]
+  // 实物商品才有发货环节
+  if (isShippableOrder.value) {
+    steps.push({ key: 'shipped', label: 'payment.history.status.shipped', level: 2 })
+  }
+  steps.push({ key: 'completed', label: 'payment.history.status.completed', level: 3 })
+
+  return steps.map((step) => ({
+    ...step,
+    done: current >= step.level,
+    current: current === step.level
+  }))
+})
+
+// 收货人首字（地址卡头像）
+const addressInitial = computed(() => {
+  const name = String(order.value.address?.name || '').trim()
+  return name ? name.slice(0, 1).toUpperCase() : '?'
+})
 
 // 时间格式化：2026-10-11T16:16:02 → 2026-10-11 16:16:02
 const formatTime = (time) => (time ? String(time).replace('T', ' ') : '')
@@ -588,466 +779,991 @@ onMounted(() => {
 
 <style scoped>
 .order-detail {
+  --od-gap: 18px;
+  color: var(--theme-text-1);
   font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--theme-text-1);
+  font-variant-numeric: tabular-nums;
 }
 
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--theme-hairline);
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.order-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--theme-text-1);
-  margin: 0;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.order-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+/* ==================== 订单概览 ==================== */
+.od-hero {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--od-gap);
+  padding: 22px 24px 18px;
+  border: 1px solid var(--theme-hairline);
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  background:
+    radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--theme-primary) 14%, transparent), transparent 58%),
+    radial-gradient(90% 120% at 100% 0%, color-mix(in srgb, var(--theme-accent-2) 10%, transparent), transparent 55%),
+    var(--theme-bg-surface-2);
+  animation: od-rise 0.5s var(--theme-ease) both;
 }
 
-.order-status::before {
-  content: '';
-  width: 7px;
-  height: 7px;
+.od-hero__glow {
+  position: absolute;
+  top: -140px;
+  right: -60px;
+  width: 320px;
+  height: 320px;
   border-radius: 50%;
-  background: currentColor;
+  background: radial-gradient(circle, color-mix(in srgb, var(--theme-primary) 32%, transparent), transparent 66%);
+  filter: blur(12px);
+  opacity: 0.55;
+  pointer-events: none;
 }
 
-.order-status.unpaid {
-  background: var(--theme-warning-soft);
-  color: var(--theme-warning);
+.od-hero__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
 }
 
-.order-status.paid {
-  background: var(--theme-success-soft);
-  color: var(--theme-success);
+.od-hero__main {
+  min-width: 0;
 }
 
-.order-status.shipping {
-  background: var(--theme-primary-soft);
-  color: var(--theme-primary);
-}
-
-.order-status.completed {
-  background: var(--theme-success-soft);
-  color: var(--theme-success);
-}
-
-.order-status.cancelled {
-  background: var(--theme-bg-muted);
+.od-hero__eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--theme-text-3);
 }
 
-.order-status.refunded {
-  background: color-mix(in srgb, var(--theme-accent-2) 10%, transparent);
-  color: var(--theme-accent-2);
+.od-hero__number {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* 卡片通用样式 */
-.order-info-card,
-.payment-info-card,
-.shipping-address-card,
-.order-items-card,
-.order-summary-card,
-.shipping-info-card {
-  background: var(--theme-bg-surface-2);
-  border-radius: 16px;
-  padding: 20px 22px;
-  margin-bottom: 16px;
-  border: 1px solid var(--theme-hairline);
+.od-hero__no {
+  font-family: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Consolas, monospace;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: var(--theme-text-1);
+  word-break: break-all;
 }
 
-/* 复制按钮 */
-.copy-btn {
-  margin-left: 8px;
-  padding: 2px 10px;
+.od-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--theme-border);
+  border-radius: 9px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-2);
+  cursor: pointer;
+  transition:
+    color var(--theme-duration-fast) var(--theme-ease),
+    background var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    transform var(--theme-duration-fast) var(--theme-ease);
+}
+
+.od-copy svg {
+  width: 14px;
+  height: 14px;
+}
+
+.od-copy:hover {
+  color: var(--theme-primary);
+  border-color: color-mix(in srgb, var(--theme-primary) 40%, transparent);
+  background: var(--theme-primary-soft);
+  transform: translateY(-1px);
+}
+
+.od-copy--sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+}
+
+.od-copy--sm svg {
+  width: 12px;
+  height: 12px;
+}
+
+.od-hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.od-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--theme-primary) 35%, transparent);
   background: var(--theme-primary-soft);
   color: var(--theme-primary);
   font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  vertical-align: middle;
-  transition: all 0.2s ease;
+  line-height: 1.5;
 }
 
-.copy-btn:hover {
-  background: var(--theme-primary);
-  color: var(--theme-primary-text);
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--theme-text-1);
-  margin: 0 0 14px 0;
-  letter-spacing: -0.01em;
-}
-
-/* 订单信息 */
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  gap: 12px;
-}
-
-.info-item:not(:last-child) {
-  border-bottom: 1px solid var(--theme-hairline);
-}
-
-.info-item .label {
-  font-size: 14px;
-  font-weight: 400;
+.od-tag--ghost {
+  background: color-mix(in srgb, var(--theme-bg-surface) 70%, transparent);
+  border: 1px solid var(--theme-hairline);
   color: var(--theme-text-2);
-  flex-shrink: 0;
-}
-
-.info-item .value {
-  font-size: 14px;
   font-weight: 500;
-  color: var(--theme-text-1);
-  text-align: right;
-  word-break: break-all;
 }
 
-.info-item .price {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--theme-text-1);
+.od-tag svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.8;
 }
 
-/* 收货地址 */
-.address-content {
+.od-hero__aside {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+  text-align: right;
 }
 
-.name-phone {
-  display: flex;
+.od-status {
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
-.name {
-  font-size: 15px;
-  font-weight: 600;
+.od-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+}
+
+.od-status.unpaid {
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+}
+
+.od-status.paid {
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
+}
+
+.od-status.shipping {
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+}
+
+.od-status.completed {
+  background: var(--theme-success-soft);
+  color: var(--theme-success);
+}
+
+.od-status.cancelled {
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-3);
+}
+
+.od-status.refunded {
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
+}
+
+.od-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.od-amount__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--theme-text-3);
+}
+
+.od-amount__value {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   color: var(--theme-text-1);
 }
 
-.phone {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--theme-text-2);
-}
-
-.address-detail {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--theme-text-2);
-  line-height: 1.6;
-}
-
-/* 商品信息 */
-.items-list {
-  background: var(--theme-bg-surface);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--theme-hairline);
-}
-
-.item {
+/* 订单进度 */
+.od-steps {
+  position: relative;
+  z-index: 1;
   display: flex;
-  padding: 16px;
-  gap: 14px;
-  transition: background 0.2s ease;
+  align-items: center;
+  gap: 18px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed color-mix(in srgb, var(--theme-text-3) 32%, transparent);
 }
 
-.item:hover {
-  background: var(--theme-bg-surface-2);
-}
-
-.item:not(:last-child) {
-  border-bottom: 1px solid var(--theme-hairline);
-}
-
-.item-image {
-  width: 72px;
-  height: 72px;
+.od-steps__caption {
   flex-shrink: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  background: var(--theme-bg-surface-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--theme-text-3);
 }
 
-.item-image img {
+.od-steps__list {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.od-step {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--theme-text-3);
+}
+
+.od-step__dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, var(--theme-text-3) 42%, transparent);
+  border-radius: 50%;
+  background: var(--theme-bg-surface);
+  color: var(--theme-primary-text);
+  transition:
+    background var(--theme-duration) var(--theme-ease),
+    border-color var(--theme-duration) var(--theme-ease),
+    box-shadow var(--theme-duration) var(--theme-ease);
+}
+
+.od-step__dot svg {
+  width: 9px;
+  height: 9px;
+}
+
+.od-step__label {
+  white-space: nowrap;
+}
+
+.od-step:not(:last-child)::after {
+  content: '';
+  flex: 1;
+  min-width: 10px;
+  height: 2px;
+  margin: 0 10px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--theme-text-3) 26%, transparent);
+  transition: background var(--theme-duration) var(--theme-ease);
+}
+
+.od-step.is-done {
+  color: var(--theme-text-2);
+}
+
+.od-step.is-done .od-step__dot {
+  border-color: var(--theme-primary);
+  background: var(--theme-primary);
+}
+
+.od-step.is-done:not(:last-child)::after {
+  background: color-mix(in srgb, var(--theme-primary) 55%, transparent);
+}
+
+.od-step.is-current .od-step__dot {
+  box-shadow: var(--theme-ring);
+}
+
+.od-step.is-current .od-step__label {
+  color: var(--theme-primary);
+  font-weight: 700;
+}
+
+/* ==================== 布局 ==================== */
+.od-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--od-gap);
+  align-items: start;
+}
+
+.od-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--od-gap);
+  min-width: 0;
+}
+
+.od-side {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--od-gap);
+}
+
+/* ==================== 卡片 ==================== */
+.od-card {
+  padding: 18px 20px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 16px;
+  background: var(--theme-bg-surface-2);
+  animation: od-rise 0.5s var(--theme-ease) both;
+  animation-delay: 0.06s;
+}
+
+.od-main .od-card:nth-child(2) { animation-delay: 0.1s; }
+.od-main .od-card:nth-child(3) { animation-delay: 0.14s; }
+.od-main .od-card:nth-child(4) { animation-delay: 0.18s; }
+.od-side .od-card { animation-delay: 0.1s; }
+
+.od-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.od-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
+}
+
+.od-card__icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.od-card__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-1);
+}
+
+.od-card__count {
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--theme-text-2);
+  white-space: nowrap;
+}
+
+/* ==================== 商品 ==================== */
+.od-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.od-items__empty {
+  margin: 0;
+  padding: 18px 12px;
+  border: 1px dashed var(--theme-hairline);
+  border-radius: 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--theme-text-3);
+}
+
+.od-item {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 12px;
+  background: var(--theme-bg-surface);
+  transition:
+    transform var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    box-shadow var(--theme-duration-fast) var(--theme-ease);
+}
+
+.od-item:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--theme-primary) 30%, transparent);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.od-item__thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-3);
+}
+
+.od-item__thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.item-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 6px;
-  min-width: 0;
+.od-item__thumb-empty svg {
+  width: 22px;
+  height: 22px;
 }
 
-.item-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--theme-text-1);
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.od-item__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.od-item__name {
   display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--theme-text-1);
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
-.order-remark {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: var(--theme-bg-surface-2);
-  font-size: 13px;
-  color: var(--theme-text-2);
-  line-height: 1.5;
-}
-
-.order-remark__label {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 1px 8px;
-  border-radius: 6px;
-  background: var(--theme-bg-surface);
-  color: var(--theme-text-3);
-  font-weight: 600;
-}
-
-.item-price {
+.od-item__meta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-}
-
-.item-price .price {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--theme-text-1);
-}
-
-.item-price .quantity {
-  font-size: 13px;
-  color: var(--theme-text-2);
-  background: var(--theme-bg-surface-2);
-  padding: 3px 10px;
-  border-radius: 8px;
-  font-weight: 500;
-}
-
-/* 订单摘要 */
-.summary-item {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.summary-label {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--theme-text-2);
-}
-
-.summary-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--theme-text-1);
-}
-
-.summary-item.total {
-  border-top: 1px solid var(--theme-hairline);
-  padding-top: 14px;
-  margin-top: 6px;
-}
-
-.summary-item.total .summary-label {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--theme-text-1);
-}
-
-.summary-item.total .summary-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--theme-text-1);
-  letter-spacing: -0.02em;
-}
-
-/* 操作按钮 */
-.order-actions {
-  display: flex;
-  justify-content: flex-end;
   gap: 12px;
-  padding-top: 8px;
 }
 
-.btn {
-  font-family: inherit;
-  padding: 11px 26px;
-  border-radius: 12px;
-  font-size: 14px;
+.od-item__price {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-1);
+}
+
+.od-item__qty {
+  padding: 2px 9px;
+  border-radius: 8px;
+  background: var(--theme-bg-surface-2);
+  font-size: 12.5px;
   font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--theme-text-2);
 }
 
-.btn-primary {
-  background: var(--theme-primary);
+.od-remark {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px dashed color-mix(in srgb, var(--theme-warning) 40%, transparent);
+  border-radius: 10px;
+  background: var(--theme-bg-surface);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--theme-text-2);
+}
+
+.od-remark__tag {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--theme-warning-soft);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--theme-warning);
+}
+
+.od-remark__text {
+  word-break: break-word;
+}
+
+/* ==================== 信息栅格 ==================== */
+.od-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px 26px;
+}
+
+.od-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.od-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--theme-text-3);
+}
+
+.od-field__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--theme-text-1);
+  word-break: break-all;
+}
+
+.od-field__value--mono {
+  font-family: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Consolas, monospace;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+}
+
+.od-field__value--accent {
+  font-weight: 700;
+  color: var(--theme-primary);
+}
+
+.od-field__value--deduct {
+  color: var(--theme-success);
+}
+
+.od-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--theme-primary-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--theme-primary);
+}
+
+.od-pill--warn {
+  background: var(--theme-warning-soft);
+  color: var(--theme-warning);
+}
+
+/* ==================== 收货地址 ==================== */
+.od-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.od-address__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--theme-gradient);
+  box-shadow: var(--theme-shadow-sm);
+  font-size: 17px;
+  font-weight: 700;
   color: var(--theme-primary-text);
 }
 
-.btn-primary:hover {
-  background: var(--theme-primary-hover);
+.od-address__body {
+  min-width: 0;
+}
+
+.od-address__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.od-address__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--theme-text-1);
+}
+
+.od-address__phone {
+  padding: 2px 9px;
+  border: 1px solid var(--theme-hairline);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--theme-text-2);
+}
+
+.od-address__text {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--theme-text-2);
+  word-break: break-word;
+}
+
+/* ==================== 结算 ==================== */
+.od-summary {
+  padding-bottom: 18px;
+}
+
+.od-summary__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.od-summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--theme-text-2);
+}
+
+.od-summary__row > span:last-child {
+  font-weight: 500;
+  color: var(--theme-text-1);
+}
+
+.od-summary__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed color-mix(in srgb, var(--theme-text-3) 32%, transparent);
+}
+
+.od-summary__total-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--theme-text-2);
+}
+
+.od-summary__total-value {
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--theme-text-1);
+}
+
+/* ==================== 按钮 ==================== */
+.od-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.od-btn {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition:
+    transform var(--theme-duration-fast) var(--theme-ease),
+    box-shadow var(--theme-duration-fast) var(--theme-ease),
+    background var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    filter var(--theme-duration-fast) var(--theme-ease);
+}
+
+.od-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--theme-ring);
+}
+
+.od-btn--primary {
+  background: var(--theme-gradient);
+  color: var(--theme-primary-text);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.od-btn--primary:hover {
   transform: translateY(-1px);
   box-shadow: var(--theme-shadow-md);
+  filter: brightness(1.05);
 }
 
-.btn-secondary {
-  background: var(--theme-bg-surface-2);
+.od-btn--ghost {
+  border-color: var(--theme-border);
+  background: var(--theme-bg-surface);
   color: var(--theme-text-1);
-  border: 1px solid var(--theme-border);
 }
 
-.btn-secondary:hover {
+.od-btn--ghost:hover {
   background: var(--theme-bg-hover);
 }
 
-/* 无订单数据 */
+/* ==================== 空状态 ==================== */
 .no-order {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 460px;
-  padding: 40px;
+  justify-content: center;
+  min-height: 420px;
+  padding: 32px 16px;
 }
 
-.no-order-content {
-  max-width: 400px;
+.no-order__card {
   width: 100%;
+  max-width: 380px;
+  padding: 36px 28px;
+  border: 1px dashed var(--theme-border);
+  border-radius: 20px;
+  background: var(--theme-bg-surface-2);
   text-align: center;
+  animation: od-rise 0.5s var(--theme-ease) both;
 }
 
-.no-order-icon {
-  margin-bottom: 24px;
-  color: var(--theme-text-3);
+.no-order__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  border-radius: 22px;
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary);
 }
 
-.no-order-icon svg {
-  width: 64px;
-  height: 64px;
+.no-order__icon svg {
+  width: 34px;
+  height: 34px;
 }
 
-.no-order-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--theme-text-1);
-  margin: 0 0 10px 0;
+.no-order__title {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 700;
   letter-spacing: -0.01em;
+  color: var(--theme-text-1);
 }
 
-.no-order-desc {
-  font-size: 15px;
-  font-weight: 400;
+.no-order__desc {
+  margin: 0 0 26px;
+  font-size: 14px;
+  line-height: 1.6;
   color: var(--theme-text-2);
-  margin: 0 0 28px 0;
-  line-height: 1.5;
 }
 
-/* 响应式 */
+.no-order__btn {
+  flex: none;
+  padding: 11px 28px;
+}
+
+/* ==================== 入场动效 ==================== */
+@keyframes od-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 1180px) {
+  .od-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 单列时结算卡上移，保证金额与支付入口优先可见 */
+  .od-side {
+    position: static;
+    order: -1;
+  }
+}
+
 @media (max-width: 767px) {
-  .order-header {
+  .od-hero {
+    padding: 18px 18px 16px;
+    border-radius: 16px;
+  }
+
+  .od-hero__body {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .od-hero__aside {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+  }
+
+  .od-amount {
+    align-items: flex-end;
+  }
+
+  .od-amount__value {
+    font-size: 27px;
+  }
+
+  .od-steps {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
-  .order-title { font-size: 22px; }
-  .section-title { font-size: 15px; }
 
-  .order-info-card,
-  .payment-info-card,
-  .shipping-address-card,
-  .order-items-card,
-  .order-summary-card,
-  .shipping-info-card {
-    padding: 18px;
+  .od-steps__list {
+    width: 100%;
+  }
+
+  .od-step {
+    font-size: 12px;
+  }
+
+  .od-step:not(:last-child)::after {
+    margin: 0 8px;
+  }
+
+  .od-card {
+    padding: 16px;
     border-radius: 14px;
   }
 
-  .info-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  .info-item .value { text-align: left; }
-
-  .item { padding: 14px; }
-  .item-image { width: 64px; height: 64px; }
-
-  .name-phone {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
+  .od-item {
+    padding: 10px;
   }
 
-  .order-actions {
-    flex-direction: column;
-    gap: 10px;
+  .od-item__thumb {
+    width: 56px;
+    height: 56px;
   }
-  .btn { width: 100%; padding: 13px; }
 
-  .no-order { padding: 32px; min-height: 380px; }
-  .no-order-icon svg { width: 56px; height: 56px; }
-  .no-order-title { font-size: 20px; }
+  .od-fields {
+    gap: 12px 20px;
+  }
+
+  .od-actions {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 480px) {
-  .order-title { font-size: 20px; }
-  .order-info-card,
-  .payment-info-card,
-  .shipping-address-card,
-  .order-items-card,
-  .order-summary-card,
-  .shipping-info-card { padding: 16px; border-radius: 12px; }
-  .info-item .label, .info-item .value { font-size: 13px; }
-  .item-name { font-size: 14px; }
-  .item-price .price { font-size: 15px; }
-  .summary-item.total .summary-value { font-size: 20px; }
-  .no-order { min-height: 320px; padding: 24px; }
+  .order-detail {
+    --od-gap: 14px;
+  }
+
+  .od-hero__no {
+    font-size: 17px;
+  }
+
+  .od-hero__tags {
+    gap: 6px;
+  }
+
+  .od-tag {
+    padding: 3px 9px;
+    font-size: 11.5px;
+  }
+
+  .od-step {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 11.5px;
+  }
+
+  .od-step:not(:last-child)::after {
+    display: none;
+  }
+
+  .od-step__label {
+    white-space: normal;
+  }
+
+  .od-summary__total-value {
+    font-size: 22px;
+  }
+
+  .no-order__card {
+    padding: 28px 20px;
+  }
+
+  .no-order__icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+  }
+
+  .no-order__icon svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .od-hero,
+  .od-card,
+  .no-order__card {
+    animation: none;
+  }
+
+  .od-item,
+  .od-btn,
+  .od-copy {
+    transition: none;
+  }
 }
 </style>

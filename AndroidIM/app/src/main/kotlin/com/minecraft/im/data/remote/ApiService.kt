@@ -207,4 +207,18 @@ interface ApiService {
         @Query("userId") userId: Long,
         @Query("type") type: String? = null
     ): ApiEnvelope<JsonElement>
+
+    // ---------------- 自定义表情包 ----------------
+    @GET("emoji/list")
+    suspend fun getMyEmojis(): ApiEnvelope<List<UserEmojiDto>>
+
+    @Multipart
+    @POST("emoji/upload")
+    suspend fun uploadEmoji(
+        @Part file: MultipartBody.Part,
+        @Part("emojiName") emojiName: RequestBody?
+    ): ApiEnvelope<UserEmojiDto>
+
+    @DELETE("emoji/{emojiId}")
+    suspend fun deleteEmoji(@Path("emojiId") emojiId: Long): ApiEnvelope<JsonElement>
 }

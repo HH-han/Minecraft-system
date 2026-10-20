@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -38,12 +39,15 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +63,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -91,6 +96,7 @@ import com.minecraft.im.R
 import com.minecraft.im.core.formatMessageDivider
 import com.minecraft.im.core.localeIsEnglish
 import com.minecraft.im.core.mediaUrl
+import com.minecraft.im.data.remote.dto.UserEmojiDto
 import com.minecraft.im.domain.model.Contact
 import com.minecraft.im.domain.model.MessageKind
 import com.minecraft.im.domain.model.MessageUi
@@ -122,6 +128,7 @@ fun ChatScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val starred by viewModel.starred.collectAsStateWithLifecycle()
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
+    val customEmojis by viewModel.customEmojis.collectAsStateWithLifecycle()
 
     val colors = LocalImColors.current
     val baseUrl = LocalBaseUrl.current
@@ -156,6 +163,25 @@ fun ChatScreen(
             }
             val mime = context.contentResolver.getType(uri) ?: "image/jpeg"
             viewModel.sendImage(bytes, mime, "im_${System.currentTimeMillis()}.jpg")
+        }
+    }
+
+    val emojiPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val bytes = withContext(Dispatchers.IO) {
+                runCatching {
+                    context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                }.getOrNull()
+            }
+            if (bytes == null) {
+                snackbar.showSnackbar(context.getString(R.string.image_pick_failed))
+                return@launch
+            }
+            val mime = context.contentResolver.getType(uri) ?: "image/png"
+            viewModel.uploadEmoji(bytes, mime, "emoji_${System.currentTimeMillis()}.png")
         }
     }
 
@@ -220,10 +246,18 @@ fun ChatScreen(
 
             if (showEmoji) {
                 EmojiPanel(
+                    customEmojis = customEmojis,
+                    uploading = state.emojiUploading,
                     onPick = { emoji ->
                         viewModel.sendEmoji(emoji)
                         showEmoji = false
-                    }
+                    },
+                    onUpload = {
+                        emojiPicker.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    },
+                    onDelete = viewModel::deleteEmoji
                 )
             }
         }
@@ -474,11 +508,27 @@ private fun MessageRow(
                         .clickable { onImageClick(message.content) }
                 )
 
-                MessageKind.EMOJI -> Text(
-                    text = message.content,
-                    fontSize = 32.sp,
-                    modifier = Modifier.padding(horizontal = 2.dp)
-                )
+                MessageKind.EMOJI -> {
+                    val isImage = message.content.startsWith("http", true) ||
+                        message.content.startsWith("/")
+                    if (isImage) {
+                        AsyncImage(
+                            model = mediaUrl(baseUrl, message.content),
+                            contentDescription = stringResource(R.string.chat_emoji),
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .size(112.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { onImageClick(message.content) }
+                        )
+                    } else {
+                        Text(
+                            text = message.content,
+                            fontSize = 32.sp,
+                            modifier = Modifier.padding(horizontal = 2.dp)
+                        )
+                    }
+                }
 
                 else -> Row(verticalAlignment = Alignment.Top) {
                     if (!mine) {
@@ -641,9 +691,20 @@ private fun ChatInputBar(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun EmojiPanel(onPick: (String) -> Unit) {
+private fun EmojiPanel(
+    customEmojis: List<UserEmojiDto>,
+    uploading: Boolean,
+    onPick: (String) -> Unit,
+    onUpload: () -> Unit,
+    onDelete: (Long) -> Unit
+) {
+    var tab by remember { mutableIntStateOf(0) }
     var groupIndex by remember { mutableIntStateOf(0) }
+    var pendingDelete by remember { mutableStateOf<UserEmojiDto?>(null) }
+    val baseUrl = LocalBaseUrl.current
+
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column {
             HorizontalDivider(
@@ -653,45 +714,175 @@ private fun EmojiPanel(onPick: (String) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                EMOJI_GROUPS.forEachIndexed { index, group ->
-                    val selected = index == groupIndex
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(
-                                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                                else Color.Transparent
+                EmojiTab(
+                    text = stringResource(R.string.emoji_tab_system),
+                    selected = tab == 0,
+                    onClick = { tab = 0 }
+                )
+                EmojiTab(
+                    text = stringResource(R.string.emoji_tab_custom),
+                    selected = tab == 1,
+                    onClick = { tab = 1 }
+                )
+                Spacer(Modifier.weight(1f))
+                if (tab == 1) {
+                    IconButton(onClick = onUpload, enabled = !uploading) {
+                        if (uploading) {
+                            CircularProgressIndicator(
+                                strokeWidth = 2.dp,
+                                modifier = Modifier.size(18.dp)
                             )
-                            .clickable { groupIndex = index }
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
-                        Text(text = group.first, fontSize = 18.sp)
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = stringResource(R.string.emoji_tab_custom),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }
-            val emojis = EMOJI_GROUPS[groupIndex].second
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(8),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                items(emojis) { emoji ->
+
+            if (tab == 0) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    EMOJI_GROUPS.forEachIndexed { index, group ->
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    if (index == groupIndex) {
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                    } else {
+                                        Color.Transparent
+                                    }
+                                )
+                                .clickable { groupIndex = index }
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                        ) {
+                            Text(text = group.first, fontSize = 18.sp)
+                        }
+                    }
+                }
+                val emojis = EMOJI_GROUPS[groupIndex].second
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(8),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(190.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(emojis) { emoji ->
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { onPick(emoji) }
+                                .padding(6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = emoji, fontSize = 24.sp, textAlign = TextAlign.Center)
+                        }
+                    }
+                }
+            } else {
+                if (customEmojis.isEmpty() && !uploading) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { onPick(emoji) }
-                            .padding(6.dp),
+                            .fillMaxWidth()
+                            .height(190.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = emoji, fontSize = 24.sp, textAlign = TextAlign.Center)
+                        Text(
+                            text = stringResource(R.string.emoji_empty),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(5),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(190.dp),
+                        contentPadding = PaddingValues(10.dp)
+                    ) {
+                        items(customEmojis, key = { it.id }) { emoji ->
+                            val url = mediaUrl(baseUrl, emoji.emojiUrl).orEmpty()
+                            Box(
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .aspectRatio(1f)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .combinedClickable(
+                                        onClick = { onPick(url) },
+                                        onLongClick = { pendingDelete = emoji }
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                AsyncImage(
+                                    model = url,
+                                    contentDescription = emoji.emojiName,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    pendingDelete?.let { emoji ->
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            text = { Text(stringResource(R.string.emoji_delete_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    pendingDelete = null
+                    onDelete(emoji.id)
+                }) {
+                    Text(
+                        text = stringResource(R.string.action_delete),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDelete = null }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun EmojiTab(text: String, selected: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(
+                if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                else Color.Transparent
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 4.dp)
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (selected) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
