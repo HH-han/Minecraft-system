@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -66,11 +67,13 @@ fun ContactDetailScreen(
 ) {
     LaunchedEffect(contactId, isGroup) { viewModel.load(contactId, isGroup) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val starred by viewModel.starred.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     var showRemarkDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val successText = stringResource(R.string.label_success)
 
     val contact = state.contact
 
@@ -230,17 +233,22 @@ fun ContactDetailScreen(
                         Text(stringResource(R.string.contact_edit_group))
                     }
                 } else {
+                    val isStarred = contact.id in starred
                     OutlinedButton(
-                        onClick = {
-                            viewModel.toggleStar(contact.id)
-                            scope.launch { snackbar.showSnackbar("★") }
-                        },
+                        onClick = { viewModel.toggleStar(contact.id) },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(Icons.Default.Star, contentDescription = null)
+                        Icon(
+                            imageVector = if (isStarred) Icons.Default.Star else Icons.Outlined.StarBorder,
+                            contentDescription = null
+                        )
                         Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.contacts_star))
+                        Text(
+                            stringResource(
+                                if (isStarred) R.string.contacts_unstar else R.string.contacts_star
+                            )
+                        )
                     }
                     OutlinedButton(
                         onClick = { showRemarkDialog = true },
@@ -293,7 +301,7 @@ fun ContactDetailScreen(
                         scope.launch {
                             snackbar.showSnackbar(
                                 result.exceptionOrNull()?.let { viewModel.errorText(it) }
-                                    ?: "OK"
+                                    ?: successText
                             )
                         }
                     }
@@ -319,7 +327,7 @@ fun ContactDetailScreen(
                         scope.launch {
                             val error = result.exceptionOrNull()
                             if (error == null) {
-                                snackbar.showSnackbar("OK")
+                                snackbar.showSnackbar(successText)
                                 onBack()
                             } else {
                                 snackbar.showSnackbar(viewModel.errorText(error))

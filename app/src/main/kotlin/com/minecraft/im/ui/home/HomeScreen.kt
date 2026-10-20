@@ -40,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -52,7 +51,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minecraft.im.R
 import com.minecraft.im.ui.components.SearchField
-import kotlinx.coroutines.launch
 
 /** 主界面：消息 / 通讯录 / 发现 / 我 */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,10 +82,11 @@ fun HomeScreen(
     var showLogoutConfirm by remember { mutableStateOf(false) }
 
     val snackbar = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) { viewModel.refresh() }
 
     LaunchedEffect(tab) {
-        if (tab != 1) {
+        if (tab != 0 && tab != 1) {
             searchOpen = false
             query = ""
         }
@@ -144,7 +143,7 @@ fun HomeScreen(
                         }
                     }
                 )
-                if (searchOpen) {
+                if (searchOpen && (tab == 0 || tab == 1)) {
                     SearchField(
                         value = query,
                         onValueChange = { query = it },

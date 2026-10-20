@@ -37,6 +37,7 @@ fun AddFriendScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+    val successText = stringResource(R.string.add_friend_success)
 
     LaunchedEffect(state.error) {
         state.error?.let {
@@ -46,7 +47,7 @@ fun AddFriendScreen(
     }
     LaunchedEffect(state.success) {
         if (state.success) {
-            snackbar.showSnackbar("OK")
+            snackbar.showSnackbar(successText)
             onBack()
         }
     }

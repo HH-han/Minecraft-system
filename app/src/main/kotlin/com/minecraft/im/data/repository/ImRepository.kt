@@ -86,7 +86,13 @@ class ImRepository @Inject constructor(
                         refreshAll()
                     }
 
-                    else -> ws.disconnect()
+                    else -> {
+                        ws.disconnect()
+                        _friends.value = emptyList()
+                        _groups.value = emptyList()
+                        _requests.value = emptyList()
+                        _messages.value = emptyMap()
+                    }
                 }
             }
         }
@@ -110,7 +116,20 @@ class ImRepository @Inject constructor(
         runCatching { apiProvider.api().getFriendInfoList(userId) }
             .onSuccess { res ->
                 if (res.code == 200) {
-                    _friends.value = res.data.orEmpty().map { it.toContact() }
+                    val previous = _friends.value.associateBy { it.id }
+                    _friends.value = res.data.orEmpty().map { dto ->
+                        val contact = dto.toContact()
+                        val old = previous[contact.id]
+                        // 后端不返回最后一条消息，保留本地已有的会话摘要
+                        if (contact.lastMessage.isBlank() && old != null) {
+                            contact.copy(
+                                lastMessage = old.lastMessage,
+                                lastMessageTime = old.lastMessageTime
+                            )
+                        } else {
+                            contact
+                        }
+                    }
                 }
             }
     }
@@ -287,6 +306,10 @@ class ImRepository @Inject constructor(
                 appendMessage(key, message)
                 updatePreview(key, previewOf(message), event.timestamp, increaseUnread = true)
                 if (contact == null) refreshFriends()
+                // 会话处于打开状态时同步清除服务端未读
+                if (_activeKey.value == key) {
+                    runCatching { apiProvider.api().markConversationRead(event.senderId) }
+                }
             }
 
             is WsEvent.GroupMessage -> {

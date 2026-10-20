@@ -134,6 +134,8 @@ fun GroupInfoScreen(
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var showInvite by remember { mutableStateOf(false) }
+    val savedText = stringResource(R.string.group_info_saved)
+    val invitedText = stringResource(R.string.group_info_invited)
 
     Scaffold(
         topBar = { TopBarBack(title = stringResource(R.string.group_info_title), onBack = onBack) },
@@ -192,7 +194,7 @@ fun GroupInfoScreen(
                     onClick = {
                         viewModel.save(groupId) { error ->
                             scope.launch {
-                                snackbar.showSnackbar(error ?: "OK")
+                                snackbar.showSnackbar(error ?: savedText)
                             }
                         }
                     },
@@ -289,7 +291,7 @@ fun GroupInfoScreen(
                         showInvite = false
                         if (selected.isNotEmpty()) {
                             viewModel.invite(groupId, selected.toList()) { error ->
-                                scope.launch { snackbar.showSnackbar(error ?: "OK") }
+                                scope.launch { snackbar.showSnackbar(error ?: invitedText) }
                             }
                         }
                     }

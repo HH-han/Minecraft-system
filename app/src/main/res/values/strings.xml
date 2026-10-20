@@ -20,6 +20,7 @@
     <string name="label_network_error">网络异常</string>
     <string name="label_me">我</string>
     <string name="label_unknown">未知</string>
+    <string name="label_success">操作成功</string>
 
     <!-- 登录 -->
     <string name="login_title">登录</string>

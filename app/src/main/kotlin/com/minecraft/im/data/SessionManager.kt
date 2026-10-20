@@ -4,6 +4,7 @@ import com.minecraft.im.BuildConfig
 import com.minecraft.im.core.normalizeBaseUrl
 import com.minecraft.im.data.local.SettingsStore
 import com.minecraft.im.data.remote.dto.UserDto
+import com.minecraft.im.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +33,7 @@ sealed interface SessionState {
 class SessionManager @Inject constructor(
     private val store: SettingsStore,
     private val json: Json,
-    private val appScope: CoroutineScope
+    @ApplicationScope private val appScope: CoroutineScope
 ) {
     private val _session = MutableStateFlow<SessionState>(SessionState.Loading)
     val session: StateFlow<SessionState> = _session.asStateFlow()
@@ -63,7 +64,11 @@ class SessionManager @Inject constructor(
     /** 启动时读取本地登录态 */
     fun bootstrap() {
         appScope.launch {
-            val snapshot = store.snapshot()
+            val snapshot = runCatching { store.snapshot() }.getOrNull()
+            if (snapshot == null) {
+                _session.value = SessionState.LoggedOut
+                return@launch
+            }
             snapshot.baseUrl?.takeIf { it.isNotBlank() }?.let {
                 currentBaseUrl = normalizeBaseUrl(it)
             }

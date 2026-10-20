@@ -8,6 +8,13 @@ import java.net.URLEncoder
  */
 fun mediaUrl(baseUrl: String, raw: String?): String? {
     if (raw.isNullOrBlank()) return null
+    // 兼容 base64 内联图片与本地 content/file 地址
+    if (raw.startsWith("data:", true) ||
+        raw.startsWith("content://", true) ||
+        raw.startsWith("file://", true)
+    ) {
+        return raw
+    }
     if (!raw.startsWith("http", ignoreCase = true)) {
         return baseUrl.trimEnd('/') + "/" + raw.trimStart('/')
     }

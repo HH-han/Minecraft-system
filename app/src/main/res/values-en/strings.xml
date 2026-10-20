@@ -20,6 +20,7 @@
     <string name="label_network_error">Network error</string>
     <string name="label_me">Me</string>
     <string name="label_unknown">Unknown</string>
+    <string name="label_success">Done</string>
 
     <!-- Login -->
     <string name="login_title">Sign in</string>

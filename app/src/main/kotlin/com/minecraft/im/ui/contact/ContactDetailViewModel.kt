@@ -30,6 +30,8 @@ class ContactDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
+    val starred = sessionManager.starred
+
     fun load(contactId: Long, isGroup: Boolean) {
         viewModelScope.launch {
             _uiState.update { it.copy(loading = true, error = null) }

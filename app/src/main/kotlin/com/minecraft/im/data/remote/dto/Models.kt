@@ -47,7 +47,7 @@ data class UserDto(
     val bio: String? = null,
     val signature: String? = null,
     val experience: String? = null,
-    val online: Boolean? = null,
+    val online: Int? = null,
     val status: Int? = null,
     val points: Int? = null,
     val permissions: String? = null

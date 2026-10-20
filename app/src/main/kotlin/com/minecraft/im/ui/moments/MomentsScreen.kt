@@ -33,7 +33,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -93,6 +93,8 @@ fun MomentsScreen(
     val listState = rememberLazyListState()
     var showPublish by remember { mutableStateOf(false) }
     var commentTarget by remember { mutableStateOf<MomentUi?>(null) }
+    val successText = stringResource(R.string.label_success)
+    val publishSuccessText = stringResource(R.string.moments_publish_success)
 
     LaunchedEffect(state.error) {
         state.error?.let {
@@ -118,7 +120,7 @@ fun MomentsScreen(
                         Icon(Icons.Default.Add, contentDescription = stringResource(R.string.moments_publish))
                     }
                     IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Send, contentDescription = stringResource(R.string.action_refresh))
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.action_refresh))
                     }
                 }
             )
@@ -152,7 +154,7 @@ fun MomentsScreen(
                             onComment = { commentTarget = moment },
                             onDelete = {
                                 viewModel.deleteMoment(moment.id) { error ->
-                                    scope.launch { snackbar.showSnackbar(error ?: "OK") }
+                                    scope.launch { snackbar.showSnackbar(error ?: successText) }
                                 }
                             }
                         )
@@ -179,7 +181,7 @@ fun MomentsScreen(
             onPublish = { content, images, location, visibility ->
                 viewModel.publish(content, images, location, visibility) { error ->
                     scope.launch {
-                        snackbar.showSnackbar(error ?: "OK")
+                        snackbar.showSnackbar(error ?: publishSuccessText)
                         if (error == null) showPublish = false
                     }
                 }
@@ -194,7 +196,7 @@ fun MomentsScreen(
             onSubmit = { content ->
                 viewModel.addComment(moment.id, content, null) { error ->
                     scope.launch {
-                        snackbar.showSnackbar(error ?: "OK")
+                        snackbar.showSnackbar(error ?: successText)
                         if (error == null) commentTarget = null
                     }
                 }
