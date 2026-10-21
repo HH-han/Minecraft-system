@@ -19,7 +19,7 @@ TD.Exception { background: #A2AEE8; font-family: courier, monospace;}
   </head>
 <body>
 <hr/>
-<p>Log session start time Wed Oct 14 00:00:00 CST 2026</p><p></p>
+<p>Log session start time Thu Oct 22 00:00:00 CST 2026</p><p></p>
 
 <table cellspacing="0">
 <tr class="header">
@@ -31,435 +31,994 @@ TD.Exception { background: #A2AEE8; font-family: courier, monospace;}
 </tr>
 
 
-<tr class="debug even">
-<td class="Date">2026-10-14 00:00:00.023</td>
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:00:00.012</td>
 <td class="Thread">rec-schedule-1</td>
 <td class="Level">DEBUG</td>
 <td class="Logger">c.m.logistics.Kuaidi100Provider</td>
 <td class="Message">[快递100] queryTrack 骨架调用 trackingNo=STO1112223334445</td>
 </tr>
 
-<tr class="debug odd">
-<td class="Date">2026-10-14 00:00:00.024</td>
+<tr class="debug even">
+<td class="Date">2026-10-22 00:00:00.015</td>
 <td class="Thread">rec-schedule-1</td>
 <td class="Level">DEBUG</td>
 <td class="Logger">c.m.logistics.Kuaidi100Provider</td>
 <td class="Message">[快递100] queryTrack 骨架调用 trackingNo=1</td>
 </tr>
 
-<tr class="debug even">
-<td class="Date">2026-10-14 00:00:00.027</td>
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:00:00.017</td>
 <td class="Thread">rec-schedule-1</td>
 <td class="Level">DEBUG</td>
 <td class="Logger">c.m.logistics.Kuaidi100Provider</td>
 <td class="Message">[快递100] queryTrack 骨架调用 trackingNo=EMS2026101169605921</td>
 </tr>
 
-<tr class="debug odd">
-<td class="Date">2026-10-14 00:00:00.028</td>
+<tr class="debug even">
+<td class="Date">2026-10-22 00:00:00.020</td>
 <td class="Thread">rec-schedule-1</td>
 <td class="Level">DEBUG</td>
 <td class="Logger">c.m.logistics.Kuaidi100Provider</td>
 <td class="Message">[快递100] queryTrack 骨架调用 trackingNo=ZTO5556667778889</td>
 </tr>
 
-<tr class="debug even">
-<td class="Date">2026-10-14 00:00:00.029</td>
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:00:00.022</td>
 <td class="Thread">rec-schedule-1</td>
 <td class="Level">DEBUG</td>
 <td class="Logger">c.m.logistics.Kuaidi100Provider</td>
 <td class="Message">[快递100] queryTrack 骨架调用 trackingNo=YTO9876543210987</td>
 </tr>
 
-<tr class="debug odd">
-<td class="Date">2026-10-14 00:00:00.032</td>
+<tr class="debug even">
+<td class="Date">2026-10-22 00:00:00.024</td>
 <td class="Thread">rec-schedule-1</td>
 <td class="Level">DEBUG</td>
 <td class="Logger">c.m.logistics.KuaidiniaoProvider</td>
 <td class="Message">[快递鸟] queryTrack 骨架调用 trackingNo=DBL4445556667778</td>
 </tr>
 
-<tr class="error even">
-<td class="Date">2026-10-14 00:00:33.780</td>
-<td class="Thread">http-nio-8080-exec-2</td>
-<td class="Level">ERROR</td>
-<td class="Logger">c.m.exception.GlobalExceptionHandler</td>
-<td class="Message">系统异常</td>
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:00:21.957</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
 </tr>
-<tr><td class="Exception" colspan="6">org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter &#39;friendId&#39; for method parameter type Long is not present
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:181)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:148)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1080)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:973)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:731)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:814)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:223)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.alibaba.druid.support.jakarta.WebStatFilter.doFilter(WebStatFilter.java:113)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:399)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:297)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:79)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:125)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.handler.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:50)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:280)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:170)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:351)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:177)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:119)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:400)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:859)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1734)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.lang.Thread.run(Thread.java:1583)
-</td></tr>
-<tr class="error odd">
-<td class="Date">2026-10-14 00:00:45.996</td>
-<td class="Thread">http-nio-8080-exec-2</td>
-<td class="Level">ERROR</td>
-<td class="Logger">c.m.exception.GlobalExceptionHandler</td>
-<td class="Message">系统异常</td>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:00:21.957</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:00:21.956703700(LocalDateTime)</td>
 </tr>
-<tr><td class="Exception" colspan="6">org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter &#39;friendId&#39; for method parameter type Long is not present
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:122)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:181)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:148)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1080)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:973)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:731)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:814)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:223)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.alibaba.druid.support.jakarta.WebStatFilter.doFilter(WebStatFilter.java:113)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:399)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:297)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:79)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:125)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.handler.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:50)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:280)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:170)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:351)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:177)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:119)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:400)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:859)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1734)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.lang.Thread.run(Thread.java:1583)
-</td></tr>
-<tr class="warn even">
-<td class="Date">2026-10-14 00:06:04.699</td>
-<td class="Thread">http-nio-8080-exec-4</td>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:00:21.959</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:01:21.964</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:01:21.965</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:01:21.963350100(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:01:21.965</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:02:21.977</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:02:21.977</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:02:21.977014300(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:02:21.978</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:03:21.983</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:03:21.983</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:03:21.982099200(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:03:21.984</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:04:21.994</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:04:21.994</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:04:21.993380500(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:04:21.994</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:05:22.001</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:05:22.002</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:05:22.000571600(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:05:22.003</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:06:22.006</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:06:22.006</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:06:22.005475700(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:06:22.007</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:07:22.018</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:07:22.018</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:07:22.018931500(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:07:22.020</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:08:22.031</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:08:22.031</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:08:22.030498100(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:08:22.032</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:09:22.037</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:09:22.037</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:09:22.036374700(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:09:22.038</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-10-22 00:09:32.225</td>
+<td class="Thread">http-nio-8080-exec-6</td>
 <td class="Level">WARN</td>
 <td class="Logger">c.m.exception.GlobalExceptionHandler</td>
 <td class="Message">SSE 长连接超时断开，等待前端自动重连</td>
 </tr>
 
-<tr class="error odd">
-<td class="Date">2026-10-14 00:11:38.280</td>
-<td class="Thread">http-nio-8080-exec-8</td>
-<td class="Level">ERROR</td>
-<td class="Logger">o.s.w.s.h.ExceptionWebSocketHandlerDecorator</td>
-<td class="Message">Closing session due to exception for StandardWebSocketSession[id=3238aa2a-209d-c48a-b42d-98e8c0bae4d9, uri=ws://localhost:8080/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJ1c2VySWQiOjE1LCJ1c2VybmFtZSI6IueIseWQg-iWr-adoeeahOWwj-aHkueMqiIsImlhdCI6MTc5MTkwNTIwNiwiZXhwIjoxNzkyNTEwMDA2fQ.gbIDhCtQhWIbNEWvSLkJ9m9xou44r5Pz6ORitM3scxTVdlKB1mlsbJ2M2GKjrhS4ylYBF8OylTF-IxlOjNFPRg&amp;userId=15]</td>
+<tr class="debug even">
+<td class="Date">2026-10-22 00:10:22.041</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
 </tr>
-<tr><td class="Exception" colspan="6">io.jsonwebtoken.MalformedJwtException: Invalid Base64Url JWS signature: gbIDhCtQhWIbNEWvSLkJ9m9xou44r5Pz6ORitM3scxTVdlKB1mlsbJ2M2GKjrhS4ylYBF8OylTF-IxlOjNFPRg&amp;userId=15
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.decode(DefaultJwtParser.java:882)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.verifySignature(DefaultJwtParser.java:301)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:577)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:362)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:94)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.AbstractParser.parse(AbstractParser.java:36)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.AbstractParser.parse(AbstractParser.java:29)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parseSignedClaims(DefaultJwtParser.java:821)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.utils.JwtUtil.getClaimsFromToken(JwtUtil.java:50)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.utils.JwtUtil.getUserId(JwtUtil.java:55)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.handler.WebSocketHandler.afterConnectionEstablished(WebSocketHandler.java:48)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.handler.WebSocketHandlerDecorator.afterConnectionEstablished(WebSocketHandlerDecorator.java:70)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.handler.LoggingWebSocketHandlerDecorator.afterConnectionEstablished(LoggingWebSocketHandlerDecorator.java:48)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator.afterConnectionEstablished(ExceptionWebSocketHandlerDecorator.java:48)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.adapter.standard.StandardWebSocketHandlerAdapter.onOpen(StandardWebSocketHandlerAdapter.java:103)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.websocket.server.WsHttpUpgradeHandler.init(WsHttpUpgradeHandler.java:136)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:902)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1734)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.lang.Thread.run(Thread.java:1583)
-<br />Caused by: io.jsonwebtoken.io.DecodingException: Unable to Base64Url-decode InputStream: Illegal base64url character: &#39;&amp;&#39;
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.DelegateStringDecoder.decode(DelegateStringDecoder.java:43)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.DelegateStringDecoder.decode(DelegateStringDecoder.java:25)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.decode(DefaultJwtParser.java:876)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;	... 22 common frames omitted
-<br />Caused by: io.jsonwebtoken.io.DecodingException: Illegal base64url character: &#39;&amp;&#39;
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64.ctoi(Base64.java:221)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64.decodeFast(Base64.java:271)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64Decoder.decode(Base64Decoder.java:39)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64Decoder.decode(Base64Decoder.java:26)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.ExceptionPropagatingDecoder.decode(ExceptionPropagatingDecoder.java:52)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.DelegateStringDecoder.decode(DelegateStringDecoder.java:39)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;	... 24 common frames omitted
-</td></tr>
-<tr class="error even">
-<td class="Date">2026-10-14 00:11:38.286</td>
-<td class="Thread">http-nio-8080-exec-9</td>
-<td class="Level">ERROR</td>
-<td class="Logger">o.s.w.s.h.ExceptionWebSocketHandlerDecorator</td>
-<td class="Message">Closing session due to exception for StandardWebSocketSession[id=e907bb6f-c3a3-d685-8ce5-48edaea3ca14, uri=ws://localhost:8080/ws?token=eyJhbGciOiJIUzUxMiJ9.eyJ1c2VySWQiOjE5LCJ1c2VybmFtZSI6IuadjuWwj-aYjiIsImlhdCI6MTc5MTkwNzYyNywiZXhwIjoxNzkyNTEyNDI3fQ.thvzLsY2qyiHkG83t2pZeARWB1S2uqPpbddzRfZQJB4NwkpvKIy3KEHYGzBh5v6hhz2pglGOR896eY-i-osicg&amp;userId=19]</td>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:10:22.042</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:10:22.041877(LocalDateTime)</td>
 </tr>
-<tr><td class="Exception" colspan="6">io.jsonwebtoken.MalformedJwtException: Invalid Base64Url JWS signature: thvzLsY2qyiHkG83t2pZeARWB1S2uqPpbddzRfZQJB4NwkpvKIy3KEHYGzBh5v6hhz2pglGOR896eY-i-osicg&amp;userId=19
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.decode(DefaultJwtParser.java:882)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.verifySignature(DefaultJwtParser.java:301)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:577)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:362)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:94)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.AbstractParser.parse(AbstractParser.java:36)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.AbstractParser.parse(AbstractParser.java:29)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.parseSignedClaims(DefaultJwtParser.java:821)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.utils.JwtUtil.getClaimsFromToken(JwtUtil.java:50)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.utils.JwtUtil.getUserId(JwtUtil.java:55)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at com.minecraft.handler.WebSocketHandler.afterConnectionEstablished(WebSocketHandler.java:48)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.handler.WebSocketHandlerDecorator.afterConnectionEstablished(WebSocketHandlerDecorator.java:70)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.handler.LoggingWebSocketHandlerDecorator.afterConnectionEstablished(LoggingWebSocketHandlerDecorator.java:48)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator.afterConnectionEstablished(ExceptionWebSocketHandlerDecorator.java:48)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.springframework.web.socket.adapter.standard.StandardWebSocketHandlerAdapter.onOpen(StandardWebSocketHandlerAdapter.java:103)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.websocket.server.WsHttpUpgradeHandler.init(WsHttpUpgradeHandler.java:136)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:902)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1734)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at java.base/java.lang.Thread.run(Thread.java:1583)
-<br />Caused by: io.jsonwebtoken.io.DecodingException: Unable to Base64Url-decode InputStream: Illegal base64url character: &#39;&amp;&#39;
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.DelegateStringDecoder.decode(DelegateStringDecoder.java:43)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.DelegateStringDecoder.decode(DelegateStringDecoder.java:25)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.DefaultJwtParser.decode(DefaultJwtParser.java:876)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;	... 22 common frames omitted
-<br />Caused by: io.jsonwebtoken.io.DecodingException: Illegal base64url character: &#39;&amp;&#39;
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64.ctoi(Base64.java:221)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64.decodeFast(Base64.java:271)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64Decoder.decode(Base64Decoder.java:39)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.Base64Decoder.decode(Base64Decoder.java:26)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.io.ExceptionPropagatingDecoder.decode(ExceptionPropagatingDecoder.java:52)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;at io.jsonwebtoken.impl.io.DelegateStringDecoder.decode(DelegateStringDecoder.java:39)
-<br />&nbsp;&nbsp;&nbsp;&nbsp;	... 24 common frames omitted
-</td></tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:10:22.042</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:11:22.049</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:11:22.049</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:11:22.049809300(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:11:22.050</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:12:22.054</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:12:22.055</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:12:22.054507400(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:12:22.055</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:13:22.059</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:13:22.059</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:13:22.059616300(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:13:22.060</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:14:22.071</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:14:22.072</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:14:22.071596600(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:14:22.073</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:15:22.086</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:15:22.086</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:15:22.086105100(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:15:22.087</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:16:22.092</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:16:22.092</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:16:22.091486300(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:16:22.093</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:17:22.106</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:17:22.108</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:17:22.106651200(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:17:22.108</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-10-22 00:18:06.229</td>
+<td class="Thread">http-nio-8080-exec-5</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.m.exception.GlobalExceptionHandler</td>
+<td class="Message">SSE 长连接超时断开，等待前端自动重连</td>
+</tr>
+
+<tr class="warn odd">
+<td class="Date">2026-10-22 00:18:08.223</td>
+<td class="Thread">http-nio-8080-exec-10</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.m.exception.GlobalExceptionHandler</td>
+<td class="Message">SSE 长连接超时断开，等待前端自动重连</td>
+</tr>
+
+<tr class="warn even">
+<td class="Date">2026-10-22 00:18:11.218</td>
+<td class="Thread">http-nio-8080-exec-3</td>
+<td class="Level">WARN</td>
+<td class="Logger">c.m.exception.GlobalExceptionHandler</td>
+<td class="Message">SSE 长连接超时断开，等待前端自动重连</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:18:22.112</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:18:22.113</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:18:22.112697700(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:18:22.113</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:19:22.129</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:19:22.129</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:19:22.128868700(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:19:22.131</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:20:22.148</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:20:22.148</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:20:22.147321600(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:20:22.149</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:21:22.156</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:21:22.156</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:21:22.156135100(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:21:22.157</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:22:22.160</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:22:22.160</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:22:22.159788800(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:22:22.161</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:23:22.178</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:23:22.178</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:23:22.177073800(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:23:22.179</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:24:22.196</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:24:22.196</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:24:22.195455700(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:24:22.197</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:25:22.202</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:25:22.202</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:25:22.201726400(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:25:22.203</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:26:22.206</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:26:22.206</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:26:22.205955500(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:26:22.207</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:27:22.220</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:27:22.221</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:27:22.220293900(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:27:22.222</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:28:22.235</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:28:22.235</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:28:22.235164400(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:28:22.236</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:29:22.242</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:29:22.243</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:29:22.242641200(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:29:22.243</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:30:00.021</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.logistics.Kuaidi100Provider</td>
+<td class="Message">[快递100] queryTrack 骨架调用 trackingNo=STO1112223334445</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:30:00.022</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.logistics.Kuaidi100Provider</td>
+<td class="Message">[快递100] queryTrack 骨架调用 trackingNo=1</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:30:00.024</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.logistics.Kuaidi100Provider</td>
+<td class="Message">[快递100] queryTrack 骨架调用 trackingNo=EMS2026101169605921</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:30:00.024</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.logistics.Kuaidi100Provider</td>
+<td class="Message">[快递100] queryTrack 骨架调用 trackingNo=ZTO5556667778889</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:30:00.026</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.logistics.Kuaidi100Provider</td>
+<td class="Message">[快递100] queryTrack 骨架调用 trackingNo=YTO9876543210987</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:30:00.027</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.logistics.KuaidiniaoProvider</td>
+<td class="Message">[快递鸟] queryTrack 骨架调用 trackingNo=DBL4445556667778</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:30:22.254</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:30:22.256</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:30:22.254935100(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:30:22.256</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:31:22.258</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:31:22.259</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:31:22.258431300(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:31:22.259</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:32:22.277</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:32:22.277</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:32:22.276007900(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:32:22.277</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:33:22.283</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:33:22.283</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:33:22.282520900(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:33:22.284</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:34:22.291</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:34:22.291</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:34:22.290377(LocalDateTime)</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:34:22.292</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:35:22.308</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt;  Preparing: SELECT id,pay_no,biz_order_no,biz_type,user_id,total_amount,pay_amount,points_deduct,channel_code,status,channel_trade_no,subject,expire_time,pay_time,created_at,updated_at FROM pay_order WHERE (status IN (?,?) AND expire_time &lt; ?) LIMIT 100</td>
+</tr>
+
+<tr class="debug odd">
+<td class="Date">2026-10-22 00:35:22.308</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">==&gt; Parameters: INIT(String), PAYING(String), 2026-10-22T00:35:22.307478300(LocalDateTime)</td>
+</tr>
+
+<tr class="debug even">
+<td class="Date">2026-10-22 00:35:22.309</td>
+<td class="Thread">rec-schedule-1</td>
+<td class="Level">DEBUG</td>
+<td class="Logger">c.m.p.m.PayOrderMapper.selectList</td>
+<td class="Message">&lt;==      Total: 0</td>
+</tr>

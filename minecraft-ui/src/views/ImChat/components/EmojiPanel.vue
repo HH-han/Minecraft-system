@@ -81,6 +81,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { apiBaseUrl } from '@/config'
 import Icon from './Icon.vue'
 import { 
   getEmojiList, 
@@ -231,7 +232,7 @@ const getEmojiUrl = (url) => {
   if (url.startsWith('http')) {
     return url
   }
-  return import.meta.env.VITE_API_BASE_URL + url
+  return apiBaseUrl + url
 }
 
 const handleClickOutside = (e) => {

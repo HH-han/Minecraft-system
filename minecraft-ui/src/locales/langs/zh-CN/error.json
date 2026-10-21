@@ -1,0 +1,57 @@
+{
+  "error": {
+    "badge": {
+      "unauthorized": "UNAUTHORIZED",
+      "forbidden": "FORBIDDEN",
+      "badGateway": "BAD GATEWAY",
+      "serviceUnavailable": "SERVICE UNAVAILABLE",
+      "gatewayTimeout": "GATEWAY TIMEOUT",
+      "notFound": "NOT FOUND"
+    },
+    "caption": {
+      "notFound": "这个页面似乎不存在",
+      "unauthorized": "需要登录后继续",
+      "forbidden": "当前账号无访问权限",
+      "badGateway": "上游服务响应异常",
+      "serviceUnavailable": "服务维护中，请稍后回来",
+      "gatewayTimeout": "响应超时，请稍后重试"
+    },
+    "notFound": {
+      "title": "页面走丢了",
+      "desc": "你访问的页面可能已被移动、删除，或者链接地址有误。不妨从首页重新出发。",
+      "primary": "返回首页",
+      "secondary": "返回上一页"
+    },
+    "unauthorized": {
+      "title": "请先登录",
+      "desc": "此页面需要登录后才能访问。完成登录后，我们会带你回到刚才的位置。",
+      "primary": "去登录",
+      "secondary": "返回首页"
+    },
+    "forbidden": {
+      "title": "你没有访问权限",
+      "desc": "当前账号没有访问此页面的权限。如果这是一次误判，请联系管理员为你开通权限。",
+      "primary": "返回首页",
+      "secondary": "返回上一页"
+    },
+    "badGateway": {
+      "title": "服务连接中断",
+      "desc": "网关没能从上游服务器拿到有效响应。这通常是暂时的，稍后重试即可恢复。",
+      "primary": "重新加载",
+      "secondary": "返回首页"
+    },
+    "serviceUnavailable": {
+      "title": "服务正在维护",
+      "desc": "服务器正在进行升级或维护，暂时无法处理请求。请稍等片刻，然后再回来看看。",
+      "primary": "重新加载",
+      "secondary": "返回首页"
+    },
+    "gatewayTimeout": {
+      "title": "请求超时了",
+      "desc": "服务器在规定时间内没有完成响应。请稍后重试，或检查一下你的网络连接。",
+      "primary": "重新加载",
+      "secondary": "返回首页"
+    },
+    "footnote": "如果问题持续出现，请稍后重试或联系站点管理员。"
+  }
+}

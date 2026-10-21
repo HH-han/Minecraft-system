@@ -7,7 +7,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/db_minecraft?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
+    username: db_minecraft
     password: 123456
     druid:
       initial-size: 5
@@ -132,7 +132,7 @@ image:
     # Windows系统访问URL
     windows-url: http://localhost:8080/upload/
     # Linux/Mac系统访问URL
-    unix-url: http://121.40.144.69:8080/tmp/images/
+    unix-url: http://43.142.153.247:8888/tmp/images/
     # 水印文字（作用于JPEG/PNG，留空表示不添加水印）
     watermark-text: ""
 
@@ -175,6 +175,12 @@ captcha:
     default: 120000
   init-default-resource: true
   local-cache-enabled: false
+  # 滑块验证码背景图目录（按操作系统自动选择）
+  image-dir:
+    # Windows 系统（本地开发）
+    windows: G:/slidingverification
+    # Linux/Mac 系统（服务器部署），需将验证码图片上传到此目录
+    unix: /data/slidingverification
 
 # 聚合支付网关
 pay:

@@ -66,6 +66,7 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
+import { apiBaseUrl } from '@/config'
 import { getUserInfo } from '@/api/user'
 import { getToken } from '@/utils/storage'
 import Icon from './Icon.vue'
@@ -232,7 +233,7 @@ const getMessageImageUrl = (url) => {
   if (url.startsWith('http')) {
     return url
   }
-  return import.meta.env.VITE_API_BASE_URL + url
+  return apiBaseUrl + url
 }
 
 const previewImage = (url) => {

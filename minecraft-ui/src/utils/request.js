@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
+import { apiRequestBaseUrl } from '@/config'
 import { useRefreshStore } from '@/stores/refreshStore'
 
 /**
@@ -123,7 +124,7 @@ const redirectToErrorPage = (status) => {
 
 // 创建axios实例
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: apiRequestBaseUrl,
   timeout: 15000
 })
 

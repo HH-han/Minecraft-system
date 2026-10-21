@@ -1,0 +1,57 @@
+{
+  "error": {
+    "badge": {
+      "unauthorized": "UNAUTHORIZED",
+      "forbidden": "FORBIDDEN",
+      "badGateway": "BAD GATEWAY",
+      "serviceUnavailable": "SERVICE UNAVAILABLE",
+      "gatewayTimeout": "GATEWAY TIMEOUT",
+      "notFound": "NOT FOUND"
+    },
+    "caption": {
+      "notFound": "This page doesn't exist",
+      "unauthorized": "Login required to continue",
+      "forbidden": "Your account lacks permission",
+      "badGateway": "Upstream service is failing",
+      "serviceUnavailable": "Service under maintenance",
+      "gatewayTimeout": "The gateway timed out"
+    },
+    "notFound": {
+      "title": "This page is missing",
+      "desc": "The page you're looking for may have been moved, deleted, or the link is incorrect. Let's start over from the home page.",
+      "primary": "Back to Home",
+      "secondary": "Go back"
+    },
+    "unauthorized": {
+      "title": "Please sign in first",
+      "desc": "This page is only available to signed-in users. We'll bring you back to where you were after signing in.",
+      "primary": "Sign in",
+      "secondary": "Back to Home"
+    },
+    "forbidden": {
+      "title": "You don't have access",
+      "desc": "Your account doesn't have permission to view this page. If this seems wrong, contact an administrator to grant access.",
+      "primary": "Back to Home",
+      "secondary": "Go back"
+    },
+    "badGateway": {
+      "title": "Connection interrupted",
+      "desc": "The gateway could not get a valid response from the upstream server. This is usually temporary — please try again shortly.",
+      "primary": "Reload",
+      "secondary": "Back to Home"
+    },
+    "serviceUnavailable": {
+      "title": "Service under maintenance",
+      "desc": "The server is being upgraded or maintained and can't handle requests right now. Please check back in a moment.",
+      "primary": "Reload",
+      "secondary": "Back to Home"
+    },
+    "gatewayTimeout": {
+      "title": "The request timed out",
+      "desc": "The server did not respond in time. Please try again later, or check your network connection.",
+      "primary": "Reload",
+      "secondary": "Back to Home"
+    },
+    "footnote": "If this keeps happening, try again later or contact the site administrator."
+  }
+}

@@ -1,3 +1,4 @@
+import { wsBaseUrl } from '@/config'
 import { getToken } from './storage'
 
 class WebSocketService {
@@ -29,8 +30,7 @@ class WebSocketService {
 
     this.userId = userId
 
-    const baseURL = import.meta.env.VITE_API_WS_URL || import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'ws://localhost:8080'
-    this.url = `${baseURL}/ws?token=${encodeURIComponent(token)}`
+    this.url = `${wsBaseUrl}/ws?token=${encodeURIComponent(token)}`
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       console.log('[WebSocket] Already connected')

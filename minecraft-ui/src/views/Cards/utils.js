@@ -1,8 +1,10 @@
+import { apiBaseUrl } from '@/config'
+
 /**
  * 旅行卡片展示工具函数
  */
 
-const BACKEND_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+const BACKEND_BASE = apiBaseUrl
 
 /**
  * 规范化图片 URL：

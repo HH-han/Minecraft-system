@@ -81,6 +81,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { ChatDotRound, EditPen, Picture, Pointer, Star, View } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
+import { apiBaseUrl } from '@/config'
 import { deleteNote, getMyNotes } from '@/api/travelNote'
 import { useAuthStore } from '@/stores/auth'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
@@ -94,7 +95,7 @@ const notes = ref([])
 const total = ref(0)
 const query = reactive({ pageNum: 1, pageSize: 10 })
 
-const BACKEND_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+const BACKEND_BASE = apiBaseUrl
 // 记录加载失败的封面，回退为图标占位，避免出现浏览器破图
 const failedCovers = ref(new Set())
 

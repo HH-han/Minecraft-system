@@ -1,0 +1,3 @@
+2026-10-03 23:35:33.818 [http-nio-8080-exec-8] INFO  c.m.service.impl.PaymentServiceImpl - 支付成功，订单ID：66，支付编号：PAY17910417338024351
+2026-10-03 23:35:33.828 [http-nio-8080-exec-8] INFO  c.m.service.impl.PaymentServiceImpl - 订单状态更新成功，订单ID：66
+2026-10-03 23:35:33.848 [http-nio-8080-exec-8] INFO  c.m.service.impl.PaymentServiceImpl - 用户积分添加成功，用户ID：15，积分：38

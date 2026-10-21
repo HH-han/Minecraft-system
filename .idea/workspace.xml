@@ -4,48 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="会员系统更新">
-      <change afterPath="$PROJECT_DIR$/Minecraft/document/pay.md" afterDir="false" />
+    <list default="true" id="d25d52a2-ec97-439c-9cc4-5746732f0ab7" name="更改" comment="安卓im更新">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Minecraft-system.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Minecraft-system2.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/MinecraftApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/MinecraftApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/common/PaymentMethod.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/AfterSaleAdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/AfterSaleAdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/BookingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/BookingController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/MemberController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/controller/PaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/Payment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/entity/RefundOrder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/enums/PaymentStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/PaymentMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/mapper/RefundOrderMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/BookingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/BookingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/MemberService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/MemberService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/PaymentService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/RefundService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/RefundService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/AfterSaleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/AfterSaleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/BookingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/BookingServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/PaymentServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/RailwayOrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/RailwayOrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/RefundServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/service/impl/RefundServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/config/CaptchaResourceConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/java/com/minecraft/config/CaptchaResourceConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/application-dev.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/mapper/PaymentMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minecraft/src/main/resources/static/sql/db_minecraft.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Minecraft/src/main/resources/static/sql/db_minecraft.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-error.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-error.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-mapper.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend-service.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend-service.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.html" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/tourism-backend.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/tourism-backend.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/travel/payment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/api/management/travel/payment.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/en-US/travel.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/en-US/travel.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/zh-CN/travel.json" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/locales/langs/zh-CN/travel.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/router/routes/modules/travel_management.ts" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/router/routes/modules/travel_management.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/payment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/src/views/travel_management/payment.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/api/booking.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/api/booking.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/api/payment.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/api/payment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/components/Payment/PayPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/Predetermined.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/payment/components/Predetermined.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/.env.production" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-admin-main/apps/web-antdv-next/.env.production" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/.env.development" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/.env.production" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/utils/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/utils/request.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/utils/sse.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/utils/sse.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/utils/websocket.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/utils/websocket.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Cards/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/401.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/401.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/403.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/403.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/404.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/404.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/502.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/502.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/503.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/503.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/504.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/Errors/504.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/EmojiPanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/EmojiPanel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/MessageList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/ImChat/components/MessageList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/src/views/TravelNote/mine.vue" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/src/views/TravelNote/mine.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minecraft-ui/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/minecraft-ui/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +47,14 @@
         <option value="bolan &lt;2560177364@qq.com&gt;" />
       </list>
     </option>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -221,86 +217,8 @@
       <workItem from="1790931344912" duration="4005000" />
       <workItem from="1791041472791" duration="1532000" />
       <workItem from="1791823790067" duration="744000" />
-    </task>
-    <task id="LOCAL-00110" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785074655533</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1785074655533</updated>
-    </task>
-    <task id="LOCAL-00111" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785074719850</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1785074719850</updated>
-    </task>
-    <task id="LOCAL-00112" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785085831006</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
-      <option name="project" value="LOCAL" />
-      <updated>1785085831006</updated>
-    </task>
-    <task id="LOCAL-00113" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785513987013</created>
-      <option name="number" value="00113" />
-      <option name="presentableId" value="LOCAL-00113" />
-      <option name="project" value="LOCAL" />
-      <updated>1785513987013</updated>
-    </task>
-    <task id="LOCAL-00114" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785600259858</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
-      <option name="project" value="LOCAL" />
-      <updated>1785600259858</updated>
-    </task>
-    <task id="LOCAL-00115" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785853764437</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
-      <option name="project" value="LOCAL" />
-      <updated>1785853764437</updated>
-    </task>
-    <task id="LOCAL-00116" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785855030542</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1785855030542</updated>
-    </task>
-    <task id="LOCAL-00117" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785855052003</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1785855052003</updated>
-    </task>
-    <task id="LOCAL-00118" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785855898572</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1785855898572</updated>
-    </task>
-    <task id="LOCAL-00119" summary="Minecraft-system">
-      <option name="closed" value="true" />
-      <created>1785856225066</created>
-      <option name="number" value="00119" />
-      <option name="presentableId" value="LOCAL-00119" />
-      <option name="project" value="LOCAL" />
-      <updated>1785856225066</updated>
+      <workItem from="1792508867870" duration="4036000" />
+      <workItem from="1792588757951" duration="9663000" />
     </task>
     <task id="LOCAL-00120" summary="Minecraft-system">
       <option name="closed" value="true" />
@@ -614,7 +532,87 @@
       <option name="project" value="LOCAL" />
       <updated>1792338354967</updated>
     </task>
-    <option name="localTasksCounter" value="159" />
+    <task id="LOCAL-00159" summary="会员系统更新">
+      <option name="closed" value="true" />
+      <created>1792508912714</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1792508912715</updated>
+    </task>
+    <task id="LOCAL-00160" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792509067045</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1792509067045</updated>
+    </task>
+    <task id="LOCAL-00161" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792509221901</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1792509221901</updated>
+    </task>
+    <task id="LOCAL-00162" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792509729261</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1792509729261</updated>
+    </task>
+    <task id="LOCAL-00163" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792510081860</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1792510081860</updated>
+    </task>
+    <task id="LOCAL-00164" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792510377660</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1792510377660</updated>
+    </task>
+    <task id="LOCAL-00165" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792512011955</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1792512011955</updated>
+    </task>
+    <task id="LOCAL-00166" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792512592074</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1792512592074</updated>
+    </task>
+    <task id="LOCAL-00167" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792513125660</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1792513125660</updated>
+    </task>
+    <task id="LOCAL-00168" summary="安卓im更新">
+      <option name="closed" value="true" />
+      <created>1792513427891</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1792513427891</updated>
+    </task>
+    <option name="localTasksCounter" value="169" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -627,7 +625,8 @@
     <MESSAGE value="页面主题切换/搜索框ui优化" />
     <MESSAGE value="全局主题切换" />
     <MESSAGE value="会员系统更新" />
-    <option name="LAST_COMMIT_MESSAGE" value="会员系统更新" />
+    <MESSAGE value="安卓im更新" />
+    <option name="LAST_COMMIT_MESSAGE" value="安卓im更新" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
 </project>

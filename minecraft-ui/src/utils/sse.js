@@ -1,4 +1,5 @@
 import { ElNotification } from 'element-plus'
+import { apiBaseUrl } from '@/config'
 import { useRefreshStore } from '@/stores/refreshStore'
 
 /**
@@ -15,10 +16,9 @@ let eventSource = null
 let reconnectTimer = null
 
 function buildUrl() {
-  const base = import.meta.env.VITE_API_BASE_URL || ''
   const token = localStorage.getItem('token')
   const query = token ? `?token=${encodeURIComponent(token)}` : ''
-  return `${base}/api/realtime/sse${query}`
+  return `${apiBaseUrl}/api/realtime/sse${query}`
 }
 
 /**
