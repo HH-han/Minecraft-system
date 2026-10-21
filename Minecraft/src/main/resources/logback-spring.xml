@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- 日志文件输出路径 -->
-    <property name="LOG_PATH" value="logs"/>
+    <!-- 日志文件输出路径（取自 application.yml 的 logging.file.path，默认 logs） -->
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="logs"/>
     <!-- 应用名称 -->
     <property name="APP_NAME" value="tourism-backend"/>
     <!-- 日志输出格式 -->

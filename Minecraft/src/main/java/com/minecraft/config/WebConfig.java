@@ -4,6 +4,7 @@ import com.minecraft.handler.DataChangeBroadcastInterceptor;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -11,11 +12,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -23,6 +24,28 @@ import java.nio.file.Paths;
 public class WebConfig implements WebMvcConfigurer {
 
     private final DataChangeBroadcastInterceptor dataChangeBroadcastInterceptor;
+
+    /** 图片上传目录（与 application.yml 的 image.upload 配置保持一致） */
+    @Value("${image.upload.windows-dir}")
+    private String windowsUploadDir;
+
+    @Value("${image.upload.unix-dir}")
+    private String unixUploadDir;
+
+    /** 图片访问URL前缀（与 application.yml 的 image.upload 配置保持一致） */
+    @Value("${image.upload.windows-url}")
+    private String windowsBaseUrl;
+
+    @Value("${image.upload.unix-url}")
+    private String unixBaseUrl;
+
+    /** 历史图片URL前缀（逗号分隔，兼容旧数据，来自 application.yml） */
+    @Value("#{'${image.upload.legacy-url-prefixes:}'.split(',')}")
+    private List<String> legacyUrlPrefixes;
+
+    /** 日志目录（与 logback-spring.xml 共用的 logging.file.path） */
+    @Value("${logging.file.path:logs}")
+    private String logDir;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -42,39 +65,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
-        // 自动检测操作系统
+        // 图片存储目录由 application.yml 的 image.upload.{windows,unix}-dir 统一配置
         String os = System.getProperty("os.name").toLowerCase();
-
-        Path imagePath = null;
-
-        // Windows 系统配置
-        if (os.contains("win")) {
-            // 检查D盘是否存在
-            File dDrive = new File("D:/");
-            if (dDrive.exists()) {
-                imagePath = Paths.get("D:/Image/");
-                createDirectoryIfNotExists(imagePath);
-                log.info("使用目录: {}", imagePath);
-            } else {
-                // 如果D盘不存在，使用用户主目录下的images文件夹
-                String userHome = System.getProperty("user.home");
-                imagePath = Paths.get(userHome, "images");
-                createDirectoryIfNotExists(imagePath);
-                log.info("创建的目录: {}", imagePath);
-            }
-        }
-        // Linux/Mac 系统配置
-        else {
-            // Linux系统直接使用/tmp/images目录
-            imagePath = Paths.get("/tmp/images/");
-            try {
-                createDirectoryIfNotExists(imagePath);
-                log.info("使用目录: {}", imagePath);
-            } catch (Exception e) {
-                log.error("无法创建目录: {}", imagePath, e);
-                throw new RuntimeException("无法创建图片存储目录: " + imagePath, e);
-            }
-        }
+        Path imagePath = Paths.get(os.contains("win") ? windowsUploadDir : unixUploadDir);
+        createDirectoryIfNotExists(imagePath);
+        log.info("使用目录: {}", imagePath);
 
         // 确保路径使用正斜杠，并且以斜杠结尾
         String resourceLocation = "file:" + imagePath.toString().replace("\\", "/");
@@ -82,16 +77,19 @@ public class WebConfig implements WebMvcConfigurer {
             resourceLocation += "/";
         }
 
-        registry.addResourceHandler("/upload/**")
+        // 图片访问映射：URL前缀由 image.upload.{windows,unix}-url 配置决定
+        String baseUrl = normalizeUrlPrefix(os.contains("win") ? windowsBaseUrl : unixBaseUrl);
+        registry.addResourceHandler(baseUrl + "**")
                 .addResourceLocations(resourceLocation);
 
-        // 添加对/tmp/images路径的映射，确保Linux系统能正常访问图片
-        registry.addResourceHandler("/tmp/images/**")
-                .addResourceLocations(resourceLocation);
-
-        // 添加对D:/Image路径的直接映射，确保Windows系统能正常访问图片
-        registry.addResourceHandler("/Image/**")
-                .addResourceLocations(resourceLocation);
+        // 历史图片URL前缀兼容映射（同样指向当前上传目录）
+        for (String legacy : legacyUrlPrefixes) {
+            String prefix = normalizeUrlPrefix(legacy);
+            if (!prefix.isEmpty() && !prefix.equals(baseUrl)) {
+                registry.addResourceHandler(prefix + "**")
+                        .addResourceLocations(resourceLocation);
+            }
+        }
 
         // 添加类路径下的静态资源映射（可选）
         registry.addResourceHandler("/static/**")
@@ -101,8 +99,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/.well-known/**")
                 .addResourceLocations("classpath:static/.well-known/");
 
-        // 允许访问 logs 目录下的文件
-        Path logsPath = Paths.get(System.getProperty("user.dir"), "logs");
+        // 允许访问日志目录下的文件（目录由 logging.file.path 配置，与 logback 一致）
+        Path logsPath = Paths.get(logDir);
+        if (!logsPath.isAbsolute()) {
+            logsPath = Paths.get(System.getProperty("user.dir")).resolve(logsPath);
+        }
         createDirectoryIfNotExists(logsPath);
         String logsLocation = "file:" + logsPath.toString().replace("\\", "/") + "/";
         registry.addResourceHandler("/logs/**")
@@ -124,5 +125,23 @@ public class WebConfig implements WebMvcConfigurer {
                 throw new RuntimeException("创建目录失败: " + path, e);
             }
         }
+    }
+
+    /** 规范化URL前缀：去空格，保证以 / 开头并以 / 结尾；空白输入返回空串 */
+    private String normalizeUrlPrefix(String prefix) {
+        if (prefix == null) {
+            return "";
+        }
+        String p = prefix.trim();
+        if (p.isEmpty()) {
+            return "";
+        }
+        if (!p.startsWith("/")) {
+            p = "/" + p;
+        }
+        if (!p.endsWith("/")) {
+            p = p + "/";
+        }
+        return p;
     }
 }

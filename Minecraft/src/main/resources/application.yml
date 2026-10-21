@@ -127,12 +127,14 @@ image:
   upload:
     # Windows系统上传目录
     windows-dir: D:/Image/
-    # Linux/Mac系统上传目录
-    unix-dir: /tmp/images/
-    # Windows系统访问URL
-    windows-url: http://localhost:8080/upload/
+    # Linux/Mac系统上传目录（勿用/tmp，系统会定期清理）
+    unix-dir: /www/wwwroot/springboot/upload/images/
+    # Windows系统访问URL（相对路径，由前端当前域名拼接，经nginx代理到后端）
+    windows-url: /upload/
     # Linux/Mac系统访问URL
-    unix-url: http://43.142.153.247:8888/tmp/images/
+    unix-url: /upload/
+    # 历史图片URL前缀兼容映射（逗号分隔，同样指向上传目录，留空则不映射）
+    legacy-url-prefixes: /tmp/images/,/Image/
     # 水印文字（作用于JPEG/PNG，留空表示不添加水印）
     watermark-text: ""
 
@@ -157,6 +159,9 @@ management:
         include: metrics,httpexchanges
 
 logging:
+  # 日志文件目录（logback-spring.xml 与 WebConfig 的 /logs/** 映射共用，相对路径基于应用工作目录）
+  file:
+    path: logs
   level:
     com.minecraft: debug
     org.springframework: info
@@ -181,6 +186,8 @@ captcha:
     windows: G:/slidingverification
     # Linux/Mac 系统（服务器部署），需将验证码图片上传到此目录
     unix: /data/slidingverification
+    # Linux 候选回退目录（按顺序探测，使用第一个含有图片的目录，留空则不回退）
+    fallbacks: /www/server/data/slidingverification,/tmp/slidingverification,/opt/slidingverification
 
 # 聚合支付网关
 pay:

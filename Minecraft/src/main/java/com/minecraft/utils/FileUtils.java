@@ -42,30 +42,10 @@ public class FileUtils {
 
     private Path getUploadPath() {
         String os = System.getProperty("os.name").toLowerCase();
-        Path imagePath = null;
-
-        if (os.contains("win")) {
-            File dDrive = new File("D:/");
-            if (dDrive.exists()) {
-                imagePath = Paths.get(windowsUploadDir);
-                createDirectoryIfNotExists(imagePath);
-                log.info("使用目录: {}", imagePath);
-            } else {
-                String userHome = System.getProperty("user.home");
-                imagePath = Paths.get(userHome, "images");
-                createDirectoryIfNotExists(imagePath);
-                log.info("创建的目录: {}", imagePath);
-            }
-        } else {
-            imagePath = Paths.get(unixUploadDir);
-            try {
-                createDirectoryIfNotExists(imagePath);
-                log.info("使用目录: {}", imagePath);
-            } catch (Exception e) {
-                log.error("无法创建目录: {}", imagePath, e);
-                throw new RuntimeException("无法创建图片存储目录: " + imagePath, e);
-            }
-        }
+        String dir = os.contains("win") ? windowsUploadDir : unixUploadDir;
+        Path imagePath = Paths.get(dir);
+        createDirectoryIfNotExists(imagePath);
+        log.info("使用目录: {}", imagePath);
         return imagePath;
     }
 
@@ -142,6 +122,9 @@ public class FileUtils {
             String fileName = filePath;
             if (filePath.contains("/upload/")) {
                 fileName = filePath.substring(filePath.lastIndexOf("/upload/") + "/upload/".length());
+            } else if (filePath.contains("/tmp/images/")) {
+                // 兼容历史数据中的旧路径前缀
+                fileName = filePath.substring(filePath.lastIndexOf("/tmp/images/") + "/tmp/images/".length());
             } else if (filePath.contains(baseUrl)) {
                 fileName = filePath.substring(filePath.lastIndexOf(baseUrl) + baseUrl.length());
             }

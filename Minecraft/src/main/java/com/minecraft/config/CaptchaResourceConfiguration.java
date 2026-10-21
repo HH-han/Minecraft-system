@@ -20,11 +20,15 @@ public class CaptchaResourceConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(CaptchaResourceConfiguration.class);
 
-    @Value("${captcha.image-dir.windows:G:/slidingverification}")
+    @Value("${captcha.image-dir.windows}")
     private String windowsImageDir;
 
-    @Value("${captcha.image-dir.unix:/www/server/data/slidingverification}")
+    @Value("${captcha.image-dir.unix}")
     private String unixImageDir;
+
+    /** Linux 候选回退目录（逗号分隔，来自 application.yml） */
+    @Value("#{'${captcha.image-dir.fallbacks:}'.split(',')}")
+    private List<String> fallbackDirs;
 
     @Bean
     public ResourceStore resourceStore() {
@@ -71,18 +75,17 @@ public class CaptchaResourceConfiguration {
     }
 
     /**
-     * 构建候选目录列表：优先使用配置目录，其次尝试常见部署路径
+     * 构建候选目录列表：优先使用配置目录，其次使用配置的回退目录
      */
     private List<String> buildCandidateDirs(String configuredDir) {
         List<String> dirs = new ArrayList<>();
         dirs.add(configuredDir);
         String osName = System.getProperty("os.name", "").toLowerCase();
-        if (!osName.contains("win")) {
-            // Linux 常见部署路径回退
-            dirs.add("/www/server/data/slidingverification");
-            dirs.add("/data/slidingverification");
-            dirs.add("/tmp/slidingverification");
-            dirs.add("/opt/slidingverification");
+        if (!osName.contains("win") && fallbackDirs != null) {
+            fallbackDirs.stream()
+                    .map(String::trim)
+                    .filter(dir -> !dir.isEmpty())
+                    .forEach(dirs::add);
         }
         return dirs;
     }
