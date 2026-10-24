@@ -133,6 +133,9 @@ image:
     windows-url: /upload/
     # Linux/Mac系统访问URL
     unix-url: /upload/
+    # 返回给前端的URL服务器前缀（留空=返回相对路径，浏览器自动拼接当前域名，请求经Nginx转发到后端；
+    # 仅当需要绕过Nginx直连后端时才填写，可用环境变量 IMAGE_URL_BASE 覆盖）
+    url-base: ${IMAGE_URL_BASE:}
     # 历史图片URL前缀兼容映射（逗号分隔，同样指向上传目录，留空则不映射）
     legacy-url-prefixes: /tmp/images/,/Image/
     # 水印文字（作用于JPEG/PNG，留空表示不添加水印）
@@ -185,9 +188,9 @@ captcha:
     # Windows 系统（本地开发）
     windows: G:/slidingverification
     # Linux/Mac 系统（服务器部署），需将验证码图片上传到此目录
-    unix: /data/slidingverification
+    unix: http://43.142.153.247/data/slidingverification
     # Linux 候选回退目录（按顺序探测，使用第一个含有图片的目录，留空则不回退）
-    fallbacks: /www/server/data/slidingverification,/tmp/slidingverification,/opt/slidingverification
+    fallbacks: http://43.142.153.247/www/server/data/slidingverification,http://43.142.153.247/tmp/slidingverification,http://43.142.153.247/opt/slidingverification
 
 # 聚合支付网关
 pay:

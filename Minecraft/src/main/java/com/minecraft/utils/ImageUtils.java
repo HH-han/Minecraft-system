@@ -54,6 +54,8 @@ public class ImageUtils {
     private final String unixUploadDir;
     private final String windowsBaseUrl;
     private final String unixBaseUrl;
+    /** 返回URL的服务器前缀（可为空，空则返回相对路径） */
+    private final String urlBase;
     /** 水印文字，留空表示不加水印 */
     private final String watermarkText;
 
@@ -62,11 +64,15 @@ public class ImageUtils {
             @Value("${image.upload.unix-dir}") String unixUploadDir,
             @Value("${image.upload.windows-url}") String windowsBaseUrl,
             @Value("${image.upload.unix-url}") String unixBaseUrl,
+            @Value("${image.upload.url-base:}") String urlBase,
             @Value("${image.upload.watermark-text:}") String watermarkText) {
         this.windowsUploadDir = windowsUploadDir;
         this.unixUploadDir = unixUploadDir;
         this.windowsBaseUrl = windowsBaseUrl;
         this.unixBaseUrl = unixBaseUrl;
+        // 去掉末尾斜杠，避免与路径前缀拼接时出现双斜杠
+        this.urlBase = urlBase != null && urlBase.endsWith("/")
+                ? urlBase.substring(0, urlBase.length() - 1) : urlBase;
         this.watermarkText = watermarkText;
     }
 
@@ -75,7 +81,8 @@ public class ImageUtils {
     }
 
     private String getBaseUrl() {
-        return System.getProperty("os.name").toLowerCase().contains("win") ? windowsBaseUrl : unixBaseUrl;
+        String path = System.getProperty("os.name").toLowerCase().contains("win") ? windowsBaseUrl : unixBaseUrl;
+        return (urlBase == null ? "" : urlBase) + path;
     }
 
     public void deleteImage(String imageUrl) throws Exception {

@@ -21,6 +21,8 @@ public class FileUtils {
     private final String unixUploadDir;
     private final String windowsBaseUrl;
     private final String unixBaseUrl;
+    /** 返回URL的服务器前缀（可为空，空则返回相对路径） */
+    private final String urlBase;
 
     private Path uploadPath;
     private String baseUrl;
@@ -29,11 +31,15 @@ public class FileUtils {
             @Value("${image.upload.windows-dir}") String windowsUploadDir,
             @Value("${image.upload.unix-dir}") String unixUploadDir,
             @Value("${image.upload.windows-url}") String windowsBaseUrl,
-            @Value("${image.upload.unix-url}") String unixBaseUrl) {
+            @Value("${image.upload.unix-url}") String unixBaseUrl,
+            @Value("${image.upload.url-base:}") String urlBase) {
         this.windowsUploadDir = windowsUploadDir;
         this.unixUploadDir = unixUploadDir;
         this.windowsBaseUrl = windowsBaseUrl;
         this.unixBaseUrl = unixBaseUrl;
+        // 去掉末尾斜杠，避免与路径前缀拼接时出现双斜杠
+        this.urlBase = urlBase != null && urlBase.endsWith("/")
+                ? urlBase.substring(0, urlBase.length() - 1) : urlBase;
         this.uploadPath = getUploadPath();
         this.baseUrl = getBaseUrl();
         log.info("文件上传路径初始化: {}", uploadPath);
@@ -51,7 +57,8 @@ public class FileUtils {
 
     private String getBaseUrl() {
         String os = System.getProperty("os.name").toLowerCase();
-        return os.contains("win") ? windowsBaseUrl : unixBaseUrl;
+        String path = os.contains("win") ? windowsBaseUrl : unixBaseUrl;
+        return (urlBase == null ? "" : urlBase) + path;
     }
 
     public String uploadFile(MultipartFile file) throws IOException {
