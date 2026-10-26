@@ -664,15 +664,12 @@ async function confirmCropperAvatar() {
     }
 
     const blob = base64ToBlob(base64, 'image/jpeg');
-    const uploadPayload = new FormData();
-    uploadPayload.append(
-      'file',
-      blob,
-      `avatar-${Date.now()}.jpg`,
-    );
+    const avatarFile = new File([blob], `avatar-${Date.now()}.jpg`, {
+      type: 'image/jpeg',
+    });
 
     cropperUploading.value = true;
-    const res = await uploadFile(uploadPayload, '/user/upload');
+    const res = await uploadFile(avatarFile, '/user/upload');
 
     // requestClient 解包成功响应后 data 即 URL 字符串，这里同时兼容对象形式
     const relativePath =
