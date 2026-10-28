@@ -15,6 +15,8 @@ export default {
   comment: 'Comment',
   replyTo: 'Reply to {name}: ',
   replyPrefix: 'Reply',
+  commentColon: ': ',
+  likeSeparator: ', ',
   like: 'Like',
   unlike: 'Unlike',
   deleteConfirm: 'Delete this moment?',

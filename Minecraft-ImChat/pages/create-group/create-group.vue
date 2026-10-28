@@ -226,7 +226,7 @@ export default {
   bottom: -8rpx;
   width: 48rpx;
   height: 48rpx;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background-image: var(--accent-gradient);
   box-shadow: var(--shadow-sm);
   display: flex;

@@ -2,7 +2,11 @@
  * 时间与文案格式化工具（跨页面共享，避免各页面重复实现）
  */
 
-const WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+import { t } from '../locales/index.js'
+
+function weekdayName(index) {
+  return t(`common.weekday${index}`)
+}
 
 function toDate(value) {
   if (!value && value !== 0) return null
@@ -37,10 +41,10 @@ export function formatListTime(value) {
 
   const yesterday = new Date(now)
   yesterday.setDate(now.getDate() - 1)
-  if (isSameDay(date, yesterday)) return '昨天'
+  if (isSameDay(date, yesterday)) return t('common.yesterday')
 
   const diffDays = Math.floor((now - date) / 86400000)
-  if (diffDays > 0 && diffDays < 7) return WEEKDAYS[date.getDay()]
+  if (diffDays > 0 && diffDays < 7) return weekdayName(date.getDay())
 
   return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
 }
@@ -58,10 +62,10 @@ export function formatChatTime(value) {
 
   const yesterday = new Date(now)
   yesterday.setDate(now.getDate() - 1)
-  if (isSameDay(date, yesterday)) return `昨天 ${time}`
+  if (isSameDay(date, yesterday)) return `${t('common.yesterday')} ${time}`
 
   const diffDays = Math.floor((now - date) / 86400000)
-  if (diffDays > 0 && diffDays < 7) return `${WEEKDAYS[date.getDay()]} ${time}`
+  if (diffDays > 0 && diffDays < 7) return `${weekdayName(date.getDay())} ${time}`
 
   return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${time}`
 }
@@ -73,11 +77,11 @@ export function formatRelativeTime(value) {
   const date = toDate(value)
   if (!date) return ''
   const diff = Date.now() - date.getTime()
-  if (diff < 60000) return '刚刚'
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`
-  if (diff < 604800000) return `${Math.floor(diff / 86400000)}天前`
-  return `${date.getMonth() + 1}月${date.getDate()}日`
+  if (diff < 60000) return t('common.justNow')
+  if (diff < 3600000) return t('common.minutesAgo', { count: Math.floor(diff / 60000) })
+  if (diff < 86400000) return t('common.hoursAgo', { count: Math.floor(diff / 3600000) })
+  if (diff < 604800000) return t('common.daysAgo', { count: Math.floor(diff / 86400000) })
+  return t('common.monthDay', { month: date.getMonth() + 1, day: date.getDate() })
 }
 
 /**
@@ -86,11 +90,11 @@ export function formatRelativeTime(value) {
 export function previewText(message) {
   if (!message) return ''
   const type = String(message.messageType || 'text').toLowerCase()
-  if (type === 'image') return '[图片]'
-  if (type === 'file') return '[文件]'
-  if (type === 'emoji') return '[表情]'
-  if (type === 'voice') return '[语音]'
-  if (type === 'video') return '[视频]'
+  if (type === 'image') return t('common.previewImage')
+  if (type === 'file') return t('common.previewFile')
+  if (type === 'emoji') return t('common.previewEmoji')
+  if (type === 'voice') return t('common.previewVoice')
+  if (type === 'video') return t('common.previewVideo')
   return message.content || ''
 }
 

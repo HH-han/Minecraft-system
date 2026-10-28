@@ -30,5 +30,20 @@ export default {
   inputPlaceholder: '发消息…',
   minutesAgo: '{count}分钟前',
   hoursAgo: '{count}小时前',
-  daysAgo: '{count}天前'
+  daysAgo: '{count}天前',
+  yesterday: '昨天',
+  justNow: '刚刚',
+  monthDay: '{month}月{day}日',
+  weekday0: '星期日',
+  weekday1: '星期一',
+  weekday2: '星期二',
+  weekday3: '星期三',
+  weekday4: '星期四',
+  weekday5: '星期五',
+  weekday6: '星期六',
+  previewImage: '[图片]',
+  previewFile: '[文件]',
+  previewEmoji: '[表情]',
+  previewVoice: '[语音]',
+  previewVideo: '[视频]'
 }

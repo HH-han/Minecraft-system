@@ -15,6 +15,8 @@ export default {
   comment: '评论',
   replyTo: '回复 {name}：',
   replyPrefix: '回复',
+  commentColon: '：',
+  likeSeparator: '，',
   like: '赞',
   unlike: '取消赞',
   deleteConfirm: '确定删除这条动态吗？',

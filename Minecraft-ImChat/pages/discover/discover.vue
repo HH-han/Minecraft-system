@@ -194,10 +194,13 @@ export default {
   position: relative;
   margin: 16rpx 24rpx 0;
   padding: 32rpx;
-  background-color: var(--bg-primary);
+  background-color: var(--glass-bg);
   background-image: linear-gradient(150deg, var(--accent-light) 0%, transparent 58%);
+  border: 1rpx solid var(--glass-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
+  backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
 }
 
 .discover-hero__glow {

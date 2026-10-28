@@ -15,84 +15,16 @@
       </view>
 
       <view class="login-panel">
-        <!-- 登录方式 tab -->
-        <view class="segmented">
-          <view
-            class="segmented__item"
-            :class="{ 'is-active': loginType === 'phone' }"
-            @click="switchLoginType('phone')"
-          >
-            <text>{{ $t('auth.tabPhone') }}</text>
-          </view>
-          <view
-            class="segmented__item"
-            :class="{ 'is-active': loginType === 'password' }"
-            @click="switchLoginType('password')"
-          >
-            <text>{{ $t('auth.tabPassword') }}</text>
-          </view>
-        </view>
-
         <!-- 表单卡片 -->
         <view class="form-card surface-card surface-card--glass">
-          <view v-if="loginType === 'phone'" class="form-body">
-            <view class="form-group">
-              <text class="form-label">{{ $t('auth.fieldPhone') }}</text>
-              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'phone' }">
-                <UiIcon name="user" :size="32" color="var(--text-tertiary)" />
-                <input
-                  class="form-input"
-                  v-model="phoneForm.phone"
-                  type="number"
-                  :placeholder="$t('auth.phPhone')"
-                  placeholder-class="form-ph"
-                  maxlength="11"
-                  @focus="onFieldFocus('phone')"
-                  @blur="onFieldBlur"
-                />
-              </view>
-            </view>
-
-            <view class="form-group">
-              <text class="form-label">{{ $t('auth.fieldCode') }}</text>
-              <view class="code-row">
-                <view
-                  class="input-wrap code-row__input"
-                  :class="{ 'is-focus': focusedField === 'code' }"
-                >
-                  <UiIcon name="shield" :size="32" color="var(--text-tertiary)" />
-                  <input
-                    class="form-input"
-                    v-model="phoneForm.code"
-                    type="number"
-                    :placeholder="$t('auth.phCode')"
-                    placeholder-class="form-ph"
-                    maxlength="6"
-                    @focus="onFieldFocus('code')"
-                    @blur="onFieldBlur"
-                  />
-                </view>
-                <view
-                  class="code-btn"
-                  :class="{ 'is-disabled': phoneForm.countdown > 0 }"
-                  hover-class="code-btn--hover"
-                  hover-stay-time="60"
-                  @click="sendCode"
-                >
-                  <text>{{ phoneForm.countdown > 0 ? `${phoneForm.countdown}s` : $t('auth.getCode') }}</text>
-                </view>
-              </view>
-            </view>
-          </view>
-
-          <view v-else class="form-body">
+          <view class="form-body">
             <view class="form-group">
               <text class="form-label">{{ $t('auth.fieldAccount') }}</text>
               <view class="input-wrap" :class="{ 'is-focus': focusedField === 'account' }">
                 <UiIcon name="at" :size="32" color="var(--text-tertiary)" />
                 <input
                   class="form-input"
-                  v-model="passwordForm.account"
+                  v-model="loginForm.account"
                   :placeholder="$t('auth.phAccount')"
                   placeholder-class="form-ph"
                   @focus="onFieldFocus('account')"
@@ -107,7 +39,7 @@
                 <UiIcon name="lock" :size="32" color="var(--text-tertiary)" />
                 <input
                   class="form-input pwd-row__input"
-                  v-model="passwordForm.password"
+                  v-model="loginForm.password"
                   :type="showPassword ? 'text' : 'password'"
                   :placeholder="$t('auth.phPassword')"
                   placeholder-class="form-ph"
@@ -199,47 +131,37 @@
 import CustomNavBar from '../../components/CustomNavBar.vue'
 import UiIcon from '../../components/Icon.vue'
 import config from '../../config/index.js'
-import { auth, userApi } from '../../utils/auth.js'
-import wsService from '../../utils/websocket.js'
+import { auth } from '../../utils/auth.js'
 
 export default {
   components: { CustomNavBar, UiIcon },
   data() {
     return {
       appTitle: config.APP_TITLE,
-      loginType: 'phone',
       showPassword: false,
       rememberMe: false,
       isLoading: false,
       focusedField: '',
 
-      phoneForm: {
-        phone: '',
-        code: '',
-        countdown: 0
-      },
-
-      passwordForm: {
+      loginForm: {
         account: '',
         password: ''
-      },
-
-      countdownTimer: null
+      }
     }
   },
 
   computed: {
     canSubmit() {
-      if (this.loginType === 'phone') {
-        return this.phoneForm.phone.length === 11 && this.phoneForm.code.length >= 4
-      }
-      return this.passwordForm.account.trim().length > 0 && this.passwordForm.password.length >= 6
+      return this.loginForm.account.trim().length > 0 && this.loginForm.password.length >= 6
     }
   },
 
-  onUnload() {
-    if (this.countdownTimer) {
-      clearInterval(this.countdownTimer)
+  onLoad() {
+    // 加载记住的账号
+    const rememberedAccount = auth.getRememberedAccount()
+    if (rememberedAccount) {
+      this.loginForm.account = rememberedAccount
+      this.rememberMe = true
     }
   },
 
@@ -256,10 +178,6 @@ export default {
       uni.navigateTo({ url: '/pages/forgot-password/forgot-password' })
     },
 
-    switchLoginType(type) {
-      this.loginType = type
-    },
-
     onFieldFocus(field) {
       this.focusedField = field
     },
@@ -268,56 +186,19 @@ export default {
       this.focusedField = ''
     },
 
-    async sendCode() {
-      const phoneRegex = /^1\d{10}$/
-      if (!phoneRegex.test(this.phoneForm.phone)) {
-        uni.showToast({ title: this.$t('auth.invalidPhone'), icon: 'none' })
-        return
-      }
-
-      if (this.phoneForm.countdown > 0) return
-
-      try {
-        const res = await auth.authApi.sendResetCode(this.phoneForm.phone)
-        if (res.code === 200) {
-          uni.showToast({ title: this.$t('auth.codeSent'), icon: 'success' })
-          this.startCountdown()
-        } else {
-          uni.showToast({ title: res.message || this.$t('auth.sendFailed'), icon: 'none' })
-        }
-      } catch (e) {
-        uni.showToast({ title: this.$t('auth.sendFailedRetry'), icon: 'none' })
-      }
-    },
-
-    startCountdown() {
-      this.phoneForm.countdown = 60
-      this.countdownTimer = setInterval(() => {
-        this.phoneForm.countdown--
-        if (this.phoneForm.countdown <= 0) {
-          clearInterval(this.countdownTimer)
-        }
-      }, 1000)
-    },
-
     async handleLogin() {
       if (this.isLoading || !this.canSubmit) return
 
       this.isLoading = true
 
       try {
-        if (this.loginType === 'phone') {
-          await auth.login({
-            phone: this.phoneForm.phone,
-            code: this.phoneForm.code,
-            type: 'phone'
-          })
-        } else {
-          await auth.login({
-            account: this.passwordForm.account.trim(),
-            password: this.passwordForm.password
-          })
-        }
+        await auth.login(
+          {
+            account: this.loginForm.account.trim(),
+            password: this.loginForm.password
+          },
+          { rememberMe: this.rememberMe }
+        )
 
         uni.showToast({ title: this.$t('auth.loginSuccess'), icon: 'success' })
 
@@ -403,41 +284,6 @@ export default {
   z-index: 2;
 }
 
-/* 登录方式 */
-.segmented {
-  display: flex;
-  padding: 8rpx;
-  margin: 0 8rpx 24rpx;
-  border-radius: 999rpx;
-  background-color: var(--bg-chip);
-  border: 1rpx solid var(--border-light);
-}
-
-.segmented__item {
-  flex: 1;
-  height: 68rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999rpx;
-  transition: background-color var(--transition-fast);
-}
-
-.segmented__item text {
-  font-size: var(--font-base);
-  color: var(--text-secondary);
-}
-
-.segmented__item.is-active {
-  background-color: var(--bg-primary);
-  box-shadow: var(--shadow-sm);
-}
-
-.segmented__item.is-active text {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
 /* 表单卡片 */
 .form-card {
   padding: 40rpx 32rpx 36rpx;
@@ -493,52 +339,6 @@ export default {
 
 .form-ph {
   color: var(--text-placeholder);
-}
-
-/* 验证码 */
-.code-row {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.code-row__input {
-  flex: 1;
-  min-width: 0;
-}
-
-.code-btn {
-  flex-shrink: 0;
-  height: 92rpx;
-  padding: 0 30rpx;
-  border-radius: 999rpx;
-  background-color: var(--accent-light);
-  border: 2rpx solid var(--accent-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.code-btn--hover {
-  background-color: var(--accent-soft);
-  transform: scale(0.98);
-}
-
-.code-btn text {
-  font-size: var(--font-sm);
-  color: var(--accent-color);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.code-btn.is-disabled {
-  background-color: var(--bg-tertiary);
-  border-color: transparent;
-}
-
-.code-btn.is-disabled text {
-  color: var(--text-disabled);
 }
 
 /* 密码 */

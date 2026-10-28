@@ -583,7 +583,7 @@ export default {
   transform: translateX(-50%);
   width: 460rpx;
   height: 320rpx;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background-color: var(--accent-light);
   opacity: 0.8;
   pointer-events: none;
@@ -760,7 +760,7 @@ export default {
   width: 76rpx;
   height: 8rpx;
   margin: 16rpx auto 0;
-  border-radius: 999rpx;
+  border-radius: var(--radius-xl);
   background-color: var(--border-color);
 }
 
@@ -786,6 +786,7 @@ export default {
 .ci-sheet__body {
   padding: 16rpx 32rpx 32rpx;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -829,7 +830,7 @@ export default {
   bottom: -10rpx;
   width: 48rpx;
   height: 48rpx;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background-image: var(--accent-gradient);
   box-shadow: var(--shadow-sm);
   display: flex;

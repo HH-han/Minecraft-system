@@ -353,7 +353,7 @@ export default {
   align-items: center;
   height: 84rpx;
   padding: 0 24rpx;
-  border-radius: 999rpx;
+  border-radius: var(--radius-xl);
   background-color: var(--bg-input);
   border: 1rpx solid var(--border-light);
 }
@@ -373,7 +373,7 @@ export default {
 .search-card__clear {
   width: 34rpx;
   height: 34rpx;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background-color: var(--text-disabled);
   display: flex;
   align-items: center;

@@ -287,10 +287,12 @@ export default {
   margin: 16rpx 24rpx 0;
   padding: 0 32rpx 32rpx;
   border-radius: var(--radius-xl);
-  background-color: var(--bg-primary);
+  background-color: var(--glass-bg);
   background-image: linear-gradient(155deg, var(--accent-light) 0%, transparent 62%);
   border: 1rpx solid var(--glass-border);
   box-shadow: var(--shadow-lg);
+  backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
   transition: opacity var(--transition-fast);
 }
 

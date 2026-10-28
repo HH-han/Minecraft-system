@@ -30,5 +30,20 @@ export default {
   inputPlaceholder: 'Message…',
   minutesAgo: '{count} min ago',
   hoursAgo: '{count} h ago',
-  daysAgo: '{count} d ago'
+  daysAgo: '{count} d ago',
+  yesterday: 'Yesterday',
+  justNow: 'Just now',
+  monthDay: '{month}/{day}',
+  weekday0: 'Sunday',
+  weekday1: 'Monday',
+  weekday2: 'Tuesday',
+  weekday3: 'Wednesday',
+  weekday4: 'Thursday',
+  weekday5: 'Friday',
+  weekday6: 'Saturday',
+  previewImage: '[Image]',
+  previewFile: '[File]',
+  previewEmoji: '[Sticker]',
+  previewVoice: '[Voice]',
+  previewVideo: '[Video]'
 }

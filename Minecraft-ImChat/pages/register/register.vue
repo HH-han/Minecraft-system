@@ -23,6 +23,20 @@
 
       <view class="register-panel">
         <view class="form-card surface-card surface-card--glass">
+          <!-- 头像上传 -->
+          <view class="avatar-picker" @click="handleChooseAvatar">
+            <image
+              v-if="registerForm.avatar"
+              class="avatar-picker__img"
+              :src="registerForm.avatar"
+              mode="aspectFill"
+            />
+            <view v-else class="avatar-picker__placeholder">
+              <UiIcon name="camera" :size="44" color="var(--text-tertiary)" />
+            </view>
+            <text class="avatar-picker__text">{{ $t('auth.uploadAvatar') }}</text>
+          </view>
+
           <view class="form-body">
             <view class="form-group">
               <text class="form-label">{{ $t('auth.fieldNickname') }}</text>
@@ -35,6 +49,21 @@
                   placeholder-class="form-ph"
                   maxlength="20"
                   @focus="onFieldFocus('username')"
+                  @blur="onFieldBlur"
+                />
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldEmail') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'email' }">
+                <UiIcon name="at" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input"
+                  v-model="registerForm.email"
+                  :placeholder="$t('auth.phEmail')"
+                  placeholder-class="form-ph"
+                  @focus="onFieldFocus('email')"
                   @blur="onFieldBlur"
                 />
               </view>
@@ -58,37 +87,6 @@
             </view>
 
             <view class="form-group">
-              <text class="form-label">{{ $t('auth.fieldCode') }}</text>
-              <view class="code-row">
-                <view
-                  class="input-wrap code-row__input"
-                  :class="{ 'is-focus': focusedField === 'code' }"
-                >
-                  <UiIcon name="shield" :size="32" color="var(--text-tertiary)" />
-                  <input
-                    class="form-input"
-                    v-model="registerForm.code"
-                    type="number"
-                    :placeholder="$t('auth.phCode')"
-                    placeholder-class="form-ph"
-                    maxlength="6"
-                    @focus="onFieldFocus('code')"
-                    @blur="onFieldBlur"
-                  />
-                </view>
-                <view
-                  class="code-btn"
-                  :class="{ 'is-disabled': registerForm.countdown > 0 }"
-                  hover-class="code-btn--hover"
-                  hover-stay-time="60"
-                  @click="handleSendCode"
-                >
-                  <text>{{ registerForm.countdown > 0 ? `${registerForm.countdown}s` : $t('auth.getCode') }}</text>
-                </view>
-              </view>
-            </view>
-
-            <view class="form-group">
               <text class="form-label">{{ $t('auth.fieldPassword') }}</text>
               <view class="input-wrap" :class="{ 'is-focus': focusedField === 'password' }">
                 <UiIcon name="lock" :size="32" color="var(--text-tertiary)" />
@@ -107,6 +105,30 @@
                     name="eye"
                     :size="34"
                     :color="showPassword ? 'var(--accent-color)' : 'var(--text-tertiary)'"
+                  />
+                </view>
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldConfirmPassword') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'confirmPassword' }">
+                <UiIcon name="lock" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input pwd-input"
+                  v-model="registerForm.confirmPassword"
+                  :type="showConfirmPassword ? 'text' : 'password'"
+                  :placeholder="$t('auth.phConfirmPassword')"
+                  placeholder-class="form-ph"
+                  maxlength="20"
+                  @focus="onFieldFocus('confirmPassword')"
+                  @blur="onFieldBlur"
+                />
+                <view class="eye-btn" @click="showConfirmPassword = !showConfirmPassword">
+                  <UiIcon
+                    name="eye"
+                    :size="34"
+                    :color="showConfirmPassword ? 'var(--accent-color)' : 'var(--text-tertiary)'"
                   />
                 </view>
               </view>
@@ -154,39 +176,35 @@
 <script>
 import CustomNavBar from '../../components/CustomNavBar.vue'
 import UiIcon from '../../components/Icon.vue'
-import { register, sendCode } from '../../utils/chat-api.js'
+import { register } from '../../utils/chat-api.js'
 
 export default {
   components: { CustomNavBar, UiIcon },
   data() {
     return {
       showPassword: false,
+      showConfirmPassword: false,
       isLoading: false,
       agreed: false,
       focusedField: '',
-      countdownTimer: null,
       registerForm: {
         username: '',
+        email: '',
         phone: '',
-        code: '',
         password: '',
-        countdown: 0
+        confirmPassword: '',
+        avatar: ''
       }
     }
   },
   computed: {
     canSubmit() {
       return this.registerForm.username.trim().length > 0 &&
+        this.registerForm.email.trim().length > 0 &&
         this.registerForm.phone.length === 11 &&
-        this.registerForm.code.length >= 4 &&
         this.registerForm.password.length >= 6 &&
+        this.registerForm.confirmPassword.length > 0 &&
         this.agreed
-    }
-  },
-  onUnload() {
-    if (this.countdownTimer) {
-      clearInterval(this.countdownTimer)
-      this.countdownTimer = null
     }
   },
   methods: {
@@ -202,54 +220,97 @@ export default {
     onFieldBlur() {
       this.focusedField = ''
     },
-    async handleSendCode() {
+    handleChooseAvatar() {
+      uni.chooseImage({
+        count: 1,
+        sizeType: ['compressed'],
+        success: (res) => {
+          const tempFile = res.tempFiles && res.tempFiles[0]
+          // H5 端通过 FileReader 读取为 base64
+          if (tempFile && tempFile.file) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              this.registerForm.avatar = e.target.result
+            }
+            reader.readAsDataURL(tempFile.file)
+          } else {
+            // App / 小程序端通过文件系统读取为 base64
+            uni.getFileSystemManager().readFile({
+              filePath: res.tempFilePaths[0],
+              encoding: 'base64',
+              success: (r) => {
+                this.registerForm.avatar = 'data:image/png;base64,' + r.data
+              }
+            })
+          }
+        }
+      })
+    },
+    async handleRegister() {
+      if (this.isLoading || !this.canSubmit) return
+
+      // 昵称验证
+      const username = this.registerForm.username.trim()
+      if (!username) {
+        uni.showToast({ title: this.$t('auth.phNickname'), icon: 'none' })
+        return
+      }
+
+      // 邮箱验证
+      const email = this.registerForm.email.trim()
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        uni.showToast({ title: this.$t('auth.invalidEmail'), icon: 'none' })
+        return
+      }
+
+      // 手机号验证 (11位数字，1开头)
       const phoneRegex = /^1\d{10}$/
       if (!phoneRegex.test(this.registerForm.phone)) {
         uni.showToast({ title: this.$t('auth.invalidPhone'), icon: 'none' })
         return
       }
-      if (this.registerForm.countdown > 0) return
 
-      try {
-        const res = await sendCode(this.registerForm.phone)
-        if (res && res.code === 200) {
-          uni.showToast({ title: this.$t('auth.codeSent'), icon: 'success' })
-          this.startCountdown()
-        } else {
-          uni.showToast({ title: (res && res.message) || this.$t('auth.sendFailed'), icon: 'none' })
-        }
-      } catch (e) {
-        console.error('发送验证码失败:', e)
-        uni.showToast({ title: this.$t('auth.sendFailedRetry'), icon: 'none' })
+      // 密码一致性校验
+      if (this.registerForm.password !== this.registerForm.confirmPassword) {
+        uni.showToast({ title: this.$t('auth.passwordMismatch'), icon: 'none' })
+        return
       }
-    },
-    startCountdown() {
-      this.registerForm.countdown = 60
-      this.countdownTimer = setInterval(() => {
-        this.registerForm.countdown--
-        if (this.registerForm.countdown <= 0) {
-          clearInterval(this.countdownTimer)
-          this.countdownTimer = null
-        }
-      }, 1000)
-    },
-    async handleRegister() {
-      if (this.isLoading || !this.canSubmit) return
+
+      // 密码长度验证
+      if (this.registerForm.password.length < 6 || this.registerForm.password.length > 20) {
+        uni.showToast({ title: this.$t('auth.passwordLength'), icon: 'none' })
+        return
+      }
+
+      // 协议同意校验
+      if (!this.agreed) {
+        uni.showToast({ title: this.$t('auth.pleaseAgree'), icon: 'none' })
+        return
+      }
 
       this.isLoading = true
       try {
         const response = await register({
-          username: this.registerForm.username.trim(),
+          username,
           password: this.registerForm.password,
+          email,
           phone: this.registerForm.phone,
-          code: this.registerForm.code
+          avatar: this.registerForm.avatar
         })
 
         if (response && response.code === 200) {
-          uni.showToast({ title: this.$t('auth.registerSuccess'), icon: 'success' })
-          setTimeout(() => {
-            uni.redirectTo({ url: '/pages/login/login' })
-          }, 1500)
+          // 注册成功，后端返回生成的账号
+          const account = response.data
+          uni.showModal({
+            title: this.$t('auth.registerSuccess'),
+            content: `${this.$t('auth.yourAccount')}${account}`,
+            showCancel: false,
+            confirmText: this.$t('auth.iKnow'),
+            success: () => {
+              uni.redirectTo({ url: '/pages/login/login' })
+            }
+          })
         } else {
           uni.showToast({ title: (response && response.message) || this.$t('auth.registerFailed'), icon: 'none' })
         }
@@ -387,50 +448,42 @@ export default {
   color: var(--text-placeholder);
 }
 
-/* 验证码 */
-.code-row {
+/* 头像上传 */
+.avatar-picker {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16rpx;
+  gap: 14rpx;
+  margin-bottom: 36rpx;
 }
 
-.code-row__input {
-  flex: 1;
-  min-width: 0;
+.avatar-picker__img,
+.avatar-picker__placeholder {
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 50%;
 }
 
-.code-btn {
-  flex-shrink: 0;
-  height: 92rpx;
-  padding: 0 30rpx;
-  border-radius: 999rpx;
-  background-color: var(--accent-light);
-  border: 2rpx solid var(--accent-color);
+.avatar-picker__img {
+  border: 2rpx solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.avatar-picker__placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  background-color: var(--bg-input);
+  border: 2rpx dashed var(--border-color);
 }
 
-.code-btn--hover {
-  background-color: var(--accent-soft);
-  transform: scale(0.98);
+.avatar-picker:active .avatar-picker__placeholder {
+  background-color: var(--bg-active);
 }
 
-.code-btn text {
-  font-size: var(--font-sm);
-  color: var(--accent-color);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.code-btn.is-disabled {
-  background-color: var(--bg-tertiary);
-  border-color: transparent;
-}
-
-.code-btn.is-disabled text {
-  color: var(--text-disabled);
+.avatar-picker__text {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
 }
 
 /* 密码 */

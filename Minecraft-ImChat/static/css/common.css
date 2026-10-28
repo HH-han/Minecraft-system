@@ -10,8 +10,7 @@
  * - 所有页面/组件只允许使用变量，禁止硬编码颜色。
  */
 
-page,
-:root {
+page {
   /* 文本 */
   --text-primary: #10141b;
   --text-secondary: #5b6472;
