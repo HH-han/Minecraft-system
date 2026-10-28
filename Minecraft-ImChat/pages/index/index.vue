@@ -36,9 +36,10 @@
           <text>{{ $t('index.pinned') }}</text>
         </view>
         <view
-          v-for="conv in topList"
+          v-for="(conv, index) in topList"
           :key="convKeyOf(conv)"
           class="conv-item"
+          :style="{ animationDelay: itemDelay(index) }"
           hover-class="conv-item--hover"
           hover-stay-time="60"
           @click="openChat(conv)"
@@ -76,9 +77,10 @@
           <text>{{ $t('index.allChats') }}</text>
         </view>
         <view
-          v-for="conv in normalList"
+          v-for="(conv, index) in normalList"
           :key="convKeyOf(conv)"
           class="conv-item"
+          :style="{ animationDelay: itemDelay(index) }"
           hover-class="conv-item--hover"
           hover-stay-time="60"
           @click="openChat(conv)"
@@ -196,6 +198,9 @@ export default {
   },
   methods: {
     formatListTime,
+    itemDelay(index) {
+      return `${Math.min(index, 10) * 28}ms`
+    },
     convKeyOf(conv) {
       return convKey(conv.type, conv.id)
     },
@@ -370,6 +375,18 @@ export default {
   padding: 24rpx 28rpx;
   position: relative;
   transition: background-color var(--transition-fast);
+  animation: convIn 0.36s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes convIn {
+  from {
+    opacity: 0;
+    transform: translateY(14rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .conv-item::after {
@@ -459,12 +476,12 @@ export default {
   min-width: 36rpx;
   height: 36rpx;
   padding: 0 10rpx;
-  background-image: linear-gradient(135deg, #ff7a7a 0%, #f04444 100%);
+  background-image: var(--badge-gradient);
   border-radius: 18rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6rpx 16rpx rgba(240, 68, 68, 0.32);
+  box-shadow: var(--badge-glow);
 }
 
 .conv-item__badge text {

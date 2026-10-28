@@ -41,7 +41,7 @@
   </view>
 
   <view v-if="showMenu" class="navbar-menu-mask" @click="closeMenu">
-    <view class="navbar-menu" @click.stop>
+    <view class="navbar-menu" :style="{ top: statusBarHeight + 52 + 'px' }" @click.stop>
       <view class="navbar-menu__arrow"></view>
       <view
         v-for="(item, index) in menuItems"
@@ -50,7 +50,7 @@
         hover-class="navbar-menu__item--hover"
         @click="onMenuItem(item)"
       >
-        <view class="navbar-menu__icon">
+        <view v-if="item.iconName || item.icon" class="navbar-menu__icon">
           <UiIcon v-if="item.iconName" :name="item.iconName" :size="32" color="#FFFFFF" />
           <text v-else>{{ item.icon }}</text>
         </view>
@@ -243,7 +243,6 @@ export default {
 
 .navbar-menu {
   position: absolute;
-  top: calc(env(safe-area-inset-top) + 104rpx);
   right: 24rpx;
   min-width: 320rpx;
   padding: 12rpx;

@@ -226,15 +226,18 @@ export default {
         sizeType: ['compressed'],
         success: (res) => {
           const tempFile = res.tempFiles && res.tempFiles[0]
-          // H5 端通过 FileReader 读取为 base64
-          if (tempFile && tempFile.file) {
+          const fileObj = tempFile && (tempFile.file || tempFile)
+          // H5 端：File 对象通过 FileReader 读取为 base64
+          if (fileObj && typeof FileReader !== 'undefined' && fileObj instanceof Blob) {
             const reader = new FileReader()
             reader.onload = (e) => {
               this.registerForm.avatar = e.target.result
             }
-            reader.readAsDataURL(tempFile.file)
-          } else {
-            // App / 小程序端通过文件系统读取为 base64
+            reader.readAsDataURL(fileObj)
+            return
+          }
+          // App / 小程序端：通过文件系统读取为 base64
+          if (typeof uni.getFileSystemManager === 'function') {
             uni.getFileSystemManager().readFile({
               filePath: res.tempFilePaths[0],
               encoding: 'base64',

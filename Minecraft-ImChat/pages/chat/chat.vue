@@ -191,9 +191,6 @@ export default {
       ]
     },
     headerTitle() {
-      if (this.chatType === 'group' && this.memberCount) {
-        return `${this.chatName}(${this.memberCount})`
-      }
       return this.chatName
     },
     headerSubtitle() {
@@ -519,6 +516,18 @@ export default {
   display: flex;
   padding: 14rpx 28rpx;
   align-items: flex-start;
+  animation: msgIn 0.26s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes msgIn {
+  from {
+    opacity: 0;
+    transform: translateY(10rpx) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .msg-row.is-self {
