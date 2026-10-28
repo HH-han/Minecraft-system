@@ -1,0 +1,20 @@
+export default {
+  title: 'Contacts',
+  searchPlaceholder: 'Search contacts',
+  shortcuts: 'Shortcuts',
+  newFriends: 'New friends',
+  groups: 'Group chats',
+  tags: 'Tags',
+  officialAccounts: 'Official accounts',
+  serviceAccounts: 'Service accounts',
+  starred: 'Starred friends',
+  empty: 'No friends yet — go add some',
+  emptySearch: 'No contacts found',
+  devToast: '{name} is coming soon',
+  noGroups: 'No group chats yet',
+  loadGroupsFailed: 'Failed to load group chats',
+  unstar: 'Remove star',
+  unstarred: 'Star removed',
+  newGroup: 'New group chat',
+  addFriend: 'Add friend'
+}

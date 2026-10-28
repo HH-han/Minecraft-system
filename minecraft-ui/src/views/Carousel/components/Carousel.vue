@@ -258,6 +258,7 @@ onUnmounted(() => {
   width: 100%;
   max-height: 100vh;
   aspect-ratio: var(--carousel-aspect-ratio);
+  border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--theme-shadow-md);
 }
@@ -467,26 +468,102 @@ onUnmounted(() => {
   }
 }
 
+/* 移动端：加高画面、缩小标题、隐藏箭头、避让指示器 */
 @media (max-width: 768px) {
   .food-carousel {
-    --border-radius: 8px;
+    --border-radius: 12px;
+    --bg-overlay: rgba(0, 0, 0, 0.28);
+    aspect-ratio: 4 / 3;
   }
 
+  /* 触摸滑动已足够，箭头在窄屏会压住标题 */
   .carousel-nav {
-    width: 36px;
-    height: 36px;
-  }
-
-  .prev {
-    left: 1rem;
-  }
-
-  .next {
-    right: 1rem;
+    display: none;
   }
 
   .slide-caption {
-    padding: 1.5rem;
+    padding: 1.25rem 0.875rem calc(1.5rem + 18px);
+    text-align: left;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.82) 0%,
+        rgba(0, 0, 0, 0.45) 55%,
+        rgba(0, 0, 0, 0) 100%);
+  }
+
+  .slide-caption:hover {
+    transform: none;
+  }
+
+  .slide-caption h3 {
+    font-size: 1.0625rem;
+    line-height: 1.25;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .slide-caption p {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 次要信息（更新时间）在窄屏不占位 */
+  .slide-caption p + p {
+    display: none;
+  }
+
+  .carousel-pagination {
+    bottom: 8px;
+    gap: 6px;
+    padding: 5px 8px;
+  }
+
+  .carousel-pagination button {
+    width: 6px;
+    height: 6px;
+  }
+
+  .carousel-pagination button.active {
+    width: 18px;
+    border-radius: 3px;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .food-carousel {
+    --border-radius: 10px;
+    aspect-ratio: 5 / 4;
+  }
+
+  .slide-caption {
+    padding: 1rem 0.75rem calc(1.375rem + 16px);
+  }
+
+  .slide-caption h3 {
+    font-size: 1rem;
+  }
+
+  .carousel-pagination {
+    bottom: 6px;
+    gap: 5px;
+    padding: 4px 7px;
+  }
+
+  .carousel-pagination button {
+    width: 5px;
+    height: 5px;
+  }
+
+  .carousel-pagination button.active {
+    width: 16px;
   }
 }
 </style>

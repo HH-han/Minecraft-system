@@ -47,6 +47,10 @@
       "active": "Active",
       "disabled": "Disabled"
     },
+    "permissions": {
+      "admin": "Admin",
+      "user": "User"
+    },
     "online": {
       "online": "Online",
       "offline": "Offline"

@@ -24,17 +24,27 @@
       <slot name="right">
         <text v-if="value" class="ui-cell__value">{{ value }}</text>
       </slot>
-      <text v-if="arrow" class="ui-cell__arrow">›</text>
+      <UiIcon
+        v-if="arrow"
+        class="ui-cell__arrow"
+        name="chevron-right"
+        :size="26"
+        color="var(--text-disabled)"
+      />
     </view>
   </view>
 </template>
 
 <script>
+import UiIcon from './Icon.vue'
+
 /**
- * 通用列表行（微信风格 cell）
+ * 通用列表行
+ * 颜色全部走主题变量，图标默认使用品牌渐变底。
  */
 export default {
   name: 'UiCell',
+  components: { UiIcon },
   props: {
     title: { type: String, default: '' },
     subtitle: { type: String, default: '' },
@@ -48,7 +58,7 @@ export default {
   emits: ['click'],
   computed: {
     iconStyle() {
-      return this.iconBg ? { backgroundColor: this.iconBg } : {}
+      return this.iconBg ? { backgroundImage: 'none', backgroundColor: this.iconBg } : {}
     }
   },
   methods: {
@@ -64,29 +74,39 @@ export default {
   display: flex;
   align-items: center;
   padding: 24rpx 32rpx;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #ededed;
+  background-color: transparent;
   position: relative;
 }
 
-.ui-cell.no-border {
-  border-bottom: none;
+.ui-cell::after {
+  content: '';
+  position: absolute;
+  left: 128rpx;
+  right: 32rpx;
+  bottom: 0;
+  height: 1rpx;
+  background-color: var(--divider);
+}
+
+.ui-cell.no-border::after {
+  display: none;
 }
 
 .ui-cell--hover {
-  background-color: #ececec;
+  background-color: var(--bg-hover);
 }
 
 .ui-cell__icon {
   width: 72rpx;
   height: 72rpx;
-  border-radius: 12rpx;
+  border-radius: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 24rpx;
   flex-shrink: 0;
-  background-color: #07c160;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--shadow-sm);
 }
 
 .ui-cell__icon-text {
@@ -111,14 +131,14 @@ export default {
 }
 
 .ui-cell__title {
-  font-size: 32rpx;
-  color: #191919;
+  font-size: 30rpx;
+  color: var(--text-primary);
   line-height: 1.4;
 }
 
 .ui-cell__subtitle {
-  font-size: 26rpx;
-  color: #999999;
+  font-size: 24rpx;
+  color: var(--text-secondary);
   margin-top: 6rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -134,18 +154,14 @@ export default {
 }
 
 .ui-cell__value {
-  font-size: 28rpx;
-  color: #999999;
+  font-size: 26rpx;
+  color: var(--text-tertiary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .ui-cell__arrow {
-  font-size: 40rpx;
-  color: #c8c8cd;
-  line-height: 1;
   margin-left: 8rpx;
-  font-weight: 300;
 }
 </style>

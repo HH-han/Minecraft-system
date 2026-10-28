@@ -25,7 +25,7 @@
           <image class="emoji-panel__image" :src="item.url" mode="aspectFit" />
         </view>
         <view v-if="customEmojis.length === 0" class="emoji-panel__empty">
-          <text>暂无自定义表情</text>
+          <text>{{ $t('chat.emojiEmpty') }}</text>
         </view>
       </view>
     </scroll-view>
@@ -36,14 +36,14 @@
         :class="{ active: activeTab === 'system' }"
         @click="activeTab = 'system'"
       >
-        <text>表情</text>
+        <text>{{ $t('chat.emojiSystem') }}</text>
       </view>
       <view
         class="emoji-panel__tab"
         :class="{ active: activeTab === 'custom' }"
         @click="activeTab = 'custom'"
       >
-        <text>我的表情</text>
+        <text>{{ $t('chat.emojiCustom') }}</text>
       </view>
     </view>
   </view>
@@ -156,8 +156,9 @@ export default {
   display: flex;
   flex-direction: column;
   height: 460rpx;
-  background-color: #f7f7f7;
-  border-top: 1rpx solid #e5e5e5;
+  flex-shrink: 0;
+  background-color: var(--bg-primary);
+  border-top: 1rpx solid var(--divider);
 }
 
 .emoji-panel__scroll {
@@ -171,8 +172,9 @@ export default {
 
 .emoji-panel__group-name {
   display: block;
-  font-size: 24rpx;
-  color: #999999;
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+  letter-spacing: 1rpx;
   padding: 12rpx 32rpx 4rpx;
 }
 
@@ -213,14 +215,14 @@ export default {
 
 .emoji-panel__empty text {
   font-size: 26rpx;
-  color: #999999;
+  color: var(--text-tertiary);
 }
 
 .emoji-panel__tabs {
   display: flex;
-  height: 80rpx;
-  background-color: #ffffff;
-  border-top: 1rpx solid #e5e5e5;
+  height: 84rpx;
+  background-color: var(--bg-primary);
+  border-top: 1rpx solid var(--divider);
 }
 
 .emoji-panel__tab {
@@ -233,12 +235,12 @@ export default {
 
 .emoji-panel__tab text {
   font-size: 28rpx;
-  color: #666666;
+  color: var(--text-secondary);
 }
 
 .emoji-panel__tab.active text {
-  color: #07c160;
-  font-weight: 500;
+  color: var(--accent-color);
+  font-weight: 600;
 }
 
 .emoji-panel__tab.active::after {
@@ -247,9 +249,9 @@ export default {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 56rpx;
-  height: 4rpx;
-  background-color: #07c160;
-  border-radius: 2rpx;
+  width: 48rpx;
+  height: 6rpx;
+  background-image: var(--accent-gradient);
+  border-radius: 3rpx;
 }
 </style>

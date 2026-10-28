@@ -25,6 +25,7 @@ import {
   Popconfirm,
   Radio,
   Result,
+  Select,
   Skeleton,
   Space,
   Switch,
@@ -415,6 +416,25 @@ function genderText(gender: any): string {
     return $t('user.detail.gender.female');
   }
   return $t('user.detail.gender.unknown');
+}
+
+function permissionsText(permissions: any): string {
+  // 权限码映射：'0' 管理员 / '1' 普通用户，其余原样展示
+  if (
+    permissions === null ||
+    permissions === undefined ||
+    permissions === ''
+  ) {
+    return $t('user.detail.no_permissions');
+  }
+  const p = String(permissions);
+  if (p === '0') {
+    return $t('user.detail.permissions.admin');
+  }
+  if (p === '1') {
+    return $t('user.detail.permissions.user');
+  }
+  return p;
 }
 
 function formatDateTime(value: number | string | undefined): string {
@@ -811,13 +831,7 @@ async function confirmCropperAvatar() {
             <!-- 权限 Tag -->
             <template v-else-if="column.dataIndex === 'permissions'">
               <Tag color="blue">
-                {{
-                  record.permissions === undefined ||
-                  record.permissions === null ||
-                  record.permissions === ''
-                    ? $t('user.detail.no_permissions')
-                    : String(record.permissions)
-                }}
+                {{ permissionsText(record.permissions) }}
               </Tag>
             </template>
 
@@ -962,7 +976,7 @@ async function confirmCropperAvatar() {
           </Descriptions.Item>
           <Descriptions.Item :label="$t('user.detail.fields.permissions')">
             <Tag color="blue">
-              {{ formData.permissions || $t('user.detail.no_permissions') }}
+              {{ permissionsText(formData.permissions) }}
             </Tag>
           </Descriptions.Item>
           <Descriptions.Item :label="$t('user.detail.fields.online')">
@@ -1244,10 +1258,21 @@ async function confirmCropperAvatar() {
               prop="permissions"
               style="display: block; width: 100%; margin-bottom: 16px;"
             >
-              <Input
+              <Select
                 v-model:value="formData.permissions"
                 class="w-full"
-                :placeholder="`${$t('user.form.placeholder_text')}${$t('user.form.field_permissions')}`"
+                allow-clear
+                :placeholder="`${$t('user.form.placeholder_select')}${$t('user.form.field_permissions')}`"
+                :options="[
+                  {
+                    value: '0',
+                    label: $t('user.detail.permissions.admin'),
+                  },
+                  {
+                    value: '1',
+                    label: $t('user.detail.permissions.user'),
+                  },
+                ]"
               />
             </FormItem>
 

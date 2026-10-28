@@ -1,0 +1,12 @@
+{
+  "calendar": {
+    "title": "Select date",
+    "placeholder": "Select date",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "prevYear": "Previous year",
+    "nextYear": "Next year",
+    "clear": "Clear",
+    "today": "Today"
+  }
+}

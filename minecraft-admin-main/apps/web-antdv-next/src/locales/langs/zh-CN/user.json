@@ -47,6 +47,10 @@
       "active": "正常",
       "disabled": "停用"
     },
+    "permissions": {
+      "admin": "管理员",
+      "user": "普通用户"
+    },
     "online": {
       "online": "在线",
       "offline": "离线"

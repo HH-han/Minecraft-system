@@ -1,11 +1,11 @@
 <template>
-  <view class="chat-page">
+  <view class="chat-page" :class="themeClass">
     <CustomNavBar
       :title="headerTitle"
+      :subtitle="headerSubtitle"
       :show-back="true"
       :show-add="true"
       :show-search="false"
-      background="#EDEDED"
       title-align="center"
       :menu-items="headerMenu"
       @back="goBack"
@@ -21,8 +21,8 @@
       :show-scrollbar="false"
     >
       <view class="msg-list__top">
-        <text v-if="isLoading" class="msg-list__loading">加载中…</text>
-        <text v-else-if="!messages.length" class="msg-list__empty">还没有消息，打个招呼吧</text>
+        <text v-if="isLoading" class="msg-list__hint">{{ $t('common.loading') }}</text>
+        <text v-else-if="!messages.length" class="msg-list__hint">{{ $t('chat.empty') }}</text>
       </view>
 
       <view v-for="(msg, index) in messages" :key="msg.localId || msg.id || index">
@@ -59,9 +59,11 @@
               />
 
               <view v-else-if="isFileLike(msg)" class="msg-file">
-                <UiIcon name="file" :size="64" color="#576B95" />
+                <view class="msg-file__icon">
+                  <UiIcon name="file" :size="48" color="var(--accent-color)" />
+                </view>
                 <view class="msg-file__info">
-                  <text class="msg-file__name">{{ msg.fileName || '文件' }}</text>
+                  <text class="msg-file__name">{{ msg.fileName || $t('chat.file') }}</text>
                   <text class="msg-file__size">{{ msg.content }}</text>
                 </view>
               </view>
@@ -69,7 +71,7 @@
               <text v-else class="msg-bubble__text">{{ msg.content }}</text>
 
               <view v-if="isSelf(msg) && msg.status === 'failed'" class="msg-bubble__failed">
-                <UiIcon name="close" :size="26" color="#FA5151" />
+                <UiIcon name="close" :size="26" color="var(--danger-color)" />
               </view>
               <view v-else-if="isSelf(msg) && msg.status === 'sending'" class="msg-bubble__sending">
                 <view class="spinner"></view>
@@ -85,11 +87,11 @@
     <view class="input-bar">
       <view class="input-bar__row">
         <view class="input-bar__btn" @click="toggleVoice">
-          <UiIcon :name="voiceMode ? 'keyboard' : 'voice'" :size="52" color="#191919" />
+          <UiIcon :name="voiceMode ? 'keyboard' : 'voice'" :size="48" color="var(--text-primary)" />
         </view>
 
         <view v-if="voiceMode" class="input-bar__voice" @touchstart="onVoiceStart" @touchend="onVoiceEnd">
-          <text>按住 说话</text>
+          <text>{{ $t('chat.holdToTalk') }}</text>
         </view>
         <input
           v-else
@@ -98,22 +100,25 @@
           :adjust-position="false"
           confirm-type="send"
           :cursor-spacing="10"
+          :placeholder="$t('common.inputPlaceholder')"
+          placeholder-class="input-bar__placeholder"
           @confirm="sendText"
           @focus="onInputFocus"
         />
 
         <view class="input-bar__btn" @click="toggleEmoji">
-          <UiIcon name="smile" :size="52" color="#191919" />
+          <UiIcon name="smile" :size="48" color="var(--text-primary)" />
         </view>
         <view class="input-bar__btn" @click="toggleMore">
-          <UiIcon name="plus" :size="52" color="#191919" />
+          <UiIcon name="plus" :size="48" color="var(--text-primary)" />
         </view>
         <view
           v-if="inputText.trim().length"
           class="input-bar__send"
+          hover-class="input-bar__send--hover"
           @click="sendText"
         >
-          <text>发送</text>
+          <text>{{ $t('common.send') }}</text>
         </view>
       </view>
     </view>
@@ -122,20 +127,20 @@
 
     <view v-if="panel === 'more'" class="more-panel">
       <view class="more-panel__item" @click="pickImage('album')">
-        <view class="more-panel__icon"><UiIcon name="image" :size="56" color="#576B95" /></view>
-        <text>相册</text>
+        <view class="more-panel__icon"><UiIcon name="image" :size="52" color="var(--accent-color)" /></view>
+        <text>{{ $t('chat.album') }}</text>
       </view>
       <view class="more-panel__item" @click="pickImage('camera')">
-        <view class="more-panel__icon"><UiIcon name="camera" :size="56" color="#576B95" /></view>
-        <text>拍摄</text>
+        <view class="more-panel__icon"><UiIcon name="camera" :size="52" color="var(--accent-color)" /></view>
+        <text>{{ $t('chat.camera') }}</text>
       </view>
       <view class="more-panel__item" @click="openChatInfo">
-        <view class="more-panel__icon"><UiIcon name="users" :size="56" color="#576B95" /></view>
-        <text>{{ chatType === 'group' ? '群信息' : '好友信息' }}</text>
+        <view class="more-panel__icon"><UiIcon name="users" :size="52" color="var(--accent-color)" /></view>
+        <text>{{ chatType === 'group' ? $t('chat.groupInfo') : $t('chat.friendInfo') }}</text>
       </view>
       <view class="more-panel__item" @click="comingSoon">
-        <view class="more-panel__icon"><UiIcon name="map-pin" :size="56" color="#576B95" /></view>
-        <text>位置</text>
+        <view class="more-panel__icon"><UiIcon name="map-pin" :size="52" color="var(--accent-color)" /></view>
+        <text>{{ $t('chat.location') }}</text>
       </view>
     </view>
   </view>
@@ -175,25 +180,33 @@ export default {
       scrollIntoId: '',
       panel: '',
       voiceMode: false,
-      currentUser: { id: null, name: '', avatar: '' },
-      headerMenu: [
-        { text: '查看聊天信息', action: 'info' },
-        { text: '清空聊天记录', action: 'clear' }
-      ]
+      currentUser: { id: null, name: '', avatar: '' }
     }
   },
   computed: {
+    headerMenu() {
+      return [
+        { text: this.$t('chat.viewInfo'), iconName: 'info', action: 'info' },
+        { text: this.$t('chat.clearHistory'), iconName: 'trash', action: 'clear' }
+      ]
+    },
     headerTitle() {
       if (this.chatType === 'group' && this.memberCount) {
         return `${this.chatName}(${this.memberCount})`
       }
       return this.chatName
+    },
+    headerSubtitle() {
+      if (this.chatType === 'group' && this.memberCount) {
+        return this.$t('chat.groupMembers', { count: this.memberCount })
+      }
+      return ''
     }
   },
   onLoad(options) {
     this.chatType = options.type || 'single'
     this.chatId = options.id
-    this.chatName = decodeURIComponent(options.name || '聊天')
+    this.chatName = decodeURIComponent(options.name || this.$t('common.chat'))
     this.chatAvatar = decodeURIComponent(options.avatar || '')
     this.memberCount = Number(options.memberCount || 0)
     this.currentUser = getCurrentProfile()
@@ -251,7 +264,7 @@ export default {
       }
       const id = msg.senderId
       if (!id) {
-        uni.showToast({ title: '无法获取用户信息', icon: 'none' })
+        uni.showToast({ title: this.$t('chat.noUserInfo'), icon: 'none' })
         return
       }
       uni.navigateTo({
@@ -371,7 +384,7 @@ export default {
         console.error('发送消息失败:', e)
         const target = this.messages.find((m) => m.localId === localId)
         if (target) target.status = 'failed'
-        uni.showToast({ title: '发送失败', icon: 'none' })
+        uni.showToast({ title: this.$t('chat.sendFailed'), icon: 'none' })
       }
     },
     pickImage(source) {
@@ -387,17 +400,17 @@ export default {
       this.panel = ''
     },
     async uploadAndSendImage(filePath) {
-      uni.showLoading({ title: '发送中…', mask: true })
+      uni.showLoading({ title: this.$t('chat.sending'), mask: true })
       try {
         const res = await uploadFile(filePath)
         if (res && res.code === 200 && res.data) {
           await this.pushMessage(res.data, 'image')
         } else {
-          uni.showToast({ title: '上传失败', icon: 'none' })
+          uni.showToast({ title: this.$t('chat.uploadFailed'), icon: 'none' })
         }
       } catch (e) {
         console.error('图片上传失败:', e)
-        uni.showToast({ title: '上传失败', icon: 'none' })
+        uni.showToast({ title: this.$t('chat.uploadFailed'), icon: 'none' })
       } finally {
         uni.hideLoading()
       }
@@ -416,7 +429,7 @@ export default {
     toggleVoice() {
       this.voiceMode = !this.voiceMode
       this.panel = ''
-      if (this.voiceMode) uni.showToast({ title: '语音消息开发中', icon: 'none' })
+      if (this.voiceMode) uni.showToast({ title: this.$t('chat.voiceDev'), icon: 'none' })
     },
     onVoiceStart() {},
     onVoiceEnd() {},
@@ -438,18 +451,18 @@ export default {
     },
     clearHistory() {
       uni.showModal({
-        title: '提示',
-        content: '确定清空聊天记录吗？',
+        title: this.$t('common.tip'),
+        content: this.$t('chat.clearConfirm'),
         success: (res) => {
           if (res.confirm) {
             this.messages = []
-            uni.showToast({ title: '已清空', icon: 'success' })
+            uni.showToast({ title: this.$t('chat.cleared'), icon: 'success' })
           }
         }
       })
     },
     comingSoon() {
-      uni.showToast({ title: '功能开发中', icon: 'none' })
+      uni.showToast({ title: this.$t('common.comingSoon'), icon: 'none' })
     }
   }
 }
@@ -460,14 +473,9 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
-}
-
-.chat-page__subtitle {
-  font-size: 26rpx;
-  color: #888888;
-  font-weight: 400;
-  margin-left: 8rpx;
+  background-color: var(--chat-bg);
+  background-image: radial-gradient(120% 50% at 50% 0%, var(--accent-light) 0%, transparent 62%);
+  color: var(--text-primary);
 }
 
 .msg-avatar:active {
@@ -477,7 +485,7 @@ export default {
 .msg-list {
   flex: 1;
   height: 0;
-  padding: 20rpx 0;
+  padding: 12rpx 0;
 }
 
 .msg-list__top {
@@ -486,26 +494,30 @@ export default {
   padding: 20rpx 0 8rpx;
 }
 
-.msg-list__loading,
-.msg-list__empty {
-  font-size: 24rpx;
-  color: #b2b2b2;
+.msg-list__hint {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
 }
 
 .msg-time {
   display: flex;
   justify-content: center;
-  padding: 24rpx 0 8rpx;
+  padding: 28rpx 0 10rpx;
 }
 
 .msg-time text {
-  font-size: 22rpx;
-  color: #b2b2b2;
+  font-size: 20rpx;
+  color: var(--text-tertiary);
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  background-color: var(--bg-chip);
+  font-family: var(--font-mono);
+  letter-spacing: 0.4rpx;
 }
 
 .msg-row {
   display: flex;
-  padding: 16rpx 32rpx;
+  padding: 14rpx 28rpx;
   align-items: flex-start;
 }
 
@@ -525,45 +537,55 @@ export default {
 }
 
 .msg-sender {
-  font-size: 22rpx;
-  color: #999999;
-  margin-bottom: 8rpx;
+  font-size: 20rpx;
+  color: var(--accent-color);
+  margin: 0 0 8rpx 6rpx;
+  font-weight: 500;
 }
 
 .msg-bubble {
   position: relative;
-  padding: 20rpx 24rpx;
-  background-color: #ffffff;
-  border-radius: 12rpx;
+  padding: 18rpx 24rpx;
+  background-color: var(--bubble-other);
+  color: var(--bubble-other-text);
+  border: 1rpx solid var(--border-light);
+  border-radius: 6rpx 24rpx 24rpx 24rpx;
+  box-shadow: var(--shadow-sm);
   word-break: break-word;
 }
 
 .msg-bubble::after {
   content: '';
   position: absolute;
-  top: 22rpx;
-  left: -10rpx;
+  top: 20rpx;
+  left: -8rpx;
   width: 0;
   height: 0;
-  border-top: 10rpx solid transparent;
-  border-bottom: 10rpx solid transparent;
-  border-right: 10rpx solid #ffffff;
+  border-top: 8rpx solid transparent;
+  border-bottom: 8rpx solid transparent;
+  border-right: 8rpx solid var(--bubble-other);
 }
 
 .msg-bubble.is-self {
-  background-color: #95ec69;
+  background-color: var(--bubble-self);
+  color: var(--bubble-self-text);
+  border-color: transparent;
+  border-radius: 24rpx 6rpx 24rpx 24rpx;
+  box-shadow: 0 8rpx 22rpx rgba(0, 0, 0, 0.18);
 }
 
 .msg-bubble.is-self::after {
   left: auto;
-  right: -10rpx;
+  right: -8rpx;
   border-right: none;
-  border-left: 10rpx solid #95ec69;
+  border-left: 8rpx solid var(--bubble-self);
 }
 
 .msg-bubble.is-plain {
   background-color: transparent;
   padding: 0;
+  border: none;
+  box-shadow: none;
 }
 
 .msg-bubble.is-plain::after {
@@ -572,13 +594,13 @@ export default {
 
 .msg-bubble__text {
   font-size: 30rpx;
-  color: #191919;
   line-height: 1.45;
+  color: inherit;
 }
 
 .msg-bubble__image {
   max-width: 400rpx;
-  border-radius: 12rpx;
+  border-radius: 20rpx;
   display: block;
 }
 
@@ -589,7 +611,18 @@ export default {
 .msg-file {
   display: flex;
   align-items: center;
-  min-width: 360rpx;
+  min-width: 340rpx;
+}
+
+.msg-file__icon {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 20rpx;
+  background-color: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .msg-file__info {
@@ -600,12 +633,12 @@ export default {
 
 .msg-file__name {
   font-size: 28rpx;
-  color: #191919;
+  color: inherit;
 }
 
 .msg-file__size {
   font-size: 22rpx;
-  color: #999999;
+  color: var(--text-tertiary);
   margin-top: 4rpx;
 }
 
@@ -613,7 +646,7 @@ export default {
 .msg-bubble__failed {
   position: absolute;
   left: -40rpx;
-  top: 24rpx;
+  top: 22rpx;
   display: flex;
   align-items: center;
 }
@@ -627,8 +660,8 @@ export default {
 .spinner {
   width: 26rpx;
   height: 26rpx;
-  border: 3rpx solid rgba(0, 0, 0, 0.15);
-  border-top-color: #07c160;
+  border: 3rpx solid var(--border-color);
+  border-top-color: var(--accent-color);
   border-radius: 50%;
   animation: chatSpin 0.8s linear infinite;
 }
@@ -644,8 +677,8 @@ export default {
 /* 输入栏 */
 .input-bar {
   flex-shrink: 0;
-  background-color: #f7f7f7;
-  border-top: 1rpx solid #e2e2e2;
+  background-color: var(--bg-primary);
+  border-top: 1rpx solid var(--divider);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -653,36 +686,44 @@ export default {
   display: flex;
   align-items: center;
   padding: 14rpx 20rpx;
-  gap: 12rpx;
+  gap: 8rpx;
 }
 
 .input-bar__btn {
-  width: 64rpx;
-  height: 64rpx;
+  width: 60rpx;
+  height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast);
 }
 
 .input-bar__btn:active {
-  opacity: 0.5;
+  background-color: var(--bg-hover);
 }
 
 .input-bar__input {
   flex: 1;
-  height: 68rpx;
-  padding: 0 22rpx;
-  background-color: #ffffff;
-  border-radius: 10rpx;
+  height: 72rpx;
+  padding: 0 24rpx;
+  background-color: var(--bg-input);
+  border: 1rpx solid var(--border-light);
+  border-radius: 999rpx;
   font-size: 30rpx;
-  color: #191919;
+  color: var(--text-primary);
+}
+
+.input-bar__placeholder {
+  color: var(--text-placeholder);
 }
 
 .input-bar__voice {
   flex: 1;
-  height: 68rpx;
-  background-color: #ffffff;
-  border-radius: 10rpx;
+  height: 72rpx;
+  background-color: var(--bg-input);
+  border: 1rpx solid var(--border-light);
+  border-radius: 999rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -690,35 +731,40 @@ export default {
 
 .input-bar__voice text {
   font-size: 28rpx;
-  color: #576b95;
+  color: var(--text-link);
+  font-weight: 500;
 }
 
 .input-bar__send {
-  padding: 0 28rpx;
-  height: 68rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+  height: 72rpx;
+  padding: 0 30rpx;
+  margin-left: 2rpx;
+  background-image: var(--accent-gradient);
+  border-radius: 999rpx;
   display: flex;
   align-items: center;
+  box-shadow: var(--accent-glow);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-.input-bar__send:active {
-  background-color: #06ad56;
+.input-bar__send--hover {
+  transform: scale(0.95);
+  opacity: 0.9;
 }
 
 .input-bar__send text {
   font-size: 28rpx;
-  color: #ffffff;
-  font-weight: 500;
+  color: var(--accent-contrast);
+  font-weight: 600;
 }
 
 /* 更多面板 */
 .more-panel {
   flex-shrink: 0;
   display: flex;
-  padding: 32rpx 24rpx;
-  background-color: #f7f7f7;
-  border-top: 1rpx solid #e2e2e2;
+  padding: 36rpx 24rpx calc(36rpx + env(safe-area-inset-bottom));
+  background-color: var(--bg-primary);
+  border-top: 1rpx solid var(--divider);
 }
 
 .more-panel__item {
@@ -729,18 +775,24 @@ export default {
 }
 
 .more-panel__icon {
-  width: 112rpx;
-  height: 112rpx;
-  background-color: #ffffff;
-  border-radius: 20rpx;
+  width: 108rpx;
+  height: 108rpx;
+  background-color: var(--bg-tertiary);
+  border: 1rpx solid var(--border-light);
+  border-radius: 26rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 12rpx;
+  transition: transform var(--transition-fast);
+}
+
+.more-panel__icon:active {
+  transform: scale(0.94);
 }
 
 .more-panel__item text {
-  font-size: 24rpx;
-  color: #666666;
+  font-size: 22rpx;
+  color: var(--text-secondary);
 }
 </style>

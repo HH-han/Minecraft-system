@@ -15,8 +15,11 @@ const DEFAULT_SETTINGS = {
   notification: true,
   sound: true,
   vibration: true,
-  theme: 'light'
+  // light | dark
+  theme: 'dark'
 }
+
+export const THEMES = ['light', 'dark']
 
 function readStorage(key, fallback) {
   try {
@@ -173,6 +176,14 @@ export function setPendingRequestCount(count) {
 export function saveSettings(patch = {}) {
   state.settings = { ...state.settings, ...patch }
   writeStorage(SETTINGS_KEY, state.settings)
+}
+
+/**
+ * 切换主题（light | dark）
+ */
+export function setTheme(theme) {
+  if (THEMES.indexOf(theme) === -1) return
+  saveSettings({ theme })
 }
 
 /**

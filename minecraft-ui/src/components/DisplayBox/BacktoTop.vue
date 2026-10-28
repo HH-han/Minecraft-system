@@ -139,9 +139,17 @@ onUnmounted(() => {
 }
 
 /* 响应式设计 */
+@media (max-width: 992px) {
+    /* 移动端底部新增悬浮导航条，返回顶部按钮上移避开遮挡 */
+    .back-to-top-container {
+        bottom: calc(94px + env(safe-area-inset-bottom));
+        right: 16px;
+    }
+}
+
 @media (max-width: 768px) {
     .back-to-top-container {
-        bottom: 20px;
+        bottom: calc(94px + env(safe-area-inset-bottom));
         right: 20px;
     }
 
@@ -153,7 +161,7 @@ onUnmounted(() => {
 
 @media (max-width: 480px) {
     .back-to-top-container {
-        bottom: 15px;
+        bottom: calc(90px + env(safe-area-inset-bottom));
         right: 15px;
     }
 

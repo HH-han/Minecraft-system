@@ -1,0 +1,20 @@
+export default {
+  title: '通讯录',
+  searchPlaceholder: '搜索联系人',
+  shortcuts: '快捷入口',
+  newFriends: '新的朋友',
+  groups: '群聊',
+  tags: '标签',
+  officialAccounts: '公众号',
+  serviceAccounts: '服务号',
+  starred: '星标朋友',
+  empty: '还没有好友，去添加吧',
+  emptySearch: '没有找到相关联系人',
+  devToast: '{name}功能开发中',
+  noGroups: '还没有群聊',
+  loadGroupsFailed: '加载群聊失败',
+  unstar: '取消星标',
+  unstarred: '已取消星标',
+  newGroup: '发起群聊',
+  addFriend: '添加朋友'
+}

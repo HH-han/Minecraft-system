@@ -7,8 +7,8 @@
                 <h1>订酒店</h1>
                 <div class="search-bar">
                     <input type="text" placeholder="出行目的地" v-model="search.destination" />
-                    <input type="date" placeholder="入住日期" v-model="search.checkIn" />
-                    <input type="date" placeholder="离店日期" v-model="search.checkOut" />
+                    <CalendarPicker v-model="search.checkIn" placeholder="入住日期" :min="todayKey" />
+                    <CalendarPicker v-model="search.checkOut" placeholder="离店日期" :min="search.checkIn || todayKey" />
                     <input type="number" placeholder="人数" v-model="search.numberOfPeople" />
                     <button @click="searchHotels">搜索</button>
                 </div>
@@ -65,6 +65,14 @@ import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { getClientRecommendations } from '@/api/clientRecommendation';
 import { useAutoRefresh } from '@/hooks/useAutoRefresh';
+import CalendarPicker from '@/components/PromptComponent/CalendarPicker.vue';
+
+// 今天（本地时区 YYYY-MM-DD），作为日期选择下限
+const todayKey = (() => {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+})();
 
 const search = ref({
     destination: '',

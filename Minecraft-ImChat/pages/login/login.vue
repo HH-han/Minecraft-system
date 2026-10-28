@@ -1,167 +1,196 @@
 <template>
-  <view class="login">
-    <CustomNavBar title="登录" title-align="center" />
+  <view class="login" :class="themeClass">
+    <CustomNavBar :title="$t('auth.navLogin')" title-align="center" />
 
     <scroll-view class="login__body" scroll-y :show-scrollbar="false">
-      <!-- 品牌区 -->
-      <view class="brand">
-        <view class="brand__logo">
-          <UiIcon name="chat" :size="72" color="#FFFFFF" />
-        </view>
-        <text class="brand__title">{{ appTitle }}</text>
-        <text class="brand__subtitle">与好友畅聊，随时随地</text>
-      </view>
-
-      <!-- 登录方式 tab -->
-      <view class="tabs">
-        <view
-          class="tabs__item"
-          :class="{ 'is-active': loginType === 'phone' }"
-          @click="switchLoginType('phone')"
-        >
-          <text class="tabs__text">手机号</text>
-        </view>
-        <view
-          class="tabs__item"
-          :class="{ 'is-active': loginType === 'password' }"
-          @click="switchLoginType('password')"
-        >
-          <text class="tabs__text">账号密码</text>
-        </view>
-      </view>
-
-      <!-- 表单卡片 -->
-      <view class="form-card">
-        <view v-if="loginType === 'phone'" class="form-body">
-          <view class="form-group">
-            <text class="form-label">手机号</text>
-            <input
-              class="form-input"
-              v-model="phoneForm.phone"
-              type="number"
-              placeholder="请输入手机号"
-              placeholder-class="form-ph"
-              maxlength="11"
-            />
+      <!-- 品牌 Hero -->
+      <view class="login-hero grid-overlay">
+        <view class="brand">
+          <view class="brand__logo">
+            <UiIcon name="chat" :size="66" color="#FFFFFF" />
           </view>
+          <text class="brand__title">{{ appTitle }}</text>
+          <text class="brand__subtitle">{{ $t('auth.brandSubtitle') }}</text>
+        </view>
+      </view>
 
-          <view class="form-group">
-            <text class="form-label">验证码</text>
-            <view class="code-row">
-              <input
-                class="form-input code-row__input"
-                v-model="phoneForm.code"
-                type="number"
-                placeholder="请输入验证码"
-                placeholder-class="form-ph"
-                maxlength="6"
-              />
-              <view
-                class="code-btn"
-                :class="{ 'is-disabled': phoneForm.countdown > 0 }"
-                hover-class="code-btn--hover"
-                hover-stay-time="60"
-                @click="sendCode"
-              >
-                <text>{{ phoneForm.countdown > 0 ? `${phoneForm.countdown}s` : '获取验证码' }}</text>
+      <view class="login-panel">
+        <!-- 登录方式 tab -->
+        <view class="segmented">
+          <view
+            class="segmented__item"
+            :class="{ 'is-active': loginType === 'phone' }"
+            @click="switchLoginType('phone')"
+          >
+            <text>{{ $t('auth.tabPhone') }}</text>
+          </view>
+          <view
+            class="segmented__item"
+            :class="{ 'is-active': loginType === 'password' }"
+            @click="switchLoginType('password')"
+          >
+            <text>{{ $t('auth.tabPassword') }}</text>
+          </view>
+        </view>
+
+        <!-- 表单卡片 -->
+        <view class="form-card surface-card surface-card--glass">
+          <view v-if="loginType === 'phone'" class="form-body">
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldPhone') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'phone' }">
+                <UiIcon name="user" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input"
+                  v-model="phoneForm.phone"
+                  type="number"
+                  :placeholder="$t('auth.phPhone')"
+                  placeholder-class="form-ph"
+                  maxlength="11"
+                  @focus="onFieldFocus('phone')"
+                  @blur="onFieldBlur"
+                />
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldCode') }}</text>
+              <view class="code-row">
+                <view
+                  class="input-wrap code-row__input"
+                  :class="{ 'is-focus': focusedField === 'code' }"
+                >
+                  <UiIcon name="shield" :size="32" color="var(--text-tertiary)" />
+                  <input
+                    class="form-input"
+                    v-model="phoneForm.code"
+                    type="number"
+                    :placeholder="$t('auth.phCode')"
+                    placeholder-class="form-ph"
+                    maxlength="6"
+                    @focus="onFieldFocus('code')"
+                    @blur="onFieldBlur"
+                  />
+                </view>
+                <view
+                  class="code-btn"
+                  :class="{ 'is-disabled': phoneForm.countdown > 0 }"
+                  hover-class="code-btn--hover"
+                  hover-stay-time="60"
+                  @click="sendCode"
+                >
+                  <text>{{ phoneForm.countdown > 0 ? `${phoneForm.countdown}s` : $t('auth.getCode') }}</text>
+                </view>
               </view>
             </view>
           </view>
-        </view>
 
-        <view v-else class="form-body">
-          <view class="form-group">
-            <text class="form-label">微信号 / QQ号 / 邮箱</text>
-            <input
-              class="form-input"
-              v-model="passwordForm.account"
-              placeholder="请输入账号"
-              placeholder-class="form-ph"
-            />
-          </view>
+          <view v-else class="form-body">
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldAccount') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'account' }">
+                <UiIcon name="at" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input"
+                  v-model="passwordForm.account"
+                  :placeholder="$t('auth.phAccount')"
+                  placeholder-class="form-ph"
+                  @focus="onFieldFocus('account')"
+                  @blur="onFieldBlur"
+                />
+              </view>
+            </view>
 
-          <view class="form-group">
-            <text class="form-label">密码</text>
-            <view class="pwd-row">
-              <input
-                class="form-input pwd-row__input"
-                v-model="passwordForm.password"
-                :type="showPassword ? 'text' : 'password'"
-                placeholder="请输入密码"
-                placeholder-class="form-ph"
-              />
-              <view class="eye-btn" @click="showPassword = !showPassword">
-                <UiIcon name="eye" :size="40" :color="showPassword ? '#07C160' : '#B2B2B2'" />
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldPassword') }}</text>
+              <view class="input-wrap pwd-row" :class="{ 'is-focus': focusedField === 'password' }">
+                <UiIcon name="lock" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input pwd-row__input"
+                  v-model="passwordForm.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  :placeholder="$t('auth.phPassword')"
+                  placeholder-class="form-ph"
+                  @focus="onFieldFocus('password')"
+                  @blur="onFieldBlur"
+                />
+                <view class="eye-btn" @click="showPassword = !showPassword">
+                  <UiIcon
+                    name="eye"
+                    :size="34"
+                    :color="showPassword ? 'var(--accent-color)' : 'var(--text-tertiary)'"
+                  />
+                </view>
               </view>
             </view>
           </view>
-        </view>
 
-        <!-- 记住我 -->
-        <view class="remember-row">
-          <view class="checkbox" :class="{ checked: rememberMe }" @click="rememberMe = !rememberMe">
-            <UiIcon v-if="rememberMe" name="check" :size="26" color="#FFFFFF" />
-          </view>
-          <text class="remember-text" @click="rememberMe = !rememberMe">记住我</text>
-        </view>
-
-        <!-- 主按钮 -->
-        <view
-          class="submit-btn"
-          :class="{ 'is-disabled': !canSubmit || isLoading }"
-          hover-class="submit-btn--hover"
-          hover-stay-time="60"
-          @click="handleLogin"
-        >
-          <text v-if="!isLoading">登录</text>
-          <view v-else class="submit-btn__loading">
-            <view class="spinner"></view>
-            <text>登录中…</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- 注册 / 找回密码 -->
-      <view class="links-row">
-        <text class="links-row__link" @click="goToRegister">注册账号</text>
-        <view class="links-row__split"></view>
-        <text class="links-row__link" @click="goToForgotPassword">忘记密码</text>
-      </view>
-
-      <!-- 其他登录方式 -->
-      <view class="other-section">
-        <view class="other-divider">
-          <view class="other-divider__line"></view>
-          <text class="other-divider__text">其他登录方式</text>
-          <view class="other-divider__line"></view>
-        </view>
-        <view class="methods">
-          <view class="method" @click="handleQrLogin">
-            <view class="method__icon">
-              <UiIcon name="scan" :size="44" color="#888888" />
+          <!-- 记住我 -->
+          <view class="remember-row">
+            <view class="check" :class="{ checked: rememberMe }" @click="rememberMe = !rememberMe">
+              <UiIcon v-if="rememberMe" name="check" :size="22" color="var(--accent-contrast)" />
             </view>
-            <text class="method__name">扫一扫</text>
+            <text class="remember-text" @click="rememberMe = !rememberMe">{{ $t('auth.rememberMe') }}</text>
           </view>
-          <view class="method" @click="handleWechatLogin">
-            <view class="method__icon">
-              <UiIcon name="user" :size="44" color="#888888" />
+
+          <!-- 主按钮 -->
+          <view
+            class="submit-btn"
+            :class="{ 'is-disabled': !canSubmit || isLoading }"
+            hover-class="submit-btn--hover"
+            hover-stay-time="60"
+            @click="handleLogin"
+          >
+            <text v-if="!isLoading">{{ $t('auth.loginBtn') }}</text>
+            <view v-else class="submit-btn__loading">
+              <view class="spinner"></view>
+              <text>{{ $t('auth.loginLoading') }}</text>
             </view>
-            <text class="method__name">微信登录</text>
           </view>
         </view>
-      </view>
 
-      <!-- 协议 -->
-      <view class="agreement-section">
-        <text class="agreement-text">
-          登录即表示同意
-          <text class="agreement-link">《用户协议》</text>
-          和
-          <text class="agreement-link">《隐私政策》</text>
-        </text>
-      </view>
+        <!-- 注册 / 找回密码 -->
+        <view class="links-row">
+          <text class="links-row__link" @click="goToRegister">{{ $t('auth.registerLink') }}</text>
+          <view class="links-row__split"></view>
+          <text class="links-row__link" @click="goToForgotPassword">{{ $t('auth.forgotLink') }}</text>
+        </view>
 
-      <view class="login__safe"></view>
+        <!-- 其他登录方式 -->
+        <view class="other-section">
+          <view class="other-divider">
+            <view class="other-divider__line"></view>
+            <text class="other-divider__text">{{ $t('auth.otherMethods') }}</text>
+            <view class="other-divider__line"></view>
+          </view>
+          <view class="methods">
+            <view class="method" @click="handleQrLogin">
+              <view class="method__icon">
+                <UiIcon name="scan" :size="40" color="var(--text-secondary)" />
+              </view>
+              <text class="method__name">{{ $t('auth.scan') }}</text>
+            </view>
+            <view class="method" @click="handleWechatLogin">
+              <view class="method__icon">
+                <UiIcon name="user" :size="40" color="var(--text-secondary)" />
+              </view>
+              <text class="method__name">{{ $t('auth.wechatLogin') }}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 协议 -->
+        <view class="agreement-section">
+          <text class="agreement-text">
+            {{ $t('auth.agreePrefix') }}
+            <text class="agreement-link">{{ $t('auth.userAgreement') }}</text>
+            {{ $t('auth.agreeAnd') }}
+            <text class="agreement-link">{{ $t('auth.privacyPolicy') }}</text>
+          </text>
+        </view>
+
+        <view class="safe-bottom-space--sm"></view>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -182,6 +211,7 @@ export default {
       showPassword: false,
       rememberMe: false,
       isLoading: false,
+      focusedField: '',
 
       phoneForm: {
         phone: '',
@@ -230,10 +260,18 @@ export default {
       this.loginType = type
     },
 
+    onFieldFocus(field) {
+      this.focusedField = field
+    },
+
+    onFieldBlur() {
+      this.focusedField = ''
+    },
+
     async sendCode() {
       const phoneRegex = /^1\d{10}$/
       if (!phoneRegex.test(this.phoneForm.phone)) {
-        uni.showToast({ title: '请输入有效的手机号', icon: 'none' })
+        uni.showToast({ title: this.$t('auth.invalidPhone'), icon: 'none' })
         return
       }
 
@@ -242,13 +280,13 @@ export default {
       try {
         const res = await auth.authApi.sendResetCode(this.phoneForm.phone)
         if (res.code === 200) {
-          uni.showToast({ title: '验证码已发送', icon: 'success' })
+          uni.showToast({ title: this.$t('auth.codeSent'), icon: 'success' })
           this.startCountdown()
         } else {
-          uni.showToast({ title: res.message || '发送失败', icon: 'none' })
+          uni.showToast({ title: res.message || this.$t('auth.sendFailed'), icon: 'none' })
         }
       } catch (e) {
-        uni.showToast({ title: '发送失败，请重试', icon: 'none' })
+        uni.showToast({ title: this.$t('auth.sendFailedRetry'), icon: 'none' })
       }
     },
 
@@ -281,24 +319,24 @@ export default {
           })
         }
 
-        uni.showToast({ title: '登录成功', icon: 'success' })
+        uni.showToast({ title: this.$t('auth.loginSuccess'), icon: 'success' })
 
         setTimeout(() => {
           uni.switchTab({ url: '/pages/index/index' })
         }, 1500)
       } catch (error) {
-        uni.showToast({ title: error.message || '登录失败', icon: 'none' })
+        uni.showToast({ title: error.message || this.$t('auth.loginFailed'), icon: 'none' })
       } finally {
         this.isLoading = false
       }
     },
 
     handleQrLogin() {
-      uni.showToast({ title: '功能开发中', icon: 'none' })
+      uni.showToast({ title: this.$t('common.comingSoon'), icon: 'none' })
     },
 
     handleWechatLogin() {
-      uni.showToast({ title: '功能开发中', icon: 'none' })
+      uni.showToast({ title: this.$t('common.comingSoon'), icon: 'none' })
     }
   }
 }
@@ -309,7 +347,8 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .login__body {
@@ -317,89 +356,97 @@ export default {
   height: 0;
 }
 
-/* 品牌区 */
+/* 品牌 Hero */
+.login-hero {
+  position: relative;
+  padding: 56rpx 32rpx 124rpx;
+  background-image: radial-gradient(120% 80% at 50% 0%, var(--accent-light) 0%, transparent 62%);
+}
+
 .brand {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 64rpx 0 40rpx;
+  z-index: 1;
 }
 
 .brand__logo {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 32rpx;
-  background-color: #07c160;
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: var(--radius-xl);
+  background-image: var(--accent-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 28rpx;
-  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.28);
+  box-shadow: var(--accent-glow);
 }
 
 .brand__title {
-  font-size: 44rpx;
+  font-size: var(--font-display);
   font-weight: 700;
-  color: #191919;
-  letter-spacing: -0.5rpx;
+  color: var(--text-primary);
+  letter-spacing: -0.6rpx;
   margin-bottom: 12rpx;
 }
 
 .brand__subtitle {
-  font-size: 26rpx;
-  color: #888888;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
 }
 
-/* tab */
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 72rpx;
-  padding: 0 32rpx;
-  margin-bottom: 32rpx;
-}
-
-.tabs__item {
+.login-panel {
   position: relative;
-  padding: 12rpx 8rpx 18rpx;
+  margin-top: -96rpx;
+  padding: 0 24rpx;
+  z-index: 2;
 }
 
-.tabs__text {
-  font-size: 30rpx;
-  color: #888888;
-  transition: color 0.2s ease;
+/* 登录方式 */
+.segmented {
+  display: flex;
+  padding: 8rpx;
+  margin: 0 8rpx 24rpx;
+  border-radius: 999rpx;
+  background-color: var(--bg-chip);
+  border: 1rpx solid var(--border-light);
 }
 
-.tabs__item.is-active .tabs__text {
-  color: #191919;
+.segmented__item {
+  flex: 1;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  transition: background-color var(--transition-fast);
+}
+
+.segmented__item text {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+}
+
+.segmented__item.is-active {
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.segmented__item.is-active text {
+  color: var(--text-primary);
   font-weight: 600;
-}
-
-.tabs__item.is-active::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 48rpx;
-  height: 6rpx;
-  border-radius: 3rpx;
-  background-color: #07c160;
 }
 
 /* 表单卡片 */
 .form-card {
-  background-color: #ffffff;
-  margin: 0 24rpx;
-  border-radius: 12rpx;
-  padding: 40rpx 32rpx;
-  box-shadow: var(--shadow-sm);
+  padding: 40rpx 32rpx 36rpx;
 }
 
 .form-body {
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
+  gap: 30rpx;
 }
 
 .form-group {
@@ -409,27 +456,46 @@ export default {
 }
 
 .form-label {
-  font-size: 28rpx;
-  color: #888888;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 1.6rpx;
+  color: var(--text-tertiary);
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  height: 92rpx;
+  padding: 0 28rpx;
+  gap: 16rpx;
+  background-color: var(--bg-input);
+  border: 2rpx solid transparent;
+  border-radius: 999rpx;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-wrap.is-focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4rpx var(--accent-light);
 }
 
 .form-input {
-  width: 100%;
-  height: 88rpx;
-  padding: 0 24rpx;
-  background-color: #f7f7f7;
-  border-radius: 10rpx;
-  font-size: 30rpx;
-  color: #191919;
-  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  background-color: transparent;
   border: none;
   outline: none;
 }
 
 .form-ph {
-  color: #b2b2b2;
+  color: var(--text-placeholder);
 }
 
+/* 验证码 */
 .code-row {
   display: flex;
   align-items: center;
@@ -438,111 +504,130 @@ export default {
 
 .code-row__input {
   flex: 1;
+  min-width: 0;
 }
 
 .code-btn {
   flex-shrink: 0;
-  height: 88rpx;
-  padding: 0 28rpx;
-  border-radius: 10rpx;
-  background-color: #07c160;
+  height: 92rpx;
+  padding: 0 30rpx;
+  border-radius: 999rpx;
+  background-color: var(--accent-light);
+  border: 2rpx solid var(--accent-color);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .code-btn--hover {
-  background-color: #06ad56;
+  background-color: var(--accent-soft);
+  transform: scale(0.98);
 }
 
 .code-btn text {
-  font-size: 28rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-sm);
+  color: var(--accent-color);
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .code-btn.is-disabled {
-  background-color: #b2b2b2;
+  background-color: var(--bg-tertiary);
+  border-color: transparent;
 }
 
+.code-btn.is-disabled text {
+  color: var(--text-disabled);
+}
+
+/* 密码 */
 .pwd-row {
   position: relative;
 }
 
 .pwd-row__input {
-  padding-right: 96rpx;
+  padding-right: 8rpx;
 }
 
 .eye-btn {
-  position: absolute;
-  right: 12rpx;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 64rpx;
-  height: 64rpx;
+  flex-shrink: 0;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
 }
 
 .eye-btn:active {
-  opacity: 0.6;
+  background-color: var(--bg-active);
 }
 
 /* 记住我 */
 .remember-row {
   display: flex;
   align-items: center;
-  margin-top: 32rpx;
+  margin-top: 30rpx;
 }
 
-.checkbox {
+.check {
   flex-shrink: 0;
-  width: 40rpx;
-  height: 40rpx;
+  width: 38rpx;
+  height: 38rpx;
   border-radius: 50%;
-  border: 2rpx solid #d2d2d6;
-  background-color: #ffffff;
+  border: 2rpx solid var(--border-color);
+  background-color: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all var(--transition-fast);
 }
 
-.checkbox.checked {
-  background-color: #07c160;
-  border-color: #07c160;
+.check.checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .remember-text {
   margin-left: 14rpx;
-  font-size: 28rpx;
-  color: #888888;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
 }
 
 /* 主按钮 */
 .submit-btn {
-  height: 88rpx;
-  margin-top: 32rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+  height: 94rpx;
+  margin-top: 36rpx;
+  border-radius: 999rpx;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .submit-btn--hover {
-  background-color: #06ad56;
+  transform: scale(0.98);
+  opacity: 0.92;
 }
 
 .submit-btn.is-disabled {
-  background-color: #c8e9d4;
+  background-image: none;
+  background-color: var(--bg-tertiary);
+  box-shadow: none;
 }
 
 .submit-btn text {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-lg);
+  color: var(--accent-contrast);
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.submit-btn.is-disabled text {
+  color: var(--text-disabled);
 }
 
 .submit-btn__loading {
@@ -552,14 +637,14 @@ export default {
 }
 
 .submit-btn__loading text {
-  font-size: 30rpx;
+  font-size: var(--font-base);
 }
 
 .spinner {
   width: 32rpx;
   height: 32rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.35);
-  border-top-color: #ffffff;
+  border: 4rpx solid var(--divider);
+  border-top-color: var(--accent-contrast);
   border-radius: 50%;
   animation: loginSpin 0.8s linear infinite;
 }
@@ -573,12 +658,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40rpx;
+  margin-top: 36rpx;
 }
 
 .links-row__link {
-  font-size: 28rpx;
-  color: #576b95;
+  font-size: var(--font-sm);
+  color: var(--accent-color);
 }
 
 .links-row__link:active {
@@ -589,31 +674,32 @@ export default {
   width: 1rpx;
   height: 24rpx;
   margin: 0 24rpx;
-  background-color: #d2d2d6;
+  background-color: var(--divider);
 }
 
 /* 其他登录方式 */
 .other-section {
-  margin-top: 64rpx;
+  margin-top: 56rpx;
 }
 
 .other-divider {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  padding: 0 48rpx;
-  margin-bottom: 36rpx;
+  padding: 0 40rpx;
+  margin-bottom: 32rpx;
 }
 
 .other-divider__line {
   flex: 1;
   height: 1rpx;
-  background-color: #d2d2d6;
+  background-color: var(--border-light);
 }
 
 .other-divider__text {
-  font-size: 24rpx;
-  color: #b2b2b2;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  letter-spacing: 1rpx;
 }
 
 .methods {
@@ -640,32 +726,29 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ffffff;
-  border: 1rpx solid #e5e5e5;
+  background-color: var(--bg-primary);
+  border: 1rpx solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .method__name {
-  font-size: 24rpx;
-  color: #888888;
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
 }
 
 /* 协议 */
 .agreement-section {
-  padding: 48rpx 48rpx 0;
+  padding: 48rpx 40rpx 0;
 }
 
 .agreement-text {
-  font-size: 22rpx;
-  color: #b2b2b2;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
   line-height: 1.6;
   text-align: center;
 }
 
 .agreement-link {
-  color: #576b95;
-}
-
-.login__safe {
-  height: calc(48rpx + env(safe-area-inset-bottom));
+  color: var(--accent-color);
 }
 </style>

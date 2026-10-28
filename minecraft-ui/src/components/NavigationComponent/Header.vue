@@ -3,14 +3,7 @@
   <div class="navbar-background">
     <div class="navbar-background-container">
       <div class="navbar-home">
-        <!-- 移动端汉堡菜单按钮（≤992px 显示） -->
-        <button class="mobile-menu-btn" :class="{ 'is-open': mobileMenuOpen }" :aria-label="$t('header.nav.menu')"
-          @click.stop="mobileMenuOpen = !mobileMenuOpen">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        <div class="logo" @click="navigateTo('/Home')">
+        <div class="logo" @click="navigateTo('/home')">
           <img v-if="mediaList.images.length > 0" :src="mediaList.images[0].image" :alt="$t('common.brand')">
           <img v-else :src="defaultLogo" :alt="$t('common.brand')">
           <span class="brand-text">{{ $t('common.brand') }}</span>
@@ -138,42 +131,49 @@
       </div>
     </div>
   </div>
-  <!-- 移动端导航面板（≤992px 显示，含主导航与更多菜单） -->
-  <Transition name="mobile-nav">
-    <div v-if="mobileMenuOpen" class="mobile-nav-panel" @click.stop>
-      <div class="mobile-nav-section">{{ $t('header.nav.sectionNav') }}</div>
-      <button v-for="(navItem, i) in navItems" :key="navItem.path" class="mobile-nav-item"
-        :class="{ 'nav-item-active': isActiveNav(navItem.path) }" :style="{ animationDelay: `${i * 40}ms` }"
-        @click="navigateTo(navItem.path)">
-        <span class="mobile-nav-iconbox">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path v-for="d in navIcon(navItem.path)" :key="d" :d="d" />
-          </svg>
-        </span>
-        <span class="mobile-nav-text">{{ navItem.labelKey ? $t(navItem.labelKey) : navItem.label }}</span>
-        <svg class="mobile-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6" />
+  <!-- 移动端底部悬浮导航（≤992px 显示）：4 个核心页面 + 「更多」入口 -->
+  <nav class="mobile-tabbar" :aria-label="$t('header.nav.menu')">
+    <button v-for="tab in mobileTabs" :key="tab.key" class="mobile-tab"
+      :class="{ 'is-active': tab.more ? mobileMenuOpen || isMoreActive : isActiveNav(tab.path) }"
+      @click.stop="onTabClick(tab)">
+      <span class="mobile-tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path v-for="d in tabIcon(tab)" :key="d" :d="d" />
         </svg>
-      </button>
-      <div class="mobile-nav-divider"></div>
-      <div class="mobile-nav-section">{{ $t('header.nav.sectionMore') }}</div>
-      <button v-for="(item, i) in moreMenuItems" :key="item.path" class="mobile-nav-item"
-        :class="{ 'nav-item-active': isActiveNav(item.path) }"
-        :style="{ animationDelay: `${(navItems.length + i) * 40}ms` }" @click="navigateTo(item.path)">
-        <span class="mobile-nav-iconbox">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path v-for="d in navIcon(item.path)" :key="d" :d="d" />
+      </span>
+      <span class="mobile-tab-label">{{ $t(tab.labelKey) }}</span>
+    </button>
+  </nav>
+
+  <!-- 移动端「更多」底部浮层（≤992px 显示，其余页面以宫格展示） -->
+  <Transition name="mobile-sheet-fade">
+    <div v-if="mobileMenuOpen" class="mobile-sheet-mask" @click="mobileMenuOpen = false"></div>
+  </Transition>
+  <Transition name="mobile-sheet-slide">
+    <div v-if="mobileMenuOpen" class="mobile-sheet" @click.stop>
+      <span class="mobile-sheet-handle"></span>
+      <div class="mobile-sheet-head">
+        <span class="mobile-sheet-title">{{ $t('header.nav.sectionMore') }}</span>
+        <button class="mobile-sheet-close" :aria-label="$t('header.nav.menu')" @click="mobileMenuOpen = false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
           </svg>
-        </span>
-        <span class="mobile-nav-text">{{ item.labelKey ? $t(item.labelKey) : item.label }}</span>
-        <svg class="mobile-nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="m9 18 6-6-6-6" />
-        </svg>
-      </button>
+        </button>
+      </div>
+      <div class="mobile-sheet-grid">
+        <button v-for="item in moreSheetItems" :key="item.path" class="mobile-sheet-tile"
+          :class="{ 'nav-item-active': isActiveNav(item.path) }" @click="navigateTo(item.path)">
+          <span class="mobile-sheet-iconbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path v-for="d in navIcon(item.path)" :key="d" :d="d" />
+            </svg>
+          </span>
+          <span class="mobile-sheet-label">{{ item.labelKey ? $t(item.labelKey) : item.label }}</span>
+        </button>
+      </div>
     </div>
   </Transition>
   <!-- 页面渲染区域：由路由驱动 -->
@@ -318,40 +318,89 @@ const closeSocialLoginModal = () => {
 
 const isLoggedIn = ref(false);
 const isDropdownVisible = ref(false);
-// 移动端导航面板开关
+// 移动端「更多」浮层开关
 const mobileMenuOpen = ref(false);
 
-// 路由切换后自动收起移动端菜单
+// 路由切换后自动收起移动端浮层
 watch(() => route.path, () => {
   mobileMenuOpen.value = false;
 });
 
-// 点击页面其他区域时收起移动端菜单
+// 点击页面其他区域时收起移动端浮层
 const onDocumentClick = () => {
   mobileMenuOpen.value = false;
 };
-onMounted(() => document.addEventListener('click', onDocumentClick));
-onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick));
+// 视口回到桌面宽度时收起浮层，避免滚动锁残留
+const onWindowResize = () => {
+  if (window.innerWidth > 992) mobileMenuOpen.value = false;
+};
+onMounted(() => {
+  document.addEventListener('click', onDocumentClick);
+  window.addEventListener('resize', onWindowResize);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocumentClick);
+  window.removeEventListener('resize', onWindowResize);
+  document.body.style.overflow = '';
+});
 
 /** 移动端菜单项图标（按路由路径映射，24x24 线性图标） */
 const MOBILE_NAV_ICONS = {
-  '/Home': ['M3 10.5 12 3l9 7.5', 'M5 9.5V21h14V9.5'],
-  '/Scenicspot': ['M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z', 'M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'],
-  '/attractions': ['M3 4h18v16H3z', 'm3 16 5-5 4 4 3-3 6 6'],
-  '/Hotel': ['M4 21V7l8-4 8 4v14', 'M9 21v-6h6v6'],
-  '/Food': ['M7 2v20', 'M7 2v6a2 2 0 0 0 4 0V2', 'M17 2c-1.7 1.2-2.5 3.4-2.5 5.5 0 2.1 1 3.5 2.5 3.5V22'],
-  '/Souvenir': ['M6 7h12l1 14H5L6 7z', 'M9 7a3 3 0 0 1 6 0'],
-  '/Strategy': ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', 'M22 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'],
-  '/Aboutwebsite': ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 16v-4', 'M12 8h.01'],
-  '/Cards': ['M2 6h20v13H2z', 'M2 10h20'],
-  '/Community': ['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
-  '/TicketService': ['M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z', 'M13 5v2', 'M13 11v2', 'M13 17v2'],
-  '/TravelPlanning': ['M3 5h18v16H3z', 'M3 10h18', 'M8 3v4', 'M16 3v4'],
-  '/Maps': ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M2 12h20', 'M12 2c3 3 4 6.5 4 10s-1 7-4 10c-3-3-4-6.5-4-10s1-7 4-10z'],
-  '/TestProject001': ['M9 3h6', 'M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3', 'M7 15h10'],
+  '/home': ['M3 10.5 12 3l9 7.5', 'M5 9.5V21h14V9.5'],
+  '/worldtravel': ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z', 'M3 12h18', 'M12 3c2.6 2.6 4 5.6 4 9s-1.4 6.4-4 9c-2.6-2.6-4-5.6-4-9s1.4-6.4 4-9z'],
+  '/scenicspot': ['M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11z', 'M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z'],
+  '/hotel': ['M4 21V7l8-4 8 4v14', 'M9 21v-6h6v6', 'M9 10h.01', 'M15 10h.01'],
+  '/food': ['M7 2v20', 'M7 2v6a2.5 2.5 0 0 0 5 0V2', 'M17 2c-1.7 1.2-2.5 3.4-2.5 5.5 0 2.1 1 3.5 2.5 3.5V22'],
+  '/souvenir': ['M6 7h12l1 14H5L6 7z', 'M9 7a3 3 0 0 1 6 0'],
+  '/strategy': ['M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z', 'M8 8h8', 'M8 12h6'],
+  '/cards': ['M2 6h20v13H2z', 'M2 10h20', 'M6 15h4'],
+  '/community': ['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', 'M8 9h8', 'M8 13h5'],
+  '/ticket': ['M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z', 'M13 5v2', 'M13 11v2', 'M13 17v2'],
+  '/travel': ['M3 5h18v16H3z', 'M3 10h18', 'M8 3v4', 'M16 3v4', 'M8 15h3'],
+  '/travel-note': ['M5 3h11l3 3v15H5z', 'M9 8h6', 'M9 12h6', 'M9 16h4'],
+  '/maps': ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M2 12h20', 'M12 2c3 3 4 6.5 4 10s-1 7-4 10c-3-3-4-6.5-4-10s1-7 4-10z'],
+  '/test': ['M9 3h6', 'M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3', 'M7 15h10'],
+  '/aboutweb': ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 16v-4', 'M12 8h.01'],
 };
 const DEFAULT_NAV_ICON = ['M4 6h16', 'M4 12h16', 'M4 18h16'];
+/** 「更多」入口图标（2x2 宫格） */
+const MORE_TAB_ICON = ['M4 4h6v6H4z', 'M14 4h6v6h-6z', 'M4 14h6v6H4z', 'M14 14h6v6h-6z'];
 const navIcon = (path) => MOBILE_NAV_ICONS[path] ?? DEFAULT_NAV_ICON;
+
+/** 移动端底部导航固定标签：只保留高频核心页面，其余收进「更多」浮层 */
+const mobileTabs = [
+  { key: 'home', path: '/home', labelKey: 'header.nav.home' },
+  { key: 'destination', path: '/worldtravel', labelKey: 'header.nav.destination' },
+  { key: 'scenic', path: '/scenicspot', labelKey: 'header.nav.scenic' },
+  { key: 'hotel', path: '/hotel', labelKey: 'header.nav.hotel' },
+  { key: 'more', more: true, labelKey: 'header.more' },
+];
+const mobileTabPaths = mobileTabs.filter((tab) => tab.path).map((tab) => tab.path);
+const tabIcon = (tab) => (tab.more ? MORE_TAB_ICON : navIcon(tab.path));
+
+/** 「更多」浮层内容 = 主菜单中未上底部栏的项 + 全部更多菜单项 */
+const moreSheetItems = computed(() => [
+  ...navItems.filter((item) => !mobileTabPaths.includes(item.path)),
+  ...moreMenuItems,
+]);
+
+/** 当前页面属于「更多」中的某一项时，高亮底部「更多」标签 */
+const isMoreActive = computed(() => moreSheetItems.value.some((item) => isActiveNav(item.path)));
+
+/** 底部标签点击：核心页面直接跳转，「更多」展开/收起浮层 */
+const onTabClick = (tab) => {
+  if (tab.more) {
+    mobileMenuOpen.value = !mobileMenuOpen.value;
+    return;
+  }
+  mobileMenuOpen.value = false;
+  navigateTo(tab.path);
+};
+
+// 浮层打开时锁定页面滚动，避免背景跟随滚动
+watch(mobileMenuOpen, (open) => {
+  document.body.style.overflow = open ? 'hidden' : '';
+});
 const showLogoutConfirm = ref(false);
 const showSocialLoginModal = ref(false);
 const currentPlatform = ref('wechat');
@@ -580,58 +629,10 @@ onMounted(() => {
 
 /* ================= 响应式适配 ================= */
 
-/* 汉堡菜单按钮：默认隐藏，≤992px 显示；白色卡片式，深浅背景均清晰可见 */
-.mobile-menu-btn {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  width: 40px;
-  height: 40px;
-  padding: 8px;
-  border: 1px solid var(--theme-border);
-  border-radius: 10px;
-  background: var(--theme-bg-glass-strong);
-  box-shadow: var(--theme-shadow-sm);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.mobile-menu-btn:hover {
-  box-shadow: var(--theme-shadow-md);
-  transform: translateY(-1px);
-}
-
-.mobile-menu-btn span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--theme-text-1);
-  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
-}
-
-/* 展开时变为 X，并高亮为品牌蓝 */
-.mobile-menu-btn.is-open span {
-  background: var(--theme-primary);
-}
-
-.mobile-menu-btn.is-open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-
-.mobile-menu-btn.is-open span:nth-child(2) {
-  opacity: 0;
-}
-
-.mobile-menu-btn.is-open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
-/* 移动端导航面板：默认隐藏 */
-.mobile-nav-panel {
+/* 移动端底部导航条与「更多」浮层：默认隐藏，≤992px 显示 */
+.mobile-tabbar,
+.mobile-sheet-mask,
+.mobile-sheet {
   display: none;
 }
 
@@ -661,12 +662,8 @@ onMounted(() => {
   }
 }
 
-/* ---- 平板（≤992px）：汉堡菜单替代水平导航 ---- */
+/* ---- 平板/手机（≤992px）：底部悬浮导航替代水平导航 ---- */
 @media (max-width: 992px) {
-  .mobile-menu-btn {
-    display: flex;
-  }
-
   /* 隐藏水平主导航与「更多」下拉 */
   .nav-items {
     display: none;
@@ -677,188 +674,366 @@ onMounted(() => {
     justify-content: space-between;
   }
 
-  /* 移动端导航面板：固定宽度卡片，左侧锚定 */
-  .mobile-nav-panel {
-    display: block;
-    position: absolute;
-    top: 78px;
-    left: 16px;
-    z-index: 9999;
-    width: 300px;
-    max-width: calc(100vw - 32px);
-    padding: 10px;
-    border: 1px solid var(--theme-border);
-    border-radius: 18px;
-    background: var(--theme-bg-glass-strong);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: var(--theme-shadow-lg);
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-  }
-
-  /* 分组标题 */
-  .mobile-nav-section {
-    padding: 8px 12px 4px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    color: var(--theme-text-3);
-  }
-
-  /* 菜单项：图标盒 + 文字 + 右箭头，进入时逐项滑入 */
-  .mobile-nav-item {
-    position: relative;
+  /* 底部悬浮导航条：毛玻璃 + 主题令牌，居中悬浮于安全区之上 */
+  .mobile-tabbar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 110;
     display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 9px 12px;
-    border: none;
-    border-radius: 12px;
-    background: transparent;
-    color: var(--theme-text-1);
-    font-size: 14px;
-    font-weight: 500;
-    text-align: left;
-    cursor: pointer;
-    opacity: 0;
-    animation: mobile-nav-item-in 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-    transition: background 0.2s ease, color 0.2s ease;
+    align-items: stretch;
+    gap: 2px;
+    width: min(560px, calc(100vw - 24px));
+    padding: 6px;
+    border: 1px solid var(--theme-border);
+    border-radius: 22px;
+    background: var(--theme-bg-glass-strong);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: var(--theme-shadow-lg);
+    animation: mobile-tabbar-in 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) both;
   }
 
-  @keyframes mobile-nav-item-in {
+  @keyframes mobile-tabbar-in {
     from {
       opacity: 0;
-      transform: translateX(-12px);
+      transform: translate(-50%, 16px);
     }
 
     to {
       opacity: 1;
-      transform: translateX(0);
+      transform: translate(-50%, 0);
     }
   }
 
-  .mobile-nav-iconbox {
+  .mobile-tab {
+    position: relative;
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    padding: 6px 2px 5px;
+    border: none;
+    border-radius: 16px;
+    background: transparent;
+    color: var(--theme-text-3);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-tab-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    background: var(--theme-primary-soft);
-    color: var(--theme-primary);
-    transition: background 0.2s ease, color 0.2s ease;
+    width: 38px;
+    height: 26px;
+    border-radius: 999px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
   }
 
-  .mobile-nav-iconbox svg {
-    width: 18px;
-    height: 18px;
+  .mobile-tab-icon svg {
+    width: 20px;
+    height: 20px;
   }
 
-  .mobile-nav-text {
-    flex: 1;
+  .mobile-tab-label {
+    max-width: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .mobile-nav-chevron {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    color: var(--theme-text-3);
-    transition: transform 0.2s ease, color 0.2s ease;
-  }
-
-  .mobile-nav-item:hover {
-    background: var(--theme-primary-soft);
-    color: var(--theme-primary);
-  }
-
-  .mobile-nav-item:hover .mobile-nav-chevron {
-    transform: translateX(3px);
-    color: var(--theme-primary);
-  }
-
-  /* 当前路由：左侧指示条 + 渐变高亮 */
-  .mobile-nav-item.nav-item-active {
-    background: var(--theme-primary-soft);
+  .mobile-tab.is-active {
     color: var(--theme-primary);
     font-weight: 600;
   }
 
-  .mobile-nav-item.nav-item-active::before {
+  .mobile-tab.is-active .mobile-tab-icon {
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
+    transform: translateY(-1px);
+  }
+
+  /* 当前标签顶部渐变指示条 */
+  .mobile-tab.is-active::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 8px;
-    bottom: 8px;
-    width: 3px;
-    border-radius: 3px;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
     background: var(--theme-gradient);
   }
 
-  .mobile-nav-item.nav-item-active .mobile-nav-iconbox {
+  .mobile-tab:active .mobile-tab-icon {
+    transform: scale(0.92);
+  }
+
+  /* 「更多」浮层遮罩 */
+  .mobile-sheet-mask {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 130;
+    background: var(--theme-overlay);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+
+  /* 「更多」浮层：底部上滑面板，宫格展示其余入口 */
+  .mobile-sheet {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 140;
+    max-height: 76vh;
+    padding: 6px 16px calc(20px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--theme-border);
+    border-radius: 24px 24px 0 0;
+    background: var(--theme-bg-elevated);
+    box-shadow: var(--theme-shadow-lg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-sheet-handle {
+    display: block;
+    width: 38px;
+    height: 4px;
+    margin: 8px auto 10px;
+    border-radius: 999px;
+    background: var(--theme-hairline);
+  }
+
+  .mobile-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 2px 12px;
+  }
+
+  .mobile-sheet-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--theme-text-1);
+  }
+
+  .mobile-sheet-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--theme-border);
+    border-radius: 10px;
+    background: var(--theme-bg-muted);
+    color: var(--theme-text-2);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-sheet-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mobile-sheet-close:hover {
+    background: var(--theme-bg-hover);
+    color: var(--theme-text-1);
+  }
+
+  /* 自适应宫格：窄屏自动降为 3 列，避免文字挤压 */
+  .mobile-sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 8px;
+  }
+
+  .mobile-sheet-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    background: var(--theme-bg-surface-2);
+    color: var(--theme-text-2);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .mobile-sheet-tile:active {
+    transform: scale(0.97);
+  }
+
+  .mobile-sheet-tile:hover,
+  .mobile-sheet-tile.nav-item-active {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-soft);
+    color: var(--theme-primary);
+  }
+
+  .mobile-sheet-iconbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--theme-bg-muted);
+    color: var(--theme-primary);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-sheet-iconbox svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .mobile-sheet-tile:hover .mobile-sheet-iconbox,
+  .mobile-sheet-tile.nav-item-active .mobile-sheet-iconbox {
     background: var(--theme-primary);
     color: var(--theme-primary-text);
   }
 
-  .mobile-nav-item.nav-item-active .mobile-nav-chevron {
-    color: var(--theme-primary);
+  .mobile-sheet-label {
+    width: 100%;
+    text-align: center;
+    line-height: 1.25;
   }
 
-  .mobile-nav-divider {
-    height: 1px;
-    margin: 8px 12px;
-    background: linear-gradient(to right, transparent, var(--theme-hairline), transparent);
+  /* 为底部悬浮导航预留空间，避免遮挡页面内容 */
+  main {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
   }
 }
 
-/* 面板展开动画 */
-.mobile-nav-enter-active,
-.mobile-nav-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+/* 浮层动效：遮罩淡入 + 面板上滑 */
+.mobile-sheet-fade-enter-active,
+.mobile-sheet-fade-leave-active {
+  transition: opacity 0.25s ease;
 }
 
-.mobile-nav-enter-from,
-.mobile-nav-leave-to {
+.mobile-sheet-fade-enter-from,
+.mobile-sheet-fade-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
 }
 
-/* ---- 手机（≤768px）：隐藏社交图标按钮，压缩操作区 ---- */
+.mobile-sheet-slide-enter-active {
+  transition: transform 0.32s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.mobile-sheet-slide-leave-active {
+  transition: transform 0.24s ease-in;
+}
+
+.mobile-sheet-slide-enter-from,
+.mobile-sheet-slide-leave-to {
+  transform: translateY(100%);
+}
+
+/* ---- 手机（≤768px）：压缩顶部栏，操作区控件保留图标形态，避免右侧溢出 ---- */
 @media (max-width: 768px) {
   /* 微信 / QQ / 微博 图标按钮 */
   .actions > .action-btn-iocn {
     display: none;
   }
 
+  /* 顶部栏整体收紧 */
   .navbar-home {
-    padding: 8px 12px;
+    height: 58px;
+    padding: 6px 12px;
+    gap: 10px;
+  }
+
+  .logo {
+    gap: 8px;
+  }
+
+  .logo img {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .actions {
+    flex: 0 1 auto;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  /* 语言切换：只留地球图标的圆形按钮 */
+  .actions :deep(.ls-trigger) {
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    gap: 0;
+  }
+
+  .actions :deep(.ls-label),
+  .actions :deep(.ls-arrow) {
+    display: none;
+  }
+
+  /* 主题切换：缩小分段与配色按钮，亮/暗/游戏三态仍可直接切换 */
+  .actions :deep(.theme-switch),
+  .actions :deep(.theme-switch__palette) {
+    --ts-item: 24px;
+    --ts-pad: 2px;
+    --ts-icon: 14px;
+  }
+
+  /* 头像与公告铃铛同步缩小，保持同一视觉重量 */
+  .profilepicture,
+  .profilepicture_img {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* 头像菜单右对齐，避免贴右侧时弹层溢出视口 */
+  .profilepicture-inner {
+    top: 48px;
+    left: auto;
+    right: 0;
+    transform: none;
   }
 }
 
-/* ---- 小屏手机（≤576px）：隐藏品牌文字，语言切换器只留图标 ---- */
+/* ---- 小屏手机（≤576px）：隐藏品牌文字，登录/注册只留图标 ---- */
 @media (max-width: 576px) {
   .logo span {
     display: none;
   }
 
   .logo img {
-    height: 36px;
+    width: 34px;
+    height: 34px;
   }
 
-  .actions :deep(.ls-label) {
+  /* 未登录时登录/注册按钮压缩为图标按钮 */
+  .actions .action-btn span {
     display: none;
   }
 
-  .actions :deep(.ls-arrow) {
-    display: none;
-  }
-
-  /* 登录/注册按钮更紧凑 */
   .actions .action-btn {
-    padding: 8px 10px;
-    font-size: 12px;
+    padding: 8px;
   }
 }
 </style>

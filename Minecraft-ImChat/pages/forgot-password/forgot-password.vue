@@ -1,93 +1,121 @@
 <template>
-  <view class="forgot">
+  <view class="forgot" :class="themeClass">
     <CustomNavBar
       :show-back="true"
-      title="找回密码"
+      :title="$t('auth.navForgot')"
       title-align="center"
       @back="goBack"
     />
 
     <scroll-view class="forgot__body" scroll-y :show-scrollbar="false">
-      <view class="hero">
-        <text class="hero__title">重置密码</text>
-        <text class="hero__subtitle">输入您的手机号以找回账号密码</text>
+      <!-- 说明 Hero -->
+      <view class="forgot-hero grid-overlay">
+        <view class="hero">
+          <view class="hero__icon">
+            <UiIcon name="lock" :size="56" color="#FFFFFF" />
+          </view>
+          <text class="hero__title">{{ $t('auth.resetTitle') }}</text>
+          <text class="hero__subtitle">{{ $t('auth.resetSubtitle') }}</text>
+        </view>
       </view>
 
-      <view class="form-card">
-        <view class="form-body">
-          <view class="form-group">
-            <text class="form-label">手机号</text>
-            <input
-              class="form-input"
-              v-model="form.phone"
-              type="number"
-              placeholder="请输入手机号"
-              placeholder-class="form-ph"
-              maxlength="11"
-            />
-          </view>
+      <view class="forgot-panel">
+        <view class="form-card surface-card surface-card--glass">
+          <view class="form-body">
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldPhone') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'phone' }">
+                <UiIcon name="phone" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input"
+                  v-model="form.phone"
+                  type="number"
+                  :placeholder="$t('auth.phPhone')"
+                  placeholder-class="form-ph"
+                  maxlength="11"
+                  @focus="onFieldFocus('phone')"
+                  @blur="onFieldBlur"
+                />
+              </view>
+            </view>
 
-          <view class="form-group">
-            <text class="form-label">验证码</text>
-            <view class="code-row">
-              <input
-                class="form-input code-row__input"
-                v-model="form.code"
-                type="number"
-                placeholder="请输入验证码"
-                placeholder-class="form-ph"
-                maxlength="6"
-              />
-              <view
-                class="code-btn"
-                :class="{ 'is-disabled': form.countdown > 0 }"
-                hover-class="code-btn--hover"
-                hover-stay-time="60"
-                @click="sendCode"
-              >
-                <text>{{ form.countdown > 0 ? `${form.countdown}s` : '获取验证码' }}</text>
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldCode') }}</text>
+              <view class="code-row">
+                <view
+                  class="input-wrap code-row__input"
+                  :class="{ 'is-focus': focusedField === 'code' }"
+                >
+                  <UiIcon name="shield" :size="32" color="var(--text-tertiary)" />
+                  <input
+                    class="form-input"
+                    v-model="form.code"
+                    type="number"
+                    :placeholder="$t('auth.phCode')"
+                    placeholder-class="form-ph"
+                    maxlength="6"
+                    @focus="onFieldFocus('code')"
+                    @blur="onFieldBlur"
+                  />
+                </view>
+                <view
+                  class="code-btn"
+                  :class="{ 'is-disabled': form.countdown > 0 }"
+                  hover-class="code-btn--hover"
+                  hover-stay-time="60"
+                  @click="sendCode"
+                >
+                  <text>{{ form.countdown > 0 ? `${form.countdown}s` : $t('auth.getCode') }}</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldNewPassword') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'password' }">
+                <UiIcon name="lock" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input pwd-input"
+                  v-model="form.newPassword"
+                  :type="showPassword ? 'text' : 'password'"
+                  :placeholder="$t('auth.phNewPassword')"
+                  placeholder-class="form-ph"
+                  maxlength="20"
+                  @focus="onFieldFocus('password')"
+                  @blur="onFieldBlur"
+                />
+                <view class="eye-btn" @click="showPassword = !showPassword">
+                  <UiIcon
+                    name="eye"
+                    :size="34"
+                    :color="showPassword ? 'var(--accent-color)' : 'var(--text-tertiary)'"
+                  />
+                </view>
               </view>
             </view>
           </view>
 
-          <view class="form-group">
-            <text class="form-label">新密码</text>
-            <view class="pwd-row">
-              <input
-                class="form-input pwd-row__input"
-                v-model="form.newPassword"
-                :type="showPassword ? 'text' : 'password'"
-                placeholder="请设置新密码"
-                placeholder-class="form-ph"
-                maxlength="20"
-              />
-              <view class="eye-btn" @click="showPassword = !showPassword">
-                <UiIcon name="eye" :size="40" :color="showPassword ? '#07C160' : '#B2B2B2'" />
-              </view>
+          <view
+            class="submit-btn"
+            :class="{ 'is-disabled': !canSubmit || isLoading }"
+            hover-class="submit-btn--hover"
+            hover-stay-time="60"
+            @click="handleReset"
+          >
+            <text v-if="!isLoading">{{ $t('auth.resetBtn') }}</text>
+            <view v-else class="submit-btn__loading">
+              <view class="spinner"></view>
+              <text>{{ $t('auth.resetLoading') }}</text>
             </view>
           </view>
         </view>
 
-        <view
-          class="submit-btn"
-          :class="{ 'is-disabled': !canSubmit || isLoading }"
-          hover-class="submit-btn--hover"
-          hover-stay-time="60"
-          @click="handleReset"
-        >
-          <text v-if="!isLoading">确认重置</text>
-          <view v-else class="submit-btn__loading">
-            <view class="spinner"></view>
-            <text>提交中…</text>
-          </view>
+        <view class="back-login-row">
+          <text class="back-login-link" @click="goBackToLogin">{{ $t('auth.backToLogin') }}</text>
         </view>
-      </view>
 
-      <view class="back-login-row">
-        <text class="back-login-link" @click="goBackToLogin">返回登录</text>
+        <view class="safe-bottom-space--sm"></view>
       </view>
-
-      <view class="forgot__safe"></view>
     </scroll-view>
   </view>
 </template>
@@ -103,6 +131,7 @@ export default {
     return {
       showPassword: false,
       isLoading: false,
+      focusedField: '',
       countdownTimer: null,
 
       form: {
@@ -137,10 +166,18 @@ export default {
       uni.redirectTo({ url: '/pages/login/login' })
     },
 
+    onFieldFocus(field) {
+      this.focusedField = field
+    },
+
+    onFieldBlur() {
+      this.focusedField = ''
+    },
+
     async sendCode() {
       const phoneRegex = /^1\d{10}$/
       if (!phoneRegex.test(this.form.phone)) {
-        uni.showToast({ title: '请输入有效的手机号', icon: 'none' })
+        uni.showToast({ title: this.$t('auth.invalidPhone'), icon: 'none' })
         return
       }
 
@@ -149,13 +186,13 @@ export default {
       try {
         const res = await sendResetCode(this.form.phone)
         if (res.code === 200) {
-          uni.showToast({ title: '验证码已发送', icon: 'success' })
+          uni.showToast({ title: this.$t('auth.codeSent'), icon: 'success' })
           this.startCountdown()
         } else {
-          uni.showToast({ title: res.message || '发送失败', icon: 'none' })
+          uni.showToast({ title: res.message || this.$t('auth.sendFailed'), icon: 'none' })
         }
       } catch (e) {
-        uni.showToast({ title: '发送失败，请重试', icon: 'none' })
+        uni.showToast({ title: this.$t('auth.sendFailedRetry'), icon: 'none' })
       }
     },
 
@@ -182,16 +219,16 @@ export default {
         })
 
         if (res.code === 200) {
-          uni.showToast({ title: '密码重置成功', icon: 'success' })
+          uni.showToast({ title: this.$t('auth.resetSuccess'), icon: 'success' })
 
           setTimeout(() => {
             uni.redirectTo({ url: '/pages/login/login' })
           }, 1500)
         } else {
-          uni.showToast({ title: res.message || '重置失败', icon: 'none' })
+          uni.showToast({ title: res.message || this.$t('auth.resetFailed'), icon: 'none' })
         }
       } catch (error) {
-        uni.showToast({ title: error.message || '重置失败', icon: 'none' })
+        uni.showToast({ title: error.message || this.$t('auth.resetFailed'), icon: 'none' })
       } finally {
         this.isLoading = false
       }
@@ -205,7 +242,8 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .forgot__body {
@@ -213,41 +251,63 @@ export default {
   height: 0;
 }
 
-/* 头部说明 */
+/* 说明 Hero */
+.forgot-hero {
+  position: relative;
+  padding: 48rpx 32rpx 104rpx;
+  background-image: radial-gradient(120% 80% at 50% 0%, var(--accent-light) 0%, transparent 62%);
+}
+
 .hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48rpx 48rpx 32rpx;
+  z-index: 1;
+}
+
+.hero__icon {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: var(--radius-lg);
+  background-image: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24rpx;
+  box-shadow: var(--accent-glow);
 }
 
 .hero__title {
-  font-size: 44rpx;
+  font-size: var(--font-xl);
   font-weight: 700;
-  color: #191919;
-  letter-spacing: -0.5rpx;
-  margin-bottom: 12rpx;
+  color: var(--text-primary);
+  letter-spacing: -0.3rpx;
+  margin-bottom: 10rpx;
 }
 
 .hero__subtitle {
-  font-size: 26rpx;
-  color: #888888;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
   text-align: center;
+}
+
+.forgot-panel {
+  position: relative;
+  margin-top: -72rpx;
+  padding: 0 24rpx;
+  z-index: 2;
 }
 
 /* 表单卡片 */
 .form-card {
-  background-color: #ffffff;
-  margin: 0 24rpx;
-  border-radius: 12rpx;
-  padding: 40rpx 32rpx;
-  box-shadow: var(--shadow-sm);
+  padding: 40rpx 32rpx 36rpx;
 }
 
 .form-body {
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
+  gap: 30rpx;
 }
 
 .form-group {
@@ -257,27 +317,46 @@ export default {
 }
 
 .form-label {
-  font-size: 28rpx;
-  color: #888888;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 1.6rpx;
+  color: var(--text-tertiary);
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  height: 92rpx;
+  padding: 0 28rpx;
+  gap: 16rpx;
+  background-color: var(--bg-input);
+  border: 2rpx solid transparent;
+  border-radius: 999rpx;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-wrap.is-focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4rpx var(--accent-light);
 }
 
 .form-input {
-  width: 100%;
-  height: 88rpx;
-  padding: 0 24rpx;
-  background-color: #f7f7f7;
-  border-radius: 10rpx;
-  font-size: 30rpx;
-  color: #191919;
-  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  background-color: transparent;
   border: none;
   outline: none;
 }
 
 .form-ph {
-  color: #b2b2b2;
+  color: var(--text-placeholder);
 }
 
+/* 验证码 */
 .code-row {
   display: flex;
   align-items: center;
@@ -286,81 +365,95 @@ export default {
 
 .code-row__input {
   flex: 1;
+  min-width: 0;
 }
 
 .code-btn {
   flex-shrink: 0;
-  height: 88rpx;
-  padding: 0 28rpx;
-  border-radius: 10rpx;
-  background-color: #07c160;
+  height: 92rpx;
+  padding: 0 30rpx;
+  border-radius: 999rpx;
+  background-color: var(--accent-light);
+  border: 2rpx solid var(--accent-color);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .code-btn--hover {
-  background-color: #06ad56;
+  background-color: var(--accent-soft);
+  transform: scale(0.98);
 }
 
 .code-btn text {
-  font-size: 28rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-sm);
+  color: var(--accent-color);
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .code-btn.is-disabled {
-  background-color: #b2b2b2;
+  background-color: var(--bg-tertiary);
+  border-color: transparent;
 }
 
-.pwd-row {
-  position: relative;
+.code-btn.is-disabled text {
+  color: var(--text-disabled);
 }
 
-.pwd-row__input {
-  padding-right: 96rpx;
+/* 密码 */
+.pwd-input {
+  padding-right: 4rpx;
 }
 
 .eye-btn {
-  position: absolute;
-  right: 12rpx;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 64rpx;
-  height: 64rpx;
+  flex-shrink: 0;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
 }
 
 .eye-btn:active {
-  opacity: 0.6;
+  background-color: var(--bg-active);
 }
 
 /* 提交 */
 .submit-btn {
-  height: 88rpx;
+  height: 94rpx;
   margin-top: 40rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+  border-radius: 999rpx;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .submit-btn--hover {
-  background-color: #06ad56;
+  transform: scale(0.98);
+  opacity: 0.92;
 }
 
 .submit-btn.is-disabled {
-  background-color: #c8e9d4;
+  background-image: none;
+  background-color: var(--bg-tertiary);
+  box-shadow: none;
 }
 
 .submit-btn text {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-lg);
+  color: var(--accent-contrast);
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.submit-btn.is-disabled text {
+  color: var(--text-disabled);
 }
 
 .submit-btn__loading {
@@ -370,14 +463,14 @@ export default {
 }
 
 .submit-btn__loading text {
-  font-size: 30rpx;
+  font-size: var(--font-base);
 }
 
 .spinner {
   width: 32rpx;
   height: 32rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.35);
-  border-top-color: #ffffff;
+  border: 4rpx solid var(--divider);
+  border-top-color: var(--accent-contrast);
   border-radius: 50%;
   animation: forgotSpin 0.8s linear infinite;
 }
@@ -391,19 +484,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40rpx;
+  margin-top: 36rpx;
 }
 
 .back-login-link {
-  font-size: 28rpx;
-  color: #576b95;
+  font-size: var(--font-sm);
+  color: var(--accent-color);
 }
 
 .back-login-link:active {
   opacity: 0.6;
-}
-
-.forgot__safe {
-  height: calc(48rpx + env(safe-area-inset-bottom));
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <view class="fav-page">
+  <view class="fav-page" :class="themeClass">
     <CustomNavBar
       :show-back="true"
-      title="收藏"
+      :title="$t('favorites.title')"
       title-align="center"
       :show-add="true"
       :menu-items="menuItems"
@@ -13,37 +13,36 @@
     <!-- 搜索 -->
     <view class="fav-search">
       <view class="fav-search__box">
-        <UiIcon name="search" :size="32" color="#B2B2B2" />
+        <UiIcon name="search" :size="30" color="var(--text-tertiary)" />
         <input
           class="fav-search__input"
           v-model="keyword"
-          placeholder="搜索收藏"
+          :placeholder="$t('favorites.searchPlaceholder')"
           placeholder-class="fav-search__ph"
           confirm-type="search"
           @input="onKeywordInput"
           @confirm="onKeywordInput"
         />
         <view v-if="keyword" class="fav-search__clear" @click="clearKeyword">
-          <UiIcon name="close" :size="22" color="#FFFFFF" />
+          <UiIcon name="close" :size="20" color="var(--text-secondary)" />
         </view>
       </view>
     </view>
 
-    <!-- 分类 tab -->
-    <scroll-view class="fav-tabs" scroll-x :show-scrollbar="false">
-      <view class="fav-tabs__inner">
+    <!-- 分类筛选 chips -->
+    <scroll-view class="fav-filters" scroll-x :show-scrollbar="false">
+      <view class="fav-filters__inner">
         <view
           v-for="t in tabsWithCount"
           :key="t.key"
-          class="fav-tab"
+          class="fav-chip"
           :class="{ 'is-active': activeTab === t.key }"
           @click="switchTab(t.key)"
         >
-          <view class="fav-tab__row">
-            <text class="fav-tab__label">{{ t.label }}</text>
-            <text v-if="t.count" class="fav-tab__badge">{{ t.count > 99 ? '99+' : t.count }}</text>
+          <text>{{ t.label }}</text>
+          <view v-if="t.count" class="fav-chip__badge">
+            <text>{{ t.count > 99 ? '99+' : t.count }}</text>
           </view>
-          <view v-if="activeTab === t.key" class="fav-tab__line"></view>
         </view>
       </view>
     </scroll-view>
@@ -68,31 +67,36 @@
       <view
         v-for="item in list"
         :key="item.id"
-        class="fav-card"
+        class="fav-card surface-card"
         hover-class="fav-card--hover"
         hover-stay-time="60"
         @click="openDetail(item)"
         @longpress="onCardLongPress(item)"
       >
-        <view class="fav-card__icon">
-          <UiIcon :name="iconOf(item.type)" :size="44" color="#576B95" />
+        <view class="fav-card__icon" :style="iconBgOf(item.type)">
+          <UiIcon :name="iconOf(item.type)" :size="40" :color="iconColorOf(item.type)" />
         </view>
         <view class="fav-card__body">
           <text class="fav-card__title">{{ itemTitle(item) }}</text>
-          <text class="fav-card__sub">{{ subText(item) }}</text>
+          <view class="fav-card__meta">
+            <view class="chip fav-card__chip">
+              <text>{{ typeLabel(item.type) }}</text>
+            </view>
+            <text class="fav-card__sub">{{ subText(item) }}</text>
+          </view>
         </view>
         <image v-if="item.cover" class="fav-card__thumb" :src="item.cover" mode="aspectFill" />
       </view>
 
       <view v-if="canClear" class="fav-clear" @click="clearCategory">
-        <text>清空当前分类</text>
+        <text>{{ $t('favorites.clearCategory') }}</text>
       </view>
 
       <view v-if="loading && list.length" class="fav-footer">
-        <text>加载中…</text>
+        <text>{{ $t('favorites.loadingMore') }}</text>
       </view>
 
-      <UiEmpty v-if="!list.length && !loading" icon="⭐" text="还没有收藏内容" />
+      <UiEmpty v-if="!list.length && !loading" icon-name="star" :text="$t('favorites.empty')" />
       <view class="fav-list__safe"></view>
     </scroll-view>
 
@@ -102,7 +106,7 @@
       <view class="fav-detail__head">
         <text class="fav-detail__title">{{ detailTitle }}</text>
         <view class="fav-detail__close" @click="closeDetail">
-          <UiIcon name="close" :size="40" color="#888888" />
+          <UiIcon name="close" :size="36" color="var(--text-tertiary)" />
         </view>
       </view>
       <scroll-view scroll-y class="fav-detail__body">
@@ -116,37 +120,37 @@
         <text v-if="detail.content" class="fav-detail__content">{{ detail.content }}</text>
 
         <view v-if="detail.url" class="fav-detail__row">
-          <text class="fav-detail__label">链接</text>
+          <text class="fav-detail__label">{{ $t('favorites.linkLabel') }}</text>
           <text class="fav-detail__value is-link">{{ detail.url }}</text>
         </view>
         <view v-if="detail.fileName" class="fav-detail__row">
-          <text class="fav-detail__label">文件名</text>
+          <text class="fav-detail__label">{{ $t('favorites.fileName') }}</text>
           <text class="fav-detail__value">{{ detail.fileName }}</text>
         </view>
         <view v-if="detail.fileSize" class="fav-detail__row">
-          <text class="fav-detail__label">大小</text>
+          <text class="fav-detail__label">{{ $t('favorites.fileSize') }}</text>
           <text class="fav-detail__value">{{ formatSize(detail.fileSize) }}</text>
         </view>
         <view v-if="detailTags.length" class="fav-detail__tags">
-          <view v-for="(tag, i) in detailTags" :key="i" class="fav-tag is-static">
+          <view v-for="(tag, i) in detailTags" :key="i" class="chip fav-detail__tag">
             <text>{{ tag }}</text>
           </view>
         </view>
         <view class="fav-detail__row">
-          <text class="fav-detail__label">来源</text>
+          <text class="fav-detail__label">{{ $t('favorites.source') }}</text>
           <text class="fav-detail__value">{{ detail.source || '—' }}</text>
         </view>
         <view class="fav-detail__row">
-          <text class="fav-detail__label">收藏时间</text>
+          <text class="fav-detail__label">{{ $t('favorites.favoriteTime') }}</text>
           <text class="fav-detail__value">{{ formatRelativeTime(detail.createTime) }}</text>
         </view>
       </scroll-view>
       <view class="fav-detail__actions">
         <view class="fav-detail__btn" @click="copyItem">
-          <text>复制</text>
+          <text>{{ $t('favorites.copy') }}</text>
         </view>
         <view class="fav-detail__btn is-danger" @click="deleteCurrent">
-          <text>删除</text>
+          <text>{{ $t('favorites.deleteLabel') }}</text>
         </view>
       </view>
       <view class="fav-detail__safe"></view>
@@ -156,68 +160,70 @@
     <view v-if="composerVisible" class="sheet-mask" @click="closeComposer"></view>
     <view v-if="composerVisible" class="composer" @click.stop>
       <view class="composer__head">
-        <text class="composer__cancel" @click="closeComposer">取消</text>
+        <text class="composer__cancel" @click="closeComposer">{{ $t('favorites.cancel') }}</text>
         <text class="composer__title">{{ composerTitle }}</text>
         <view
           class="composer__save"
           :class="{ 'is-disabled': saving }"
           @click="submitComposer"
         >
-          <text>{{ saving ? '保存中…' : '保存' }}</text>
+          <text>{{ saving ? $t('favorites.saving') : $t('favorites.save') }}</text>
         </view>
       </view>
       <scroll-view scroll-y class="composer__body">
         <template v-if="composerType === 'link'">
           <view class="composer__field">
-            <text class="composer__label">链接地址</text>
+            <text class="composer__label">{{ $t('favorites.urlLabel') }}</text>
             <input
               class="composer__input"
               v-model="cUrl"
-              placeholder="https://"
+              :placeholder="$t('favorites.urlPlaceholder')"
               placeholder-class="composer__ph"
             />
           </view>
         </template>
 
         <view class="composer__field">
-          <text class="composer__label">标题</text>
+          <text class="composer__label">{{ $t('favorites.titleLabel') }}</text>
           <input
             class="composer__input"
             v-model="cTitle"
             :maxlength="100"
-            placeholder="标题（选填）"
+            :placeholder="$t('favorites.titlePlaceholder')"
             placeholder-class="composer__ph"
           />
         </view>
 
         <view class="composer__field composer__field--col">
-          <text class="composer__label">{{ composerType === 'link' ? '备注' : '内容' }}</text>
+          <text class="composer__label">
+            {{ composerType === 'link' ? $t('favorites.remarkLabel') : $t('favorites.contentLabel') }}
+          </text>
           <textarea
             class="composer__textarea"
             v-model="cContent"
             :maxlength="2000"
-            placeholder="写点什么…"
+            :placeholder="$t('favorites.contentPlaceholder')"
             placeholder-class="composer__ph"
             auto-height
           />
         </view>
 
         <view class="composer__field">
-          <text class="composer__label">标签</text>
+          <text class="composer__label">{{ $t('favorites.tagsLabel') }}</text>
           <input
             class="composer__input"
             v-model="cTags"
-            placeholder="标签，用逗号或空格分隔（选填）"
+            :placeholder="$t('favorites.tagsPlaceholder')"
             placeholder-class="composer__ph"
           />
         </view>
 
         <view class="composer__field">
-          <text class="composer__label">封面</text>
+          <text class="composer__label">{{ $t('favorites.coverLabel') }}</text>
           <view class="composer__cover" @click="pickCover">
             <image v-if="cCover" class="composer__cover-img" :src="cCover" mode="aspectFill" />
             <view v-else class="composer__cover-add">
-              <UiIcon name="image" :size="48" color="#B2B2B2" />
+              <UiIcon name="image" :size="44" color="var(--text-tertiary)" />
             </view>
           </view>
         </view>
@@ -245,18 +251,6 @@ import { uploadFile } from '../../utils/chat-api.js'
 import { getUserId, getCurrentProfile } from '../../utils/session.js'
 import { formatRelativeTime } from '../../utils/format.js'
 
-const TYPE_LABELS = {
-  note: '笔记',
-  link: '链接',
-  image: '图片',
-  video: '视频',
-  file: '文件',
-  chat: '聊天记录',
-  voice: '语音',
-  location: '位置',
-  miniapp: '小程序'
-}
-
 const TYPE_ICONS = {
   note: 'note',
   link: 'link',
@@ -269,24 +263,36 @@ const TYPE_ICONS = {
   miniapp: 'compass'
 }
 
+const TYPE_TONES = {
+  note: 'accent',
+  link: 'info',
+  image: 'info',
+  video: 'info',
+  file: 'warning',
+  chat: 'accent',
+  voice: 'warning',
+  location: 'danger',
+  miniapp: 'accent'
+}
+
+const TYPE_LABEL_KEYS = {
+  note: 'tabNote',
+  link: 'tabLink',
+  image: 'typeImage',
+  video: 'typeVideo',
+  file: 'tabFile',
+  chat: 'tabChat',
+  voice: 'tabVoice',
+  location: 'tabLocation',
+  miniapp: 'tabMiniapp'
+}
+
 export default {
   components: { CustomNavBar, UiIcon, UiEmpty },
   data() {
     return {
       userId: null,
       profile: { name: '', avatar: '' },
-      tabs: [
-        { key: 'all', label: '全部' },
-        { key: 'recent', label: '最近' },
-        { key: 'note', label: '笔记' },
-        { key: 'link', label: '链接' },
-        { key: 'media', label: '图片与视频' },
-        { key: 'file', label: '文件' },
-        { key: 'chat', label: '聊天记录' },
-        { key: 'voice', label: '语音' },
-        { key: 'location', label: '位置' },
-        { key: 'miniapp', label: '小程序' }
-      ],
       activeTab: 'all',
       activeTag: '',
       keyword: '',
@@ -311,15 +317,30 @@ export default {
       cUrl: '',
       cCover: '',
       cTags: '',
-      saving: false,
-
-      menuItems: [
-        { text: '写笔记', iconName: 'note', action: 'note' },
-        { text: '添加链接', iconName: 'link', action: 'link' }
-      ]
+      saving: false
     }
   },
   computed: {
+    tabs() {
+      return [
+        { key: 'all', label: this.$t('favorites.tabAll') },
+        { key: 'recent', label: this.$t('favorites.tabRecent') },
+        { key: 'note', label: this.$t('favorites.tabNote') },
+        { key: 'link', label: this.$t('favorites.tabLink') },
+        { key: 'media', label: this.$t('favorites.tabMedia') },
+        { key: 'file', label: this.$t('favorites.tabFile') },
+        { key: 'chat', label: this.$t('favorites.tabChat') },
+        { key: 'voice', label: this.$t('favorites.tabVoice') },
+        { key: 'location', label: this.$t('favorites.tabLocation') },
+        { key: 'miniapp', label: this.$t('favorites.tabMiniapp') }
+      ]
+    },
+    menuItems() {
+      return [
+        { text: this.$t('favorites.writeNote'), iconName: 'note', action: 'note' },
+        { text: this.$t('favorites.addLink'), iconName: 'link', action: 'link' }
+      ]
+    },
     tabsWithCount() {
       return this.tabs.map((t) => ({ ...t, count: this.tabCount(t.key) }))
     },
@@ -343,7 +364,9 @@ export default {
       return []
     },
     composerTitle() {
-      return this.composerType === 'link' ? '添加链接' : '写笔记'
+      return this.composerType === 'link'
+        ? this.$t('favorites.addLink')
+        : this.$t('favorites.writeNote')
     }
   },
   onLoad() {
@@ -369,8 +392,18 @@ export default {
     iconOf(type) {
       return TYPE_ICONS[type] || 'star'
     },
+    iconTone(type) {
+      return TYPE_TONES[type] || 'accent'
+    },
+    iconColorOf(type) {
+      return `var(--${this.iconTone(type)}-color)`
+    },
+    iconBgOf(type) {
+      return { backgroundColor: `var(--${this.iconTone(type)}-light)` }
+    },
     typeLabel(type) {
-      return TYPE_LABELS[type] || '收藏'
+      const key = TYPE_LABEL_KEYS[type]
+      return key ? this.$t(`favorites.${key}`) : this.$t('favorites.typeFallback')
     },
     itemTitle(item) {
       if (!item) return ''
@@ -493,21 +526,21 @@ export default {
     copyItem() {
       const value = this.detail.url || this.detail.content || this.detail.title
       if (!value) {
-        uni.showToast({ title: '暂无可复制内容', icon: 'none' })
+        uni.showToast({ title: this.$t('favorites.nothingToCopy'), icon: 'none' })
         return
       }
       uni.setClipboardData({
         data: value,
         success: () => {
-          uni.showToast({ title: '已复制', icon: 'success' })
+          uni.showToast({ title: this.$t('favorites.copied'), icon: 'success' })
         }
       })
     },
     deleteCurrent() {
       const item = this.detail
       uni.showModal({
-        title: '提示',
-        content: '确定删除该收藏吗？',
+        title: this.$t('common.tip'),
+        content: this.$t('favorites.deleteConfirm'),
         success: async (r) => {
           if (!r.confirm) return
           try {
@@ -517,18 +550,18 @@ export default {
               this.load(true)
               this.loadStats()
               this.loadTags()
-              uni.showToast({ title: '已删除', icon: 'success' })
+              uni.showToast({ title: this.$t('favorites.deleted'), icon: 'success' })
             }
           } catch (e) {
-            uni.showToast({ title: '删除失败', icon: 'none' })
+            uni.showToast({ title: this.$t('favorites.deleteFailed'), icon: 'none' })
           }
         }
       })
     },
     onCardLongPress(item) {
       uni.showModal({
-        title: '提示',
-        content: '确定删除该收藏吗？',
+        title: this.$t('common.tip'),
+        content: this.$t('favorites.deleteConfirm'),
         success: async (r) => {
           if (!r.confirm) return
           try {
@@ -537,18 +570,18 @@ export default {
               this.list = this.list.filter((it) => it.id !== item.id)
               this.loadStats()
               this.loadTags()
-              uni.showToast({ title: '已删除', icon: 'success' })
+              uni.showToast({ title: this.$t('favorites.deleted'), icon: 'success' })
             }
           } catch (e) {
-            uni.showToast({ title: '删除失败', icon: 'none' })
+            uni.showToast({ title: this.$t('favorites.deleteFailed'), icon: 'none' })
           }
         }
       })
     },
     clearCategory() {
       uni.showModal({
-        title: '提示',
-        content: '确定清空当前分类的收藏吗？',
+        title: this.$t('common.tip'),
+        content: this.$t('favorites.clearConfirm'),
         success: async (r) => {
           if (!r.confirm) return
           try {
@@ -557,10 +590,10 @@ export default {
               this.load(true)
               this.loadStats()
               this.loadTags()
-              uni.showToast({ title: '已清空', icon: 'success' })
+              uni.showToast({ title: this.$t('favorites.cleared'), icon: 'success' })
             }
           } catch (e) {
-            uni.showToast({ title: '清空失败', icon: 'none' })
+            uni.showToast({ title: this.$t('favorites.clearFailed'), icon: 'none' })
           }
         }
       })
@@ -586,16 +619,16 @@ export default {
         success: async (res) => {
           const path = res.tempFilePaths[0]
           if (!path) return
-          uni.showLoading({ title: '上传中…', mask: true })
+          uni.showLoading({ title: this.$t('favorites.uploading'), mask: true })
           try {
             const uploadRes = await uploadFile(path)
             if (uploadRes && uploadRes.code === 200 && uploadRes.data) {
               this.cCover = uploadRes.data
             } else {
-              uni.showToast({ title: '上传失败', icon: 'none' })
+              uni.showToast({ title: this.$t('favorites.uploadFailed'), icon: 'none' })
             }
           } catch (e) {
-            uni.showToast({ title: '上传失败', icon: 'none' })
+            uni.showToast({ title: this.$t('favorites.uploadFailed'), icon: 'none' })
           } finally {
             uni.hideLoading()
           }
@@ -605,7 +638,7 @@ export default {
     async submitComposer() {
       if (this.saving) return
       if (this.composerType === 'link' && !this.cUrl.trim()) {
-        uni.showToast({ title: '请输入链接地址', icon: 'none' })
+        uni.showToast({ title: this.$t('favorites.inputUrl'), icon: 'none' })
         return
       }
       if (
@@ -614,7 +647,7 @@ export default {
         !this.cContent.trim() &&
         !this.cCover
       ) {
-        uni.showToast({ title: '请至少填写标题、内容或封面', icon: 'none' })
+        uni.showToast({ title: this.$t('favorites.inputAtLeastOne'), icon: 'none' })
         return
       }
       const tags = this.cTags
@@ -642,12 +675,12 @@ export default {
           this.load(true)
           this.loadStats()
           this.loadTags()
-          uni.showToast({ title: '已收藏', icon: 'success' })
+          uni.showToast({ title: this.$t('favorites.added'), icon: 'success' })
         } else {
-          uni.showToast({ title: (res && res.message) || '保存失败', icon: 'none' })
+          uni.showToast({ title: (res && res.message) || this.$t('favorites.saveFailed'), icon: 'none' })
         }
       } catch (e) {
-        uni.showToast({ title: '保存失败', icon: 'none' })
+        uni.showToast({ title: this.$t('favorites.saveFailed'), icon: 'none' })
       } finally {
         this.saving = false
       }
@@ -661,127 +694,140 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* 搜索 */
 .fav-search {
   flex-shrink: 0;
-  padding: 0 24rpx 16rpx;
+  padding: 8rpx 24rpx 14rpx;
 }
 
 .fav-search__box {
   display: flex;
   align-items: center;
-  height: 64rpx;
-  background-color: #ffffff;
-  border-radius: 10rpx;
-  padding: 0 20rpx;
+  height: 76rpx;
+  padding: 0 24rpx;
+  gap: 14rpx;
+  background-color: var(--bg-input);
+  border: 1rpx solid var(--border-light);
+  border-radius: 999rpx;
 }
 
 .fav-search__input {
   flex: 1;
-  font-size: 28rpx;
-  color: #191919;
-  margin-left: 12rpx;
+  min-width: 0;
+  font-size: var(--font-base);
+  color: var(--text-primary);
 }
 
 .fav-search__ph {
-  color: #b2b2b2;
+  color: var(--text-placeholder);
 }
 
 .fav-search__clear {
-  width: 32rpx;
-  height: 32rpx;
+  width: 36rpx;
+  height: 36rpx;
   border-radius: 50%;
-  background-color: #c8c8cd;
+  background-color: var(--bg-active);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* tab */
-.fav-tabs {
+/* 分类 chips */
+.fav-filters {
   flex-shrink: 0;
-  background-color: #ffffff;
   white-space: nowrap;
 }
 
-.fav-tabs__inner {
+.fav-filters__inner {
   display: inline-flex;
-  align-items: flex-end;
-  padding: 0 12rpx;
-}
-
-.fav-tab {
-  position: relative;
-  flex-shrink: 0;
-  padding: 20rpx 20rpx 16rpx;
-}
-
-.fav-tab__row {
-  display: flex;
   align-items: center;
+  gap: 14rpx;
+  padding: 0 24rpx 14rpx;
 }
 
-.fav-tab__label {
-  font-size: 28rpx;
-  color: #191919;
+.fav-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 60rpx;
+  padding: 0 26rpx;
+  border-radius: 999rpx;
+  background-color: var(--bg-chip);
+  border: 1rpx solid var(--border-light);
+  transition: all var(--transition-fast);
 }
 
-.fav-tab.is-active .fav-tab__label {
-  color: #07c160;
-  font-weight: 500;
+.fav-chip:active {
+  opacity: 0.8;
 }
 
-.fav-tab__badge {
+.fav-chip text {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.fav-chip.is-active {
+  background-color: var(--accent-light);
+  border-color: var(--accent-color);
+}
+
+.fav-chip.is-active text {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.fav-chip__badge {
   min-width: 32rpx;
   height: 32rpx;
   padding: 0 8rpx;
-  margin-left: 8rpx;
-  background-color: #f2f2f2;
+  margin-left: 10rpx;
   border-radius: 16rpx;
-  font-size: 20rpx;
-  color: #999999;
-  line-height: 32rpx;
-  text-align: center;
+  background-color: var(--bg-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.fav-tab.is-active .fav-tab__badge {
-  background-color: #e6f7ee;
-  color: #07c160;
+.fav-chip__badge text {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
 }
 
-.fav-tab__line {
-  position: absolute;
-  left: 20rpx;
-  right: 20rpx;
-  bottom: 4rpx;
-  height: 4rpx;
-  background-color: #07c160;
-  border-radius: 2rpx;
+.fav-chip.is-active .fav-chip__badge {
+  background-color: var(--accent-color);
+}
+
+.fav-chip.is-active .fav-chip__badge text {
+  color: var(--accent-contrast);
+  font-weight: 600;
 }
 
 /* 标签云 */
 .fav-tagbar {
   flex-shrink: 0;
-  background-color: #ffffff;
-  border-top: 1rpx solid #ededed;
   white-space: nowrap;
 }
 
 .fav-tagbar__inner {
   display: inline-flex;
   align-items: center;
-  padding: 16rpx 24rpx;
-  gap: 16rpx;
+  gap: 14rpx;
+  padding: 0 24rpx 14rpx;
 }
 
 .fav-tag {
   flex-shrink: 0;
-  padding: 8rpx 24rpx;
-  background-color: #f2f2f2;
-  border-radius: 26rpx;
+  display: inline-flex;
+  align-items: center;
+  height: 52rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  background-color: var(--bg-chip);
+  border: 1rpx solid var(--border-light);
 }
 
 .fav-tag:active {
@@ -789,48 +835,42 @@ export default {
 }
 
 .fav-tag text {
-  font-size: 24rpx;
-  color: #576b95;
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
 }
 
 .fav-tag.is-active {
-  background-color: #e6f7ee;
+  background-color: var(--accent-light);
+  border-color: var(--accent-color);
 }
 
 .fav-tag.is-active text {
-  color: #07c160;
-}
-
-.fav-tag.is-static {
-  flex-shrink: 1;
+  color: var(--accent-color);
+  font-weight: 600;
 }
 
 /* 列表 */
 .fav-list {
   flex: 1;
   height: 0;
-  padding: 16rpx 0;
+  padding-top: 8rpx;
 }
 
 .fav-card {
   display: flex;
   align-items: center;
-  margin: 0 24rpx 16rpx;
+  margin: 0 24rpx 18rpx;
   padding: 24rpx;
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
 
-.fav-card--hover {
-  background-color: #f7f7f7;
+.fav-card.fav-card--hover {
+  background-color: var(--bg-hover);
 }
 
 .fav-card__icon {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 16rpx;
-  background-color: #f2f6ff;
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -845,37 +885,56 @@ export default {
 
 .fav-card__title {
   display: block;
-  font-size: 30rpx;
-  color: #191919;
+  font-size: var(--font-md);
+  font-weight: 500;
+  color: var(--text-primary);
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.fav-card__sub {
-  display: block;
-  font-size: 24rpx;
-  color: #999999;
+.fav-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
   margin-top: 10rpx;
+}
+
+.fav-card__chip {
+  flex-shrink: 0;
+  height: 34rpx;
+  padding: 0 12rpx;
+}
+
+.fav-card__chip text {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+}
+
+.fav-card__sub {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .fav-card__thumb {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 10rpx;
-  margin-left: 20rpx;
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: var(--radius-sm);
+  margin-left: 18rpx;
   flex-shrink: 0;
-  background-color: #f2f2f2;
+  background-color: var(--bg-tertiary);
 }
 
 .fav-clear {
   display: flex;
   justify-content: center;
-  padding: 32rpx 0;
+  padding: 12rpx 0 32rpx;
 }
 
 .fav-clear:active {
@@ -883,8 +942,8 @@ export default {
 }
 
 .fav-clear text {
-  font-size: 28rpx;
-  color: #fa5151;
+  font-size: var(--font-sm);
+  color: var(--danger-color);
 }
 
 .fav-footer {
@@ -894,8 +953,8 @@ export default {
 }
 
 .fav-footer text {
-  font-size: 24rpx;
-  color: #b2b2b2;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
 }
 
 .fav-list__safe {
@@ -909,7 +968,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.45);
+  background-color: var(--bg-mask);
   z-index: 900;
 }
 
@@ -920,8 +979,8 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 901;
-  background-color: #ffffff;
-  border-radius: 24rpx 24rpx 0 0;
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   display: flex;
   flex-direction: column;
   max-height: 78vh;
@@ -930,19 +989,19 @@ export default {
 
 .fav-detail__head {
   flex-shrink: 0;
-  height: 96rpx;
+  height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 32rpx;
-  border-bottom: 1rpx solid #ededed;
+  border-bottom: 1rpx solid var(--divider);
 }
 
 .fav-detail__title {
   flex: 1;
-  font-size: 32rpx;
+  font-size: var(--font-lg);
   font-weight: 600;
-  color: #191919;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -955,10 +1014,11 @@ export default {
   align-items: center;
   justify-content: center;
   margin-left: 16rpx;
+  border-radius: 50%;
 }
 
 .fav-detail__close:active {
-  opacity: 0.5;
+  background-color: var(--bg-hover);
 }
 
 .fav-detail__body {
@@ -969,15 +1029,15 @@ export default {
 
 .fav-detail__cover {
   width: 100%;
-  border-radius: 12rpx;
+  border-radius: var(--radius-md);
   margin-bottom: 20rpx;
   display: block;
 }
 
 .fav-detail__content {
   display: block;
-  font-size: 30rpx;
-  color: #191919;
+  font-size: var(--font-md);
+  color: var(--text-primary);
   line-height: 1.6;
   word-break: break-word;
   white-space: pre-wrap;
@@ -987,66 +1047,77 @@ export default {
 .fav-detail__row {
   display: flex;
   align-items: flex-start;
-  padding: 16rpx 0;
-  border-top: 1rpx solid #f0f0f0;
+  padding: 18rpx 0;
+  border-top: 1rpx solid var(--divider);
 }
 
 .fav-detail__label {
   width: 130rpx;
   flex-shrink: 0;
-  font-size: 28rpx;
-  color: #999999;
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
 }
 
 .fav-detail__value {
   flex: 1;
-  font-size: 28rpx;
-  color: #191919;
+  font-size: var(--font-sm);
+  color: var(--text-primary);
   line-height: 1.5;
   word-break: break-all;
 }
 
 .fav-detail__value.is-link {
-  color: #576b95;
+  color: var(--text-link);
 }
 
 .fav-detail__tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
-  padding: 16rpx 0;
-  border-top: 1rpx solid #f0f0f0;
+  gap: 14rpx;
+  padding: 18rpx 0;
+  border-top: 1rpx solid var(--divider);
+}
+
+.fav-detail__tag {
+  height: 44rpx;
+  padding: 0 18rpx;
 }
 
 .fav-detail__actions {
   flex-shrink: 0;
   display: flex;
   padding: 20rpx 32rpx;
-  border-top: 1rpx solid #ededed;
+  border-top: 1rpx solid var(--divider);
 }
 
 .fav-detail__btn {
   flex: 1;
-  height: 80rpx;
+  height: 84rpx;
   margin: 0 10rpx;
-  border-radius: 12rpx;
-  background-color: #f2f2f2;
+  border-radius: 999rpx;
+  background-color: var(--bg-chip);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color var(--transition-fast);
 }
 
 .fav-detail__btn:active {
-  opacity: 0.7;
+  background-color: var(--bg-active);
 }
 
 .fav-detail__btn text {
-  font-size: 30rpx;
-  color: #191919;
+  font-size: var(--font-md);
+  color: var(--text-primary);
+}
+
+.fav-detail__btn.is-danger {
+  background-color: var(--danger-light);
 }
 
 .fav-detail__btn.is-danger text {
-  color: #fa5151;
+  color: var(--danger-color);
+  font-weight: 500;
 }
 
 .fav-detail__safe {
@@ -1060,8 +1131,8 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 901;
-  background-color: #ffffff;
-  border-radius: 24rpx 24rpx 0 0;
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   display: flex;
   flex-direction: column;
   max-height: 80vh;
@@ -1070,49 +1141,58 @@ export default {
 
 .composer__head {
   flex-shrink: 0;
-  height: 96rpx;
+  height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 32rpx;
-  border-bottom: 1rpx solid #ededed;
+  border-bottom: 1rpx solid var(--divider);
 }
 
 .composer__cancel {
-  font-size: 30rpx;
-  color: #888888;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
   min-width: 120rpx;
 }
 
 .composer__title {
-  font-size: 32rpx;
+  font-size: var(--font-lg);
   font-weight: 600;
-  color: #191919;
+  color: var(--text-primary);
 }
 
 .composer__save {
   min-width: 120rpx;
   height: 64rpx;
   padding: 0 28rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+  border-radius: 999rpx;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .composer__save:active {
-  background-color: #06ad56;
+  transform: scale(0.97);
+  opacity: 0.9;
 }
 
 .composer__save.is-disabled {
-  background-color: #b7ebcb;
+  background-image: none;
+  background-color: var(--bg-tertiary);
+  box-shadow: none;
 }
 
 .composer__save text {
-  font-size: 28rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-sm);
+  color: var(--accent-contrast);
+  font-weight: 600;
+}
+
+.composer__save.is-disabled text {
+  color: var(--text-disabled);
 }
 
 .composer__body {
@@ -1125,7 +1205,7 @@ export default {
   display: flex;
   align-items: center;
   height: 96rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--divider);
 }
 
 .composer__field--col {
@@ -1138,35 +1218,40 @@ export default {
 .composer__label {
   width: 130rpx;
   flex-shrink: 0;
-  font-size: 28rpx;
-  color: #888888;
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
 }
 
 .composer__input {
   flex: 1;
-  font-size: 30rpx;
-  color: #191919;
+  min-width: 0;
+  font-size: var(--font-md);
+  color: var(--text-primary);
 }
 
 .composer__textarea {
   width: 100%;
   min-height: 180rpx;
   margin-top: 16rpx;
-  font-size: 30rpx;
-  color: #191919;
+  padding: 20rpx;
+  box-sizing: border-box;
+  background-color: var(--bg-input);
+  border-radius: var(--radius-md);
+  font-size: var(--font-md);
+  color: var(--text-primary);
   line-height: 1.5;
 }
 
 .composer__ph {
-  color: #b2b2b2;
+  color: var(--text-placeholder);
 }
 
 .composer__cover {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 12rpx;
+  width: 152rpx;
+  height: 152rpx;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: #f7f7f7;
+  background-color: var(--bg-tertiary);
 }
 
 .composer__cover-img {
@@ -1181,8 +1266,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1rpx solid #e2e2e2;
-  border-radius: 12rpx;
+  border: 1rpx solid var(--border-color);
+  border-radius: var(--radius-md);
 }
 
 .composer__cover:active {

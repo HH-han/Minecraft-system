@@ -1,69 +1,83 @@
 /**
- * 全局样式 - 现代设计规范
+ * 全局设计令牌（Game IM Design System）
  *
- * 色彩系统：
- * - 主文本: #1d1d1f
- * - 次要文本: #6e6e73
- * - 辅助文本: #a1a1a6
- * - 背景主色: #ffffff
- * - 背景辅色: #f5f5f7
- * - 背景深色: #f0f0f2
- * - 强调色: #07C160 (悬停 #06AD56)
- * - 成功色: #34c759
- * - 警告色: #ff9500
- * - 危险色: #ff3b30
- * - 分割线: #d2d2d6
- * - 分割线浅色: #e5e5e5
+ * 视觉方向：游戏社交客户端风格 —— 深色玻璃面板、霓虹青绿强调色、
+ * 圆角卡片、柔和发光与细微网格纹理。
+ *
+ * 主题切换：
+ * - 浅色：默认令牌定义在 page 上；
+ * - 深色：页面根节点挂载 .theme-dark，覆盖同名变量；
+ * - 所有页面/组件只允许使用变量，禁止硬编码颜色。
  */
 
+page,
 :root {
   /* 文本 */
-  --text-primary: #191919;
-  --text-secondary: #888888;
-  --text-tertiary: #b2b2b2;
-  --text-placeholder: #b2b2b2;
-  --text-disabled: #d2d2d2;
-  --text-link: #576b95;
+  --text-primary: #10141b;
+  --text-secondary: #5b6472;
+  --text-tertiary: #98a2b3;
+  --text-placeholder: #a9b3c1;
+  --text-disabled: #cdd4de;
+  --text-link: #0b8f5a;
+  --text-on-accent: #ffffff;
 
   /* 背景 */
   --bg-primary: #ffffff;
-  --bg-secondary: #ededed;
-  --bg-tertiary: #f7f7f7;
-  --bg-hover: #ececec;
-  --bg-active: #e5e5e5;
-  --bg-nav: #ededed;
+  --bg-secondary: #f2f4f8;
+  --bg-tertiary: #e9edf3;
+  --bg-hover: rgba(16, 20, 27, 0.045);
+  --bg-active: rgba(16, 20, 27, 0.08);
+  --bg-nav: rgba(255, 255, 255, 0.78);
+  --bg-elevated: #ffffff;
+  --bg-input: #edf1f6;
+  --bg-mask: rgba(9, 12, 18, 0.45);
+  --bg-chip: rgba(16, 20, 27, 0.055);
+  --chat-bg: #f2f4f8;
 
-  /* 品牌 */
+  /* 品牌 / 强调 */
   --accent-color: #07c160;
   --accent-hover: #06ad56;
-  --accent-light: rgba(7, 193, 96, 0.1);
+  --accent-light: rgba(7, 193, 96, 0.12);
   --accent-dark: #059849;
-  --bubble-self: #95ec69;
+  --accent-soft: #e7f9ef;
+  --accent-contrast: #ffffff;
+  --accent-gradient: linear-gradient(135deg, #12d67a 0%, #06b45a 100%);
+  --accent-glow: 0 10rpx 30rpx rgba(7, 193, 96, 0.28);
+  --bubble-self: #c8f7b0;
+  --bubble-self-text: #10231a;
   --bubble-other: #ffffff;
+  --bubble-other-text: #10141b;
 
   /* 语义 */
   --success-color: #07c160;
-  --success-light: rgba(7, 193, 96, 0.1);
-  --warning-color: #ffc300;
-  --warning-light: rgba(255, 195, 0, 0.12);
+  --success-light: rgba(7, 193, 96, 0.12);
+  --warning-color: #f5a623;
+  --warning-light: rgba(245, 166, 35, 0.14);
   --danger-color: #fa5151;
-  --danger-light: rgba(250, 81, 81, 0.1);
+  --danger-light: rgba(250, 81, 81, 0.12);
+  --info-color: #3d8bfd;
+  --info-light: rgba(61, 139, 253, 0.12);
 
-  /* 分割线 */
-  --border-color: #dcdcdc;
-  --border-light: #f0f0f0;
-  --border-lightest: #f5f5f5;
-  --divider: #ededed;
+  /* 分割线 / 描边 */
+  --border-color: #dde3ec;
+  --border-light: #e8edf4;
+  --border-lightest: #f0f3f8;
+  --divider: rgba(16, 20, 27, 0.06);
 
-  --shadow-sm: 0 1rpx 3rpx rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
-  --shadow-xl: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
+  /* 玻璃面板 */
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-blur: 20rpx;
 
-  --radius-sm: 8rpx;
-  --radius-md: 16rpx;
-  --radius-lg: 24rpx;
-  --radius-xl: 32rpx;
+  --shadow-sm: 0 2rpx 6rpx rgba(16, 20, 27, 0.04);
+  --shadow-md: 0 8rpx 24rpx rgba(16, 20, 27, 0.07);
+  --shadow-lg: 0 16rpx 44rpx rgba(16, 20, 27, 0.1);
+  --shadow-xl: 0 24rpx 64rpx rgba(16, 20, 27, 0.14);
+
+  --radius-sm: 10rpx;
+  --radius-md: 18rpx;
+  --radius-lg: 26rpx;
+  --radius-xl: 36rpx;
   --radius-full: 50%;
 
   --spacing-xs: 8rpx;
@@ -74,8 +88,8 @@
   --spacing-xxl: 64rpx;
 
   --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s ease;
-  --transition-slow: 0.35s ease;
+  --transition-normal: 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+  --transition-slow: 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
 
   --font-xs: 22rpx;
   --font-sm: 24rpx;
@@ -85,6 +99,68 @@
   --font-xl: 40rpx;
   --font-xxl: 48rpx;
   --font-display: 56rpx;
+  --font-mono: "SF Mono", "JetBrains Mono", "Roboto Mono", Consolas, monospace;
+}
+
+/**
+ * 深色主题（Game Night）
+ * 挂载在页面根节点：<view class="page" :class="themeClass">
+ */
+.theme-dark {
+  --text-primary: #eaf0f7;
+  --text-secondary: #a3aebd;
+  --text-tertiary: #6e7a8a;
+  --text-placeholder: #66717f;
+  --text-disabled: #4a5462;
+  --text-link: #6be3a4;
+  --text-on-accent: #062313;
+
+  --bg-primary: #1a1f29;
+  --bg-secondary: #0f131a;
+  --bg-tertiary: #232a36;
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-active: rgba(255, 255, 255, 0.1);
+  --bg-nav: rgba(15, 19, 26, 0.72);
+  --bg-elevated: #222834;
+  --bg-input: #232b37;
+  --bg-mask: rgba(0, 0, 0, 0.6);
+  --bg-chip: rgba(255, 255, 255, 0.07);
+  --chat-bg: #0f131a;
+
+  --accent-color: #3ddc84;
+  --accent-hover: #2fc46f;
+  --accent-light: rgba(61, 220, 132, 0.16);
+  --accent-dark: #7ceba9;
+  --accent-soft: rgba(61, 220, 132, 0.14);
+  --accent-contrast: #062313;
+  --accent-gradient: linear-gradient(135deg, #52e894 0%, #1fbb6b 100%);
+  --accent-glow: 0 10rpx 30rpx rgba(61, 220, 132, 0.3);
+  --bubble-self: #2a6f4f;
+  --bubble-self-text: #eafbf2;
+  --bubble-other: #202734;
+  --bubble-other-text: #eaf0f7;
+
+  --success-color: #3ddc84;
+  --success-light: rgba(61, 220, 132, 0.16);
+  --warning-color: #ffc857;
+  --warning-light: rgba(255, 200, 87, 0.16);
+  --danger-color: #ff6b6b;
+  --danger-light: rgba(255, 107, 107, 0.16);
+  --info-color: #6aa8ff;
+  --info-light: rgba(106, 168, 255, 0.16);
+
+  --border-color: #2c3442;
+  --border-light: #242c38;
+  --border-lightest: #1e2530;
+  --divider: rgba(255, 255, 255, 0.07);
+
+  --glass-bg: rgba(26, 31, 41, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 10rpx 28rpx rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18rpx 50rpx rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 26rpx 72rpx rgba(0, 0, 0, 0.62);
 }
 
 page {
@@ -919,4 +995,209 @@ page {
     opacity: 0;
     transform: translateX(-100%);
   }
+}
+
+/* ============================================================
+ * Game IM 通用布局与视觉原语
+ * 所有页面复用，避免在页面内重复定义背景 / 卡片 / 分组样式
+ * ============================================================ */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.app-shell--scroll {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.surface-card {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1rpx solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.surface-card--flat {
+  box-shadow: none;
+}
+
+.surface-card--glass {
+  background-color: var(--glass-bg);
+  border-color: var(--glass-border);
+  backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
+}
+
+.group-block {
+  margin: 20rpx 24rpx 0;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-primary);
+  border: 1rpx solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.group-block + .group-block {
+  margin-top: 20rpx;
+}
+
+.section-label {
+  padding: 28rpx 32rpx 12rpx;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.row-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  position: relative;
+  background-color: transparent;
+  transition: background-color var(--transition-fast);
+}
+
+.row-item::after {
+  content: '';
+  position: absolute;
+  left: 148rpx;
+  right: 32rpx;
+  bottom: 0;
+  height: 1rpx;
+  background-color: var(--divider);
+}
+
+.row-item:last-child::after {
+  display: none;
+}
+
+.row-item--hover {
+  background-color: var(--bg-hover);
+}
+
+.row-item__body {
+  flex: 1;
+  min-width: 0;
+  margin-left: 24rpx;
+}
+
+.row-item__title {
+  display: block;
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row-item__desc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background-color: var(--bg-chip);
+  color: var(--text-secondary);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.chip--accent {
+  background-color: var(--accent-light);
+  color: var(--accent-color);
+}
+
+.chip--danger {
+  background-color: var(--danger-color);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.icon-tile {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--shadow-sm);
+}
+
+.icon-tile--plain {
+  background-image: none;
+  background-color: var(--bg-tertiary);
+}
+
+.glass-panel {
+  background-color: var(--glass-bg);
+  border: 1rpx solid var(--glass-border);
+  backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  -webkit-backdrop-filter: saturate(160%) blur(var(--glass-blur));
+  box-shadow: var(--shadow-lg);
+}
+
+.pressable:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.grid-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--divider) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, var(--divider) 1rpx, transparent 1rpx);
+  background-size: 44rpx 44rpx;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.accent-text {
+  color: var(--accent-color);
+}
+
+.accent-glow {
+  box-shadow: var(--accent-glow);
+}
+
+.hairline {
+  height: 1rpx;
+  background-color: var(--divider);
+}
+
+.safe-bottom-space {
+  height: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.safe-bottom-space--sm {
+  height: calc(32rpx + env(safe-area-inset-bottom));
 }

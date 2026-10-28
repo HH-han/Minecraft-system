@@ -83,11 +83,20 @@ const ICONS = {
   'video-off': '<path d="M10.7 5H16a2 2 0 0 1 2 2v1.5l4-2.5v10l-4-2.5V17"/><path d="M2 6s0-1 1-1h2M2 6v11a2 2 0 0 0 2 2h10M2 2l20 20"/>',
   speaker: '<path d="M11 5 6 9H2.5v6H6l5 4Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/>',
   at: '<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>',
-  folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>'
+  folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
+
+  // 主题 / 语言 / 游戏化
+  moon: '<path d="M20.8 13.6A8.6 8.6 0 1 1 10.4 3.2a7 7 0 0 0 10.4 10.4Z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  globe: '<circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.7 4 6 4 9.5s-1.4 6.8-4 9.5c-2.6-2.7-4-6-4-9.5s1.4-6.8 4-9.5Z"/>',
+  pin: '<path d="M12 17v5"/><path d="M8 3h8l-1 7 3 3.2H6L9 10Z"/>',
+  sparkles: '<path d="m12 3 1.7 4.4L18 9l-4.3 1.6L12 15l-1.7-4.4L6 9l4.3-1.6Z"/><path d="M18.5 15.5 19.4 18l2.1.9-2.1.8-.9 2.3-.9-2.3-2.1-.8 2.1-.9Z"/>',
+  zap: '<path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12Z"/>',
+  'pin-filled': '<path d="M12 17v5"/><path d="M8 3h8l-1 7 3 3.2H6L9 10Z"/>'
 }
 
 // 需要填充的图标
-const FILLED_ICONS = ['star-filled', 'heart-filled']
+const FILLED_ICONS = ['star-filled', 'heart-filled', 'pin-filled']
 
 // 语义别名
 const ALIASES = {
@@ -97,7 +106,9 @@ const ALIASES = {
   'new-friend': 'user-plus',
   moments: 'image',
   favorite: 'star',
-  qrcode: 'qr'
+  qrcode: 'qr',
+  theme: 'moon',
+  language: 'globe'
 }
 
 export default {

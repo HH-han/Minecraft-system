@@ -1,59 +1,91 @@
 <template>
-  <view class="create-group">
+  <view class="create-group" :class="themeClass">
     <CustomNavBar
       :show-back="true"
-      title="发起群聊"
+      :title="$t('createGroup.title')"
       title-align="center"
       @back="goBack"
     />
 
-    <view class="group-card">
-      <view class="avatar-wrap" @click="chooseAvatar">
-        <UiAvatar shape="square" :size="140" :src="avatarLocalPath" :name="groupName || '群聊'" />
-        <view class="avatar-badge">
-          <UiIcon name="camera" :size="34" color="#FFFFFF" />
+    <view class="group-card surface-card grid-overlay">
+      <view class="group-card__avatar" @click="chooseAvatar">
+        <UiAvatar
+          shape="square"
+          :size="128"
+          :src="avatarLocalPath"
+          :name="groupName || $t('createGroup.groupFallback')"
+        />
+        <view class="group-card__badge">
+          <UiIcon name="camera" :size="26" color="var(--accent-contrast)" />
         </view>
       </view>
 
-      <view class="field">
-        <text class="field__label">群名称</text>
-        <input
-          class="field__input"
-          v-model="groupName"
-          placeholder="请输入群名称"
-          placeholder-class="field__ph"
-          maxlength="20"
-        />
-      </view>
+      <view class="group-card__fields">
+        <view class="field">
+          <text class="field__label">{{ $t('createGroup.groupName') }}</text>
+          <input
+            class="field__input"
+            v-model="groupName"
+            :placeholder="$t('createGroup.groupNamePlaceholder')"
+            placeholder-class="field__ph"
+            maxlength="20"
+          />
+        </view>
 
-      <view class="field field--textarea">
-        <text class="field__label">群描述</text>
-        <textarea
-          class="field__textarea"
-          v-model="groupDescription"
-          placeholder="请输入群描述（选填）"
-          placeholder-class="field__ph"
-          maxlength="100"
-        />
+        <view class="field field--area">
+          <text class="field__label">{{ $t('createGroup.groupDescription') }}</text>
+          <textarea
+            class="field__area"
+            v-model="groupDescription"
+            :placeholder="$t('createGroup.descriptionPlaceholder')"
+            placeholder-class="field__ph"
+            maxlength="100"
+          />
+        </view>
       </view>
     </view>
 
     <view class="members-bar">
-      <text class="members-bar__title">选择成员</text>
-      <text class="members-bar__count">已选 {{ selectedFriends.length }} 人</text>
+      <text class="members-bar__title">{{ $t('createGroup.membersTitle') }}</text>
+      <view class="chip chip--accent">
+        {{ $t('createGroup.selectedCount', { count: selectedFriends.length }) }}
+      </view>
     </view>
+
+    <scroll-view
+      v-if="selectedFriends.length"
+      class="selected-strip"
+      scroll-x
+      :show-scrollbar="false"
+    >
+      <view class="selected-strip__inner">
+        <view
+          v-for="friend in selectedFriends"
+          :key="friend.id"
+          class="selected-strip__item"
+        >
+          <UiAvatar shape="square" :size="84" :src="friend.avatar" :name="friend.name" />
+          <text class="selected-strip__name">{{ friend.name }}</text>
+        </view>
+      </view>
+    </scroll-view>
 
     <FriendPicker v-model="selectedFriends" />
 
     <view class="footer">
       <view
         class="create-btn"
-        :class="{ 'is-disabled': !canCreate || submitting }"
+        :class="{ 'is-disabled': createDisabled }"
         hover-class="create-btn--hover"
         hover-stay-time="60"
         @click="createGroup"
       >
-        <text>创建群聊</text>
+        <UiIcon
+          name="users"
+          :size="30"
+          :color="createDisabled ? 'var(--text-tertiary)' : 'var(--accent-contrast)'"
+        />
+        <text>{{ $t('createGroup.createBtn') }}</text>
       </view>
     </view>
   </view>
@@ -81,6 +113,9 @@ export default {
   computed: {
     canCreate() {
       return this.groupName.trim().length > 0
+    },
+    createDisabled() {
+      return !this.canCreate || this.submitting
     }
   },
   methods: {
@@ -99,17 +134,17 @@ export default {
     async createGroup() {
       if (this.submitting) return
       if (!this.canCreate) {
-        uni.showToast({ title: '请输入群名称', icon: 'none' })
+        uni.showToast({ title: this.$t('createGroup.nameRequired'), icon: 'none' })
         return
       }
       const userId = getUserId()
       if (!userId) {
-        uni.showToast({ title: '请先登录', icon: 'none' })
+        uni.showToast({ title: this.$t('createGroup.loginRequired'), icon: 'none' })
         return
       }
 
       this.submitting = true
-      uni.showLoading({ title: '创建中…', mask: true })
+      uni.showLoading({ title: this.$t('createGroup.creating'), mask: true })
       try {
         // 选择了群头像时，先上传拿到 URL 再提交
         let avatarUrl = ''
@@ -130,7 +165,7 @@ export default {
 
         uni.hideLoading()
         if (res && res.code === 200 && res.data) {
-          uni.showToast({ title: '创建成功', icon: 'success' })
+          uni.showToast({ title: this.$t('createGroup.createSuccess'), icon: 'success' })
           const groupId = res.data.id
           const name = encodeURIComponent(this.groupName.trim())
           const avatar = encodeURIComponent(avatarUrl || '')
@@ -140,12 +175,15 @@ export default {
             })
           }, 800)
         } else {
-          uni.showToast({ title: (res && res.message) || '创建失败', icon: 'none' })
+          uni.showToast({
+            title: (res && res.message) || this.$t('createGroup.createFailed'),
+            icon: 'none'
+          })
         }
       } catch (e) {
         console.error('创建群聊失败:', e)
         uni.hideLoading()
-        uni.showToast({ title: '创建失败', icon: 'none' })
+        uni.showToast({ title: this.$t('createGroup.createFailed'), icon: 'none' })
       } finally {
         this.submitting = false
       }
@@ -159,98 +197,87 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  background-image: radial-gradient(120% 52% at 50% 0%, var(--accent-light) 0%, transparent 62%);
+  color: var(--text-primary);
 }
 
 .group-card {
   flex-shrink: 0;
-  background-color: #ffffff;
-  margin-top: 20rpx;
-  padding: 32rpx 0 8rpx;
+  display: flex;
+  align-items: flex-start;
+  margin: 20rpx 24rpx 0;
+  padding: 24rpx;
 }
 
-.avatar-wrap {
+.group-card__avatar {
   position: relative;
-  width: 140rpx;
-  height: 140rpx;
-  margin: 8rpx auto 28rpx;
+  flex-shrink: 0;
+  margin-right: 24rpx;
 }
 
-.avatar-wrap:active {
+.group-card__avatar:active {
   opacity: 0.85;
 }
 
-.avatar-badge {
+.group-card__badge {
   position: absolute;
-  right: -12rpx;
-  bottom: -12rpx;
-  width: 52rpx;
-  height: 52rpx;
+  right: -8rpx;
+  bottom: -8rpx;
+  width: 48rpx;
+  height: 48rpx;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.55);
+  background-image: var(--accent-gradient);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.field {
-  display: flex;
-  align-items: center;
-  min-height: 88rpx;
-  padding: 0 32rpx;
+.group-card__fields {
   position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 0;
 }
 
-.field::after {
-  content: '';
-  position: absolute;
-  left: 32rpx;
-  right: 0;
-  bottom: 0;
-  height: 1rpx;
-  background-color: #ededed;
-  transform: scaleY(0.5);
+.field {
+  padding: 8rpx 0 12rpx;
+  border-bottom: 1rpx solid var(--divider);
 }
 
-.field:last-child::after {
-  display: none;
+.field--area {
+  padding-top: 12rpx;
+  border-bottom: none;
 }
 
 .field__label {
-  flex-shrink: 0;
-  min-width: 140rpx;
-  font-size: 30rpx;
-  color: #191919;
+  display: block;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  color: var(--text-tertiary);
 }
 
 .field__input {
-  flex: 1;
-  margin-left: 24rpx;
-  font-size: 30rpx;
-  color: #191919;
+  width: 100%;
+  height: 60rpx;
+  margin-top: 4rpx;
+  font-size: var(--font-base);
+  color: var(--text-primary);
+}
+
+.field__area {
+  width: 100%;
+  height: 96rpx;
+  margin-top: 6rpx;
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 .field__ph {
-  color: #b2b2b2;
-}
-
-.field--textarea {
-  align-items: flex-start;
-  padding-top: 24rpx;
-  padding-bottom: 24rpx;
-}
-
-.field--textarea .field__label {
-  padding-top: 6rpx;
-}
-
-.field__textarea {
-  flex: 1;
-  margin-left: 24rpx;
-  height: 120rpx;
-  font-size: 30rpx;
-  color: #191919;
-  line-height: 1.5;
+  color: var(--text-placeholder);
 }
 
 .members-bar {
@@ -258,46 +285,84 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24rpx 32rpx 12rpx;
+  padding: 24rpx 40rpx 10rpx;
 }
 
 .members-bar__title {
-  font-size: 26rpx;
-  color: #888888;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
-.members-bar__count {
-  font-size: 26rpx;
-  color: #888888;
+.selected-strip {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.selected-strip__inner {
+  display: inline-flex;
+  gap: 18rpx;
+  padding: 8rpx 24rpx 12rpx;
+}
+
+.selected-strip__item {
+  width: 96rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selected-strip__name {
+  max-width: 96rpx;
+  margin-top: 6rpx;
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .footer {
   flex-shrink: 0;
-  padding: 20rpx 32rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  background-color: #ededed;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background-color: var(--bg-secondary);
+  border-top: 1rpx solid var(--divider);
 }
 
 .create-btn {
   height: 88rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+  border-radius: var(--radius-md);
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.create-btn--hover {
-  background-color: #06ad56;
-}
-
-.create-btn.is-disabled {
-  background-color: #c8e9d4;
+  gap: 10rpx;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .create-btn text {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--accent-contrast);
+}
+
+.create-btn--hover {
+  transform: scale(0.99);
+  opacity: 0.9;
+}
+
+.create-btn.is-disabled {
+  background-image: none;
+  background-color: var(--bg-chip);
+  border: 1rpx solid var(--border-light);
+  box-shadow: none;
+}
+
+.create-btn.is-disabled text {
+  color: var(--text-tertiary);
 }
 </style>

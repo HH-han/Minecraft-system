@@ -97,7 +97,8 @@
             <div class="userlogin-input-centainer">
               <div class="userlogin-inputContainer">
                 <input required="required" id="userlogin-usernameField" placeholder="请输入账号" @input="handleUsernameInput"
-                  v-model="loginForm.username" type="text">
+                  v-model="loginForm.username" type="text" autocomplete="username" autocapitalize="off"
+                  spellcheck="false" enterkeyhint="next">
                 <label class="userlogin-usernameLabel" for="userlogin-usernameField">请输入账号</label>
                 <svg t="1746095535223" class="userlogin-userIcon" viewBox="0 0 1024 1024" version="1.1" p-id="26266">
                   <path
@@ -111,7 +112,7 @@
               <!-- 密码输入框 -->
               <div class="userlogin-inputContainer">
                 <input required="required" id="userlogin-passwordField" placeholder="请输入密码" v-model="loginForm.password"
-                  type="password">
+                  type="password" autocomplete="current-password" enterkeyhint="go" @keyup.enter="handleLogin">
                 <label class="userlogin-usernameLabel" for="userlogin-passwordField">请输入密码</label>
                 <svg t="1746095118852" class="userlogin-userIcon" viewBox="0 0 1024 1024" version="1.1" p-id="21472">
                   <path
@@ -243,35 +244,39 @@
               <div>
 
                 <div class="registered-css-input-container">
-                  <input placeholder="" class="registered-css-input-field" type="text" v-model="registerForm.username">
-                  <label for="enrolfirst-input-field" class="registered-css-input-label">请输入真实姓名...</label>
+                  <input id="register-name" placeholder="" class="registered-css-input-field" type="text"
+                    autocomplete="name" v-model="registerForm.username">
+                  <label for="register-name" class="registered-css-input-label">请输入真实姓名...</label>
                   <span class="registered-css-input-highlight"></span>
                 </div>
 
                 <div class="registered-css-input-container">
-                  <input placeholder="" class="registered-css-input-field" type="text" v-model="registerForm.email">
-                  <label for="enrolfirst-input-field" class="registered-css-input-label">请输入邮箱...</label>
+                  <input id="register-email" placeholder="" class="registered-css-input-field" type="email"
+                    autocomplete="email" inputmode="email" v-model="registerForm.email">
+                  <label for="register-email" class="registered-css-input-label">请输入邮箱...</label>
                   <span class="registered-css-input-highlight"></span>
                 </div>
               </div>
               <div>
                 <div class="registered-css-input-container">
-                  <input placeholder="" class="registered-css-input-field" type="text" v-model="registerForm.phone">
-                  <label for="enrolfirst-input-field" class="registered-css-input-label">请输入联系电话...</label>
+                  <input id="register-phone" placeholder="" class="registered-css-input-field" type="tel"
+                    autocomplete="tel" inputmode="numeric" maxlength="11" v-model="registerForm.phone">
+                  <label for="register-phone" class="registered-css-input-label">请输入联系电话...</label>
                   <span class="registered-css-input-highlight"></span>
                 </div>
 
                 <div class="registered-css-input-container">
-                  <input placeholder="" class="registered-css-input-field" type="password"
-                    v-model="registerForm.password">
-                  <label for="enrolfirst-input-field" class="registered-css-input-label">请设置密码...</label>
+                  <input id="register-password" placeholder="" class="registered-css-input-field" type="password"
+                    autocomplete="new-password" v-model="registerForm.password">
+                  <label for="register-password" class="registered-css-input-label">请设置密码...</label>
                   <span class="registered-css-input-highlight"></span>
                 </div>
 
                 <div class="registered-css-input-container">
-                  <input placeholder="" class="registered-css-input-field" type="password"
+                  <input id="register-confirm" placeholder="" class="registered-css-input-field" type="password"
+                    autocomplete="new-password" enterkeyhint="go" @keyup.enter="handleRegister"
                     v-model="registerForm.confirmPassword">
-                  <label for="enrolfirst-input-field" class="registered-css-input-label">请确认密码...</label>
+                  <label for="register-confirm" class="registered-css-input-label">请确认密码...</label>
                   <span class="registered-css-input-highlight"></span>
                 </div>
               </div>
@@ -740,7 +745,8 @@ onMounted(() => {
 /* 基础样式 */
 .login-container {
   display: flex;
-  width: 100%;
+  box-sizing: border-box;
+  width: min(calc(100% - 32px), 1000px);
   max-width: 1000px;
   max-height: 600px;
   font-family: 'Arial', sans-serif;
@@ -754,7 +760,9 @@ onMounted(() => {
 }
 
 .left-section {
+  box-sizing: border-box;
   width: 50%;
+  min-width: 0;
   background: var(--theme-gradient);
   color: var(--theme-primary-text);
   padding: 60px;
@@ -871,7 +879,9 @@ onMounted(() => {
 }
 
 .right-section {
+  box-sizing: border-box;
   width: 50%;
+  min-width: 0;
   background: var(--theme-bg-elevated);
   padding: 24px;
   display: flex;
@@ -1088,7 +1098,6 @@ onMounted(() => {
 /* 账号密码输入框样式 */
 #userlogin-passwordField,
 #userlogin-usernameField {
-  width: 100%;
   border: 2px solid var(--theme-border);
   background-color: transparent;
   border-radius: 15px;
@@ -1796,40 +1805,6 @@ onMounted(() => {
   }
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .login-container {
-    flex-direction: column;
-  }
-
-  .left-section,
-  .right-section {
-    width: 100%;
-    height: 50%;
-  }
-
-  .left-section {
-    padding: 40px;
-  }
-
-  .right-section {
-    padding: 40px;
-  }
-
-  .stats {
-    gap: 20px;
-  }
-
-  .form-row {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .form-group.half {
-    width: 100%;
-  }
-}
-
 /* 模糊背景模态框样式 */
 .blur-modal {
   position: fixed;
@@ -1914,30 +1889,342 @@ onMounted(() => {
   order: 2;
 }
 
-/* —— 窄屏统一回退为居中卡片，避免贴边全屏在移动端被挤压 —— */
-@media (max-width: 768px) {
-
-  .layout-panel-left,
-  .layout-panel-right {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 1000px;
-    max-height: 600px;
-    height: auto;
-    border-radius: 16px;
+/* —— 平板（769~1024）：压缩两栏内边距，避免图文区文字挤压 —— */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .left-section {
+    padding: 40px;
   }
 
+  .right-section {
+    padding: 28px 24px;
+  }
+
+  .left-section h1,
+  .left-section h2 {
+    font-size: 26px;
+  }
+
+  .stats {
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+}
+
+/* ============================================================
+   移动端适配（≤768px 及手机横屏）
+   · 容器改为 fixed 全屏可滚动：摆脱 1000×600 居中卡片在窄屏
+     上下被裁切、横向溢出的问题
+   · 图文区压缩为页头（仅标题/简介），隐藏数据与步骤，突出表单
+   · 表单区全宽、内层不再单独滚动，输入框统一 16px 规避 iOS 聚焦放大
+   ============================================================ */
+@media (max-width: 768px), (max-height: 500px) and (orientation: landscape) {
+
+  /* 三种布局在窄屏统一为「页头 + 表单」纵向流，可整页滚动 */
+  .login-container,
+  .layout-panel-left,
+  .layout-panel-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: none;
+    border-radius: 0;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .login-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .left-section,
   .layout-panel-left .left-section,
-  .layout-panel-left .right-section,
-  .layout-panel-right .left-section,
-  .layout-panel-right .right-section {
+  .layout-panel-right .left-section {
     flex: 0 0 auto;
     order: 0;
     width: 100%;
     min-width: 0;
+    height: auto;
+    justify-content: flex-start;
+    padding: 20px 20px 24px;
+  }
+
+  /* 装饰圆在窄屏会撑出横向滚动，直接隐藏 */
+  .left-section::before,
+  .right-section::before {
+    display: none;
+  }
+
+  .logo {
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+
+  .logo::before {
+    margin-right: 8px;
+    font-size: 22px;
+  }
+
+  .left-section h1,
+  .left-section h2 {
+    margin-bottom: 8px;
+    font-size: 22px;
+  }
+
+  .description {
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* 移动端以登录表单为主，省略统计数据与注册步骤 */
+  .stats,
+  .steps {
+    display: none;
+  }
+
+  .right-section,
+  .layout-panel-left .right-section,
+  .layout-panel-right .right-section {
+    flex: 1 0 auto;
+    order: 0;
+    width: 100%;
+    min-width: 0;
     max-width: none;
-    padding: 40px;
+    height: auto;
+    justify-content: flex-start;
+    padding: 24px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* 页面整体滚动，表单内部不再二次滚动；余量充足时表单垂直居中 */
+  .form-wrapper {
+    max-height: none;
+    overflow: visible;
+    margin-block: auto;
+  }
+
+  .login-form,
+  .register-form {
+    max-width: 420px;
+  }
+
+  .login-form h2,
+  .register-form h2 {
+    font-size: 24px;
+  }
+
+  .form-subtitle {
+    margin-bottom: 24px;
+  }
+
+  .loginpage-avatar-container,
+  .registered-avatar-container {
+    margin-bottom: 20px;
+  }
+
+  .loginpage-avatar,
+  .registered-avatar-preview {
+    width: 68px;
+    height: 68px;
+  }
+
+  /* 触屏无 hover，头像上传提示常驻显示 */
+  .registered-avatar-upload-label {
+    opacity: 1;
+    font-size: 12px;
+    padding: 6px;
+    background: color-mix(in srgb, var(--theme-overlay) 70%, transparent);
+  }
+
+  /* 16px：避免 iOS 聚焦输入框时自动放大页面 */
+  #userlogin-usernameField,
+  #userlogin-passwordField,
+  .registered-css-input-field {
+    font-size: 16px;
+  }
+
+  #userlogin-usernameField,
+  #userlogin-passwordField {
+    padding: 12px 15px;
+  }
+
+  .userlogin-input-centainer {
+    gap: 28px;
+    margin-bottom: 24px;
+  }
+
+  .other-login-methods {
+    margin: 24px 0 20px;
+  }
+
+  .other-login-buttons {
+    gap: 16px;
+  }
+
+  .other-login-btn {
+    width: 54px;
+    height: 54px;
+    padding: 8px;
+  }
+
+  .form-footer button {
+    padding: 8px 4px;
+  }
+
+  .registered-css-input-container-all {
+    margin: 16px 0;
+  }
+
+  /* 弹层留边，避免窄屏内容贴边被裁（border-box 防止 padding 撑宽视口） */
+  .loginpage-modal,
+  .blur-modal {
+    box-sizing: border-box;
+    padding: 16px;
+  }
+
+  .blur-modal-content {
+    width: 100%;
+    max-height: 88dvh;
+  }
+
+  /* 布局切换仅对宽屏生效，窄屏隐藏避免遮挡标题 */
+  .layout-switch-login {
+    display: none;
+  }
+
+  /* 主题开关贴近右上角，给内容让位 */
+  :global(.theme-switch-login) {
+    top: 12px;
+    right: 12px;
+  }
+
+  /* 触屏反馈：去掉点击高亮块、抑制双击缩放延迟 */
+  .submit-btn,
+  .other-login-btn,
+  .form-footer button,
+  .registered-css-input-registered,
+  .loginpage-qr-link,
+  .agreement-link,
+  .agreement-a4 {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 }
+
+/* —— 超窄屏（≤380px）：进一步压缩间距，保证 4 个第三方入口不换行 —— */
+@media (max-width: 380px) {
+  .left-section {
+    padding: 16px 14px 20px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .left-section h1,
+  .left-section h2 {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+
+  .right-section {
+    padding: 20px 14px 24px;
+  }
+
+  .login-form h2,
+  .register-form h2 {
+    font-size: 21px;
+  }
+
+  .user-icon {
+    margin: 6px 10px;
+  }
+
+  .user-icon svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .other-login-buttons {
+    gap: 10px;
+  }
+
+  .other-login-btn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .agreement-text,
+  .agreement-link {
+    font-size: 12px;
+  }
+
+  .form-footer button {
+    margin: 0 6px;
+    font-size: 13px;
+  }
+}
+
+/* —— 手机横屏（高度 ≤500px）：隐藏简介、压缩头像与间距，减少滚动 —— */
+@media (max-height: 500px) and (orientation: landscape) {
+  .left-section {
+    padding: 12px 16px 14px;
+  }
+
+  .logo {
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  .left-section h1,
+  .left-section h2 {
+    margin-bottom: 4px;
+    font-size: 18px;
+  }
+
+  .description {
+    display: none;
+  }
+
+  .right-section {
+    padding: 16px 16px 20px;
+  }
+
+  .form-subtitle {
+    margin-bottom: 16px;
+  }
+
+  .loginpage-avatar-container,
+  .registered-avatar-container {
+    margin-bottom: 12px;
+  }
+
+  .loginpage-avatar,
+  .registered-avatar-preview {
+    width: 52px;
+    height: 52px;
+  }
+
+  .userlogin-input-centainer {
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+
+  .other-login-methods {
+    margin: 16px 0;
+  }
+}
+
 </style>

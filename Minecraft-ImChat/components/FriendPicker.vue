@@ -2,15 +2,15 @@
   <view class="friend-picker">
     <view class="friend-picker__search">
       <view class="friend-picker__search-box">
-        <text class="friend-picker__search-icon">🔍</text>
+        <UiIcon name="search" :size="30" color="var(--text-tertiary)" />
         <input
           class="friend-picker__search-input"
           v-model="keyword"
-          placeholder="搜索"
+          :placeholder="$t('common.search')"
           placeholder-class="friend-picker__placeholder"
         />
         <view v-if="keyword" class="friend-picker__clear" @click="keyword = ''">
-          <text>✕</text>
+          <UiIcon name="close" :size="18" color="var(--bg-primary)" />
         </view>
       </view>
     </view>
@@ -24,26 +24,33 @@
       >
         <UiAvatar :src="friend.avatar" :name="friend.name" :size="72" />
         <text class="friend-picker__selected-name">{{ friend.name }}</text>
-        <view class="friend-picker__selected-remove"><text>✕</text></view>
+        <view class="friend-picker__selected-remove">
+          <UiIcon name="close" :size="16" color="#FFFFFF" />
+        </view>
       </view>
     </view>
 
-    <scroll-view class="friend-picker__list" scroll-y>
+    <scroll-view class="friend-picker__list" scroll-y :show-scrollbar="false">
       <view
         v-for="friend in filteredFriends"
         :key="friend.id"
         class="friend-picker__item"
+        hover-class="friend-picker__item--hover"
         :class="{ selected: isSelected(friend.id) }"
         @click="toggle(friend)"
       >
         <UiAvatar :src="friend.avatar" :name="friend.name" :size="80" />
         <text class="friend-picker__name">{{ friend.name }}</text>
         <view class="friend-picker__checkbox" :class="{ checked: isSelected(friend.id) }">
-          <text v-if="isSelected(friend.id)" class="friend-picker__check">✓</text>
+          <UiIcon v-if="isSelected(friend.id)" name="check" :size="24" color="#FFFFFF" />
         </view>
       </view>
 
-      <UiEmpty v-if="filteredFriends.length === 0" icon="👤" text="暂无可选择的联系人" />
+      <UiEmpty
+        v-if="filteredFriends.length === 0"
+        icon-name="users"
+        :text="$t('chat.pickerEmpty')"
+      />
     </scroll-view>
   </view>
 </template>
@@ -53,6 +60,7 @@ import { getFriendInfoList } from '../utils/chat-api.js'
 import { getUserId } from '../utils/session.js'
 import UiAvatar from './Avatar.vue'
 import UiEmpty from './EmptyState.vue'
+import UiIcon from './Icon.vue'
 
 /**
  * 选人组件（发起群聊 / 邀请入群复用）
@@ -61,7 +69,7 @@ import UiEmpty from './EmptyState.vue'
  */
 export default {
   name: 'FriendPicker',
-  components: { UiAvatar, UiEmpty },
+  components: { UiAvatar, UiEmpty, UiIcon },
   props: {
     modelValue: { type: Array, default: () => [] },
     // 需要排除的 id（如已在群成员中的好友）
@@ -98,7 +106,7 @@ export default {
         if (res && res.code === 200 && Array.isArray(res.data)) {
           this.friends = res.data.map((f) => ({
             id: f.friendId,
-            name: f.remark || f.username || '未知用户',
+            name: f.remark || f.username || this.$t('common.unknownUser'),
             avatar: f.avatar || ''
           }))
           this.$emit('loaded', this.friends)
@@ -137,41 +145,32 @@ export default {
 .friend-picker__search-box {
   display: flex;
   align-items: center;
-  height: 68rpx;
-  background-color: #f0f0f0;
-  border-radius: 34rpx;
+  height: 72rpx;
+  background-color: var(--bg-input);
+  border: 1rpx solid var(--border-light);
+  border-radius: 999rpx;
   padding: 0 24rpx;
-}
-
-.friend-picker__search-icon {
-  font-size: 26rpx;
-  margin-right: 12rpx;
-  opacity: 0.5;
 }
 
 .friend-picker__search-input {
   flex: 1;
+  margin-left: 12rpx;
   font-size: 28rpx;
-  color: #191919;
+  color: var(--text-primary);
 }
 
 .friend-picker__placeholder {
-  color: #b2b2b2;
+  color: var(--text-placeholder);
 }
 
 .friend-picker__clear {
-  width: 36rpx;
-  height: 36rpx;
+  width: 34rpx;
+  height: 34rpx;
   border-radius: 50%;
-  background-color: #c8c8cd;
+  background-color: var(--text-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.friend-picker__clear text {
-  font-size: 22rpx;
-  color: #ffffff;
 }
 
 .friend-picker__selected {
@@ -191,7 +190,7 @@ export default {
 
 .friend-picker__selected-name {
   font-size: 22rpx;
-  color: #666666;
+  color: var(--text-secondary);
   margin-top: 6rpx;
   max-width: 96rpx;
   overflow: hidden;
@@ -206,15 +205,10 @@ export default {
   width: 32rpx;
   height: 32rpx;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.friend-picker__selected-remove text {
-  font-size: 20rpx;
-  color: #ffffff;
 }
 
 .friend-picker__list {
@@ -226,17 +220,31 @@ export default {
   display: flex;
   align-items: center;
   padding: 20rpx 32rpx;
-  border-bottom: 1rpx solid #f2f2f2;
+  position: relative;
 }
 
-.friend-picker__item:active {
-  background-color: #f0f0f0;
+.friend-picker__item::after {
+  content: '';
+  position: absolute;
+  left: 136rpx;
+  right: 32rpx;
+  bottom: 0;
+  height: 1rpx;
+  background-color: var(--divider);
+}
+
+.friend-picker__item:last-child::after {
+  display: none;
+}
+
+.friend-picker__item--hover {
+  background-color: var(--bg-hover);
 }
 
 .friend-picker__name {
   flex: 1;
   font-size: 30rpx;
-  color: #191919;
+  color: var(--text-primary);
   margin-left: 24rpx;
 }
 
@@ -244,21 +252,17 @@ export default {
   width: 44rpx;
   height: 44rpx;
   border-radius: 50%;
-  border: 2rpx solid #d2d2d6;
+  border: 2rpx solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .friend-picker__checkbox.checked {
-  background-color: #07c160;
-  border-color: #07c160;
-}
-
-.friend-picker__check {
-  font-size: 24rpx;
-  color: #ffffff;
-  line-height: 1;
+  background-image: var(--accent-gradient);
+  border-color: transparent;
+  box-shadow: 0 0 16rpx var(--accent-light);
 }
 </style>

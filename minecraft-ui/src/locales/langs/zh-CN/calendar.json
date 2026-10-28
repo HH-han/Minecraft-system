@@ -1,0 +1,12 @@
+{
+  "calendar": {
+    "title": "选择日期",
+    "placeholder": "选择日期",
+    "prevMonth": "上个月",
+    "nextMonth": "下个月",
+    "prevYear": "上一年",
+    "nextYear": "下一年",
+    "clear": "清除",
+    "today": "今天"
+  }
+}

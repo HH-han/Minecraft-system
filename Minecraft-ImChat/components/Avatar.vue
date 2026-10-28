@@ -1,7 +1,7 @@
 <template>
   <view
     class="ui-avatar"
-    :class="[shape, sizeClass]"
+    :class="[shape, sizeClass, { 'has-ring': ring }]"
     :style="rootStyle"
   >
     <image
@@ -11,7 +11,7 @@
       mode="aspectFill"
       @error="onError"
     />
-    <view v-else class="ui-avatar__fallback" :style="{ backgroundColor: bgColor }">
+    <view v-else class="ui-avatar__fallback" :style="fallbackStyle">
       <text class="ui-avatar__initial" :style="{ fontSize: initialFontSize }">{{ initial }}</text>
     </view>
 
@@ -24,13 +24,18 @@
 /**
  * 通用头像
  *
- * 不依赖 default-avatar.png 等静态资源：加载失败或未设置时，
- * 自动降级为「昵称首字 + 稳定配色」的占位头像。
+ * 未设置或加载失败时，降级为「昵称首字 + 稳定双色渐变」占位头像。
+ * 主题切换由 CSS 变量完成（边框、在线点描边）。
  */
-const COLORS = [
-  '#5B8FF9', '#61DDAA', '#F6BD16', '#7262FD',
-  '#78D3F8', '#9661BC', '#F6903D', '#008685',
-  '#F08BB4', '#5D7092'
+const GRADIENTS = [
+  ['#4F8BFF', '#7C5CFF'],
+  ['#22C55E', '#0EA5A4'],
+  ['#F59E0B', '#EF4444'],
+  ['#8B5CF6', '#EC4899'],
+  ['#06B6D4', '#3B82F6'],
+  ['#F97316', '#F43F5E'],
+  ['#10B981', '#65A30D'],
+  ['#64748B', '#334155']
 ]
 
 export default {
@@ -42,7 +47,9 @@ export default {
     shape: { type: String, default: 'round' },
     // 尺寸（rpx）
     size: { type: Number, default: 88 },
-    online: { type: Boolean, default: false }
+    online: { type: Boolean, default: false },
+    // 强调描边（用于群主/当前用户等场景）
+    ring: { type: Boolean, default: false }
   },
   data() {
     return { failed: false }
@@ -63,15 +70,18 @@ export default {
       return Array.from(name)[0].toUpperCase()
     },
     initialFontSize() {
-      return `${Math.round(this.size * 0.42)}rpx`
+      return `${Math.round(this.size * 0.4)}rpx`
     },
-    bgColor() {
+    fallbackStyle() {
       const name = String(this.name || '?')
       let hash = 0
       for (let i = 0; i < name.length; i++) {
         hash = (hash * 31 + name.charCodeAt(i)) % 100000
       }
-      return COLORS[hash % COLORS.length]
+      const pair = GRADIENTS[hash % GRADIENTS.length]
+      return {
+        backgroundImage: `linear-gradient(135deg, ${pair[0]} 0%, ${pair[1]} 100%)`
+      }
     }
   },
   watch: {
@@ -99,7 +109,7 @@ export default {
 }
 
 .ui-avatar.square {
-  border-radius: 16rpx;
+  border-radius: 22rpx;
 }
 
 .ui-avatar__img,
@@ -114,12 +124,25 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.16);
 }
 
 .ui-avatar__initial {
   color: #ffffff;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1;
+  letter-spacing: 0.5rpx;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.18);
+}
+
+.ui-avatar.has-ring::after {
+  content: '';
+  position: absolute;
+  inset: -6rpx;
+  border-radius: inherit;
+  border: 3rpx solid var(--accent-color);
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 .ui-avatar__online {
@@ -128,8 +151,8 @@ export default {
   bottom: -2rpx;
   width: 18rpx;
   height: 18rpx;
-  background-color: #07c160;
+  background-color: var(--success-color);
   border-radius: 50%;
-  border: 3rpx solid #ffffff;
+  border: 3rpx solid var(--bg-primary);
 }
 </style>

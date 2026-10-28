@@ -1,58 +1,81 @@
 <template>
-  <view class="add-friend">
+  <view class="add-friend" :class="themeClass">
     <CustomNavBar
       :show-back="true"
-      title="添加朋友"
+      :title="$t('addFriend.title')"
       title-align="center"
       @back="goBack"
     />
 
     <scroll-view class="add-friend__body" scroll-y :show-scrollbar="false">
-      <view class="search-row">
-        <view class="search-box">
-          <UiIcon name="search" :size="36" color="#B2B2B2" />
+      <!-- 搜索输入卡 -->
+      <view class="search-card surface-card grid-overlay">
+        <view class="search-card__field">
+          <UiIcon name="search" :size="34" color="var(--text-tertiary)" />
           <input
-            class="search-box__input"
+            class="search-card__input"
             v-model="keyword"
             type="text"
-            placeholder="手机号/账号"
-            placeholder-class="search-box__ph"
+            :placeholder="$t('addFriend.searchPlaceholder')"
+            placeholder-class="search-card__ph"
             confirm-type="search"
             @confirm="searchUser"
           />
-          <view v-if="keyword" class="search-box__clear" @click="keyword = ''">
-            <UiIcon name="close" :size="20" color="#FFFFFF" />
+          <view v-if="keyword" class="search-card__clear" @click="keyword = ''">
+            <UiIcon name="close" :size="18" color="var(--bg-primary)" />
           </view>
         </view>
-        <view class="search-action" hover-class="search-action--hover" hover-stay-time="60" @click="searchUser">
-          <text>搜索</text>
-        </view>
-      </view>
-
-      <view v-if="searchResult" class="group">
-        <view class="group__title">搜索结果</view>
-        <view class="result">
-          <UiAvatar shape="square" :size="96" :src="searchResult.avatar" :name="resultName" />
-          <view class="result__body">
-            <text class="result__name">{{ resultName }}</text>
-            <text v-if="resultSub" class="result__sub">{{ resultSub }}</text>
-          </view>
-          <view v-if="isFriend" class="op-btn is-disabled">
-            <text>已是好友</text>
-          </view>
-          <view v-else-if="isAdded" class="op-btn is-disabled">
-            <text>已发送</text>
-          </view>
-          <view v-else class="op-btn is-primary" hover-class="op-btn--hover" hover-stay-time="60" @click="addFriend">
-            <text>添加到通讯录</text>
-          </view>
+        <view
+          class="search-card__btn"
+          hover-class="search-card__btn--hover"
+          hover-stay-time="60"
+          @click="searchUser"
+        >
+          <UiIcon name="search" :size="28" color="var(--accent-contrast)" />
+          <text>{{ $t('addFriend.search') }}</text>
         </view>
       </view>
 
-      <view v-if="searchHistory.length" class="group">
-        <view class="group__head">
-          <text class="group__title">搜索历史</text>
-          <text class="group__extra" hover-class="group__extra--hover" hover-stay-time="60" @click="clearHistory">清空</text>
+      <!-- 搜索结果卡 -->
+      <view v-if="searchResult" class="result-card surface-card grid-overlay">
+        <text class="block-label">{{ $t('addFriend.searchResult') }}</text>
+        <view class="result-card__body">
+          <UiAvatar shape="square" :size="104" :src="searchResult.avatar" :name="resultName" />
+          <view class="result-card__info">
+            <text class="result-card__name">{{ resultName }}</text>
+            <text v-if="resultSub" class="result-card__sub">{{ resultSub }}</text>
+          </view>
+        </view>
+        <view v-if="isFriend" class="result-card__btn is-disabled">
+          <UiIcon name="check" :size="28" color="var(--text-tertiary)" />
+          <text>{{ $t('addFriend.alreadyFriend') }}</text>
+        </view>
+        <view v-else-if="isAdded" class="result-card__btn is-disabled">
+          <UiIcon name="check" :size="28" color="var(--text-tertiary)" />
+          <text>{{ $t('addFriend.alreadySent') }}</text>
+        </view>
+        <view
+          v-else
+          class="result-card__btn is-primary"
+          hover-class="result-card__btn--hover"
+          hover-stay-time="60"
+          @click="addFriend"
+        >
+          <UiIcon name="user-plus" :size="30" color="var(--accent-contrast)" />
+          <text>{{ $t('addFriend.addToContacts') }}</text>
+        </view>
+      </view>
+
+      <!-- 搜索历史 -->
+      <view v-if="searchHistory.length" class="group-block">
+        <view class="history-head">
+          <text class="block-label">{{ $t('addFriend.searchHistory') }}</text>
+          <text
+            class="history-head__clear"
+            hover-class="history-head__clear--hover"
+            hover-stay-time="60"
+            @click="clearHistory"
+          >{{ $t('addFriend.clear') }}</text>
         </view>
         <view
           v-for="(item, index) in searchHistory"
@@ -67,22 +90,43 @@
             <text class="history__name">{{ item.username || maskPhone(item.phone) }}</text>
             <text class="history__sub">{{ maskPhone(item.phone) }}</text>
           </view>
+          <UiIcon name="chevron-right" :size="26" color="var(--text-disabled)" />
         </view>
       </view>
 
-      <view class="group">
-        <view class="group__title">温馨提示</view>
-        <view class="tip">
-          <UiIcon name="info" :size="34" color="#07C160" />
-          <text class="tip__text">输入对方手机号或账号即可发送好友请求</text>
-        </view>
-        <view class="tip">
-          <UiIcon name="info" :size="34" color="#07C160" />
-          <text class="tip__text">对方同意后即可开始聊天</text>
+      <!-- 我的账号卡 -->
+      <view class="account-card surface-card grid-overlay">
+        <text class="block-label">{{ $t('addFriend.myAccount') }}</text>
+        <view class="account-card__body">
+          <UiAvatar shape="square" :size="88" :src="myProfile.avatar" :name="myName" />
+          <view class="account-card__info">
+            <text class="account-card__name">{{ myName }}</text>
+            <text class="account-card__sub">{{ accountText }}</text>
+          </view>
+          <view class="account-card__tile">
+            <UiIcon name="qr" :size="34" color="var(--accent-color)" />
+          </view>
         </view>
       </view>
 
-      <view class="add-friend__safe"></view>
+      <!-- 温馨提示 -->
+      <view class="group-block tips-block">
+        <text class="block-label tips-block__label">{{ $t('addFriend.tipsTitle') }}</text>
+        <view class="tip">
+          <view class="tip__icon">
+            <UiIcon name="info" :size="28" color="var(--accent-color)" />
+          </view>
+          <text class="tip__text">{{ $t('addFriend.tip1') }}</text>
+        </view>
+        <view class="tip">
+          <view class="tip__icon">
+            <UiIcon name="message" :size="28" color="var(--accent-color)" />
+          </view>
+          <text class="tip__text">{{ $t('addFriend.tip2') }}</text>
+        </view>
+      </view>
+
+      <view class="safe-bottom-space--sm"></view>
     </scroll-view>
   </view>
 </template>
@@ -92,7 +136,7 @@ import CustomNavBar from '../../components/CustomNavBar.vue'
 import UiIcon from '../../components/Icon.vue'
 import UiAvatar from '../../components/Avatar.vue'
 import { getUserByAccount, getFriendInfoList, sendFriendRequest } from '../../utils/chat-api.js'
-import { getUserId } from '../../utils/session.js'
+import { getUserId, getCurrentProfile } from '../../utils/session.js'
 import { maskPhone } from '../../utils/format.js'
 
 const HISTORY_KEY = 'friendSearchHistory'
@@ -106,6 +150,7 @@ export default {
       isFriend: false,
       isAdded: false,
       searchHistory: [],
+      myProfile: { name: '', avatar: '', account: '' },
       // 已是好友判断依据（拿不到则为空集合，按 false 处理）
       friendIds: [],
       friendKeys: []
@@ -114,19 +159,32 @@ export default {
   computed: {
     resultName() {
       const r = this.searchResult || {}
-      return r.nickname || r.username || r.account || '未知用户'
+      return r.nickname || r.username || r.account || this.$t('addFriend.unknownUser')
     },
     resultSub() {
       const r = this.searchResult || {}
-      if (r.account && r.phone) return `账号：${r.account} · ${maskPhone(r.phone)}`
-      if (r.account) return `账号：${r.account}`
+      if (r.account && r.phone) {
+        return this.$t('addFriend.accountWithPhone', {
+          account: r.account,
+          phone: maskPhone(r.phone)
+        })
+      }
+      if (r.account) return this.$t('addFriend.accountOnly', { account: r.account })
       if (r.phone) return maskPhone(r.phone)
       return ''
+    },
+    myName() {
+      return this.myProfile.name || this.$t('addFriend.unknownUser')
+    },
+    accountText() {
+      if (!this.myProfile.account) return '-'
+      return this.$t('addFriend.accountOnly', { account: this.myProfile.account })
     }
   },
   onLoad() {
     this.loadHistory()
     this.loadFriends()
+    this.myProfile = getCurrentProfile()
   },
   methods: {
     maskPhone,
@@ -160,10 +218,10 @@ export default {
     async searchUser() {
       const kw = this.keyword.trim()
       if (!kw) {
-        uni.showToast({ title: '请输入手机号或账号', icon: 'none' })
+        uni.showToast({ title: this.$t('addFriend.inputRequired'), icon: 'none' })
         return
       }
-      uni.showLoading({ title: '搜索中…' })
+      uni.showLoading({ title: this.$t('addFriend.searching') })
       try {
         const res = await getUserByAccount(kw)
         if (res && res.code === 200 && res.data) {
@@ -175,11 +233,11 @@ export default {
           this.searchResult = null
           this.isAdded = false
           this.isFriend = false
-          uni.showToast({ title: '未找到该用户', icon: 'none' })
+          uni.showToast({ title: this.$t('addFriend.notFound'), icon: 'none' })
         }
       } catch (e) {
         console.error('搜索用户失败:', e)
-        uni.showToast({ title: '搜索失败', icon: 'none' })
+        uni.showToast({ title: this.$t('addFriend.searchFailed'), icon: 'none' })
       } finally {
         uni.hideLoading()
       }
@@ -188,13 +246,13 @@ export default {
       if (!this.searchResult || this.isAdded || this.isFriend) return
       const userId = getUserId()
       if (!userId) {
-        uni.showToast({ title: '请先登录', icon: 'none' })
+        uni.showToast({ title: this.$t('addFriend.loginRequired'), icon: 'none' })
         return
       }
       uni.showModal({
-        title: '发送好友请求',
+        title: this.$t('addFriend.sendRequestTitle'),
         editable: true,
-        placeholderText: '请输入验证消息（选填）',
+        placeholderText: this.$t('addFriend.messagePlaceholder'),
         success: async (res) => {
           if (!res.confirm) return
           try {
@@ -205,13 +263,16 @@ export default {
             })
             if (result && result.code === 200) {
               this.isAdded = true
-              uni.showToast({ title: '请求已发送', icon: 'success' })
+              uni.showToast({ title: this.$t('addFriend.requestSent'), icon: 'success' })
             } else {
-              uni.showToast({ title: (result && result.message) || '发送失败', icon: 'none' })
+              uni.showToast({
+                title: (result && result.message) || this.$t('addFriend.sendFailed'),
+                icon: 'none'
+              })
             }
           } catch (e) {
             console.error('发送好友请求失败:', e)
-            uni.showToast({ title: '发送失败', icon: 'none' })
+            uni.showToast({ title: this.$t('addFriend.sendFailed'), icon: 'none' })
           }
         }
       })
@@ -241,8 +302,8 @@ export default {
     },
     clearHistory() {
       uni.showModal({
-        title: '提示',
-        content: '确定要清空搜索历史吗？',
+        title: this.$t('addFriend.tip'),
+        content: this.$t('addFriend.clearConfirm'),
         success: (res) => {
           if (res.confirm) {
             this.searchHistory = []
@@ -260,7 +321,9 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  background-image: radial-gradient(120% 52% at 50% 0%, var(--accent-light) 0%, transparent 62%);
+  color: var(--text-primary);
 }
 
 .add-friend__body {
@@ -268,180 +331,195 @@ export default {
   height: 0;
 }
 
-/* 搜索栏 */
-.search-row {
-  display: flex;
-  align-items: center;
-  padding: 24rpx 32rpx;
-  gap: 20rpx;
+.block-label {
+  display: block;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
 }
 
-.search-box {
-  flex: 1;
+/* 搜索输入卡 */
+.search-card {
+  margin: 24rpx 24rpx 0;
+  padding: 22rpx;
+}
+
+.search-card__field {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  height: 88rpx;
-  background-color: #ffffff;
-  border-radius: 10rpx;
+  height: 84rpx;
   padding: 0 24rpx;
+  border-radius: 999rpx;
+  background-color: var(--bg-input);
+  border: 1rpx solid var(--border-light);
 }
 
-.search-box__input {
+.search-card__input {
   flex: 1;
-  font-size: 30rpx;
-  color: #191919;
-  margin-left: 16rpx;
+  height: 100%;
+  margin-left: 14rpx;
+  font-size: var(--font-md);
+  color: var(--text-primary);
 }
 
-.search-box__ph {
-  color: #b2b2b2;
+.search-card__ph {
+  color: var(--text-placeholder);
 }
 
-.search-box__clear {
-  width: 36rpx;
-  height: 36rpx;
+.search-card__clear {
+  width: 34rpx;
+  height: 34rpx;
   border-radius: 50%;
-  background-color: #c8c8cd;
+  background-color: var(--text-disabled);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.search-action {
-  flex-shrink: 0;
-  height: 88rpx;
-  padding: 0 40rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+.search-card__btn {
+  position: relative;
+  z-index: 1;
+  height: 84rpx;
+  margin-top: 18rpx;
+  border-radius: var(--radius-md);
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10rpx;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-.search-action--hover {
-  background-color: #06ad56;
+.search-card__btn text {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--accent-contrast);
 }
 
-.search-action text {
-  font-size: 30rpx;
-  color: #ffffff;
-  font-weight: 500;
+.search-card__btn--hover {
+  transform: scale(0.99);
+  opacity: 0.9;
 }
 
-/* 分组 */
-.group {
-  background-color: #ffffff;
+/* 搜索结果卡 */
+.result-card {
+  margin: 20rpx 24rpx 0;
+  padding: 26rpx;
+}
+
+.result-card__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
   margin-top: 20rpx;
 }
 
-.group__title {
-  font-size: 26rpx;
-  color: #888888;
-  padding: 20rpx 32rpx 12rpx;
-}
-
-.group__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20rpx 32rpx 12rpx;
-}
-
-.group__head .group__title {
-  padding: 0;
-}
-
-.group__extra {
-  font-size: 26rpx;
-  color: #576b95;
-}
-
-.group__extra--hover {
-  opacity: 0.6;
-}
-
-/* 搜索结果 */
-.result {
-  display: flex;
-  align-items: center;
-  padding: 24rpx 32rpx 32rpx;
-}
-
-.result__body {
+.result-card__info {
   flex: 1;
   min-width: 0;
-  margin-left: 24rpx;
+  margin-left: 22rpx;
   display: flex;
   flex-direction: column;
 }
 
-.result__name {
-  font-size: 32rpx;
-  color: #191919;
-  line-height: 1.3;
+.result-card__name {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.result__sub {
-  font-size: 26rpx;
-  color: #888888;
+.result-card__sub {
   margin-top: 8rpx;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
 }
 
-.op-btn {
-  flex-shrink: 0;
-  height: 64rpx;
-  padding: 0 28rpx;
-  border-radius: 10rpx;
+.result-card__btn {
+  position: relative;
+  z-index: 1;
+  height: 80rpx;
+  margin-top: 24rpx;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10rpx;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
-.op-btn text {
-  font-size: 26rpx;
-  font-weight: 500;
+.result-card__btn text {
+  font-size: var(--font-base);
+  font-weight: 600;
 }
 
-.op-btn.is-primary {
-  background-color: #07c160;
+.result-card__btn.is-primary {
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
 }
 
-.op-btn.is-primary text {
-  color: #ffffff;
+.result-card__btn.is-primary text {
+  color: var(--accent-contrast);
 }
 
-.op-btn--hover {
-  background-color: #06ad56;
+.result-card__btn--hover {
+  transform: scale(0.99);
+  opacity: 0.9;
 }
 
-.op-btn.is-disabled {
-  background-color: #f2f2f2;
+.result-card__btn.is-disabled {
+  background-color: var(--bg-chip);
+  border: 1rpx solid var(--border-light);
 }
 
-.op-btn.is-disabled text {
-  color: #b2b2b2;
+.result-card__btn.is-disabled text {
+  color: var(--text-tertiary);
 }
 
 /* 搜索历史 */
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26rpx 32rpx 6rpx;
+}
+
+.history-head__clear {
+  font-size: var(--font-sm);
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.history-head__clear--hover {
+  opacity: 0.6;
+}
+
 .history {
   display: flex;
   align-items: center;
   padding: 20rpx 32rpx;
   position: relative;
+  transition: background-color var(--transition-fast);
 }
 
 .history::after {
   content: '';
   position: absolute;
   left: 128rpx;
-  right: 0;
+  right: 32rpx;
   bottom: 0;
   height: 1rpx;
-  background-color: #ededed;
-  transform: scaleY(0.5);
+  background-color: var(--divider);
 }
 
 .history:last-child::after {
@@ -449,51 +527,115 @@ export default {
 }
 
 .history--hover {
-  background-color: #ececec;
+  background-color: var(--bg-hover);
 }
 
 .history__body {
   flex: 1;
   min-width: 0;
-  margin-left: 24rpx;
+  margin-left: 22rpx;
   display: flex;
   flex-direction: column;
 }
 
 .history__name {
-  font-size: 30rpx;
-  color: #191919;
+  font-size: var(--font-md);
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .history__sub {
-  font-size: 24rpx;
-  color: #b2b2b2;
+  margin-top: 4rpx;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+/* 我的账号卡 */
+.account-card {
+  margin: 20rpx 24rpx 0;
+  padding: 26rpx;
+}
+
+.account-card__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  margin-top: 18rpx;
+}
+
+.account-card__info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-card__name {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-card__sub {
   margin-top: 6rpx;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-card__tile {
+  width: 68rpx;
+  height: 68rpx;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background-color: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 温馨提示 */
+.tips-block__label {
+  padding: 26rpx 32rpx 10rpx;
+}
+
 .tip {
   display: flex;
   align-items: center;
-  padding: 18rpx 32rpx;
+  padding: 12rpx 32rpx;
 }
 
 .tip:last-child {
-  padding-bottom: 28rpx;
+  padding-bottom: 26rpx;
+}
+
+.tip__icon {
+  width: 52rpx;
+  height: 52rpx;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background-color: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tip__text {
   flex: 1;
-  font-size: 26rpx;
-  color: #888888;
+  margin-left: 18rpx;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
   line-height: 1.5;
-  margin-left: 16rpx;
-}
-
-.add-friend__safe {
-  height: calc(24rpx + env(safe-area-inset-bottom));
 }
 </style>

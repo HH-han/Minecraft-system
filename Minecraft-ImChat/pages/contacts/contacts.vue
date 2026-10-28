@@ -1,7 +1,7 @@
 <template>
-  <view class="contacts-page">
+  <view class="contacts-page" :class="themeClass">
     <CustomNavBar
-      title="通讯录"
+      :title="$t('contacts.title')"
       title-align="left"
       :show-add="true"
       :menu-items="menuItems"
@@ -10,27 +10,14 @@
 
     <!-- 搜索条 -->
     <view class="ct-searchbar">
-      <view v-if="!searchVisible" class="ct-search ct-search--entry" @click="openSearch">
-        <UiIcon name="search" :size="32" color="#B2B2B2" />
-        <text class="ct-search__ph">搜索</text>
-      </view>
-      <view v-else class="ct-searchbar__row">
-        <view class="ct-search">
-          <UiIcon name="search" :size="32" color="#B2B2B2" />
-          <input
-            class="ct-search__input"
-            v-model="keyword"
-            focus
-            placeholder="搜索"
-            placeholder-class="ct-search__ph"
-            confirm-type="search"
-          />
-          <view v-if="keyword" class="ct-search__clear" @click="keyword = ''">
-            <UiIcon name="close" :size="22" color="#FFFFFF" />
-          </view>
-        </view>
-        <text class="ct-searchbar__cancel" @click="closeSearch">取消</text>
-      </view>
+      <SearchBar
+        v-model="keyword"
+        :placeholder="$t('contacts.searchPlaceholder')"
+        :autofocus="searchVisible"
+        :show-cancel="searchVisible"
+        @focus="openSearch"
+        @cancel="closeSearch"
+      />
     </view>
 
     <view class="ct-body">
@@ -42,97 +29,116 @@
         :show-scrollbar="false"
       >
         <!-- 功能入口 -->
-        <view class="ct-block">
-          <CellItem
-            title="新的朋友"
-            icon-bg="#FA9D3B"
-            :arrow="false"
-            @click="goFriendRequests"
-          >
+        <view class="section-label">{{ $t('contacts.shortcuts') }}</view>
+        <view class="group-block">
+          <CellItem :title="$t('contacts.newFriends')" :arrow="false" @click="goFriendRequests">
             <template #icon>
-              <UiIcon name="user-plus" :size="44" color="#FFFFFF" />
+              <UiIcon name="user-plus" :size="40" color="#FFFFFF" />
             </template>
             <template #right>
               <view v-if="pendingCount > 0" class="ct-badge">
                 <text>{{ pendingCount > 99 ? '99+' : pendingCount }}</text>
               </view>
+              <UiIcon name="chevron-right" :size="26" color="var(--text-disabled)" class="ct-entry__arrow" />
             </template>
           </CellItem>
 
-          <CellItem title="群聊" icon-bg="#07C160" :arrow="true" @click="openGroups">
+          <CellItem :title="$t('contacts.groups')" :arrow="true" @click="openGroups">
             <template #icon>
-              <UiIcon name="users" :size="44" color="#FFFFFF" />
+              <UiIcon name="users" :size="40" color="#FFFFFF" />
             </template>
           </CellItem>
 
-          <CellItem title="标签" icon-bg="#10AEFF" :arrow="true" @click="comingSoon('标签')">
+          <CellItem :title="$t('contacts.tags')" :arrow="true" @click="comingSoon($t('contacts.tags'))">
             <template #icon>
-              <UiIcon name="tag" :size="44" color="#FFFFFF" />
+              <UiIcon name="tag" :size="40" color="#FFFFFF" />
             </template>
           </CellItem>
 
-          <CellItem title="公众号" icon-bg="#2782D7" :arrow="true" @click="comingSoon('公众号')">
+          <CellItem :title="$t('contacts.officialAccounts')" :arrow="true" @click="comingSoon($t('contacts.officialAccounts'))">
             <template #icon>
-              <UiIcon name="shield" :size="44" color="#FFFFFF" />
+              <UiIcon name="shield" :size="40" color="#FFFFFF" />
             </template>
           </CellItem>
 
           <CellItem
-            title="服务号"
-            icon-bg="#5B9BD5"
+            :title="$t('contacts.serviceAccounts')"
             :arrow="true"
             :border="false"
-            @click="comingSoon('服务号')"
+            @click="comingSoon($t('contacts.serviceAccounts'))"
           >
             <template #icon>
-              <UiIcon name="shield" :size="44" color="#FFFFFF" />
+              <UiIcon name="shield" :size="40" color="#FFFFFF" />
             </template>
           </CellItem>
         </view>
 
         <!-- 星标朋友 -->
         <view v-if="starFriends.length">
-          <view class="ct-section">星标朋友</view>
-          <view class="ct-block">
+          <view class="section-label">{{ $t('contacts.starred') }}</view>
+          <view class="group-block">
             <view
               v-for="friend in starFriends"
               :key="'star-' + friend.id"
-              class="ct-row"
-              hover-class="ct-row--hover"
+              class="row-item"
+              hover-class="row-item--hover"
               hover-stay-time="60"
               @click="goDetail(friend)"
               @longpress="unstar(friend)"
             >
-              <UiAvatar shape="square" :size="80" :src="friend.avatar" :name="friend.name" />
-              <text class="ct-row__name">{{ friend.name }}</text>
+              <UiAvatar
+                shape="square"
+                :size="80"
+                :src="friend.avatar"
+                :name="friend.name"
+                :online="friend.online"
+              />
+              <view class="row-item__body">
+                <text class="row-item__title">{{ friend.name }}</text>
+              </view>
+              <UiIcon name="star-filled" :size="26" color="var(--warning-color)" />
             </view>
           </view>
         </view>
 
         <!-- 字母分组 -->
-        <view v-for="group in groups" :key="group.letter">
-          <view class="ct-section" :id="'letter-' + group.letter">{{ group.letter }}</view>
-          <view class="ct-block">
+        <view v-for="group in groups" :key="group.letter" class="ct-letter-group">
+          <view class="section-label ct-letter" :id="'letter-' + group.letter">
+            {{ group.letter }}
+          </view>
+          <view class="group-block">
             <view
               v-for="friend in group.list"
               :key="friend.id"
-              class="ct-row"
-              hover-class="ct-row--hover"
+              class="row-item"
+              hover-class="row-item--hover"
               hover-stay-time="60"
               @click="goDetail(friend)"
             >
-              <UiAvatar shape="square" :size="80" :src="friend.avatar" :name="friend.name" />
-              <text class="ct-row__name">{{ friend.name }}</text>
+              <UiAvatar
+                shape="square"
+                :size="80"
+                :src="friend.avatar"
+                :name="friend.name"
+                :online="friend.online"
+              />
+              <view class="row-item__body">
+                <text class="row-item__title">{{ friend.name }}</text>
+              </view>
             </view>
           </view>
         </view>
 
-        <view v-if="!groups.length" class="ct-empty">
-          <text>{{ keyword ? '没有找到相关联系人' : '还没有好友，去添加吧' }}</text>
-        </view>
+        <UiEmpty
+          v-if="!groups.length"
+          icon-name="contacts"
+          :text="keyword ? $t('contacts.emptySearch') : $t('contacts.empty')"
+        />
 
-        <view class="ct-footer">{{ totalFriends }}位朋友</view>
-        <view class="ct-list__safe"></view>
+        <view v-if="groups.length" class="ct-footer">
+          {{ $t('common.friendsCount', { count: totalFriends }) }}
+        </view>
+        <view class="safe-bottom-space"></view>
       </scroll-view>
 
       <!-- 右侧字母索引 -->
@@ -160,9 +166,11 @@
     </view>
 
     <!-- 字母气泡 -->
-    <view v-if="showBubble" class="letter-bubble">
+    <view v-if="showBubble" class="letter-bubble glass-panel">
       <text>{{ bubbleLetter }}</text>
     </view>
+
+    <FloatingTabBar active="contacts" />
   </view>
 </template>
 
@@ -171,6 +179,9 @@ import CustomNavBar from '../../components/CustomNavBar.vue'
 import UiIcon from '../../components/Icon.vue'
 import UiAvatar from '../../components/Avatar.vue'
 import CellItem from '../../components/CellItem.vue'
+import UiEmpty from '../../components/EmptyState.vue'
+import SearchBar from '../../components/SearchBar.vue'
+import FloatingTabBar from '../../components/FloatingTabBar.vue'
 import { getFriendInfoList, getPendingFriendRequests, getGroupsByUserId } from '../../utils/chat-api.js'
 import { getUserId } from '../../utils/session.js'
 import { groupContacts, INDEX_LETTERS } from '../../composables/useContactGroups.js'
@@ -178,7 +189,7 @@ import { measureRect, resolveLetterByY } from '../../composables/useLetterIndex.
 import store, { isStarred, toggleStar, setPendingRequestCount, clearUnread } from '../../store/index.js'
 
 export default {
-  components: { CustomNavBar, UiIcon, UiAvatar, CellItem },
+  components: { CustomNavBar, UiIcon, UiAvatar, CellItem, UiEmpty, SearchBar, FloatingTabBar },
   data() {
     return {
       friends: [],
@@ -189,14 +200,16 @@ export default {
       bubbleLetter: '',
       showBubble: false,
       touching: false,
-      indexRect: null,
-      menuItems: [
-        { text: '发起群聊', iconName: 'users', action: 'group' },
-        { text: '添加朋友', iconName: 'user-plus', action: 'addFriend' }
-      ]
+      indexRect: null
     }
   },
   computed: {
+    menuItems() {
+      return [
+        { text: this.$t('contacts.newGroup'), iconName: 'users', action: 'group' },
+        { text: this.$t('contacts.addFriend'), iconName: 'user-plus', action: 'addFriend' }
+      ]
+    },
     contactResult() {
       return groupContacts(this.friends, this.keyword)
     },
@@ -240,7 +253,7 @@ export default {
         if (friendsRes && friendsRes.code === 200 && Array.isArray(friendsRes.data)) {
           this.friends = friendsRes.data.map((f) => ({
             id: f.friendId,
-            name: f.remark || f.username || '未知用户',
+            name: f.remark || f.username || this.$t('common.unknownUser'),
             avatar: f.avatar || '',
             online: !!f.online
           }))
@@ -272,7 +285,7 @@ export default {
       uni.navigateTo({ url: '/pages/friend-requests/friend-requests' })
     },
     comingSoon(name) {
-      uni.showToast({ title: `${name}功能开发中`, icon: 'none' })
+      uni.showToast({ title: this.$t('contacts.devToast', { name }), icon: 'none' })
     },
     async openGroups() {
       const userId = getUserId()
@@ -281,25 +294,25 @@ export default {
         const res = await getGroupsByUserId(userId)
         const list = res && res.code === 200 && Array.isArray(res.data) ? res.data : []
         if (!list.length) {
-          uni.showToast({ title: '还没有群聊', icon: 'none' })
+          uni.showToast({ title: this.$t('contacts.noGroups'), icon: 'none' })
           return
         }
         uni.showActionSheet({
-          itemList: list.map((g) => g.name || '群聊'),
+          itemList: list.map((g) => g.name || this.$t('common.groupChat')),
           success: (r) => {
             const group = list[r.tapIndex]
             if (!group) return
             clearUnread('group', group.id)
             uni.navigateTo({
               url: `/pages/chat/chat?type=group&id=${group.id}&name=${encodeURIComponent(
-                group.name || '群聊'
+                group.name || this.$t('common.groupChat')
               )}&avatar=${encodeURIComponent(group.avatar || '')}`
             })
           }
         })
       } catch (e) {
         console.error('加载群聊失败:', e)
-        uni.showToast({ title: '加载群聊失败', icon: 'none' })
+        uni.showToast({ title: this.$t('contacts.loadGroupsFailed'), icon: 'none' })
       }
     },
     goDetail(friend) {
@@ -311,10 +324,10 @@ export default {
     },
     unstar(friend) {
       uni.showActionSheet({
-        itemList: ['取消星标'],
+        itemList: [this.$t('contacts.unstar')],
         success: () => {
           if (isStarred(friend.id)) toggleStar(friend.id)
-          uni.showToast({ title: '已取消星标', icon: 'none' })
+          uni.showToast({ title: this.$t('contacts.unstarred'), icon: 'none' })
         }
       })
     },
@@ -384,60 +397,36 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* 搜索条 */
 .ct-searchbar {
-  padding: 0 24rpx 16rpx;
+  padding: 12rpx 24rpx 4rpx;
 }
 
-.ct-searchbar__row {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
+.ct-entry__arrow {
+  margin-left: 10rpx;
 }
 
-.ct-search {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  height: 64rpx;
-  background-color: #ffffff;
-  border-radius: 10rpx;
-  padding: 0 20rpx;
-}
-
-.ct-search--entry {
-  color: #b2b2b2;
-}
-
-.ct-search__ph {
-  font-size: 28rpx;
-  color: #b2b2b2;
-  margin-left: 12rpx;
-}
-
-.ct-search__input {
-  flex: 1;
-  font-size: 28rpx;
-  color: #191919;
-  margin-left: 12rpx;
-}
-
-.ct-search__clear {
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 50%;
-  background-color: #c8c8cd;
+.ct-badge {
+  min-width: 36rpx;
+  height: 36rpx;
+  padding: 0 10rpx;
+  box-sizing: border-box;
+  border-radius: 999rpx;
+  background-color: var(--danger-color);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ct-searchbar__cancel {
-  font-size: 28rpx;
-  color: #576b95;
+.ct-badge text {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--bg-primary);
+  line-height: 1;
 }
 
 /* 内容区 */
@@ -453,118 +442,60 @@ export default {
   height: 100%;
 }
 
-.ct-block {
-  background-color: #ffffff;
-}
-
-.ct-section {
-  height: 48rpx;
-  line-height: 48rpx;
-  padding-left: 32rpx;
-  font-size: 24rpx;
-  color: #888888;
-  background-color: #ededed;
-}
-
-.ct-row {
-  display: flex;
-  align-items: center;
-  padding: 20rpx 32rpx;
-  position: relative;
-}
-
-.ct-row::after {
-  content: '';
-  position: absolute;
-  left: 148rpx;
-  right: 0;
-  bottom: 0;
-  height: 1rpx;
-  background-color: #ededed;
-  transform: scaleY(0.5);
-}
-
-.ct-row:last-child::after {
-  display: none;
-}
-
-.ct-row--hover {
-  background-color: #ececec;
-}
-
-.ct-row__name {
-  flex: 1;
-  min-width: 0;
-  margin-left: 24rpx;
-  font-size: 32rpx;
-  color: #191919;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ct-badge {
-  min-width: 34rpx;
-  height: 34rpx;
-  padding: 0 8rpx;
-  background-color: #fa5151;
-  border-radius: 17rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ct-badge text {
-  font-size: 20rpx;
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.ct-empty {
-  padding: 120rpx 0;
-  text-align: center;
-  font-size: 26rpx;
-  color: #b2b2b2;
+.ct-letter {
+  padding-top: 24rpx;
+  padding-bottom: 8rpx;
+  letter-spacing: 4rpx;
 }
 
 .ct-footer {
   text-align: center;
-  padding: 40rpx 0;
-  font-size: 26rpx;
-  color: #b2b2b2;
-}
-
-.ct-list__safe {
-  height: env(safe-area-inset-bottom);
+  padding: 36rpx 0 8rpx;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  letter-spacing: 1rpx;
 }
 
 /* 右侧字母索引 */
 .letter-index {
-  width: 44rpx;
+  width: 52rpx;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20rpx 0;
+  margin-bottom: 160rpx;
 }
 
 .letter-index__item {
   width: 44rpx;
   flex: 1;
+  margin: 1rpx 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast);
 }
 
 .letter-index__item text {
-  font-size: 20rpx;
-  color: #7f7f7f;
+  font-size: 18rpx;
+  color: var(--text-tertiary);
   line-height: 1;
 }
 
+.letter-index__item.is-empty text {
+  color: var(--text-disabled);
+}
+
+.letter-index__item.is-active {
+  background-color: var(--accent-light);
+}
+
 .letter-index__item.is-active text {
-  color: #07c160;
-  font-weight: 600;
+  color: var(--accent-color);
+  font-weight: 700;
 }
 
 /* 字母气泡 */
@@ -573,10 +504,9 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 120rpx;
-  height: 120rpx;
-  background-color: rgba(51, 51, 51, 0.85);
-  border-radius: 20rpx;
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -584,8 +514,8 @@ export default {
 }
 
 .letter-bubble text {
-  font-size: 56rpx;
-  color: #ffffff;
-  font-weight: 600;
+  font-size: var(--font-display);
+  font-weight: 700;
+  color: var(--accent-color);
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <view class="cd-page">
+  <view class="cd-page" :class="themeClass">
     <CustomNavBar
       :show-back="true"
-      title="资料"
+      :title="$t('contactDetail.title')"
       title-align="center"
       :show-add="true"
       :menu-items="menuItems"
@@ -13,79 +13,131 @@
     <scroll-view class="cd-scroll" scroll-y :show-scrollbar="false">
       <!-- ===== 单聊视图 ===== -->
       <block v-if="!isGroup">
-        <view class="cd-profile">
-          <UiAvatar shape="square" :size="160" :src="info.avatar" :name="info.name" />
-          <view class="cd-profile__info">
-            <view class="cd-profile__name-row">
-              <text class="cd-profile__name">{{ info.name || '未知用户' }}</text>
-              <text v-if="genderText" class="cd-gender" :class="info.gender">{{ genderText }}</text>
-            </view>
-            <text v-if="info.account" class="cd-profile__line">微信号：{{ info.account }}</text>
-            <text v-if="info.username && info.username !== info.name" class="cd-profile__line">
-              昵称：{{ info.username }}
-            </text>
-            <text v-if="info.region" class="cd-profile__line">地区：{{ info.region }}</text>
-          </view>
-          <view class="cd-star" @click="onToggleStar">
-            <UiIcon
-              :name="starred ? 'star-filled' : 'star'"
-              :size="48"
-              :color="starred ? '#F5B800' : '#CCCCCC'"
+        <view class="cd-hero grid-overlay">
+          <view class="cd-hero__top">
+            <UiAvatar
+              shape="square"
+              :size="160"
+              :src="info.avatar"
+              :name="info.name"
+              :ring="starred"
             />
+            <view class="cd-hero__head">
+              <view class="cd-hero__name-row">
+                <text class="cd-hero__name">{{ info.name || $t('common.unknownUser') }}</text>
+                <text v-if="genderText" class="cd-gender" :class="info.gender">{{ genderText }}</text>
+              </view>
+              <view class="cd-hero__chips">
+                <view v-if="starred" class="chip chip--accent">
+                  <text class="cd-chip__text">{{ $t('contactDetail.starredTag') }}</text>
+                </view>
+                <view v-if="info.region" class="chip">
+                  <text class="cd-chip__text">{{ info.region }}</text>
+                </view>
+              </view>
+            </view>
+            <view class="cd-star" hover-class="cd-star--hover" @click="onToggleStar">
+              <UiIcon
+                :name="starred ? 'star-filled' : 'star'"
+                :size="40"
+                :color="starred ? 'var(--warning-color)' : 'var(--text-tertiary)'"
+              />
+            </view>
+          </view>
+
+          <view v-if="metaRows.length" class="cd-meta">
+            <view v-for="(row, index) in metaRows" :key="index" class="cd-meta__row">
+              <text class="cd-meta__label">{{ row.label }}</text>
+              <text class="cd-meta__value">{{ row.value }}</text>
+            </view>
           </view>
         </view>
 
-        <view class="cd-group">
+        <view class="cd-actions">
+          <view class="cd-action cd-action--primary" hover-class="cd-action--hover" @click="sendMessage">
+            <UiIcon name="message" :size="36" color="var(--accent-contrast)" />
+            <text>{{ $t('contactDetail.sendMessage') }}</text>
+          </view>
+          <view
+            class="cd-action cd-action--ghost"
+            hover-class="cd-action--hover"
+            @click="comingSoon($t('contactDetail.call'))"
+          >
+            <UiIcon name="video" :size="36" color="var(--text-secondary)" />
+            <text>{{ $t('contactDetail.call') }}</text>
+          </view>
+        </view>
+
+        <view class="section-label">{{ $t('contactDetail.infoSection') }}</view>
+
+        <view class="group-block">
           <CellItem
-            title="设置备注"
-            :value="info.remark || '未设置'"
+            :title="$t('contactDetail.remark')"
+            :value="info.remark || $t('common.notSet')"
             :arrow="true"
             @click="editRemark"
           />
-          <CellItem title="朋友圈" :arrow="true" @click="openMoments" />
+          <CellItem
+            :title="$t('contactDetail.moments')"
+            :arrow="true"
+            :border="!!(info.phone || tagsText)"
+            @click="openMoments"
+          />
           <CellItem
             v-if="info.phone"
-            title="电话"
+            :title="$t('contactDetail.phone')"
             :value="phoneText"
             :arrow="true"
+            :border="!!tagsText"
             @click="callPhone"
           />
           <CellItem
             v-if="tagsText"
-            title="标签"
+            :title="$t('contactDetail.tags')"
             :value="tagsText"
             :border="false"
             :clickable="false"
           />
         </view>
 
-        <view class="cd-group">
-          <view class="cd-action cd-action--primary" @click="sendMessage">
-            <text>发消息</text>
-          </view>
-          <view class="cd-action cd-action--ghost" @click="comingSoon('音视频通话')">
-            <text>音视频通话</text>
-          </view>
-        </view>
-
-        <view class="cd-group">
-          <view class="cd-danger" @click="removeFriend">
-            <text>删除好友</text>
+        <view class="group-block cd-danger-block">
+          <view class="cd-danger" hover-class="cd-danger--hover" @click="removeFriend">
+            <UiIcon name="trash" :size="30" color="var(--danger-color)" />
+            <text>{{ $t('contactDetail.removeFriend') }}</text>
           </view>
         </view>
       </block>
 
       <!-- ===== 群聊视图 ===== -->
       <block v-else>
-        <view class="cd-profile">
-          <UiAvatar shape="square" :size="160" :src="info.avatar" :name="info.name" />
-          <view class="cd-profile__info">
-            <text class="cd-profile__name">{{ info.name || '群聊' }}</text>
-            <text class="cd-profile__line">{{ memberCount }}位成员</text>
+        <view class="cd-hero grid-overlay">
+          <view class="cd-hero__top">
+            <UiAvatar shape="square" :size="160" :src="info.avatar" :name="info.name" />
+            <view class="cd-hero__head">
+              <text class="cd-hero__name">{{ info.name || $t('common.groupChat') }}</text>
+              <view class="cd-hero__chips">
+                <view class="chip chip--accent">
+                  <text class="cd-chip__text">{{ $t('common.members', { count: memberCount }) }}</text>
+                </view>
+                <view v-if="info.isCreator" class="chip">
+                  <text class="cd-chip__text">{{ $t('contactDetail.creatorTag') }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          <text v-if="info.description" class="cd-hero__desc">{{ info.description }}</text>
+        </view>
+
+        <view class="cd-actions">
+          <view class="cd-action cd-action--primary" hover-class="cd-action--hover" @click="sendMessage">
+            <UiIcon name="message" :size="36" color="var(--accent-contrast)" />
+            <text>{{ $t('contactDetail.sendMessage') }}</text>
           </view>
         </view>
 
-        <view class="cd-group cd-group--members">
+        <view class="section-label">{{ $t('contactDetail.membersSection') }}</view>
+
+        <view class="group-block cd-members-card">
           <view class="cd-members">
             <view
               v-for="member in members"
@@ -98,46 +150,49 @@
             </view>
             <view class="cd-member" @click="inviteMembers">
               <view class="cd-member__plus">
-                <UiIcon name="plus" :size="48" color="#B2B2B2" />
+                <UiIcon name="plus" :size="44" color="var(--text-tertiary)" />
               </view>
-              <text class="cd-member__name">邀请</text>
+              <text class="cd-member__name">{{ $t('contactDetail.invite') }}</text>
             </view>
           </view>
         </view>
 
-        <view class="cd-group">
-          <CellItem title="群聊名称" :value="info.name" :arrow="true" @click="comingSoon('修改群聊名称')" />
+        <view class="section-label">{{ $t('contactDetail.groupSection') }}</view>
+
+        <view class="group-block">
           <CellItem
-            title="群公告"
-            :value="info.description || '未设置'"
+            :title="$t('contactDetail.groupName')"
+            :value="info.name"
             :arrow="true"
-            @click="comingSoon('群公告')"
+            @click="comingSoon($t('contactDetail.editGroupName'))"
           />
           <CellItem
-            title="查找聊天记录"
+            :title="$t('contactDetail.groupNotice')"
+            :value="info.description || $t('common.notSet')"
+            :arrow="true"
+            @click="comingSoon($t('contactDetail.groupNotice'))"
+          />
+          <CellItem
+            :title="$t('contactDetail.searchHistory')"
             :arrow="true"
             :border="false"
-            @click="comingSoon('查找聊天记录')"
+            @click="comingSoon($t('contactDetail.searchHistory'))"
           />
         </view>
 
-        <view class="cd-group">
-          <view class="cd-action cd-action--primary" @click="sendMessage">
-            <text>发消息</text>
+        <view class="group-block cd-danger-block">
+          <view v-if="info.isCreator" class="cd-danger" hover-class="cd-danger--hover" @click="removeGroup">
+            <UiIcon name="trash" :size="30" color="var(--danger-color)" />
+            <text>{{ $t('contactDetail.dissolveGroup') }}</text>
           </view>
-        </view>
-
-        <view class="cd-group">
-          <view v-if="info.isCreator" class="cd-danger" @click="removeGroup">
-            <text>解散群聊</text>
-          </view>
-          <view v-else class="cd-danger" @click="leaveGroup">
-            <text>退出群聊</text>
+          <view v-else class="cd-danger" hover-class="cd-danger--hover" @click="leaveGroup">
+            <UiIcon name="logout" :size="30" color="var(--danger-color)" />
+            <text>{{ $t('contactDetail.leaveGroup') }}</text>
           </view>
         </view>
       </block>
 
-      <view class="cd-safe"></view>
+      <view class="safe-bottom-space--sm"></view>
     </scroll-view>
   </view>
 </template>
@@ -183,20 +238,26 @@ export default {
       },
       members: [],
       memberCount: 0,
-      starred: false,
-      menuItems: [
-        { text: '投诉', action: 'complain' },
-        { text: '加入黑名单', action: 'block' }
-      ]
+      starred: false
     }
   },
   computed: {
+    menuItems() {
+      return [
+        { text: this.$t('contactDetail.complain'), action: 'complain' },
+        { text: this.$t('contactDetail.block'), action: 'block' }
+      ]
+    },
     isGroup() {
       return this.type === 'group'
     },
     genderText() {
-      if (this.info.gender === 'male' || this.info.gender === 1 || this.info.gender === '1') return '男'
-      if (this.info.gender === 'female' || this.info.gender === 2 || this.info.gender === '2') return '女'
+      if (this.info.gender === 'male' || this.info.gender === 1 || this.info.gender === '1') {
+        return this.$t('contactDetail.genderMale')
+      }
+      if (this.info.gender === 'female' || this.info.gender === 2 || this.info.gender === '2') {
+        return this.$t('contactDetail.genderFemale')
+      }
       return ''
     },
     phoneText() {
@@ -207,6 +268,25 @@ export default {
       if (Array.isArray(tags) && tags.length) return tags.join('，')
       if (typeof tags === 'string' && tags.trim()) return tags
       return ''
+    },
+    // 资料卡中的键值行：仅在有值时展示
+    metaRows() {
+      const rows = []
+      if (this.info.account) {
+        rows.push({
+          key: 'account',
+          label: this.$t('contactDetail.accountLabel'),
+          value: this.info.account
+        })
+      }
+      if (this.info.username && this.info.username !== this.info.name) {
+        rows.push({
+          key: 'nickname',
+          label: this.$t('contactDetail.nicknameLabel'),
+          value: this.info.username
+        })
+      }
+      return rows
     }
   },
   onLoad(options) {
@@ -248,7 +328,7 @@ export default {
     normalizeMember(m) {
       return {
         id: m.userId || m.id || m.friendId,
-        name: m.remark || m.nickname || m.username || m.name || '成员',
+        name: m.remark || m.nickname || m.username || m.name || this.$t('contactDetail.memberFallback'),
         avatar: m.avatar || ''
       }
     },
@@ -297,17 +377,20 @@ export default {
       uni.navigateBack()
     },
     onMenu(item) {
-      uni.showToast({ title: `${item.text}功能开发中`, icon: 'none' })
+      uni.showToast({ title: this.$t('contactDetail.devToast', { name: item.text }), icon: 'none' })
     },
     onToggleStar() {
       this.starred = toggleStar(this.id)
-      uni.showToast({ title: this.starred ? '已设为星标朋友' : '已取消星标', icon: 'none' })
+      uni.showToast({
+        title: this.starred ? this.$t('contactDetail.starredOn') : this.$t('contactDetail.starredOff'),
+        icon: 'none'
+      })
     },
     editRemark() {
       uni.showModal({
-        title: '设置备注',
+        title: this.$t('contactDetail.remark'),
         editable: true,
-        placeholderText: '请输入备注',
+        placeholderText: this.$t('contactDetail.remarkPlaceholder'),
         content: this.info.remark || '',
         success: async (res) => {
           if (!res.confirm) return
@@ -316,13 +399,16 @@ export default {
             const result = await updateFriendRemark(getUserId(), this.id, remark)
             if (result && result.code === 200) {
               this.info.remark = remark
-              uni.showToast({ title: '已保存', icon: 'success' })
+              uni.showToast({ title: this.$t('contactDetail.saved'), icon: 'success' })
             } else {
-              uni.showToast({ title: (result && result.message) || '保存失败', icon: 'none' })
+              uni.showToast({
+                title: (result && result.message) || this.$t('common.saveFailed'),
+                icon: 'none'
+              })
             }
           } catch (e) {
             console.error('修改备注失败:', e)
-            uni.showToast({ title: '保存失败', icon: 'none' })
+            uni.showToast({ title: this.$t('common.saveFailed'), icon: 'none' })
           }
         }
       })
@@ -333,13 +419,13 @@ export default {
       })
     },
     callPhone() {
-      uni.showToast({ title: '功能开发中', icon: 'none' })
+      uni.showToast({ title: this.$t('contactDetail.devToast', { name: this.$t('contactDetail.phone') }), icon: 'none' })
     },
     sendMessage() {
       if (this.isGroup) {
         uni.navigateTo({
           url: `/pages/chat/chat?type=group&id=${this.id}&name=${encodeURIComponent(
-            this.info.name || '群聊'
+            this.info.name || this.$t('common.groupChat')
           )}&avatar=${encodeURIComponent(this.info.avatar || '')}`
         })
         return
@@ -359,7 +445,7 @@ export default {
     inviteMembers() {
       uni.navigateTo({
         url: `/pages/chat-info/chat-info?type=group&id=${this.id}&name=${encodeURIComponent(
-          this.info.name || '群聊'
+          this.info.name || this.$t('common.groupChat')
         )}&avatar=${encodeURIComponent(this.info.avatar || '')}`
       })
     },
@@ -372,67 +458,76 @@ export default {
       })
     },
     comingSoon(name) {
-      uni.showToast({ title: `${name}功能开发中`, icon: 'none' })
+      uni.showToast({ title: this.$t('contactDetail.devToast', { name }), icon: 'none' })
     },
     removeFriend() {
       uni.showModal({
-        title: '提示',
-        content: '删除后将同时删除与该好友的聊天记录',
+        title: this.$t('common.tip'),
+        content: this.$t('contactDetail.removeFriendConfirm'),
         success: async (res) => {
           if (!res.confirm) return
           try {
             const result = await deleteFriend(getUserId(), this.id)
             if (result && result.code === 200) {
-              uni.showToast({ title: '已删除', icon: 'success' })
+              uni.showToast({ title: this.$t('contactDetail.deleted'), icon: 'success' })
               setTimeout(() => uni.navigateBack(), 800)
             } else {
-              uni.showToast({ title: (result && result.message) || '删除失败', icon: 'none' })
+              uni.showToast({
+                title: (result && result.message) || this.$t('contactDetail.deleteFailed'),
+                icon: 'none'
+              })
             }
           } catch (e) {
             console.error('删除好友失败:', e)
-            uni.showToast({ title: '删除失败', icon: 'none' })
+            uni.showToast({ title: this.$t('contactDetail.deleteFailed'), icon: 'none' })
           }
         }
       })
     },
     removeGroup() {
       uni.showModal({
-        title: '提示',
-        content: '确定要解散该群聊吗？',
+        title: this.$t('common.tip'),
+        content: this.$t('contactDetail.dissolveConfirm'),
         success: async (res) => {
           if (!res.confirm) return
           try {
             const result = await deleteGroup(this.id)
             if (result && result.code === 200) {
-              uni.showToast({ title: '已解散', icon: 'success' })
+              uni.showToast({ title: this.$t('contactDetail.dissolved'), icon: 'success' })
               setTimeout(() => uni.switchTab({ url: '/pages/index/index' }), 800)
             } else {
-              uni.showToast({ title: (result && result.message) || '解散失败', icon: 'none' })
+              uni.showToast({
+                title: (result && result.message) || this.$t('contactDetail.dissolveFailed'),
+                icon: 'none'
+              })
             }
           } catch (e) {
             console.error('解散群聊失败:', e)
-            uni.showToast({ title: '解散失败', icon: 'none' })
+            uni.showToast({ title: this.$t('contactDetail.dissolveFailed'), icon: 'none' })
           }
         }
       })
     },
     leaveGroup() {
       uni.showModal({
-        title: '提示',
-        content: '确定要退出该群聊吗？',
+        title: this.$t('common.tip'),
+        content: this.$t('contactDetail.leaveConfirm'),
         success: async (res) => {
           if (!res.confirm) return
           try {
             const result = await removeGroupMember(this.id, getUserId())
             if (result && result.code === 200) {
-              uni.showToast({ title: '已退出', icon: 'success' })
+              uni.showToast({ title: this.$t('contactDetail.left'), icon: 'success' })
               setTimeout(() => uni.switchTab({ url: '/pages/index/index' }), 800)
             } else {
-              uni.showToast({ title: (result && result.message) || '退出失败', icon: 'none' })
+              uni.showToast({
+                title: (result && result.message) || this.$t('contactDetail.leaveFailed'),
+                icon: 'none'
+              })
             }
           } catch (e) {
             console.error('退出群聊失败:', e)
-            uni.showToast({ title: '退出失败', icon: 'none' })
+            uni.showToast({ title: this.$t('contactDetail.leaveFailed'), icon: 'none' })
           }
         }
       })
@@ -446,7 +541,8 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .cd-scroll {
@@ -454,31 +550,42 @@ export default {
   height: 0;
 }
 
-/* 资料卡 */
-.cd-profile {
-  display: flex;
-  align-items: center;
-  padding: 40rpx 32rpx;
-  background-color: #ffffff;
-  margin-bottom: 16rpx;
+/* 资料头部卡 */
+.cd-hero {
+  margin: 20rpx 24rpx 0;
+  padding: 32rpx 32rpx 26rpx;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-primary);
+  background-image: linear-gradient(155deg, var(--accent-light) 0%, transparent 62%);
+  border: 1rpx solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
-.cd-profile__info {
+.cd-hero__top {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.cd-hero__head {
   flex: 1;
   min-width: 0;
   margin-left: 28rpx;
 }
 
-.cd-profile__name-row {
+.cd-hero__name-row {
   display: flex;
   align-items: center;
   gap: 12rpx;
 }
 
-.cd-profile__name {
-  font-size: 40rpx;
-  font-weight: 600;
-  color: #191919;
+.cd-hero__name {
+  display: block;
+  font-size: var(--font-xl);
+  font-weight: 700;
+  letter-spacing: -0.3rpx;
+  color: var(--text-primary);
   line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -487,117 +594,158 @@ export default {
 
 .cd-gender {
   flex-shrink: 0;
-  height: 32rpx;
-  padding: 0 12rpx;
-  border-radius: 16rpx;
-  font-size: 20rpx;
-  line-height: 32rpx;
-  color: #ffffff;
-  background-color: #b2b2b2;
+  height: 36rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  font-size: var(--font-xs);
+  line-height: 36rpx;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--bg-chip);
 }
 
 .cd-gender.male,
 .cd-gender[class~='1'] {
-  background-color: #4a90e2;
+  color: var(--info-color);
+  background-color: var(--info-light);
 }
 
 .cd-gender.female,
 .cd-gender[class~='2'] {
-  background-color: #f55a8a;
+  color: var(--danger-color);
+  background-color: var(--danger-light);
 }
 
-.cd-profile__line {
+.cd-hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.cd-chip__text {
+  font-size: var(--font-xs);
+  color: inherit;
+  line-height: 1;
+}
+
+.cd-hero__desc {
   display: block;
-  font-size: 26rpx;
-  color: #888888;
-  margin-top: 8rpx;
+  position: relative;
+  z-index: 1;
+  margin-top: 24rpx;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .cd-star {
-  width: 72rpx;
-  height: 72rpx;
+  width: 68rpx;
+  height: 68rpx;
+  margin-left: 12rpx;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 16rpx;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-chip);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.cd-star:active {
-  opacity: 0.6;
+.cd-star--hover {
+  background-color: var(--bg-active);
+  transform: scale(0.94);
 }
 
-/* 分组 */
-.cd-group {
-  background-color: #ffffff;
-  margin-bottom: 16rpx;
+/* 资料键值行 */
+.cd-meta {
+  position: relative;
+  z-index: 1;
+  margin-top: 26rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--divider);
 }
 
-.cd-group--members {
-  padding: 24rpx 0 8rpx;
+.cd-meta__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10rpx 0;
 }
 
-/* 操作按钮 */
+.cd-meta__label {
+  flex-shrink: 0;
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  letter-spacing: 0.6rpx;
+}
+
+.cd-meta__value {
+  flex: 1;
+  min-width: 0;
+  margin-left: 24rpx;
+  text-align: right;
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 操作按钮组 */
+.cd-actions {
+  margin: 20rpx 24rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
 .cd-action {
-  height: 96rpx;
+  height: 92rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 24rpx 32rpx;
-  border-radius: 12rpx;
+  gap: 12rpx;
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .cd-action text {
-  font-size: 32rpx;
+  font-size: var(--font-md);
+  font-weight: 600;
 }
 
 .cd-action--primary {
-  background-color: #07c160;
-}
-
-.cd-action--primary:active {
-  background-color: #06ad56;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
 }
 
 .cd-action--primary text {
-  color: #ffffff;
-  font-weight: 500;
+  color: var(--accent-contrast);
 }
 
 .cd-action--ghost {
-  margin-top: 0;
-  background-color: #f7f7f7;
-}
-
-.cd-action--ghost:active {
-  background-color: #ececec;
+  background-color: var(--bg-chip);
+  border: 1rpx solid var(--border-light);
 }
 
 .cd-action--ghost text {
-  color: #191919;
+  color: var(--text-primary);
 }
 
-/* 危险操作 */
-.cd-danger {
-  height: 96rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cd-danger:active {
-  background-color: #f7f7f7;
-}
-
-.cd-danger text {
-  font-size: 32rpx;
-  color: #fa5151;
+.cd-action--hover {
+  transform: scale(0.98);
+  opacity: 0.92;
 }
 
 /* 群成员网格 */
+.cd-members-card {
+  padding: 20rpx 12rpx 8rpx;
+}
+
 .cd-members {
   display: flex;
   flex-wrap: wrap;
-  padding: 0 12rpx;
 }
 
 .cd-member {
@@ -605,14 +753,14 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12rpx 0 20rpx;
+  padding: 10rpx 0 16rpx;
 }
 
 .cd-member__name {
   max-width: 120rpx;
   margin-top: 10rpx;
-  font-size: 22rpx;
-  color: #888888;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -621,18 +769,39 @@ export default {
 .cd-member__plus {
   width: 96rpx;
   height: 96rpx;
-  border-radius: 16rpx;
-  border: 2rpx dashed #c8c8cd;
+  border-radius: 22rpx;
+  border: 2rpx dashed var(--border-color);
+  background-color: var(--bg-chip);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .cd-member:active .cd-member__plus {
-  background-color: #f7f7f7;
+  background-color: var(--bg-active);
 }
 
-.cd-safe {
-  height: env(safe-area-inset-bottom);
+/* 危险操作 */
+.cd-danger-block {
+  padding: 0;
+}
+
+.cd-danger {
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  transition: background-color var(--transition-fast);
+}
+
+.cd-danger text {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--danger-color);
+}
+
+.cd-danger--hover {
+  background-color: var(--danger-light);
 }
 </style>

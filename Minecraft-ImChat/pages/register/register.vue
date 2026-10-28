@@ -1,106 +1,152 @@
 <template>
-  <view class="register">
+  <view class="register" :class="themeClass">
     <CustomNavBar
       :show-back="true"
-      title="注册"
+      :title="$t('auth.navRegister')"
       title-align="center"
       @back="goBack"
     />
 
     <scroll-view class="register__body" scroll-y :show-scrollbar="false">
-      <view class="form-card">
-        <view class="form-row">
-          <text class="form-label">昵称</text>
-          <input
-            class="form-input"
-            v-model="registerForm.username"
-            placeholder="请输入昵称"
-            placeholder-class="form-ph"
-            maxlength="20"
-          />
-        </view>
-
-        <view class="form-row">
-          <text class="form-label">手机号</text>
-          <input
-            class="form-input"
-            v-model="registerForm.phone"
-            type="number"
-            placeholder="请输入手机号"
-            placeholder-class="form-ph"
-            maxlength="11"
-          />
-        </view>
-
-        <view class="form-row">
-          <text class="form-label">验证码</text>
-          <input
-            class="form-input"
-            v-model="registerForm.code"
-            type="number"
-            placeholder="请输入验证码"
-            placeholder-class="form-ph"
-            maxlength="6"
-          />
-          <view
-            class="code-btn"
-            :class="{ 'is-disabled': registerForm.countdown > 0 }"
-            hover-class="code-btn--hover"
-            hover-stay-time="60"
-            @click="handleSendCode"
-          >
-            <text>{{ registerForm.countdown > 0 ? `${registerForm.countdown}s` : '获取验证码' }}</text>
+      <!-- 品牌 Hero -->
+      <view class="register-hero grid-overlay">
+        <view class="hero-brand">
+          <view class="hero-brand__logo">
+            <UiIcon name="user-plus" :size="56" color="#FFFFFF" />
           </view>
-        </view>
-
-        <view class="form-row">
-          <text class="form-label">密码</text>
-          <input
-            class="form-input"
-            v-model="registerForm.password"
-            :type="showPassword ? 'text' : 'password'"
-            placeholder="请设置密码（6-20位）"
-            placeholder-class="form-ph"
-            maxlength="20"
-          />
-          <view class="eye-btn" @click="showPassword = !showPassword">
-            <UiIcon name="eye" :size="40" :color="showPassword ? '#07C160' : '#B2B2B2'" />
+          <view class="hero-brand__text">
+            <text class="hero-brand__title">{{ $t('auth.navRegister') }}</text>
+            <text class="hero-brand__subtitle">{{ $t('auth.registerSubtitle') }}</text>
           </view>
         </view>
       </view>
 
-      <view class="agreement-row">
-        <view class="checkbox" :class="{ checked: agreed }" @click="agreed = !agreed">
-          <UiIcon v-if="agreed" name="check" :size="26" color="#FFFFFF" />
+      <view class="register-panel">
+        <view class="form-card surface-card surface-card--glass">
+          <view class="form-body">
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldNickname') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'username' }">
+                <UiIcon name="user" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input"
+                  v-model="registerForm.username"
+                  :placeholder="$t('auth.phNickname')"
+                  placeholder-class="form-ph"
+                  maxlength="20"
+                  @focus="onFieldFocus('username')"
+                  @blur="onFieldBlur"
+                />
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldPhone') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'phone' }">
+                <UiIcon name="phone" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input"
+                  v-model="registerForm.phone"
+                  type="number"
+                  :placeholder="$t('auth.phPhone')"
+                  placeholder-class="form-ph"
+                  maxlength="11"
+                  @focus="onFieldFocus('phone')"
+                  @blur="onFieldBlur"
+                />
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldCode') }}</text>
+              <view class="code-row">
+                <view
+                  class="input-wrap code-row__input"
+                  :class="{ 'is-focus': focusedField === 'code' }"
+                >
+                  <UiIcon name="shield" :size="32" color="var(--text-tertiary)" />
+                  <input
+                    class="form-input"
+                    v-model="registerForm.code"
+                    type="number"
+                    :placeholder="$t('auth.phCode')"
+                    placeholder-class="form-ph"
+                    maxlength="6"
+                    @focus="onFieldFocus('code')"
+                    @blur="onFieldBlur"
+                  />
+                </view>
+                <view
+                  class="code-btn"
+                  :class="{ 'is-disabled': registerForm.countdown > 0 }"
+                  hover-class="code-btn--hover"
+                  hover-stay-time="60"
+                  @click="handleSendCode"
+                >
+                  <text>{{ registerForm.countdown > 0 ? `${registerForm.countdown}s` : $t('auth.getCode') }}</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="form-group">
+              <text class="form-label">{{ $t('auth.fieldPassword') }}</text>
+              <view class="input-wrap" :class="{ 'is-focus': focusedField === 'password' }">
+                <UiIcon name="lock" :size="32" color="var(--text-tertiary)" />
+                <input
+                  class="form-input pwd-input"
+                  v-model="registerForm.password"
+                  :type="showPassword ? 'text' : 'password'"
+                  :placeholder="$t('auth.phRegisterPassword')"
+                  placeholder-class="form-ph"
+                  maxlength="20"
+                  @focus="onFieldFocus('password')"
+                  @blur="onFieldBlur"
+                />
+                <view class="eye-btn" @click="showPassword = !showPassword">
+                  <UiIcon
+                    name="eye"
+                    :size="34"
+                    :color="showPassword ? 'var(--accent-color)' : 'var(--text-tertiary)'"
+                  />
+                </view>
+              </view>
+            </view>
+          </view>
         </view>
-        <text class="agreement-text">
-          我已阅读并同意
-          <text class="agreement-link">《用户协议》</text>
-          和
-          <text class="agreement-link">《隐私政策》</text>
-        </text>
-      </view>
 
-      <view
-        class="submit-btn"
-        :class="{ 'is-disabled': !canSubmit || isLoading }"
-        hover-class="submit-btn--hover"
-        hover-stay-time="60"
-        @click="handleRegister"
-      >
-        <text v-if="!isLoading">注册</text>
-        <view v-else class="submit-btn__loading">
-          <view class="spinner"></view>
-          <text>注册中…</text>
+        <view class="agreement-row">
+          <view class="check" :class="{ checked: agreed }" @click="agreed = !agreed">
+            <UiIcon v-if="agreed" name="check" :size="22" color="var(--accent-contrast)" />
+          </view>
+          <text class="agreement-text">
+            {{ $t('auth.agreeRead') }}
+            <text class="agreement-link">{{ $t('auth.userAgreement') }}</text>
+            {{ $t('auth.agreeAnd') }}
+            <text class="agreement-link">{{ $t('auth.privacyPolicy') }}</text>
+          </text>
         </view>
-      </view>
 
-      <view class="login-row">
-        <text class="login-row__text">已有账号？</text>
-        <text class="login-row__link" @click="goToLogin">立即登录</text>
-      </view>
+        <view
+          class="submit-btn"
+          :class="{ 'is-disabled': !canSubmit || isLoading }"
+          hover-class="submit-btn--hover"
+          hover-stay-time="60"
+          @click="handleRegister"
+        >
+          <text v-if="!isLoading">{{ $t('auth.registerBtn') }}</text>
+          <view v-else class="submit-btn__loading">
+            <view class="spinner"></view>
+            <text>{{ $t('auth.registerLoading') }}</text>
+          </view>
+        </view>
 
-      <view class="register__safe"></view>
+        <view class="login-row">
+          <text class="login-row__text">{{ $t('auth.hasAccount') }}</text>
+          <text class="login-row__link" @click="goToLogin">{{ $t('auth.goLogin') }}</text>
+        </view>
+
+        <view class="safe-bottom-space--sm"></view>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -117,6 +163,7 @@ export default {
       showPassword: false,
       isLoading: false,
       agreed: false,
+      focusedField: '',
       countdownTimer: null,
       registerForm: {
         username: '',
@@ -149,10 +196,16 @@ export default {
     goToLogin() {
       uni.redirectTo({ url: '/pages/login/login' })
     },
+    onFieldFocus(field) {
+      this.focusedField = field
+    },
+    onFieldBlur() {
+      this.focusedField = ''
+    },
     async handleSendCode() {
       const phoneRegex = /^1\d{10}$/
       if (!phoneRegex.test(this.registerForm.phone)) {
-        uni.showToast({ title: '请输入有效的手机号', icon: 'none' })
+        uni.showToast({ title: this.$t('auth.invalidPhone'), icon: 'none' })
         return
       }
       if (this.registerForm.countdown > 0) return
@@ -160,14 +213,14 @@ export default {
       try {
         const res = await sendCode(this.registerForm.phone)
         if (res && res.code === 200) {
-          uni.showToast({ title: '验证码已发送', icon: 'success' })
+          uni.showToast({ title: this.$t('auth.codeSent'), icon: 'success' })
           this.startCountdown()
         } else {
-          uni.showToast({ title: (res && res.message) || '发送失败', icon: 'none' })
+          uni.showToast({ title: (res && res.message) || this.$t('auth.sendFailed'), icon: 'none' })
         }
       } catch (e) {
         console.error('发送验证码失败:', e)
-        uni.showToast({ title: '发送失败，请重试', icon: 'none' })
+        uni.showToast({ title: this.$t('auth.sendFailedRetry'), icon: 'none' })
       }
     },
     startCountdown() {
@@ -193,16 +246,16 @@ export default {
         })
 
         if (response && response.code === 200) {
-          uni.showToast({ title: '注册成功', icon: 'success' })
+          uni.showToast({ title: this.$t('auth.registerSuccess'), icon: 'success' })
           setTimeout(() => {
             uni.redirectTo({ url: '/pages/login/login' })
           }, 1500)
         } else {
-          uni.showToast({ title: (response && response.message) || '注册失败', icon: 'none' })
+          uni.showToast({ title: (response && response.message) || this.$t('auth.registerFailed'), icon: 'none' })
         }
       } catch (error) {
         console.error('注册失败:', error)
-        uni.showToast({ title: (error && error.message) || '注册失败', icon: 'none' })
+        uni.showToast({ title: (error && error.message) || this.$t('auth.registerFailed'), icon: 'none' })
       } finally {
         this.isLoading = false
       }
@@ -216,7 +269,8 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ededed;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .register__body {
@@ -224,153 +278,251 @@ export default {
   height: 0;
 }
 
-.form-card {
-  background-color: #ffffff;
-  margin-top: 20rpx;
+/* 品牌 Hero */
+.register-hero {
+  position: relative;
+  padding: 40rpx 32rpx 104rpx;
+  background-image: radial-gradient(120% 80% at 50% 0%, var(--accent-light) 0%, transparent 62%);
 }
 
-.form-row {
+.hero-brand {
+  position: relative;
   display: flex;
   align-items: center;
-  height: 100rpx;
-  padding: 0 32rpx;
+  z-index: 1;
+}
+
+.hero-brand__logo {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: var(--radius-lg);
+  background-image: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--accent-glow);
+}
+
+.hero-brand__text {
+  margin-left: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-brand__title {
+  font-size: var(--font-xxl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.4rpx;
+}
+
+.hero-brand__subtitle {
+  margin-top: 6rpx;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.register-panel {
   position: relative;
+  margin-top: -76rpx;
+  padding: 0 24rpx;
+  z-index: 2;
 }
 
-.form-row::after {
-  content: '';
-  position: absolute;
-  left: 32rpx;
-  right: 0;
-  bottom: 0;
-  height: 1rpx;
-  background-color: #ededed;
-  transform: scaleY(0.5);
+/* 表单卡片 */
+.form-card {
+  padding: 40rpx 32rpx;
 }
 
-.form-row:last-child::after {
-  display: none;
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
 }
 
 .form-label {
-  flex-shrink: 0;
-  min-width: 140rpx;
-  font-size: 30rpx;
-  color: #191919;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 1.6rpx;
+  color: var(--text-tertiary);
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  height: 92rpx;
+  padding: 0 28rpx;
+  gap: 16rpx;
+  background-color: var(--bg-input);
+  border: 2rpx solid transparent;
+  border-radius: 999rpx;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-wrap.is-focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4rpx var(--accent-light);
 }
 
 .form-input {
   flex: 1;
-  margin-left: 24rpx;
-  font-size: 30rpx;
-  color: #191919;
+  min-width: 0;
+  height: 100%;
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .form-ph {
-  color: #b2b2b2;
+  color: var(--text-placeholder);
+}
+
+/* 验证码 */
+.code-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.code-row__input {
+  flex: 1;
+  min-width: 0;
 }
 
 .code-btn {
   flex-shrink: 0;
-  height: 60rpx;
-  padding: 0 24rpx;
-  margin-left: 16rpx;
-  border-radius: 10rpx;
-  background-color: #07c160;
+  height: 92rpx;
+  padding: 0 30rpx;
+  border-radius: 999rpx;
+  background-color: var(--accent-light);
+  border: 2rpx solid var(--accent-color);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .code-btn--hover {
-  background-color: #06ad56;
+  background-color: var(--accent-soft);
+  transform: scale(0.98);
 }
 
 .code-btn text {
-  font-size: 26rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-sm);
+  color: var(--accent-color);
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .code-btn.is-disabled {
-  background-color: #d2d2d6;
+  background-color: var(--bg-tertiary);
+  border-color: transparent;
+}
+
+.code-btn.is-disabled text {
+  color: var(--text-disabled);
+}
+
+/* 密码 */
+.pwd-input {
+  padding-right: 4rpx;
 }
 
 .eye-btn {
   flex-shrink: 0;
-  width: 60rpx;
-  height: 60rpx;
-  margin-left: 12rpx;
+  width: 56rpx;
+  height: 56rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
 }
 
 .eye-btn:active {
-  opacity: 0.6;
+  background-color: var(--bg-active);
 }
 
 /* 协议 */
 .agreement-row {
   display: flex;
   align-items: flex-start;
-  padding: 32rpx;
+  padding: 28rpx 12rpx 0;
 }
 
-.checkbox {
+.check {
   flex-shrink: 0;
-  width: 40rpx;
-  height: 40rpx;
+  width: 38rpx;
+  height: 38rpx;
   margin-top: 2rpx;
   border-radius: 50%;
-  border: 2rpx solid #d2d2d6;
-  background-color: #ffffff;
+  border: 2rpx solid var(--border-color);
+  background-color: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all var(--transition-fast);
 }
 
-.checkbox.checked {
-  background-color: #07c160;
-  border-color: #07c160;
+.check.checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .agreement-text {
   flex: 1;
   margin-left: 14rpx;
-  font-size: 24rpx;
-  color: #888888;
-  line-height: 1.5;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  line-height: 1.6;
 }
 
 .agreement-link {
-  color: #576b95;
+  color: var(--accent-color);
 }
 
 /* 提交 */
 .submit-btn {
-  height: 88rpx;
-  margin: 0 32rpx;
-  background-color: #07c160;
-  border-radius: 10rpx;
+  height: 94rpx;
+  margin: 36rpx 12rpx 0;
+  border-radius: 999rpx;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
 }
 
 .submit-btn--hover {
-  background-color: #06ad56;
+  transform: scale(0.98);
+  opacity: 0.92;
 }
 
 .submit-btn.is-disabled {
-  background-color: #c8e9d4;
+  background-image: none;
+  background-color: var(--bg-tertiary);
+  box-shadow: none;
 }
 
 .submit-btn text {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: 500;
+  font-size: var(--font-lg);
+  color: var(--accent-contrast);
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.submit-btn.is-disabled text {
+  color: var(--text-disabled);
 }
 
 .submit-btn__loading {
@@ -380,14 +532,14 @@ export default {
 }
 
 .submit-btn__loading text {
-  font-size: 30rpx;
+  font-size: var(--font-base);
 }
 
 .spinner {
   width: 32rpx;
   height: 32rpx;
-  border: 4rpx solid rgba(255, 255, 255, 0.35);
-  border-top-color: #ffffff;
+  border: 4rpx solid var(--divider);
+  border-top-color: var(--accent-contrast);
   border-radius: 50%;
   animation: registerSpin 0.8s linear infinite;
 }
@@ -401,25 +553,22 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40rpx;
+  margin-top: 36rpx;
 }
 
 .login-row__text {
-  font-size: 28rpx;
-  color: #888888;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
 }
 
 .login-row__link {
-  font-size: 28rpx;
-  color: #576b95;
-  font-weight: 500;
+  font-size: var(--font-sm);
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-left: 6rpx;
 }
 
 .login-row__link:active {
   opacity: 0.6;
-}
-
-.register__safe {
-  height: calc(48rpx + env(safe-area-inset-bottom));
 }
 </style>

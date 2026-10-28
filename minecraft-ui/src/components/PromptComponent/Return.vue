@@ -186,13 +186,9 @@ const goBack = () => {
 }
 
 @media (max-width: 768px) {
+  /* 移动端隐藏返回按钮：与底部悬浮导航栏位置冲突，改由底部导航承载页面切换 */
   .return-wrap {
-    left: 16px;
-    bottom: 16px;
-  }
-
-  .return-btn__face {
-    height: 48px;
+    display: none;
   }
 }
 </style>

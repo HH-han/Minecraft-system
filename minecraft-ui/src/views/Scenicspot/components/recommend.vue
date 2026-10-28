@@ -9,8 +9,8 @@
                 <h1>景点推荐</h1>
                 <div class="search-bar">
                     <input type="text" placeholder="输入目的地" v-model="search.destination" />
-                    <input type="date" placeholder="开始日期" v-model="search.startDate" />
-                    <input type="date" placeholder="结束日期" v-model="search.endDate" />
+                    <CalendarPicker v-model="search.startDate" placeholder="开始日期" :min="todayKey" />
+                    <CalendarPicker v-model="search.endDate" placeholder="结束日期" :min="search.startDate || todayKey" />
                     <input type="number" placeholder="人数" v-model="search.travelers" />
                     <button @click="searchAttractions">搜索</button>
                 </div>
@@ -70,6 +70,14 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getClientRecommendations } from '@/api/clientRecommendation'
 import { useAutoRefresh } from '@/hooks/useAutoRefresh'
+import CalendarPicker from '@/components/PromptComponent/CalendarPicker.vue'
+
+// 今天（本地时区 YYYY-MM-DD），作为日期选择下限
+const todayKey = (() => {
+    const d = new Date()
+    const pad = (n) => String(n).padStart(2, '0')
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+})()
 
 // 当前选中的景点类型
 const activeAttractionType = ref('all')
@@ -566,8 +574,9 @@ onMounted(loadRecommendations)
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+    /* 搜索栏改为纵向排列，日期选择组件与输入框同宽 */
     .search-bar {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     .features {
