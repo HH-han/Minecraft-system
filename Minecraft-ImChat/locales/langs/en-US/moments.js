@@ -1,5 +1,7 @@
 export default {
   title: 'Moments',
+  publishEntry: 'New post',
+  signatureHint: 'Capture the moment',
   changeCover: 'Change cover',
   empty: 'No moments yet. Share something!',
   loadingMore: 'Loading…',

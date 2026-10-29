@@ -7,7 +7,10 @@
       @scrolltolower="onReachLower"
     >
       <!-- 封面 Hero -->
-      <view class="cover grid-overlay" :style="coverStyle">
+      <view
+        class="cover"
+        :style="[coverStyle, { height: 'calc(520rpx + ' + statusBarHeight + 'px)' }]"
+      >
         <view class="cover__glow"></view>
         <view class="cover__scrim"></view>
         <view class="cover__status" :style="{ height: statusBarHeight + 'px' }"></view>
@@ -16,14 +19,19 @@
             <UiIcon name="back" :size="38" color="var(--text-primary)" />
           </view>
           <view class="cover__change" @click="chooseCover">
-            <UiIcon name="image" :size="28" color="var(--accent-color)" />
+            <UiIcon name="camera" :size="28" color="var(--text-primary)" />
             <text>{{ $t('moments.changeCover') }}</text>
           </view>
         </view>
-        <view class="cover__spacer"></view>
-        <view class="cover__entry" @click="openComposer">
-          <text class="cover__name">{{ profile.name }}</text>
-          <UiAvatar shape="square" :size="80" :src="profile.avatar" :name="profile.name" />
+
+        <view class="cover__sign">
+          <view class="cover__sign-text">
+            <text class="cover__name">{{ profile.name }}</text>
+            <text class="cover__hint">{{ $t('moments.signatureHint') }}</text>
+          </view>
+          <view class="cover__avatar">
+            <UiAvatar shape="square" :size="112" :src="profile.avatar" :name="profile.name" />
+          </view>
         </view>
       </view>
 
@@ -65,8 +73,26 @@
 
               <view class="mom-card__foot">
                 <text class="mom-card__time">{{ formatRelativeTime(moment.createTime) }}</text>
-                <view class="mom-card__more" @click="openActions(moment)">
-                  <UiIcon name="more" :size="38" color="var(--text-tertiary)" />
+                <view class="mom-card__acts">
+                  <view
+                    class="mom-act"
+                    :class="{ 'is-liked': moment.liked }"
+                    @click="toggleLike(moment)"
+                  >
+                    <UiIcon
+                      :name="moment.liked ? 'heart-filled' : 'heart'"
+                      :size="32"
+                      :color="moment.liked ? 'var(--accent-color)' : 'var(--text-tertiary)'"
+                    />
+                    <text v-if="moment.likeCount" class="mom-act__count">{{ moment.likeCount }}</text>
+                  </view>
+                  <view class="mom-act" @click="openComment(moment)">
+                    <UiIcon name="message" :size="32" color="var(--text-tertiary)" />
+                    <text v-if="moment.commentCount" class="mom-act__count">{{ moment.commentCount }}</text>
+                  </view>
+                  <view class="mom-act" @click="openActions(moment)">
+                    <UiIcon name="more" :size="32" color="var(--text-tertiary)" />
+                  </view>
                 </view>
               </view>
 
@@ -105,6 +131,18 @@
 
       <view class="moments-safe"></view>
     </scroll-view>
+
+    <!-- 发布入口 -->
+    <view
+      v-if="!composerVisible && !commentVisible"
+      class="publish-fab"
+      hover-class="publish-fab--hover"
+      hover-stay-time="60"
+      @click="openComposer"
+    >
+      <UiIcon name="plus" :size="34" color="var(--accent-contrast)" />
+      <text class="publish-fab__label">{{ $t('moments.publishEntry') }}</text>
+    </view>
 
     <!-- 发布弹层 -->
     <view v-if="composerVisible" class="sheet-mask" @click="closeComposer"></view>
@@ -645,47 +683,61 @@ export default {
   margin-left: 8rpx;
 }
 
-.cover__spacer {
-  height: 380rpx;
-}
-
-.cover__entry {
+.cover__sign {
   position: absolute;
-  right: 24rpx;
-  bottom: 24rpx;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 132rpx;
+  padding: 0 26rpx 0 40rpx;
   display: flex;
   align-items: center;
-  padding: 10rpx 12rpx 10rpx 22rpx;
-  border-radius: 999rpx;
-  background-color: var(--glass-bg);
-  border: 1rpx solid var(--glass-border);
-  backdrop-filter: blur(var(--glass-blur));
-  z-index: 2;
+  background-color: var(--bg-primary);
+  border-top: 1rpx solid var(--border-lightest);
 }
 
-.cover__entry:active {
-  opacity: 0.85;
+.cover__sign-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .cover__name {
-  font-size: var(--font-base);
-  color: var(--text-primary);
+  max-width: 100%;
+  font-size: var(--font-md);
   font-weight: 600;
-  margin-right: 16rpx;
-  max-width: 320rpx;
+  color: var(--text-primary);
+  letter-spacing: 1rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.cover__hint {
+  margin-top: 6rpx;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+.cover__avatar {
+  flex-shrink: 0;
+  margin-left: 22rpx;
+  padding: 4rpx;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-primary);
+}
+
 /* 信息流 */
 .feed {
-  padding-top: 20rpx;
+  padding-top: 24rpx;
 }
 
 .mom-card {
   margin: 0 24rpx 20rpx;
-  padding: 26rpx 26rpx 20rpx;
+  padding: 28rpx 26rpx 18rpx;
 }
 
 .mom-card__main {
@@ -725,12 +777,12 @@ export default {
 .mom-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12rpx;
+  gap: 8rpx;
   margin-top: 16rpx;
 }
 
 .mom-grid__item {
-  border-radius: var(--radius-sm);
+  border-radius: 12rpx;
   overflow: hidden;
   background-color: var(--bg-tertiary);
 }
@@ -740,18 +792,18 @@ export default {
 }
 
 .mom-grid.is-single .mom-grid__item {
-  width: 340rpx;
-  height: 340rpx;
+  width: 400rpx;
+  height: 400rpx;
 }
 
 .mom-grid.is-2col .mom-grid__item {
-  width: 282rpx;
-  height: 282rpx;
+  width: 264rpx;
+  height: 264rpx;
 }
 
 .mom-grid.is-3col .mom-grid__item {
-  width: 182rpx;
-  height: 182rpx;
+  width: 176rpx;
+  height: 176rpx;
 }
 
 .mom-grid__img {
@@ -788,25 +840,41 @@ export default {
   font-family: var(--font-mono);
 }
 
-.mom-card__more {
-  width: 56rpx;
-  height: 44rpx;
+.mom-card__acts {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
+  gap: 6rpx;
+  margin-right: -10rpx;
 }
 
-.mom-card__more:active {
+.mom-act {
+  display: flex;
+  align-items: center;
+  height: 52rpx;
+  padding: 0 14rpx;
+  border-radius: 999rpx;
+  gap: 6rpx;
+}
+
+.mom-act:active {
   background-color: var(--bg-hover);
+}
+
+.mom-act__count {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+.mom-act.is-liked .mom-act__count {
+  color: var(--accent-color);
 }
 
 /* 点赞/评论 */
 .mom-inter {
   margin-top: 16rpx;
   background-color: var(--bg-secondary);
-  border-radius: var(--radius-sm);
-  padding: 4rpx 16rpx;
+  border-radius: var(--radius-md);
+  padding: 6rpx 20rpx;
 }
 
 .mom-inter__likes {
@@ -865,7 +933,49 @@ export default {
 }
 
 .moments-safe {
-  height: env(safe-area-inset-bottom);
+  height: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+/* 发布悬浮按钮 */
+.publish-fab {
+  position: fixed;
+  right: 32rpx;
+  bottom: calc(40rpx + env(safe-area-inset-bottom));
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  height: 96rpx;
+  padding: 0 36rpx 0 28rpx;
+  border-radius: 999rpx;
+  background-image: var(--accent-gradient);
+  box-shadow: var(--accent-glow), var(--shadow-lg);
+  animation: fabIn 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.publish-fab:active,
+.publish-fab--hover {
+  transform: scale(0.96);
+  opacity: 0.92;
+}
+
+.publish-fab__label {
+  margin-left: 10rpx;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  letter-spacing: 0.5rpx;
+  color: var(--accent-contrast);
+}
+
+@keyframes fabIn {
+  from {
+    opacity: 0;
+    transform: translateY(28rpx) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* 遮罩 */

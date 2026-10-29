@@ -1,5 +1,7 @@
 export default {
   title: '朋友圈',
+  publishEntry: '发布',
+  signatureHint: '记录这一刻',
   changeCover: '更换封面',
   empty: '还没有动态，快去发布吧',
   loadingMore: '加载中…',
