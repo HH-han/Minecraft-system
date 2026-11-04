@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.LocationUpdateDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.GroupLocationHistory;
@@ -23,7 +25,7 @@ public class GroupLocationController {
 
     @Operation(summary = "更新当前位置")
     @PostMapping("/update")
-    public ApiResponse<Void> updateLocation(@RequestBody LocationUpdateDTO dto) {
+    public ApiResponse<Void> updateLocation(@Valid @RequestBody LocationUpdateDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         groupLocationService.updateLocation(dto, userId);
         return ApiResponse.success("更新成功", null);

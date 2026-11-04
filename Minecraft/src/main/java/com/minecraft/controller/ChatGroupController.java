@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.CreateGroupRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.ChatGroup;
@@ -68,7 +70,7 @@ public class ChatGroupController {
 
     @Operation(summary = "创建群组并添加成员")
     @PostMapping("/with-members")
-    public ApiResponse<ChatGroup> createGroupWithMembers(@RequestBody CreateGroupRequest request) {
+    public ApiResponse<ChatGroup> createGroupWithMembers(@Valid @RequestBody CreateGroupRequest request) {
         if (request.getName() == null || request.getName().isEmpty()) {
             return ApiResponse.error(400, "群名称不能为空");
         }

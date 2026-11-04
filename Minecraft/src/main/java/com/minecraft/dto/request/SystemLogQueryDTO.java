@@ -1,5 +1,7 @@
 package com.minecraft.dto.request;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -25,7 +27,10 @@ public class SystemLogQueryDTO {
 
     private LocalDateTime endTime;   // 结束时间
 
+    @Min(value = 1, message = "页码不能小于1")
     private Integer pageNum = 1;
 
+    @Min(value = 1, message = "每页数量不能小于1")
+    @Max(value = 200, message = "每页数量不能超过200")
     private Integer pageSize = 10;
 }

@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupPollDTO;
 import com.minecraft.dto.request.GroupPollVoteDTO;
 import com.minecraft.dto.response.ApiResponse;
@@ -25,7 +27,7 @@ public class GroupPollController {
 
     @Operation(summary = "发起投票")
     @PostMapping("/create")
-    public ApiResponse<GroupPoll> createPoll(@RequestBody GroupPollDTO dto) {
+    public ApiResponse<GroupPoll> createPoll(@Valid @RequestBody GroupPollDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         GroupPoll poll = groupPollService.createPoll(dto, userId);
         return ApiResponse.success("创建成功", poll);

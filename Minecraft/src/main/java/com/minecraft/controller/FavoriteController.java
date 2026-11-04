@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.FavoriteSaveDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.FavoriteStatVO;
@@ -25,13 +27,13 @@ public class FavoriteController {
 
     @Operation(summary = "新增收藏")
     @PostMapping("/add")
-    public ApiResponse<FavoriteVO> add(@RequestBody FavoriteSaveDTO dto) {
+    public ApiResponse<FavoriteVO> add(@Valid @RequestBody FavoriteSaveDTO dto) {
         return ApiResponse.success("收藏成功", favoriteService.save(dto.getUserId(), dto));
     }
 
     @Operation(summary = "编辑收藏")
     @PutMapping("/{id}")
-    public ApiResponse<FavoriteVO> update(@PathVariable Long id, @RequestBody FavoriteSaveDTO dto) {
+    public ApiResponse<FavoriteVO> update(@PathVariable Long id, @Valid @RequestBody FavoriteSaveDTO dto) {
         dto.setId(id);
         return ApiResponse.success("保存成功", favoriteService.save(dto.getUserId(), dto));
     }

@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupInviteDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.GroupMember;
@@ -22,7 +24,7 @@ public class GroupMemberController {
 
     @Operation(summary = "邀请成员")
     @PostMapping("/invite")
-    public ApiResponse<Void> inviteMembers(@PathVariable Long groupId, @RequestBody GroupInviteDTO dto) {
+    public ApiResponse<Void> inviteMembers(@PathVariable Long groupId, @Valid @RequestBody GroupInviteDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         dto.setGroupId(groupId);
         groupMemberService.inviteMembers(groupId, dto.getInviteeIds(), userId);

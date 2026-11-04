@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.AITripGenerateDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.AITripRecommendation;
@@ -22,7 +24,7 @@ public class AITripRecommendationController {
 
     @Operation(summary = "生成AI行程方案")
     @PostMapping("/generate")
-    public ApiResponse<AITripRecommendation> generateTrip(@RequestBody AITripGenerateDTO dto) {
+    public ApiResponse<AITripRecommendation> generateTrip(@Valid @RequestBody AITripGenerateDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         AITripRecommendation recommendation = aiTripRecommendationService.generateTrip(dto, userId);
         return ApiResponse.success("生成成功", recommendation);

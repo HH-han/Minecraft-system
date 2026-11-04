@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import cloud.tianai.captcha.application.ImageCaptchaApplication;
 import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
@@ -63,7 +65,7 @@ public class CaptchaController {
 
     @Operation(summary = "验证滑块位置")
     @PostMapping("/verify")
-    public com.minecraft.dto.response.ApiResponse<VerifyResult> verify(@RequestBody VerifyRequest request, HttpServletRequest httpRequest) {
+    public com.minecraft.dto.response.ApiResponse<VerifyResult> verify(@Valid @RequestBody VerifyRequest request, HttpServletRequest httpRequest) {
         String clientIp = getClientIP(httpRequest);
         long startTime = System.currentTimeMillis();
 

@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupCommentDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.GroupComment;
@@ -23,7 +25,7 @@ public class GroupCommentController {
 
     @Operation(summary = "发表评论")
     @PostMapping("/{postId}/comment")
-    public ApiResponse<GroupComment> createComment(@PathVariable Long postId, @RequestBody GroupCommentDTO dto) {
+    public ApiResponse<GroupComment> createComment(@PathVariable Long postId, @Valid @RequestBody GroupCommentDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         dto.setPostId(postId);
         GroupComment comment = groupCommentService.createComment(dto, userId);

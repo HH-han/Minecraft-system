@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.MomentCommentDTO;
 import com.minecraft.dto.request.MomentPublishDTO;
 import com.minecraft.dto.response.ApiResponse;
@@ -29,7 +31,7 @@ public class MomentController {
 
     @Operation(summary = "发布朋友圈动态")
     @PostMapping("/publish")
-    public ApiResponse<MomentVO> publish(@RequestBody MomentPublishDTO dto) {
+    public ApiResponse<MomentVO> publish(@Valid @RequestBody MomentPublishDTO dto) {
         return ApiResponse.success("发布成功", momentService.publishMoment(dto.getUserId(), dto));
     }
 
@@ -75,7 +77,7 @@ public class MomentController {
     @PostMapping("/{momentId}/comment")
     public ApiResponse<MomentCommentVO> addComment(
             @PathVariable Long momentId,
-            @RequestBody MomentCommentDTO dto) {
+            @Valid @RequestBody MomentCommentDTO dto) {
         return ApiResponse.success("评论成功", momentService.addComment(dto.getUserId(), momentId, dto));
     }
 

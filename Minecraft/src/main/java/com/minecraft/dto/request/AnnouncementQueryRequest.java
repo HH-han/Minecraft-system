@@ -1,5 +1,7 @@
 package com.minecraft.dto.request;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 /**
@@ -8,8 +10,11 @@ import lombok.Data;
 @Data
 public class AnnouncementQueryRequest {
     /** 页码，从 1 开始 */
+    @Min(value = 1, message = "页码不能小于1")
     private Integer page = 1;
     /** 每页数量 */
+    @Min(value = 1, message = "每页数量不能小于1")
+    @Max(value = 200, message = "每页数量不能超过200")
     private Integer size = 10;
     /** 类型: 1-系统公告 2-活动通知 3-维护通知 4-版本更新 */
     private Integer type;

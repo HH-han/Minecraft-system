@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.FriendRequestWithPhoneDTO;
 import com.minecraft.dto.request.GroupChatMessage;
 import com.minecraft.dto.request.SingleChatMessage;
@@ -152,7 +154,7 @@ public class ImController {
 
     @Operation(summary = "发送好友申请（实体方式）")
     @PostMapping("/friend/request")
-    public ApiResponse<Void> sendFriendRequest(@RequestBody FriendRequestWithPhoneDTO dto) {
+    public ApiResponse<Void> sendFriendRequest(@Valid @RequestBody FriendRequestWithPhoneDTO dto) {
         if (dto.getReceiverId() == null && dto.getReceiverPhone() == null) {
             return ApiResponse.error(400, "receiverId或receiverPhone必须提供一个");
         }

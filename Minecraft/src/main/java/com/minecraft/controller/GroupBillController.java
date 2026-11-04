@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupBillDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.GroupBill;
@@ -23,7 +25,7 @@ public class GroupBillController {
 
     @Operation(summary = "添加账单")
     @PostMapping
-    public ApiResponse<GroupBill> addBill(@PathVariable Long groupId, @RequestBody GroupBillDTO dto) {
+    public ApiResponse<GroupBill> addBill(@PathVariable Long groupId, @Valid @RequestBody GroupBillDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         dto.setGroupId(groupId);
         GroupBill bill = groupBillService.addBill(dto, userId);
@@ -32,7 +34,7 @@ public class GroupBillController {
 
     @Operation(summary = "修改账单")
     @PutMapping("/{billId}")
-    public ApiResponse<Void> updateBill(@PathVariable Long billId, @RequestBody GroupBillDTO dto) {
+    public ApiResponse<Void> updateBill(@PathVariable Long billId, @Valid @RequestBody GroupBillDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         groupBillService.updateBill(billId, dto, userId);
         return ApiResponse.success("修改成功", null);

@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupPostDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.GroupPost;
@@ -23,7 +25,7 @@ public class GroupPostController {
 
     @Operation(summary = "发布动态")
     @PostMapping
-    public ApiResponse<GroupPost> createPost(@PathVariable Long groupId, @RequestBody GroupPostDTO dto) {
+    public ApiResponse<GroupPost> createPost(@PathVariable Long groupId, @Valid @RequestBody GroupPostDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         dto.setGroupId(groupId);
         GroupPost post = groupPostService.createPost(dto, userId);

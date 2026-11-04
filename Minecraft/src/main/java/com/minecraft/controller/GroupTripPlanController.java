@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupTripPlanDTO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.entity.GroupTripPlan;
@@ -23,7 +25,7 @@ public class GroupTripPlanController {
 
     @Operation(summary = "添加行程项")
     @PostMapping
-    public ApiResponse<GroupTripPlan> addTripItem(@PathVariable Long groupId, @RequestBody GroupTripPlanDTO dto) {
+    public ApiResponse<GroupTripPlan> addTripItem(@PathVariable Long groupId, @Valid @RequestBody GroupTripPlanDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         dto.setGroupId(groupId);
         GroupTripPlan plan = groupTripPlanService.addTripItem(dto, userId);
@@ -32,7 +34,7 @@ public class GroupTripPlanController {
 
     @Operation(summary = "更新行程项")
     @PutMapping("/{tripId}")
-    public ApiResponse<Void> updateTripItem(@PathVariable Long tripId, @RequestBody GroupTripPlanDTO dto) {
+    public ApiResponse<Void> updateTripItem(@PathVariable Long tripId, @Valid @RequestBody GroupTripPlanDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         groupTripPlanService.updateTripItem(tripId, dto, userId);
         return ApiResponse.success("更新成功", null);
