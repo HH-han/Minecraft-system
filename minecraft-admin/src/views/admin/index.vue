@@ -288,6 +288,7 @@ import { useAuthStore } from '@/stores/auth';
 import { logout as logoutApi } from '@/api/auth';
 // 用户管理组件
 import User from '@/views/ManagementViews/UserManagement.vue';
+import ExcelManagement from '@/views/ManagementViews/ExcelManagement.vue';
 import OrderManagement from '@/views/ManagementViews/OrderManagement.vue';
 import CollectionManagement from '@/views/ManagementViews/CollectionManagement.vue';
 import logininformationManagement from '@/views/ManagementViews/logininformationManagement.vue';
@@ -441,6 +442,9 @@ const toggleCategory = (type) => {
 
 // 从Pinia store获取上次激活的菜单，默认为1（系统管理）
 const activeMenu = ref(authStore.currentComponentPath || 1);
+const excelIcon = `
+  <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="256" height="256"><path d="M832 64H192c-35.2 0-64 28.8-64 64v768c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V128c0-35.2-28.8-64-64-64z" fill="#21A366"></path><path d="M704 256H320v512h384V256z" fill="#FFFFFF"></path><path d="M384 352h96v96h-96zM544 352h96v96h-96zM384 512h96v96h-96zM544 512h96v96h-96z" fill="#21A366"></path><path d="M192 896V128c0-35.2 28.8-64 64-64h256v896H256c-35.2 0-64-28.8-64-64z" fill="#185C37"></path><path d="M320 416l96-96 64 64-96 96 96 96-64 64-96-96-96 96-64-64 96-96-96-96 64-64z" fill="#FFFFFF"></path></svg>
+`;
 const menuItems = reactive([
   { id: 1, title: '系统首页', icon: homeIcon, component: AdminsystemHome },
   { id: 2, title: '控制台', icon: mh, component: ManagementHomepage },
@@ -483,10 +487,11 @@ const menuItems = reactive([
   { id: 39, title: '网站介绍', icon: wiIcon, component: WebsiteIntroduction },
   { id: 40, title: '管理首页', icon: homeIcon, component: Webhome },
   { id: 41, title: '公告管理', icon: fb, component: AnnouncementManagement },
+  { id: 42, title: 'Excel导入导出', icon: excelIcon, component: ExcelManagement },
 ]);
 // 计算属性分类
 const systemMenus = computed(() =>
-  menuItems.filter(item => [40, 1, 2, 18, 19, 30, 31].includes(item.id))
+  menuItems.filter(item => [40, 1, 2, 18, 19, 30, 31, 42].includes(item.id))
 )
 
 const contentMenus = computed(() =>

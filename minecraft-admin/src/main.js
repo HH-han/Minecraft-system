@@ -9,6 +9,7 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import router from './router'
 import './assets/styles/global.css'
 import { initTheme } from './utils/theme'
+import { setupI18n } from './locales'
 
 
 const app = createApp(App)
@@ -34,4 +35,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 初始化主题
 initTheme()
 
-app.mount('#app')
+// 初始化国际化后再挂载，避免首屏文案闪烁
+setupI18n(app).then(() => {
+  app.mount('#app')
+})

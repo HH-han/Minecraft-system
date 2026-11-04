@@ -1,0 +1,78 @@
+{
+  "excel": {
+    "title": "Excel 导入导出",
+    "subtitle": "支持景点、酒店、美食、商品、票务、城市、积分商品的批量导入与导出",
+    "language": "语言",
+    "biz": {
+      "attraction": "景点",
+      "hotel": "酒店",
+      "food": "美食",
+      "product": "商品",
+      "ticket": "票务",
+      "city": "城市",
+      "points_product": "积分商品"
+    },
+    "bizType": "业务类型",
+    "bizTypePlaceholder": "请选择业务类型",
+    "duplicateStrategy": "重复数据策略",
+    "strategy": {
+      "skip": "跳过",
+      "overwrite": "覆盖",
+      "error": "报错"
+    },
+    "import": {
+      "title": "批量导入",
+      "tip": "仅支持 xls / xlsx，单个文件不超过 50MB；重复数据按右侧策略处理。",
+      "template": "下载模板",
+      "selectFile": "选择文件",
+      "start": "开始导入",
+      "fileSelected": "已选择：{name}",
+      "progressTitle": "导入进度",
+      "taskNo": "任务号",
+      "reimport": "重新导入"
+    },
+    "export": {
+      "title": "数据导出",
+      "keyword": "关键字",
+      "keywordPlaceholder": "按名称模糊筛选，留空导出全部",
+      "button": "导出 Excel"
+    },
+    "task": {
+      "title": "任务记录",
+      "refresh": "刷新",
+      "taskNo": "任务号",
+      "fileName": "文件名",
+      "type": "类型",
+      "import": "导入",
+      "export": "导出",
+      "bizType": "业务类型",
+      "rows": "成功 / 失败",
+      "status": "状态",
+      "time": "创建时间",
+      "actions": "操作",
+      "errorFile": "失败明细",
+      "cancel": "取消",
+      "empty": "暂无任务记录"
+    },
+    "status": {
+      "pending": "待处理",
+      "processing": "处理中",
+      "success": "成功",
+      "partialFail": "部分失败",
+      "failed": "失败",
+      "cancelled": "已取消"
+    },
+    "summary": "共 {total} 行，成功 {success} 行，失败 {fail} 行",
+    "messages": {
+      "selectFileFirst": "请先选择需要导入的 Excel 文件",
+      "importSubmitted": "导入任务已提交，正在后台处理",
+      "templateDownloaded": "模板下载成功",
+      "exportStarted": "导出完成，文件已开始下载",
+      "cancelSubmitted": "已提交取消请求",
+      "importFinished": "导入完成：成功 {success} 行，失败 {fail} 行",
+      "loadFailed": "加载任务列表失败",
+      "downloadFailed": "文件下载失败",
+      "noErrorFile": "该任务没有失败明细"
+    }
+  }
+}

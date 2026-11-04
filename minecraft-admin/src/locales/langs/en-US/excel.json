@@ -1,0 +1,78 @@
+{
+  "excel": {
+    "title": "Excel Import & Export",
+    "subtitle": "Batch import and export for attractions, hotels, foods, products, tickets, cities and points products",
+    "language": "Language",
+    "biz": {
+      "attraction": "Attractions",
+      "hotel": "Hotels",
+      "food": "Foods",
+      "product": "Products",
+      "ticket": "Tickets",
+      "city": "Cities",
+      "points_product": "Points products"
+    },
+    "bizType": "Business type",
+    "bizTypePlaceholder": "Please select a business type",
+    "duplicateStrategy": "Duplicate strategy",
+    "strategy": {
+      "skip": "Skip",
+      "overwrite": "Overwrite",
+      "error": "Error"
+    },
+    "import": {
+      "title": "Batch import",
+      "tip": "Only xls / xlsx files are supported, up to 50MB. Duplicates are handled by the strategy on the right.",
+      "template": "Download template",
+      "selectFile": "Select file",
+      "start": "Start import",
+      "fileSelected": "Selected: {name}",
+      "progressTitle": "Import progress",
+      "taskNo": "Task No.",
+      "reimport": "Import again"
+    },
+    "export": {
+      "title": "Data export",
+      "keyword": "Keyword",
+      "keywordPlaceholder": "Filter by name, leave empty to export all",
+      "button": "Export Excel"
+    },
+    "task": {
+      "title": "Task records",
+      "refresh": "Refresh",
+      "taskNo": "Task No.",
+      "fileName": "File name",
+      "type": "Type",
+      "import": "Import",
+      "export": "Export",
+      "bizType": "Business type",
+      "rows": "Success / Failed",
+      "status": "Status",
+      "time": "Created at",
+      "actions": "Actions",
+      "errorFile": "Error details",
+      "cancel": "Cancel",
+      "empty": "No task records"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "success": "Success",
+      "partialFail": "Partially failed",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "summary": "{total} rows in total, {success} succeeded, {fail} failed",
+    "messages": {
+      "selectFileFirst": "Please select an Excel file first",
+      "importSubmitted": "Import task submitted, processing in background",
+      "templateDownloaded": "Template downloaded",
+      "exportStarted": "Export completed, download started",
+      "cancelSubmitted": "Cancel request submitted",
+      "importFinished": "Import finished: {success} succeeded, {fail} failed",
+      "loadFailed": "Failed to load task list",
+      "downloadFailed": "File download failed",
+      "noErrorFile": "No error details for this task"
+    }
+  }
+}
