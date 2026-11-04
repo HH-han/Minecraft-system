@@ -1,4 +1,18 @@
-# Minecraft 旅游系统
+<div align="center">
+     <h1>Minecraft 旅游系统 <sup style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.4em; vertical-align: super; margin-left: 5px;">v1.0.0</sup></h1>
+     <h3>一站式智慧旅游服务平台</h3>
+     <p>Spring Boot 3 + Vue 3 + uni-app — 一套后端，多端覆盖（Web 用户端 / 管理端 / 移动端）</p>
+     <p align="center">
+          <img src="https://img.shields.io/badge/Version-1.0.0-brightgreen" alt="Version">
+          <img src="https://img.shields.io/badge/License-MIT-orange" alt="License">
+          <img src="https://img.shields.io/badge/Java-%E2%89%A517-blue" alt="Java">
+          <img src="https://img.shields.io/badge/Spring%20Boot-3.0.2-blue" alt="Spring Boot">
+          <img src="https://img.shields.io/badge/Vue-3.5-blue" alt="Vue">
+          <img src="https://img.shields.io/badge/NodeJS-%E2%89%A520.0-blue" alt="NodeJS">
+          <img src="https://img.shields.io/badge/MySQL-%E2%89%A58.0-blue" alt="MySQL">
+          <img src="https://img.shields.io/badge/Redis-%E2%89%A56.0-blue" alt="Redis">
+     </p>
+</div>
 
 > 一站式智慧旅游服务平台，为用户提供景点推荐、酒店预订、票务预订、美食推荐、特产商城、出行计划、社区交流等全方位旅游服务。
 
