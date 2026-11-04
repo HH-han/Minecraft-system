@@ -2,7 +2,7 @@
   <!-- Element Plus 语言包随 i18n 联动切换 -->
   <el-config-provider :locale="elementLocale">
     <!-- 设备检测组件（始终渲染但隐藏） -->
-    <DeviceDetects ref="deviceDetectsRef" style="display: none;" />
+    <!-- <DeviceDetects ref="deviceDetectsRef" style="display: none;" /> -->
     <!-- PC设备正常显示 -->
     <div>
       <!-- loading 加载中效果-->

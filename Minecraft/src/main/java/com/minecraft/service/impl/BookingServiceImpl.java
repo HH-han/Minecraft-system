@@ -132,7 +132,9 @@ public class BookingServiceImpl implements BookingService {
         vo.setContactEmail(booking.getContactEmail());
         vo.setSpecialRequest(booking.getSpecialRequest());
         vo.setVisitDate(booking.getVisitDate());
+        vo.setStatus(booking.getStatus());
         vo.setCreatedAt(booking.getCreatedAt());
+        vo.setUpdatedAt(booking.getUpdatedAt());
 
         LambdaQueryWrapper<TicketBookingItem> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TicketBookingItem::getBookingId, booking.getId());
@@ -282,7 +284,9 @@ public class BookingServiceImpl implements BookingService {
         vo.setRoomPrice(booking.getRoomPrice());
         vo.setRoomDesc(booking.getRoomDesc());
         vo.setRoomFacilities(booking.getRoomFacilities());
+        vo.setStatus(booking.getStatus());
         vo.setCreatedAt(booking.getCreatedAt());
+        vo.setUpdatedAt(booking.getUpdatedAt());
 
         LambdaQueryWrapper<HotelBookingItem> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(HotelBookingItem::getBookingId, booking.getId());

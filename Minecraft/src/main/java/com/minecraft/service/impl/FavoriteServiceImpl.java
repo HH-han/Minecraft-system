@@ -262,6 +262,7 @@ public class FavoriteServiceImpl extends ServiceImpl<FavoriteMapper, Favorite> i
         vo.setFileSize(favorite.getFileSize());
         vo.setTags(splitTags(favorite.getTags()));
         vo.setSource(favorite.getSource());
+        vo.setStatus(favorite.getStatus());
         vo.setCreateTime(favorite.getCreateTime());
         vo.setUpdateTime(favorite.getUpdateTime());
         return vo;

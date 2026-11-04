@@ -17,10 +17,13 @@ public class HotelDetailVO {
     private String coverImage;
     private List<String> images;
     private BigDecimal price;
+    private Integer starLevel;
     private Integer rating;
     private Integer likeCount;
     private Integer collectCount;
     private Integer commentCount;
+    /** 状态：0-下架 1-上架 */
+    private Integer status;
     private LocalDateTime createTime;
     
     private List<HotelRoomVO> rooms;

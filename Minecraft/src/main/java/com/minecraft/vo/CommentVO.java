@@ -18,6 +18,8 @@ public class CommentVO {
     private List<String> images;
     private Integer rating;
     private Integer likeCount;
+    /** 状态：0-待审 1-通过 2-驳回 */
+    private Integer status;
     private Boolean isLiked;
     private LocalDateTime createTime;
     private List<CommentVO> replies;

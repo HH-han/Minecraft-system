@@ -19,4 +19,5 @@ public class GroupPostVO {
     private Integer commentCount;
     private Boolean isLiked;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

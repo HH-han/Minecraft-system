@@ -21,6 +21,8 @@ public class FavoriteVO {
     private Long fileSize;
     private List<String> tags;
     private String source;
+    /** 状态：0-禁用 1-正常 */
+    private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

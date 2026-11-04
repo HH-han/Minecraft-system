@@ -25,6 +25,8 @@ public class AttractionVO {
     private List<String> tags;
     private Boolean isLiked;
     private Boolean isCollected;
+    /** 状态：0-下架 1-上架 */
+    private Integer status;
     private LocalDateTime createTime;
     private List<AttractionTicketVO> tickets;
     private List<String> facilities;

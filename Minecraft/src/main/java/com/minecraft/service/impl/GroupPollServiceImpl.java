@@ -147,7 +147,12 @@ public class GroupPollServiceImpl extends ServiceImpl<GroupPollMapper, GroupPoll
             GroupPollVO vo = new GroupPollVO();
             vo.setId(poll.getId());
             vo.setGroupId(poll.getGroupId());
+            vo.setCreatorId(poll.getCreatorId());
             vo.setTitle(poll.getTitle());
+            vo.setDescription(poll.getDescription());
+            vo.setType(poll.getType());
+            vo.setEndTime(poll.getEndTime());
+            vo.setIsAnonymous(poll.getIsAnonymous());
             vo.setStatus(poll.getStatus());
             vo.setCreatedAt(poll.getCreatedAt());
 

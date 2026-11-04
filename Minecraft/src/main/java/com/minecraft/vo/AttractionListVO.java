@@ -23,6 +23,8 @@ public class AttractionListVO {
     private Integer collectCount;
     private Integer commentCount;
     private List<String> tags;
+    /** 状态：0-下架 1-上架 */
+    private Integer status;
     private LocalDateTime createTime;
     
     private List<AttractionTicketVO> tickets;

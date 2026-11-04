@@ -25,7 +25,10 @@ public class HotelBookingVO {
     private BigDecimal roomPrice;
     private String roomDesc;
     private String roomFacilities;
+    /** 订单状态：0-待支付 1-已支付 2-已取消 3-已完成 */
+    private Integer status;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private List<HotelBookingItemVO> items;
 

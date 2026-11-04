@@ -18,6 +18,8 @@ public class CommunityPostVO {
     private Integer likeCount;
     private Integer commentCount;
     private Integer collectCount;
+    /** 状态：0-待审 1-通过 2-驳回 */
+    private Integer status;
     private Boolean isLiked;
     private Boolean isCollected;
     private LocalDateTime createTime;

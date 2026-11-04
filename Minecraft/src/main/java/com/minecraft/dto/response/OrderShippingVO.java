@@ -20,11 +20,22 @@ public class OrderShippingVO {
 
     private String orderNo;
 
+    /** 下单用户ID */
+    private Long userId;
+
+    /** 商品类型 */
+    private String itemType;
+
+    /** 商品ID */
+    private Long itemId;
+
     private String itemName;
 
     private String itemImage;
 
     private Integer quantity;
+
+    private Long carrierId;
 
     private String carrierCode;
 
@@ -38,7 +49,13 @@ public class OrderShippingVO {
 
     private String receiverAddress;
 
+    /** 包裹重量(kg) */
+    private BigDecimal packageWeight;
+
     private BigDecimal freight;
+
+    /** 备注 */
+    private String remark;
 
     private Integer status;
 

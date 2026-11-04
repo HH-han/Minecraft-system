@@ -20,5 +20,7 @@ public class MomentCommentVO {
     /** 回复目标用户昵称 */
     private String replyToNickname;
     private String content;
+    /** 状态：0-待审 1-通过 2-驳回 */
+    private Integer status;
     private LocalDateTime createTime;
 }

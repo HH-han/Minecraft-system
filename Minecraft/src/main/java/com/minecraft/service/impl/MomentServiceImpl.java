@@ -347,6 +347,7 @@ public class MomentServiceImpl extends ServiceImpl<MomentMapper, Moment> impleme
         vo.setVisibility(moment.getVisibility());
         vo.setLikeCount(moment.getLikeCount() != null ? moment.getLikeCount() : 0);
         vo.setCommentCount(moment.getCommentCount() != null ? moment.getCommentCount() : 0);
+        vo.setStatus(moment.getStatus());
         vo.setCreateTime(moment.getCreateTime());
 
         List<MomentLike> likes = momentLikeMapper.selectList(new LambdaQueryWrapper<MomentLike>()
@@ -390,6 +391,7 @@ public class MomentServiceImpl extends ServiceImpl<MomentMapper, Moment> impleme
             }
         }
         vo.setContent(comment.getContent());
+        vo.setStatus(comment.getStatus());
         vo.setCreateTime(comment.getCreateTime());
         return vo;
     }

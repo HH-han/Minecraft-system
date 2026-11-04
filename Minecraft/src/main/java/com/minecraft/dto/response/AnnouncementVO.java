@@ -27,6 +27,7 @@ public class AnnouncementVO {
     private LocalDateTime expireTime;
     private Long viewCount;
     private Long readCount;
+    private Long creatorId;
     private String creatorName;
     private LocalDateTime createTime;
     /** 当前用户是否已读（未登录恒为 false） */

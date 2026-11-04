@@ -25,6 +25,8 @@ public class AttractionDetailVO {
     private List<String> tags;
     private Boolean isLiked;
     private Boolean isCollected;
+    /** 状态：0-下架 1-上架 */
+    private Integer status;
     private String openingHours;
     private LocalDateTime createTime;
     

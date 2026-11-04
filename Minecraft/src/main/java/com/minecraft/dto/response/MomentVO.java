@@ -22,6 +22,8 @@ public class MomentVO {
     private Integer visibility;
     private Integer likeCount;
     private Integer commentCount;
+    /** 状态：0-待审 1-通过 2-驳回 */
+    private Integer status;
     private LocalDateTime createTime;
     /** 当前用户是否已点赞 */
     private Boolean liked;

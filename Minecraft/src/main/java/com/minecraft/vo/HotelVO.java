@@ -24,6 +24,8 @@ public class HotelVO {
     private Integer commentCount;
     private List<HotelRoomVO> rooms;
     private List<String> facilityList;
+    /** 状态：0-下架 1-上架 */
+    private Integer status;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

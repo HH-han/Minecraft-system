@@ -1,15 +1,6 @@
 <template>
   <view class="ui-icon" :style="rootStyle">
-    <svg
-      class="ui-icon__svg"
-      viewBox="0 0 24 24"
-      :fill="filled ? 'currentColor' : 'none'"
-      stroke="currentColor"
-      :stroke-width="strokeWidth"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      v-html="inner"
-    ></svg>
+    <view class="ui-icon__glyph" :style="glyphStyle"></view>
   </view>
 </template>
 
@@ -130,11 +121,35 @@ export default {
     filled() {
       return FILLED_ICONS.includes(this.key)
     },
+    // 使用 px（uni.upx2px）而非内联 rpx，保证 App/小程序端动态尺寸生效
     rootStyle() {
+      const px = uni.upx2px(this.size)
       return {
-        width: `${this.size}rpx`,
-        height: `${this.size}rpx`,
+        width: `${px}px`,
+        height: `${px}px`,
         color: this.color
+      }
+    },
+    svgMarkup() {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${
+        this.filled ? 'black' : 'none'
+      }" stroke="black" stroke-width="${this.strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${
+        this.inner
+      }</svg>`
+    },
+    // App 端 `<svg>` 无法按 SVG 命名空间渲染，改用 CSS mask + 内联 SVG 数据源
+    glyphStyle() {
+      const image = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(this.svgMarkup)}")`
+      return {
+        backgroundColor: this.color,
+        webkitMaskImage: image,
+        maskImage: image,
+        webkitMaskSize: '100% 100%',
+        maskSize: '100% 100%',
+        webkitMaskRepeat: 'no-repeat',
+        maskRepeat: 'no-repeat',
+        webkitMaskPosition: 'center',
+        maskPosition: 'center'
       }
     }
   }
@@ -149,9 +164,8 @@ export default {
   flex-shrink: 0;
 }
 
-.ui-icon__svg {
+.ui-icon__glyph {
   width: 100%;
   height: 100%;
-  display: block;
 }
 </style>

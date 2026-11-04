@@ -21,6 +21,15 @@ public class AfterSaleVO {
 
     private String orderNo;
 
+    /** 申请用户ID */
+    private Long userId;
+
+    /** 售后商品类型 */
+    private String itemType;
+
+    /** 售后商品ID */
+    private Long itemId;
+
     private String itemName;
 
     private String itemImage;
@@ -48,9 +57,24 @@ public class AfterSaleVO {
 
     private String auditRemark;
 
+    /** 审核人ID */
+    private Long auditBy;
+
+    /** 审核时间 */
+    private LocalDateTime auditTime;
+
     private String returnCarrier;
 
     private String returnTracking;
+
+    /** 退回时间 */
+    private LocalDateTime returnTime;
+
+    /** 商家收货时间 */
+    private LocalDateTime receiveTime;
+
+    /** 关闭原因 */
+    private String closeReason;
 
     private String refundNo;
 

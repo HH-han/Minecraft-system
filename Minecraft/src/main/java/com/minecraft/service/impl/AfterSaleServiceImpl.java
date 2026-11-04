@@ -231,6 +231,9 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
         vo.setAfterSaleNo(as.getAfterSaleNo());
         vo.setOrderId(as.getOrderId());
         vo.setOrderNo(as.getOrderNo());
+        vo.setUserId(as.getUserId());
+        vo.setItemType(as.getItemType());
+        vo.setItemId(as.getItemId());
         vo.setItemName(as.getItemName());
         vo.setItemImage(as.getItemImage());
         vo.setQuantity(as.getQuantity());
@@ -243,9 +246,14 @@ public class AfterSaleServiceImpl extends ServiceImpl<AfterSaleMapper, AfterSale
         vo.setActualAmount(as.getActualAmount());
         vo.setStatus(as.getStatus());
         vo.setStatusDesc(AfterSaleStatus.descriptionOf(as.getStatus()));
+        vo.setAuditBy(as.getAuditBy());
+        vo.setAuditTime(as.getAuditTime());
         vo.setAuditRemark(as.getAuditRemark());
         vo.setReturnCarrier(as.getReturnCarrier());
         vo.setReturnTracking(as.getReturnTracking());
+        vo.setReturnTime(as.getReturnTime());
+        vo.setReceiveTime(as.getReceiveTime());
+        vo.setCloseReason(as.getCloseReason());
         vo.setRefundNo(as.getRefundNo());
         vo.setRefundTime(as.getRefundTime());
         vo.setCreateTime(as.getCreateTime());

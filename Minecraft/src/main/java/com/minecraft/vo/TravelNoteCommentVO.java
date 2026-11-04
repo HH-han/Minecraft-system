@@ -20,6 +20,8 @@ public class TravelNoteCommentVO {
     private String replyUsername;
     private String content;
     private Integer likeCount;
+    /** 状态：0-待审 1-通过 2-驳回 */
+    private Integer status;
     private LocalDateTime createTime;
     private List<TravelNoteCommentVO> replies;
 }

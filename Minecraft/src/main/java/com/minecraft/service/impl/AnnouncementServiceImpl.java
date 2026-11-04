@@ -402,6 +402,7 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
         vo.setExpireTime(ann.getExpireTime());
         vo.setViewCount(ann.getViewCount());
         vo.setReadCount(ann.getReadCount());
+        vo.setCreatorId(ann.getCreatorId());
         vo.setCreatorName(ann.getCreatorName());
         vo.setCreateTime(ann.getCreateTime());
         vo.setIsRead(isRead);

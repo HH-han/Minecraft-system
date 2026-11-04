@@ -16,6 +16,8 @@ public class TravelNoteReportVO {
     private String reporterName;
     private String reason;
     private Integer status;
+    /** 处理人ID */
+    private Long handleBy;
     private LocalDateTime createTime;
     private LocalDateTime handleTime;
 }
