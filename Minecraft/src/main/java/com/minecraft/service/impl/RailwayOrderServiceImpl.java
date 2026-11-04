@@ -357,7 +357,10 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
         RailwayOrderVO vo = new RailwayOrderVO();
         vo.setId(order.getId());
         vo.setOrderNo(order.getOrderNo());
+        vo.setUserId(order.getUserId());
         vo.setServiceId(order.getServiceId());
+        vo.setFromStopSeq(order.getFromStopSeq());
+        vo.setToStopSeq(order.getToStopSeq());
         vo.setSeatType(order.getSeatType());
         vo.setPassengerCount(order.getPassengerCount());
         vo.setTotalAmount(order.getTotalAmount());
@@ -365,6 +368,7 @@ public class RailwayOrderServiceImpl implements RailwayOrderService {
         vo.setStatus(order.getStatus());
         vo.setExpireTime(order.getExpireTime());
         vo.setPayTime(order.getPayTime());
+        vo.setCancelTime(order.getCancelTime());
         vo.setCreateTime(order.getCreateTime());
 
         RailwayService service = serviceMapper.selectById(order.getServiceId());

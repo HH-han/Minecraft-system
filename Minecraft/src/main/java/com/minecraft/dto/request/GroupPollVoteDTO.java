@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class GroupPollVoteDTO {
 
-    @NotNull(message = "投票ID不能为空")
+    /** 投票ID，由接口路径传入 */
     private Long pollId;
 
     @NotNull(message = "投票选项不能为空")

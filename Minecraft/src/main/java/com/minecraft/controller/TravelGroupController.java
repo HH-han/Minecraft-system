@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.GroupCreateDTO;
 import com.minecraft.dto.request.GroupUpdateDTO;
 import com.minecraft.dto.response.ApiResponse;
@@ -39,7 +41,7 @@ public class TravelGroupController {
 
     @Operation(summary = "创建群组")
     @PostMapping("/create")
-    public ApiResponse<Long> createGroup(@RequestBody GroupCreateDTO dto) {
+    public ApiResponse<Long> createGroup(@Valid @RequestBody GroupCreateDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         Long groupId = travelGroupService.createGroup(dto, userId);
         return ApiResponse.success("创建成功", groupId);
@@ -47,7 +49,7 @@ public class TravelGroupController {
 
     @Operation(summary = "更新群组信息")
     @PutMapping("/{groupId}")
-    public ApiResponse<Void> updateGroup(@PathVariable Long groupId, @RequestBody GroupUpdateDTO dto) {
+    public ApiResponse<Void> updateGroup(@PathVariable Long groupId, @Valid @RequestBody GroupUpdateDTO dto) {
         dto.setId(groupId);
         travelGroupService.updateGroup(dto);
         return ApiResponse.success("更新成功", null);

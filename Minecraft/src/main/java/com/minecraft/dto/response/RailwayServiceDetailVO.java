@@ -18,6 +18,9 @@ public class RailwayServiceDetailVO {
 
     private LocalDate serviceDate;
 
+    /** 服务状态 */
+    private Integer status;
+
     private List<RailwayStopVO> stops;
 
     /** 全程各席别余票与票价 */

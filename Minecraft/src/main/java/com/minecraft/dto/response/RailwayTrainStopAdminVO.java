@@ -10,6 +10,9 @@ public class RailwayTrainStopAdminVO {
 
     private Long id;
 
+    /** 所属车次ID */
+    private Long trainId;
+
     private Long stationId;
 
     private String stationName;

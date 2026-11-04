@@ -297,6 +297,7 @@ public class RailwayScheduleServiceImpl implements RailwayScheduleService {
         detail.setTrainNo(train.getTrainNo());
         detail.setTrainType(train.getTrainType());
         detail.setServiceDate(service.getServiceDate());
+        detail.setStatus(service.getStatus());
         detail.setStops(stopVos);
         if (!stops.isEmpty()) {
             detail.setSeats(aggregateSeats(inventories,

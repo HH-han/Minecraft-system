@@ -35,7 +35,7 @@ public class GroupPollController {
 
     @Operation(summary = "投票")
     @PostMapping("/{pollId}/vote")
-    public ApiResponse<Void> vote(@PathVariable Long pollId, @RequestBody GroupPollVoteDTO dto) {
+    public ApiResponse<Void> vote(@PathVariable Long pollId, @Valid @RequestBody GroupPollVoteDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();
         dto.setPollId(pollId);
         groupPollService.vote(dto, userId);

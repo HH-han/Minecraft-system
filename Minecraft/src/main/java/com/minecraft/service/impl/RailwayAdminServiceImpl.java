@@ -210,6 +210,7 @@ public class RailwayAdminServiceImpl implements RailwayAdminService {
         return stops.stream().map(stop -> {
             RailwayTrainStopAdminVO vo = new RailwayTrainStopAdminVO();
             vo.setId(stop.getId());
+            vo.setTrainId(stop.getTrainId());
             vo.setStationId(stop.getStationId());
             vo.setStationName(stationName(stationMap, stop.getStationId()));
             vo.setStopSeq(stop.getStopSeq());

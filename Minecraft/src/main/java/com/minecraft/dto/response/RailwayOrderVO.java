@@ -15,7 +15,16 @@ public class RailwayOrderVO {
 
     private String orderNo;
 
+    /** 下单用户ID */
+    private Long userId;
+
     private Long serviceId;
+
+    /** 上车站序号 */
+    private Integer fromStopSeq;
+
+    /** 下车站序号 */
+    private Integer toStopSeq;
 
     private String trainNo;
 
@@ -51,6 +60,9 @@ public class RailwayOrderVO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime payTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime cancelTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
