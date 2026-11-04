@@ -1,10 +1,14 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
+import com.minecraft.annotation.OperationLog;
 import com.minecraft.dto.request.OrderRequest;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Order;
+import com.minecraft.enums.OperationType;
 import com.minecraft.service.OrderService;
 import com.minecraft.utils.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,8 +25,10 @@ public class OrderController {
     private OrderService orderService;
 
     @Operation(summary ="创建订单")
+    @OperationLog(module = "ORDER", action = "创建订单", type = OperationType.ADD,
+            bizId = "#result.data.id", detail = "'创建订单'")
     @PostMapping("/create")
-    public ApiResponse<Order> createOrder(@RequestBody OrderRequest orderRequest) {
+    public ApiResponse<Order> createOrder(@Valid @RequestBody OrderRequest orderRequest) {
         Long userId = SecurityUtils.getCurrentUserId();
         return ApiResponse.success("创建成功", orderService.createOrder(userId, orderRequest));
     }
@@ -41,6 +47,8 @@ public class OrderController {
     }
 
     @Operation(summary ="取消订单")
+    @OperationLog(module = "ORDER", action = "取消订单", type = OperationType.UPDATE,
+            bizId = "#id", detail = "'取消订单'")
     @PutMapping("/{id}/cancel")
     public ApiResponse<Void> cancelOrder(@PathVariable Long id) {
         orderService.cancelOrder(id);
@@ -48,6 +56,7 @@ public class OrderController {
     }
 
     @Operation(summary ="删除订单")
+    @OperationLog(module = "ORDER", action = "删除订单", type = OperationType.DELETE, bizId = "#id")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);

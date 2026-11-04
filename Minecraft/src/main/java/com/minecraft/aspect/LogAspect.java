@@ -1,12 +1,12 @@
 package com.minecraft.aspect;
 
-import com.alibaba.fastjson2.JSON;
-import com.minecraft.annotation.Log;
-import com.minecraft.entity.OperationLog;
-import com.minecraft.service.OperationLogService;
+import com.minecraft.entity.User;
+import com.minecraft.enums.OperationType;
+import com.minecraft.log.OperationLogRecorder;
+import com.minecraft.service.UserService;
+import com.minecraft.utils.LogParamSerializer;
 import com.minecraft.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,207 +14,270 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.expression.MethodBasedEvaluationContext;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * 操作日志切面：
- * 1. 所有 Controller 写操作（POST/PUT/DELETE/PATCH）自动记录到 operation_logs 表；
- * 2. 标注 {@link Log} 注解的方法（含查询）按注解描述精确记录；
- * 3. 记录执行时长、操作状态、错误信息、请求参数与响应结果，异步落库不影响主流程。
+ * 操作日志切面。
+ *
+ * <ul>
+ *   <li>所有 Controller 写操作（POST/PUT/PATCH/DELETE）自动记录；</li>
+ *   <li>标注 {@link OperationLog} 的方法（含 Service 层）按注解精确记录；</li>
+ *   <li>框架统一补齐操作人、请求来源、耗时、成功/失败等公共信息；</li>
+ *   <li>bizId、detail 支持 Spring EL，业务自行描述“改了什么”；</li>
+ *   <li>默认不记录请求参数，防止敏感信息落库；</li>
+ *   <li>日志通过独立事务异步落库，业务回滚不影响审计记录。</li>
+ * </ul>
  */
 @Aspect
 @Component
 public class LogAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
-    private static final int MAX_RESULT_LENGTH = 500;
 
-    private final OperationLogService operationLogService;
+    private static final int MAX_DETAIL_LENGTH = 2000;
+    private static final int MAX_ERROR_LENGTH = 1000;
 
-    public LogAspect(OperationLogService operationLogService) {
-        this.operationLogService = operationLogService;
+    private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
+    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
+
+    private final OperationLogRecorder operationLogRecorder;
+    private final UserService userService;
+
+    public LogAspect(OperationLogRecorder operationLogRecorder, UserService userService) {
+        this.operationLogRecorder = operationLogRecorder;
+        this.userService = userService;
     }
 
     @Pointcut("execution(* com.minecraft.controller..*(..))")
     public void controllerPointcut() {
     }
 
-    @Pointcut("@annotation(com.minecraft.annotation.Log)")
-    public void logAnnotationPointcut() {
+    @Pointcut("@annotation(com.minecraft.annotation.OperationLog)")
+    public void operationLogPointcut() {
     }
 
-    @Around("controllerPointcut() || logAnnotationPointcut()")
+    @Around("controllerPointcut() || operationLogPointcut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         long beginTime = System.currentTimeMillis();
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        Log logAnnotation = method.getAnnotation(Log.class);
+        com.minecraft.annotation.OperationLog annotation =
+                method.getAnnotation(com.minecraft.annotation.OperationLog.class);
         HttpServletRequest request = getRequest();
 
-        // GET 请求且无 @Log 注解时不记录，避免查询日志量过大
-        boolean shouldLog = logAnnotation != null
-                || (request != null && !"GET".equalsIgnoreCase(request.getMethod())
-                && !"OPTIONS".equalsIgnoreCase(request.getMethod()));
+        // GET/OPTIONS/HEAD 等只读请求默认不记录，除非显式标注 @OperationLog
+        boolean shouldLog = annotation != null || isWriteRequest(request);
 
-        Object result;
+        Object result = null;
+        Throwable error = null;
         try {
             result = joinPoint.proceed();
+            return result;
         } catch (Throwable e) {
-            if (shouldLog) {
-                saveLog(joinPoint, method, logAnnotation, request,
-                        System.currentTimeMillis() - beginTime, null, e);
-            }
+            error = e;
             throw e;
+        } finally {
+            if (shouldLog) {
+                try {
+                    recordLog(joinPoint, method, annotation, request,
+                            result, error, System.currentTimeMillis() - beginTime);
+                } catch (Throwable ex) {
+                    // 日志记录失败（含类加载错误等 Error）不能影响业务主流程
+                    logger.error("记录操作日志失败: {}", method.getName(), ex);
+                }
+            }
         }
-
-        if (shouldLog) {
-            saveLog(joinPoint, method, logAnnotation, request,
-                    System.currentTimeMillis() - beginTime, result, null);
-        }
-        return result;
     }
 
-    private void saveLog(ProceedingJoinPoint joinPoint, Method method, Log logAnnotation,
-                         HttpServletRequest request, long executionTime, Object result, Throwable e) {
-        try {
-            OperationLog operationLog = new OperationLog();
+    private void recordLog(ProceedingJoinPoint joinPoint, Method method,
+                           com.minecraft.annotation.OperationLog annotation,
+                           HttpServletRequest request, Object result, Throwable error,
+                           long executionTime) {
+        com.minecraft.entity.OperationLog operationLog = new com.minecraft.entity.OperationLog();
 
-            // 操作用户信息
-            Long userId = SecurityUtils.getCurrentUserId();
-            if (userId != null) {
-                operationLog.setUserId(userId.intValue());
-            }
-            operationLog.setUsername(SecurityUtils.getCurrentUsername());
+        fillOperator(operationLog);
+        fillRequestInfo(operationLog, request);
 
-            // 请求信息
-            if (request != null) {
-                operationLog.setIpAddress(getClientIp(request));
-                operationLog.setUserAgent(request.getHeader("User-Agent"));
-                operationLog.setRequestUri(request.getRequestURI());
-                operationLog.setRequestMethod(request.getMethod());
-                operationLog.setBrowser(parseBrowser(request.getHeader("User-Agent")));
-                operationLog.setOs(parseOs(request.getHeader("User-Agent")));
-            }
-
-            // @Log 注解信息优先，否则按 HTTP 方法自动归类
-            if (logAnnotation != null) {
-                operationLog.setOperationType(logAnnotation.operationType().name());
-                operationLog.setOperationDesc(logAnnotation.value());
-                operationLog.setModule(logAnnotation.module());
-                if (logAnnotation.recordParams()) {
-                    operationLog.setRequestParams(serializeParams(joinPoint));
-                }
-                if (logAnnotation.recordResult() && result != null) {
-                    operationLog.setResponseResult(truncate(JSON.toJSONString(result)));
-                }
-            } else {
-                operationLog.setOperationType(resolveOperationType(request));
-                MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-                operationLog.setOperationDesc(signature.getDeclaringType().getSimpleName()
-                        + "." + method.getName());
-            }
-
-            // 未通过注解记录参数时统一记录请求参数
-            if (operationLog.getRequestParams() == null) {
-                operationLog.setRequestParams(serializeParams(joinPoint));
-            }
-
-            operationLog.setExecutionTime(executionTime);
-
-            // 操作状态与错误信息
-            if (e != null) {
-                operationLog.setStatus(0);
-                operationLog.setErrorMsg(e.getMessage());
-            } else {
-                operationLog.setStatus(1);
-            }
-
-            // 异步落库，不影响主流程
-            operationLogService.saveOperationLogAsync(operationLog);
-        } catch (Throwable ex) {
-            // 日志记录失败（含类加载错误等 Error）不能影响业务主流程
-            logger.error("保存操作日志失败", ex);
+        if (annotation != null) {
+            fillFromAnnotation(operationLog, annotation, joinPoint, method, result);
+        } else {
+            operationLog.setModule(resolveModule(joinPoint));
+            operationLog.setOperationDesc(method.getName());
+            operationLog.setOperationType(resolveOperationType(request));
         }
+
+        if (annotation != null && annotation.recordParams()) {
+            operationLog.setRequestParams(LogParamSerializer.serialize(joinPoint.getArgs()));
+        }
+
+        operationLog.setExecutionTime(executionTime);
+        if (error != null) {
+            operationLog.setStatus(0);
+            operationLog.setErrorMsg(truncate(errorText(error), MAX_ERROR_LENGTH));
+        } else {
+            operationLog.setStatus(1);
+        }
+
+        operationLogRecorder.record(operationLog);
     }
 
     /**
-     * 序列化请求参数，过滤不可序列化的 Servlet/上传对象
+     * 填充操作人信息：JWT 中只有用户 ID，这里补充可读的操作人名称。
      */
-    private String serializeParams(ProceedingJoinPoint joinPoint) {
-        try {
-            Object[] args = Arrays.stream(joinPoint.getArgs())
-                    .filter(arg -> !(arg instanceof HttpServletRequest)
-                            && !(arg instanceof HttpServletResponse)
-                            && !(arg instanceof MultipartFile)
-                            && !(arg instanceof org.springframework.validation.BindingResult))
-                    .toArray();
-            String params = JSON.toJSONString(args);
-            return truncate(params);
-        } catch (Exception e) {
-            return truncate(Arrays.toString(joinPoint.getArgs()));
+    private void fillOperator(com.minecraft.entity.OperationLog operationLog) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        if (userId != null) {
+            operationLog.setUserId(userId.intValue());
+            operationLog.setUsername(resolveOperatorName(userId));
+        } else {
+            operationLog.setUsername(SecurityUtils.getCurrentUsername());
         }
     }
 
-    private String truncate(String text) {
-        if (text == null) {
+    private String resolveOperatorName(Long userId) {
+        try {
+            User user = userService.getById(userId);
+            if (user != null) {
+                if (!isBlank(user.getNickname())) {
+                    return user.getNickname();
+                }
+                if (!isBlank(user.getUsername())) {
+                    return user.getUsername();
+                }
+                if (!isBlank(user.getAccount())) {
+                    return user.getAccount();
+                }
+            }
+        } catch (Exception e) {
+            logger.debug("解析操作人名称失败，userId={}", userId, e);
+        }
+        return SecurityUtils.getCurrentUsername();
+    }
+
+    private void fillRequestInfo(com.minecraft.entity.OperationLog operationLog, HttpServletRequest request) {
+        if (request == null) {
+            return;
+        }
+        operationLog.setIpAddress(getClientIp(request));
+        operationLog.setUserAgent(request.getHeader("User-Agent"));
+        operationLog.setRequestUri(request.getRequestURI());
+        operationLog.setRequestMethod(request.getMethod());
+        operationLog.setBrowser(parseBrowser(operationLog.getUserAgent()));
+        operationLog.setOs(parseOs(operationLog.getUserAgent()));
+    }
+
+    private void fillFromAnnotation(com.minecraft.entity.OperationLog operationLog,
+                                    com.minecraft.annotation.OperationLog annotation,
+                                    ProceedingJoinPoint joinPoint, Method method, Object result) {
+        OperationType type = annotation.type();
+        operationLog.setOperationType(type != null && type != OperationType.OTHER
+                ? type.name()
+                : resolveOperationType(getRequest()));
+        operationLog.setModule(isBlank(annotation.module()) ? resolveModule(joinPoint) : annotation.module());
+        operationLog.setOperationDesc(isBlank(annotation.action()) ? method.getName() : annotation.action());
+
+        EvaluationContext context = buildEvaluationContext(method, joinPoint.getArgs(), result);
+        operationLog.setBizId(evaluate(annotation.bizId(), context));
+        operationLog.setDetail(truncate(evaluate(annotation.detail(), context), MAX_DETAIL_LENGTH));
+    }
+
+    private EvaluationContext buildEvaluationContext(Method method, Object[] args, Object result) {
+        EvaluationContext context = new MethodBasedEvaluationContext(null, method, args, PARAMETER_NAME_DISCOVERER);
+        context.setVariable("result", result);
+        return context;
+    }
+
+    /**
+     * 解析 Spring EL 表达式；为空或解析失败时返回 null，不影响业务。
+     */
+    private String evaluate(String expression, EvaluationContext context) {
+        if (isBlank(expression)) {
             return null;
         }
-        return text.length() > MAX_RESULT_LENGTH ? text.substring(0, MAX_RESULT_LENGTH) + "..." : text;
+        try {
+            Expression parsed = EXPRESSION_PARSER.parseExpression(expression);
+            Object value = parsed.getValue(context);
+            return value == null ? null : String.valueOf(value);
+        } catch (Exception e) {
+            logger.debug("操作日志表达式解析失败: {}", expression, e);
+            return null;
+        }
+    }
+
+    private boolean isWriteRequest(HttpServletRequest request) {
+        if (request == null) {
+            return false;
+        }
+        String method = request.getMethod();
+        return !("GET".equalsIgnoreCase(method)
+                || "OPTIONS".equalsIgnoreCase(method)
+                || "HEAD".equalsIgnoreCase(method));
     }
 
     /**
-     * 无注解时按 HTTP 方法归类操作类型
+     * 未指定 module 时根据 Controller 名称推断，如 ProductController -> PRODUCT。
+     */
+    private String resolveModule(ProceedingJoinPoint joinPoint) {
+        String simpleName = joinPoint.getSignature().getDeclaringType().getSimpleName();
+        String module = simpleName.replace("Controller", "");
+        return module.isEmpty() ? "SYSTEM" : module.toUpperCase();
+    }
+
+    /**
+     * 未指定类型时按 HTTP 方法归类操作类型。
      */
     private String resolveOperationType(HttpServletRequest request) {
         if (request == null) {
-            return com.minecraft.enums.OperationType.OTHER.name();
+            return OperationType.OTHER.name();
         }
         return switch (request.getMethod().toUpperCase()) {
-            case "POST" -> com.minecraft.enums.OperationType.ADD.name();
-            case "PUT", "PATCH" -> com.minecraft.enums.OperationType.UPDATE.name();
-            case "DELETE" -> com.minecraft.enums.OperationType.DELETE.name();
-            default -> com.minecraft.enums.OperationType.OTHER.name();
+            case "POST" -> OperationType.ADD.name();
+            case "PUT", "PATCH" -> OperationType.UPDATE.name();
+            case "DELETE" -> OperationType.DELETE.name();
+            default -> OperationType.OTHER.name();
         };
     }
 
     private String getClientIp(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+        if (isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("X-Real-IP");
         }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+        if (isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+        if (isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
-        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+        if (isBlank(ip) || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-        // 多个代理的情况，取第一个IP
         if (ip != null && ip.contains(",")) {
             ip = ip.split(",")[0].trim();
         }
         return ip;
     }
 
-    /**
-     * 从 User-Agent 简单解析浏览器信息
-     */
     private String parseBrowser(String userAgent) {
-        if (userAgent == null || userAgent.isEmpty()) {
+        if (isBlank(userAgent)) {
             return "Unknown";
         }
         if (userAgent.contains("Edg/")) {
             return "Edge";
-        } else if (userAgent.contains("Chrome/") && !userAgent.contains("Edg/")) {
+        } else if (userAgent.contains("Chrome/")) {
             return "Chrome";
         } else if (userAgent.contains("Firefox/")) {
             return "Firefox";
@@ -224,11 +287,8 @@ public class LogAspect {
         return "Other";
     }
 
-    /**
-     * 从 User-Agent 简单解析操作系统信息
-     */
     private String parseOs(String userAgent) {
-        if (userAgent == null || userAgent.isEmpty()) {
+        if (isBlank(userAgent)) {
             return "Unknown";
         }
         if (userAgent.contains("Windows")) {
@@ -249,5 +309,20 @@ public class LogAspect {
         ServletRequestAttributes attributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         return attributes == null ? null : attributes.getRequest();
+    }
+
+    private String errorText(Throwable error) {
+        return Objects.requireNonNullElseGet(error.getMessage(), () -> error.getClass().getSimpleName());
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    private String truncate(String text, int maxLength) {
+        if (text == null) {
+            return null;
+        }
+        return text.length() > maxLength ? text.substring(0, maxLength) + "..." : text;
     }
 }

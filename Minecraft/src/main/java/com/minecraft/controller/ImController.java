@@ -75,7 +75,7 @@ public class ImController {
 
     @Operation(summary = "发送单聊消息（实体方式）")
     @PostMapping("/single/send")
-    public ApiResponse<ChatMessage> sendSingleMessage(@RequestBody SingleChatMessage dto) {
+    public ApiResponse<ChatMessage> sendSingleMessage(@Valid @RequestBody SingleChatMessage dto) {
         ChatMessage message = new ChatMessage();
         message.setSenderId(dto.getSenderId());
         message.setReceiverId(dto.getReceiverId());
@@ -101,7 +101,7 @@ public class ImController {
 
     @Operation(summary = "发送群聊消息（实体方式）")
     @PostMapping("/group/send")
-    public ApiResponse<Void> sendGroupMessage(@RequestBody GroupChatMessage dto) {
+    public ApiResponse<Void> sendGroupMessage(@Valid @RequestBody GroupChatMessage dto) {
         groupChatService.sendMessage(dto.getGroupId(), dto.getSenderId(), dto.getContent(), dto.getMessageType());
         return ApiResponse.success("消息发送成功", null);
     }

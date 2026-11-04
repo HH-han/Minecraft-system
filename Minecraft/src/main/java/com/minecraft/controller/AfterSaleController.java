@@ -60,7 +60,7 @@ public class AfterSaleController {
 
     @Operation(summary = "协商留言")
     @PostMapping("/{id}/message")
-    public ApiResponse<Void> message(@PathVariable Long id, @RequestBody AfterSaleMessageRequest request) {
+    public ApiResponse<Void> message(@PathVariable Long id, @Valid @RequestBody AfterSaleMessageRequest request) {
         afterSaleService.message(id, SecurityUtils.getCurrentUserId(), request);
         return ApiResponse.success("发送成功", null);
     }

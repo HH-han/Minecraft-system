@@ -45,9 +45,9 @@ public interface OperationLogService extends IService<OperationLog> {
     void saveOperationLog(OperationLog operationLog);
 
     /**
-     * 异步保存操作日志
+     * 以独立事务保存操作日志：业务事务回滚时，审计记录仍会保留
      */
-    void saveOperationLogAsync(OperationLog operationLog);
+    void saveLogInNewTransaction(OperationLog operationLog);
 
     /**
      * 删除操作日志

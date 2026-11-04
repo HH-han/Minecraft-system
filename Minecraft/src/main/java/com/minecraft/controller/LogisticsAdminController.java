@@ -97,7 +97,7 @@ public class LogisticsAdminController {
 
     @Operation(summary = "新增/编辑承运商")
     @PostMapping("/carrier")
-    public ApiResponse<LogisticsCarrier> saveCarrier(@RequestBody CarrierSaveRequest request) {
+    public ApiResponse<LogisticsCarrier> saveCarrier(@Valid @RequestBody CarrierSaveRequest request) {
         adminAuthorizationService.requireAdmin();
         LogisticsCarrier carrier = new LogisticsCarrier();
         carrier.setId(request.getId());
@@ -139,7 +139,7 @@ public class LogisticsAdminController {
 
     @Operation(summary = "新增/编辑运费模板")
     @PostMapping("/freight")
-    public ApiResponse<FreightTemplate> saveFreight(@RequestBody FreightSaveRequest request) {
+    public ApiResponse<FreightTemplate> saveFreight(@Valid @RequestBody FreightSaveRequest request) {
         adminAuthorizationService.requireAdmin();
         FreightTemplate template = new FreightTemplate();
         template.setId(request.getId());

@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.CollectionRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.service.CollectionService;
@@ -19,7 +21,7 @@ public class CollectionController {
 
     @Operation(summary ="收藏")
     @PostMapping("/add")
-    public ApiResponse<Void> collect(@RequestBody CollectionRequest collectionRequest) {
+    public ApiResponse<Void> collect(@Valid @RequestBody CollectionRequest collectionRequest) {
         Long userId = SecurityUtils.getCurrentUserId();
         collectionService.collect(collectionRequest, userId);
         return ApiResponse.success("收藏成功", null);
@@ -27,7 +29,7 @@ public class CollectionController {
 
     @Operation(summary ="取消收藏")
     @PostMapping("/cancel")
-    public ApiResponse<Void> uncollect(@RequestBody CollectionRequest collectionRequest) {
+    public ApiResponse<Void> uncollect(@Valid @RequestBody CollectionRequest collectionRequest) {
         Long userId = SecurityUtils.getCurrentUserId();
         collectionService.uncollect(collectionRequest, userId);
         return ApiResponse.success("取消收藏成功", null);

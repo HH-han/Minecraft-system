@@ -1,5 +1,6 @@
 package com.minecraft.controller;
 
+import com.minecraft.annotation.OperationLog;
 import com.minecraft.dto.request.MemberBenefitGrantDTO;
 import com.minecraft.dto.request.MemberGrowthAdjustDTO;
 import com.minecraft.dto.request.MemberLevelSetDTO;
@@ -10,6 +11,7 @@ import com.minecraft.entity.MemberBenefitRecord;
 import com.minecraft.entity.MemberLevel;
 import com.minecraft.entity.MemberPackage;
 import com.minecraft.entity.MemberSignRecord;
+import com.minecraft.enums.OperationType;
 import com.minecraft.recommendation.service.AdminAuthorizationService;
 import com.minecraft.service.MemberAdminService;
 import com.minecraft.vo.MemberGrowthRecordVO;
@@ -45,6 +47,8 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "新增会员等级")
+    @OperationLog(module = "MEMBER", action = "新增会员等级", type = OperationType.ADD,
+            detail = "'新增会员等级：' + #level.name")
     @PostMapping("/levels")
     public ApiResponse<MemberLevel> createLevel(@RequestBody MemberLevel level) {
         adminAuthorizationService.requireAdmin();
@@ -52,6 +56,8 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "更新会员等级")
+    @OperationLog(module = "MEMBER", action = "更新会员等级", type = OperationType.UPDATE,
+            bizId = "#id", detail = "'更新会员等级：' + #level.name")
     @PutMapping("/levels/{id}")
     public ApiResponse<MemberLevel> updateLevel(@PathVariable Long id, @RequestBody MemberLevel level) {
         adminAuthorizationService.requireAdmin();
@@ -59,6 +65,7 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "删除会员等级")
+    @OperationLog(module = "MEMBER", action = "删除会员等级", type = OperationType.DELETE, bizId = "#id")
     @DeleteMapping("/levels/{id}")
     public ApiResponse<Void> deleteLevel(@PathVariable Long id) {
         adminAuthorizationService.requireAdmin();
@@ -110,6 +117,8 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "会员订单退款")
+    @OperationLog(module = "MEMBER", action = "会员订单退款", type = OperationType.UPDATE,
+            bizId = "#id", detail = "'会员订单退款'")
     @PostMapping("/orders/{id}/refund")
     public ApiResponse<Void> refundOrder(@PathVariable Long id) {
         adminAuthorizationService.requireAdmin();
@@ -129,6 +138,9 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "调整会员成长值")
+    @OperationLog(module = "MEMBER", action = "调整会员成长值", type = OperationType.UPDATE,
+            bizId = "#userId",
+            detail = "'成长值调整：' + #dto.changeValue + (#dto.remark != null ? '，备注：' + #dto.remark : '')")
     @PostMapping("/users/{userId}/growth")
     public ApiResponse<Void> adjustGrowth(@PathVariable Long userId,
                                           @Valid @RequestBody MemberGrowthAdjustDTO dto) {
@@ -138,6 +150,8 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "设置会员等级")
+    @OperationLog(module = "MEMBER", action = "设置会员等级", type = OperationType.UPDATE,
+            bizId = "#userId", detail = "'会员等级设置为：' + #dto.levelId")
     @PostMapping("/users/{userId}/level")
     public ApiResponse<Void> setLevel(@PathVariable Long userId,
                                       @Valid @RequestBody MemberLevelSetDTO dto) {
@@ -147,6 +161,9 @@ public class MemberAdminController {
     }
 
     @Operation(summary = "发放会员权益")
+    @OperationLog(module = "MEMBER", action = "发放会员权益", type = OperationType.ADD,
+            bizId = "#userId",
+            detail = "'发放会员权益：' + #dto.benefitType + (#dto.content != null ? '，内容：' + #dto.content : '')")
     @PostMapping("/users/{userId}/benefit")
     public ApiResponse<MemberBenefitRecord> grantBenefit(@PathVariable Long userId,
                                                          @Valid @RequestBody MemberBenefitGrantDTO dto) {

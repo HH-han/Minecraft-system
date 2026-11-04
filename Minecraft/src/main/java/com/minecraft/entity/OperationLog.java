@@ -22,6 +22,12 @@ public class OperationLog {
 
     private String operationDesc;
 
+    /** 业务对象 ID，如订单号、商品 ID、会员 ID */
+    private String bizId;
+
+    /** 操作详情，记录“改了什么”，例如“价格从 99.00 修改为 89.00” */
+    private String detail;
+
     private String ipAddress;
 
     private String userAgent;

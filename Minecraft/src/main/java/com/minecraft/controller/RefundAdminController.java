@@ -1,8 +1,10 @@
 package com.minecraft.controller;
 
+import com.minecraft.annotation.OperationLog;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
+import com.minecraft.enums.OperationType;
 import com.minecraft.recommendation.service.AdminAuthorizationService;
 import com.minecraft.service.RefundService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +32,9 @@ public class RefundAdminController {
     }
 
     @Operation(summary = "模拟渠道回调（标记退款成功/失败）")
+    @OperationLog(module = "REFUND", action = "退款结果回调", type = OperationType.UPDATE,
+            bizId = "#id",
+            detail = "'退款结果：' + (#success ? '成功' : '失败') + (#failReason != null ? '，原因：' + #failReason : '')")
     @PostMapping("/{id}/notify")
     public ApiResponse<Void> notify(@PathVariable Long id,
                                     @RequestParam boolean success,

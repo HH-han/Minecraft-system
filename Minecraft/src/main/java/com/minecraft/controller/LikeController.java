@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.LikeRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.service.LikeService;
@@ -19,7 +21,7 @@ public class LikeController {
 
     @Operation(summary ="点赞")
     @PostMapping("/add")
-    public ApiResponse<Void> like(@RequestBody LikeRequest likeRequest) {
+    public ApiResponse<Void> like(@Valid @RequestBody LikeRequest likeRequest) {
         Long userId = SecurityUtils.getCurrentUserId();
         likeService.like(likeRequest, userId);
         return ApiResponse.success("点赞成功", null);
@@ -27,7 +29,7 @@ public class LikeController {
 
     @Operation(summary ="取消点赞")
     @PostMapping("/cancel")
-    public ApiResponse<Void> unlike(@RequestBody LikeRequest likeRequest) {
+    public ApiResponse<Void> unlike(@Valid @RequestBody LikeRequest likeRequest) {
         Long userId = SecurityUtils.getCurrentUserId();
         likeService.unlike(likeRequest, userId);
         return ApiResponse.success("取消点赞成功", null);

@@ -1,10 +1,12 @@
 package com.minecraft.controller;
 
+import com.minecraft.annotation.OperationLog;
 import com.minecraft.dto.request.AfterSaleAuditRequest;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.AfterSaleVO;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
+import com.minecraft.enums.OperationType;
 import com.minecraft.pay.entity.PayRefund;
 import com.minecraft.recommendation.service.AdminAuthorizationService;
 import com.minecraft.service.AfterSaleService;
@@ -43,6 +45,10 @@ public class AfterSaleAdminController {
     }
 
     @Operation(summary = "审核")
+    @OperationLog(module = "AFTER_SALE", action = "售后审核", type = OperationType.UPDATE,
+            bizId = "#id",
+            detail = "'审核结果：' + (#request.approved ? '通过' : '驳回')"
+                    + " + (#request.auditRemark != null ? '，备注：' + #request.auditRemark : '')")
     @PostMapping("/{id}/audit")
     public ApiResponse<Void> audit(@PathVariable Long id, @Valid @RequestBody AfterSaleAuditRequest request) {
         Long adminId = adminAuthorizationService.requireAdmin();
@@ -51,6 +57,7 @@ public class AfterSaleAdminController {
     }
 
     @Operation(summary = "确认收货")
+    @OperationLog(module = "AFTER_SALE", action = "确认收货", type = OperationType.UPDATE, bizId = "#id")
     @PostMapping("/{id}/receive")
     public ApiResponse<Void> receive(@PathVariable Long id) {
         Long adminId = adminAuthorizationService.requireAdmin();
@@ -59,6 +66,7 @@ public class AfterSaleAdminController {
     }
 
     @Operation(summary = "发起退款")
+    @OperationLog(module = "AFTER_SALE", action = "发起退款", type = OperationType.ADD, bizId = "#id")
     @PostMapping("/{id}/refund")
     public ApiResponse<PayRefund> refund(@PathVariable Long id) {
         Long adminId = adminAuthorizationService.requireAdmin();
@@ -66,6 +74,8 @@ public class AfterSaleAdminController {
     }
 
     @Operation(summary = "关闭售后")
+    @OperationLog(module = "AFTER_SALE", action = "关闭售后", type = OperationType.UPDATE,
+            bizId = "#id", detail = "(#reason != null ? '关闭原因：' + #reason : '关闭售后')")
     @PostMapping("/{id}/close")
     public ApiResponse<Void> close(@PathVariable Long id, @RequestParam(required = false) String reason) {
         Long adminId = adminAuthorizationService.requireAdmin();

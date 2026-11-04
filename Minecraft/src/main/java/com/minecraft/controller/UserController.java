@@ -1,9 +1,13 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.LoginRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.LoginResponse;
 import com.minecraft.entity.User;
+import com.minecraft.vo.UserVO;
+import org.springframework.beans.BeanUtils;
 import com.minecraft.entity.PointsRecord;
 import com.minecraft.mapper.PointsRecordMapper;
 import com.minecraft.service.LoginLogService;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "用户管理")
 @RestController
@@ -47,9 +52,9 @@ public class UserController {
 
     @Operation(summary ="获取用户信息")
     @GetMapping("/info")
-    public ApiResponse<User> getUserInfo() {
+    public ApiResponse<UserVO> getUserInfo() {
         Long userId = SecurityUtils.getCurrentUserId();
-        return ApiResponse.success(userService.getUserInfo(userId));
+        return ApiResponse.success(toUserVO(userService.getUserInfo(userId)));
     }
 
     @Operation(summary ="更新用户信息")
@@ -84,16 +89,29 @@ public class UserController {
 
     @Operation(summary ="获取所有用户")
     @GetMapping("/list")
-    public ApiResponse<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ApiResponse<List<UserVO>> getAllUsers() {
+        List<UserVO> users = userService.getAllUsers().stream()
+                .map(this::toUserVO)
+                .collect(Collectors.toList());
         return ApiResponse.success(users);
     }
 
     @Operation(summary ="根据账号获取用户信息")
     @GetMapping("/by-account")
-    public ApiResponse<User> getUserByAccount(@RequestParam String account) {
-        User user = userService.getUserByAccount(account);
-        return ApiResponse.success(user);
+    public ApiResponse<UserVO> getUserByAccount(@RequestParam String account) {
+        return ApiResponse.success(toUserVO(userService.getUserByAccount(account)));
+    }
+
+    /**
+     * 实体转脱敏 VO，避免密码等敏感字段返回前端
+     */
+    private UserVO toUserVO(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserVO vo = new UserVO();
+        BeanUtils.copyProperties(user, vo);
+        return vo;
     }
 
     @Operation(summary ="退出登录")
@@ -108,7 +126,7 @@ public class UserController {
 
     @Operation(summary ="管理员登录")
     @PostMapping("/admin/login")
-    public ApiResponse<LoginResponse> adminLogin(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+    public ApiResponse<LoginResponse> adminLogin(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         LoginResponse response = userService.adminLogin(request, httpRequest);
         return ApiResponse.success(response);
     }

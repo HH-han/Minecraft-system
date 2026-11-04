@@ -3176,6 +3176,8 @@ CREATE TABLE `operation_logs` (
   `username` varchar(64) DEFAULT NULL COMMENT '操作用户名',
   `operation_type` varchar(50) NOT NULL COMMENT '操作类型',
   `operation_desc` varchar(255) NOT NULL COMMENT '操作描述',
+  `biz_id` varchar(100) DEFAULT NULL COMMENT '业务对象ID（订单号/商品ID/会员ID等）',
+  `detail` text COMMENT '操作详情（变更前后对比）',
   `request_uri` varchar(200) DEFAULT NULL COMMENT '请求URI',
   `request_method` varchar(10) DEFAULT NULL COMMENT '请求方法：GET, POST, PUT, DELETE',
   `request_params` text COMMENT '请求参数',
@@ -3194,7 +3196,9 @@ CREATE TABLE `operation_logs` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_created_at` (`created_at`),
   KEY `idx_operation_type` (`operation_type`),
-  KEY `idx_username` (`username`)
+  KEY `idx_username` (`username`),
+  KEY `idx_module` (`module`),
+  KEY `idx_biz_id` (`biz_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=485 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='操作日志表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

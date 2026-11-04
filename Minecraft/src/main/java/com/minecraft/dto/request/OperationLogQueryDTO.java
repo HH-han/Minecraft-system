@@ -17,6 +17,10 @@ public class OperationLogQueryDTO {
 
     private String operationType;  // 操作类型
 
+    private String module;         // 业务模块
+
+    private String bizId;          // 业务对象 ID
+
     private Integer status;        // 操作状态：0-失败，1-成功
 
     private LocalDateTime startTime; // 开始时间

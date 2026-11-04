@@ -1,9 +1,11 @@
 package com.minecraft.controller;
 
+import com.minecraft.annotation.OperationLog;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.ApiResponse;
 import com.minecraft.dto.response.PageResponse;
 import com.minecraft.entity.Product;
+import com.minecraft.enums.OperationType;
 import com.minecraft.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,6 +58,8 @@ public class ProductController {
     }
 
     @Operation(summary ="添加商品")
+    @OperationLog(module = "PRODUCT", action = "新增商品", type = OperationType.ADD,
+            detail = "'新增商品：' + #product.name")
     @PostMapping("/add")
     public ApiResponse<Void> addProduct(@RequestBody Product product) {
         productService.addProduct(product);
@@ -63,6 +67,9 @@ public class ProductController {
     }
 
     @Operation(summary ="更新商品")
+    @OperationLog(module = "PRODUCT", action = "更新商品", type = OperationType.UPDATE,
+            bizId = "#product.id",
+            detail = "'更新商品：' + #product.name + '，价格：' + #product.price")
     @PutMapping("/update")
     public ApiResponse<Void> updateProduct(@RequestBody Product product) {
         productService.updateProduct(product);
@@ -70,6 +77,7 @@ public class ProductController {
     }
 
     @Operation(summary ="删除商品")
+    @OperationLog(module = "PRODUCT", action = "删除商品", type = OperationType.DELETE, bizId = "#id")
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);

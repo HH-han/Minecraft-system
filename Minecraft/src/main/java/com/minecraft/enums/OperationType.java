@@ -23,4 +23,26 @@ public enum OperationType {
     public String getDescription() {
         return description;
     }
+
+    /**
+     * 面向业务展示的操作类型名称。
+     */
+    public String label() {
+        return description;
+    }
+
+    /**
+     * 根据编码解析枚举，未知编码返回 null。
+     */
+    public static OperationType fromCode(String code) {
+        if (code == null) {
+            return null;
+        }
+        for (OperationType type : values()) {
+            if (type.name().equals(code)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }

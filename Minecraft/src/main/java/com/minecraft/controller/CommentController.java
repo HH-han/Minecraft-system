@@ -1,5 +1,7 @@
 package com.minecraft.controller;
 
+import jakarta.validation.Valid;
+
 import com.minecraft.dto.request.CommentRequest;
 import com.minecraft.dto.request.PageRequest;
 import com.minecraft.dto.response.ApiResponse;
@@ -24,7 +26,7 @@ public class CommentController {
 
     @Operation(summary ="添加评论")
     @PostMapping("/add")
-    public ApiResponse<Void> addComment(@RequestBody CommentRequest commentRequest) {
+    public ApiResponse<Void> addComment(@Valid @RequestBody CommentRequest commentRequest) {
         Long userId = SecurityUtils.getCurrentUserId();
         commentService.addComment(commentRequest, userId);
         return ApiResponse.success("评论成功", null);
