@@ -13,8 +13,9 @@ public class ExcelBizHandlerRegistry {
 
     private final Map<ExcelBizType, ExcelBizHandler<?>> handlers = new EnumMap<>(ExcelBizType.class);
 
-    public ExcelBizHandlerRegistry(List<ExcelBizHandler<?>> handlerList) {
-        for (ExcelBizHandler<?> handler : handlerList) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ExcelBizHandlerRegistry(List<ExcelBizHandler> handlerList) {
+        for (ExcelBizHandler handler : handlerList) {
             handlers.put(handler.bizType(), handler);
         }
     }
