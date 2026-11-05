@@ -28,6 +28,7 @@ import dayjs from 'dayjs';
 import type { ExcelBizTypeItem, ExcelTaskItem } from '#/api/management/excel';
 import {
   cancelExcelTask,
+  deleteExcelTask,
   downloadExcelErrorFile,
   downloadExcelTemplate,
   exportExcel,
@@ -59,6 +60,7 @@ const FALLBACK_BIZ_TYPES: ExcelBizTypeItem[] = [
   { code: 'countries', desc: '国家' },
   { code: 'continents', desc: '大洲' },
   { code: 'news', desc: '资讯' },
+  { code: 'user', desc: '用户' },
 ];
 
 const bizTypes = ref<ExcelBizTypeItem[]>([]);
@@ -494,6 +496,20 @@ async function handleCancelTask(taskNo: string) {
   }
 }
 
+async function handleDeleteTask(taskNo: string) {
+  if (!taskNo) return;
+  try {
+    await deleteExcelTask(taskNo);
+    message.success($t('excel.messages.deleteSuccess'));
+    if (currentTaskNo.value === taskNo) {
+      resetImport();
+    }
+    await loadTasks();
+  } catch {
+    // 请求层已统一提示错误
+  }
+}
+
 onMounted(async () => {
   await loadBizTypes();
   await loadTasks();
@@ -803,6 +819,18 @@ onBeforeUnmount(() => {
                 >
                   <Button danger size="small" type="link">
                     {{ $t('excel.task.cancel') }}
+                  </Button>
+                </Popconfirm>
+                <Popconfirm
+                  v-if="!isActive(record.status)"
+                  :cancel-text="$t('excel.task.continueText')"
+                  :description="$t('excel.task.confirmDeleteDesc')"
+                  :ok-text="$t('excel.task.deleteText')"
+                  :title="$t('excel.task.confirmDelete')"
+                  @confirm="handleDeleteTask(record.taskNo)"
+                >
+                  <Button danger size="small" type="link">
+                    {{ $t('excel.task.delete') }}
                   </Button>
                 </Popconfirm>
               </Space>

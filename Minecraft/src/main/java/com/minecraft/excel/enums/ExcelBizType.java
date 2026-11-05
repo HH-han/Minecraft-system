@@ -22,7 +22,8 @@ public enum ExcelBizType {
     SAFETY_TIPS("safety_tips", "安全提示"),
     COUNTRIES("countries", "国家"),
     CONTINENTS("continents", "大洲"),
-    NEWS("news", "资讯");
+    NEWS("news", "资讯"),
+    USER("user", "用户");
 
     private final String code;
     private final String desc;

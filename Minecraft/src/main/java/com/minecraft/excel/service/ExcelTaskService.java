@@ -35,6 +35,8 @@ public interface ExcelTaskService {
 
     void cancel(String taskNo);
 
+    void deleteTask(String taskNo);
+
     String writeErrorFile(String taskNo);
 
     Path resolveErrorFile(String taskNo);

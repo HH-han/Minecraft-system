@@ -20,7 +20,8 @@
     "safety_tips": "Safety Tips",
     "countries": "Countries",
     "continents": "Continents",
-    "news": "News"
+    "news": "News",
+    "user": "User"
   },
   "strategyOptions": {
     "skip": "Skip",
@@ -66,7 +67,11 @@
     "confirmCancel": "Cancel this task?",
     "confirmCancelDesc": "Unprocessed data will no longer be imported after cancellation",
     "cancelText": "Confirm",
-    "continueText": "Keep"
+    "continueText": "Keep",
+    "delete": "Delete",
+    "confirmDelete": "Delete this task?",
+    "confirmDeleteDesc": "Task details and error files will also be removed",
+    "deleteText": "Confirm"
   },
   "status": {
     "pending": "Pending",
@@ -86,6 +91,7 @@
     "downloadFailed": "Download failed",
     "noErrorFile": "No error details available for this task",
     "cancelSubmitted": "Cancel request submitted",
+    "deleteSuccess": "Task deleted",
     "loadFailed": "Failed to load task list",
     "selectFile": "Please select an Excel file to import",
     "invalidFileType": "Only .xls / .xlsx files are supported",

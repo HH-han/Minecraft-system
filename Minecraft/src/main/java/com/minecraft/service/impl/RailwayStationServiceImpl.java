@@ -1,6 +1,7 @@
 package com.minecraft.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minecraft.entity.RailwayStation;
 import com.minecraft.exception.BusinessException;
 import com.minecraft.mapper.RailwayStationMapper;
@@ -11,7 +12,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 @Service
-public class RailwayStationServiceImpl implements RailwayStationService {
+public class RailwayStationServiceImpl extends ServiceImpl<RailwayStationMapper, RailwayStation> implements RailwayStationService {
 
     private final RailwayStationMapper stationMapper;
 

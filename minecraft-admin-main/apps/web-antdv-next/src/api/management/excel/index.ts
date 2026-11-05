@@ -101,6 +101,11 @@ export function cancelExcelTask(taskNo: string) {
   return requestClient.post(`${BASE}/task/${taskNo}/cancel`);
 }
 
+/** 删除已结束的任务 */
+export function deleteExcelTask(taskNo: string) {
+  return requestClient.delete(`${BASE}/task/${taskNo}`);
+}
+
 /** 下载导入模板（Blob） */
 export function downloadExcelTemplate(bizType: string) {
   return requestClient.download<Blob>(`${BASE}/template/${bizType}`, {

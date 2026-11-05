@@ -20,7 +20,8 @@
     "safety_tips": "安全提示",
     "countries": "国家",
     "continents": "大洲",
-    "news": "资讯"
+    "news": "资讯",
+    "user": "用户"
   },
   "strategyOptions": {
     "skip": "跳过",
@@ -66,7 +67,11 @@
     "confirmCancel": "确认取消该任务？",
     "confirmCancelDesc": "取消后未处理的数据将不再导入",
     "cancelText": "确认取消",
-    "continueText": "继续"
+    "continueText": "继续",
+    "delete": "删除",
+    "confirmDelete": "确认删除该任务？",
+    "confirmDeleteDesc": "删除后将同时清除任务明细与失败文件",
+    "deleteText": "确认删除"
   },
   "status": {
     "pending": "待处理",
@@ -86,6 +91,7 @@
     "downloadFailed": "下载失败",
     "noErrorFile": "该任务没有可下载的失败明细",
     "cancelSubmitted": "取消请求已提交",
+    "deleteSuccess": "任务已删除",
     "loadFailed": "任务列表加载失败",
     "selectFile": "请先选择要导入的 Excel 文件",
     "invalidFileType": "仅支持 .xls / .xlsx 格式的文件",

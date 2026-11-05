@@ -204,6 +204,27 @@ public class ExcelTaskServiceImpl implements ExcelTaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public void deleteTask(String taskNo) {
+        ExcelTask task = getByTaskNo(taskNo);
+        if (task.getStatus() != null && task.getStatus() < ExcelTaskStatus.SUCCESS.getCode()) {
+            throw new BusinessException("任务进行中，请先取消后再删除");
+        }
+        if (!isBlank(task.getErrorFile())) {
+            try {
+                Files.deleteIfExists(Paths.get(task.getErrorFile()));
+            } catch (IOException e) {
+                log.warn("删除失败明细文件失败 taskNo={} path={}", taskNo, task.getErrorFile(), e);
+            }
+        }
+        detailMapper.delete(new LambdaQueryWrapper<ExcelTaskDetail>()
+                .eq(ExcelTaskDetail::getTaskNo, taskNo));
+        taskMapper.deleteById(task.getId());
+        redisTemplate.delete(PROGRESS_KEY + taskNo);
+        redisTemplate.delete(CANCEL_KEY + taskNo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public String writeErrorFile(String taskNo) {
         List<ExcelTaskDetail> details = detailMapper.selectList(new LambdaQueryWrapper<ExcelTaskDetail>()
                 .eq(ExcelTaskDetail::getTaskNo, taskNo)

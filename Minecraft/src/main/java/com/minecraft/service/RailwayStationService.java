@@ -1,10 +1,11 @@
 package com.minecraft.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.minecraft.entity.RailwayStation;
 
 import java.util.List;
 
-public interface RailwayStationService {
+public interface RailwayStationService extends IService<RailwayStation> {
 
     List<RailwayStation> search(String keyword);
 

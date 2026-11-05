@@ -20,6 +20,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -136,6 +137,16 @@ public class ExcelController {
     @OperationLog(module = "EXCEL", action = "取消Excel任务")
     public ApiResponse<Void> cancel(@PathVariable String taskNo) {
         taskService.cancel(taskNo);
+        return ApiResponse.success(null);
+    }
+
+    /**
+     * 删除已结束的任务（含明细与失败文件）。
+     */
+    @DeleteMapping("/task/{taskNo}")
+    @OperationLog(module = "EXCEL", action = "删除Excel任务")
+    public ApiResponse<Void> deleteTask(@PathVariable String taskNo) {
+        taskService.deleteTask(taskNo);
         return ApiResponse.success(null);
     }
 
