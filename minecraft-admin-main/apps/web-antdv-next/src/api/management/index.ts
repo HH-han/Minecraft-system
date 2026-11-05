@@ -1,4 +1,5 @@
 export * from './content';
+export * from './excel';
 export * from './im';
 export * from './logistics';
 export * from './service';

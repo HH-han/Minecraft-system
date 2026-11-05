@@ -14,7 +14,15 @@ public enum ExcelBizType {
     PRODUCT("product", "商品"),
     TICKET("ticket", "票务"),
     CITY("city", "城市"),
-    POINTS_PRODUCT("points_product", "积分商品");
+    POINTS_PRODUCT("points_product", "积分商品"),
+    ANNOUNCEMENT("announcement", "公告"),
+    CAROUSEL("carousel", "轮播图"),
+    RAILWAY_STATION("railway_station", "火车站点"),
+    TAGS("tags", "标签"),
+    SAFETY_TIPS("safety_tips", "安全提示"),
+    COUNTRIES("countries", "国家"),
+    CONTINENTS("continents", "大洲"),
+    NEWS("news", "资讯");
 
     private final String code;
     private final String desc;
