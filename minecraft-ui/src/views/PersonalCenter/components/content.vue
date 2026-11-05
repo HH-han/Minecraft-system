@@ -676,13 +676,25 @@ const goToMyReport = () => {
   router.push('/myreport');
 };
 
+// 跳转到支付中心
+const goToPayment = () => {
+  router.push('/payment');
+};
+
+// 跳转到账户设置
+const goToAccountSettings = () => {
+  router.push('/accountsettings');
+};
+
 // 快捷入口
-const quickEntries = [
-  { title: '积分商城', desc: '用积分兑换心仪好物', icon: 'fas fa-gift', action: goToPoints },
-  { title: '物流详情', desc: '查看订单配送进度', icon: 'fas fa-truck', action: goToLogistics },
-  { title: '售后服务', desc: '退换维修一站处理', icon: 'fas fa-headset', action: goToAfterSale },
-  { title: '我的举报', desc: '查看举报记录与进度', icon: 'fas fa-flag', action: goToMyReport }
-];
+const quickEntries = computed(() => [
+  { title: t('personalCenter.entries.points.title'), desc: t('personalCenter.entries.points.desc'), icon: 'fas fa-gift', action: goToPoints },
+  { title: t('personalCenter.entries.logistics.title'), desc: t('personalCenter.entries.logistics.desc'), icon: 'fas fa-truck', action: goToLogistics },
+  { title: t('personalCenter.entries.afterSale.title'), desc: t('personalCenter.entries.afterSale.desc'), icon: 'fas fa-headset', action: goToAfterSale },
+  { title: t('personalCenter.entries.myReport.title'), desc: t('personalCenter.entries.myReport.desc'), icon: 'fas fa-flag', action: goToMyReport },
+  { title: t('personalCenter.entries.payment.title'), desc: t('personalCenter.entries.payment.desc'), icon: 'fas fa-wallet', action: goToPayment },
+  { title: t('personalCenter.entries.accountSettings.title'), desc: t('personalCenter.entries.accountSettings.desc'), icon: 'fas fa-sliders-h', action: goToAccountSettings }
+]);
 
 // 处理头像上传
 const handleAvatarUpload = async (event) => {

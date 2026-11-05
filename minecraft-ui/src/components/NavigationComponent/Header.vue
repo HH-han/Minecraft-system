@@ -251,24 +251,6 @@ const userMenuItems = computed(() => [
     show: true
   },
   {
-    label: t('header.userMenu.payment'),
-    path: '/payment',
-    style: 'border-radius: 0 0 10px 10px;',
-    show: true
-  },
-  {
-    label: t('header.userMenu.member'),
-    path: '/member',
-    style: 'border-radius: 0 0 10px 10px;',
-    show: true
-  },
-  {
-    label: t('header.userMenu.account'),
-    path: '/accountsettings',
-    style: 'border-radius: 0 0 10px 10px;',
-    show: true
-  },
-  {
     label: t('header.userMenu.chat'),
     path: '/chat',
     show: true,

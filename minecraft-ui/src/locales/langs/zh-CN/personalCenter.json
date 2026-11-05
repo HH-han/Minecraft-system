@@ -1,0 +1,30 @@
+{
+  "personalCenter": {
+    "entries": {
+      "points": {
+        "title": "积分商城",
+        "desc": "用积分兑换心仪好物"
+      },
+      "logistics": {
+        "title": "物流详情",
+        "desc": "查看订单配送进度"
+      },
+      "afterSale": {
+        "title": "售后服务",
+        "desc": "退换维修一站处理"
+      },
+      "myReport": {
+        "title": "我的举报",
+        "desc": "查看举报记录与进度"
+      },
+      "payment": {
+        "title": "支付中心",
+        "desc": "查看订单与支付记录"
+      },
+      "accountSettings": {
+        "title": "账户设置",
+        "desc": "管理账号资料与密码"
+      }
+    }
+  }
+}

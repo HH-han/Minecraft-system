@@ -1,0 +1,30 @@
+{
+  "personalCenter": {
+    "entries": {
+      "points": {
+        "title": "Points Mall",
+        "desc": "Redeem points for gifts"
+      },
+      "logistics": {
+        "title": "Logistics",
+        "desc": "Track order delivery progress"
+      },
+      "afterSale": {
+        "title": "After-Sales Service",
+        "desc": "Returns, exchanges and repairs"
+      },
+      "myReport": {
+        "title": "My Reports",
+        "desc": "View reports and their progress"
+      },
+      "payment": {
+        "title": "Payment Center",
+        "desc": "View orders and payment records"
+      },
+      "accountSettings": {
+        "title": "Account Settings",
+        "desc": "Manage your profile and password"
+      }
+    }
+  }
+}
