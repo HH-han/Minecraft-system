@@ -136,18 +136,19 @@ const OrderDetails = (productId) => {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
     gap: 2rem;
-    justify-items: center;
+    justify-items: stretch;
     animation: fadeInUp 1s ease-out;
 }
 
 /* 卡片容器 */
 .card-souvenir {
     height: 380px;
+    width: 100%;
+    min-width: 0;
     background: var(--theme-bg-surface);
     box-shadow: var(--theme-shadow-md);
     display: flex;
     border-radius: 16px;
-    margin: 2rem auto;
     overflow: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -198,6 +199,7 @@ const OrderDetails = (productId) => {
 /* 内容区域 */
 .content {
     flex: 1;
+    min-width: 0;
     padding: 2rem;
     display: flex;
     flex-direction: column;
@@ -286,5 +288,118 @@ const OrderDetails = (productId) => {
     padding: 40px;
     color: var(--theme-text-2);
     grid-column: 1 / -1;
+}
+
+/* ========== 响应式 ========== */
+/* 平板：卡片高度与字号收紧 */
+@media (max-width: 992px) {
+    .card-container {
+        padding: 1.5rem;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    }
+
+    .card-souvenir {
+        height: 320px;
+    }
+
+    .content {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.45rem;
+        margin-bottom: 1rem;
+    }
+
+    .description {
+        font-size: 0.95rem;
+        line-height: 1.65;
+        margin-bottom: 1rem;
+    }
+}
+
+/* 移动端：单列 + 上下结构卡片 */
+@media (max-width: 768px) {
+    .card-container {
+        padding: 1rem;
+        gap: 1rem;
+        grid-template-columns: 1fr;
+    }
+
+    .card-souvenir {
+        height: auto;
+        flex-direction: column;
+        border-radius: 14px;
+    }
+
+    .card-image-wrapper {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 200px;
+    }
+
+    .image-main {
+        border-radius: 14px 14px 0 0;
+    }
+
+    .content {
+        flex: 0 0 auto;
+        padding: 1rem 1.15rem 1.15rem;
+        justify-content: flex-start;
+    }
+
+    .title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 1.2rem;
+        line-height: 1.35;
+        margin-bottom: 0.85rem;
+        letter-spacing: 0.2px;
+    }
+
+    .title::after {
+        bottom: -6px;
+        width: 36px;
+        height: 2px;
+    }
+
+    .description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 0.85rem;
+    }
+
+    .card-price {
+        font-size: 1.1em;
+    }
+
+    .loading,
+    .error-state,
+    .empty-state {
+        padding: 28px 16px;
+    }
+}
+
+/* 小屏手机：进一步压缩图片高度 */
+@media (max-width: 420px) {
+    .card-container {
+        padding: 0.75rem;
+        gap: 0.85rem;
+    }
+
+    .card-image-wrapper {
+        height: 170px;
+    }
+
+    .title {
+        font-size: 1.1rem;
+    }
 }
 </style>

@@ -290,6 +290,8 @@ onMounted(loadRecommendations)
     flex-direction: row;
     flex-wrap: wrap;
     gap: 12px;
+    max-width: 100%;
+    box-sizing: border-box;
     background: var(--theme-bg-surface);
     padding: 18px;
     border-radius: 12px;
@@ -298,6 +300,8 @@ onMounted(loadRecommendations)
 }
 
 .search-bar input {
+    box-sizing: border-box;
+    min-width: 0;
     padding: 12px 16px;
     border: 1px solid var(--theme-border);
     border-radius: 8px;
@@ -574,28 +578,165 @@ onMounted(loadRecommendations)
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    /* 搜索栏改为纵向排列，日期选择组件与输入框同宽 */
+    .recommendation {
+        padding: 0 10px;
+    }
+
+    /* 头部高度自适应，避免搜索栏被固定高度裁切 */
+    .header {
+        height: auto;
+        margin: 12px 0 16px;
+        padding: 20px 12px 16px;
+        justify-content: flex-start;
+    }
+
+    .bg {
+        inset: 5px;
+        width: auto;
+        height: auto;
+    }
+
+    .header-content {
+        width: 100%;
+    }
+
+    .recommendation h1 {
+        font-size: 1.35rem;
+        margin-bottom: 0.85rem;
+    }
+
+    /* 搜索栏两列布局：目的地占满一行，日期与人数/搜索各占两列 */
     .search-bar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+        width: 100%;
+        margin: 0;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .search-bar > * {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .search-bar > :first-child {
+        grid-column: 1 / -1;
+    }
+
+    .search-bar input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .search-bar button {
+        padding: 0 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    /* 特色推荐卡片：横向三列紧凑排列 */
+    .features {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .feature {
+        padding: 10px 8px;
+        border-radius: 12px;
+        display: flex;
         flex-direction: column;
     }
 
-    .features {
-        grid-template-columns: 1fr;
+    .feature-icon {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 6px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+
+    .feature h2 {
+        font-size: 13px;
+        margin-bottom: 2px;
+        line-height: 1.3;
+    }
+
+    .feature p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 11px;
+        line-height: 1.35;
+        color: var(--theme-text-3);
+    }
+
+    /* 类型切换与列表收紧 */
+    .types h2 {
+        font-size: 1.4rem;
     }
 
     .section-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
     }
 
     .type-tabs {
         width: 100%;
         overflow-x: auto;
+        flex-wrap: nowrap;
         padding-bottom: 8px;
     }
 
-    .recommendation h1 {
-        font-size: 1.8rem;
+    .type-tabs button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .image {
+        height: 170px;
+    }
+
+    .info {
+        padding: 12px 14px;
+    }
+
+    .info h3 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .location {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+
+    .tags {
+        margin-bottom: 10px;
+    }
+
+    .price,
+    .free {
+        font-size: 0.95rem;
+    }
+
+    .rating {
+        font-size: 0.85rem;
+    }
+
+    .empty-tip {
+        padding: 32px 0;
+        font-size: 0.9rem;
     }
 }
 </style>

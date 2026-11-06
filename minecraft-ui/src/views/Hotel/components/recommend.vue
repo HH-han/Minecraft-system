@@ -293,6 +293,8 @@ onMounted(loadRecommendations)
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
     background: var(--theme-bg-surface);
     padding: 1.5rem;
     margin: 1rem;
@@ -301,6 +303,8 @@ onMounted(loadRecommendations)
 }
 
 .search-bar input {
+    box-sizing: border-box;
+    min-width: 0;
     padding: 0.8rem 1.2rem;
     border: 1px solid var(--theme-border);
     border-radius: 8px;
@@ -593,31 +597,150 @@ onMounted(loadRecommendations)
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .search-bar {
-        flex-direction: column;
+    .booking {
+        padding: 0 10px;
     }
 
-    .search-bar button {
-        grid-column: auto;
+    /* 头部高度自适应，避免搜索栏被固定高度裁切 */
+    .header {
+        height: auto;
+        margin: 12px 0 16px;
+        padding: 20px 12px 16px;
+        justify-content: flex-start;
+    }
+
+    .bg {
+        inset: 5px;
+        width: auto;
+        height: auto;
+    }
+
+    .header-content {
+        width: 100%;
     }
 
     header h1 {
-        font-size: 2rem;
+        font-size: 1.35rem;
+        margin-bottom: 0.85rem;
     }
 
+    /* 搜索栏两列布局：目的地占满一行，日期与人数/搜索各占两列 */
+    .search-bar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+        width: 100%;
+        margin: 0;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .search-bar > * {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .search-bar > :first-child {
+        grid-column: 1 / -1;
+    }
+
+    .search-bar input {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.9rem;
+    }
+
+    .search-bar button {
+        padding: 0 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    /* 特色服务卡片：横向三列紧凑排列 */
     .features {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .feature {
+        padding: 10px 8px;
+        border-radius: 12px;
+    }
+
+    .feature h2 {
+        font-size: 13px;
+        margin-bottom: 2px;
+        line-height: 1.3;
+    }
+
+    .feature p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 11px;
+        line-height: 1.35;
+        color: var(--theme-text-3);
+    }
+
+    /* 列表与卡片收紧 */
+    .themed-hotels {
+        margin-top: 24px;
+    }
+
+    .themed-hotels h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
     }
 
     .section-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
     }
 
     .theme-tabs {
         width: 100%;
         overflow-x: auto;
+        flex-wrap: nowrap;
         padding-bottom: 0.5rem;
+    }
+
+    .theme-tabs button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .item-list {
+        padding: 8px;
+    }
+
+    .item-list img {
+        height: 170px;
+    }
+
+    .item-list h3 {
+        padding: 0.75rem 0.35rem 0.2rem;
+        font-size: 1rem;
+    }
+
+    .item-list .location {
+        padding: 0 0.35rem;
+        font-size: 0.85rem;
+    }
+
+    .facilities {
+        padding: 0.4rem 0.35rem 0.6rem;
+    }
+
+    .item-list .meta {
+        padding: 0 0.35rem 0.6rem;
     }
 }
 </style>
