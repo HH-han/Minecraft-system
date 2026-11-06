@@ -11,6 +11,17 @@
       "require": "./index.js"
     }
   },
+  "files": [
+    "bin",
+    "lib",
+    "src",
+    "templates",
+    "index.js",
+    "index.mjs",
+    "index.d.ts",
+    "binding.gyp",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "node-gyp rebuild",
     "install": "node-gyp rebuild",

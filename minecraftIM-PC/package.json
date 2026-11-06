@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
-    "adrenaline-js": "file:vendor/adrenaline-js",
+    "adrenaline-js": "file:vendor/adrenaline-js-0.2.0-patched.tgz",
     "element-plus": "^2.13.2",
     "pinia": "^3.0.4",
     "vue": "^3.5.25",
