@@ -1416,6 +1416,11 @@ watch(selectedContact, () => {
     width: 56px;
   }
 
+  /* 服务页下侧栏收窄至导航竖栏宽度 */
+  .im-container.services-open :deep(.im-sidebar) {
+    width: 56px;
+  }
+
   .im-container :deep(.contact-detail),
   .im-container :deep(.contact-detail-empty) {
     width: 280px;
@@ -1441,6 +1446,11 @@ watch(selectedContact, () => {
 
   /* 打开收藏时隐藏侧栏，收藏页全屏 */
   .im-container.favorites-open :deep(.im-sidebar) {
+    display: none;
+  }
+
+  /* 打开服务页时隐藏侧栏，服务页全屏 */
+  .im-container.services-open :deep(.im-sidebar) {
     display: none;
   }
 
