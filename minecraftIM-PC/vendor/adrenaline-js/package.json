@@ -1,0 +1,28 @@
+{
+  "name": "adrenaline-js",
+  "version": "0.2.0",
+  "description": "Desktop app framework using Node.js and webview.h",
+  "main": "index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  },
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "install": "node-gyp rebuild",
+    "test": "node test/test.js && node test/test_loadfile.js && node test/test_features.js && node test/test_dialog.js && node test/test_cef_architecture.js"
+  },
+  "dependencies": {
+    "node-addon-api": "^8.0.0"
+  },
+  "devDependencies": {
+    "node-gyp": "^10.0.0"
+  },
+  "bin": {
+    "adrenaline": "./bin/cli.js"
+  }
+}

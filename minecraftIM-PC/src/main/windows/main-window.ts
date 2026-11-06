@@ -22,8 +22,7 @@ export function openMainWindow(): BrowserWindow {
     minWidth: 960,
     minHeight: 640,
     title: APP_DISPLAY_NAME,
-    resizable: true,
-    lowEndDeviceMode: false
+    resizable: true
   });
 
   const rendererUrl = process.env.ADREN_RENDERER_URL;

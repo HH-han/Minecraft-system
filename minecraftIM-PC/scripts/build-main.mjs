@@ -1,5 +1,5 @@
 import { build } from 'esbuild';
-import { rm } from 'node:fs/promises';
+import { copyFile, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
@@ -19,6 +19,16 @@ await build({
   external: ['adrenaline-js'],
   sourcemap: false,
   logLevel: 'info'
+});
+
+// WebView2 Loader DLL 需要与主进程产物一起分发
+const nativeDir = resolve(projectRoot, 'dist/main/native');
+await mkdir(nativeDir, { recursive: true });
+await copyFile(
+  resolve(projectRoot, 'vendor/native/WebView2Loader.dll'),
+  resolve(nativeDir, 'WebView2Loader.dll')
+).catch(() => {
+  console.warn('[build-main] WebView2Loader.dll 未找到，跳过复制');
 });
 
 console.log(`[build-main] -> ${outfile}`);
