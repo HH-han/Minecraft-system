@@ -4,7 +4,7 @@ import { paths } from './config';
 
 type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
-const logFile = path.join(paths.logsDir, 'app.log');
+const logFile = (): string => path.join(paths.logsDir, 'app.log');
 
 function write(level: LogLevel, message: string, meta?: unknown): void {
   const line = `${new Date().toISOString()} [${level.toUpperCase()}] ${message}${
@@ -16,7 +16,7 @@ function write(level: LogLevel, message: string, meta?: unknown): void {
 
   try {
     fs.mkdirSync(paths.logsDir, { recursive: true });
-    fs.appendFileSync(logFile, line, 'utf8');
+    fs.appendFileSync(logFile(), line, 'utf8');
   } catch {
     // 日志落盘失败不应影响主流程
   }

@@ -27,12 +27,21 @@ export const useAppStore = defineStore('app', () => {
     await invoke(IPC_CHANNELS.appQuit);
   }
 
+  /** 弹出目录选择框并切换数据 / 日志目录；取消返回 false */
+  async function changeStorageDir(kind: 'data' | 'logs', title?: string): Promise<boolean> {
+    const next = await invoke(IPC_CHANNELS.appSetStorageDir, { kind, title });
+    if (!next) return false;
+    info.value = next;
+    return true;
+  }
+
   return {
     info,
     loading,
     error,
     isDesktop,
     loadAppInfo,
-    quit
+    quit,
+    changeStorageDir
   };
 });

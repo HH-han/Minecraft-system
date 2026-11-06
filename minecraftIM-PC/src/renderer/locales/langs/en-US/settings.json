@@ -2,6 +2,42 @@
   "settings": {
     "title": "Settings",
     "description": "Theme and language preferences are stored locally and restored on restart.",
+    "sections": {
+      "account": "Account & storage",
+      "general": "General",
+      "shortcuts": "Shortcuts",
+      "notifications": "Notifications",
+      "plugins": "Plugins",
+      "about": "About"
+    },
+    "account": {
+      "autoStart": "Launch at login"
+    },
+    "general": {
+      "title": "General preferences",
+      "compact": "Compact list mode",
+      "enterToSend": "Send with Enter"
+    },
+    "shortcuts": {
+      "send": "Send message",
+      "newline": "New line",
+      "search": "Search chats",
+      "settings": "Open settings",
+      "closePanel": "Close detail panel"
+    },
+    "notifications": {
+      "message": "Message notifications",
+      "sound": "Notification sound",
+      "detail": "Show message preview"
+    },
+    "plugins": {
+      "items": {
+        "cloudName": "Cloud sync",
+        "cloudDesc": "Sync favorites and drafts across devices",
+        "translateName": "Message translation",
+        "translateDesc": "Automatically translate incoming messages"
+      }
+    },
     "theme": {
       "title": "Theme",
       "description": "Switching updates the global CSS tokens and Element Plus dark mode.",
@@ -16,14 +52,21 @@
     "storage": {
       "title": "Local storage",
       "dataDir": "Data directory",
-      "logDir": "Log directory"
+      "logDir": "Log directory",
+      "change": "Change",
+      "changed": "Directory updated",
+      "changeFailed": "Failed to change directory",
+      "pickData": "Select data directory",
+      "pickLogs": "Select log directory"
     },
     "about": {
       "title": "About",
       "framework": "Desktop framework",
       "frameworkValue": "Adrenaline.js",
       "renderer": "Renderer",
-      "rendererValue": "Vue 3 + Vite"
+      "rendererValue": "Vue 3 + Vite",
+      "version": "Version",
+      "platform": "Platform"
     },
     "actions": {
       "quit": "Quit app"

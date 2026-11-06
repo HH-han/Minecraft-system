@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus';
 import { Search } from '@element-plus/icons-vue';
 import { sendFriendRequest } from '@/api/chat';
 import { getUserByAccount } from '@/api/user';
+import { resolveMediaUrl } from '@/config';
 import { useAuthStore } from '@/stores/auth';
 import type { UserInfo } from '@/types/im';
 
@@ -118,7 +119,11 @@ async function submit(): Promise<void> {
 
       <div v-if="found" class="user-card">
         <span class="avatar">
-          <img v-if="found.avatar" :src="found.avatar" :alt="foundName" />
+          <img
+            v-if="resolveMediaUrl(found.avatar)"
+            :src="resolveMediaUrl(found.avatar)"
+            :alt="foundName"
+          />
           <template v-else>{{ (foundName || '?')[0] }}</template>
         </span>
         <span class="user-meta">

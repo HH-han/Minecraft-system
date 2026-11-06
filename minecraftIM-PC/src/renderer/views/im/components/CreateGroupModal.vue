@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
-import { createGroupWithMembers } from '@/api/chat';
+import { resolveMediaUrl } from '@/config';
 import { useAuthStore } from '@/stores/auth';
 import { useChatStore } from '@/stores/chat';
 import type { FriendInfo } from '@/types/im';
@@ -30,11 +30,11 @@ const visible = computed({
 });
 
 function friendId(friend: FriendInfo): number {
-  return Number(friend.friendId ?? friend.userId);
+  return Number(friend.friendId);
 }
 
 function friendName(friend: FriendInfo): string {
-  return String(friend.remark || friend.nickname || friend.username || '');
+  return String(friend.remark || friend.username || '');
 }
 
 const canSubmit = computed(
@@ -56,7 +56,7 @@ async function submit(): Promise<void> {
   if (!creatorId || !canSubmit.value) return;
   creating.value = true;
   try {
-    await createGroupWithMembers({
+    await chatStore.createGroup({
       name: name.value.trim(),
       creatorId,
       memberIds: memberIds.value
@@ -103,7 +103,11 @@ async function submit(): Promise<void> {
           >
             <span class="member-row">
               <span class="avatar">
-                <img v-if="friend.avatar" :src="friend.avatar" :alt="friendName(friend)" />
+                <img
+                  v-if="resolveMediaUrl(friend.avatar)"
+                  :src="resolveMediaUrl(friend.avatar)"
+                  :alt="friendName(friend)"
+                />
                 <template v-else>{{ (friendName(friend) || '?')[0] }}</template>
               </span>
               <span class="member-name">{{ friendName(friend) }}</span>

@@ -35,6 +35,14 @@ export interface SelectFileResponse {
   filePaths: string[];
 }
 
+export type StorageDirKind = 'data' | 'logs';
+
+export interface SetStorageDirRequest {
+  kind: StorageDirKind;
+  /** 目录选择弹窗标题（由渲染层传入，便于国际化） */
+  title?: string;
+}
+
 /**
  * IPC 调用契约：新增通道时先在此登记请求 / 响应类型，
  * 渲染进程的 bridge 与主进程 handler 会自动获得类型约束。
@@ -42,6 +50,10 @@ export interface SelectFileResponse {
 export interface IpcInvokeMap {
   [IPC_CHANNELS.appGetInfo]: { request: undefined; response: AppInfo };
   [IPC_CHANNELS.appQuit]: { request: undefined; response: void };
+  [IPC_CHANNELS.appSetStorageDir]: {
+    request: SetStorageDirRequest;
+    response: AppInfo | null;
+  };
   [IPC_CHANNELS.dataGet]: { request: DataGetRequest; response: unknown };
   [IPC_CHANNELS.dataSet]: { request: DataSetRequest; response: void };
   [IPC_CHANNELS.fileSelect]: { request: SelectFileRequest | undefined; response: SelectFileResponse };

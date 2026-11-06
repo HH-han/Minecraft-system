@@ -40,6 +40,8 @@ async function mockInvoke(channel: IpcInvokeChannel, payload: unknown): Promise<
       return MOCK_APP_INFO;
     case IPC_CHANNELS.appQuit:
       return undefined;
+    case IPC_CHANNELS.appSetStorageDir:
+      return null;
     case IPC_CHANNELS.dataGet: {
       const { key } = payload as { key: string };
       const raw = localStorage.getItem(`mock-data:${key}`);

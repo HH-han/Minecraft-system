@@ -461,14 +461,15 @@ function comingSoon(): void {
 }
 
 .chat-date {
-  align-self: center;
+  display: block;
+  width: 100%;
   margin: 14px 0 10px;
-  padding: 3px 10px;
-  border-radius: 99px;
+  padding: 0;
+  background: none;
+  border: none;
+  text-align: center;
   font-size: 11px;
   color: var(--theme-text-3);
-  background: color-mix(in srgb, var(--theme-bg-surface) 70%, transparent);
-  border: 1px solid var(--theme-hairline);
 }
 
 .msg-row {

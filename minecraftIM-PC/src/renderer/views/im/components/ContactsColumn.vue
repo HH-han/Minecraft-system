@@ -11,7 +11,7 @@ import {
   Search,
   Star,
   StarFilled,
-  UserPlus,
+  User,
   UserFilled
 } from '@element-plus/icons-vue';
 import { pinyin } from 'pinyin-pro';
@@ -170,7 +170,7 @@ function handleCommand(command: string): void {
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="add-friend">
-                <el-icon><UserPlus /></el-icon>
+                <el-icon><User /></el-icon>
                 {{ t('im.contacts.addFriend') }}
               </el-dropdown-item>
               <el-dropdown-item command="create-group">
@@ -200,7 +200,7 @@ function handleCommand(command: string): void {
       <div v-if="mode === 'contacts'" class="entry-list">
         <button class="entry" @click="openRequests">
           <span class="entry__icon entry__icon--new">
-            <el-icon :size="17"><UserPlus /></el-icon>
+            <el-icon :size="17"><User /></el-icon>
           </span>
           <span class="entry__label">{{ t('im.contacts.newFriends') }}</span>
           <span v-if="requestCount" class="im-badge">{{ requestCount }}</span>
@@ -381,7 +381,7 @@ function handleCommand(command: string): void {
       </div>
       <div v-else class="im-empty request-empty">
         <div class="im-empty__icon">
-          <el-icon :size="26"><UserPlus /></el-icon>
+          <el-icon :size="26"><User /></el-icon>
         </div>
         <p class="im-empty__title">{{ t('im.contacts.noRequests') }}</p>
         <p class="im-empty__desc">{{ t('im.contacts.noRequestsDesc') }}</p>

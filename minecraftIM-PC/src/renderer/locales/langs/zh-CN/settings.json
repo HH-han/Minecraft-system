@@ -2,6 +2,42 @@
   "settings": {
     "title": "设置",
     "description": "主题与语言配置保存在本地，重启后自动恢复。",
+    "sections": {
+      "account": "账号与存储",
+      "general": "通用",
+      "shortcuts": "快捷键",
+      "notifications": "通知",
+      "plugins": "插件",
+      "about": "关于"
+    },
+    "account": {
+      "autoStart": "开机自动启动"
+    },
+    "general": {
+      "title": "通用偏好",
+      "compact": "紧凑列表模式",
+      "enterToSend": "Enter 键发送消息"
+    },
+    "shortcuts": {
+      "send": "发送消息",
+      "newline": "消息换行",
+      "search": "搜索会话",
+      "settings": "打开设置",
+      "closePanel": "关闭详情面板"
+    },
+    "notifications": {
+      "message": "新消息通知",
+      "sound": "通知声音",
+      "detail": "显示消息详情"
+    },
+    "plugins": {
+      "items": {
+        "cloudName": "云端同步",
+        "cloudDesc": "在多端之间同步收藏与草稿",
+        "translateName": "消息翻译",
+        "translateDesc": "自动翻译收到的外文消息"
+      }
+    },
     "theme": {
       "title": "主题",
       "description": "切换后全局 CSS 令牌生效，Element Plus 同步切换深色模式。",
@@ -16,14 +52,21 @@
     "storage": {
       "title": "本地存储",
       "dataDir": "数据目录",
-      "logDir": "日志目录"
+      "logDir": "日志目录",
+      "change": "更改",
+      "changed": "目录已更新",
+      "changeFailed": "目录切换失败",
+      "pickData": "选择数据目录",
+      "pickLogs": "选择日志目录"
     },
     "about": {
       "title": "关于",
       "framework": "桌面框架",
       "frameworkValue": "Adrenaline.js",
       "renderer": "渲染层",
-      "rendererValue": "Vue 3 + Vite"
+      "rendererValue": "Vue 3 + Vite",
+      "version": "应用版本",
+      "platform": "运行平台"
     },
     "actions": {
       "quit": "退出应用"

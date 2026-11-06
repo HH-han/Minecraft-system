@@ -5,6 +5,7 @@
 export const IPC_CHANNELS = {
   appGetInfo: 'app:get-info',
   appQuit: 'app:quit',
+  appSetStorageDir: 'app:set-storage-dir',
   dataGet: 'data:get',
   dataSet: 'data:set',
   fileSelect: 'file:select'

@@ -335,33 +335,68 @@ watch(
         </div>
       </div>
 
-      <!-- 操作区 -->
+      <!-- 操作区：原生按钮 + 固定宽度内容块，保证各行图标与文字左边缘严格对齐 -->
       <div class="action-block">
-        <el-button class="im-action-primary action-main" :disabled="busy" @click="openChat">
-          <el-icon><ChatDotRound /></el-icon>
-          <span class="action-text">{{ t('im.detail.sendMessage') }}</span>
-        </el-button>
+        <button
+          type="button"
+          class="action-btn action-main im-action-primary"
+          :disabled="busy"
+          @click="openChat"
+        >
+          <span class="action-inner">
+            <span class="action-icon"><el-icon :size="15"><ChatDotRound /></el-icon></span>
+            <span class="action-text">{{ t('im.detail.sendMessage') }}</span>
+          </span>
+        </button>
 
         <template v-if="type === 'friend'">
-          <el-button class="im-action-danger action-main" :loading="busy" @click="removeFriend">
-            <el-icon><Delete /></el-icon>
-            <span class="action-text">{{ t('im.detail.deleteFriend') }}</span>
-          </el-button>
+          <button
+            type="button"
+            class="action-btn action-main im-action-danger"
+            :disabled="busy"
+            @click="removeFriend"
+          >
+            <span class="action-inner">
+              <span class="action-icon"><el-icon :size="15"><Delete /></el-icon></span>
+              <span class="action-text">{{ t('im.detail.deleteFriend') }}</span>
+            </span>
+          </button>
         </template>
 
         <template v-else>
-          <el-button class="action-secondary action-main" @click="openInvite">
-            <el-icon><UserFilled /></el-icon>
-            <span class="action-text">{{ t('im.detail.invite') }}</span>
-          </el-button>
-          <el-button class="action-secondary action-main" @click="openGroupEdit">
-            <el-icon><Edit /></el-icon>
-            <span class="action-text">{{ t('im.detail.editGroup') }}</span>
-          </el-button>
-          <el-button class="im-action-danger action-main" :loading="busy" @click="dissolveGroup">
-            <el-icon><Delete /></el-icon>
-            <span class="action-text">{{ t('im.detail.dissolve') }}</span>
-          </el-button>
+          <button
+            type="button"
+            class="action-btn action-main action-secondary"
+            :disabled="busy"
+            @click="openInvite"
+          >
+            <span class="action-inner">
+              <span class="action-icon"><el-icon :size="15"><UserFilled /></el-icon></span>
+              <span class="action-text">{{ t('im.detail.invite') }}</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="action-btn action-main action-secondary"
+            :disabled="busy"
+            @click="openGroupEdit"
+          >
+            <span class="action-inner">
+              <span class="action-icon"><el-icon :size="15"><Edit /></el-icon></span>
+              <span class="action-text">{{ t('im.detail.editGroup') }}</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="action-btn action-main im-action-danger"
+            :disabled="busy"
+            @click="dissolveGroup"
+          >
+            <span class="action-inner">
+              <span class="action-icon"><el-icon :size="15"><Delete /></el-icon></span>
+              <span class="action-text">{{ t('im.detail.dissolve') }}</span>
+            </span>
+          </button>
         </template>
       </div>
     </div>
@@ -592,16 +627,68 @@ watch(
   gap: 10px;
 }
 
+.action-btn {
+  width: 100%;
+  height: 38px;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease);
+}
+
+.action-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .action-main {
   width: 100%;
   height: 38px;
-  justify-content: center;
   border-radius: 10px;
   font-size: 13px;
 }
 
+/* 图标 + 文字作为整体在按钮内居中；文字槽定宽并居中，各行视觉中心一致 */
+.action-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* 固定图标槽，避免不同 el-icon 尺寸造成基线漂移 */
+.action-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon :deep(.el-icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .action-text {
-  margin-left: 6px;
+  min-width: 72px;
+  margin-left: 0;
+  text-align: center;
+  line-height: 1;
 }
 
 .action-secondary {
@@ -609,6 +696,11 @@ watch(
   border-color: var(--theme-border);
   background: var(--theme-bg-surface-2);
   color: var(--theme-text-2);
+}
+
+.action-secondary:hover:not(:disabled) {
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-1);
 }
 
 .invite-list {

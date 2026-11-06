@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ElIcon } from 'element-plus';
-import { ChatDotRound, InfoFilled, Plus, Search, User, UserFilled } from '@element-plus/icons-vue';
+import {
+  ChatDotSquare,
+  InfoFilled,
+  Plus,
+  Search,
+  User,
+  UserFilled
+} from '@element-plus/icons-vue';
 import { resolveMediaUrl } from '@/config';
 import { useChatStore } from '@/stores/chat';
 import { formatListTime } from '@/utils/format';
