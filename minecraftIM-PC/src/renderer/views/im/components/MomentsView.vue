@@ -184,6 +184,9 @@ function openCompose(): void {
   composeVisible.value = true;
 }
 
+// 供「发现」左栏的发布按钮调用
+defineExpose({ openCompose });
+
 async function handleCoverFile(event: Event): Promise<void> {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];

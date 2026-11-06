@@ -49,12 +49,32 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem(userInfoStorageKey, JSON.stringify(user.value));
   }
 
+  /**
+   * 拉取完整用户资料（登录响应只含基础字段）。
+   * 仅当 token 未变化时写入，避免切换账号时旧请求的响应覆盖新账号信息。
+   */
+  async function syncProfile(expectToken: string | null): Promise<void> {
+    if (!expectToken) return;
+    try {
+      const res = await getUserInfo();
+      if (token.value !== expectToken) return;
+      if (res.data) {
+        user.value = { ...user.value, ...res.data };
+        localStorage.setItem(userInfoStorageKey, JSON.stringify(user.value));
+      }
+    } catch {
+      /* 拉取失败时保留登录响应中的资料 */
+    }
+  }
+
   async function login(payload: LoginParams): Promise<boolean> {
     loading.value = true;
     error.value = null;
     try {
       const res = await loginApi(payload);
       applyLoginResult(res.data);
+      // 登录后重新拉取完整资料，保证切换账号后资料是最新的
+      await syncProfile(res.data.token);
       connectWs();
       return true;
     } catch (err) {
@@ -74,6 +94,7 @@ export const useAuthStore = defineStore('auth', () => {
       const account = typeof res.data === 'string' && res.data ? res.data : payload.username;
       const loginRes = await loginApi({ account, password: payload.password });
       applyLoginResult(loginRes.data);
+      await syncProfile(loginRes.data.token);
       connectWs();
       return true;
     } catch (err) {
@@ -86,16 +107,19 @@ export const useAuthStore = defineStore('auth', () => {
 
   /** 启动时用本地 token 拉取最新用户信息；失败（token 失效）则清空登录态 */
   async function restore(): Promise<void> {
-    if (!token.value) return;
+    const expectToken = token.value;
+    if (!expectToken) return;
     try {
       const res = await getUserInfo();
+      // 请求期间已切换账号（或已退出），丢弃旧响应
+      if (token.value !== expectToken) return;
       if (res.data) {
         user.value = { ...user.value, ...res.data };
         localStorage.setItem(userInfoStorageKey, JSON.stringify(user.value));
       }
       connectWs();
     } catch {
-      clearSession();
+      if (token.value === expectToken) clearSession();
     }
   }
 
@@ -106,16 +130,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   /** 重新拉取用户资料（个人资料保存/头像更新后调用） */
   async function refreshUser(): Promise<void> {
-    if (!token.value) return;
-    try {
-      const res = await getUserInfo();
-      if (res.data) {
-        user.value = { ...user.value, ...res.data };
-        localStorage.setItem(userInfoStorageKey, JSON.stringify(user.value));
-      }
-    } catch {
-      /* 保持现有资料 */
-    }
+    await syncProfile(token.value);
   }
 
   /** 本地合并资料字段（无需等待接口） */

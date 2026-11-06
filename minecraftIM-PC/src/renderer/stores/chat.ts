@@ -169,7 +169,12 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   async function loadContacts(): Promise<void> {
-    const userId = currentUserId.value;
+    let userId = currentUserId.value;
+    // 登录响应缺少 userId 时，用 token 重新拉取用户资料补齐后再加载，避免直接 return
+    if (!userId && authStore.token) {
+      await authStore.refreshUser();
+      userId = currentUserId.value;
+    }
     if (!userId) return;
 
     // 切换账号后先清空上一个账号的数据，避免好友/会话串号

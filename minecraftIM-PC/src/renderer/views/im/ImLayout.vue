@@ -19,6 +19,7 @@ import ChatArea from './components/ChatArea.vue';
 import ContactDetail from './components/ContactDetail.vue';
 import FavoritesView from './components/FavoritesView.vue';
 import MomentsView from './components/MomentsView.vue';
+import DiscoverColumn from './components/DiscoverColumn.vue';
 import MeView from './components/MeView.vue';
 import ProfileView from './components/ProfileView.vue';
 import ServicesView from './components/ServicesView.vue';
@@ -43,6 +44,7 @@ const meView = ref<MeViewKey>('overview');
 const selectedContact = ref<ContactSelection | null>(null);
 const infoOpen = ref(false);
 const showAddFriend = ref(false);
+const momentsRef = ref<{ openCompose: () => void } | null>(null);
 const showCreateGroup = ref(false);
 const showSettings = ref(false);
 
@@ -117,6 +119,11 @@ function openMeView(view: MeViewKey): void {
 
 function openSettings(): void {
   showSettings.value = true;
+}
+
+/** 「发现」左栏 + 号：打开发布动态弹窗 */
+function publishMoment(): void {
+  momentsRef.value?.openCompose();
 }
 
 /** 账号就绪 / 切换后重新绑定 WS 并拉取通讯录（登录其他账号也能正确加载） */
@@ -224,8 +231,11 @@ onBeforeUnmount(() => {
       <!-- 收藏 -->
       <FavoritesView v-else-if="activeTab === 'favorites'" />
 
-      <!-- 朋友圈 -->
-      <MomentsView v-else-if="activeTab === 'discover'" />
+      <!-- 发现 -->
+      <template v-else-if="activeTab === 'discover'">
+        <DiscoverColumn @publish="publishMoment" />
+        <MomentsView ref="momentsRef" />
+      </template>
 
       <!-- 我 -->
       <template v-else>

@@ -184,6 +184,14 @@
     },
     "discover": {
       "title": "Moments",
+      "pageTitle": "Discover",
+      "searchPlaceholder": "Search…",
+      "menu": {
+        "moments": "Moments",
+        "scan": "Scan",
+        "nearby": "Nearby",
+        "shake": "Shake"
+      },
       "slogan": "Share life, capture the moment",
       "empty": "No moments yet",
       "emptyDesc": "Post your first moment and let friends see you",

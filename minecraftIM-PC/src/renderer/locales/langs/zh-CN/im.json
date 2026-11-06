@@ -184,6 +184,14 @@
     },
     "discover": {
       "title": "朋友圈",
+      "pageTitle": "发现",
+      "searchPlaceholder": "搜索…",
+      "menu": {
+        "moments": "朋友圈",
+        "scan": "扫一扫",
+        "nearby": "附近的人",
+        "shake": "摇一摇"
+      },
       "slogan": "分享生活，记录此刻",
       "empty": "暂无动态",
       "emptyDesc": "发布第一条动态，让好友看到你",
