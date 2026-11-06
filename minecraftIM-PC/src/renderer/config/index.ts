@@ -13,6 +13,16 @@ function normalize(base: string): string {
 
 export const apiBaseUrl = normalize(env.VITE_API_BASE_URL ?? 'http://localhost:8080/api');
 
+/** 后端站点根（用于把相对资源路径补全为可直接访问的地址） */
+export const apiOrigin = apiBaseUrl.replace(/\/api$/, '');
+
+export function resolveMediaUrl(url?: string | null): string | undefined {
+  if (!url) return undefined;
+  if (/^(http|https|data|blob):/.test(url)) return url;
+  if (url.startsWith('//')) return `http:${url}`;
+  return `${apiOrigin}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
 export const wsBaseUrl = normalize(
   env.VITE_WS_BASE_URL ?? apiBaseUrl.replace(/^http/, 'ws').replace(/\/api$/, '')
 );

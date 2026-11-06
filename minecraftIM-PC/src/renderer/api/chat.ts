@@ -2,20 +2,44 @@ import request, { type ApiResponse } from './request';
 import type {
   ChatGroup,
   ChatMessage,
-  ChatMessageType,
   FriendInfo,
-  FriendRequestInfo
-} from '@/types/im';
+  FriendRequestInfo,
+  GroupMember
+} from '../types/im';
 
-/* ---------------- 单聊 ---------------- */
-
-export function sendSingleMessage(message: {
+export interface SingleMessagePayload {
   senderId: number;
   receiverId: number;
   content: string;
-  messageType?: ChatMessageType;
-}) {
-  return request.post<unknown, ApiResponse<ChatMessage>>('/public/im/single/send', message);
+  messageType?: string;
+}
+
+export interface GroupMessagePayload {
+  groupId: number;
+  senderId: number;
+  content: string;
+  messageType?: string;
+}
+
+export interface CreateGroupPayload {
+  name: string;
+  description?: string;
+  avatar?: string;
+  creatorId: number;
+  memberIds: number[];
+}
+
+export interface FriendRequestPayload {
+  senderId: number;
+  receiverId?: number;
+  receiverPhone?: string;
+  message?: string;
+}
+
+/* ---------------- 消息 ---------------- */
+
+export function sendSingleMessage(payload: SingleMessagePayload) {
+  return request.post<unknown, ApiResponse<ChatMessage>>('/public/im/single/send', payload);
 }
 
 export function getSingleChatHistory(userId1: number, userId2: number, limit = 50) {
@@ -24,15 +48,8 @@ export function getSingleChatHistory(userId1: number, userId2: number, limit = 5
   });
 }
 
-/* ---------------- 群聊 ---------------- */
-
-export function sendGroupMessage(message: {
-  groupId: number;
-  senderId: number;
-  content: string;
-  messageType?: ChatMessageType;
-}) {
-  return request.post<unknown, ApiResponse<ChatMessage>>('/public/im/group/send', message);
+export function sendGroupMessage(payload: GroupMessagePayload) {
+  return request.post<unknown, ApiResponse<void>>('/public/im/group/send', payload);
 }
 
 export function getGroupChatHistory(groupId: number, limit = 50) {
@@ -41,21 +58,23 @@ export function getGroupChatHistory(groupId: number, limit = 50) {
   });
 }
 
-export function getGroupsByUserId(userId: number) {
-  return request.get<unknown, ApiResponse<ChatGroup[]>>(`/public/chat-group/user/${userId}`);
+export function markMessageAsRead(userId: number, messageId: number, groupId?: number) {
+  return request.post<unknown, ApiResponse<void>>('/public/im/message/read', null, {
+    params: { userId, messageId, groupId }
+  });
 }
 
-export function createGroupWithMembers(groupData: {
-  name: string;
-  creatorId: number;
-  memberIds?: number[];
-  avatar?: string;
-}) {
-  return request.post<unknown, ApiResponse<ChatGroup>>('/public/chat-group/with-members', groupData);
+export function getUnreadMessageCount(userId: number, groupId?: number) {
+  return request.get<unknown, ApiResponse<number>>('/public/im/message/unread/count', {
+    params: { userId, groupId }
+  });
 }
 
-export function getGroupMembers(groupId: number) {
-  return request.get<unknown, ApiResponse<FriendInfo[]>>(`/public/chat-group/${groupId}/members`);
+/** 上传聊天图片/文件 */
+export function uploadImFile(file: File) {
+  const form = new FormData();
+  form.append('file', file);
+  return request.post<unknown, ApiResponse<string>>('/public/im/upload', form);
 }
 
 /* ---------------- 好友 ---------------- */
@@ -66,13 +85,8 @@ export function getFriendInfoList(userId: number) {
   });
 }
 
-export function sendFriendRequest(data: {
-  senderId: number;
-  receiverId?: number;
-  receiverPhone?: string;
-  message?: string;
-}) {
-  return request.post<unknown, ApiResponse<unknown>>('/public/im/friend/request', data);
+export function sendFriendRequest(payload: FriendRequestPayload) {
+  return request.post<unknown, ApiResponse<void>>('/public/im/friend/request', payload);
 }
 
 export function getPendingFriendRequestsWithInfo(userId: number) {
@@ -83,39 +97,75 @@ export function getPendingFriendRequestsWithInfo(userId: number) {
 }
 
 export function acceptFriendRequest(requestId: number) {
-  return request.put<unknown, ApiResponse<unknown>>('/public/im/friend/request/accept', null, {
+  return request.put<unknown, ApiResponse<void>>('/public/im/friend/request/accept', null, {
     params: { requestId }
   });
 }
 
 export function rejectFriendRequest(requestId: number) {
-  return request.put<unknown, ApiResponse<unknown>>('/public/im/friend/request/reject', null, {
+  return request.put<unknown, ApiResponse<void>>('/public/im/friend/request/reject', null, {
     params: { requestId }
   });
 }
 
 export function deleteFriend(userId: number, friendId: number) {
-  return request.delete<unknown, ApiResponse<unknown>>('/public/im/friend/delete', {
+  return request.delete<unknown, ApiResponse<void>>('/public/im/friend/delete', {
     params: { userId, friendId }
   });
 }
 
 export function updateFriendRemark(userId: number, friendId: number, remark: string) {
-  return request.put<unknown, ApiResponse<unknown>>('/public/im/friend/remark', null, {
+  return request.put<unknown, ApiResponse<void>>('/public/im/friend/remark', null, {
     params: { userId, friendId, remark }
   });
 }
 
-/* ---------------- 已读 / 未读 ---------------- */
-
-export function markMessageAsRead(messageId: number, userId: number, groupId?: number) {
-  return request.post<unknown, ApiResponse<unknown>>('/public/im/message/read', null, {
-    params: { messageId, userId, groupId }
+export function checkFriend(userId: number, friendId: number) {
+  return request.get<unknown, ApiResponse<boolean>>('/public/im/friend/check', {
+    params: { userId, friendId }
   });
 }
 
-export function getUnreadMessageCount(userId: number, groupId?: number) {
-  return request.get<unknown, ApiResponse<number>>('/public/im/message/unread/count', {
-    params: { userId, groupId }
-  });
+/* ---------------- 群组 ---------------- */
+
+export function getGroupsByUserId(userId: number) {
+  return request.get<unknown, ApiResponse<ChatGroup[]>>(`/public/chat-group/user/${userId}`);
+}
+
+export function getGroupById(groupId: number) {
+  return request.get<unknown, ApiResponse<ChatGroup>>(`/public/chat-group/${groupId}`);
+}
+
+export function createGroupWithMembers(payload: CreateGroupPayload) {
+  return request.post<unknown, ApiResponse<ChatGroup>>(
+    '/public/chat-group/with-members',
+    payload
+  );
+}
+
+export function getGroupMembers(groupId: number) {
+  return request.get<unknown, ApiResponse<GroupMember[]>>(
+    `/public/chat-group/${groupId}/members`
+  );
+}
+
+export function updateGroup(group: Partial<ChatGroup> & { id: number }) {
+  return request.put<unknown, ApiResponse<void>>('/public/chat-group', group);
+}
+
+export function inviteGroupMembers(groupId: number, friendIds: number[]) {
+  return request.post<unknown, ApiResponse<void>>(
+    `/public/chat-group/${groupId}/invite`,
+    friendIds
+  );
+}
+
+export function removeGroupMember(groupId: number, userId: number) {
+  return request.delete<unknown, ApiResponse<void>>(
+    `/public/chat-group/${groupId}/members/${userId}`
+  );
+}
+
+export function deleteGroup(groupId: number) {
+  return request.delete<unknown, ApiResponse<void>>(`/public/chat-group/${groupId}`);
 }

@@ -89,6 +89,27 @@ export const useAuthStore = defineStore('auth', () => {
     if (id) wsService.connect(id);
   }
 
+  /** 重新拉取用户资料（个人资料保存/头像更新后调用） */
+  async function refreshUser(): Promise<void> {
+    if (!token.value) return;
+    try {
+      const res = await getUserInfo();
+      if (res.data) {
+        user.value = { ...user.value, ...res.data };
+        localStorage.setItem(userInfoStorageKey, JSON.stringify(user.value));
+      }
+    } catch {
+      /* 保持现有资料 */
+    }
+  }
+
+  /** 本地合并资料字段（无需等待接口） */
+  function patchUser(patch: Partial<UserInfo>): void {
+    if (!user.value) return;
+    user.value = { ...user.value, ...patch };
+    localStorage.setItem(userInfoStorageKey, JSON.stringify(user.value));
+  }
+
   function clearSession(): void {
     token.value = null;
     user.value = null;
@@ -121,6 +142,8 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     register,
     restore,
+    refreshUser,
+    patchUser,
     logout
   };
 });

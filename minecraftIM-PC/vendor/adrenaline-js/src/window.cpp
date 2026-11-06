@@ -3,8 +3,10 @@
 #include "vendor/webview.h"
 
 #ifdef _WIN32
-// windows.h 将 CreateWindow 定义为宏，与本文件中的 N-API 绑定函数重名
+// windows.h defines CreateWindow as a macro, which conflicts with our N-API binding function name.
 #undef CreateWindow
+#include <shellapi.h>
+#pragma comment(lib, "shell32.lib")
 #endif
 
 #include <thread>
@@ -35,6 +37,11 @@ struct WindowInstance {
     std::thread th;
     std::atomic<bool> is_running{false};
 
+    // Pending icon path: setIcon may be called before webview is created.
+    // Cache the path and apply it on the webview thread once wv is ready.
+    std::string pendingIconPath;
+    std::mutex iconMutex;
+
     Napi::ThreadSafeFunction tsfn;
     bool has_tsfn{false};
     std::atomic<bool> tsfn_released{false};
@@ -43,6 +50,41 @@ struct WindowInstance {
 static std::atomic<int> g_next_window_id{1};
 static std::unordered_map<int, std::shared_ptr<WindowInstance>> g_windows;
 static std::mutex g_windows_mutex;
+
+// Apply an ICO file as the window icon (title bar + taskbar).
+// Must be called on the webview thread.
+static void ApplyWindowIcon(webview::webview* wv, const std::string& iconPath) {
+    if (!wv) return;
+    auto winResult = wv->window();
+    if (!winResult.ok()) {
+        std::cerr << "[adrenaline] setIcon: failed to get window handle" << std::endl;
+        return;
+    }
+    HWND hwnd = (HWND)winResult.value();
+    if (!hwnd) {
+        std::cerr << "[adrenaline] setIcon: window handle is null" << std::endl;
+        return;
+    }
+
+    int wideLen = MultiByteToWideChar(CP_UTF8, 0, iconPath.c_str(), -1, nullptr, 0);
+    if (wideLen <= 0) {
+        std::cerr << "[adrenaline] setIcon: MultiByteToWideChar failed" << std::endl;
+        return;
+    }
+    std::wstring widePath(wideLen, L'\0');
+    MultiByteToWideChar(CP_UTF8, 0, iconPath.c_str(), -1, &widePath[0], wideLen);
+
+    HICON hIcon = (HICON)LoadImageW(
+        nullptr, widePath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+    if (!hIcon) {
+        std::cerr << "[adrenaline] setIcon: LoadImageW failed for " << iconPath
+                  << " (error=" << GetLastError() << ")" << std::endl;
+        return;
+    }
+    SendMessageW(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+    std::cerr << "[adrenaline] setIcon: icon set successfully" << std::endl;
+}
 
 Napi::Value GetCompiledFeatures(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
@@ -150,6 +192,11 @@ Napi::Value CreateWindow(const Napi::CallbackInfo& info) {
 
     instance->th = std::thread([instance]() {
         try {
+#ifdef _WIN32
+            // Set AppUserModelID so Windows taskbar uses the window icon
+            // instead of the host process (node.exe) icon.
+            SetCurrentProcessExplicitAppUserModelID(L"MinecraftIM.PC");
+#endif
             bool debug_flag = false;
 #if ADREN_FEATURE_DEVTOOLS
             debug_flag = true;
@@ -249,6 +296,16 @@ Napi::Value CreateWindow(const Napi::CallbackInfo& info) {
 
             instance->wv = &wv;
             instance->is_running = true;
+
+            // If setIcon was called before webview was ready, apply it now.
+            {
+                std::lock_guard<std::mutex> lock(instance->iconMutex);
+                if (!instance->pendingIconPath.empty()) {
+                    ApplyWindowIcon(&wv, instance->pendingIconPath);
+                    instance->pendingIconPath.clear();
+                }
+            }
+
             wv.run();
             instance->is_running = false;
             instance->wv = nullptr;
@@ -402,33 +459,26 @@ Napi::Value SetWindowIcon(const Napi::CallbackInfo& info) {
         }
     }
 
-    if (instance && instance->wv) {
-        std::string iconPathCopy = iconPath;
-        instance->wv->dispatch([instance, iconPathCopy]() {
-            if (!instance->wv) return;
+    if (!instance) {
+        std::cerr << "[adrenaline] setIcon: window instance not found, id=" << window_id << std::endl;
+        return Napi::Boolean::New(env, false);
+    }
 
-            HWND hwnd = (HWND)webview_get_native_handle(
-                (webview_t)instance->wv, WEBVIEW_NATIVE_HANDLE_KIND_UI_WINDOW);
-            if (!hwnd) return;
-
-            // UTF-8 -> UTF-16
-            int wideLen = MultiByteToWideChar(CP_UTF8, 0, iconPathCopy.c_str(), -1, nullptr, 0);
-            if (wideLen <= 0) return;
-            std::wstring widePath(wideLen, L'\0');
-            MultiByteToWideChar(CP_UTF8, 0, iconPathCopy.c_str(), -1, &widePath[0], wideLen);
-
-            HICON hIcon = (HICON)LoadImageW(
-                nullptr, widePath.c_str(), IMAGE_ICON,
-                0, 0, LR_LOADFROMFILE);
-            if (hIcon) {
-                SendMessageW(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
-                SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-            }
-        });
+    // webview may not be created yet; cache the icon path for later.
+    if (!instance->wv) {
+        std::lock_guard<std::mutex> lock(instance->iconMutex);
+        instance->pendingIconPath = iconPath;
+        std::cerr << "[adrenaline] setIcon: webview not ready, icon path cached" << std::endl;
         return Napi::Boolean::New(env, true);
     }
 
-    return Napi::Boolean::New(env, false);
+    std::string iconPathCopy = iconPath;
+    instance->wv->dispatch([instance, iconPathCopy]() {
+        if (instance->wv) {
+            ApplyWindowIcon(instance->wv, iconPathCopy);
+        }
+    });
+    return Napi::Boolean::New(env, true);
 }
 
 } // namespace Adrenaline

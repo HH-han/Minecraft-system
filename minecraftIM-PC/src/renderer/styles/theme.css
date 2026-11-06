@@ -70,6 +70,20 @@ html[data-theme="light"] {
   --theme-scrollbar-thumb: rgba(15, 23, 42, 0.2);
   --theme-scrollbar-thumb-hover: rgba(15, 23, 42, 0.32);
 
+  /* IM 场景令牌 */
+  --theme-rail-bg: #f4f6fa;
+  --theme-list-bg: #ffffff;
+  --theme-bg-chat: #f2f4f9;
+  --theme-bubble-mine: #a7e86f;
+  --theme-bubble-mine-text: #10261a;
+  --theme-bubble-other: #ffffff;
+  --theme-bubble-other-text: #16202d;
+  --theme-bubble-mine-shadow: 0 6px 16px -12px rgba(78, 140, 46, 0.55);
+  --theme-online: #22c55e;
+  --theme-accent-gradient: linear-gradient(135deg, #59b8ff 0%, #4a6cf7 100%);
+  --theme-wallet-gradient: linear-gradient(135deg, #34b9f8 0%, #1677ff 100%);
+  --theme-cover-overlay: linear-gradient(180deg, rgba(15, 23, 42, 0) 40%, rgba(15, 23, 42, 0.55) 100%);
+
   --el-color-primary: var(--theme-primary);
   --el-color-primary-light-3: color-mix(in srgb, var(--theme-primary) 70%, #ffffff);
   --el-color-primary-light-5: color-mix(in srgb, var(--theme-primary) 50%, #ffffff);
@@ -134,6 +148,20 @@ html[data-theme="dark"] {
   --theme-overlay: rgba(0, 0, 0, 0.62);
   --theme-scrollbar-thumb: rgba(255, 255, 255, 0.16);
   --theme-scrollbar-thumb-hover: rgba(255, 255, 255, 0.28);
+
+  /* IM 场景令牌 */
+  --theme-rail-bg: #14161b;
+  --theme-list-bg: #15171c;
+  --theme-bg-chat: #0d0f13;
+  --theme-bubble-mine: #2f6b4a;
+  --theme-bubble-mine-text: #eaf9f0;
+  --theme-bubble-other: rgba(255, 255, 255, 0.08);
+  --theme-bubble-other-text: #e9eef5;
+  --theme-bubble-mine-shadow: 0 8px 20px -14px rgba(0, 0, 0, 0.8);
+  --theme-online: #37e0a0;
+  --theme-accent-gradient: linear-gradient(135deg, #3a7aa3 0%, #3d4f8c 100%);
+  --theme-wallet-gradient: linear-gradient(135deg, #2b6a9c 0%, #1f3f78 100%);
+  --theme-cover-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.7) 100%);
 }
 
 /* ---------- 游戏（石板暗底 + 绿色强调） ---------- */
@@ -185,6 +213,20 @@ html[data-theme="game"] {
   --theme-overlay: rgba(2, 6, 23, 0.68);
   --theme-scrollbar-thumb: rgba(148, 163, 184, 0.3);
   --theme-scrollbar-thumb-hover: rgba(148, 163, 184, 0.46);
+
+  /* IM 场景令牌 */
+  --theme-rail-bg: #0f1a2b;
+  --theme-list-bg: #16243a;
+  --theme-bg-chat: #0b1220;
+  --theme-bubble-mine: #245c3a;
+  --theme-bubble-mine-text: #e9fbf0;
+  --theme-bubble-other: #1e293b;
+  --theme-bubble-other-text: #e2e8f0;
+  --theme-bubble-mine-shadow: 0 8px 20px -14px rgba(0, 0, 0, 0.7);
+  --theme-online: #4ade80;
+  --theme-accent-gradient: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+  --theme-wallet-gradient: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  --theme-cover-overlay: linear-gradient(180deg, rgba(2, 6, 23, 0) 40%, rgba(2, 6, 23, 0.72) 100%);
 }
 
 /* 深色主题下 Element Plus 变量桥接（覆盖 EP dark 默认值） */

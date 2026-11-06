@@ -5,6 +5,7 @@ import 'element-plus/dist/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 import './styles/theme.css';
 import './styles/global.css';
+import './styles/im.css';
 import App from './App.vue';
 import { setupI18n } from './locales';
 import { initTheme } from './stores/theme';

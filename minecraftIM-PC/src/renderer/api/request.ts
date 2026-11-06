@@ -20,7 +20,13 @@ request.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   const method = config.method?.toUpperCase();
-  if (method && ['POST', 'PUT', 'PATCH'].includes(method) && !config.headers['Content-Type']) {
+  const isFormData = typeof FormData !== 'undefined' && config.data instanceof FormData;
+  if (
+    method &&
+    ['POST', 'PUT', 'PATCH'].includes(method) &&
+    !isFormData &&
+    !config.headers['Content-Type']
+  ) {
     config.headers['Content-Type'] = 'application/json';
   }
   return config;

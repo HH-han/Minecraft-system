@@ -2,387 +2,556 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
+import {
+  ArrowLeft,
+  ChatDotRound,
+  Check,
+  Comment,
+  Plus,
+  Search,
+  Star,
+  StarFilled,
+  UserPlus,
+  UserFilled
+} from '@element-plus/icons-vue';
+import { pinyin } from 'pinyin-pro';
+import { resolveMediaUrl } from '@/config';
 import { useChatStore } from '@/stores/chat';
 import type { ChatGroup, FriendInfo, FriendRequestInfo } from '@/types/im';
-
-interface ContactSelection {
-  type: 'friend' | 'group';
-  id: number;
-}
-
-const props = defineProps<{
-  selected: ContactSelection | null;
-}>();
+import { formatListTime } from '@/utils/format';
 
 const emit = defineEmits<{
-  select: [payload: ContactSelection];
-  'open-requests': [];
+  selectFriend: [friendId: number];
+  selectGroup: [groupId: number];
+  openAddFriend: [];
+  openCreateGroup: [];
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const chatStore = useChatStore();
 
 const keyword = ref('');
-const showRequests = ref(false);
-const handlingId = ref<number | null>(null);
+const mode = ref<'contacts' | 'groups'>('contacts');
+const starOnly = ref(false);
+const requestVisible = ref(false);
+const processingId = ref<number | null>(null);
 
-function friendId(friend: FriendInfo): number {
-  return Number(friend.friendId ?? friend.userId);
+function displayName(friend: FriendInfo): string {
+  return friend.remark || friend.username || '';
 }
 
-function friendName(friend: FriendInfo): string {
-  return String(friend.remark || friend.nickname || friend.username || `用户 ${friendId(friend)}`);
+function initialOf(name: string): string {
+  return (name || '?').trim().charAt(0).toUpperCase();
 }
 
-function groupName(group: ChatGroup): string {
-  return String(group.name ?? group.groupName ?? `群聊 ${group.id}`);
+function letterOf(name: string): string {
+  const first = (name || '').trim().charAt(0);
+  if (!first) return '#';
+  if (/[a-zA-Z]/.test(first)) return first.toUpperCase();
+  if (/[\u4e00-\u9fa5]/.test(first)) {
+    const initials = pinyin(first, { pattern: 'first', toneType: 'none', type: 'array' });
+    const letter = String(initials[0] ?? '').trim().charAt(0).toUpperCase();
+    return /[A-Z]/.test(letter) ? letter : '#';
+  }
+  return '#';
 }
 
-const filteredFriends = computed(() => {
+const filteredFriends = computed<FriendInfo[]>(() => {
   const kw = keyword.value.trim().toLowerCase();
-  if (!kw) return chatStore.friends;
-  return chatStore.friends.filter((friend) => friendName(friend).toLowerCase().includes(kw));
+  return chatStore.friends.filter((friend) => {
+    if (starOnly.value && !chatStore.isStarred(friend.friendId)) return false;
+    if (!kw) return true;
+    return displayName(friend).toLowerCase().includes(kw);
+  });
 });
 
-const filteredGroups = computed(() => {
+const groupedFriends = computed<Array<{ letter: string; friends: FriendInfo[] }>>(() => {
+  const map = new Map<string, FriendInfo[]>();
+  for (const friend of [...filteredFriends.value].sort((a, b) =>
+    displayName(a).localeCompare(displayName(b), 'zh-CN')
+  )) {
+    const letter = letterOf(displayName(friend));
+    const list = map.get(letter);
+    if (list) list.push(friend);
+    else map.set(letter, [friend]);
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => {
+      if (a[0] === '#') return 1;
+      if (b[0] === '#') return -1;
+      return a[0].localeCompare(b[0]);
+    })
+    .map(([letter, friends]) => ({ letter, friends }));
+});
+
+const filteredGroups = computed<ChatGroup[]>(() => {
   const kw = keyword.value.trim().toLowerCase();
   if (!kw) return chatStore.groups;
-  return chatStore.groups.filter((group) => groupName(group).toLowerCase().includes(kw));
+  return chatStore.groups.filter((group) => group.name.toLowerCase().includes(kw));
 });
 
-const isEmpty = computed(() => !filteredFriends.value.length && !filteredGroups.value.length);
+const starredFriends = computed<FriendInfo[]>(() =>
+  chatStore.friends.filter((friend) => chatStore.isStarred(friend.friendId))
+);
 
-function isSelected(type: 'friend' | 'group', id: number): boolean {
-  return props.selected?.type === type && props.selected?.id === id;
-}
+const requestCount = computed(() => chatStore.pendingRequestCount);
 
-function openRequests(): void {
-  showRequests.value = true;
-  emit('open-requests');
+function requestName(request: FriendRequestInfo): string {
+  return request.nickname || request.username || t('im.common.member');
 }
 
 function requestIdOf(request: FriendRequestInfo): number {
-  return Number(request.id ?? request.requestId);
+  return Number(request.id ?? request.requestId ?? 0);
 }
 
-function requestName(request: FriendRequestInfo): string {
-  return String(request.senderNickname || `用户 ${request.senderId ?? ''}`);
+function openRequests(): void {
+  if (!chatStore.friendRequests.length && requestCount.value === 0) {
+    ElMessage.info(t('im.contacts.noRequests'));
+  }
+  requestVisible.value = true;
 }
 
 async function handleRequest(request: FriendRequestInfo, accept: boolean): Promise<void> {
   const id = requestIdOf(request);
-  if (!Number.isFinite(id) || handlingId.value !== null) return;
-  handlingId.value = id;
+  if (!id || processingId.value) return;
+  processingId.value = id;
   try {
-    await chatStore.handleFriendRequest(id, accept);
+    await chatStore.resolveFriendRequest(id, accept);
     ElMessage.success(accept ? t('im.contacts.accepted') : t('im.contacts.rejected'));
-    if (!chatStore.friendRequests.length) showRequests.value = false;
   } catch {
-    /* 静默：操作失败保留在列表中 */
+    /* 请求层已提示 */
   } finally {
-    handlingId.value = null;
+    processingId.value = null;
   }
+}
+
+function toggleStarOnly(): void {
+  starOnly.value = !starOnly.value;
+  if (starOnly.value && !starredFriends.value.length) {
+    ElMessage.info(t('im.contacts.noStarred'));
+  }
+}
+
+function notReady(): void {
+  ElMessage.info(t('im.common.comingSoon'));
+}
+
+function switchMode(next: 'contacts' | 'groups'): void {
+  mode.value = next;
+  starOnly.value = false;
+  keyword.value = '';
+}
+
+function handleCommand(command: string): void {
+  if (command === 'add-friend') emit('openAddFriend');
+  if (command === 'create-group') emit('openCreateGroup');
 }
 </script>
 
 <template>
-  <div class="contacts-column">
-    <div class="search-box">
+  <aside class="im-column contacts-column">
+    <header class="im-column-head">
+      <button
+        v-if="mode === 'groups'"
+        class="im-icon-btn"
+        :title="t('im.common.back')"
+        @click="switchMode('contacts')"
+      >
+        <el-icon :size="16"><ArrowLeft /></el-icon>
+      </button>
+      <h2 class="im-column-title">
+        {{ mode === 'groups' ? t('im.contacts.groups') : t('im.contacts.title') }}
+      </h2>
+      <div class="im-column-actions">
+        <el-dropdown trigger="click" placement="bottom-end" @command="handleCommand">
+          <button class="im-icon-btn is-round" :title="t('im.common.more')">
+            <el-icon :size="16"><Plus /></el-icon>
+          </button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="add-friend">
+                <el-icon><UserPlus /></el-icon>
+                {{ t('im.contacts.addFriend') }}
+              </el-dropdown-item>
+              <el-dropdown-item command="create-group">
+                <el-icon><ChatDotRound /></el-icon>
+                {{ t('im.contacts.createGroup') }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+    </header>
+
+    <div class="im-search-row">
       <el-input
         v-model="keyword"
-        :placeholder="t('im.contacts.search')"
-        size="small"
+        :placeholder="mode === 'groups' ? t('im.contacts.searchGroups') : t('im.contacts.search')"
         clearable
-      />
+      >
+        <template #prefix>
+          <el-icon :size="14"><Search /></el-icon>
+        </template>
+      </el-input>
     </div>
 
-    <div class="list-scroll">
-      <button type="button" class="requests-entry" @click="openRequests">
-        <span class="requests-icon">
-          <span v-if="chatStore.friendRequests.length" class="requests-badge">
-            {{ chatStore.friendRequests.length > 99 ? '99+' : chatStore.friendRequests.length }}
+    <div class="im-scroll">
+      <!-- 通讯录入口 -->
+      <div v-if="mode === 'contacts'" class="entry-list">
+        <button class="entry" @click="openRequests">
+          <span class="entry__icon entry__icon--new">
+            <el-icon :size="17"><UserPlus /></el-icon>
           </span>
-          +
-        </span>
-        <span class="requests-label">{{ t('im.contacts.requests') }}</span>
-      </button>
+          <span class="entry__label">{{ t('im.contacts.newFriends') }}</span>
+          <span v-if="requestCount" class="im-badge">{{ requestCount }}</span>
+          <el-icon class="entry__arrow" :size="13"><ArrowLeft /></el-icon>
+        </button>
 
-      <el-empty
-        v-if="isEmpty"
-        :description="t('im.contacts.empty')"
-        :image-size="90"
-      />
+        <button class="entry" @click="switchMode('groups')">
+          <span class="entry__icon entry__icon--group">
+            <el-icon :size="17"><ChatDotRound /></el-icon>
+          </span>
+          <span class="entry__label">{{ t('im.contacts.groups') }}</span>
+          <span class="entry__count">{{ chatStore.groups.length }}</span>
+          <el-icon class="entry__arrow" :size="13"><ArrowLeft /></el-icon>
+        </button>
 
+        <button class="entry" @click="notReady">
+          <span class="entry__icon entry__icon--tag">
+            <el-icon :size="17"><Comment /></el-icon>
+          </span>
+          <span class="entry__label">{{ t('im.contacts.tags') }}</span>
+          <el-icon class="entry__arrow" :size="13"><ArrowLeft /></el-icon>
+        </button>
+
+        <button class="entry" @click="notReady">
+          <span class="entry__icon entry__icon--official">
+            <el-icon :size="17"><UserFilled /></el-icon>
+          </span>
+          <span class="entry__label">{{ t('im.contacts.official') }}</span>
+          <el-icon class="entry__arrow" :size="13"><ArrowLeft /></el-icon>
+        </button>
+      </div>
+
+      <!-- 星标朋友 -->
+      <template v-if="mode === 'contacts'">
+        <button class="star-row" :class="{ 'is-active': starOnly }" @click="toggleStarOnly">
+          <el-icon :size="14">
+            <StarFilled v-if="starOnly" />
+            <Star v-else />
+          </el-icon>
+          <span>{{ t('im.contacts.starFriends') }}</span>
+          <span class="entry__count">{{ starredFriends.length }}</span>
+        </button>
+
+        <template v-if="groupedFriends.length">
+          <div v-for="group in groupedFriends" :key="group.letter">
+            <p class="im-group-title">{{ group.letter }}</p>
+            <div class="im-list">
+              <div
+                v-for="friend in group.friends"
+                :key="friend.friendId"
+                class="im-list-item contact-item"
+                @click="emit('selectFriend', friend.friendId)"
+              >
+                <div class="im-avatar">
+                  <img
+                    v-if="resolveMediaUrl(friend.avatar)"
+                    :src="resolveMediaUrl(friend.avatar)"
+                    :alt="displayName(friend)"
+                  />
+                  <template v-else>{{ initialOf(displayName(friend)) }}</template>
+                  <span class="im-status-dot" :class="{ offline: !friend.online }" />
+                </div>
+                <div class="im-list-item__body">
+                  <div class="im-list-item__top">
+                    <span class="im-list-item__name">{{ displayName(friend) }}</span>
+                    <el-icon v-if="chatStore.isStarred(friend.friendId)" class="star-mark" :size="12">
+                      <StarFilled />
+                    </el-icon>
+                  </div>
+                  <div class="im-list-item__bottom">
+                    <span class="im-list-item__preview">
+                      {{ friend.online ? t('im.common.online') : t('im.common.offline') }}
+                    </span>
+                    <span class="im-list-item__time">
+                      {{ formatListTime(friend.lastMessageTime, locale, t('im.time.yesterday')) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <div v-else class="im-empty">
+          <div class="im-empty__icon">
+            <el-icon :size="28"><UserFilled /></el-icon>
+          </div>
+          <p class="im-empty__title">{{ keyword ? t('im.conversation.noResult') : t('im.contacts.empty') }}</p>
+          <p class="im-empty__desc">{{ t('im.contacts.emptyDesc') }}</p>
+        </div>
+      </template>
+
+      <!-- 群聊列表 -->
       <template v-else>
-        <section v-if="filteredGroups.length" class="group-section">
-          <p class="section-title">{{ t('im.contacts.groups') }}</p>
-          <button
+        <div v-if="filteredGroups.length" class="im-list group-list">
+          <div
             v-for="group in filteredGroups"
-            :key="`group-${group.id}`"
-            type="button"
-            class="contact-item"
-            :class="{ active: isSelected('group', group.id) }"
-            @click="emit('select', { type: 'group', id: group.id })"
+            :key="group.id"
+            class="im-list-item"
+            @click="emit('selectGroup', group.id)"
           >
-            <span class="avatar group">
-              <img v-if="group.avatar" :src="group.avatar" :alt="groupName(group)" />
-              <template v-else>{{ groupName(group)[0] }}</template>
-            </span>
-            <span class="name">{{ groupName(group) }}</span>
-          </button>
-        </section>
-
-        <section v-if="filteredFriends.length" class="group-section">
-          <p class="section-title">{{ t('im.contacts.friends') }}</p>
-          <button
-            v-for="friend in filteredFriends"
-            :key="`friend-${friendId(friend)}`"
-            type="button"
-            class="contact-item"
-            :class="{ active: isSelected('friend', friendId(friend)) }"
-            @click="emit('select', { type: 'friend', id: friendId(friend) })"
-          >
-            <span class="avatar">
-              <img v-if="friend.avatar" :src="friend.avatar" :alt="friendName(friend)" />
-              <template v-else>{{ friendName(friend)[0] }}</template>
-            </span>
-            <span class="name">{{ friendName(friend) }}</span>
-          </button>
-        </section>
+            <div class="im-avatar">
+              <img
+                v-if="resolveMediaUrl(group.avatar)"
+                :src="resolveMediaUrl(group.avatar)"
+                :alt="group.name"
+              />
+              <template v-else>{{ initialOf(group.name) }}</template>
+              <span class="im-group-badge">{{ group.memberCount ?? 0 }}</span>
+            </div>
+            <div class="im-list-item__body">
+              <div class="im-list-item__top">
+                <span class="im-list-item__name">{{ group.name }}</span>
+              </div>
+              <div class="im-list-item__bottom">
+                <span class="im-list-item__preview">{{ group.description || t('im.common.noDescription') }}</span>
+                <span class="im-chat-stub">{{ t('im.common.group') }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="im-empty">
+          <div class="im-empty__icon">
+            <el-icon :size="28"><ChatDotRound /></el-icon>
+          </div>
+          <p class="im-empty__title">{{ keyword ? t('im.conversation.noResult') : t('im.contacts.noGroups') }}</p>
+          <p class="im-empty__desc">{{ t('im.contacts.noGroupsDesc') }}</p>
+        </div>
       </template>
     </div>
 
+    <!-- 新的朋友 -->
     <el-dialog
-      v-model="showRequests"
-      :title="t('im.contacts.requests')"
-      width="380px"
+      v-model="requestVisible"
+      :title="t('im.contacts.newFriends')"
+      width="440px"
       append-to-body
+      class="im-dialog"
     >
-      <el-empty
-        v-if="!chatStore.friendRequests.length"
-        :description="t('im.contacts.noRequests')"
-        :image-size="80"
-      />
-      <ul v-else class="request-list">
-        <li v-for="request in chatStore.friendRequests" :key="requestIdOf(request)" class="request-item">
-          <span class="avatar small">
-            <img v-if="request.senderAvatar" :src="request.senderAvatar" :alt="requestName(request)" />
-            <template v-else>{{ requestName(request)[0] }}</template>
-          </span>
-          <span class="request-meta">
-            <span class="request-name">{{ requestName(request) }}</span>
-            <span class="request-message">{{ request.message || '…' }}</span>
-          </span>
-          <span class="request-actions">
+      <div v-if="chatStore.friendRequests.length" class="request-list">
+        <div
+          v-for="request in chatStore.friendRequests"
+          :key="requestIdOf(request)"
+          class="request-item"
+        >
+          <div class="im-avatar sm round">
+            <img
+              v-if="resolveMediaUrl(request.avatar)"
+              :src="resolveMediaUrl(request.avatar)"
+              :alt="requestName(request)"
+            />
+            <template v-else>{{ initialOf(requestName(request)) }}</template>
+          </div>
+          <div class="request-main">
+            <p class="request-name">{{ requestName(request) }}</p>
+            <p class="request-message">{{ request.message || t('im.contacts.requestMessage') }}</p>
+          </div>
+          <div class="request-actions">
             <el-button
-              type="primary"
               size="small"
-              :loading="handlingId === requestIdOf(request)"
+              class="im-action-primary"
+              :loading="processingId === requestIdOf(request)"
               @click="handleRequest(request, true)"
             >
-              {{ t('im.contacts.accept') }}
+              <el-icon><Check /></el-icon>
+              <span>{{ t('im.contacts.accept') }}</span>
             </el-button>
             <el-button
               size="small"
-              :disabled="handlingId === requestIdOf(request)"
+              class="im-action-danger"
+              :disabled="processingId === requestIdOf(request)"
               @click="handleRequest(request, false)"
             >
               {{ t('im.contacts.reject') }}
             </el-button>
-          </span>
-        </li>
-      </ul>
+          </div>
+        </div>
+      </div>
+      <div v-else class="im-empty request-empty">
+        <div class="im-empty__icon">
+          <el-icon :size="26"><UserPlus /></el-icon>
+        </div>
+        <p class="im-empty__title">{{ t('im.contacts.noRequests') }}</p>
+        <p class="im-empty__desc">{{ t('im.contacts.noRequestsDesc') }}</p>
+      </div>
     </el-dialog>
-  </div>
+  </aside>
 </template>
 
 <style scoped>
 .contacts-column {
-  flex: 1;
+  width: 292px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--theme-hairline);
+}
+
+.entry-list {
+  padding: 2px 10px 8px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 1px;
 }
 
-.search-box {
-  padding: 0 14px 10px;
-}
-
-.list-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 8px 10px;
-}
-
-.requests-entry {
-  width: 100%;
+.entry {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;
+  padding: 8px 12px;
   border: none;
-  border-radius: var(--theme-radius-sm);
+  border-radius: 12px;
   background: transparent;
   cursor: pointer;
   text-align: left;
   transition: background var(--theme-duration-fast) var(--theme-ease);
 }
 
-.requests-entry:hover {
+.entry:hover {
   background: var(--theme-bg-hover);
 }
 
-.requests-icon {
-  position: relative;
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-  border-radius: 50%;
+.entry__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--theme-primary-text);
-  background: var(--theme-gradient);
-}
-
-.requests-badge {
-  position: absolute;
-  top: -4px;
-  right: -6px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 9px;
-  background: var(--theme-danger);
   color: #fff;
-  font-size: 11px;
-  line-height: 18px;
-  text-align: center;
+  flex-shrink: 0;
   box-shadow: var(--theme-shadow-sm);
 }
 
-.requests-label {
-  font-size: 14px;
-  font-weight: 600;
+.entry__icon--new {
+  background: linear-gradient(135deg, #ffb347, #f97316);
+}
+
+.entry__icon--group {
+  background: linear-gradient(135deg, #59b8ff, #4a6cf7);
+}
+
+.entry__icon--tag {
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+}
+
+.entry__icon--official {
+  background: linear-gradient(135deg, #c084fc, #7c3aed);
+}
+
+.entry__label {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 500;
   color: var(--theme-text-1);
 }
 
-.group-section {
-  margin-top: 12px;
-}
-
-.section-title {
-  margin: 0 0 4px;
-  padding: 0 10px;
-  font-size: 12px;
+.entry__count {
+  font-size: 11px;
   color: var(--theme-text-3);
+  font-variant-numeric: tabular-nums;
 }
 
-.contact-item {
-  width: 100%;
+.entry__arrow {
+  color: var(--theme-text-3);
+  transform: rotate(180deg);
+  opacity: 0.5;
+}
+
+.star-row {
+  margin: 8px 10px 0;
+  width: calc(100% - 20px);
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
-  border: none;
-  border-radius: var(--theme-radius-sm);
-  background: transparent;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--theme-hairline);
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-2);
+  font-size: 12.5px;
   cursor: pointer;
-  text-align: left;
-  transition: background var(--theme-duration-fast) var(--theme-ease);
+  transition: background var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease);
 }
 
-.contact-item:hover {
+.star-row:hover {
   background: var(--theme-bg-hover);
 }
 
-.contact-item.active {
+.star-row.is-active {
+  color: var(--theme-primary);
+  border-color: color-mix(in srgb, var(--theme-primary) 30%, transparent);
   background: var(--theme-primary-soft);
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  font-weight: 700;
-  color: #fff;
-  background: var(--theme-gradient);
-  overflow: hidden;
-}
-
-.avatar.group {
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--theme-accent-3), var(--theme-primary));
-}
-
-.avatar.small {
-  width: 36px;
-  height: 36px;
-  font-size: 14px;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.name {
+.star-row span:first-of-type {
   flex: 1;
-  min-width: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--theme-text-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.contact-item {
+  padding: 9px 12px;
+}
+
+.star-mark {
+  color: #f5b301;
+  flex-shrink: 0;
+}
+
+.group-list {
+  padding-top: 6px;
+}
+
+.im-chat-stub {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--theme-primary);
 }
 
 .request-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 320px;
+  gap: 6px;
+  max-height: 380px;
   overflow-y: auto;
 }
 
 .request-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: var(--theme-radius-sm);
-  transition: background var(--theme-duration-fast) var(--theme-ease);
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-hairline);
+  background: var(--theme-bg-surface-2);
 }
 
-.request-item:hover {
-  background: var(--theme-bg-hover);
-}
-
-.request-meta {
+.request-main {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .request-name {
-  font-size: 13px;
+  margin: 0;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--theme-text-1);
 }
 
 .request-message {
-  font-size: 12px;
+  margin: 3px 0 0;
+  font-size: 11.5px;
   color: var(--theme-text-3);
   white-space: nowrap;
   overflow: hidden;
@@ -390,8 +559,16 @@ async function handleRequest(request: FriendRequestInfo, accept: boolean): Promi
 }
 
 .request-actions {
-  flex-shrink: 0;
   display: flex;
   gap: 6px;
+  flex-shrink: 0;
+}
+
+.request-actions :deep(.el-button span) {
+  margin-left: 4px;
+}
+
+.request-empty {
+  min-height: 220px;
 }
 </style>

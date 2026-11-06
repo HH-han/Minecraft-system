@@ -1,188 +1,188 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ElIcon } from 'element-plus';
+import { ChatDotRound, InfoFilled, Plus, Search, User, UserFilled } from '@element-plus/icons-vue';
+import { resolveMediaUrl } from '@/config';
 import { useChatStore } from '@/stores/chat';
+import { formatListTime } from '@/utils/format';
+import type { Conversation } from '@/types/im';
 
-const { t } = useI18n();
+const emit = defineEmits<{
+  openAddFriend: [];
+  openCreateGroup: [];
+  openInfo: [key: string];
+}>();
+
+const { t, locale } = useI18n();
 const chatStore = useChatStore();
-
 const keyword = ref('');
 
-const filtered = computed(() => {
+const filtered = computed<Conversation[]>(() => {
   const kw = keyword.value.trim().toLowerCase();
   if (!kw) return chatStore.conversations;
-  return chatStore.conversations.filter((item) => item.name.toLowerCase().includes(kw));
+  return chatStore.conversations.filter(
+    (item) =>
+      item.name.toLowerCase().includes(kw) ||
+      (item.lastMessage ?? '').toLowerCase().includes(kw)
+  );
 });
 
-function formatTime(value?: string): string {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  const now = new Date();
-  const sameDay = date.toDateString() === now.toDateString();
-  if (sameDay) {
-    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-  }
-  return `${date.getMonth() + 1}/${date.getDate()}`;
+function avatarOf(conversation: Conversation): string | undefined {
+  return resolveMediaUrl(conversation.avatar);
+}
+
+function initialOf(conversation: Conversation): string {
+  return (conversation.name || '?').trim().charAt(0).toUpperCase();
+}
+
+function previewOf(conversation: Conversation): string {
+  if (conversation.lastMessageType === 'image') return t('im.chat.imagePreview');
+  if (conversation.lastMessageType === 'file') return t('im.chat.filePreview');
+  return conversation.lastMessage || t('im.conversation.noMessage');
+}
+
+function timeOf(conversation: Conversation): string {
+  return formatListTime(conversation.lastTime, locale.value, t('im.time.yesterday'));
+}
+
+function select(conversation: Conversation): void {
+  void chatStore.selectConversation(conversation.key);
+}
+
+function handleCommand(command: string): void {
+  if (command === 'add-friend') emit('openAddFriend');
+  if (command === 'create-group') emit('openCreateGroup');
 }
 </script>
 
 <template>
-  <div class="conversation-list">
-    <div class="search-box">
+  <aside class="im-column conversation-column">
+    <header class="im-column-head">
+      <h2 class="im-column-title">{{ t('im.conversation.title') }}</h2>
+      <div class="im-column-actions">
+        <el-dropdown trigger="click" placement="bottom-end" @command="handleCommand">
+          <button class="im-icon-btn is-round" :title="t('im.common.more')">
+            <el-icon :size="16"><Plus /></el-icon>
+          </button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="add-friend">
+                <el-icon><User /></el-icon>
+                {{ t('im.conversation.addFriend') }}
+              </el-dropdown-item>
+              <el-dropdown-item command="create-group">
+                <el-icon><ChatDotSquare /></el-icon>
+                {{ t('im.conversation.newChat') }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+    </header>
+
+    <div class="im-search-row">
       <el-input
         v-model="keyword"
         :placeholder="t('im.conversation.search')"
-        size="small"
         clearable
-      />
+      >
+        <template #prefix>
+          <el-icon :size="14"><Search /></el-icon>
+        </template>
+      </el-input>
     </div>
 
-    <div class="list-scroll">
-      <el-empty
-        v-if="!filtered.length"
-        :description="t('im.conversation.empty')"
-        :image-size="90"
-      />
-      <button
-        v-for="item in filtered"
-        :key="item.key"
-        type="button"
-        class="conversation-item"
-        :class="{ active: chatStore.activeKey === item.key }"
-        @click="chatStore.selectConversation(item.key)"
-      >
-        <span class="avatar" :class="{ group: item.type === 'group' }">
-          <img v-if="item.avatar" :src="item.avatar" :alt="item.name" />
-          <template v-else>{{ item.name[0] }}</template>
-        </span>
-        <span class="meta">
-          <span class="row">
-            <span class="name">{{ item.name }}</span>
-            <span class="time">{{ formatTime(item.lastTime) }}</span>
-          </span>
-          <span class="row">
-            <span class="preview">{{ item.lastMessage || '…' }}</span>
-            <span v-if="item.unread > 0" class="badge">{{ item.unread > 99 ? '99+' : item.unread }}</span>
-          </span>
-        </span>
-      </button>
+    <div class="im-scroll">
+      <div v-if="filtered.length" class="im-list">
+        <div
+          v-for="conversation in filtered"
+          :key="conversation.key"
+          class="im-list-item"
+          :class="{ 'is-active': chatStore.activeKey === conversation.key }"
+          @click="select(conversation)"
+        >
+          <div class="im-avatar">
+            <img
+              v-if="avatarOf(conversation)"
+              :src="avatarOf(conversation)"
+              :alt="conversation.name"
+            />
+            <template v-else>{{ initialOf(conversation) }}</template>
+            <span
+              v-if="conversation.type === 'single'"
+              class="im-status-dot"
+              :class="{ offline: !conversation.online }"
+            />
+            <span v-else class="im-group-badge">{{ conversation.memberCount ?? 0 }}</span>
+          </div>
+
+          <div class="im-list-item__body">
+            <div class="im-list-item__top">
+              <span class="im-list-item__name">{{ conversation.name }}</span>
+              <span class="im-list-item__time">{{ timeOf(conversation) }}</span>
+            </div>
+            <div class="im-list-item__bottom">
+              <span class="im-list-item__preview">{{ previewOf(conversation) }}</span>
+              <span v-if="conversation.unread" class="im-badge">
+                {{ conversation.unread > 99 ? '99+' : conversation.unread }}
+              </span>
+              <button
+                class="conversation-info"
+                :title="t('im.conversation.info')"
+                @click.stop="emit('openInfo', conversation.key)"
+              >
+                <el-icon :size="14"><InfoFilled /></el-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="im-empty">
+        <div class="im-empty__icon">
+          <el-icon :size="30"><UserFilled /></el-icon>
+        </div>
+        <p class="im-empty__title">
+          {{ keyword ? t('im.conversation.noResult') : t('im.conversation.empty') }}
+        </p>
+        <p class="im-empty__desc">
+          {{ keyword ? t('im.conversation.noResultDesc') : t('im.conversation.emptyDesc') }}
+        </p>
+      </div>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped>
-.conversation-list {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.search-box {
-  padding: 0 14px 10px;
-}
-
-.list-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 8px 10px;
-}
-
-.conversation-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 10px;
-  border: none;
-  border-radius: var(--theme-radius-sm);
-  background: transparent;
-  cursor: pointer;
-  text-align: left;
-  transition: background var(--theme-duration-fast) var(--theme-ease);
-}
-
-.conversation-item:hover {
-  background: var(--theme-bg-hover);
-}
-
-.conversation-item.active {
-  background: var(--theme-primary-soft);
-}
-
-.avatar {
-  width: 42px;
-  height: 42px;
+.conversation-column {
+  width: 292px;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-right: 1px solid var(--theme-hairline);
+}
+
+.conversation-info {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--theme-text-3);
   display: grid;
   place-items: center;
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  background: var(--theme-gradient);
-  overflow: hidden;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--theme-duration-fast) var(--theme-ease),
+    background var(--theme-duration-fast) var(--theme-ease);
 }
 
-.avatar.group {
-  background: linear-gradient(135deg, var(--theme-accent-3), var(--theme-primary));
+.im-list-item:hover .conversation-info,
+.im-list-item.is-active .conversation-info {
+  opacity: 1;
 }
 
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.meta {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.name {
-  font-size: 14px;
-  font-weight: 600;
+.conversation-info:hover {
+  background: var(--theme-bg-muted);
   color: var(--theme-text-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.time {
-  font-size: 11px;
-  color: var(--theme-text-3);
-  flex-shrink: 0;
-}
-
-.preview {
-  font-size: 12px;
-  color: var(--theme-text-3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.badge {
-  flex-shrink: 0;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 9px;
-  background: var(--theme-danger);
-  color: #fff;
-  font-size: 11px;
-  line-height: 18px;
-  text-align: center;
 }
 </style>

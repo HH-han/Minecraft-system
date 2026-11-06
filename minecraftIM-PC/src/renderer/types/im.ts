@@ -1,9 +1,5 @@
-/**
- * IM 领域模型。字段与后端 entity / DTO 对齐，后端可能返回额外字段，
- * 因此关键实体保留索引签名，避免严格类型阻断渲染。
- */
+/** 后端 IM / 用户 / 收藏 / 朋友圈 领域模型 */
 
-/** 登录 / 注册成功的返回（LoginResponse DTO） */
 export interface LoginResult {
   token: string;
   userId: number;
@@ -14,21 +10,7 @@ export interface LoginResult {
   account?: string;
   phone?: string;
   signature?: string;
-  experience?: number;
-}
-
-/** 当前用户信息（/user/info） */
-export interface UserInfo {
-  id?: number;
-  userId?: number;
-  username?: string;
-  nickname?: string;
-  account?: string;
-  email?: string;
-  phone?: string;
-  avatar?: string;
-  signature?: string;
-  [key: string]: unknown;
+  experience?: string;
 }
 
 export interface LoginParams {
@@ -44,98 +26,199 @@ export interface RegisterParams {
   avatar?: string;
 }
 
-/** 好友信息（/public/im/friend/info/list 的列表项） */
-export interface FriendInfo {
-  friendId?: number;
+export interface UserInfo {
+  id?: number;
   userId?: number;
-  username?: string;
+  account?: string;
+  username: string;
   nickname?: string;
+  email?: string;
+  phone?: string;
   avatar?: string;
-  remark?: string;
+  gender?: string;
+  age?: number;
+  occupation?: string;
+  hobbies?: string;
   signature?: string;
-  status?: number | string;
-  [key: string]: unknown;
+  experience?: string;
+  bio?: string;
+  points?: number;
+  /** 0-在线 1-离线 */
+  online?: number;
+  /** 0-禁用 1-正常 */
+  status?: number;
+  permissions?: string;
+  createTime?: string;
 }
 
-/** 好友申请（/public/im/friend/request/info/pending 的列表项） */
+/** 好友（好友列表带最后一条消息与未读数） */
+export interface FriendInfo {
+  friendId: number;
+  remark?: string;
+  username: string;
+  avatar?: string;
+  online?: boolean;
+  lastMessage?: string;
+  lastMessageTime?: string;
+  unreadCount?: number;
+  phone?: string;
+  email?: string;
+}
+
 export interface FriendRequestInfo {
   id?: number;
   requestId?: number;
+  userId?: number;
   senderId?: number;
-  receiverId?: number;
+  friendId?: number;
+  username?: string;
+  nickname?: string;
+  avatar?: string;
+  phone?: string;
   message?: string;
-  status?: number | string;
-  senderNickname?: string;
-  senderAvatar?: string;
+  remark?: string;
+  status?: number;
   createTime?: string;
-  [key: string]: unknown;
 }
 
-/** 群聊（ChatGroup 实体） */
 export interface ChatGroup {
   id: number;
-  name?: string;
-  groupName?: string;
-  avatar?: string;
+  name: string;
+  description?: string;
   creatorId?: number;
+  avatar?: string;
   memberCount?: number;
-  notice?: string;
-  [key: string]: unknown;
+  maxMembers?: number;
+  createTime?: string;
 }
 
-export type ChatMessageType = 'text' | 'image' | 'emoji' | 'file' | string;
+export interface GroupMember {
+  id?: number;
+  groupId: number;
+  userId: number;
+  nickname?: string;
+  username?: string;
+  avatar?: string;
+  role?: string;
+  status?: number;
+  joinTime?: string;
+}
 
-/** 聊天消息（ChatMessage / GroupChatMessage 实体，字段做并集处理） */
 export interface ChatMessage {
   id?: number;
-  senderId?: number;
+  senderId: number;
   receiverId?: number;
   groupId?: number;
-  content?: string;
-  messageType?: ChatMessageType;
-  type?: ChatMessageType;
-  sendTime?: string;
-  createTime?: string;
-  isRead?: number | boolean;
-  senderNickname?: string;
+  senderName?: string;
   senderAvatar?: string;
+  content: string;
+  messageType?: string;
+  isRead?: number;
+  createTime?: string;
   [key: string]: unknown;
 }
 
-/** 渲染层聚合的会话模型（由好友 + 群组合成） */
 export interface Conversation {
-  /** 'single-<friendId>' 或 'group-<groupId>' */
   key: string;
   type: 'single' | 'group';
   targetId: number;
   name: string;
   avatar?: string;
   lastMessage?: string;
+  lastMessageType?: string;
   lastTime?: string;
   unread: number;
+  online?: boolean;
+  memberCount?: number;
 }
 
+export type FavoriteType =
+  | 'note'
+  | 'link'
+  | 'image'
+  | 'file'
+  | 'chat'
+  | 'voice'
+  | 'location'
+  | 'miniapp'
+  | 'other';
+
 export interface FavoriteItem {
-  id?: number;
+  id: number;
+  userId?: number;
+  type: FavoriteType | string;
   title?: string;
   content?: string;
-  type?: string;
-  tags?: string;
+  cover?: string;
+  url?: string;
+  fileName?: string;
+  fileSize?: number;
+  tags?: string[];
+  source?: string;
+  status?: number;
   createTime?: string;
   updateTime?: string;
-  [key: string]: unknown;
+}
+
+export interface FavoriteStat {
+  total: number;
+  types: Record<string, number>;
+}
+
+export interface MomentUser {
+  userId: number;
+  username?: string;
+  nickname?: string;
+  avatar?: string;
+}
+
+export interface MomentComment {
+  id: number;
+  momentId: number;
+  userId: number;
+  username?: string;
+  nickname?: string;
+  avatar?: string;
+  replyToUserId?: number;
+  replyToNickname?: string;
+  content: string;
+  status?: number;
+  createTime?: string;
 }
 
 export interface MomentItem {
-  id?: number;
-  userId?: number;
+  id: number;
+  userId: number;
+  username?: string;
   nickname?: string;
   avatar?: string;
   content?: string;
-  images?: string | string[];
+  images?: string[];
+  location?: string;
+  visibility?: number;
   likeCount?: number;
   commentCount?: number;
+  status?: number;
   createTime?: string;
   liked?: boolean;
+  likes?: MomentUser[];
+  comments?: MomentComment[];
+}
+
+export interface LikeResult {
+  liked?: boolean;
+  likeCount?: number;
+  [key: string]: unknown;
+}
+
+export interface PointsRecord {
+  id?: number;
+  userId?: number;
+  points?: number;
+  amount?: number;
+  type?: string | number;
+  description?: string;
+  remark?: string;
+  createTime?: string;
   [key: string]: unknown;
 }
