@@ -1,0 +1,14 @@
+{
+  "app": {
+    "name": "Minecraft IM PC",
+    "tagline": "Lightweight Minecraft instant-messaging desktop client"
+  },
+  "nav": {
+    "home": "Chats",
+    "settings": "Settings"
+  },
+  "status": {
+    "desktop": "Desktop mode",
+    "browser": "Browser preview"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "minecraft-im-pc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minecraft IM desktop client built with Adrenaline.js",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "npm run build && adrenaline dev",
+    "dev:renderer": "vite",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:renderer": "vite build",
+    "build:main": "node scripts/build-main.mjs",
+    "start": "npm run build && adrenaline start",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.main.json"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "adrenaline-js": "^0.5.0",
+    "element-plus": "^2.13.2",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.25",
+    "vue-i18n": "^11.4.13"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.3.1",
+    "vue-tsc": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

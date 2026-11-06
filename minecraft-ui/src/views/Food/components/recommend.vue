@@ -32,7 +32,7 @@
             <div class="cuisine-grid">
                 <div class="cuisine-card" v-for="cuisine in cuisines" :key="cuisine.id"
                     @click="selectCuisine(cuisine.id)" :class="{ active: selectedCuisine === cuisine.id }">
-                    <div class="cuisine-icon">{{ cuisine.icon }}</div>
+                    <div class="cuisine-icon"><i :class="cuisine.icon"></i></div>
                     <h3>{{ cuisine.name }}</h3>
                 </div>
             </div>
@@ -117,15 +117,15 @@ const quickFilters = [
 
 // 美食分类（按真实菜系数据归组）
 const cuisines = [
-    { id: 'all', name: '全部', icon: '🧺' },
-    { id: 'sichuan', name: '川渝风味', icon: '🍲' },
-    { id: 'north', name: '北方风味', icon: '🥟' },
-    { id: 'east', name: '江浙沪徽', icon: '🦀' },
-    { id: 'south', name: '粤闽桂琼', icon: '🍵' },
-    { id: 'hunan', name: '湘黔风味', icon: '🌶️' },
-    { id: 'yunnan', name: '云贵风味', icon: '🍄' },
-    { id: 'central', name: '华中赣鄂', icon: '🍚' },
-    { id: 'snack', name: '小吃面食', icon: '🍢' }
+    { id: 'all', name: '全部', icon: 'fas fa-utensils' },
+    { id: 'sichuan', name: '川渝风味', icon: 'fas fa-pepper-hot' },
+    { id: 'north', name: '北方风味', icon: 'fas fa-bread-slice' },
+    { id: 'east', name: '江浙沪徽', icon: 'fas fa-fish' },
+    { id: 'south', name: '粤闽桂琼', icon: 'fas fa-mug-hot' },
+    { id: 'hunan', name: '湘黔风味', icon: 'fas fa-fire' },
+    { id: 'yunnan', name: '云贵风味', icon: 'fas fa-leaf' },
+    { id: 'central', name: '华中赣鄂', icon: 'fas fa-utensil-spoon' },
+    { id: 'snack', name: '小吃面食', icon: 'fas fa-hamburger' }
 ]
 
 // 菜系分组关键词
@@ -270,9 +270,11 @@ onMounted(loadRecommendations)
 /* 头部样式 */
 .header {
     position: relative;
-    height: 250px;
+    height: auto;
+    min-height: 210px;
     border-radius: 14px;
     margin: 24px 0 24px 0;
+    padding: 32px 24px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -281,17 +283,21 @@ onMounted(loadRecommendations)
 }
 
 .header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 2.4rem;
+    margin-bottom: 8px;
     font-weight: 700;
+    background: var(--theme-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
 }
 
 .bg {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    width: calc(100% - 10px);
-    height: 240px;
+    inset: 5px;
+    width: auto;
+    height: auto;
     z-index: 2;
     background: var(--theme-bg-glass-strong);
     backdrop-filter: blur(24px);
@@ -336,54 +342,70 @@ onMounted(loadRecommendations)
     }
 }
 
-.header-content{
+.header-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 760px;
     position: relative;
     z-index: 3;
 }
 
 .subtitle {
-    font-size: 1.1rem;
-    margin-bottom: 25px;
-    opacity: 0.9;
+    font-size: 1rem;
+    color: var(--theme-text-2);
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .search-container {
-    max-width: 800px;
+    width: 100%;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0;
 }
 
 .search-bar {
     display: flex;
-    margin-bottom: 15px;
+    align-items: stretch;
+    gap: 8px;
+    padding: 6px;
+    margin-bottom: 14px;
+    background: var(--theme-bg-surface);
+    border: 1px solid var(--theme-border);
+    border-radius: 999px;
+    box-shadow: var(--theme-shadow-sm);
 }
 
 .search-bar input {
     flex: 1;
-    padding: 14px 20px;
+    min-width: 0;
+    padding: 12px 18px;
     border: none;
-    border-radius: 30px 0 0 30px;
-    font-size: 16px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--theme-text-1);
+    font-size: 15px;
     outline: none;
-    box-shadow: var(--theme-shadow-sm);
-    transition: box-shadow 0.3s ease;
+    box-shadow: none;
+    transition: none;
 }
 
 .search-bar input:focus {
-    box-shadow: var(--theme-ring);
+    box-shadow: none;
 }
 
 .search-bar button {
-    padding: 0 25px;
+    flex-shrink: 0;
+    padding: 0 22px;
     background: var(--theme-gradient);
     color: var(--theme-primary-text);
     border: none;
-    border-radius: 0 30px 30px 0;
-    font-size: 16px;
+    border-radius: 999px;
+    font-size: 15px;
     font-weight: 600;
+    white-space: nowrap;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -397,24 +419,25 @@ onMounted(loadRecommendations)
 }
 
 .search-icon {
-    margin-right: 8px;
+    margin-right: 6px;
+    font-size: 14px;
 }
 
 .quick-filters {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
 }
 
 .quick-filters button {
-    padding: 8px 18px;
+    padding: 7px 16px;
     background: var(--theme-bg-surface);
     color: var(--theme-text-2);
-    border: none;
+    border: 1px solid var(--theme-border);
     border-radius: 999px;
     box-shadow: var(--theme-shadow-sm);
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -427,6 +450,7 @@ onMounted(loadRecommendations)
 .quick-filters button.active {
     background: var(--theme-gradient);
     color: var(--theme-primary-text);
+    border-color: transparent;
     font-weight: 600;
     box-shadow: var(--theme-shadow-sm);
 }
@@ -465,6 +489,10 @@ onMounted(loadRecommendations)
     background: var(--theme-bg-surface);
     border-radius: 12px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 14px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -484,8 +512,11 @@ onMounted(loadRecommendations)
 }
 
 .cuisine-icon {
-    font-size: 2rem;
-    margin-bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.35rem;
+    color: var(--theme-primary);
+    flex-shrink: 0;
 }
 
 .cuisine-card h3 {
@@ -742,22 +773,60 @@ onMounted(loadRecommendations)
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .header h1 {
-        font-size: 2rem;
+    .header {
+        min-height: 0;
+        margin: 14px 0 18px;
+        padding: 22px 12px 18px;
     }
 
+    .header h1 {
+        font-size: 1.6rem;
+    }
+
+    .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 16px;
+    }
+
+    .search-container {
+        max-width: 100%;
+    }
+
+    /* 搜索框保持一行：输入框自适应 + 按钮紧凑 */
     .search-bar {
-        flex-direction: column;
+        padding: 5px;
+        gap: 6px;
+        margin-bottom: 12px;
     }
 
     .search-bar input {
-        border-radius: 30px;
-        margin-bottom: 10px;
+        padding: 10px 14px;
+        font-size: 14px;
     }
 
     .search-bar button {
-        border-radius: 30px;
-        justify-content: center;
+        padding: 0 14px;
+        font-size: 14px;
+    }
+
+    .search-icon {
+        margin-right: 4px;
+        font-size: 13px;
+    }
+
+    /* 快捷筛选横向滚动，不换行 */
+    .quick-filters {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .quick-filters button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 6px 14px;
+        font-size: 12px;
     }
 
     .cuisine-grid {

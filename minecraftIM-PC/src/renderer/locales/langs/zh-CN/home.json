@@ -1,0 +1,34 @@
+{
+  "title": "欢迎使用 Minecraft IM PC",
+  "subtitle": "Adrenaline.js + Vue 3 基础架构已就绪：主进程服务、类型安全 IPC、主题与国际化能力均已接通。",
+  "runtime": {
+    "title": "运行环境",
+    "version": "应用版本",
+    "platform": "平台 / 架构",
+    "node": "Node.js",
+    "mode": "运行模式",
+    "dev": "开发模式",
+    "prod": "生产模式",
+    "refresh": "刷新"
+  },
+  "auth": {
+    "title": "账号登录",
+    "description": "当前为本地占位认证，接入后端后只需替换 auth.service。",
+    "username": "用户名",
+    "password": "密码",
+    "usernamePlaceholder": "请输入用户名",
+    "passwordPlaceholder": "请输入密码",
+    "submit": "登录",
+    "submitting": "登录中…",
+    "logout": "退出登录",
+    "welcome": "已登录：{name}",
+    "emptyError": "用户名和密码不能为空"
+  },
+  "file": {
+    "title": "文件能力",
+    "description": "通过主进程原生对话框选择文件，用于验证 IPC 通路。",
+    "select": "选择文件",
+    "none": "尚未选择文件",
+    "selected": "已选择：{path}"
+  }
+}

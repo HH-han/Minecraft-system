@@ -1,0 +1,14 @@
+{
+  "app": {
+    "name": "Minecraft IM PC",
+    "tagline": "轻量级 Minecraft 即时通讯桌面客户端"
+  },
+  "nav": {
+    "home": "会话",
+    "settings": "设置"
+  },
+  "status": {
+    "desktop": "桌面模式",
+    "browser": "浏览器预览"
+  }
+}

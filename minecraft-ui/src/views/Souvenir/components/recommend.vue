@@ -28,7 +28,7 @@
         <nav class="category-nav">
             <div class="category-item" v-for="category in categories" :key="category.id"
                 :class="{ active: activeCategory === category.id }" @click="filterByCategory(category.id)">
-                <div class="category-icon">{{ category.icon }}</div>
+                <div class="category-icon"><i :class="category.icon"></i></div>
                 <span>{{ category.name }}</span>
             </div>
         </nav>
@@ -110,14 +110,14 @@ const loading = ref(false)
 
 // 分类导航（基于商品真实类型）
 const categories = [
-    { id: 'all', name: '全部', icon: '🛍️' },
-    { id: 'food', name: '特色食品', icon: '🍪' },
-    { id: 'craft', name: '手工艺品', icon: '✂️' },
-    { id: 'clothing', name: '丝绸纺织', icon: '👕' },
-    { id: 'decoration', name: '家居装饰', icon: '🏠' },
-    { id: 'jewelry', name: '珠宝首饰', icon: '💍' },
-    { id: 'beauty', name: '美妆保健', icon: '💄' },
-    { id: 'other', name: '其他', icon: '🎁' }
+    { id: 'all', name: '全部', icon: 'fas fa-store' },
+    { id: 'food', name: '特色食品', icon: 'fas fa-cookie-bite' },
+    { id: 'craft', name: '手工艺品', icon: 'fas fa-cut' },
+    { id: 'clothing', name: '丝绸纺织', icon: 'fas fa-tshirt' },
+    { id: 'decoration', name: '家居装饰', icon: 'fas fa-couch' },
+    { id: 'jewelry', name: '珠宝首饰', icon: 'fas fa-gem' },
+    { id: 'beauty', name: '美妆保健', icon: 'fas fa-spa' },
+    { id: 'other', name: '其他', icon: 'fas fa-gift' }
 ]
 
 // 分类与商品类型（subType）的映射
@@ -460,8 +460,15 @@ onMounted(loadRecommendations)
 }
 
 .category-icon {
-    font-size: 1.4rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.15rem;
     line-height: 1;
+    color: var(--theme-primary);
+}
+
+.category-item.active .category-icon {
+    color: var(--theme-primary-text);
 }
 
 .category-item span {
