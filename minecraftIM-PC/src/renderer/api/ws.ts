@@ -41,6 +41,14 @@ class WebSocketService {
   connect(userId: number): void {
     const token = localStorage.getItem(tokenStorageKey);
     if (!token || !userId) return;
+
+    // 切换账号时关闭上一个账号的连接，避免复用旧 token 的连接
+    if (this.userId !== null && this.userId !== userId && this.ws) {
+      this.isClosing = true;
+      this.stopHeartbeat();
+      this.ws.close(1000, 'Account switched');
+      this.ws = null;
+    }
     this.userId = userId;
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) return;

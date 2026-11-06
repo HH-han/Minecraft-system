@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   ChatDotRound,
@@ -119,10 +119,17 @@ function openSettings(): void {
   showSettings.value = true;
 }
 
-onMounted(async () => {
-  chatStore.bindWs();
-  await chatStore.loadContacts();
-});
+/** 账号就绪 / 切换后重新绑定 WS 并拉取通讯录（登录其他账号也能正确加载） */
+watch(
+  () => chatStore.currentUserId,
+  async (id, prev) => {
+    if (!id) return;
+    if (prev && prev !== id) chatStore.reset();
+    chatStore.bindWs();
+    await chatStore.loadContacts();
+  },
+  { immediate: true }
+);
 
 onBeforeUnmount(() => {
   chatStore.unbindWs();

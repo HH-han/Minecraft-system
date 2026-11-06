@@ -15,13 +15,24 @@ function readStoredUser(): UserInfo | null {
   }
 }
 
+/** 读取本地 token，顺带清理历史遗留的非法值（如 "undefined"） */
+function readStoredToken(): string | null {
+  const raw = localStorage.getItem(tokenStorageKey);
+  if (!raw || raw === 'undefined' || raw === 'null') {
+    localStorage.removeItem(tokenStorageKey);
+    return null;
+  }
+  return raw;
+}
+
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(localStorage.getItem(tokenStorageKey));
+  const token = ref<string | null>(readStoredToken());
   const user = ref<UserInfo | null>(readStoredUser());
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  const authenticated = computed(() => Boolean(token.value));
+  // token 与用户信息同时存在才算已登录，避免脏数据进入 IM 后 userId 缺失
+  const authenticated = computed(() => Boolean(token.value && user.value));
   const userId = computed<number | null>(() => {
     const u = user.value;
     if (!u) return null;
@@ -30,6 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
   });
 
   function applyLoginResult(data: LoginResult): void {
+    if (!data?.token) throw new Error('登录响应异常，请重试');
     token.value = data.token;
     localStorage.setItem(tokenStorageKey, data.token);
     const { token: _ignored, ...profile } = data;
@@ -58,7 +70,10 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
     try {
       const res = await registerApi(payload);
-      applyLoginResult(res.data);
+      // 后端注册接口只返回新账号，需要再登录一次换取 token 与用户信息
+      const account = typeof res.data === 'string' && res.data ? res.data : payload.username;
+      const loginRes = await loginApi({ account, password: payload.password });
+      applyLoginResult(loginRes.data);
       connectWs();
       return true;
     } catch (err) {
@@ -116,6 +131,8 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem(tokenStorageKey);
     localStorage.removeItem(userInfoStorageKey);
     wsService.disconnect();
+    // 通知各业务 store 清理上一个账号的数据
+    window.dispatchEvent(new CustomEvent('app:session-cleared'));
   }
 
   async function logout(): Promise<void> {

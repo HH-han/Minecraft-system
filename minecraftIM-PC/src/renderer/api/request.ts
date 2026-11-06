@@ -1,4 +1,4 @@
-import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { ElMessage } from 'element-plus';
 import { apiBaseUrl, tokenStorageKey, userInfoStorageKey } from '@/config';
 
@@ -7,6 +7,13 @@ export interface ApiResponse<T = unknown> {
   code: number;
   message: string;
   data: T;
+}
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    /** 静默请求：失败时不弹出全局错误提示（用于可选查询） */
+    silent?: boolean;
+  }
 }
 
 const request = axios.create({
@@ -50,7 +57,7 @@ request.interceptors.response.use(
     if (body.code === 200) return body;
     // 业务错误：统一提示并拒绝
     const message = body.message || '请求失败';
-    ElMessage.error(message);
+    if (!response.config.silent) ElMessage.error(message);
     return Promise.reject(new Error(message));
   },
   (error: AxiosError<ApiResponse>) => {
@@ -58,7 +65,7 @@ request.interceptors.response.use(
 
     const status = error.response?.status;
     const body = error.response?.data;
-    const silent = (error.config as AxiosRequestConfig & { silent?: boolean })?.silent;
+    const silent = error.config?.silent;
 
     if (status === 401) {
       if (!silent) ElMessage.error(body?.message || '登录已过期，请重新登录');

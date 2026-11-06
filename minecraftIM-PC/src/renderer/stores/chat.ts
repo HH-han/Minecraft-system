@@ -68,6 +68,8 @@ export const useChatStore = defineStore('chat', () => {
   const loadingContacts = ref(false);
   const connected = ref(false);
   const wsBound = ref(false);
+  /** 已加载过通讯录的账号，用于切换账号时判断是否需要重新拉取 */
+  const loadedUserId = ref<number | null>(null);
 
   const currentUserId = computed(() => authStore.userId ?? 0);
 
@@ -169,6 +171,13 @@ export const useChatStore = defineStore('chat', () => {
   async function loadContacts(): Promise<void> {
     const userId = currentUserId.value;
     if (!userId) return;
+
+    // 切换账号后先清空上一个账号的数据，避免好友/会话串号
+    if (loadedUserId.value !== null && loadedUserId.value !== userId) {
+      clearData();
+    }
+    loadedUserId.value = userId;
+
     loadingContacts.value = true;
     readStars();
 
@@ -177,6 +186,9 @@ export const useChatStore = defineStore('chat', () => {
       getGroupsByUserId(userId),
       getPendingFriendRequestsWithInfo(userId)
     ]);
+
+    // 请求返回期间账号已切换，丢弃这次结果
+    if (loadedUserId.value !== userId) return;
 
     if (friendResult.status === 'fulfilled') {
       friends.value = friendResult.value.data ?? [];
@@ -441,8 +453,8 @@ export const useChatStore = defineStore('chat', () => {
     wsBound.value = false;
   }
 
-  function reset(): void {
-    unbindWs();
+  /** 只清空账号相关数据，保留 WS 绑定状态 */
+  function clearData(): void {
     friends.value = [];
     groups.value = [];
     friendRequests.value = [];
@@ -451,8 +463,19 @@ export const useChatStore = defineStore('chat', () => {
     starredIds.value = [];
     groupMembersMap.value = {};
     activeKey.value = null;
+    loadedUserId.value = null;
+  }
+
+  function reset(): void {
+    unbindWs();
+    clearData();
     connected.value = false;
   }
+
+  // 退出登录 / 登录过期时清空上一账号的会话数据，避免切换账号后数据串号
+  window.addEventListener('app:session-cleared', () => {
+    reset();
+  });
 
   return {
     friends,

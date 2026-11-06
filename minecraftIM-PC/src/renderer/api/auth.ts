@@ -6,7 +6,7 @@ export function login(params: LoginParams) {
   return request.post<unknown, ApiResponse<LoginResult>>('/auth/login', params);
 }
 
-/** 注册：POST /auth/register（成功后会话即建立，后端直接返回登录态） */
+/** 注册：POST /auth/register（后端返回新账号，需再登录获取登录态） */
 export function register(params: RegisterParams) {
-  return request.post<unknown, ApiResponse<LoginResult>>('/auth/register', params);
+  return request.post<unknown, ApiResponse<string>>('/auth/register', params);
 }

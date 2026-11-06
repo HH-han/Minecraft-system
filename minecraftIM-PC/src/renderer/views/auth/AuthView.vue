@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
 import {
   Camera,
   ChatDotRound,
+  Check,
   Lock,
   MagicStick,
   Moon,
   Sunny,
-  User
+  User,
+  UserFilled
 } from '@element-plus/icons-vue';
-import { uploadUserImage } from '@/api/user';
+import { getUserByAccount, uploadUserImage } from '@/api/user';
 import { resolveMediaUrl } from '@/config';
 import { SUPPORTED_LOCALES, setLocale, type AppLocale } from '@/locales';
 import { useAuthStore } from '@/stores/auth';
@@ -46,6 +48,47 @@ const registerAvatarUrl = computed(() => resolveMediaUrl(registerAvatar.value));
 const registerInitial = computed(() =>
   (registerForm.username || '?').trim().charAt(0).toUpperCase()
 );
+
+/** 登录账号输入后防抖查询该账号的头像，用于登录框头像预览 */
+const loginAvatar = ref('');
+const loginAvatarLoading = ref(false);
+const loginAvatarUrl = computed(() => resolveMediaUrl(loginAvatar.value));
+const loginAccount = computed(() => loginForm.account.trim());
+
+let avatarTimer: ReturnType<typeof setTimeout> | null = null;
+let avatarRequestSeq = 0;
+
+watch(loginAccount, (value) => {
+  if (avatarTimer) {
+    clearTimeout(avatarTimer);
+    avatarTimer = null;
+  }
+  if (!value) {
+    avatarRequestSeq += 1;
+    loginAvatar.value = '';
+    loginAvatarLoading.value = false;
+    return;
+  }
+  avatarTimer = setTimeout(async () => {
+    avatarTimer = null;
+    const seq = ++avatarRequestSeq;
+    loginAvatarLoading.value = true;
+    try {
+      const res = await getUserByAccount(value, { silent: true });
+      if (seq !== avatarRequestSeq) return;
+      loginAvatar.value = res.data?.avatar ?? '';
+    } catch {
+      if (seq === avatarRequestSeq) loginAvatar.value = '';
+    } finally {
+      if (seq === avatarRequestSeq) loginAvatarLoading.value = false;
+    }
+  }, 450);
+});
+
+onBeforeUnmount(() => {
+  if (avatarTimer) clearTimeout(avatarTimer);
+  avatarRequestSeq += 1;
+});
 
 const currentLocale = computed(() => locale.value as AppLocale);
 
@@ -183,6 +226,16 @@ function notImplemented(): void {
 
       <!-- 登录表单 -->
       <form v-if="mode === 'login'" class="auth-form" @submit.prevent="submitLogin">
+        <div v-if="loginAccount" class="auth-login-avatar">
+          <span
+            class="auth-login-avatar__ring"
+            :class="{ 'is-loading': loginAvatarLoading }"
+          >
+            <img v-if="loginAvatarUrl" :src="loginAvatarUrl" :alt="loginAccount" />
+            <el-icon v-else :size="36"><UserFilled /></el-icon>
+          </span>
+        </div>
+
         <label class="auth-field">
           <span class="auth-field__icon">
             <el-icon :size="16"><User /></el-icon>
@@ -229,8 +282,11 @@ function notImplemented(): void {
         </div>
 
         <label class="auth-agreement">
-          <input v-model="agreed" type="checkbox" />
-          <span>{{ t('auth.agreement') }}</span>
+          <input v-model="agreed" type="checkbox" class="auth-agreement__input" />
+          <span class="auth-agreement__box" aria-hidden="true">
+            <el-icon :size="11"><Check /></el-icon>
+          </span>
+          <span class="auth-agreement__text">{{ t('auth.agreement') }}</span>
         </label>
 
         <div class="auth-foot">
@@ -326,8 +382,11 @@ function notImplemented(): void {
         </div>
 
         <label class="auth-agreement">
-          <input v-model="agreed" type="checkbox" />
-          <span>{{ t('auth.agreement') }}</span>
+          <input v-model="agreed" type="checkbox" class="auth-agreement__input" />
+          <span class="auth-agreement__box" aria-hidden="true">
+            <el-icon :size="11"><Check /></el-icon>
+          </span>
+          <span class="auth-agreement__text">{{ t('auth.agreement') }}</span>
         </label>
 
         <button type="submit" class="auth-submit" :disabled="authStore.loading">
@@ -593,6 +652,56 @@ function notImplemented(): void {
   margin-bottom: 2px;
 }
 
+.auth-login-avatar {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 2px;
+  animation: auth-avatar-in 260ms var(--theme-ease);
+}
+
+@keyframes auth-avatar-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.auth-login-avatar__ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--theme-text-3);
+  background: var(--theme-bg-surface-2);
+  border: 2px solid color-mix(in srgb, var(--theme-primary) 40%, transparent);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--theme-primary) 12%, transparent),
+    0 18px 34px -20px color-mix(in srgb, var(--theme-primary) 70%, transparent);
+}
+
+.auth-login-avatar__ring img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auth-login-avatar__ring.is-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--theme-primary);
+  animation: spin 750ms linear infinite;
+}
+
 .auth-avatar {
   position: relative;
   width: 78px;
@@ -815,17 +924,84 @@ function notImplemented(): void {
 .auth-agreement {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 9px;
   margin-top: 2px;
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--theme-text-3);
   cursor: pointer;
+  user-select: none;
 }
 
-.auth-agreement input {
-  margin: 2px 0 0;
-  accent-color: var(--theme-primary);
+/* 隐藏原生复选框，仅保留可访问性与键盘交互 */
+.auth-agreement__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.auth-agreement__box {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  border: 1.5px solid var(--theme-border);
+  background: var(--theme-bg-surface-2);
+  color: #fff;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+  transition:
+    background var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    box-shadow var(--theme-duration-fast) var(--theme-ease),
+    transform var(--theme-duration-fast) var(--theme-ease);
+}
+
+.auth-agreement__box .el-icon {
+  transform: scale(0.4);
+  opacity: 0;
+  transition:
+    transform var(--theme-duration-fast) var(--theme-ease),
+    opacity var(--theme-duration-fast) var(--theme-ease);
+}
+
+.auth-agreement:hover .auth-agreement__box {
+  border-color: color-mix(in srgb, var(--theme-primary) 60%, transparent);
+}
+
+.auth-agreement:hover .auth-agreement__text {
+  color: var(--theme-text-2);
+}
+
+.auth-agreement__input:checked + .auth-agreement__box {
+  border-color: transparent;
+  background: var(--theme-accent-gradient);
+  box-shadow: 0 6px 14px -8px color-mix(in srgb, var(--theme-primary) 85%, transparent);
+}
+
+.auth-agreement__input:checked + .auth-agreement__box .el-icon {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.auth-agreement__input:active + .auth-agreement__box {
+  transform: scale(0.92);
+}
+
+.auth-agreement__input:focus-visible + .auth-agreement__box {
+  box-shadow: var(--theme-ring);
+}
+
+.auth-agreement__text {
+  transition: color var(--theme-duration-fast) var(--theme-ease);
 }
 
 .auth-foot {

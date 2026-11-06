@@ -31,8 +31,11 @@ export function logout() {
   return request.post<unknown, ApiResponse<void>>('/user/logout');
 }
 
-export function getUserByAccount(account: string) {
-  return request.get<unknown, ApiResponse<UserInfo>>('/user/by-account', { params: { account } });
+export function getUserByAccount(account: string, options?: { silent?: boolean }) {
+  return request.get<unknown, ApiResponse<UserInfo>>('/user/by-account', {
+    params: { account },
+    silent: options?.silent
+  });
 }
 
 export function getUserPoints() {
