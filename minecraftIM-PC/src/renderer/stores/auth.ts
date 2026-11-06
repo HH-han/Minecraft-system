@@ -4,7 +4,7 @@ import { login as loginApi, register as registerApi } from '@/api/auth';
 import { getUserInfo, logout as logoutApi } from '@/api/user';
 import { wsService } from '@/api/ws';
 import { tokenStorageKey, userInfoStorageKey } from '@/config';
-import type { LoginParams, RegisterParams, UserInfo } from '@/types/im';
+import type { LoginParams, LoginResult, RegisterParams, UserInfo } from '@/types/im';
 
 function readStoredUser(): UserInfo | null {
   try {
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
     return typeof id === 'number' ? id : null;
   });
 
-  function applyLoginResult(data: { token: string } & Record<string, unknown>): void {
+  function applyLoginResult(data: LoginResult): void {
     token.value = data.token;
     localStorage.setItem(tokenStorageKey, data.token);
     const { token: _ignored, ...profile } = data;
