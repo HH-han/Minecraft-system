@@ -14,6 +14,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "closeWindow"), Napi::Function::New(env, Adrenaline::CloseWindow));
     exports.Set(Napi::String::New(env, "evalWindow"), Napi::Function::New(env, Adrenaline::EvalWindow));
     exports.Set(Napi::String::New(env, "navigateWindow"), Napi::Function::New(env, Adrenaline::NavigateWindow));
+    exports.Set(Napi::String::New(env, "setWindowIcon"), Napi::Function::New(env, Adrenaline::SetWindowIcon));
     exports.Set(Napi::String::New(env, "getCompiledFeatures"), Napi::Function::New(env, Adrenaline::GetCompiledFeatures));
     exports.Set(Napi::String::New(env, "showOpenDialog"), Napi::Function::New(env, Adrenaline::ShowOpenDialog));
     exports.Set(Napi::String::New(env, "showSaveDialog"), Napi::Function::New(env, Adrenaline::ShowSaveDialog));

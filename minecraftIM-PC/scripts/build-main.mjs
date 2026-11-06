@@ -31,4 +31,16 @@ await copyFile(
   console.warn('[build-main] WebView2Loader.dll 未找到，跳过复制');
 });
 
+// 复制主进程资源（窗口图标等）
+const assetsSrc = resolve(projectRoot, 'src/main/assets');
+const assetsDst = resolve(projectRoot, 'dist/main/assets');
+try {
+  await stat(assetsSrc);
+  const { cp } = await import('node:fs/promises');
+  await cp(assetsSrc, assetsDst, { recursive: true });
+  console.log('[build-main] assets copied -> dist/main/assets');
+} catch {
+  console.warn('[build-main] src/main/assets 不存在，跳过资源复制');
+}
+
 console.log(`[build-main] -> ${outfile}`);

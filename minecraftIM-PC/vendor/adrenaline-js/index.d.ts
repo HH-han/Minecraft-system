@@ -89,6 +89,7 @@ export class BrowserWindow extends EventEmitter {
   loadURL(url: string): Promise<void> | void;
   close(): boolean | void;
   setTitle(title: string): void;
+  setIcon(iconPath: string): boolean | void;
   openDevTools(): boolean | void;
 }
 

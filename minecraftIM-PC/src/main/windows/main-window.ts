@@ -25,6 +25,14 @@ export function openMainWindow(): BrowserWindow {
     resizable: true
   });
 
+  // 设置窗口图标（标题栏 / 任务栏）
+  const iconPath = path.join(__dirname, 'assets/app.ico');
+  try {
+    win.setIcon(iconPath);
+  } catch (error) {
+    logger.warn('set window icon failed', error instanceof Error ? error.message : error);
+  }
+
   const rendererUrl = process.env.ADREN_RENDERER_URL;
   if (rendererUrl) {
     logger.info('loading renderer from url', rendererUrl);

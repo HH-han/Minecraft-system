@@ -128,6 +128,11 @@ class BrowserWindow extends EventEmitter {
         this.webContents.executeJavaScript(script);
     }
 
+    setIcon(iconPath) {
+        if (this._isClosed) return;
+        return native.setWindowIcon(this._id, iconPath);
+    }
+
     loadURL(url) {
         if (this._isClosed) return;
         this._options.url = url;

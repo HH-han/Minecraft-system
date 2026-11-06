@@ -10,6 +10,7 @@ Napi::Value CreateWindow(const Napi::CallbackInfo& info);
 Napi::Value CloseWindow(const Napi::CallbackInfo& info);
 Napi::Value EvalWindow(const Napi::CallbackInfo& info);
 Napi::Value NavigateWindow(const Napi::CallbackInfo& info);
+Napi::Value SetWindowIcon(const Napi::CallbackInfo& info);
 Napi::Value GetCompiledFeatures(const Napi::CallbackInfo& info);
 
 } // namespace Adrenaline

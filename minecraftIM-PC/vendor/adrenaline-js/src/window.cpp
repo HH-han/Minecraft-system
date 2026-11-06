@@ -382,4 +382,53 @@ Napi::Value NavigateWindow(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, false);
 }
 
+Napi::Value SetWindowIcon(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsString()) {
+        Napi::TypeError::New(env, "Expected window ID (number) and icon path (string)").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
+    int window_id = info[0].As<Napi::Number>().Int32Value();
+    std::string iconPath = info[1].As<Napi::String>().Utf8Value();
+
+    std::shared_ptr<WindowInstance> instance;
+    {
+        std::lock_guard<std::mutex> lock(g_windows_mutex);
+        auto it = g_windows.find(window_id);
+        if (it != g_windows.end()) {
+            instance = it->second;
+        }
+    }
+
+    if (instance && instance->wv) {
+        std::string iconPathCopy = iconPath;
+        instance->wv->dispatch([instance, iconPathCopy]() {
+            if (!instance->wv) return;
+
+            HWND hwnd = (HWND)webview_get_native_handle(
+                (webview_t)instance->wv, WEBVIEW_NATIVE_HANDLE_KIND_UI_WINDOW);
+            if (!hwnd) return;
+
+            // UTF-8 -> UTF-16
+            int wideLen = MultiByteToWideChar(CP_UTF8, 0, iconPathCopy.c_str(), -1, nullptr, 0);
+            if (wideLen <= 0) return;
+            std::wstring widePath(wideLen, L'\0');
+            MultiByteToWideChar(CP_UTF8, 0, iconPathCopy.c_str(), -1, &widePath[0], wideLen);
+
+            HICON hIcon = (HICON)LoadImageW(
+                nullptr, widePath.c_str(), IMAGE_ICON,
+                0, 0, LR_LOADFROMFILE);
+            if (hIcon) {
+                SendMessageW(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+                SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+            }
+        });
+        return Napi::Boolean::New(env, true);
+    }
+
+    return Napi::Boolean::New(env, false);
+}
+
 } // namespace Adrenaline
