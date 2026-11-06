@@ -6,6 +6,7 @@ import { Search } from '@element-plus/icons-vue';
 import { sendFriendRequest } from '@/api/chat';
 import { getUserByAccount } from '@/api/user';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
 import { useAuthStore } from '@/stores/auth';
 import type { UserInfo } from '@/types/im';
 
@@ -96,11 +97,15 @@ async function submit(): Promise<void> {
 </script>
 
 <template>
-  <el-dialog
+  <AppDialog
     v-model="visible"
     :title="t('im.addFriend.title')"
-    width="400px"
-    append-to-body
+    width="430px"
+    :cancel-text="t('im.contacts.reject')"
+    :confirm-text="t('im.addFriend.submit')"
+    :confirm-disabled="!foundId"
+    :confirm-loading="sending"
+    @confirm="submit"
     @closed="reset"
   >
     <div class="form">
@@ -111,10 +116,15 @@ async function submit(): Promise<void> {
           clearable
           @keyup.enter="search"
         />
-        <el-button type="primary" :loading="searching" @click="search">
-          <el-icon><Search /></el-icon>
+        <button
+          type="button"
+          class="search-btn im-action-primary"
+          :disabled="searching"
+          @click="search"
+        >
+          <el-icon :size="14"><Search /></el-icon>
           <span>{{ t('im.addFriend.search') }}</span>
-        </el-button>
+        </button>
       </div>
 
       <div v-if="found" class="user-card">
@@ -139,19 +149,7 @@ async function submit(): Promise<void> {
         maxlength="100"
       />
     </div>
-
-    <template #footer>
-      <el-button @click="close">{{ t('im.contacts.reject') }}</el-button>
-      <el-button
-        type="primary"
-        :disabled="!foundId"
-        :loading="sending"
-        @click="submit"
-      >
-        {{ t('im.addFriend.submit') }}
-      </el-button>
-    </template>
-  </el-dialog>
+  </AppDialog>
 </template>
 
 <style scoped>
@@ -159,6 +157,7 @@ async function submit(): Promise<void> {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding-bottom: 6px;
 }
 
 .search-row {
@@ -166,12 +165,23 @@ async function submit(): Promise<void> {
   gap: 8px;
 }
 
-.search-row :deep(.el-button) {
+.search-btn {
+  height: 32px;
+  padding: 0 14px;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
 }
 
-.search-row :deep(.el-button span) {
-  margin-left: 4px;
+.search-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .user-card {

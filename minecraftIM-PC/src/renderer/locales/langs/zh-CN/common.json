@@ -10,5 +10,12 @@
   "status": {
     "desktop": "桌面模式",
     "browser": "浏览器预览"
+  },
+  "common": {
+    "dialog": {
+      "confirm": "确定",
+      "cancel": "取消",
+      "close": "关闭"
+    }
   }
 }

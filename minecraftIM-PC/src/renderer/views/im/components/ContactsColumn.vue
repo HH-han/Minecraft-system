@@ -16,6 +16,7 @@ import {
 } from '@element-plus/icons-vue';
 import { pinyin } from 'pinyin-pro';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
 import { useChatStore } from '@/stores/chat';
 import type { ChatGroup, FriendInfo, FriendRequestInfo } from '@/types/im';
 import { formatListTime } from '@/utils/format';
@@ -333,12 +334,11 @@ function handleCommand(command: string): void {
     </div>
 
     <!-- 新的朋友 -->
-    <el-dialog
+    <AppDialog
       v-model="requestVisible"
       :title="t('im.contacts.newFriends')"
-      width="440px"
-      append-to-body
-      class="im-dialog"
+      width="460px"
+      :show-footer="false"
     >
       <div v-if="chatStore.friendRequests.length" class="request-list">
         <div
@@ -381,12 +381,12 @@ function handleCommand(command: string): void {
       </div>
       <div v-else class="im-empty request-empty">
         <div class="im-empty__icon">
-          <el-icon :size="26"><User /></el-icon>
+          <el-icon :size="30"><User /></el-icon>
         </div>
         <p class="im-empty__title">{{ t('im.contacts.noRequests') }}</p>
         <p class="im-empty__desc">{{ t('im.contacts.noRequestsDesc') }}</p>
       </div>
-    </el-dialog>
+    </AppDialog>
   </aside>
 </template>
 

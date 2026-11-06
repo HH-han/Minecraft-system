@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import {
   Camera,
   ChatDotRound,
@@ -9,7 +9,6 @@ import {
   EditPen,
   Location,
   Plus,
-  Promotion,
   Star
 } from '@element-plus/icons-vue';
 import {
@@ -23,6 +22,8 @@ import {
   uploadMomentCover
 } from '@/api/moment';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
+import { confirm } from '@/components/dialog/confirm';
 import { useAuthStore } from '@/stores/auth';
 import type { MomentItem } from '@/types/im';
 import { formatClock, relativeTime } from '@/utils/format';
@@ -161,15 +162,14 @@ async function submitComment(moment: MomentItem): Promise<void> {
 
 async function removeMoment(moment: MomentItem): Promise<void> {
   if (!authStore.userId) return;
-  try {
-    await ElMessageBox.confirm(t('im.discover.deleteConfirm'), t('im.common.delete'), {
-      type: 'warning',
-      confirmButtonText: t('im.common.confirm'),
-      cancelButtonText: t('im.common.cancel')
-    });
-  } catch {
-    return;
-  }
+  const confirmed = await confirm({
+    title: t('im.common.delete'),
+    message: t('im.discover.deleteConfirm'),
+    confirmText: t('im.common.confirm'),
+    cancelText: t('im.common.cancel'),
+    tone: 'danger'
+  });
+  if (!confirmed) return;
   try {
     await deleteMoment(moment.id, authStore.userId);
     moments.value = moments.value.filter((item) => item.id !== moment.id);
@@ -407,7 +407,15 @@ onMounted(async () => {
     </div>
 
     <!-- 发布动态 -->
-    <el-dialog v-model="composeVisible" :title="t('im.discover.publish')" width="520px" append-to-body>
+    <AppDialog
+      v-model="composeVisible"
+      :title="t('im.discover.publish')"
+      width="540px"
+      :cancel-text="t('im.common.cancel')"
+      :confirm-text="t('im.discover.publish')"
+      :confirm-loading="publishing"
+      @confirm="submitCompose"
+    >
       <div class="compose-form">
         <el-input
           v-model="composeForm.content"
@@ -445,15 +453,7 @@ onMounted(async () => {
           </el-select>
         </div>
       </div>
-
-      <template #footer>
-        <el-button @click="composeVisible = false">{{ t('im.common.cancel') }}</el-button>
-        <el-button class="im-action-primary" :loading="publishing" @click="submitCompose">
-          <el-icon><Promotion /></el-icon>
-          <span class="publish-text">{{ t('im.discover.publish') }}</span>
-        </el-button>
-      </template>
-    </el-dialog>
+    </AppDialog>
   </section>
 </template>
 

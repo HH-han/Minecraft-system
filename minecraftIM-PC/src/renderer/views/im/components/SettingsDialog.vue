@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import {
   Bell,
-  Close,
   Cpu,
   Grid,
   InfoFilled,
@@ -17,6 +16,8 @@ import {
 } from '@element-plus/icons-vue';
 import { SUPPORTED_LOCALES, setLocale, type AppLocale } from '@/locales';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
+import { confirm } from '@/components/dialog/confirm';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore, type ThemeId } from '@/stores/theme';
@@ -144,38 +145,27 @@ async function changeDir(kind: 'data' | 'logs'): Promise<void> {
 }
 
 async function handleLogout(): Promise<void> {
-  try {
-    await ElMessageBox.confirm(t('im.me.logoutConfirm'), t('im.me.logout'), {
-      type: 'warning',
-      confirmButtonText: t('im.common.confirm'),
-      cancelButtonText: t('im.common.cancel')
-    });
-  } catch {
-    return;
-  }
+  const confirmed = await confirm({
+    title: t('im.me.logout'),
+    message: t('im.me.logoutConfirm'),
+    confirmText: t('im.common.confirm'),
+    cancelText: t('im.common.cancel'),
+    tone: 'danger'
+  });
+  if (!confirmed) return;
   visible.value = false;
   await authStore.logout();
 }
 </script>
 
 <template>
-  <el-dialog
+  <AppDialog
     v-model="visible"
-    width="760px"
-    class="settings-dialog"
-    append-to-body
-    align-center
-    :show-close="false"
+    :title="t('settings.title')"
+    width="720px"
+    :show-footer="false"
+    body-padding="0"
   >
-    <template #header>
-      <div class="settings-dialog__head">
-        <h3>{{ t('settings.title') }}</h3>
-        <button class="im-icon-btn" :title="t('im.common.close')" @click="visible = false">
-          <el-icon :size="16"><Close /></el-icon>
-        </button>
-      </div>
-    </template>
-
     <div class="settings-dialog__body">
       <nav class="settings-nav">
         <button
@@ -370,24 +360,10 @@ async function handleLogout(): Promise<void> {
         </section>
       </div>
     </div>
-  </el-dialog>
+  </AppDialog>
 </template>
 
 <style scoped>
-.settings-dialog__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2px 4px;
-}
-
-.settings-dialog__head h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--theme-text-1);
-}
-
 .settings-dialog__body {
   display: flex;
   height: 460px;

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useChatStore } from '@/stores/chat';
 import type { FriendInfo } from '@/types/im';
@@ -73,11 +74,15 @@ async function submit(): Promise<void> {
 </script>
 
 <template>
-  <el-dialog
+  <AppDialog
     v-model="visible"
     :title="t('im.createGroup.title')"
-    width="420px"
-    append-to-body
+    width="440px"
+    :cancel-text="t('im.contacts.reject')"
+    :confirm-text="t('im.createGroup.submit')"
+    :confirm-disabled="!canSubmit"
+    :confirm-loading="creating"
+    @confirm="submit"
     @closed="reset"
   >
     <div class="form">
@@ -116,14 +121,7 @@ async function submit(): Promise<void> {
         </el-checkbox-group>
       </div>
     </div>
-
-    <template #footer>
-      <el-button @click="close">{{ t('im.contacts.reject') }}</el-button>
-      <el-button type="primary" :disabled="!canSubmit" :loading="creating" @click="submit">
-        {{ t('im.createGroup.submit') }}
-      </el-button>
-    </template>
-  </el-dialog>
+  </AppDialog>
 </template>
 
 <style scoped>
@@ -131,6 +129,7 @@ async function submit(): Promise<void> {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding-bottom: 6px;
 }
 
 .members-block {

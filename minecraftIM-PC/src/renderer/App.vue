@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
+import ConfirmHost from '@/components/dialog/ConfirmHost.vue';
 import AuthView from '@/views/auth/AuthView.vue';
 import ImLayout from '@/views/im/ImLayout.vue';
 
@@ -19,6 +20,7 @@ onMounted(async () => {
   <div class="app-shell theme-transition">
     <ImLayout v-if="authStore.authenticated" />
     <AuthView v-else />
+    <ConfirmHost />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import {
   ArrowLeft,
   ChatDotRound,
@@ -28,6 +28,8 @@ import {
   touchFavorite
 } from '@/api/favorite';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
+import { confirm } from '@/components/dialog/confirm';
 import { useAuthStore } from '@/stores/auth';
 import type { FavoriteItem, FavoriteStat } from '@/types/im';
 import { formatFullTime, formatFileSize } from '@/utils/format';
@@ -257,15 +259,14 @@ async function saveLink(): Promise<void> {
 
 async function removeSelected(): Promise<void> {
   if (!selected.value || !authStore.userId) return;
-  try {
-    await ElMessageBox.confirm(t('im.favorites.deleteConfirm'), t('im.common.delete'), {
-      type: 'warning',
-      confirmButtonText: t('im.common.confirm'),
-      cancelButtonText: t('im.common.cancel')
-    });
-  } catch {
-    return;
-  }
+  const confirmed = await confirm({
+    title: t('im.common.delete'),
+    message: t('im.favorites.deleteConfirm'),
+    confirmText: t('im.common.confirm'),
+    cancelText: t('im.common.cancel'),
+    tone: 'danger'
+  });
+  if (!confirmed) return;
   deleting.value = true;
   try {
     await deleteFavorite(authStore.userId, selected.value.id);
@@ -439,8 +440,16 @@ onMounted(async () => {
     </section>
 
     <!-- 写笔记 -->
-    <el-dialog v-model="noteVisible" :title="t('im.favorites.writeNote')" width="440px" append-to-body>
-      <div class="im-stack">
+    <AppDialog
+      v-model="noteVisible"
+      :title="t('im.favorites.writeNote')"
+      width="460px"
+      :cancel-text="t('im.common.cancel')"
+      :confirm-text="t('im.common.save')"
+      :confirm-loading="saving"
+      @confirm="saveNote"
+    >
+      <div class="im-stack dialog-form">
         <el-input v-model="noteForm.title" maxlength="80" :placeholder="t('im.favorites.noteTitle')" />
         <el-input
           v-model="noteForm.content"
@@ -451,31 +460,34 @@ onMounted(async () => {
           :placeholder="t('im.favorites.noteContent')"
         />
       </div>
-      <template #footer>
-        <el-button @click="noteVisible = false">{{ t('im.common.cancel') }}</el-button>
-        <el-button class="im-action-primary" :loading="saving" @click="saveNote">
-          {{ t('im.common.save') }}
-        </el-button>
-      </template>
-    </el-dialog>
+    </AppDialog>
 
     <!-- 添加链接 -->
-    <el-dialog v-model="linkVisible" :title="t('im.favorites.addLink')" width="440px" append-to-body>
-      <div class="im-stack">
+    <AppDialog
+      v-model="linkVisible"
+      :title="t('im.favorites.addLink')"
+      width="460px"
+      :cancel-text="t('im.common.cancel')"
+      :confirm-text="t('im.common.save')"
+      :confirm-loading="saving"
+      @confirm="saveLink"
+    >
+      <div class="im-stack dialog-form">
         <el-input v-model="linkForm.title" maxlength="80" :placeholder="t('im.favorites.linkTitle')" />
         <el-input v-model="linkForm.url" :placeholder="t('im.favorites.linkUrl')" />
       </div>
-      <template #footer>
-        <el-button @click="linkVisible = false">{{ t('im.common.cancel') }}</el-button>
-        <el-button class="im-action-primary" :loading="saving" @click="saveLink">
-          {{ t('im.common.save') }}
-        </el-button>
-      </template>
-    </el-dialog>
+    </AppDialog>
   </div>
 </template>
 
 <style scoped>
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 6px;
+}
+
 .favorites-view {
   flex: 1;
   min-width: 0;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import {
   ChatDotRound,
   Close,
@@ -13,6 +13,8 @@ import {
   UserFilled
 } from '@element-plus/icons-vue';
 import { resolveMediaUrl } from '@/config';
+import AppDialog from '@/components/dialog/AppDialog.vue';
+import { confirm } from '@/components/dialog/confirm';
 import { useChatStore } from '@/stores/chat';
 import type { ChatGroup, FriendInfo } from '@/types/im';
 
@@ -109,15 +111,14 @@ function toggleStar(): void {
 
 async function removeFriend(): Promise<void> {
   if (!friend.value) return;
-  try {
-    await ElMessageBox.confirm(t('im.detail.deleteFriendConfirm'), t('im.detail.deleteFriend'), {
-      type: 'warning',
-      confirmButtonText: t('im.common.confirm'),
-      cancelButtonText: t('im.common.cancel')
-    });
-  } catch {
-    return;
-  }
+  const confirmed = await confirm({
+    title: t('im.detail.deleteFriend'),
+    message: t('im.detail.deleteFriendConfirm'),
+    confirmText: t('im.common.confirm'),
+    cancelText: t('im.common.cancel'),
+    tone: 'danger'
+  });
+  if (!confirmed) return;
   busy.value = true;
   try {
     await chatStore.removeFriend(friend.value.friendId);
@@ -180,15 +181,14 @@ async function submitInvite(): Promise<void> {
 
 async function dissolveGroup(): Promise<void> {
   if (!group.value) return;
-  try {
-    await ElMessageBox.confirm(t('im.detail.dissolveConfirm'), t('im.detail.dissolve'), {
-      type: 'warning',
-      confirmButtonText: t('im.common.confirm'),
-      cancelButtonText: t('im.common.cancel')
-    });
-  } catch {
-    return;
-  }
+  const confirmed = await confirm({
+    title: t('im.detail.dissolve'),
+    message: t('im.detail.dissolveConfirm'),
+    confirmText: t('im.common.confirm'),
+    cancelText: t('im.common.cancel'),
+    tone: 'danger'
+  });
+  if (!confirmed) return;
   busy.value = true;
   try {
     await chatStore.dissolveGroup(group.value.id);
@@ -402,19 +402,35 @@ watch(
     </div>
 
     <!-- 备注 -->
-    <el-dialog v-model="remarkVisible" :title="t('im.detail.editRemark')" width="380px" append-to-body>
-      <el-input v-model="remarkDraft" maxlength="24" :placeholder="t('im.detail.remarkPlaceholder')" />
-      <template #footer>
-        <el-button @click="remarkVisible = false">{{ t('im.common.cancel') }}</el-button>
-        <el-button class="im-action-primary" :loading="busy" @click="saveRemark">
-          {{ t('im.common.save') }}
-        </el-button>
-      </template>
-    </el-dialog>
+    <AppDialog
+      v-model="remarkVisible"
+      :title="t('im.detail.editRemark')"
+      width="400px"
+      :cancel-text="t('im.common.cancel')"
+      :confirm-text="t('im.common.save')"
+      :confirm-loading="busy"
+      @confirm="saveRemark"
+    >
+      <div class="dialog-form">
+        <el-input
+          v-model="remarkDraft"
+          maxlength="24"
+          :placeholder="t('im.detail.remarkPlaceholder')"
+        />
+      </div>
+    </AppDialog>
 
     <!-- 编辑群资料 -->
-    <el-dialog v-model="groupEditVisible" :title="t('im.detail.editGroup')" width="420px" append-to-body>
-      <div class="im-stack">
+    <AppDialog
+      v-model="groupEditVisible"
+      :title="t('im.detail.editGroup')"
+      width="440px"
+      :cancel-text="t('im.common.cancel')"
+      :confirm-text="t('im.common.save')"
+      :confirm-loading="busy"
+      @confirm="saveGroup"
+    >
+      <div class="im-stack dialog-form">
         <el-input v-model="groupForm.name" maxlength="30" :placeholder="t('im.detail.groupName')" />
         <el-input
           v-model="groupForm.description"
@@ -424,16 +440,19 @@ watch(
           :placeholder="t('im.detail.groupDesc')"
         />
       </div>
-      <template #footer>
-        <el-button @click="groupEditVisible = false">{{ t('im.common.cancel') }}</el-button>
-        <el-button class="im-action-primary" :loading="busy" @click="saveGroup">
-          {{ t('im.common.save') }}
-        </el-button>
-      </template>
-    </el-dialog>
+    </AppDialog>
 
     <!-- 邀请好友 -->
-    <el-dialog v-model="inviteVisible" :title="t('im.detail.invite')" width="420px" append-to-body>
+    <AppDialog
+      v-model="inviteVisible"
+      :title="t('im.detail.invite')"
+      width="440px"
+      :cancel-text="t('im.common.cancel')"
+      :confirm-text="t('im.common.confirm')"
+      :confirm-disabled="!inviteSelection.length"
+      :confirm-loading="busy"
+      @confirm="submitInvite"
+    >
       <div v-if="inviteCandidates.length" class="invite-list">
         <el-checkbox-group v-model="inviteSelection" class="im-stack">
           <el-checkbox
@@ -459,18 +478,7 @@ watch(
       <div v-else class="im-empty invite-empty">
         <p class="im-empty__title">{{ t('im.detail.noInviteCandidates') }}</p>
       </div>
-      <template #footer>
-        <el-button @click="inviteVisible = false">{{ t('im.common.cancel') }}</el-button>
-        <el-button
-          class="im-action-primary"
-          :disabled="!inviteSelection.length"
-          :loading="busy"
-          @click="submitInvite"
-        >
-          {{ t('im.common.confirm') }}
-        </el-button>
-      </template>
-    </el-dialog>
+    </AppDialog>
   </aside>
 </template>
 
@@ -701,6 +709,13 @@ watch(
 .action-secondary:hover:not(:disabled) {
   background: var(--theme-bg-muted);
   color: var(--theme-text-1);
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 6px;
 }
 
 .invite-list {

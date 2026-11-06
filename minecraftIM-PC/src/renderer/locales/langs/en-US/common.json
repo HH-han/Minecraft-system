@@ -10,5 +10,12 @@
   "status": {
     "desktop": "Desktop mode",
     "browser": "Browser preview"
+  },
+  "common": {
+    "dialog": {
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "close": "Close"
+    }
   }
 }
