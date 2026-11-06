@@ -1,5 +1,5 @@
 <template>
-  <div class="im-container" :class="{ 'chat-open': !!selectedContact, 'moments-open': showMoments, 'favorites-open': showFavorites }">
+  <div class="im-container" :class="{ 'chat-open': !!selectedContact, 'moments-open': showMoments, 'favorites-open': showFavorites, 'services-open': showServices }">
     <Sidebar
       :friends="friends"
       :groups="groups"
@@ -31,7 +31,7 @@
     />
     
     <ChatArea
-      v-if="!showMoments && !showFavorites"
+      v-if="!showMoments && !showFavorites && !showServices"
       ref="chatAreaRef"
       :selected-contact="selectedContact"
       :messages="messages"
@@ -48,6 +48,12 @@
       :current-user-name="currentUserName"
       :current-user-avatar="currentUserAvatar"
       @close="showMoments = false"
+    />
+
+    <Services
+      v-else-if="showServices"
+      :current-user-id="authStore.userInfo?.id || currentUserId"
+      @close="showServices = false"
     />
 
     <Favorites
@@ -155,6 +161,7 @@ import FriendRemarkModal from './components/FriendRemarkModal.vue'
 import CallPanel from './components/CallPanel.vue'
 import Moments from './components/Moments.vue'
 import Favorites from './components/Favorites.vue'
+import Services from './components/Services.vue'
 import Profile from './components/Profile.vue'
 import Settings from './components/Settings.vue'
 import { initiateVoiceCall, initiateVideoCall } from '@/api/call'
@@ -187,6 +194,7 @@ const showFriendRemarkModal = ref(false)
 const editFriend = ref(null)
 const showMoments = ref(false)
 const showFavorites = ref(false)
+const showServices = ref(false)
 const showProfile = ref(false)
 const showSettings = ref(false)
 
@@ -931,9 +939,10 @@ const onGroupCreated = (group) => {
 
 const handleNavChange = (tab) => {
   console.log('[ImChat] 导航切换:', tab)
-  // 切换左侧导航时退出朋友圈 / 收藏
+  // 切换左侧导航时退出朋友圈 / 收藏 / 服务
   showMoments.value = false
   showFavorites.value = false
+  showServices.value = false
 }
 
 const handleUserProfile = () => {
@@ -980,6 +989,7 @@ const handleOfficials = () => {
 const handleMoments = () => {
   showMoments.value = true
   showFavorites.value = false
+  showServices.value = false
 }
 
 const handleScan = () => {
@@ -998,13 +1008,15 @@ const handleShake = () => {
 }
 
 const handleServices = () => {
-  console.log('[ImChat] 服务')
-  // 打开服务页面
+  showServices.value = true
+  showMoments.value = false
+  showFavorites.value = false
 }
 
 const handleFavorites = () => {
   showFavorites.value = true
   showMoments.value = false
+  showServices.value = false
 }
 
 const handleSettings = () => {
@@ -1255,6 +1267,15 @@ watch(selectedContact, () => {
 }
 
 .im-container.favorites-open :deep(.sidebar-right) {
+  display: none;
+}
+
+/* 服务页打开时：保留最左侧图标导航栏，仅收起右侧列表面板 */
+.im-container.services-open :deep(.im-sidebar) {
+  width: 64px;
+}
+
+.im-container.services-open :deep(.sidebar-right) {
   display: none;
 }
 
