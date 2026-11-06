@@ -6,9 +6,11 @@ import {
   Collection,
   Edit,
   Setting,
+  SwitchButton,
   Wallet
 } from '@element-plus/icons-vue';
 import { resolveMediaUrl } from '@/config';
+import { confirm } from '@/components/dialog/confirm';
 import { useAppStore } from '@/stores/app';
 import { useAuthStore } from '@/stores/auth';
 
@@ -35,6 +37,18 @@ const points = computed(() => Number(authStore.user?.points ?? 0));
 
 function initialOf(name?: string): string {
   return (name || '?').trim().charAt(0).toUpperCase();
+}
+
+async function handleLogout(): Promise<void> {
+  const confirmed = await confirm({
+    title: t('im.me.logout'),
+    message: t('im.me.logoutConfirm'),
+    confirmText: t('im.common.confirm'),
+    cancelText: t('im.common.cancel'),
+    tone: 'danger'
+  });
+  if (!confirmed) return;
+  await authStore.logout();
 }
 </script>
 
@@ -105,6 +119,11 @@ function initialOf(name?: string): string {
           <el-icon class="me-arrow" :size="14"><ArrowRight /></el-icon>
         </button>
       </div>
+
+      <button class="me-logout" type="button" @click="handleLogout">
+        <el-icon :size="15"><SwitchButton /></el-icon>
+        <span>{{ t('im.me.logout') }}</span>
+      </button>
 
       <p class="me-footer">
         Minecraft IM {{ appStore.info?.version ? `v${appStore.info.version}` : '' }}
@@ -263,6 +282,31 @@ function initialOf(name?: string): string {
 .me-entry__desc {
   font-size: 11px;
   color: var(--theme-text-3);
+}
+
+.me-logout {
+  width: 100%;
+  height: 38px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--theme-danger) 45%, transparent);
+  background: var(--theme-danger-soft);
+  color: var(--theme-danger);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background var(--theme-duration-fast) var(--theme-ease),
+    border-color var(--theme-duration-fast) var(--theme-ease);
+}
+
+.me-logout:hover {
+  background: color-mix(in srgb, var(--theme-danger) 18%, var(--theme-bg-surface));
+  border-color: color-mix(in srgb, var(--theme-danger) 65%, transparent);
 }
 
 .me-footer {

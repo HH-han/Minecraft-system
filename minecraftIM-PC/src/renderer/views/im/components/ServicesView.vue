@@ -266,6 +266,11 @@ onMounted(() => {
   gap: 16px;
 }
 
+/* 滚动容器内的卡片不参与压缩，否则带 overflow:hidden 的积分卡会被裁成一条窄条 */
+.services-scroll > * {
+  flex-shrink: 0;
+}
+
 .spinning {
   animation: spin 900ms linear infinite;
 }

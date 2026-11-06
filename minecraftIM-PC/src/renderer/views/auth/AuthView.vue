@@ -3,6 +3,7 @@ import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ElMessage } from 'element-plus';
 import {
+  Camera,
   ChatDotRound,
   Lock,
   MagicStick,
@@ -10,6 +11,8 @@ import {
   Sunny,
   User
 } from '@element-plus/icons-vue';
+import { uploadUserImage } from '@/api/user';
+import { resolveMediaUrl } from '@/config';
 import { SUPPORTED_LOCALES, setLocale, type AppLocale } from '@/locales';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore } from '@/stores/theme';
@@ -34,6 +37,15 @@ const registerForm = reactive({
   email: '',
   phone: ''
 });
+
+const avatarInput = ref<HTMLInputElement | null>(null);
+const avatarUploading = ref(false);
+const registerAvatar = ref('');
+
+const registerAvatarUrl = computed(() => resolveMediaUrl(registerAvatar.value));
+const registerInitial = computed(() =>
+  (registerForm.username || '?').trim().charAt(0).toUpperCase()
+);
 
 const currentLocale = computed(() => locale.value as AppLocale);
 
@@ -69,6 +81,35 @@ async function submitLogin(): Promise<void> {
   if (ok) ElMessage.success(t('auth.loginSuccess'));
 }
 
+function pickAvatar(): void {
+  if (avatarUploading.value) return;
+  avatarInput.value?.click();
+}
+
+async function onAvatarChange(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = '';
+  if (!file || avatarUploading.value) return;
+  if (!file.type.startsWith('image/')) {
+    ElMessage.warning(t('auth.register.avatarTypeError'));
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    ElMessage.warning(t('auth.register.avatarSizeError'));
+    return;
+  }
+  avatarUploading.value = true;
+  try {
+    const res = await uploadUserImage(file);
+    registerAvatar.value = res.data ?? '';
+  } catch {
+    ElMessage.error(t('auth.register.avatarUploadFailed'));
+  } finally {
+    avatarUploading.value = false;
+  }
+}
+
 async function submitRegister(): Promise<void> {
   const form = registerForm;
   if (!form.username.trim() || !form.password || !form.email.trim() || !form.phone.trim()) {
@@ -79,6 +120,10 @@ async function submitRegister(): Promise<void> {
     ElMessage.warning(t('auth.register.passwordMismatch'));
     return;
   }
+  if (!registerAvatar.value) {
+    ElMessage.warning(t('auth.register.avatarRequired'));
+    return;
+  }
   if (!agreed.value) {
     ElMessage.warning(t('auth.errors.agreementRequired'));
     return;
@@ -87,7 +132,8 @@ async function submitRegister(): Promise<void> {
     username: form.username.trim(),
     password: form.password,
     email: form.email.trim(),
-    phone: form.phone.trim()
+    phone: form.phone.trim(),
+    avatar: registerAvatar.value
   });
   if (ok) ElMessage.success(t('auth.register.success'));
 }
@@ -199,6 +245,34 @@ function notImplemented(): void {
 
       <!-- 注册表单 -->
       <form v-else class="auth-form auth-form--register" @submit.prevent="submitRegister">
+        <div class="auth-avatar-block">
+          <button
+            type="button"
+            class="auth-avatar"
+            :disabled="avatarUploading"
+            :title="t('auth.register.avatarHint')"
+            @click="pickAvatar"
+          >
+            <img v-if="registerAvatarUrl" :src="registerAvatarUrl" :alt="registerForm.username" />
+            <span v-else class="auth-avatar__initial">{{ registerInitial }}</span>
+            <span class="auth-avatar__mask">
+              <span v-if="avatarUploading" class="auth-avatar__spinner" />
+              <template v-else>
+                <el-icon :size="15"><Camera /></el-icon>
+                <span>{{ t('auth.register.avatarHint') }}</span>
+              </template>
+            </span>
+          </button>
+          <p class="auth-avatar__tip">{{ t('auth.register.avatarTip') }}</p>
+          <input
+            ref="avatarInput"
+            class="auth-file"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            @change="onAvatarChange"
+          />
+        </div>
+
         <label class="auth-line">
           <span>{{ t('auth.register.username') }}</span>
           <input
@@ -509,6 +583,96 @@ function notImplemented(): void {
 
 .auth-field input::placeholder {
   color: var(--theme-text-3);
+}
+
+.auth-avatar-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.auth-avatar {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px dashed var(--theme-border);
+  background: var(--theme-bg-surface-2);
+  color: var(--theme-text-3);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color var(--theme-duration-fast) var(--theme-ease),
+    box-shadow var(--theme-duration-fast) var(--theme-ease),
+    color var(--theme-duration-fast) var(--theme-ease);
+}
+
+.auth-avatar:hover:not(:disabled) {
+  border-color: var(--theme-primary);
+  color: var(--theme-primary);
+  box-shadow: var(--theme-ring);
+}
+
+.auth-avatar:disabled {
+  cursor: progress;
+}
+
+.auth-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auth-avatar__initial {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--theme-primary);
+}
+
+.auth-avatar__mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 8px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #ffffff;
+  font-size: 10.5px;
+  line-height: 1.3;
+  text-align: center;
+  opacity: 0;
+  transition: opacity var(--theme-duration-fast) var(--theme-ease);
+}
+
+.auth-avatar:hover .auth-avatar__mask {
+  opacity: 1;
+}
+
+.auth-avatar__spinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+  animation: spin 700ms linear infinite;
+}
+
+.auth-avatar__tip {
+  margin: 0;
+  font-size: 10.5px;
+  color: var(--theme-text-3);
+}
+
+.auth-file {
+  display: none;
 }
 
 .auth-line {

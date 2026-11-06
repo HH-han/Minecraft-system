@@ -184,7 +184,11 @@ async function onAvatarChange(event: Event): Promise<void> {
           <img v-if="avatarUrl" :src="avatarUrl" :alt="displayName" />
           <span v-else>{{ displayName.charAt(0).toUpperCase() }}</span>
           <span class="profile-avatar__mask">
-            <el-icon :size="18"><Camera /></el-icon>
+            <span v-if="uploading" class="profile-avatar__spinner" />
+            <template v-else>
+              <el-icon :size="17"><Camera /></el-icon>
+              <span>{{ t('im.profile.changeAvatar') }}</span>
+            </template>
           </span>
         </button>
         <input
@@ -384,18 +388,40 @@ async function onAvatarChange(event: Event): Promise<void> {
 
 .profile-avatar__mask {
   position: absolute;
-  inset: auto 0 0 0;
-  height: 32%;
-  display: grid;
-  place-items: center;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 10px;
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
   color: #fff;
-  background: rgba(15, 23, 42, 0.42);
+  background: rgba(15, 23, 42, 0.55);
   opacity: 0;
   transition: opacity var(--theme-duration-fast) var(--theme-ease);
 }
 
-.profile-avatar:hover .profile-avatar__mask {
+.profile-avatar:hover .profile-avatar__mask,
+.profile-avatar:disabled .profile-avatar__mask {
   opacity: 1;
+}
+
+.profile-avatar__spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  animation: profile-spin 700ms linear infinite;
+}
+
+@keyframes profile-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .profile-file {
