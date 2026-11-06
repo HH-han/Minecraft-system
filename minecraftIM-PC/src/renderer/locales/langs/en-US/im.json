@@ -1,0 +1,103 @@
+{
+  "im": {
+    "nav": {
+      "chat": "Chats",
+      "contacts": "Contacts",
+      "favorites": "Favorites",
+      "discover": "Discover",
+      "me": "Me",
+      "settings": "Settings"
+    },
+    "conversation": {
+      "title": "Conversations",
+      "search": "Search conversations",
+      "empty": "No conversations yet. Find friends in Contacts.",
+      "loadFailed": "Failed to load conversations"
+    },
+    "chat": {
+      "inputPlaceholder": "Type a message. Enter to send, Shift+Enter for newline",
+      "send": "Send",
+      "emptyTitle": "Start a conversation",
+      "emptyDesc": "Pick a conversation or contact from the left",
+      "loadMore": "Load more",
+      "group": "Group",
+      "single": "Direct",
+      "sendFailed": "Failed to send message"
+    },
+    "contacts": {
+      "title": "Contacts",
+      "friends": "Friends",
+      "groups": "Groups",
+      "requests": "New friends",
+      "empty": "No contacts yet",
+      "search": "Search contacts",
+      "addFriend": "Add friend",
+      "createGroup": "New group",
+      "accept": "Accept",
+      "reject": "Reject",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "requestMessage": "Message",
+      "noRequests": "No friend requests",
+      "deleteFriend": "Delete friend",
+      "deleteConfirm": "Delete this friend?",
+      "remark": "Remark",
+      "setRemark": "Set remark"
+    },
+    "addFriend": {
+      "title": "Add friend",
+      "accountLabel": "Account",
+      "accountPlaceholder": "Username / phone of the user",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Hi, I'm…",
+      "submit": "Send request",
+      "sent": "Friend request sent",
+      "search": "Search",
+      "notFound": "User not found"
+    },
+    "createGroup": {
+      "title": "New group",
+      "nameLabel": "Group name",
+      "namePlaceholder": "Enter a group name",
+      "membersLabel": "Members",
+      "submit": "Create",
+      "created": "Group created"
+    },
+    "detail": {
+      "sendMessage": "Message",
+      "signature": "Signature",
+      "account": "Account",
+      "phone": "Phone",
+      "email": "Email",
+      "members": "Members",
+      "notice": "Notice"
+    },
+    "favorites": {
+      "title": "Favorites",
+      "empty": "No favorites yet",
+      "loadFailed": "Failed to load favorites"
+    },
+    "discover": {
+      "title": "Moments",
+      "empty": "No moments yet",
+      "publish": "Post",
+      "publishPlaceholder": "Share what's on your mind…",
+      "published": "Posted",
+      "loadFailed": "Failed to load moments"
+    },
+    "me": {
+      "title": "Me",
+      "signature": "Signature",
+      "signaturePlaceholder": "Say something about yourself",
+      "nickname": "Nickname",
+      "save": "Save",
+      "saved": "Profile updated",
+      "logout": "Sign out",
+      "logoutConfirm": "Sign out of the current account?",
+      "settings": "Preferences"
+    },
+    "time": {
+      "today": "Today"
+    }
+  }
+}

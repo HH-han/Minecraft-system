@@ -1,0 +1,103 @@
+{
+  "im": {
+    "nav": {
+      "chat": "聊天",
+      "contacts": "通讯录",
+      "favorites": "收藏",
+      "discover": "发现",
+      "me": "我",
+      "settings": "设置"
+    },
+    "conversation": {
+      "title": "会话",
+      "search": "搜索会话",
+      "empty": "暂无会话，去通讯录找好友聊聊吧",
+      "loadFailed": "会话加载失败"
+    },
+    "chat": {
+      "inputPlaceholder": "输入消息，Enter 发送，Shift+Enter 换行",
+      "send": "发送",
+      "emptyTitle": "开始一段对话",
+      "emptyDesc": "从左侧选择一个会话或联系人",
+      "loadMore": "加载更多",
+      "group": "群聊",
+      "single": "单聊",
+      "sendFailed": "消息发送失败"
+    },
+    "contacts": {
+      "title": "通讯录",
+      "friends": "好友",
+      "groups": "群聊",
+      "requests": "新的朋友",
+      "empty": "暂无联系人",
+      "search": "搜索联系人",
+      "addFriend": "添加好友",
+      "createGroup": "发起群聊",
+      "accept": "接受",
+      "reject": "拒绝",
+      "accepted": "已接受",
+      "rejected": "已拒绝",
+      "requestMessage": "验证消息",
+      "noRequests": "暂无好友申请",
+      "deleteFriend": "删除好友",
+      "deleteConfirm": "确定删除该好友吗？",
+      "remark": "备注",
+      "setRemark": "设置备注"
+    },
+    "addFriend": {
+      "title": "添加好友",
+      "accountLabel": "账号",
+      "accountPlaceholder": "输入对方用户名 / 手机号",
+      "messageLabel": "验证消息",
+      "messagePlaceholder": "我是…",
+      "submit": "发送申请",
+      "sent": "好友申请已发送",
+      "search": "查找",
+      "notFound": "未找到该用户"
+    },
+    "createGroup": {
+      "title": "发起群聊",
+      "nameLabel": "群名称",
+      "namePlaceholder": "请输入群名称",
+      "membersLabel": "选择成员",
+      "submit": "创建",
+      "created": "群聊已创建"
+    },
+    "detail": {
+      "sendMessage": "发消息",
+      "signature": "签名",
+      "account": "账号",
+      "phone": "手机号",
+      "email": "邮箱",
+      "members": "群成员",
+      "notice": "群公告"
+    },
+    "favorites": {
+      "title": "收藏",
+      "empty": "暂无收藏内容",
+      "loadFailed": "收藏加载失败"
+    },
+    "discover": {
+      "title": "朋友圈",
+      "empty": "暂无动态",
+      "publish": "发表",
+      "publishPlaceholder": "分享此刻的想法…",
+      "published": "已发表",
+      "loadFailed": "动态加载失败"
+    },
+    "me": {
+      "title": "我",
+      "signature": "个性签名",
+      "signaturePlaceholder": "写一句话介绍自己",
+      "nickname": "昵称",
+      "save": "保存",
+      "saved": "资料已更新",
+      "logout": "退出登录",
+      "logoutConfirm": "确定退出当前账号吗？",
+      "settings": "通用设置"
+    },
+    "time": {
+      "today": "今天"
+    }
+  }
+}

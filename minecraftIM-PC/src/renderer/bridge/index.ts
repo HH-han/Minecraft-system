@@ -2,14 +2,11 @@ import { IPC_CHANNELS } from '@shared/constants';
 import type { AdrenalineBridge } from '@shared/types/adrenaline';
 import type {
   AppInfo,
-  AuthState,
   IpcEventChannel,
   IpcEventMap,
   IpcInvokeChannel,
   IpcRequest,
-  IpcResponse,
-  LoginRequest,
-  LoginResponse
+  IpcResponse
 } from '@shared/types/ipc';
 
 /** 无参数通道调用时不要求传 payload */
@@ -37,33 +34,12 @@ const MOCK_APP_INFO: AppInfo = {
   logDir: '(浏览器预览模式无本地目录)'
 };
 
-let mockAuthState: AuthState = { authenticated: false, user: null };
-
 async function mockInvoke(channel: IpcInvokeChannel, payload: unknown): Promise<unknown> {
   switch (channel) {
     case IPC_CHANNELS.appGetInfo:
       return MOCK_APP_INFO;
     case IPC_CHANNELS.appQuit:
       return undefined;
-    case IPC_CHANNELS.authGetState:
-      return mockAuthState;
-    case IPC_CHANNELS.authLogin: {
-      const request = payload as LoginRequest;
-      if (!request.username?.trim() || !request.password) {
-        throw new Error('用户名和密码不能为空');
-      }
-      const user = {
-        id: `mock-${request.username}`,
-        username: request.username,
-        nickname: request.username,
-        role: 'member' as const
-      };
-      mockAuthState = { authenticated: true, user };
-      return { user, token: 'mock-token' } satisfies LoginResponse;
-    }
-    case IPC_CHANNELS.authLogout:
-      mockAuthState = { authenticated: false, user: null };
-      return mockAuthState;
     case IPC_CHANNELS.dataGet: {
       const { key } = payload as { key: string };
       const raw = localStorage.getItem(`mock-data:${key}`);
