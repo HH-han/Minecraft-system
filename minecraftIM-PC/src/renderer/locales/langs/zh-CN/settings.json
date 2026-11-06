@@ -1,30 +1,32 @@
 {
-  "title": "设置",
-  "description": "主题与语言配置保存在本地，重启后自动恢复。",
-  "theme": {
-    "title": "主题",
-    "description": "切换后全局 CSS 令牌生效，Element Plus 同步切换深色模式。",
-    "light": "亮色",
-    "dark": "暗色",
-    "game": "游戏"
-  },
-  "language": {
-    "title": "语言",
-    "description": "语言包按目录懒加载，切换后立即生效。"
-  },
-  "storage": {
-    "title": "本地存储",
-    "dataDir": "数据目录",
-    "logDir": "日志目录"
-  },
-  "about": {
-    "title": "关于",
-    "framework": "桌面框架",
-    "frameworkValue": "Adrenaline.js",
-    "renderer": "渲染层",
-    "rendererValue": "Vue 3 + Vite"
-  },
-  "actions": {
-    "quit": "退出应用"
+  "settings": {
+    "title": "设置",
+    "description": "主题与语言配置保存在本地，重启后自动恢复。",
+    "theme": {
+      "title": "主题",
+      "description": "切换后全局 CSS 令牌生效，Element Plus 同步切换深色模式。",
+      "light": "亮色",
+      "dark": "暗色",
+      "game": "游戏"
+    },
+    "language": {
+      "title": "语言",
+      "description": "语言包按目录懒加载，切换后立即生效。"
+    },
+    "storage": {
+      "title": "本地存储",
+      "dataDir": "数据目录",
+      "logDir": "日志目录"
+    },
+    "about": {
+      "title": "关于",
+      "framework": "桌面框架",
+      "frameworkValue": "Adrenaline.js",
+      "renderer": "渲染层",
+      "rendererValue": "Vue 3 + Vite"
+    },
+    "actions": {
+      "quit": "退出应用"
+    }
   }
 }

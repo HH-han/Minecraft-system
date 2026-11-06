@@ -1,34 +1,36 @@
 {
-  "title": "Welcome to Minecraft IM PC",
-  "subtitle": "The Adrenaline.js + Vue 3 foundation is ready: main-process services, type-safe IPC, theming and i18n are wired up.",
-  "runtime": {
-    "title": "Runtime",
-    "version": "App version",
-    "platform": "Platform / Arch",
-    "node": "Node.js",
-    "mode": "Mode",
-    "dev": "Development",
-    "prod": "Production",
-    "refresh": "Refresh"
-  },
-  "auth": {
-    "title": "Sign in",
-    "description": "Local placeholder auth. Replace auth.service when the backend is ready.",
-    "username": "Username",
-    "password": "Password",
-    "usernamePlaceholder": "Enter username",
-    "passwordPlaceholder": "Enter password",
-    "submit": "Sign in",
-    "submitting": "Signing in…",
-    "logout": "Sign out",
-    "welcome": "Signed in as {name}",
-    "emptyError": "Username and password are required"
-  },
-  "file": {
-    "title": "File access",
-    "description": "Pick a file through the native dialog to verify the IPC pipeline.",
-    "select": "Choose file",
-    "none": "No file selected",
-    "selected": "Selected: {path}"
+  "home": {
+    "title": "Welcome to Minecraft IM PC",
+    "subtitle": "The Adrenaline.js + Vue 3 foundation is ready: main-process services, type-safe IPC, theming and i18n are wired up.",
+    "runtime": {
+      "title": "Runtime",
+      "version": "App version",
+      "platform": "Platform / Arch",
+      "node": "Node.js",
+      "mode": "Mode",
+      "dev": "Development",
+      "prod": "Production",
+      "refresh": "Refresh"
+    },
+    "auth": {
+      "title": "Sign in",
+      "description": "Local placeholder auth. Replace auth.service when the backend is ready.",
+      "username": "Username",
+      "password": "Password",
+      "usernamePlaceholder": "Enter username",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "logout": "Sign out",
+      "welcome": "Signed in as {name}",
+      "emptyError": "Username and password are required"
+    },
+    "file": {
+      "title": "File access",
+      "description": "Pick a file through the native dialog to verify the IPC pipeline.",
+      "select": "Choose file",
+      "none": "No file selected",
+      "selected": "Selected: {path}"
+    }
   }
 }
