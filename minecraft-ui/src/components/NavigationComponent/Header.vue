@@ -115,8 +115,7 @@
             <div class="profilepicture">
               <button class="profilepicture_button" @click="toggleDropdown">
                 <div class="profilepicture_img">
-                  <img v-if="!userInfo.avatar" :src="defaultAvatar" alt="默认头像" class="img1">
-                  <img v-else :src="userInfo.avatar" alt="用户头像" class="img1" />
+                  <img :src="avatarSrc" alt="用户头像" class="img1" @error="onAvatarError" />
                 </div>
               </button>
               <div class="profilepicture-inner" v-show="isDropdownVisible">
@@ -476,6 +475,19 @@ const userInfo = ref({
   avatar: ''
 });
 
+// 头像加载失败（如断网、图片地址失效）时回退到默认头像，避免出现浏览器破图占位
+const avatarLoadFailed = ref(false);
+const avatarSrc = computed(() =>
+  !userInfo.value.avatar || avatarLoadFailed.value ? defaultAvatar : userInfo.value.avatar
+);
+const onAvatarError = () => {
+  if (!avatarLoadFailed.value) avatarLoadFailed.value = true;
+};
+// 头像地址变化后重新尝试加载远程头像
+watch(() => userInfo.value.avatar, () => {
+  avatarLoadFailed.value = false;
+});
+
 // 过滤后的用户菜单项
 const filteredUserMenuItems = computed(() => {
   return userMenuItems.value.filter(item => {
@@ -514,6 +526,8 @@ const fetchUserInfo = async () => {
     const response = await getUserInfo();
 
     if (response.code === 200) {
+      // 拿到最新用户信息后重新尝试加载远程头像（此前可能因断网失败）
+      avatarLoadFailed.value = false;
       userInfo.value = response.data;
       localStorage.setItem('user', JSON.stringify(response.data));
       isLoggedIn.value = true;

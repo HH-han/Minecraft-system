@@ -1,0 +1,32 @@
+# =====================================================================
+# 生产环境配置（application-prod.yml 自动加载本文件）
+# 说明：
+#   1. 部署时把 config 目录与 jar 放在同一启动目录，或用
+#      --spring.config.additional-location=file:/部署路径/config/ 指定位置
+#   2. 操作系统环境变量优先级高于本文件，敏感信息建议用环境变量注入
+#   3. 启动时需激活生产环境：SPRING_PROFILES_ACTIVE=prod
+# =====================================================================
+
+# ---------- MySQL ----------
+# 生产库与开发库同名 db_minecraft，如有差异只改 DB_NAME 即可
+DB_HOST: localhost
+DB_PORT: 3306
+DB_NAME: db_minecraft
+DB_USERNAME: db_minecraft
+DB_PASSWORD: 123456
+DB_SSL: false
+
+# ---------- Redis ----------
+REDIS_HOST: localhost
+REDIS_PORT: 6379
+REDIS_PASSWORD:
+
+# ---------- Druid 监控台账号（公网部署务必修改） ----------
+DRUID_USER: admin
+DRUID_PASSWORD: admin123
+
+# ---------- 图片访问前缀（留空=相对路径，经 Nginx 转发到后端） ----------
+# IMAGE_URL_BASE: https://你的域名
+
+# ---------- 支付回调基地址（必须为公网可访问地址） ----------
+# PAY_NOTIFY_BASE: https://你的域名

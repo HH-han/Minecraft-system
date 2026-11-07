@@ -1,10 +1,15 @@
 spring:
+  # 加载外部环境配置文件（不存在时忽略，不阻断启动）
+  config:
+    import: optional:file:./config/env-prod.yml
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://prod-db-host:3306/tourism?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    # 生产环境与开发环境使用同一默认库名 db_minecraft，具体值通过环境变量注入
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:db_minecraft}?useUnicode=true&characterEncoding=utf8&useSSL=${DB_SSL:false}&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${DB_USERNAME:db_minecraft}
+    # 服务器部署时务必通过环境变量 DB_PASSWORD 覆盖默认密码
+    password: ${DB_PASSWORD:123456}
     druid:
       initial-size: 5
       min-idle: 5
@@ -46,16 +51,16 @@ spring:
         url-pattern: /druid/*
         reset-enable: false
         login-username: ${DRUID_USER:admin}
-        login-password: ${DRUID_PASSWORD}
+        login-password: ${DRUID_PASSWORD:admin123}
         allow: 10.0.0.0/8,172.16.0.0/12
 
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: 6379
-      password: ${REDIS_PASSWORD}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
 
 logging:
   level:
-    com.tourism: info
+    com.minecraft: info
     org.springframework: warn

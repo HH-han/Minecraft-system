@@ -36,6 +36,25 @@ const shouldNotifyRefresh = (url = '') => {
 }
 
 /**
+ * 错误提示节流：
+ * 后端不可用 / 断网时页面通常会并发发出多个请求，逐个弹错会导致提示刷屏。
+ * 相同错误在冷却窗口内只提示一次，并配合 grouping 合并相同内容。
+ */
+const ERROR_TOAST_COOLDOWN = 5000
+const NETWORK_ERROR_COOLDOWN = 10000
+const lastToastAt = new Map()
+
+const notifyError = (msg, key = msg, cooldown = ERROR_TOAST_COOLDOWN) => {
+  const now = Date.now()
+  if (now - (lastToastAt.get(key) || 0) < cooldown) return
+  lastToastAt.set(key, now)
+  ElMessage({ message: msg, type: 'error', grouping: true })
+}
+
+// 任意请求成功即视为网络已恢复，重置网络错误冷却，便于下次断网时再次提醒
+const markNetworkRecovered = () => lastToastAt.delete('network')
+
+/**
  * 请求去重：
  * 相同「method + url + params + data」的请求在 pending 期间只真正发出一次，
  * 后续重复请求直接复用同一个 Promise。
@@ -151,6 +170,8 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use(
   (response) => {
+    // 请求成功说明网络恢复，重置网络错误提示冷却
+    markNetworkRecovered()
     // 写操作成功后通知刷新总线：让页面自动重新拉取数据
     const method = String(response.config?.method || 'get').toLowerCase()
     const body = response.data
@@ -195,55 +216,59 @@ instance.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    // 统一错误提示（silent 请求不弹任何提示）
-    const showError = (msg) => {
+    // 统一错误提示（silent 请求不弹任何提示；相同错误在冷却窗口内只提示一次）
+    const showError = (msg, key = msg, cooldown = ERROR_TOAST_COOLDOWN) => {
       if (!config?.silent) {
-        ElMessage.error(msg)
+        notifyError(msg, key, cooldown)
       }
     }
     const serverMsg = error.response?.data?.message
-    const defaultMsg =
-      error.code === 'ERR_NETWORK'
-        ? '网络连接异常，请检查网络'
-        : error.code === 'ECONNABORTED'
-          ? '请求超时，请稍后重试'
-          : '网络异常'
+    const isNetworkError = error.code === 'ERR_NETWORK'
+    const defaultMsg = isNetworkError
+      ? '网络连接异常，请检查网络'
+      : error.code === 'ECONNABORTED'
+        ? '请求超时，请稍后重试'
+        : '网络异常'
 
     switch (status) {
       case 400:
-        showError('请求参数错误')
+        showError('请求参数错误', 400)
         redirectToErrorPage(400)
         break
       case 401:
-        showError('登录已过期，请重新登录')
+        showError('登录已过期，请重新登录', 401)
         redirectToErrorPage(401)
         break
       case 403:
-        showError('没有权限访问')
+        showError('没有权限访问', 403)
         redirectToErrorPage(403)
         break
       case 404:
-        showError('请求资源不存在')
+        showError('请求资源不存在', 404)
         redirectToErrorPage(404)
         break
       case 500:
-        showError('服务器内部错误')
+        showError('服务器内部错误', 500)
         redirectToErrorPage(500)
         break
       case 502:
-        showError('网关错误')
+        showError('网关错误', 502)
         redirectToErrorPage(502)
         break
       case 503:
-        showError('服务暂不可用，请稍后重试')
+        showError('服务暂不可用，请稍后重试', 503)
         redirectToErrorPage(503)
         break
       case 504:
-        showError('网关超时')
+        showError('网关超时', 504)
         redirectToErrorPage(504)
         break
       default:
-        showError(serverMsg || defaultMsg)
+        showError(
+          serverMsg || defaultMsg,
+          isNetworkError ? 'network' : `error:${serverMsg || defaultMsg}`,
+          isNetworkError ? NETWORK_ERROR_COOLDOWN : ERROR_TOAST_COOLDOWN
+        )
     }
 
     return Promise.reject(error)
