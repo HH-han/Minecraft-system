@@ -135,8 +135,11 @@ public class RailwayMembershipServiceImpl implements RailwayMembershipService {
         return redemption;
     }
 
+    /**
+     * 在支付回调事务内执行，不单独开启事务：
+     * 避免积分发放异常时将外层支付事务标记为 rollback-only。
+     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void awardOrderPoints(String orderNo) {
         RailwayOrder order = orderMapper.selectOne(new LambdaQueryWrapper<RailwayOrder>()
                 .eq(RailwayOrder::getOrderNo, orderNo)

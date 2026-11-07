@@ -396,6 +396,10 @@ const queryFares = async () => {
   height: 40px;
 }
 
+.rw-if-bar .rw-svc-btn {
+  height: 40px;
+}
+
 .rw-if-tip {
   margin: 30px 0 10px;
   text-align: center;
@@ -454,8 +458,31 @@ const queryFares = async () => {
   align-items: end;
 }
 
+/* 统一标签行高与控件高度，保证日期、输入框、切换器与按钮水平对齐 */
+.rw-if-filters .rw-svc-field > label {
+  display: flex;
+  align-items: center;
+  min-height: 17px;
+  line-height: 17px;
+}
+
+.rw-if-filters :deep(.el-input__wrapper),
+.rw-if-filters :deep(.el-select__wrapper),
+.rw-if-filters :deep(.el-date-editor .el-input__wrapper),
+.rw-if-filters :deep(.el-date-editor.el-input__wrapper) {
+  height: 40px;
+  min-height: 40px;
+  box-sizing: border-box;
+}
+
+.rw-if-filters :deep(.el-date-editor) {
+  width: 100%;
+  height: 40px;
+}
+
 .rw-if-query {
-  margin-bottom: 1px;
+  height: 40px;
+  margin-bottom: 0;
 }
 
 .rw-if-switch {
@@ -466,6 +493,7 @@ const queryFares = async () => {
   background: var(--rw-soft-2);
   height: 40px;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .rw-if-switch button {
