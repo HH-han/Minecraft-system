@@ -106,7 +106,9 @@
         <section class="rw-svc-card">
           <div class="rw-svc-card-head">
             <h2 class="rw-svc-card-title">{{ $t('railway.stationPage.recordsTitle') }}</h2>
-            <span v-if="loggedIn" class="rw-svc-card-head-right">{{ total }} 条</span>
+            <span v-if="loggedIn" class="rw-svc-card-head-right">
+              {{ $t('railway.common.count', { n: total }) }}
+            </span>
           </div>
 
           <div v-if="!loggedIn" class="rw-svc-empty">
@@ -180,7 +182,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -370,6 +372,15 @@ const cancel = async (item) => {
 }
 
 const goLogin = () => router.push({ path: '/login', query: { redirect: route.fullPath } })
+
+watch(
+  () => route.query.service,
+  (value) => {
+    const code = queryString(value, '')
+    const matched = services.value.find((item) => item.serviceCode === code)
+    if (matched) selectService(matched)
+  },
+)
 
 onMounted(() => {
   loadServices()

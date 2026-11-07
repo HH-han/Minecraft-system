@@ -555,7 +555,8 @@
 .rw-svc-status--REJECTED,
 .rw-svc-status--COMPLETED,
 .rw-svc-status--DEPARTED,
-.rw-svc-status--ARRIVED {
+.rw-svc-status--ARRIVED,
+.rw-svc-status--WAITING {
   background: var(--rw-soft-2);
   color: var(--rw-text-3);
 }

@@ -187,6 +187,48 @@ export default [
         component: () => import('@/views/Ticket/Timetable.vue'),
         meta: { title: '时刻表查询', requiresAuth: false },
       },
+      {
+        path: 'group',
+        name: 'RailwayGroupBooking',
+        component: () => import('@/views/Ticket/GroupBooking.vue'),
+        meta: { title: '团购服务', requiresAuth: false },
+      },
+      {
+        path: 'member',
+        name: 'RailwayMember',
+        component: () => import('@/views/Ticket/Membership.vue'),
+        meta: { title: '会员服务', requiresAuth: false },
+      },
+      {
+        path: 'station',
+        name: 'RailwayStationServices',
+        component: () => import('@/views/Ticket/StationServices.vue'),
+        meta: { title: '站车服务', requiresAuth: false },
+      },
+      {
+        path: 'business',
+        name: 'RailwayBusinessTravel',
+        component: () => import('@/views/Ticket/BusinessTravel.vue'),
+        meta: { title: '商旅服务', requiresAuth: false },
+      },
+      {
+        path: 'guide',
+        name: 'RailwayGuide',
+        component: () => import('@/views/Ticket/Guide.vue'),
+        meta: { title: '出行指南', requiresAuth: false },
+      },
+      {
+        path: 'guide/:id',
+        name: 'RailwayGuideDetail',
+        component: () => import('@/views/Ticket/GuideDetail.vue'),
+        meta: { title: '指南详情', requiresAuth: false },
+      },
+      {
+        path: 'info',
+        name: 'RailwayInfo',
+        component: () => import('@/views/Ticket/InfoQuery.vue'),
+        meta: { title: '信息查询', requiresAuth: false },
+      },
     ],
   },
   {

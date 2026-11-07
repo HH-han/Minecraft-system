@@ -481,6 +481,8 @@
       "planTime": "Planned",
       "expectedTime": "Expected",
       "platform": "Platform",
+      "route": "Origin / Destination",
+      "status": "Status",
       "boardStatus": {
         "WAITING": "Waiting",
         "CHECKING": "Boarding",
@@ -522,7 +524,8 @@
       "minutes": "{n} min",
       "hours": "{n} h",
       "hoursMinutes": "{h} h {m} min",
-      "yuan": "¥{price}"
+      "yuan": "¥{price}",
+      "count": "{n} items"
     }
   }
 }

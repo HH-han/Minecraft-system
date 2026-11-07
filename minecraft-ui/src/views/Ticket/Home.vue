@@ -44,7 +44,7 @@
       </div>
       <div class="rw-quick-grid">
         <button v-for="item in quickServices" :key="item.key" type="button" class="rw-quick-item"
-          @click="handleQuick(item.key)">
+          @click="handleQuick(item)">
           <span class="rw-quick-icon">
             <el-icon><component :is="item.icon" /></el-icon>
           </span>
@@ -81,7 +81,9 @@
     <!-- 服务卡片 -->
     <section class="rw-section">
       <div class="rw-banner-grid">
-        <article v-for="banner in banners" :key="banner.key" class="rw-banner" :class="`rw-banner--${banner.tone}`">
+        <article v-for="banner in banners" :key="banner.key" class="rw-banner"
+          :class="`rw-banner--${banner.tone}`" role="button" tabindex="0" @click="router.push(banner.to)"
+          @keyup.enter="router.push(banner.to)">
           <div class="rw-banner-text">
             <h3>{{ $t(`railway.home.banner.${banner.key}Title`) }}</h3>
             <p>{{ $t(`railway.home.banner.${banner.key}Desc`) }}</p>
@@ -114,8 +116,6 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { ElMessage } from 'element-plus'
 import {
   Box,
   Calendar,
@@ -137,7 +137,6 @@ import { formatDuration, queryString, todayString } from './utils'
 
 const router = useRouter()
 const route = useRoute()
-const { t } = useI18n()
 
 const initialTripType = computed(() => queryString(route.query.tripType, 'single'))
 
@@ -148,13 +147,13 @@ const preset = reactive({
 })
 
 const quickServices = [
-  { key: 'special', icon: FirstAidKit },
-  { key: 'lost', icon: Search },
-  { key: 'car', icon: Van },
-  { key: 'luggage', icon: Box },
-  { key: 'guide', icon: MapLocation },
-  { key: 'scenery', icon: Camera },
-  { key: 'feedback', icon: ChatDotRound },
+  { key: 'special', icon: FirstAidKit, to: { path: '/ticket/station', query: { service: 'SPECIAL_ASSIST' } } },
+  { key: 'lost', icon: Search, to: { path: '/ticket/station', query: { service: 'LOST_FOUND' } } },
+  { key: 'car', icon: Van, to: { path: '/ticket/station', query: { service: 'CAR_SERVICE' } } },
+  { key: 'luggage', icon: Box, to: { path: '/ticket/station', query: { service: 'LUGGAGE' } } },
+  { key: 'guide', icon: MapLocation, to: { path: '/ticket/guide' } },
+  { key: 'scenery', icon: Camera, to: { path: '/ticket/guide', query: { category: 'SCENERY' } } },
+  { key: 'feedback', icon: ChatDotRound, to: { path: '/ticket/station', query: { service: 'FEEDBACK' } } },
 ]
 
 const popularRoutes = [
@@ -165,10 +164,10 @@ const popularRoutes = [
 ]
 
 const banners = [
-  { key: 'member', tone: 'blue', icon: Trophy },
-  { key: 'food', tone: 'orange', icon: KnifeFork },
-  { key: 'insurance', tone: 'mint', icon: Umbrella },
-  { key: 'periodic', tone: 'violet', icon: Calendar },
+  { key: 'member', tone: 'blue', icon: Trophy, to: { path: '/ticket/member' } },
+  { key: 'food', tone: 'orange', icon: KnifeFork, to: { path: '/ticket/guide', query: { category: 'DINING' } } },
+  { key: 'insurance', tone: 'mint', icon: Umbrella, to: { path: '/ticket/guide', query: { category: 'SAFETY' } } },
+  { key: 'periodic', tone: 'violet', icon: Calendar, to: { path: '/ticket/guide', query: { category: 'TICKET' } } },
 ]
 
 const features = [
@@ -204,8 +203,8 @@ const searchPopular = (item) => {
   })
 }
 
-const handleQuick = () => {
-  ElMessage.info(t('railway.search.notOpen'))
+const handleQuick = (item) => {
+  router.push(item.to)
 }
 </script>
 
@@ -515,6 +514,13 @@ const handleQuick = () => {
   overflow: hidden;
   position: relative;
   min-height: 118px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rw-banner:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 38px -30px rgba(16, 47, 100, 0.65);
 }
 
 .rw-banner::after {

@@ -481,6 +481,8 @@
       "planTime": "计划",
       "expectedTime": "预计",
       "platform": "站台",
+      "route": "始发 / 终到",
+      "status": "状态",
       "boardStatus": {
         "WAITING": "候车",
         "CHECKING": "检票中",
@@ -522,7 +524,8 @@
       "minutes": "{n} 分钟",
       "hours": "{n} 小时",
       "hoursMinutes": "{h} 小时 {m} 分",
-      "yuan": "¥{price}"
+      "yuan": "¥{price}",
+      "count": "{n} 条"
     }
   }
 }

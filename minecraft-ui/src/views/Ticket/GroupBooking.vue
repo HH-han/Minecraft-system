@@ -4,7 +4,7 @@
       :desc="$t('railway.groupPage.desc')" :icon="ShoppingCartFull" tone="warm">
       <div class="rw-svc-hero-badge">
         <strong>20–500</strong>
-        <span>{{ $t('railway.groupPage.badgeMax') }}</span>
+        <span>{{ $t('railway.groupPage.count') }}</span>
       </div>
     </ServiceHero>
 
@@ -103,7 +103,9 @@
           <section class="rw-svc-card">
             <div class="rw-svc-card-head">
               <h2 class="rw-svc-card-title">{{ $t('railway.groupPage.recordsTitle') }}</h2>
-              <span v-if="loggedIn" class="rw-svc-card-head-right">{{ total }} 条</span>
+              <span v-if="loggedIn" class="rw-svc-card-head-right">
+                {{ $t('railway.common.count', { n: total }) }}
+              </span>
             </div>
 
             <div v-if="!loggedIn" class="rw-svc-empty">
@@ -207,7 +209,7 @@
             </div>
 
             <div v-else class="rw-svc-note">
-              {{ $t('railway.groupPage.quoteMatched', { train: '—' }) }}
+              {{ $t('railway.groupPage.quoteUnmatched') }}
               <br />
               {{ $t('railway.groupPage.discountHint') }}
             </div>

@@ -91,12 +91,12 @@ const trainKeyword = ref('')
 const navItems = computed(() => [
   { key: 'home', path: '/ticket', active: route.path === '/ticket' },
   { key: 'ticket', path: '/ticket/list', active: route.path.startsWith('/ticket/list') },
-  { key: 'group', active: false },
-  { key: 'member', active: false },
-  { key: 'station', active: false },
-  { key: 'business', active: false },
-  { key: 'guide', active: false },
-  { key: 'info', active: false },
+  { key: 'group', path: '/ticket/group', active: route.path.startsWith('/ticket/group') },
+  { key: 'member', path: '/ticket/member', active: route.path.startsWith('/ticket/member') },
+  { key: 'station', path: '/ticket/station', active: route.path.startsWith('/ticket/station') },
+  { key: 'business', path: '/ticket/business', active: route.path.startsWith('/ticket/business') },
+  { key: 'guide', path: '/ticket/guide', active: route.path.startsWith('/ticket/guide') },
+  { key: 'info', path: '/ticket/info', active: route.path.startsWith('/ticket/info') },
 ])
 
 const comingSoon = () => {
@@ -118,12 +118,8 @@ const goHomeWithTrip = (tripType) => {
 }
 
 const handleNav = (item) => {
-  if (item.key === 'home') {
-    goHome()
-    return
-  }
-  if (item.key === 'ticket') {
-    router.push('/ticket/list')
+  if (item.path) {
+    router.push(item.path)
     return
   }
   comingSoon()
@@ -135,7 +131,12 @@ const searchTrain = () => {
     ElMessage.warning(t('railway.top.searchEmpty'))
     return
   }
-  router.push({ path: '/ticket/timetable', query: { trainNo: keyword } })
+  // 车次号直达时刻表，其余关键词作为出行指南检索
+  if (/^[GDCZTK]\d+$/i.test(keyword)) {
+    router.push({ path: '/ticket/timetable', query: { trainNo: keyword.toUpperCase() } })
+    return
+  }
+  router.push({ path: '/ticket/guide', query: { keyword } })
 }
 </script>
 
