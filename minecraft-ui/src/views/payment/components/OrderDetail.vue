@@ -1563,9 +1563,7 @@ onMounted(() => {
   width: 100%;
   max-width: 380px;
   padding: 36px 28px;
-  border: 1px dashed var(--theme-border);
   border-radius: 20px;
-  background: var(--theme-bg-surface-2);
   text-align: center;
   animation: od-rise 0.5s var(--theme-ease) both;
 }

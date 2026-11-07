@@ -60,3 +60,86 @@ export const addRailwayPassenger = (data) =>
 
 export const deleteRailwayPassenger = (id) =>
   call(request.delete(`/railway/passengers/${id}`))
+
+/* ==================== 信息查询 ==================== */
+
+// 车站大屏（type: DEPARTURE / ARRIVAL）
+export const getRailwayBoard = (params) =>
+  call(request.get('/railway/info/board', { params }))
+
+// 区间票价查询
+export const getRailwayFares = (params) =>
+  call(request.get('/railway/info/fares', { params }))
+
+/* ==================== 团购服务 ==================== */
+
+export const quoteRailwayGroup = (params) =>
+  call(request.get('/railway/group/quote', { params }))
+
+export const createRailwayGroupBooking = (data) =>
+  call(request.post('/railway/group/bookings', data))
+
+export const getRailwayGroupBookings = (params) =>
+  call(request.get('/railway/group/bookings', { params }))
+
+export const cancelRailwayGroupBooking = (id) =>
+  call(request.post(`/railway/group/bookings/${id}/cancel`))
+
+/* ==================== 会员服务 ==================== */
+
+export const getRailwayMemberOverview = () =>
+  call(request.get('/railway/member/overview'))
+
+export const getRailwayPointLogs = (params) =>
+  call(request.get('/railway/member/points', { params }))
+
+export const getRailwayMemberGifts = () =>
+  call(request.get('/railway/member/gifts'))
+
+export const redeemRailwayGift = (data) =>
+  call(request.post('/railway/member/redeem', data))
+
+/* ==================== 站车服务 ==================== */
+
+export const getRailwayStationServices = () =>
+  call(request.get('/railway/station-services'))
+
+export const createRailwayServiceRequest = (data) =>
+  call(request.post('/railway/station-services/requests', data))
+
+export const getRailwayServiceRequests = (params) =>
+  call(request.get('/railway/station-services/requests', { params }))
+
+export const cancelRailwayServiceRequest = (id) =>
+  call(request.post(`/railway/station-services/requests/${id}/cancel`))
+
+/* ==================== 商旅服务 ==================== */
+
+export const getRailwayBusinessAccount = () =>
+  call(request.get('/railway/business/account'))
+
+export const saveRailwayBusinessAccount = (data) =>
+  call(request.put('/railway/business/account', data))
+
+export const getRailwayBusinessSummary = () =>
+  call(request.get('/railway/business/summary'))
+
+export const createRailwayBusinessTrip = (data) =>
+  call(request.post('/railway/business/trips', data))
+
+export const getRailwayBusinessTrips = (params) =>
+  call(request.get('/railway/business/trips', { params }))
+
+export const cancelRailwayBusinessTrip = (id) =>
+  call(request.post(`/railway/business/trips/${id}/cancel`))
+
+/* ==================== 出行指南 ==================== */
+
+export const getRailwayGuides = (params) =>
+  call(request.get('/railway/guides', { params }))
+
+export const getRailwayGuideDetail = (id) =>
+  call(request.get(`/railway/guides/${id}`))
+
+export const getRailwayGuideRelated = (id, limit = 3) =>
+  call(request.get(`/railway/guides/${id}/related`, { params: { limit } }))

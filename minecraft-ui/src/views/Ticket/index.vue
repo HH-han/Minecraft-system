@@ -46,3 +46,8 @@ import BottomPage from '@/components/DisplayBox/BottomPage.vue'
   width: 100%;
 }
 </style>
+
+<style>
+/* 订票扩展服务页共享样式（团购 / 会员 / 站车 / 商旅 / 指南 / 信息查询） */
+@import './styles/service.css';
+</style>

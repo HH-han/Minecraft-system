@@ -1796,15 +1796,15 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
     .website-introduction {
-        border-radius: 32px;
+        border-radius: 28px;
     }
 
     .hero-inner {
-        padding: 76px 20px 8px;
+        padding: 68px 16px 8px;
     }
 
     .hero-subtitle {
-        font-size: 16px;
+        font-size: 15.5px;
     }
 
     .hero-cta-group {
@@ -1817,15 +1817,17 @@ onBeforeUnmount(() => {
     }
 
     .hero-stats {
-        width: calc(100% - 40px);
+        width: calc(100% - 32px);
         grid-template-columns: 1fr;
-        gap: 22px;
-        padding: 26px 20px;
+        gap: 20px;
+        margin-top: 32px;
+        padding: 24px 18px;
+        border-radius: 24px;
     }
 
     .stat-item + .stat-item::before {
         left: 50%;
-        top: -11px;
+        top: -10px;
         width: 56px;
         height: 1px;
         transform: translateX(-50%);
@@ -1833,68 +1835,242 @@ onBeforeUnmount(() => {
     }
 
     .intro-section {
-        padding: 0 20px;
-        margin-bottom: 72px;
+        padding: 0 16px;
+        margin-bottom: 56px;
     }
 
     .stage {
-        padding: 0 20px;
-        margin-bottom: 72px;
+        padding: 0 16px;
+        margin-bottom: 56px;
+    }
+
+    .section-header {
+        margin: 0 auto 32px;
+    }
+
+    .section-eyebrow {
+        margin-bottom: 12px;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+    }
+
+    .section-title {
+        font-size: 26px;
+    }
+
+    .section-subtitle {
+        font-size: 14.5px;
     }
 
     .stories-stack {
-        gap: 64px;
+        gap: 56px;
     }
 
     .about-grid,
     .features-grid,
     .tech-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
     .about-card {
-        padding: 32px 26px;
+        padding: 28px 22px;
+        border-radius: 26px;
+    }
+
+    .feature-card {
+        padding: 28px 22px;
+        border-radius: 24px;
+    }
+
+    .tech-card {
+        padding: 24px 20px;
+        border-radius: 24px;
     }
 
     .feature-strip {
-        margin: 0 20px 72px;
-        padding: 76px 20px;
-        border-radius: 32px;
+        margin: 0 16px 56px;
+        padding: 56px 20px;
+        border-radius: 28px;
+    }
+
+    /* 发展历程：左侧单轴时间线，收紧卡片内边距 */
+    .timeline {
+        padding: 4px 0 0;
     }
 
     .timeline::before {
-        left: 0;
+        left: 5px;
+        transform: none;
     }
 
     .timeline-item,
     .timeline-item--right {
         width: 100%;
         margin-left: 0;
-        padding: 0 0 36px 30px;
+        padding: 0 0 22px 26px;
     }
 
     .timeline-item::after,
     .timeline-item--right::after {
-        left: -6px;
+        left: -1px;
         right: auto;
+        top: 28px;
+        width: 10px;
+        height: 10px;
+        border-width: 2px;
+    }
+
+    .timeline-content {
+        padding: 20px 18px;
+        border-radius: 20px;
+    }
+
+    .timeline-date {
+        margin-bottom: 10px;
+        padding: 4px 12px;
+        font-size: 11.5px;
+    }
+
+    .timeline-title {
+        font-size: 16.5px;
+    }
+
+    .timeline-desc {
+        font-size: 13.5px;
+        line-height: 1.65;
     }
 
     .stats-section {
-        padding: 72px 20px 16px;
+        padding: 56px 16px 8px;
     }
 
     .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .stat-card {
+        padding: 22px 14px;
+        border-radius: 22px;
+    }
+
+    .stat-card-number {
+        font-size: 30px;
     }
 
     .scroll-cue {
-        margin-top: 34px;
+        margin-top: 28px;
+        height: 44px;
+    }
+
+    /* —— 内容区子组件在移动端的排版收敛（覆盖基础 :deep 规则） —— */
+    .website-introduction :deep(.stage-body--listing .recommendations-container),
+    .website-introduction :deep(.stage-body--listing .content-container) {
+        padding: 0;
+    }
+
+    .website-introduction :deep(.stage-body--listing .section-header) {
+        margin-bottom: 24px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .section-title) {
+        font-size: 26px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .section-subtitle) {
+        font-size: 14.5px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .category-filter) {
+        gap: 10px;
+        padding: 14px;
+        margin-bottom: 24px;
+        border-radius: 22px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .category-row) {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .filter-label) {
+        min-width: 0;
+        font-size: 12.5px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .category-list) {
+        width: 100%;
+        gap: 8px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .category-btn) {
+        padding: 8px 14px;
+        font-size: 12.5px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .tab-container) {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        gap: 6px;
+        padding: 6px;
+        margin-bottom: 24px;
+        border-radius: 20px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .tab-btn) {
+        padding: 11px 4px;
+        font-size: 13px;
+        border-radius: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .website-introduction :deep(.stage-body--listing .card-image-wrapper) {
+        height: 220px;
+        background: var(--theme-bg-surface-2);
+    }
+
+    .website-introduction :deep(.stage-body--listing .card-content) {
+        padding: 20px;
+    }
+
+    .website-introduction :deep(.stage-body--listing .card-title) {
+        font-size: 19px;
+        min-height: 0;
+    }
+
+    .website-introduction :deep(.stage-body--listing .card-description) {
+        font-size: 14px;
+        min-height: 0;
+    }
+
+    .website-introduction :deep(.stage-body--listing .card-actions) {
+        gap: 10px;
     }
 }
 
 @media (max-width: 576px) {
     .stats-grid {
-        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 18px 10px;
+        border-radius: 20px;
+    }
+
+    .stat-card-number {
+        margin-bottom: 6px;
+        font-size: 26px;
+    }
+
+    .stat-card-label {
+        font-size: 12.5px;
     }
 
     .tech-list li {

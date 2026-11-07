@@ -301,9 +301,11 @@ onMounted(() => {
 
 .tab-container {
     width: 100%;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 16px;
     min-height: 128px;
     margin-bottom: 48px;
@@ -320,6 +322,7 @@ onMounted(() => {
     font-size: 15px;
     font-weight: 500;
     color: var(--theme-text-1);
+    white-space: nowrap;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
@@ -375,11 +378,12 @@ onMounted(() => {
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
     gap: 40px;
 }
 
 .card {
+    min-width: 0;
     background: var(--theme-bg-surface);
     border-radius: 32px;
     overflow: hidden;
@@ -461,12 +465,16 @@ onMounted(() => {
     position: relative;
     height: 280px;
     overflow: hidden;
+    background: var(--theme-bg-surface-2);
 }
 
 .card-image {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    color: var(--theme-text-3);
+    font-size: 13px;
     transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -511,6 +519,7 @@ onMounted(() => {
 
 .card-content {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     padding: 28px;
@@ -546,10 +555,15 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     margin-bottom: 24px;
 }
 
 .card-location {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 14px;
     color: var(--theme-text-3);
     display: flex;
@@ -558,6 +572,8 @@ onMounted(() => {
 }
 
 .card-price {
+    flex: 0 0 auto;
+    white-space: nowrap;
     font-size: 20px;
     font-weight: 600;
     background: var(--theme-gradient);
@@ -706,29 +722,50 @@ onMounted(() => {
 
 @media (max-width: 768px) {
     .content-container {
-        padding: 0 40px;
+        padding: 0;
     }
 
     .content-section {
         margin-bottom: 60px;
     }
 
+    .section-header {
+        margin-bottom: 28px;
+    }
+
     .section-title {
-        font-size: 32px;
+        font-size: 26px;
     }
 
     .section-subtitle {
-        font-size: 16px;
+        font-size: 14.5px;
+        margin-top: 6px;
     }
 
+    /* 三个分类等宽平铺，避免文字换行与横向溢出 */
     .tab-container {
-        min-height: 80px;
-        padding: 10px;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        gap: 6px;
+        min-height: 0;
+        padding: 6px;
+        margin-bottom: 28px;
+        border-radius: 20px;
+    }
+
+    .tab-btn {
+        padding: 11px 4px;
+        font-size: 13.5px;
+        border-radius: 15px;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .card-grid {
-        grid-template-columns: 1fr;
-        gap: 28px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
     }
 
     .expand-actions {
@@ -741,58 +778,7 @@ onMounted(() => {
     }
 
     .card-image-wrapper {
-        height: 240px;
-    }
-
-    .card-content {
-        padding: 24px;
-    }
-
-    .card-title {
-        font-size: 20px;
-        min-height: 50px;
-    }
-
-    .card-description {
-        font-size: 15px;
-        min-height: 48px;
-    }
-
-    .card-actions {
-        gap: 12px;
-    }
-
-    .primary-cta {
-        padding: 12px 20px;
-        font-size: 14px;
-    }
-
-    .secondary-cta {
-        width: 44px;
-        height: 44px;
-    }
-}
-
-@media (max-width: 375px) {
-    .content-container {
-        padding: 0 24px;
-    }
-
-    .content-section {
-        margin-bottom: 48px;
-    }
-
-    .section-title {
-        font-size: 28px;
-    }
-
-    .tab-container {
-        min-height: 64px;
-        padding: 8px;
-    }
-
-    .card-image-wrapper {
-        height: 200px;
+        height: 220px;
     }
 
     .card-content {
@@ -800,15 +786,74 @@ onMounted(() => {
     }
 
     .card-title {
-        font-size: 18px;
-        margin-bottom: 10px;
-        min-height: 45px;
+        font-size: 19px;
+        min-height: 0;
     }
 
     .card-description {
         font-size: 14px;
+        min-height: 0;
+        margin-bottom: 18px;
+    }
+
+    .card-actions {
+        gap: 10px;
+    }
+
+    .primary-cta {
+        flex: 1;
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+
+    .secondary-cta {
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+@media (max-width: 375px) {
+    .content-container {
+        padding: 0;
+    }
+
+    .content-section {
+        margin-bottom: 48px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .tab-container {
+        min-height: 0;
+        padding: 5px;
+    }
+
+    .tab-btn {
+        padding: 10px 2px;
+        font-size: 12.5px;
+    }
+
+    .card-image-wrapper {
+        height: 200px;
+    }
+
+    .card-content {
+        padding: 18px;
+    }
+
+    .card-title {
+        font-size: 17px;
+        margin-bottom: 10px;
+        min-height: 0;
+    }
+
+    .card-description {
+        font-size: 13.5px;
         margin-bottom: 16px;
-        min-height: 45px;
+        min-height: 0;
     }
 
     .card-meta {
@@ -825,6 +870,7 @@ onMounted(() => {
     }
 
     .secondary-cta {
+        flex: 0 0 40px;
         width: 40px;
         height: 40px;
     }

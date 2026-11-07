@@ -7,8 +7,12 @@
       </div>
       <span class="note-card__scrim" aria-hidden="true"></span>
 
-      <span v-if="note.isFeatured" class="note-card__badge note-card__badge--featured">精</span>
-      <span v-if="note.isTop" class="note-card__badge note-card__badge--top">顶</span>
+      <span v-if="note.isFeatured" class="note-card__badge note-card__badge--featured">
+        {{ $t('travelNote.card.featured') }}
+      </span>
+      <span v-if="note.isTop" class="note-card__badge note-card__badge--top">
+        {{ $t('travelNote.card.top') }}
+      </span>
     </div>
 
     <div class="note-card__body">
@@ -23,13 +27,17 @@
         <span v-if="note.destination" class="note-card__dest">
           <el-icon><Location /></el-icon>{{ note.destination }}
         </span>
-        <span v-if="note.travelDays" class="note-card__days">{{ note.travelDays }} 天</span>
+        <span v-if="note.travelDays" class="note-card__days">
+          {{ $t('travelNote.card.days', { days: note.travelDays }) }}
+        </span>
       </div>
 
       <div class="note-card__footer">
         <div class="note-card__author">
-          <el-avatar :size="22" :src="note.avatar">{{ (note.username || '匿')[0] }}</el-avatar>
-          <span class="note-card__username">{{ note.username || '匿名用户' }}</span>
+          <el-avatar :size="22" :src="note.avatar">
+            {{ (note.username || $t('travelNote.card.anonymous'))[0] }}
+          </el-avatar>
+          <span class="note-card__username">{{ note.username || $t('travelNote.card.anonymous') }}</span>
         </div>
         <div class="note-card__stats">
           <span><el-icon><View /></el-icon>{{ formatCount(note.viewCount) }}</span>

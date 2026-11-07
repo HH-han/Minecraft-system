@@ -8,6 +8,7 @@ import com.minecraft.pay.entity.PayOrder;
 import com.minecraft.pay.enums.PayBizType;
 import com.minecraft.pay.event.PaySuccessEvent;
 import com.minecraft.pay.mapper.PayOrderMapper;
+import com.minecraft.service.RailwayMembershipService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -26,6 +27,7 @@ public class RailwayPayBizListener {
 
     private final PayOrderMapper payOrderMapper;
     private final RailwayOrderMapper railwayOrderMapper;
+    private final RailwayMembershipService railwayMembershipService;
 
     @EventListener
     @Transactional(rollbackFor = Exception.class)
@@ -43,5 +45,15 @@ public class RailwayPayBizListener {
                 .set(RailwayOrder::getPayTime, LocalDateTime.now()));
         log.info("[支付成功] 铁路订单状态更新 orderNo={}, updated={}",
                 payOrder.getBizOrderNo(), updated);
+        if (updated > 0) {
+            try {
+                // 购票成功后发放铁路积分与会员成长值（内部按订单号幂等）
+                railwayMembershipService.awardOrderPoints(payOrder.getBizOrderNo());
+            } catch (Exception e) {
+                // 积分发放失败不影响支付结果
+                log.warn("[支付成功] 铁路会员积分发放失败 orderNo={}: {}",
+                        payOrder.getBizOrderNo(), e.getMessage());
+            }
+        }
     }
 }

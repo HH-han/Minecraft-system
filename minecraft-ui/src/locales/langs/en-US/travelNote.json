@@ -102,6 +102,33 @@
         "maxTags": "Up to 10 tags",
         "tagExists": "Tag already exists"
       }
+    },
+    "square": {
+      "eyebrow": "TRAVEL JOURNAL",
+      "title": "Travel Note Square",
+      "subtitle": "Discover real travelers' footprints, guides and inspiration",
+      "write": "Write a note",
+      "mine": "My notes",
+      "tabs": {
+        "recommend": "For you",
+        "latest": "Latest",
+        "follow": "Following",
+        "city": "Nearby"
+      },
+      "searchPlaceholder": "Search destination / title / keyword",
+      "hotTags": "HOT TAGS",
+      "emptyTitle": "No notes yet",
+      "emptyDesc": "Be the first to share your journey",
+      "emptyAction": "Write a note",
+      "loadMore": "Load more",
+      "noMore": "No more notes",
+      "followHint": "Sign in to see notes from travelers you follow"
+    },
+    "card": {
+      "featured": "PICK",
+      "top": "TOP",
+      "days": "{days} days",
+      "anonymous": "Anonymous"
     }
   }
 }

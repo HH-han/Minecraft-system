@@ -11,9 +11,13 @@
                 <div class="brand-desc">
                     <i class="fas fa-compass"></i> {{ $t('website.footer.brandDesc') }}
                 </div>
-                <div class="brand-badges">
-                    <span class="brand-badge"><i class="fas fa-check-circle"></i> {{ $t('website.footer.badgeQuality') }}</span>
-                    <span class="brand-badge"><i class="fas fa-shield-alt"></i> {{ $t('website.footer.badgeSafe') }}</span>
+                <div style="display: flex; gap: 0.8rem; margin-top: 0.3rem; flex-wrap: wrap;">
+                    <span
+                        style="background: var(--theme-primary-soft); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid var(--theme-border); font-size:0.75rem; color:var(--theme-text-2);"><i
+                            class="fas fa-check-circle" style="color: var(--theme-primary);"></i> {{ $t('website.footer.badgeQuality') }}</span>
+                    <span
+                        style="background: var(--theme-primary-soft); padding: 0.2rem 1rem; border-radius: 20px; border:1px solid var(--theme-border); font-size:0.75rem; color:var(--theme-text-2);"><i
+                            class="fas fa-shield-alt" style="color: var(--theme-primary);"></i> {{ $t('website.footer.badgeSafe') }}</span>
                 </div>
             </div>
 
@@ -55,8 +59,8 @@
                         :aria-label="$t('website.footer.newsletter.placeholder')">
                     <button><i class="fas fa-arrow-right"></i> {{ $t('website.footer.newsletter.submit') }}</button>
                 </div>
-                <p class="newsletter-privacy">
-                    <i class="fas fa-lock"></i> {{ $t('website.footer.newsletter.privacy') }}
+                <p style="font-size:0.7rem; color:var(--theme-text-3); margin-top: 0.2rem;">
+                    <i class="fas fa-lock" style="margin-right: 4px;"></i> {{ $t('website.footer.newsletter.privacy') }}
                 </p>
             </div>
         </div>
@@ -69,7 +73,7 @@
                 <a href="#">{{ $t('website.footer.privacyPolicy') }}</a>
                 <a href="#">{{ $t('website.footer.terms') }}</a>
                 <a href="#">{{ $t('website.footer.cookieSettings') }}</a>
-                <span class="crafted"><span class="heart">❤</span> {{ $t('website.footer.crafted') }}</span>
+                <span style="margin-left: 0.8rem;"> <span class="heart">❤</span> {{ $t('website.footer.crafted') }}</span>
             </div>
         </div>
     </footer>
@@ -152,32 +156,6 @@ export default {
     margin-right: 6px;
 }
 
-/* 品牌标签 */
-.brand-badges {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 0.3rem;
-    flex-wrap: wrap;
-}
-
-.brand-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--theme-primary-soft);
-    padding: 0.2rem 1rem;
-    border-radius: 20px;
-    border: 1px solid var(--theme-border);
-    font-size: 0.75rem;
-    color: var(--theme-text-2);
-    white-space: nowrap;
-}
-
-.brand-badge i {
-    color: var(--theme-primary);
-    font-size: 0.75rem;
-}
-
 /* 通用标题 ———— 蓝色调 */
 .footer-title {
     font-size: 1.1rem;
@@ -205,7 +183,6 @@ export default {
     flex-direction: column;
     gap: 0.9rem;
     padding: 0;
-    margin: 0;
 }
 
 .footer-links li a {
@@ -294,16 +271,6 @@ export default {
     font-size: 0.9rem;
     line-height: 1.5;
     margin-bottom: 0.5rem;
-}
-
-.newsletter-col .newsletter-privacy {
-    font-size: 0.7rem;
-    color: var(--theme-text-3);
-    margin: 0.2rem 0 0;
-}
-
-.newsletter-privacy i {
-    margin-right: 4px;
 }
 
 .newsletter-input-group {
@@ -399,15 +366,11 @@ export default {
     display: inline-block;
 }
 
-.footer-bottom .legal .crafted {
-    margin-left: 0.8rem;
-}
-
 /* 响应式 */
 @media (max-width: 992px) {
     .footer-container {
         grid-template-columns: 1fr 1fr;
-        gap: 1.8rem 1.5rem;
+        gap: 2rem 1.5rem;
     }
 
     .brand-col {
@@ -425,187 +388,53 @@ export default {
         padding: 0.5rem 1rem;
     }
 
-    .brand-badges {
-        justify-content: center;
-    }
-
     .social-icons {
         justify-content: center;
-        flex-wrap: wrap;
     }
 }
 
 @media (max-width: 600px) {
-    .footer-wrapper {
-        padding: 2rem 1.1rem 1.2rem;
-    }
-
     .footer-container {
         grid-template-columns: 1fr;
-        gap: 1.6rem;
-        justify-items: center;
+        gap: 2rem;
         text-align: center;
-    }
-
-    .brand-col,
-    .quick-col,
-    .contact-col,
-    .newsletter-col {
-        width: 100%;
-    }
-
-    .brand-col {
-        gap: 0.6rem;
-    }
-
-    .logo {
-        font-size: 1.65rem;
-        letter-spacing: 1px;
-        gap: 8px;
-        justify-content: center;
-    }
-
-    .logo i {
-        font-size: 1.9rem;
-    }
-
-    .brand-desc {
-        font-size: 0.85rem;
-        line-height: 1.55;
-        padding: 0.45rem 0.8rem;
-    }
-
-    .brand-badges {
-        justify-content: center;
-        gap: 0.5rem;
-        margin-top: 0.2rem;
-    }
-
-    .brand-badge {
-        padding: 0.18rem 0.8rem;
-        font-size: 0.7rem;
-    }
-
-    .footer-title {
-        font-size: 0.95rem;
-        letter-spacing: 0.8px;
-        margin-bottom: 0.8rem;
-        padding-bottom: 4px;
-    }
-
-    .footer-title i {
-        margin-right: 6px;
-    }
-
-    .footer-links {
-        gap: 0.5rem;
-        align-items: center;
-    }
-
-    .footer-links li {
-        width: 100%;
     }
 
     .footer-links li a {
         justify-content: center;
-        font-size: 0.88rem;
-        gap: 8px;
-        padding: 0.15rem 0;
-        min-height: 30px;
-    }
-
-    .footer-links li a i {
-        width: 18px;
-        font-size: 0.85rem;
-    }
-
-    .contact-col .footer-links li a i {
-        width: 20px;
-    }
-
-    .social-icons {
-        gap: 0.75rem;
-        margin-top: 0.9rem;
-    }
-
-    .social-icons a {
-        width: 40px;
-        height: 40px;
-        font-size: 1.25rem;
-    }
-
-    .newsletter-col {
-        gap: 0.35rem;
-    }
-
-    .newsletter-col p {
-        font-size: 0.85rem;
-        margin-bottom: 0.3rem;
     }
 
     .newsletter-input-group {
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         border-radius: 30px;
     }
 
     .newsletter-input-group input {
-        min-width: 0;
-        padding: 0.7rem 1rem;
-        font-size: 0.85rem;
-        text-align: left;
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem 1rem;
     }
 
     .newsletter-input-group button {
-        padding: 0.7rem 1.1rem;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        border-radius: 0 30px 30px 0;
-    }
-
-    .newsletter-col .newsletter-privacy {
-        font-size: 0.68rem;
+        width: 100%;
+        justify-content: center;
+        border-left: none;
+        border-top: 1px solid var(--theme-hairline);
+        border-radius: 0 0 30px 30px;
     }
 
     .footer-bottom {
-        margin-top: 1.6rem;
-        padding-top: 1.1rem;
         flex-direction: column;
         text-align: center;
-        font-size: 0.75rem;
-        gap: 0.6rem;
-    }
-
-    .footer-bottom .legal {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 0.4rem 0.9rem;
     }
 
     .footer-bottom .legal a {
-        margin: 0;
+        margin: 0 0.6rem;
     }
 
-    .footer-bottom .legal .crafted {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-
-@media (max-width: 380px) {
-    .footer-wrapper {
-        padding: 1.6rem 0.85rem 1rem;
-    }
-
-    .newsletter-input-group button {
-        padding: 0.7rem 0.85rem;
-    }
-
-    .social-icons a {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
-    }
+    .logo {
+    font-size: 2rem;
+    justify-content: center;
+  }
 }
 </style>

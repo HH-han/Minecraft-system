@@ -102,6 +102,33 @@
         "maxTags": "最多10个标签",
         "tagExists": "标签已存在"
       }
+    },
+    "square": {
+      "eyebrow": "TRAVEL JOURNAL",
+      "title": "旅行笔记广场",
+      "subtitle": "发现真实旅行者的足迹、攻略与灵感",
+      "write": "写笔记",
+      "mine": "我的笔记",
+      "tabs": {
+        "recommend": "推荐",
+        "latest": "最新",
+        "follow": "关注",
+        "city": "同城"
+      },
+      "searchPlaceholder": "搜索目的地 / 标题 / 关键词",
+      "hotTags": "热门标签",
+      "emptyTitle": "还没有笔记",
+      "emptyDesc": "成为第一个分享旅程的人吧",
+      "emptyAction": "立即写笔记",
+      "loadMore": "加载更多",
+      "noMore": "没有更多了",
+      "followHint": "登录后可查看关注作者的笔记"
+    },
+    "card": {
+      "featured": "精",
+      "top": "顶",
+      "days": "{days} 天",
+      "anonymous": "匿名用户"
     }
   }
 }
